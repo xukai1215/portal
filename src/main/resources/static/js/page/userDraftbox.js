@@ -364,7 +364,9 @@ var userDraftBox = Vue.extend(
 
                 ],
 
-                draftCardWidth:800
+                draftCardWidth:800,
+
+                asc:false,
             }
         },
 
@@ -374,14 +376,25 @@ var userDraftBox = Vue.extend(
                     return 8
                 else if(this.draftCardWidth>380)
                     return 12
-                else return 24 
+                else return 24
             }
         },
 
         methods:{
 
+            changeSort(){
+                if(this.asc==true)
+                    this.asc=false
+                else
+                    this.asc=true
+                this.loadDraft()
+            },
+
             loadDraft(){
                 axios.get('/draft/listByUser',{
+                    params:{
+                        sort:this.asc
+                    }
 
                 }).then(res=>{
                     if(res.data.code==0){

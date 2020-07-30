@@ -32,9 +32,12 @@
                         <el-tab-pane label="Model Item" name="first">
                             <el-card>
                                 <div class="block">
-                                    <div class="radio">
+                                    <div class="flexJustStart flexAlignCenter">
                                         Sort by time:
-
+                                        <el-button size="mini" type="primary" plain v-on:click="changeSort" style=";margin-left: 5px;padding: 5px 6px;">
+                                            <i v-if="!asc" class="fa fa-sort-numeric-desc" style="font-size: 14px"></i>
+                                            <i v-else class="fa fa-sort-numeric-asc" style="font-size: 14px"></i>
+                                        </el-button>
                                     </div>
                                     <div class="no-mess icon-th-list overview" style="color: #ccc;font-size: 16px;margin: 20px;text-align: center;display: none;">
                                         <span style="margin-left: 5px;    font-family: 'Microsoft YaHei';">This page is temporarily empty</span>

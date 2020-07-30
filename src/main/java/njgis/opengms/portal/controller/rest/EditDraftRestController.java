@@ -65,13 +65,13 @@ public class EditDraftRestController {
     }
 
     @RequestMapping(value = "/listByUser",method = RequestMethod.GET)
-    public JsonResult listByUser(HttpServletRequest httpServletRequest){
+    public JsonResult listByUser(HttpServletRequest httpServletRequest,@RequestParam("sort") Boolean sort){
         HttpSession session = httpServletRequest.getSession();
         if(Utils.checkLoginStatus(session)==null){
             return ResultUtils.error(-1,"no login");
         }else{
             String userOid = session.getAttribute("oid").toString();
-            return ResultUtils.success(editDraftService.listByUser(userOid));
+            return ResultUtils.success(editDraftService.listByUser(userOid,sort));
         }
     }
 

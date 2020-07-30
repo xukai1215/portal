@@ -42,4 +42,22 @@ public class SpatialRestController {
     JsonResult searchByTitle(@RequestParam(value = "oid")String oid){
         return ResultUtils.success(spatialService.getWKT(oid));
     }
+
+    @RequestMapping(value="/getSpatialReference",method= RequestMethod.GET)
+    JsonResult getSpatialReference(@RequestParam(value="asc") int asc,
+                                   @RequestParam(value = "page") int page,
+                                   @RequestParam(value = "size") int size)
+    {
+        return ResultUtils.success(spatialService.getSpatialReference(asc,page,size));
+    }
+
+
+    @RequestMapping(value="/searchSpatialReference",method= RequestMethod.GET)
+    JsonResult searchSpatialReference(@RequestParam(value="asc") int asc,
+                                   @RequestParam(value = "page") int page,
+                                   @RequestParam(value = "size") int size,
+                                   @RequestParam(value = "searchText") String searchText)
+    {
+        return ResultUtils.success(spatialService.searchSpatialReference(asc,page,size,searchText));
+    }
 }

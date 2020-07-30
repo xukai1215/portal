@@ -85,8 +85,9 @@ public class EditDraftService {
         return result;
     }
 
-    public List<EditDraft> listByUser(String itemOid){
-        List<EditDraft> editDrafts = editDraftDao.findByUser(itemOid);
+    public List<EditDraft> listByUser(String itemOid,Boolean asc){
+        Sort sort=new Sort(asc == true ? Sort.Direction.ASC : Sort.Direction.DESC, "lastModifyTime");
+        List<EditDraft> editDrafts = editDraftDao.findByUserOrderByLastModifyTime(itemOid,sort);
         return editDrafts;
     }
 

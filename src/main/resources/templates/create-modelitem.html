@@ -466,7 +466,7 @@
                                                                 </div>
                                                             </div>
                                                             <div class="step-footer text-right">
-                                                                <button class="btn btn-danger prev" @click="cancelEdit()">
+                                                                <button class="btn btn-danger prev" @click="cancelEditClick()">
                                                                     Cancel
                                                                 </button>
                                                                 <button class="btn btn-warning prev" data-direction="prev">
@@ -684,6 +684,19 @@
                         </el-pagination>
 
                     </div>
+                </el-dialog>
+                <el-dialog title="Tips" :visible.sync = "cancelDraftDialog" width="30%" custom-class="min400w">
+                    <div class="el-message-box__content">
+                        <div class="el-message-box__status el-icon-warning"></div>
+                        <div class="el-message-box__message">
+                            <p>You have a draft about this Item, do you want to save the latest version of it? If not, this draft will be deleted.</p>
+                        </div>
+                    </div>
+                    <span slot="footer" class="dialog-footer">
+                        <el-button size="small" @click="cancelDraftDialog = false" style="float: left">Cancel</el-button>
+                        <el-button size="small" @click="cancelEdit">No</el-button>
+                        <el-button size="small" type="primary" @click="saveDraft">Yes</el-button>
+                    </span>
                 </el-dialog>
                 <el-dialog title="Edit Image" :visible.sync="imgClipDialog" >
                     <span slot="footer">

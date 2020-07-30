@@ -391,6 +391,8 @@ var createModelItem = Vue.extend({
         inSearch:0,
 
         imgClipDialog:false,
+
+        cancelDraftDialog:false,
     }
     },
 
@@ -752,19 +754,33 @@ var createModelItem = Vue.extend({
             this.draftListDialog=false;
         },
 
-        cancelEdit(){
-            this.$confirm('You have a draft about this Item, do you want to save the latest version of it? If not, this draft will be deleted.', 'Tips', {
-                confirmButtonText: 'Yes',
-                cancelButtonText: 'No',
-                type: 'warning'
-            }).then(() => {
-                this.saveDraft()
-            }).catch(() => {
-                this.deleteDraft()
-                setTimeout(()=>{
+        cancelEditClick(){
+            if(this.draft.oid!=''){
+                this.cancelDraftDialog=true
+            }else{
+                setTimeout(() => {
                     window.location.href = "/user/userSpace#/models/modelitem";
-                },905)
-            });
+                }, 905)
+            }
+            // this.$confirm('You have a draft about this Item, do you want to save the latest version of it? If not, this draft will be deleted.', 'Tips', {
+            //     confirmButtonText: 'Yes',
+            //     cancelButtonText: 'No',
+            //     type: 'warning'
+            // }).then(() => {
+            //     this.saveDraft()
+            // }).catch(() => {
+            //     this.deleteDraft()
+            //     setTimeout(()=>{
+            //         window.location.href = "/user/userSpace#/models/modelitem";
+            //     },905)
+            // });
+        },
+
+        cancelEdit() {
+            this.deleteDraft()
+            setTimeout(() => {
+                window.location.href = "/user/userSpace#/models/modelitem";
+            }, 905)
         },
 
         saveDraft(){

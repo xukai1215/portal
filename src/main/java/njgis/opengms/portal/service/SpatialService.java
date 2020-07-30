@@ -1,10 +1,12 @@
 package njgis.opengms.portal.service;
 
 import com.alibaba.fastjson.JSONObject;
+import njgis.opengms.portal.dao.SpatialReferenceClassificationDao;
 import njgis.opengms.portal.dao.SpatialReferenceDao;
 import njgis.opengms.portal.dao.UserDao;
 import njgis.opengms.portal.dto.Spatial.SpatialFindDTO;
 import njgis.opengms.portal.dto.Spatial.SpatialResultDTO;
+import njgis.opengms.portal.entity.Classification;
 import njgis.opengms.portal.entity.SpatialReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -21,6 +24,9 @@ public class SpatialService {
 
     @Autowired
     SpatialReferenceDao spatialReferenceDao;
+
+    @Autowired
+    SpatialReferenceClassificationDao spatialReferenceClassificationDao;
 
     @Autowired
     UserDao userDao;
@@ -96,4 +102,49 @@ public class SpatialService {
 
         return jsonObject;
     }
+
+    public JSONObject getSpatialReference(int asc,int page,int size){
+        Sort sort = new Sort(asc == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        List<Classification> classifications = spatialReferenceClassificationDao.findAllByParentId("58340c92-d74f-4d81-8a80-e4fcff286008");
+
+        List<String> classificationIds = new ArrayList<String>();
+
+        for (Classification item:classifications){
+            classificationIds.add(item.getOid());
+        }
+
+        Page<SpatialResultDTO> spatialResultDTOPage = spatialReferenceDao.findAllByAndClassificationsIn(classificationIds,pageable);
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("total",spatialResultDTOPage.getTotalElements());
+        jsonObject.put("content",spatialResultDTOPage.getContent());
+
+        return jsonObject;
+    }
+
+    public JSONObject searchSpatialReference(int asc,int page,int size,String searchText){
+        Sort sort = new Sort(asc == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        List<Classification> classifications = spatialReferenceClassificationDao.findAllByParentId("58340c92-d74f-4d81-8a80-e4fcff286008");
+
+        List<String> classificationIds = new ArrayList<String>();
+
+        for (Classification item:classifications){
+            classificationIds.add(item.getOid());
+        }
+
+        Page<SpatialResultDTO> spatialResultDTOPage = spatialReferenceDao.findAllByNameLikeIgnoreCaseAndClassificationsIn(searchText,classificationIds,pageable);
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("total",spatialResultDTOPage.getTotalElements());
+        jsonObject.put("content",spatialResultDTOPage.getContent());
+
+        return jsonObject;
+    }
+
 }

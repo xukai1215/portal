@@ -310,6 +310,20 @@ a{
     color: #f2f2f2;
 }
 
+.inputForm{
+    width: 100% ;
+    margin: 5px 0;
+}
+
+.inputForm p{
+    color: #7d7d7d;
+    margin: 0 ;
+}
+
+.inputForm .el-input{
+    margin-left: 5px;
+}
+
 @media only screen and (min-width:1150px) {
     .wzhSectionContainer .imgContainerW100{
         display: none;

@@ -1,3 +1,22 @@
 .LanguageInfoContainer .table-bordered:first-child{
     margin-bottom:0px;
 }
+
+.transformContainer{
+    display: flex;
+    align-items: center;
+}
+
+.exchangeButton{
+    transform: rotate(90deg);
+}
+
+@media (max-width: 725px){
+    .transformContainer{
+        flex-direction: column;
+    }
+
+    .exchangeButton{
+        transform: rotate(0deg);
+    }
+}
