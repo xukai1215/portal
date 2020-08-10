@@ -39,8 +39,8 @@ var dropm1 = document.getElementById('drop1'), dropm2 = document.getElementById(
     communityArrow1=document.getElementsByClassName("arrow")[0],helpArrow1=document.getElementsByClassName("arrow")[1],
     communityArrow2=document.getElementsByClassName("arrow")[2],helpArrow1=document.getElementsByClassName("arrow")[3],
 
-    phoneUserSub = document.getElementsByClassName('fullSub')[0],
-    fullsub = document.getElementsByClassName('fullSub')[1],
+    phoneUserSub = document.getElementById('phoneUserSub'),
+    fullsub = document.getElementById('phonesub'),
 
     phoneLoged = document.getElementsByClassName('phoneLoged')[0],
 
@@ -719,7 +719,7 @@ $('#phoneHelp').click((e)=>{
         clearTimeout(timeout2);
         target.css('display','block')
         fullSubMenuDropDpwn(target);
-        $('#aboutUs').animate({marginTop:150},185);
+        $('#aboutUs').animate({marginTop:199},245);
     }
 
     else{

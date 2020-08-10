@@ -755,6 +755,7 @@ new Vue({
 
         wktTransfer(coordinate,wkt){
             let obj={};
+            // if(wkt.indexOf('GEOGCS')==-1) return
             // let subStrIndex=this.findFirstCoupe(wkt)
             if(wkt.indexOf('COMPD_CS')!=-1){
                 coordinate.compd=1
@@ -945,6 +946,7 @@ new Vue({
 
         loadCoordinate(item){
             this.inputX=this.inputY=this.inputLat=this.inputLong=this.outputX=this.outputY=this.outputLat=this.outputLong=''
+            this.loadSpatialDialog=false
             if(this.loadStatus==0){
                 this.inputCoordinate= item
                 this.inputCoordinate.name = item.name
@@ -956,11 +958,11 @@ new Vue({
                 this.outputCoordinate.wkt = item.wkt
                 this.wktTransfer(this.outputCoordinate,this.outputCoordinate.wkt)
             }
-            this.loadSpatialDialog=false
 
         },
 
         judgeUnit(coordinate){
+            if(coordinate.geogcs==undefined) return 'metre'
             if(coordinate.geogcs.unit.key.toLowerCase().indexOf('metre')==-1) {
                 if (coordinate.projcs!=undefined&&coordinate.projcs.unit.key.toLowerCase().indexOf('metre') != -1) {
                     return 'metre'
@@ -984,7 +986,7 @@ new Vue({
                     return
                 }
                 if(this.inputX==''||this.inputY==''||!this.isNum(this.inputX)||!this.isNum(this.inputY)){
-                    this.$alert('Please input the right value')
+                    this.$alert('Please input valid value')
                     return
                 }
 
@@ -994,7 +996,7 @@ new Vue({
                     return
                 }
                 if(this.inputLong==''||this.inputLat==''||!this.isNum(this.inputLong)||!this.isNum(this.inputLat)){
-                    this.$alert('Please input the right value')
+                    this.$alert('Please input valid value')
                     return
                 }
             }
@@ -1010,13 +1012,17 @@ new Vue({
             var firstProjection = this.inputCoordinate.wkt;
             var secondProjection = this.outputCoordinate.wkt;
 
-            if(firstProjection==''||secondProjection==''){
+            if(firstProjection.indexOf('GEOGCS')==-1||secondProjection.indexOf('GEOGCS')==-1){
                 this.$alert('The selected coordinates are not supported to transform.')
                 return
             }
 
-
-            let result=proj4(firstProjection,secondProjection,[inX,inY]);
+            let result
+            try{
+                result=proj4(firstProjection,secondProjection,[inX,inY]);
+            }catch (e) {
+                this.$alert('The selected coordinates are not supported to transform.')
+            }
 
             if(this.judgeUnit(this.outputCoordinate)==='metre') {
                 this.outputX = result[0].toFixed(5)

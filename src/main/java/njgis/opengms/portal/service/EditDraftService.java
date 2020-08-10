@@ -101,6 +101,14 @@ public class EditDraftService {
         return editDraft;
     }
 
+    public List<EditDraft> getCreateDraftByUserByType(String user,String itemType,String editType){
+        Sort sort = new Sort(Sort.Direction.DESC,"lastModifyTime");
+
+        List<EditDraft> editDrafts = editDraftDao.findByUserAndItemTypeAndEditTypeOrderByLastModifyTime(user,itemType,editType,sort);
+
+        return editDrafts;
+    }
+
     public String delete(String oid){
         EditDraft editDraft = editDraftDao.findFirstByOid(oid);
         editDraftDao.delete(editDraft);

@@ -685,6 +685,40 @@
 
                     </div>
                 </el-dialog>
+                <el-dialog title="Creating Draft" :visible.sync="matchedCreateDraftDialog" center width="40%">
+                    <p style="text-align: center">You saved creating drafts about this kind of item before, you can select one to continue.</p>
+                    <el-table style="padding-left:10px "
+                              :data="matchedCreateDraft">
+                        <el-table-column
+                                label="Item name"
+                                prop="content.name"
+                        >
+<!--                            <template slot-scope="scope">-->
+<!--                                <span v-if="scope.row.editType=='create'">{{ scope.row.content.name}}</span>-->
+<!--                                <a v-else class="cursorPointer" @click="checkItem(scope.row)">{{ scope.row.content.name}}</a>-->
+<!--                            </template>-->
+                        </el-table-column>
+                        <el-table-column
+                                label="Last modify time"
+                        >
+                            <template slot-scope="scope">
+                                <span>{{ scope.row.lastModifyTime.substring(0,10)+' '+ scope.row.lastModifyTime.substring(11,16)}}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                label="Option"
+                                width="160"
+                        >
+                            <template slot-scope="scope">
+                                <el-button size="mini" round type="success" @click="insertDraft(scope.row)">Load</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+
+                    <span slot="footer" class="dialog-footer">
+                            <el-button style="float: right" size="small" @click="matchedCreateDraftDialog=false">Cancel</el-button>
+                    </span>
+                </el-dialog>
                 <el-dialog title="Tips" :visible.sync = "cancelDraftDialog" width="30%" custom-class="min400w">
                     <div class="el-message-box__content">
                         <div class="el-message-box__status el-icon-warning"></div>
@@ -698,8 +732,8 @@
                         <el-button size="small" type="primary" @click="saveDraft">Yes</el-button>
                     </span>
                 </el-dialog>
-                <el-dialog title="Edit Image" :visible.sync="imgClipDialog" >
-                    <span slot="footer">
+                <el-dialog title="Edit Image" :visible.sync="imgClipDialog" @close="closeImgUpload">
+                    <span slot="footer" >
                         <div id="editImageDialog">
                         <div class="flexJustAround flexAlignCenter editImageContainer" style="">
                             <div class="containerWithDashed">
@@ -715,13 +749,13 @@
                                 <p style="text-align: center;color: #595959;font-size: 15px">overview</p>
                                 <div class="flexJustAround flexAlignCenter flexCol" style="background-color: inherit;">
                                     <div class="circlePhotoFrame flexCenter">
-                                        <canvas ref="clipCanvas"></canvas>
+                                        <canvas id="clipCanvas" ref="clipCanvas"></canvas>
                                     </div>
                                     <!--                                    <div class="circlePhotoFrameShade">-->
                                     <!--                                    </div>-->
                                     <!--                                    <img id="imgShowBig" style="width: 145px;height: 145px"-->
                                     <!--                                         src="../static/img/icon/default.png">-->
-                                    <div class="dragBar" style="margin-top:15px ">
+                                    <div class="dragBar" style="margin-top:15px " :style="dragReady?'background-color: #cfe5fa':'background-color: #d9d9d9'">
                                         <div class="dragBlock" ></div>
                                     </div>
                                 </div>

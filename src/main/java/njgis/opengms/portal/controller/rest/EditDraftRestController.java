@@ -97,6 +97,17 @@ public class EditDraftRestController {
         }
     }
 
+    @RequestMapping(value = "/getCreateDraftByUserByType",method = RequestMethod.GET)
+    public JsonResult getCreateDraftByUserByType(@RequestParam(value="itemType")String itemType, @RequestParam(value = "editType")String editType, HttpServletRequest httpServletRequest){
+        HttpSession session = httpServletRequest.getSession();
+        if(Utils.checkLoginStatus(session)==null){
+            return ResultUtils.error(-1,"no login");
+        }else{
+            String userOid = session.getAttribute("oid").toString();
+            return ResultUtils.success(editDraftService.getCreateDraftByUserByType(userOid,itemType,editType));
+        }
+    }
+
     @RequestMapping(value = "/deleteByOid",method = RequestMethod.DELETE)
     public JsonResult deleteByOid(@RequestParam(value = "oid") String oid, HttpServletRequest httpServletRequest){
         HttpSession session = httpServletRequest.getSession();

@@ -134,11 +134,11 @@ ul {
   text-align: center;
 }
 
-h1,
-h2,
-h3 {
-  font-weight: 400;
-}
+/*h1,*/
+/*h2,*/
+/*h3 {*/
+/*  font-weight: 400;*/
+/*}*/
 
 .wzhScrollbar{
   overflow-y: overlay;

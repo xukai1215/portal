@@ -375,6 +375,10 @@ var createModelItem = Vue.extend({
 
         matchedDraft:{},
 
+        matchedCreateDraft:{},
+
+        matchedCreateDraftDialog:false,
+
         draftLoading:false,
 
         pageOption: {
@@ -393,6 +397,10 @@ var createModelItem = Vue.extend({
         imgClipDialog:false,
 
         cancelDraftDialog:false,
+
+        loading:true,
+
+        dragReady:false,
     }
     },
 
@@ -596,6 +604,29 @@ var createModelItem = Vue.extend({
             })
         },
 
+        loadMatchedCreateDraft(){
+            this.loadCreateDraft()
+        },
+
+        loadCreateDraft(){//
+            this.matchedCreateDraft={}
+            axios.get('/draft/getCreateDraftByUserByType',{
+                params:{
+                    itemType:'ModelItem',
+                    editType:'create',
+                }
+            }).then(res=>{
+                if(res.data.code==0){
+                    if(res.data.data.length>1){
+                        this.matchedCreateDraft=res.data.data;
+                        this.matchedCreateDraftDialog=true
+                    }
+                }
+
+
+            })
+        },
+
         insertDraft(draft){
             this.draft=draft;
             let content = draft.content;
@@ -752,6 +783,8 @@ var createModelItem = Vue.extend({
             initTinymce('textarea#modelItemText')
 
             this.draftListDialog=false;
+
+            this.matchedCreateDraftDialog=false;
         },
 
         cancelEditClick(){
@@ -820,7 +853,6 @@ var createModelItem = Vue.extend({
             let itemType = item.itemType.substring(0,1).toLowerCase()+item.itemType.substring(1)
             window.location.href='/'+itemType+'/'+item.itemOid
         },
-
 
         //reference
         searchDoi(){
@@ -993,7 +1025,21 @@ var createModelItem = Vue.extend({
 
         imgUpload(){
             this.imgClipDialog = true
-            let canvas = this.$refs.clipCanvas
+            this.$nextTick(()=>{
+                let canvas = document.getElementsByTagName('canvas')[0]
+                canvas.style.backgroundImage = ''
+
+                context = canvas.getContext('2d');
+                //清除画布
+                context.clearRect(0,0,150,150);
+
+                document.getElementsByClassName('dragBlock')[0].style.left = '-7px'
+            })
+
+        },
+
+        closeImgUpload(){
+            this.dragReady = false
         },
 
         changeOpen(n) {
@@ -1267,6 +1313,8 @@ var createModelItem = Vue.extend({
             $("#subRteTitle").text("/Create Model Item")
 
             initTinymce('textarea#modelItemText')
+
+            this.loadMatchedCreateDraft()
             if(this.draft.oid!='')
                 this.loadDraftByOid()
 
@@ -2109,7 +2157,9 @@ var createModelItem = Vue.extend({
                         },file.type || 'image/png');
                         $('.circlePhotoFrame').eq(0).children('canvas').remove();
                         document.getElementsByClassName('circlePhotoFrame')[0].appendChild(canvas);
-                        $('.dragBar').eq(0).css('background-color','#cfe5fa')
+                        // $('.dragBar').eq(0).css('background-color','#cfe5fa')
+
+                        vthis.dragReady=true
                     }
 
                 })
@@ -2283,7 +2333,7 @@ var createModelItem = Vue.extend({
             })
 
             $(document).on('mousemove',(e)=>{
-                if(dragBarAble==true){
+                if(dragBarAble==true&&vthis.dragReady==true){
                     var move=e.pageX-leftStart
 
                     let x=parseFloat(canvas.style.backgroundPositionX.split('p')[0])
@@ -2366,7 +2416,12 @@ var createModelItem = Vue.extend({
 
             $('#imgShow').get(0).src = img;
             $('#imgShow').show();
-            vthis.imgClipDialog=false
+            vthis.loading=true
+            vthis.dragReady=false
+            setTimeout(()=>{
+                vthis.imgClipDialog=false
+                vthis.loading=false
+            },150)
 
         }
 
