@@ -208,7 +208,7 @@
         modelTmp.description = cells[i].description;
         modelTmp.md5 = cells[i].md5;
         modelTmp.inputEvents = getInputEvents(cells[i], cells);
-        modelTmp.outputEvents = getOutputEvents(cells[i], cells);
+        modelTmp.outputEvents = getOutputEvents(cells[i], cells,modelTmp);
 
         models.push(modelTmp);
       }
@@ -276,7 +276,7 @@
     return inputEvents;
   }
 
-  function getOutputEvents(model, cells) {
+  function getOutputEvents(model, cells,modelTmp) {//传入modelTmp打上multi标识
     var outputEvents = [];
     var event = {};
     var source = model.id;
@@ -289,6 +289,10 @@
         event.value = "";
         event.dataId = output.eid;
         event.type = "url";
+        event.mutiple = output.multiple;
+        if(event.mutiple==true){
+          modelTmp.hasMultiOut=true
+        }
         outputEvents.push(event);
       }
     }
@@ -311,6 +315,10 @@
       event.optional = e.optional;
       event.description = e.eventDesc;
       event.data = e.data;
+      event.mutiple = e.multiple;
+      if(event.mutiple==true){
+        modelTmp.hasMultiOut=true
+      }
       outputEvents.push(event);
 
     }

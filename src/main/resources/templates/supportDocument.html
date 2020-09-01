@@ -29,7 +29,7 @@
             </div>
             <div class="col-lg-10 col-lg-offset-1 col-md-12 clearfix" style="padding: 25px 0">
                 <el-row :gutter="20">
-                    <el-col :span="7">
+                    <el-col :span="sectionTitleSpan">
                         <div class="treeContainer">
                             <el-tree
                                     :data="sectionData"
@@ -38,7 +38,7 @@
                             </el-tree>
                         </div>
                     </el-col>
-                    <el-col :span="17" style="margin-bottom: 30px">
+                    <el-col :span="sectionSpan" style="margin-bottom: 30px">
                         <div class="clearfix docSection " style="background-color: white;padding: 0 20px 20px" >
                             <section class="wordSpace" v-for="section in supportDoc" :id="section.title">
                                 <h3 class="h_lite">{{section.title}}</h3>
@@ -47,9 +47,10 @@
                         </div>
                     </el-col>
                 </el-row>
-                <h5><a class="cursorPointer">Download</a> this support document.</h5>
-                <div class="flexAlignCenter">
-                    <h5 style="margin-right: 15px">Still have problems?</h5><el-button round size="mini" type="primary" plain>Contact us</el-button>
+                <h5 class="phoneCenter"><a class="cursorPointer">Download</a> this support document.</h5>
+                <div class="flexAlignCenter phoneCenter">
+                    <h5 style="margin-right: 15px">Still have problems?</h5>
+                    <el-button round size="mini" type="primary" @click="" plain>Contact us</el-button>
                 </div>
             </div>
             <div class="floatBlock commentContent "

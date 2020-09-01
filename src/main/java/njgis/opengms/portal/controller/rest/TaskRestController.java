@@ -266,7 +266,7 @@ public class TaskRestController {
         else {
             String username = session.getAttribute("uid").toString();
             RestTemplate restTemplate=new RestTemplate();
-            String url="http://" + managerServerIpAndPort + "/GeoModeling/task";//远程接口
+            String url="http://" + managerServerIpAndPort + "/GeoModeling/task/runTask";//远程接口
             String suffix="."+FilenameUtils.getExtension(file.getOriginalFilename());
             File temp=File.createTempFile("temp",suffix);
             file.transferTo(temp);
@@ -305,10 +305,10 @@ public class TaskRestController {
     }
 
     @RequestMapping(value="/checkIntegratedTask/{taskId}", method = RequestMethod.GET)
-    JsonResult checkIntegratedTask(@PathVariable("taskId") String taskId){
+    JsonResult checkIntegratedTask(@PathVariable("taskId") String taskId,HttpServletRequest request){
 
         RestTemplate restTemplate=new RestTemplate();
-        String url="http://" + managerServerIpAndPort + "/GeoModeling/task/checkRecord?taskId={taskId}";//远程接口
+        String url="http://" + managerServerIpAndPort + "/GeoModeling/task/checkTaskStatus?taskId={taskId}";//远程接口
         Map<String, String> params = new HashMap<>();
         params.put("taskId", taskId);
         ResponseEntity<JSONObject> responseEntity=restTemplate.getForEntity(url,JSONObject.class,params);
@@ -503,10 +503,38 @@ public class TaskRestController {
 
     }
 
+    @RequestMapping(value = "/mutiInvoke", method = RequestMethod.POST)
+    JsonResult mutiInvoke(@RequestBody List<JSONObject> taskLists, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("uid") != null) {
+            String userName = session.getAttribute("uid").toString();
+            String[] results = taskService.mutiInvoke(taskLists,userName);
+            if(results[0].equals("run failed")){
+                return ResultUtils.error(-2, "invoke failed!");
+            }
+            else{
+                return ResultUtils.success(results);
+            }
+
+        } else {
+            return ResultUtils.error(-1, "no login");
+        }
+    }
+
+
+
     @RequestMapping(value = "/getResult", method = RequestMethod.POST)
     JsonResult getResult(@RequestBody JSONObject data) {
 
         JSONObject out=taskService.getTaskResult(data);
+        return ResultUtils.success(out);
+
+    }
+
+    @RequestMapping(value = "/getMutiResult", method = RequestMethod.POST)
+    JsonResult getMutiResult(@RequestBody JSONObject data) {
+
+        List<JSONObject> out=taskService.getMutiTaskResult(data);
         return ResultUtils.success(out);
 
     }

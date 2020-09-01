@@ -14,6 +14,7 @@
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/fabric/fabric.min.css"/>
     <link rel="stylesheet" href="/static/css/base/style.css">
     <link rel="stylesheet" href="/static/css/base/universal.css">
+    <link rel="stylesheet" href="/static/css/common/wzhStyle.css">
     <link rel="stylesheet" href="/static/css/common/wzhFlexContainer.css">
     <!--<link rel="stylesheet" href="/static/css/other/computable-test.css">-->
     <!--<link rel="stylesheet" href="/static/css/other/jquery.gritter.css">-->
@@ -235,9 +236,9 @@
 <!--                            </span>-->
 <!--                        </el-dialog>-->
                         <!-- 多文件展示-->
-                        <el-dialog :visible.sync="multiFileDialog" class="h600Dialog">
+                        <el-dialog :visible.sync="multiFileDialog" class="wzhScrollbar h600Dialog">
                             <el-table
-                                    :data="outputMultiFile" style="width: 100%">
+                                    :data="outputMultiFile" style="width: 100%;min-width: 725px">
                                 <el-table-column
                                        type="index"
                                         label="No."

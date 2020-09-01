@@ -42,12 +42,13 @@ var vue = new Vue({
                 else
                     this.searchDeployedModel()
             },
+
             loadDeployedModel(){
                 this.inSearch = 0
                 this.loading = true;
                 axios.get('/computableModel/loadDeployedModel',{
                     params:{
-                        asc:1,
+                        asc:0,
                         page:this.pageOption.currentPage-1,
                         size:6,
                     }
@@ -80,7 +81,7 @@ var vue = new Vue({
                 this.pageOption.currentPage=targetPage
                 axios.get('/computableModel/searchDeployedModel',{
                     params:{
-                        asc:1,
+                        asc:0,
                         page:targetPage-1,
                         size:6,
                         searchText: this.searchText,
@@ -147,32 +148,7 @@ var vue = new Vue({
                             let arr = window.location.href.split("/");
                             let bindOid = arr[arr.length - 1].split("#")[0];
                             this.setSession("bindOid", bindOid);
-                            switch (this.relateType) {
-                                case "modelItem":
-                                    window.open("/user/userSpace#/model/createModelItem", "_blank")
-                                    break;
-                                case "conceptualModel":
-                                    window.open("/user/userSpace#/model/createConceptualModel", "_blank")
-                                    break;
-                                case "logicalModel":
-                                    window.open("/user/userSpace#/model/createLogicalModel", "_blank")
-                                    break;
-                                case "computableModel":
-                                    window.open("/user/userSpace#/model/createComputableModel", "_blank")
-                                    break;
-                                case "concept":
-                                    window.open("/user/userSpace#/community/createConcept", "_blank")
-                                    break;
-                                case "spatialReference":
-                                    window.open("/user/userSpace#/community/createSpatialReference", "_blank")
-                                    break;
-                                case "template":
-                                    window.open("/user/userSpace#/community/createTemplate", "_blank")
-                                    break;
-                                case "unit":
-                                    window.open("/user/userSpace#/community/createUnit", "_blank")
-                                    break;
-                            }
+                            window.open("/user/userSpace#/model/createComputableModel", "_blank")
                         }
                     }
                 })

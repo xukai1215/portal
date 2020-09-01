@@ -791,6 +791,11 @@ public class UserRestController {
 
     }
 
+    @RequestMapping(value = "/sendEmail",method = RequestMethod.POST)
+    void sendEmail(@RequestBody Map<String,String> email){
+        userService.sendMyEmail(email);
+    }
+
     @RequestMapping(value = "/listArticle",method = RequestMethod.GET)
     JsonResult listArticle(@RequestParam(value="page")int page, @RequestParam(value="oid") String oid){
         return ResultUtils.success(userService.listUserArticle(page,oid));

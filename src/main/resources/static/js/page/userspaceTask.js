@@ -535,7 +535,7 @@ var userTask = Vue.extend(
 
             shareOutput(url){
                 this.shareIndex=true;
-                this.downloadUrl='https://geomodeling.njnu.edu.cn/dispatchRequest/download?url='+url;
+                this.downloadUrl=url;
             },
 
             copyLink(){
@@ -803,10 +803,11 @@ var userTask = Vue.extend(
             checkMultiContent(output){
                 this.multiFileDialog = true;
                 this.outputMultiFile = [];
-                for(let i = 0;output.urls&&i<output.urls.length;i++){
+                let urls = output.url.substring(1, output.url.length-1).split(',')
+                for(let i = 0;urls&&i<urls.length;i++){
                     let obj={
                         name:output.tag+''+output.suffix,
-                        url:output.urls[i],
+                        url:urls[i].substring(1,urls[i].length-1),
                         visual:output.visual
                     }
                     this.outputMultiFile.push(obj)

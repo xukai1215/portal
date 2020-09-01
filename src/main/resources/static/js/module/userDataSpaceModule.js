@@ -5,6 +5,10 @@ Vue.component("user-data",
             deleteButton: {
                 type: Boolean,
                 default: false
+            },
+            singleChoice: {
+                type: Boolean,
+                default: false
             }
         },
         data() {
@@ -163,9 +167,20 @@ Vue.component("user-data",
                 uploadFiles: [],
                 uploadLoading: false,
 
+                fileContainerWidth:1200,
             }
         },
-
+        computed:{
+            fileCard(){
+                if(this.fileContainerWidth<460){
+                    return 8
+                }else if(this.fileContainerWidth<757){
+                    return 6
+                }else {
+                    return 4
+                }
+            }
+        },
         methods: {
 
             formatDate(value, callback) {
@@ -863,14 +878,13 @@ Vue.component("user-data",
             //选中文件
             getid(target, eval) {
                 this.dataid = eval.id;
-                console.log(eval)
-
                 // target.className = "el-card dataitemisol clickdataitem"
 
                 //再次点击取消选择
-                if (this.isSelected(this.downloadDataSet,eval)) {
-                    this.cancelSelect(eval)
+                if (this.isSelected(this.downloadDataSet, eval)) {
+                    this.cancelMutiSelect(eval)
 
+                    this.removeFileFromFatherModule(eval)
                     // for (var i = 0; i < this.downloadDataSetName.length; i++) {
                     //     if (this.downloadDataSetName[i].name === eval.label&&this.downloadDataSetName[i].suffix === eval.suffix) {
                     //         //删除
@@ -881,24 +895,33 @@ Vue.component("user-data",
                     // }
 
                 } else {
-                    this.downloadDataSet.push(eval)
-                    let obj = {
-                        name: eval.label,
-                        suffix: eval.suffix,
-                        package: eval.package,
-
+                    if(this.singleChoice){//如果是单选，则先把其他清空
+                        this.downloadDataSet=[]
+                        this.downloadDataSetName=[]
                     }
-                    this.downloadDataSetName.push(obj)
+                    this.mutiSelect(eval)
+
+                    this.selectFileToFatherModule(eval)
                 }
 
-                this.selectFileToFatherModule(eval)
                 if (eval.taskId != null) {
                     this.detailsIndex = 2
                     this.getOneOfUserTasks(eval.taskId);
                 }
             },
 
-            cancelSelect(eval) {
+            mutiSelect(eval){
+                this.downloadDataSet.push(eval)
+                let obj = {
+                    name: eval.label,
+                    suffix: eval.suffix,
+                    package: eval.package,
+
+                }
+                this.downloadDataSetName.push(obj)
+            },
+
+            cancelMutiSelect(eval) {
                 for (var i = 0; i < this.downloadDataSet.length; i++) {
                     if (this.downloadDataSet[i] === eval) {
                         //删除
@@ -909,8 +932,12 @@ Vue.component("user-data",
                 }
             },
 
-            selectFileToFatherModule(eval) {//将选中文件加入父组件数据中,或者取消选择文件
+            selectFileToFatherModule(eval) {//将选中文件加入父组件数据中
                 this.$emit('com-selectfile', eval)
+            },
+
+            removeFileFromFatherModule(eval) {
+                this.$emit('com-removefile', eval)
             },
 
             getOneOfUserTasks(taskId) {
@@ -1016,7 +1043,7 @@ Vue.component("user-data",
             removeClass($event, item) {
 
 
-                if (!this.isSelected(this.downloadDataSet,item)) {
+                if (this.isSelected(this.downloadDataSet,item)) {
                     $event.currentTarget.className = "el-card dataitemisol clickdataitem"
                 } else {
                     $event.currentTarget.className = "el-card dataitemisol"
@@ -1763,47 +1790,6 @@ Vue.component("user-data",
                 });
             },
 
-            //share as data item
-            initTaskDataForm() {
-                this.taskDataList = [];
-                this.taskSharingActive = 0;
-                this.stateFilters = [];
-                this.taskCollapseActiveNames = [];
-
-                this.taskDataForm = {
-                    name: '',
-                    type: "option1",
-                    contentType: "resource",
-                    description: "",
-                    detail: "",
-                    reference: "",
-                    author: "",
-                    keywords: [],
-                    contributers: [],
-                    classifications: [],
-                    displays: [],
-                    authorship: [],
-                    comments: [],
-                    dataList: [],
-
-                    categoryText: [],
-                };
-                $(".taskDataCate").children().css("color", "black");
-
-                if ($("#taskDataShareDialog .tag-editor").length != 0) {
-                    $('#taskDataKeywords').tagEditor('destroy');
-                }
-
-                $("#taskDataKeywords").tagEditor({
-                    initialTags: [''],
-                    forceLowercase: false
-                });
-
-                tinyMCE.activeEditor.setContent("");
-                $(".taskDataAuthorship").remove();
-                $(".user-add").click();
-            },
-
             checkSelectedFile() {
                 this.checkSelectedIndex = 1;
             },
@@ -1814,174 +1800,12 @@ Vue.component("user-data",
                 return row.statename === value;
             },
 
-            allFileShareAsDataItem() {
-                this.initTaskDataForm()
-                this.allFileTaskSharingVisible = true;
-                this.multipleSelection = [];
-                this.multipleSelectionMyData = [];
-                this.taskSharingActive = 0;
-                if ($("#allFileShareDialog .tag-editor").length != 0) {
-                    $('#taskDataKeywordsAll').tagEditor('destroy');
-                }
-                $("#taskDataKeywordsAll").tagEditor({
-                    initialTags: [''],
-                    forceLowercase: false
-                });
-                // this.getTasks();
-            },
-
-            taskSharingPre() {
-                let len = $(".taskSharingStep").length;
-                if (this.taskSharingActive != 0)
-                    this.taskSharingActive--;
-                // if(this.curIndex=='3-3'){
-                //     $('.dataItemShare').eq(this.taskSharingActive).animate({marginLeft:0},200)
-                //     $('.dataItemShare').eq(this.taskSharingActive+1).animate({marginleft:1500},200)
-                // }
-            },
-            taskSharingFinish() {
-
-                this.taskSharingActive = 4;
-                var selectResult = []
-                selectResult = this.multipleSelectionMyData.concat(this.multipleSelection);
-
-                console.log(selectResult)
-                for (let select of selectResult) {
-                    if (select.tag) {
-                        select.name = select.tag;
-                        select.suffix = 'unknow';
-                    } else {
-                        select.name = select.fileName;
-                        select.suffix = select.suffix;
-                    }
-
-                    this.taskDataForm.dataList.push(select);
-                }
-
-                this.taskDataForm.detail = tinyMCE.activeEditor.getContent();
-
-                this.taskDataForm.keywords = $("#taskDataKeywordsAll").val().split(",");
-
-                this.taskDataForm.author = this.userId;
-
-                // this.dataItemAddDTO.meta.coordinateSystem = $("#coordinateSystem").val();
-                // this.dataItemAddDTO.meta.geographicProjection = $("#geographicProjection").val();
-                // this.dataItemAddDTO.meta.coordinateUnits = $("#coordinateUnits").val();
-                // this.dataItemAddDTO.meta.boundingRectangle=[];
-
-                let authorship = [];
-
-                userspace.getUserData($("#providersPanelAll .user-contents .form-control"), authorship);
-
-                this.taskDataForm.authorship = authorship;
-                console.log(this.taskDataForm)
-
-                axios.post("/dataItem/", this.taskDataForm)
-                    .then(res => {
-                        console.log(res);
-                        if (res.status == 200) {
-
-                            this.openConfirmBox("create successful! Do you want to view this Data Item?", "Message", res.data.data.id);
-                            this.taskSharingVisible = false;
-                            this.allFileTaskSharingVisible = false;
-                        }
-                    })
-            },
             showWaring(text) {
                 this.$message({
                     showClose: true,
                     message: text,
                     type: 'warning'
                 });
-            },
-            taskSharingNext() {
-
-                //检查
-                switch (this.taskSharingActive) {
-                    case 0:
-                        if (this.multipleSelection.length + this.multipleSelectionMyData.length == 0) {
-                            this.showWaring('Please select data first!');
-                            return;
-                        }
-                        break;
-                    case 1:
-                        if (this.taskDataForm.classifications.length == 0) {
-                            this.showWaring('Please choose categories from sidebar')
-                            return;
-                        }
-                        if (this.taskDataForm.name.trim() == '') {
-                            this.showWaring('Please enter name');
-                            return;
-                        }
-
-                        if ($("#taskDataKeywordsAll").val().split(",")[0] == '') {
-                            this.showWaring('Please enter keywords');
-                            return;
-                        }
-
-                        if (this.taskDataForm.description == '') {
-                            this.showWaring('Please enter overview');
-                            return;
-                        }
-                        break;
-                    case 2:
-                        if (tinyMCE.activeEditor.getContent().trim() == '') {
-                            this.showWaring('Please enter detailed description');
-                            return;
-                        }
-                        break;
-
-                }
-
-
-                //翻页
-                let len = $(".taskSharingStep").length;
-                if (this.taskSharingActive < len)
-                    this.taskSharingActive++;
-                if (this.taskSharingActive == 1) {
-
-                    if ($("#allFileShareDialog .tag-editor").length == 0) {
-                        $("#taskDataKeywordsAll").tagEditor({
-                            forceLowercase: false
-                        })
-
-                    }
-
-                    tinymce.init({
-                        selector: "textarea#taskDataDetailAll",
-                        height: 205,
-                        theme: 'silver',
-                        plugins: ['link', 'table', 'image', 'media'],
-                        image_title: true,
-                        // enable automatic uploads of images represented by blob or data URIs
-                        automatic_uploads: true,
-                        // URL of our upload handler (for more details check: https://www.tinymce.com/docs/configure/file-image-upload/#images_upload_url)
-                        // images_upload_url: 'postAcceptor.php',
-                        // here we add custom filepicker only to Image dialog
-                        file_picker_types: 'image',
-
-                        file_picker_callback: function (cb, value, meta) {
-                            var input = document.createElement('input');
-                            input.setAttribute('type', 'file');
-                            input.setAttribute('accept', 'image/*');
-                            input.onchange = function () {
-                                var file = input.files[0];
-
-                                var reader = new FileReader();
-                                reader.readAsDataURL(file);
-                                reader.onload = function () {
-                                    var img = reader.result.toString();
-                                    cb(img, {title: file.name});
-                                }
-                            };
-                            input.click();
-                        },
-                        images_dataimg_filter: function (img) {
-                            return img.hasAttribute('internal-blob');
-                        }
-                    });
-                }
-
             },
 
             handleCloseandInit(done) {
@@ -2255,15 +2079,15 @@ Vue.component("user-data",
                 this.$emit('com-senduserinfo', userId)
             },
 
-            //选择输入数据
-            selectData() {
-                var data = this.downloadDataSet[0];
-
-                selectInputData(data);
-
-                this.downloadDataSet = []
-
-            }
+            // //选择输入数据
+            // selectData() {
+            //     var data = this.downloadDataSet[0];
+            //
+            //     selectInputData(data);
+            //
+            //     this.downloadDataSet = []
+            //
+            // }
 
         },
 
@@ -2281,16 +2105,19 @@ Vue.component("user-data",
             this.remoteMethod("");
 
             $(() => {
-                let height = document.documentElement.clientHeight;
-                this.ScreenMinHeight = (height) + "px";
-                this.ScreenMaxHeight = (height) + "px";
-
-                window.onresize = () => {
-                    console.log('come on ..');
-                    height = document.documentElement.clientHeight;
-                    this.ScreenMinHeight = (height) + "px";
-                    this.ScreenMaxHeight = (height) + "px";
-                };
+                // let height = document.documentElement.clientHeight;
+                // this.ScreenMinHeight = (height) + "px";
+                // this.ScreenMaxHeight = (height) + "px";
+                //
+                // this.fileContainerWidth = document.getElementById('filePlate').offsetWidth
+                // window.onresize = () => {
+                //     console.log('come on ..');
+                //     height = document.documentElement.clientHeight;
+                //     this.ScreenMinHeight = (height) + "px";
+                //     this.ScreenMaxHeight = (height) + "px";
+                //
+                //     this.fileContainerWidth = document.getElementById('filePlate').offsetWidth
+                // };
 
 
                 $.ajax({
@@ -2481,45 +2308,14 @@ Vue.component("user-data",
             this.getFilePackage();
             this.getUserTaskInfo();
 
-            tinymce.init({
-                selector: "textarea#detail",
-                height: 205,
-                theme: 'silver',
-                plugins: ['link', 'table', 'image', 'media'],
-                image_title: true,
-                // enable automatic uploads of images represented by blob or data URIs
-                automatic_uploads: true,
-                // URL of our upload handler (for more details check: https://www.tinymce.com/docs/configure/file-image-upload/#images_upload_url)
-                // images_upload_url: 'postAcceptor.php',
-                // here we add custom filepicker only to Image dialog
-                file_picker_types: 'image',
-
-                file_picker_callback: function (cb, value, meta) {
-                    var input = document.createElement('input');
-                    input.setAttribute('type', 'file');
-                    input.setAttribute('accept', 'image/*');
-                    input.onchange = function () {
-                        var file = input.files[0];
-
-                        var reader = new FileReader();
-                        reader.readAsDataURL(file);
-                        reader.onload = function () {
-                            var img = reader.result.toString();
-                            cb(img, {title: file.name});
-                        }
-                    };
-                    input.click();
-                },
-                images_dataimg_filter: function (img) {
-                    return img.hasAttribute('internal-blob');
-                }
-            });
-
             var user_num = 0;
 
             //初始化的时候吧curIndex传给父组件，来控制bar的高亮显示
             this.sendcurIndexToParent()
+
+            console.log(this.singleChoice)
         },
+
 
     }
 )

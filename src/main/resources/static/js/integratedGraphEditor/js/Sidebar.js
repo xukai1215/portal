@@ -81,7 +81,7 @@ Sidebar.prototype.init = function () {
     this.container.appendChild(this.sideHeaderContainer);
 
     var generalTab = document.createElement("div");
-    generalTab.style= "border-width: 0px 0px 0px 1px;border-style:solid;border-color:#dadce0; text-align: center;font-color:#707070; font-weight: bold;font-size: 16px; overflow: hidden; display: inline-block; padding-top: 8px; height: 25px; width: 49%;";
+    generalTab.style= "border-width: 0px 0px 0px 1px;border-style:solid;border-color:#dadce0; text-align: center;font-color:#707070; font-weight: bold;font-size: 16px; overflow: hidden; display: inline-block; padding-top: 12px; height: 25px; width: 49%;";
     generalTab.textContent="General";
     generalTab.id = "general_tab";
     generalTab.onclick=function(){
@@ -94,7 +94,7 @@ Sidebar.prototype.init = function () {
     };
 
     var modelTab = document.createElement("div");
-    modelTab.style= "border-width: 0px 1px 1px 0px;border-style:solid;border-color:#dadce0; background-color: #f1f3f4;text-align: center; font-weight: bold;font-color:#707070;font-size: 16px; overflow: hidden; display: inline-block; padding-top: 8px; height: 25px; width: 49%;";
+    modelTab.style= "border-width: 0px 1px 1px 0px;border-style:solid;border-color:#dadce0; background-color: #f1f3f4;text-align: center; font-weight: bold;font-color:#707070;font-size: 16px; overflow: hidden; display: inline-block; padding-top: 12px; height: 25px; width: 49%;";
     modelTab.textContent="Model";
     modelTab.id = "model_tab";
     modelTab.onclick=function(){

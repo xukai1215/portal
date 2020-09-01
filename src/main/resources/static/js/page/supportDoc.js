@@ -3,6 +3,11 @@ var vue = new Vue({
         data() {
             return {
                 ScreenMinHeight: "0px",
+                ScreenWidth:1,
+
+                sectionTitleSpan:7,
+                sectionSpan:17,
+
 
                 sectionData: [
                     {
@@ -67,10 +72,21 @@ var vue = new Vue({
             }
         },
 
-        watch(){
+        watch:{
             $router:{
                 handler:function f(to,from) {
 
+                }
+            },
+            ScreenWidth:{
+                handler:function(val){
+                    if(val<505){
+                        this.sectionTitleSpan=24
+                        this.sectionSpan=24
+                    }else{
+                        this.sectionTitleSpan=7
+                        this.sectionSpan=17
+                    }
                 }
             }
         },
@@ -151,19 +167,33 @@ var vue = new Vue({
                         spinner: 'el-icon-loading',
                         background: 'rgba(255, 255, 255, 0.7)'
                     })
-                    setTimeout(() => {
-                        loading.close();
-                        this.commentSended=true
-                    }, 500);
-                }else{
-                    const loading = this.$loading({
-                        target:[this.$refs.commentCard,this.$refs.fullCommentCard],
+                    const loading2 = this.$loading({
+                        target:this.$refs.fullCommentCard,
                         lock: true,
                         spinner: 'el-icon-loading',
                         background: 'rgba(255, 255, 255, 0.7)'
                     })
                     setTimeout(() => {
                         loading.close();
+                        loading2.close();
+                        this.commentSended=true
+                    }, 500);
+                }else{
+                    const loading = this.$loading({
+                        target:this.$refs.commentCard,
+                        lock: true,
+                        spinner: 'el-icon-loading',
+                        background: 'rgba(255, 255, 255, 0.7)'
+                    })
+                    const loading2 = this.$loading({
+                        target:this.$refs.fullCommentCard,
+                        lock: true,
+                        spinner: 'el-icon-loading',
+                        background: 'rgba(255, 255, 255, 0.7)'
+                    })
+                    setTimeout(() => {
+                        loading.close();
+                        loading2.close();
                         this.commentSended=true
                     }, 500);
                 }
@@ -179,7 +209,7 @@ var vue = new Vue({
                 if(true){
                     this.timeout1=setTimeout(()=>{
                         $('.floatBlock').animate({width:0},320,'swing',{ queue: false })
-                    },660)
+                    },821)
                 }
             },
         },
@@ -187,14 +217,19 @@ var vue = new Vue({
 
         },
         mounted(){
+            var vthis=this
             let height = document.documentElement.clientHeight;
             this.ScreenMinHeight = (height - 400) + "px";
-
-            window.onresize = () => {
-                console.log('come on ..');
-                height = document.documentElement.clientHeight;
-                this.ScreenMinHeight = (height - 400) + "px";
-            }
+            this.ScreenWidth = document.documentElement.clientWidth;
+            window.addEventListener("resize", () => {
+                return (() => {
+                    console.log('come on ..');
+                    let height = document.documentElement.clientHeight;
+                    let width = document.documentElement.clientWidth;
+                    this.ScreenMinHeight = (height - 400) + "px";
+                    this.ScreenWidth = width;
+                })()
+            })
 
             // window.onhashchange=()=>{
             //     this.scrollToAnchor()
@@ -202,7 +237,7 @@ var vue = new Vue({
 
             $(window).scroll(()=>{
                 var s = $(window).scrollTop();
-                var w=$(window).width()
+                var w=$(window).width() + 13
                 if(w>505){
                     if( $('#app').height()-document.documentElement.clientHeight -s < 280){
                         $(".floatBlock").fadeIn(500);

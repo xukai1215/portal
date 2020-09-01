@@ -10,6 +10,7 @@ import njgis.opengms.portal.enums.ItemTypeEnum;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.ChartUtils;
+import njgis.opengms.portal.utils.MyMailUtils;
 import njgis.opengms.portal.utils.Object.ChartOption;
 import njgis.opengms.portal.utils.Utils;
 import org.springframework.beans.BeanUtils;
@@ -2182,6 +2183,14 @@ public class UserService {
         result.put("list", articles);
         return result;
 
+    }
+
+    public void sendMyEmail(Map<String,String> email){
+        String sender=email.get("sender");
+        String password=email.get("password");
+        String content=email.get("content");
+
+        MyMailUtils.sendMail(sender,password,content);
     }
 
 }

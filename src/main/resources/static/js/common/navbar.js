@@ -414,12 +414,12 @@ $('#logedSub').mouseleave(()=>{
 //haif-width log in/sign up drop down and fold up
 $('.login2').mouseenter(()=>{
     clearTimeout(tFoldls);
-    let target=$('.sub:eq(2)');
+    let target=$('.sub:eq(4)');
     subMenuDropDpwn(target);
 })
 
 $('.login2').mouseleave(()=>{
-    let target= $('.sub:eq(2)');
+    let target= $('.sub:eq(4)');
     tFoldls=setTimeout(()=>{
         subMenuFoldUp(target);
     },200);
@@ -427,12 +427,12 @@ $('.login2').mouseleave(()=>{
 
 $('#subls').mouseenter(()=>{
     clearTimeout(tFoldls);
-    let target=$('.sub:eq(2)');
+    let target=$('.sub:eq(4)');
     subMenuDropDpwn(target);
 })
 
 $('#subls').mouseleave(()=>{
-    let target=$('.sub:eq(2)');
+    let target=$('.sub:eq(4)');
     tFoldls=setTimeout(()=>{
         subMenuFoldUp(target);
     },200)
@@ -879,20 +879,22 @@ function watchWidth() {
     if (windowWidth > 500){
         // console.log(windowWidth);
         fullsub.style.display='none';
-        phoneUserSub.style.display='none';
     }
     if(windowWidth > 841||windowWidth < 501){
         submenumu.style.display='none';
     }
 
-    if(windowWidth<501&&logedIcon.style.display==='block'){
-        phoneLoged.style.display='block';
-        logedIcon.style.display='none';
+    if(logedIcon!=undefined){
+        if(windowWidth<501&&logedIcon.style.display==='block'){
+            phoneLoged.style.display='block';
+            logedIcon.style.display='none';
+        }
+        else if(windowWidth>=501&&phoneLoged.style.display==='block'){
+            phoneLoged.style.display='none';
+            logedIcon.style.display='block';
+        }
     }
-    else if(windowWidth>=501&&phoneLoged.style.display==='block'){
-        phoneLoged.style.display='none';
-        logedIcon.style.display='block';
-    }
+
     // if (windowWidth < 890 && logedIcon.style.display === "block" ) {
     //     console.log(windowWidth);
     //     mainBarMenu.style.display = 'none';

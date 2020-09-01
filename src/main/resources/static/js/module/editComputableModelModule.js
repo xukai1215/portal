@@ -888,9 +888,9 @@ Vue.component("editComputableModelModule",
                 else{
                     this.computableModel.oid=oid;
 
-                    for(i=0;i<this.fileArray.length;i++){
-                        this.formData.append("resources",this.fileArray[i]);
-                    }
+                    // for(i=0;i<this.fileArray.length;i++){
+                    //     this.formData.append("resources",this.fileArray[i]);
+                    // }
 
                     let file = new File([JSON.stringify(this.computableModel)],'ant.txt',{
                         type: 'text/plain',

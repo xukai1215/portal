@@ -644,7 +644,7 @@ public class RepositoryService {
         Concept concept = conceptDao.findByOid(oid);
         if (concept != null) {
             String image = concept.getImage();
-            if (image.contains("/concept/")) {
+            if (image!=null&&image.contains("/concept/")) {
                 File file = new File(resourcePath + concept.getImage());
                 if (file.exists() && file.isFile())
                     file.delete();
@@ -976,7 +976,7 @@ public class RepositoryService {
         SpatialReference spatial = spatialReferenceDao.findByOid(oid);
         if (spatial != null) {
             String image = spatial.getImage();
-            if (image.contains("/concept/")) {
+            if (image!=null&&image.contains("/concept/")) {
                 File file = new File(resourcePath + spatial.getImage());
                 if (file.exists() && file.isFile())
                     file.delete();
@@ -1282,7 +1282,7 @@ public class RepositoryService {
         Template template = templateDao.findByOid(oid);
         if (template != null) {
             String image = template.getImage();
-            if (image.contains("/concept/")) {
+            if (image!=null&&image.contains("/concept/")) {
                 File file = new File(resourcePath + template.getImage());
                 if (file.exists() && file.isFile())
                     file.delete();
@@ -1616,7 +1616,7 @@ public class RepositoryService {
         Unit unit = unitDao.findByOid(oid);
         if (unit != null) {
             String image = unit.getImage();
-            if (image.contains("/concept/")) {
+            if (image!=null&&image.contains("/concept/")) {
                 File file = new File(resourcePath + unit.getImage());
                 if (file.exists() && file.isFile())
                     file.delete();

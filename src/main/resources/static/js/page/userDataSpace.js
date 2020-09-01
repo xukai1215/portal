@@ -577,7 +577,7 @@ var userDataSpace = Vue.extend(
                                 // console.log(this.myFileShown)
                                 // this.getFilePackage();
                                 // console.log(this.myFile)
-                                alert('Add folder successfully')
+                                this.$alert('Add folder successfully')
                                 this.newFolderName='';
                                 this.addFolderIndex=false;
 
@@ -935,15 +935,6 @@ var userDataSpace = Vue.extend(
                             break
                         }
                     }
-
-                    // for (var i = 0; i < this.downloadDataSetName.length; i++) {
-                    //     if (this.downloadDataSetName[i].name === eval.label&&this.downloadDataSetName[i].suffix === eval.suffix) {
-                    //         //删除
-                    //         this.downloadDataSetName.splice(i, 1)
-                    //         console.log(this.downloadDataSetName)
-                    //         break
-                    //     }
-                    // }
 
                 } else {
                     this.downloadDataSet.push(eval)
@@ -1473,6 +1464,7 @@ var userDataSpace = Vue.extend(
 
                 let progress
                 this.progressFlag=true
+                this.uploadProgress = 0
                 axios({
                     url: '/dispatchRequest/uploadMutiFiles',
                     method: 'post',
@@ -1483,7 +1475,7 @@ var userDataSpace = Vue.extend(
                     async: true,
                     timeout:20000,
                     onUploadProgress: (progressEvent) => {
-                        this.uploadProgress = 0
+
                         this.uploadProgress = progressEvent.loaded / progressEvent.total * 100 | 0;  //百分比
                     }
                 }).then((res)=> {
@@ -1832,7 +1824,7 @@ var userDataSpace = Vue.extend(
                         this.selectValue="";
                         this.uploadFiles=[];
                         this.uploadLoading=false;
-                        // this.uploadDialogVisible=false;
+                        this.uploadDialogVisible=false;
                     }
                 });
 

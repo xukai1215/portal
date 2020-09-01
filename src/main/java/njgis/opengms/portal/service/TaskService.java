@@ -15,10 +15,7 @@ import njgis.opengms.portal.entity.ComputableModel;
 import njgis.opengms.portal.entity.Task;
 import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.entity.intergrate.Model;
-import njgis.opengms.portal.entity.support.ParamInfo;
-import njgis.opengms.portal.entity.support.TaskData;
-import njgis.opengms.portal.entity.support.UserTaskInfo;
-import njgis.opengms.portal.entity.support.ZipStreamEntity;
+import njgis.opengms.portal.entity.support.*;
 import njgis.opengms.portal.utils.MyHttpUtils;
 import njgis.opengms.portal.utils.ResultUtils;
 import njgis.opengms.portal.utils.Utils;
@@ -39,6 +36,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.Future;
 
@@ -49,6 +47,9 @@ public class TaskService {
 
     @Autowired
     ComputableModelService computableModelService;
+
+    @Autowired
+    UserService userService;
 
     @Autowired
     ComputableModelDao computableModelDao;
@@ -268,7 +269,7 @@ public class TaskService {
         result.put("userInfo", userJson);
         result.put("modelInfo", model_Info);
         result.put("taskInfo", taskInfo);
-        result.put("dxInfo", dxInfo);
+//        result.put("dxInfo", dxInfo);
         System.out.println(result);
 
         return result;
@@ -786,6 +787,147 @@ public class TaskService {
         return result;
     }
 
+    public String[] mutiInvoke(List<JSONObject> lists,String userName) {
+        String[] result = new String[lists.size()];
+        int sucCount = 0; //成功次数计数
+        for (int i = 0; i < lists.size(); i++) {
+            ComputableModel computableModel = computableModelService.getByOid(lists.get(i).getString("oid"));
+
+            String mdlStr = computableModel.getMdl();
+            JSONObject mdlJson = Utils.convertMdl(mdlStr);
+            System.out.println(mdlJson);
+            JSONObject mdl = mdlJson.getJSONObject("mdl");
+            JSONArray states = mdl.getJSONArray("states");
+            //截取RelatedDatasets字符串
+
+            JSONArray outputs = new JSONArray();
+            for (int k = 0; k < states.size(); k++) {
+                JSONObject state = states.getJSONObject(k);
+                JSONArray events = state.getJSONArray("event");
+                for (int j = 0; j < events.size(); j++) {
+                    JSONObject event = events.getJSONObject(j);
+                    String eventType = event.getString("eventType");
+                    if (eventType.equals("noresponse")) {
+                        JSONObject output = new JSONObject();
+                        output.put("statename", state.getString("name"));
+                        output.put("event", event.getString("eventName"));
+                        JSONObject template = new JSONObject();
+
+                        JSONArray dataArr = event.getJSONArray("data");
+                        if (dataArr != null) {
+                            JSONObject data = dataArr.getJSONObject(0);
+                            String dataType = data.getString("dataType");
+                            if (dataType.equals("external")) {
+                                String externalId = data.getString("externalId");
+
+                                template.put("type", "id");
+                                template.put("value", externalId.toLowerCase());
+                                output.put("template", template);
+
+                            } else if (dataType.equals("internal")) {
+                                JSONArray nodes = data.getJSONArray("nodes");
+                                if (nodes != null) {
+                                    if (data.getString("schema") != null) {
+                                        template.put("type", "schema");
+                                        template.put("value", data.getString("schema"));
+                                        output.put("template", template);
+                                    } else {
+                                        template.put("type", "none");
+                                        template.put("value", "");
+                                        output.put("template", template);
+                                    }
+                                } else {
+                                    template.put("type", "none");
+                                    template.put("value", "");
+                                    output.put("template", template);
+                                }
+                            } else {
+                                template.put("type", "none");
+                                template.put("value", "");
+                                output.put("template", template);
+                            }
+                        } else {
+                            template.put("type", "none");
+                            template.put("value", "");
+                            output.put("template", template);
+                        }
+                        outputs.add(output);
+                    }
+                }
+            }
+            lists.get(i).put("outputs", outputs);
+//            JSONObject jsonObject = JSONObject.parseObject(lists);
+            lists.get(i).put("username", userName);
+
+            result[i] = invoke(lists.get(i));
+            if (result != null) {
+                sucCount++;
+                Task task = new Task();
+                task.setOid(UUID.randomUUID().toString());
+                task.setComputableId(lists.get(i).getString("oid"));
+
+                task.setComputableName(computableModel.getName());
+                task.setTaskId(result[i]);
+                task.setUserId(userName);
+                task.setIntegrate(false);
+                task.setPermission("private");
+                task.setIp(lists.get(i).getString("ip"));
+                task.setPort(lists.get(i).getInteger("port"));
+                task.setRunTime(new Date());
+                task.setStatus(0);
+                JSONArray inputs = lists.get(i).getJSONArray("inputs");
+                task.setInputs(JSONObject.parseArray(inputs.toJSONString(), TaskData.class));
+                task.setOutputs(null);
+//                for(int i=0;i<inputs.size();i++)
+//                {
+//                    JSONObject input=inputs.getJSONObject(i);
+//                    BeanUtils.copyProperties(input,);
+//                }
+
+                save(task);
+                UserTaskInfo userTaskInfo = new UserTaskInfo();
+                userTaskInfo.setCreateTime(task.getRunTime());
+                userTaskInfo.setModelName(task.getComputableName());
+                userTaskInfo.setTaskId(task.getTaskId());
+
+                Date now = new Date();
+                DailyViewCount newInvokeCount = new DailyViewCount(now, 1);
+                List<DailyViewCount> dailyInvokeCount = computableModel.getDailyInvokeCount();
+//                if(computableModel.getDailyInvokeCount()!=null){
+//                    dailyInvokeCount = computableModel.getDailyInvokeCount();
+//                }
+                if (dailyInvokeCount.size() > 0) {
+                    DailyViewCount dailyViewCount = dailyInvokeCount.get(dailyInvokeCount.size() - 1);
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+                    if (sdf.format(dailyViewCount.getDate()).equals(sdf.format(now))) {
+                        dailyViewCount.setCount(dailyViewCount.getCount() + 1);
+                        dailyInvokeCount.set(dailyInvokeCount.size() - 1, dailyViewCount);
+                    } else {
+                        dailyInvokeCount.add(newInvokeCount);
+                    }
+                } else {
+                    dailyInvokeCount.add(newInvokeCount);
+                }
+                computableModel.setInvokeCount(computableModel.getInvokeCount() + 1);
+                computableModelDao.save(computableModel);
+
+                //存入用户信息记录
+                String msg = userService.addTaskInfo(userName, userTaskInfo);
+            }
+
+//                result=result.concat("&").concat(msg);
+
+        }
+
+        if(sucCount==0){
+            String[] res=new String[]{"run failed"};
+            return res;
+        }
+
+        return result;
+    }
+
     public String invoke(JSONObject lists) {
 
         JSONObject result = postJSON("http://" + managerServerIpAndPort + "/GeoModeling/computableModel/invoke", lists);
@@ -930,6 +1072,7 @@ public class TaskService {
                     param.put("ip", task.getIp());
                     param.put("port", task.getPort());
                     param.put("tid", task.getTaskId());
+                    param.put("integrate", task.getIntegrate());
 
                     futures.add(asyncTask.getRecordCallback(param, managerServerIpAndPort));
                 }
@@ -1268,6 +1411,95 @@ public class TaskService {
         }
 
         return out;
+    }
+
+    public List<JSONObject> getMutiTaskResult(JSONObject data) {
+        List<JSONObject> taskResults = new ArrayList<>();
+        AsyncTask asyncTask = new AsyncTask();
+        List<Future> futures = new ArrayList<>();
+
+        String[] tids = data.getObject("tid",String[].class);
+        try {
+            for (int i = 0; i < tids.length; i++) {
+                if(tids!=null){
+                    Task task = taskDao.findFirstByTaskId(tids[i]);
+                    if (task.getStatus() != 2 && task.getStatus() != -1) {
+                        JSONObject param = new JSONObject();
+                        param.put("ip", task.getIp());
+                        param.put("port", task.getPort());
+                        param.put("tid", task.getTaskId());
+                        param.put("integrate", task.getIntegrate());
+
+                        futures.add(asyncTask.getRecordCallback(param, managerServerIpAndPort));
+                    }
+                }
+
+            }
+
+            for (Future<?> future : futures) {
+                while (true) {//CPU高速轮询：每个future都并发轮循，判断完成状态然后获取结果，这一行，是本实现方案的精髓所在。即有10个future在高速轮询，完成一个future的获取结果，就关闭一个轮询
+                    if (future.isDone() && !future.isCancelled()) {//获取future成功完成状态，如果想要限制每个任务的超时时间，取消本行的状态判断+future.get(1000*1, TimeUnit.MILLISECONDS)+catch超时异常使用即可。
+                        String result = (String) future.get();//获取结果
+                        JSONObject jsonResult = JSON.parseObject(result);
+                        String tid = jsonResult.getString("tid");
+                        int remoteStatus = jsonResult.getInteger("status");
+                        ////update model status to Started, Started: 1, Finished: 2, Inited: 0, Error: -1
+                        Task task = findByTaskId(tid);
+                        int state = task.getStatus();
+                        int remoteState = jsonResult.getInteger("status");
+
+                        if (remoteState != state) {
+                            task.setStatus(remoteState);
+                        }
+                        if (remoteState == 2) {
+                            boolean hasValue = false;
+                            JSONArray outputs = jsonResult.getJSONArray("outputs");
+                            for (int i = 0; i < outputs.size(); i++) {
+                                if (!outputs.getJSONObject(i).getString("url").equals("")) {
+                                    hasValue = true;
+                                    break;
+                                }
+                            }
+                            if (!hasValue) {
+                                task.setStatus(-1);
+                            }
+                            for (int i = 0; i < outputs.size(); i++) {
+                                if (outputs.getJSONObject(i).getString("url").contains("[")) {//说明是单event多输出的情况
+                                    outputs.getJSONObject(i).put("multiple", true);
+                                }
+                            }
+
+                            task.setOutputs(outputs.toJavaList(TaskData.class));
+
+                            task = templateMatch(task);
+                        }
+                        save(task);
+                        JSONObject out = new JSONObject();
+
+                        out.put("tid",tid );
+                        if (task.getStatus() == 0) {
+                            out.put("status", 0);
+                        } else if (task.getStatus() == 1) {
+                            out.put("status", 1);
+                        } else if (task.getStatus() == 2) {
+                            out.put("status", 2);
+                            out.put("outputdata", task.getOutputs());
+                        } else {
+                            out.put("status", -1);
+                        }
+                        taskResults.add(out);
+                        break;
+                    } else {
+                        Thread.sleep(1);//每次轮询休息1毫秒（CPU纳秒级），避免CPU高速轮循耗空CPU---》新手别忘记这个
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        return taskResults;
     }
 
     public String addDescription(String taskId, String description) {

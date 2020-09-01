@@ -1034,7 +1034,7 @@ input::placeholder{
     background-color: #cccccc;
 }
 
-.listItemContainer::-webkit-scrollbar-thumb:focus{
+.listItemContainer::-webkit-scrollbar-thumb:active{
     background-color: #a8a8a8;
 }
 
@@ -1068,7 +1068,7 @@ input::placeholder{
 }
 
 .wzhScrollbar::-webkit-scrollbar-thumb:focus{
-    background-color: #a8a8a8;
+    background-color: #a8544a;
 }
 
 .wzhScrollbar::-webkit-scrollbar-track{
@@ -1081,6 +1081,10 @@ input::placeholder{
     width: 6px;
     background-color: #ededed;
     transition: .4s;
+}
+
+.wzhScrollbar::-webkit-scrollbar-thumb:active {
+    background-color: #a83b35;
 }
 
 .flexActive{

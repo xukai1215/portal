@@ -503,8 +503,149 @@ h1.h_lite,h2.h_lite,h3.h_lite,h4.h_lite,span.h_lite{
     color: whitesmoke;
 }
 
+.fullScreenComment .el-loading-spinner{
+    margin-top: -13px;
+
+}
+
 .fullScreenComment .el-loading-spinner .el-icon-loading{
     font-size: 26px;
+
+}
+
+.wzhCard{
+    border:2px solid;
+    border-radius: 3px;
+}
+
+.wzhDotCard{
+    border:3px dotted;
+    border-radius: 6px;
+    padding: 15px;
+    margin: 5px;
+}
+
+.wzhDashedCard{
+    border:3px dashed;
+    border-radius: 6px;
+    padding: 15px;
+    margin: 5px;
+}
+
+.borderBlue{
+    border-color: rgb(4, 162, 255);
+    background-color: #e8f7ff;
+}
+
+.borderRed{
+    border-color: rgb(178, 7, 18);
+    background-color: #ffd6d5;
+}
+
+.borderGreen{
+    border-color: rgb(21, 146, 56);
+    background-color: #ceffdc;
+}
+
+.containerWithDottedLine {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    font-family: aktiv-grotesk;
+    border-radius: 8px;
+    border: 4px dotted;
+    padding: 5px 10px 15px;
+    margin: 10px 0;
+    padding-right: 15px;
+    overflow-y: scroll;
+    overflow-y: overlay;
+}
+
+.wzhScrollbar{
+
+    overflow-y: auto;
+    overflow-x: auto;
+    overflow-y: overlay;
+    overflow-x: overlay;
+}
+
+.wzhScrollbar::-webkit-scrollbar{
+    width: 6px;
+    height: 6px;
+}
+
+.wzhScrollbar::-webkit-scrollbar-thumb{
+    width: 6px;
+    height: 10px;
+    margin-right: 5px;
+    border-radius: 3.5px;
+    background-color: #cccccc;
+}
+
+.wzhScrollbar::-webkit-scrollbar-thumb:active{
+    background-color: #b8b8b8;
+    width: 6px;
+}
+
+.wzhScrollbar::-webkit-scrollbar-track{
+    width: 6px;
+    /*background-color: #a8a8a8;*/
+}
+
+.wzhScrollbar::-webkit-scrollbar-track:hover{
+    width: 6px;
+    background-color: #ededed;
+    transition: .4s;
+}
+
+/*!*滚动条上的按钮--垂直滚动条向上按钮*!*/
+/*.wzhScrollbar::-webkit-scrollbar-button:decrement {*/
+/*    height: 10px;*/
+/*    background: url("./up.png") 0px 0px no-repeat;*/
+/*    border: 1px solid #F1F1F1;*/
+/*}*/
+
+/*!*滚动条上的按钮--垂直滚动条向下按钮*!*/
+/*.wzhScrollbar::-webkit-scrollbar-button:increment {*/
+/*    height: 10px;*/
+/*    background: url("./down.png") 0px -2px no-repeat;*/
+/*    border: 1px solid #F1F1F1;*/
+/*}*/
+
+
+.wzhScrollbar .el-dialog__body{
+    overflow-y: overlay;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+.wzhScrollbar .el-dialog__body::-webkit-scrollbar{
+    width: 6px;
+    height: 6px;
+}
+
+.wzhScrollbar .el-dialog__body::-webkit-scrollbar-thumb{
+    width: 6px;
+    height: 6px;
+    margin-right: 5px;
+    border-radius: 3.5px;
+    background-color: #cccccc;
+}
+
+.wzhScrollbar .el-dialog__body::-webkit-scrollbar-thumb:focus{
+    background-color: #999999;
+}
+
+.wzhScrollbar .el-dialog__body::-webkit-scrollbar-track{
+    width: 6px;
+
+    /*background-color: #a8a8a8;*/
+}
+
+.wzhScrollbar .el-dialog__body::-webkit-scrollbar-track:hover{
+    width: 6px;
+    background-color: #ededed;
+    transition: .4s;
 }
 
 @media only screen and (min-width:1150px) {
@@ -560,5 +701,10 @@ h1.h_lite,h2.h_lite,h3.h_lite,h4.h_lite,span.h_lite{
 
     .commentContent{
         display: none !important;
+    }
+
+    .phoneCenter{
+        text-align: center;
+        justify-content: center;
     }
 }

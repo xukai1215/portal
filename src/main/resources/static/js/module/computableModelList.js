@@ -448,7 +448,7 @@ Vue.component("computable-models",
           for (let i = 0; i < this.checkModelList.length; i++) {
             this.checkModelList.splice(i)
           }
-          $(".list-item").css("background-color","#fff")
+          $(".comModelItem").css("background-color","#fff")
         }
       },
       mounted(){

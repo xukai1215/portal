@@ -217,25 +217,72 @@ var userDataItems = Vue.extend(
 
             deleteItem(id) {
                 //todo 删除category中的 id
-                var cfm = confirm("Are you sure to delete?");
+                const h = this.$createElement;
+                this.$msgbox({
+                    title: ' ',
+                    message: h('p', null, [
+                        h('span', null, 'Are you sure to '),
+                        h('span', {style: 'font-weight:600'}, 'delete'),
+                        h('span', null, ' this item?'),
+                    ]),
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'confirm',
+                    cancelButtonText: 'cancel',
+                    beforeClose: (action, instance, done) => {
 
-                if (cfm == true) {
-                    axios.get("/dataItem/del/", {
-                        params: {
-                            id: id
+                        if (action === 'confirm') {
+                            instance.confirmButtonLoading = true;
+                            instance.confirmButtonText = 'deleting...';
+                            setTimeout(() => {
+
+                                $.ajax({
+                                    type: "GET",
+                                    url: "/dataItem/del/",
+                                    data: {
+                                        id: id
+                                    },
+                                    cache: false,
+                                    async: true,
+                                    dataType: "json",
+                                    xhrFields: {
+                                        withCredentials: true
+                                    },
+                                    crossDomain: true,
+                                    success: (json) => {
+                                        if (json.code == -1) {
+                                            alert("Please log in first!")
+                                        } else {
+                                            if (json.data == 1) {
+                                                // this.$alert("delete successfully!")
+                                            } else if (json.data == -1) {
+                                                this.$alert("delete failed!")
+                                            } else
+                                                this.$alert("please refresh the page!")
+                                        }
+                                        if (this.searchText.trim() != "") {
+                                            this.searchDataItem();
+                                        } else {
+                                            this.getDataItems();
+                                        }
+
+                                    }
+                                })
+                                done();
+                                setTimeout(() => {
+                                    instance.confirmButtonLoading = false;
+                                }, 300);
+                            }, 300);
+                        } else {
+                            done();
                         }
-                    }).then(res => {
-                        if (res.status == 200) {
-                            if(res.data.data == 1){
-                                this.$alert("delete success!");
-                                this.getDataItems();
-                            }else
-                                this.$alert("please refresh the page!")
-
-
-                        }
-                    })
-                }
+                    }
+                }).then(action => {
+                    this.$message({
+                        type: 'success',
+                        message: 'delete successful '
+                    });
+                });
             },
 
             searchItems(page){
