@@ -201,6 +201,11 @@
                 {{scope.row.createTime}}
               </template>
             </el-table-column>
+              <el-table-column label="Operation" width="120px">
+              <template slot-scope="props">
+                <el-button type="primary" @click="addDataItemData($event)" :id="props.row.id">Add</el-button>
+              </template>
+            </el-table-column>
 
           </el-table>
           <el-pagination style="text-align: center;margin-top:20px"

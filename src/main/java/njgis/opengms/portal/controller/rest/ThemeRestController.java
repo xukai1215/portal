@@ -140,6 +140,7 @@ public class ThemeRestController {
 //        categorys.setCategory("Solid Earth Geophysics");
 //        categorys.setParentCategory("5cc051437a419164e821231c");
 //        categoryDao.insert(categorys);
+//        ArrayList<Integer>themes = new ArrayList<Integer>();
 
 
 

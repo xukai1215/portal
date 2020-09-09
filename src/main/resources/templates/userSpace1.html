@@ -139,12 +139,25 @@
 <!--userDataItems展示组件-->
 <template th:replace="userDataItems :: userDataItems"></template>
 <script src="/static/js/page/userDataItems.js"></script>
+<template th:replace="userDataApplication :: userDataApplication"></template>
+<script src="/static/js/page/userDataApplication.js"></script>
+<template th:replace="userDataVisualApplication :: userDataVisualApplication"></template>
+<script src="/static/js/page/userDataVisualApplication.js"></script>
+
 <!--userData create/edit组件-->
 <template th:replace="create-dataItem :: createDataItem"></template>
 <script src="/static/js/page/create-dataItem.js"></script>
+<!--userData create/edit组件-->
+<template th:replace="create-data-application :: createDataApplication"></template>
+<script src="/static/js/page/create-data-application.js"></script>
+<template th:replace="create-data-visualApplication :: createDataVisualApplication"></template>
+<script src="/static/js/page/create-data-visualApplication.js"></script>
 <!--userDataSpace展示组件-->
 <template th:replace="userDataSpace :: userDataSpace"></template>
 <script src="/static/js/page/userDataSpace.js"></script>
+<!--distributed node mange 组件-->
+<template th:replace="distributed_node_mange :: distributedNode"></template>
+<script src="/static/js/page/distributed_node_mange.js"></script>
 <!--userServer组件-->
 <template th:replace="userServer :: userServer"></template>
 <script src="/static/js/page/userServer.js"></script>

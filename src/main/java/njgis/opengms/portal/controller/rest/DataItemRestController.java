@@ -2,15 +2,17 @@ package njgis.opengms.portal.controller.rest;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.gson.JsonObject;
+import com.sun.org.apache.regexp.internal.RE;
+import lombok.extern.slf4j.Slf4j;
 import njgis.opengms.portal.bean.JsonResult;
-import njgis.opengms.portal.dao.CategoryDao;
-import njgis.opengms.portal.dao.DataItemDao;
-import njgis.opengms.portal.dao.ModelItemDao;
-import njgis.opengms.portal.dao.UserDao;
+import njgis.opengms.portal.dao.*;
+import njgis.opengms.portal.dto.DataCategorysAddDTO;
 import njgis.opengms.portal.dto.categorys.CategoryAddDTO;
 import njgis.opengms.portal.dto.dataItem.DataItemAddDTO;
 import njgis.opengms.portal.dto.dataItem.DataItemFindDTO;
 import njgis.opengms.portal.dto.dataItem.DataItemUpdateDTO;
+import njgis.opengms.portal.dto.theme.ThemeUpdateDTO;
 import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.entity.support.AuthorInfo;
 import njgis.opengms.portal.exception.MyException;
@@ -20,6 +22,8 @@ import njgis.opengms.portal.service.ModelItemService;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
 import njgis.opengms.portal.utils.Utils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -36,13 +40,21 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
+import springfox.documentation.spring.web.json.Json;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.websocket.server.PathParam;
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.sql.SQLTransactionRollbackException;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName DataItemController
@@ -53,6 +65,7 @@ import java.util.*;
  */
 @RestController
 @RequestMapping (value = "/dataItem")
+@Slf4j
 public class DataItemRestController {
 
     @Autowired
@@ -80,7 +93,19 @@ public class DataItemRestController {
     UserService userService;
 
     @Autowired
+    DataApplicationDao dataApplicationDao;
+
+    @Autowired
+    DistributedNodeDao distributedNodeDao;
+
+    @Autowired
+    DataCategorysDao dataCategorysDao;
+
+    @Autowired
     private MongoTemplate mongoTemplate;
+
+    @Autowired
+    DataItemNewDao dataItemNewDao;
 
     @Value ("${dataContainerIpAndPort}")
     String dataContainerIpAndPort;
@@ -99,7 +124,7 @@ public class DataItemRestController {
      */
     @RequestMapping("/hubs")
     public ModelAndView getHubs(){
-        System.out.println("data-items-page");
+//        System.out.println("data-items-page");
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("data_items");
         modelAndView.addObject("dataType","hubs");
@@ -194,9 +219,8 @@ public class DataItemRestController {
     JsonResult listByClassification(
             @PathVariable  String categorysId,
             @PathVariable Integer page,
-              @PathVariable String dataType,
-
-              HttpServletRequest request){
+            @PathVariable String dataType,
+            HttpServletRequest request){
         HttpSession session = request.getSession();
         String loadUser = null;
         if(session.getAttribute("oid")!=null)
@@ -262,11 +286,9 @@ public class DataItemRestController {
      */
     @RequestMapping (value = "/{id}", method = RequestMethod.GET)
     ModelAndView get(@PathVariable ("id") String id){
-
         ModelAndView view = new ModelAndView();
 
-//        view.setViewName("/dataItems/"+id);
-        DataItem dataItem=new DataItem();
+        DataItem dataItem;
         try {
             dataItem=dataItemService.getById(id);
         }catch (MyException e){
@@ -277,6 +299,7 @@ public class DataItemRestController {
 
         dataItem=(DataItem)itemService.recordViewCount(dataItem);
         dataItemDao.save(dataItem);
+
 
 
         //用户信息
@@ -318,23 +341,12 @@ public class DataItemRestController {
             }
         }
         List<String> classifications=new ArrayList<>();
-//        if (dataItem.getDataType()!=null&&dataItem.getDataType().equals("DistributedNode")){
-//            classifications = dataItem.getClassifications();
-//        }else {
-            //category
-//            List<String> classifications = new ArrayList<>();
-            List<String> categories = dataItem.getClassifications();
-            for (String category : categories) {
-                Categorys categorys = categoryDao.findFirstById(category);
-                String name = categorys.getCategory();
-                if (name.equals("...All")) {
-                    Categorys categorysParent = categoryDao.findFirstById(categorys.getParentCategory());
-                    classifications.add(categorysParent.getCategory());
-                } else {
-                    classifications.add(name);
-                }
-            }
-//        }
+        List<String> categories = dataItem.getClassifications();
+        for (String category : categories) {
+            Categorys categorys = dataCategorysDao.findFirstById(category);
+            String name = categorys.getCategory();
+            classifications.add(name);
+        }
 
 
         ArrayList<String> fileName = new ArrayList<>();
@@ -353,7 +365,7 @@ public class DataItemRestController {
         view.addObject("classifications",classifications);
         view.addObject("relatedModels",modelItemArray);
         view.addObject("authorship",authorshipString);
-        view.addObject("userDataList", dataItem.getUserDataList());
+//        view.addObject("userDataList", dataItem.getUserDataList());
         view.addObject("fileName",fileName);//后期应该是放该name下的所有数据
 
 
@@ -379,7 +391,6 @@ public class DataItemRestController {
      */
     @RequestMapping(value="/viewcount",method = RequestMethod.GET)
     Integer getViewCount(@RequestParam(value="id") String id){
-
         return dataItemService.getViewCount(id);
     }
 
@@ -560,9 +571,15 @@ public class DataItemRestController {
      * 个人中心动态创建分类树
      * @return
      */
+//    @RequestMapping(value = "/createTree",method = RequestMethod.GET)
+//    Map<String,List<Map<String,String >>> createTree(){
+////        return dataItemService.createTree();
+//        return dataItemService.createTree();
+//    }
     @RequestMapping(value = "/createTree",method = RequestMethod.GET)
-    Map<String,List<Map<String,String >>> createTree(){
-        return dataItemService.createTree();
+    JSONArray createTree(){
+//        return dataItemService.createTree();
+        return dataItemService.createTreeNew();
     }
 
     //user space end
@@ -717,6 +734,24 @@ public class DataItemRestController {
         return ResultUtils.success();
     }
 
+    @RequestMapping(value = "/update",method = RequestMethod.POST)
+    public JsonResult updateDataItem(@RequestBody DataItemUpdateDTO dataItemUpdateDTO, HttpServletRequest request) {
+        HttpSession session=request.getSession();
+        String uid=session.getAttribute("uid").toString();
+        String oid = session.getAttribute("oid").toString();
+        if(uid==null){
+            return ResultUtils.error(-2,"未登录");
+        }
+
+        JSONObject result=dataItemService.updateDataItem(dataItemUpdateDTO,oid);
+        if(result==null){
+            return ResultUtils.error(-1,"There is another version have not been checked, please contact opengms@njnu.edu.cn if you want to modify this item.");
+        }
+        else {
+            return ResultUtils.success(result);
+        }
+    }
+
 
     /**
      * //todo 测试接口
@@ -743,7 +778,8 @@ public class DataItemRestController {
                                   @RequestParam("type") String type,
                                   @RequestParam("authority") Boolean authority,
                                   @RequestParam("token") String token,
-                                  @RequestParam("meta") String meta1) throws IOException {
+                                  @RequestParam("meta") String meta1,
+                                  @RequestParam("ip") String ip) throws IOException {
         JsonResult jsonResult = new JsonResult();
         //检查该id是否已经存在于数据库中
         if (dataItemDao.findFirstByDistributedNodeDataId(id) != null){
@@ -760,7 +796,8 @@ public class DataItemRestController {
             jsonResult.setMsg("user information error");
             return jsonResult;
         }
-        DataItem dataItem = dataItemService.insertDistributeData(id,oid,name,date,type,authority,token,meta);
+        DataItem dataItem = dataItemService.insertDistributeData(id,oid,name,date,type,authority,token,meta,ip);
+        dataItemService.insertDistributeNode(ip,dataItem.getId(),oid);
         jsonResult.setData("/dataItem/"+dataItem.getId());
         //将data item的id加到对应的类别下，用于data items页面的显示
         JSONArray tags = new JSONArray();
@@ -772,6 +809,7 @@ public class DataItemRestController {
         CategoryAddDTO categoryAddDTO = new CategoryAddDTO();
         categoryAddDTO.setId(dataItem.getId());
         categoryAddDTO.setCate(list);
+        categoryAddDTO.setDataType("DistributedNode");
         dataItemService.addCateId(categoryAddDTO);
         return jsonResult;
     }
@@ -1006,7 +1044,7 @@ public class DataItemRestController {
         return jsonObject;
     }
 
-    @RequestMapping(value = "delProcessing",method = RequestMethod.DELETE)
+    @RequestMapping(value = "/delProcessing",method = RequestMethod.DELETE)
     public JsonResult delProcessing(@RequestParam(value = "pcsId") String pcsId,
                                     @RequestParam(value = "type") String type){
         JsonResult jsonResult = new JsonResult();
@@ -1057,5 +1095,280 @@ public class DataItemRestController {
         }
         return jsonResult;
     }
+
+    //获取注册到门户的分布式节点
+    //todo mangeNodes
+    @RequestMapping(value = "/mangeNodes",method = RequestMethod.GET)
+    public JSONArray mangeNodes(HttpServletRequest request){
+        JSONArray jsonArray = new JSONArray();
+        HttpSession session = request.getSession();
+        String oid = session.getAttribute("oid").toString();
+        List<DistributedNode> distributedNodes = distributedNodeDao.findAll();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        for (DistributedNode distributedNode:distributedNodes){
+            JSONObject jsonObject = new JSONObject();
+            if (distributedNode.getIp()!=null&&distributedNode.getUserId().equals(oid)){
+                jsonObject.put("ip",distributedNode.getIp());
+                if (distributedNode.getOnlineStatus()){
+                    jsonObject.put("onlineStatus","Online");
+                }else {
+                    jsonObject.put("onlineStatus","Offline");
+                }
+                jsonObject.put("date",sdf.format(distributedNode.getLastTime()));
+                User user = userDao.findFirstByOid(distributedNode.getUserId());
+                String userName = user.getUserName();
+                jsonObject.put("userName",userName);
+                jsonArray.add(jsonObject);
+            }
+        }
+        return jsonArray;
+    }
+
+    @RequestMapping(value = "/getDataItemList", method = RequestMethod.POST)
+    public JSONArray getDataItemList(@RequestBody String ip){
+        JSONArray result = new JSONArray();
+        DistributedNode distributedNode = distributedNodeDao.findFirstByIp(ip);
+        List<String> dataItems = distributedNode.getDataItems();
+        for (int i=0;i<dataItems.size();i++){
+            DataItem dataItem = dataItemDao.findFirstById(dataItems.get(i));
+            result.add(dataItem);
+        }
+        return result;
+    }
+
+//    @RequestMapping(value = "/addDataCategories", method = RequestMethod.POST)
+//    public JsonResult addDataCategories(@RequestParam(value = "category") String category,
+//                                       @RequestParam(value = "parentCategory") String parentCategory){
+//        JsonResult result = new JsonResult();
+//        //一级类别
+////        DataCategorys dataCategorys = new DataCategorys();
+////        dataCategorys.setCategory(category);
+////        dataCategorys.setParentCategory("null");
+////        dataCategorysDao.insert(dataCategorys);
+//
+//
+//        //二级类别
+//        DataCategorys dataCategorys = new DataCategorys();
+//        dataCategorys.setParentCategory(parentCategory);
+//        dataCategorys.setCategory(category);
+//        dataCategorysDao.insert(dataCategorys);
+//
+//        result.setMsg("success");
+//        result.setCode(0);
+//        result.setData(dataCategorys.getId());
+//
+//
+//
+//        return result;
+//    }
+
+    /**
+     * 数据条目 tabs接口
+     */
+    @RequestMapping(value = "/getDataApplication",method = RequestMethod.POST)
+    public JsonResult getDataApplication(@RequestParam(value = "categoryId") String categoryId,
+                                         @RequestParam(value = "type") String type){
+        JsonResult result = new JsonResult();
+
+
+        Criteria criteria = Criteria.where("classifications").is(categoryId);
+        Query query = new Query(criteria);
+        List<DataApplication> dataApplications = mongoTemplate.find(query,DataApplication.class);
+
+        List<DataApplication> dataApplications1 = new ArrayList<>();
+        for (int i=0;i<dataApplications.size();i++){
+            if (dataApplications.get(i).getType().equals(type)){
+                dataApplications1.add(dataApplications.get(i));
+            }
+        }
+        List<Map>maps = new LinkedList<>();
+        for (DataApplication dataApplication:dataApplications1){
+            Map<String,String>map = new HashMap<String, String>();
+            map.put("oid", dataApplication.getOid());
+            map.put("name",dataApplication.getName());
+            maps.add(map);
+        }
+        result.setMsg("success");
+        result.setCode(0);
+        result.setData(maps);
+        return result;
+    }
+
+    //导入json数据入库
+    @RequestMapping(value = "/addJosnInformation",method = RequestMethod.POST)
+    public JsonResult addJosnInformation(@RequestParam(value = "jsonFile") MultipartFile file) throws IOException {
+        JsonResult jsonResult = new JsonResult();
+        String result = new BufferedReader(new InputStreamReader(file.getInputStream()))
+                .lines().collect(Collectors.joining(System.lineSeparator()));
+
+        JSONArray jsonArray = JSONObject.parseArray(result);
+        Date now = new Date();
+        for (int i=0;i<jsonArray.size();i++){
+            DataItemNew dataItemNew = new DataItemNew();
+            dataItemNew.setCreateTime(now);
+            JSONObject jsonObject = (JSONObject) jsonArray.get(i);
+            dataItemNew.setReference(jsonObject.getString("reference"));
+            dataItemNew.setDescription(jsonObject.getString("description"));
+            dataItemNew.setName(jsonObject.getString("name"));
+            dataItemNew.setAuthor(jsonObject.getString("author"));
+            dataItemNew.setDetail(jsonObject.getString("detail"));
+
+            JSONObject jsonObject1 = jsonObject.getJSONObject("authorship");
+            if (jsonObject1 !=null) {
+                List<AuthorInfo> authorship = new ArrayList<>();
+                JSONObject author = jsonObject1;
+                AuthorInfo authorInfo = new AuthorInfo();
+                authorInfo.setName(author.getString("name"));
+                authorInfo.setEmail(author.getString("email"));
+                authorInfo.setIns(author.getString("ins"));
+                authorInfo.setHomepage(author.getString("homepage"));
+                authorship.add(authorInfo);
+                dataItemNew.setAuthorship(authorship);
+            }
+            JSONArray jsonArray1 = jsonObject.getJSONArray("classifications");
+            if (jsonArray1!=null) {
+                List<String> classifications = new ArrayList<>();
+                for (int i1 = 0; i1 < jsonArray1.size(); i1++) {
+                    classifications.add(jsonArray1.get(i1).toString());
+                }
+                dataItemNew.setClassifications(classifications);
+            }
+
+            dataItemNewDao.insert(dataItemNew);
+        }
+
+        return jsonResult;
+    }
+
+    @RequestMapping(value = "/addOtherInfo", method = RequestMethod.POST)
+    public JsonResult addOtherInfo(@RequestParam(value = "authors") ArrayList<String> authors){
+        JsonResult jsonResult = new JsonResult();
+        List<DataItemNew> dataItemNews = dataItemNewDao.findAll();
+        for (int i=0;i<dataItemNews.size();i++){
+            String author ="";
+            if (i<=100){
+                author = authors.get(0);
+            }else if (i <= 313){
+                author = authors.get(1);
+            } else if (i <= 456){
+                author = authors.get(2);
+            } else if (i <= 604){
+                author = authors.get(3);
+            } else if (i <= 800){
+                author = authors.get(4);
+            }
+
+            DataItemNew dataItemNew = dataItemNews.get(i);
+            dataItemNew.setAuthor(author);
+            dataItemNew.setOid(UUID.randomUUID().toString());
+            dataItemNew.setDataType("Url");
+            dataItemNew.setLastModifyTime(dataItemNew.getCreateTime());
+            dataItemNew.setStatus("Public");
+            dataItemNew.setLock(false);
+            dataItemNew.setShareCount(0);
+            dataItemNew.setViewCount(0);
+            dataItemNew.setThumbsUpCount(0);
+
+            dataItemNewDao.save(dataItemNew);
+
+        }
+
+        return jsonResult;
+    }
+
+    @RequestMapping(value = "/addKeyWords", method = RequestMethod.POST)
+    public JsonResult addKeyWords(){
+        JsonResult jsonResult = new JsonResult();
+        List<DataItemNew> dataItemNews = dataItemNewDao.findAll();
+        for (DataItemNew dataItemNew:dataItemNews){
+            ArrayList<String> keywords = new ArrayList<>();
+            keywords.add(dataItemNew.getName());
+            dataItemNew.setKeywords(keywords);
+            dataItemNewDao.save(dataItemNew);
+        }
+
+        return jsonResult;
+    }
+
+    @RequestMapping(value = "/updateClassification", method = RequestMethod.GET)
+    public JsonResult updateClassification(){
+        JsonResult jsonResult = new JsonResult();
+        List<DataItemNew> dataItemNews = dataItemNewDao.findAll();
+        int logNum=0;
+        for (DataItemNew dataItemNew:dataItemNews){
+            logNum++;
+            List<String> classification = dataItemNew.getClassifications();
+            log.info(classification.get(0));
+            String str = classification.get(0);
+            if (str.equals("sectors")||str.equals("markets")){
+                str = "Economic Regions";
+            }
+            if (str.equals("regional")){
+                str = "integrated perspective";
+            }
+            if (str.equals("Water")||str.equals("Soil")||str.equals("landform")||str.equals("ecosystem")){
+                str = "Land regions";
+            }
+            if (str.equals("seaWater")||str.equals("sea-ice")){
+                str = "ocean regions";
+            }
+            if (str.equals("permafrost")){
+                str = "frozen regions";
+            }if (str.equals("climate")||str.equals("weather")){
+                str = "atmosphere regions";
+            }if (str.equals("lithosphere")||str.equals("mantle")){
+                str = "solid earth";
+            }if (str.equals("global")){
+                str = "integrated perspective";
+            }if (str.equals("outdoor")){
+                str = "social regions";
+            }
+            //将首字母大写
+            String[] split = str.split(" ");
+            String s1 = "";
+            for (int i=0;i< split.length;i++){
+                String s2 = split[i].substring(0,1).toUpperCase()+split[i].substring(1);
+                s1 += s2;
+                s1+=" ";
+            }
+            s1=s1.substring(0,s1.length()-1);
+            log.info(s1);
+            DataCategorys dataCategorys = dataCategorysDao.findFirstByCategory(s1);
+            log.info("log is "+logNum);
+            String id = dataCategorys.getId();
+            List<String> classifications = new ArrayList<>();
+            classifications.add(id);
+            dataItemNew.setClassifications(classifications);
+            dataItemNewDao.save(dataItemNew);
+        }
+
+        return jsonResult;
+    }
+
+    //将新的dataItem添加到对应的类别中
+    @RequestMapping(value = "/matchCategory", method = RequestMethod.GET)
+    public JsonResult matchCategory(){
+        JsonResult jsonResult = new JsonResult();
+        List<DataItemNew> dataItemNews = dataItemNewDao.findAll();
+        for (DataItemNew dataItemNew:dataItemNews){
+            String cateId = dataItemNew.getClassifications().get(0);
+            //匹配类别，将该条目加入类别中
+            DataCategorys dataCategorys = dataCategorysDao.findFirstById(cateId);
+            List<String> dataItemNewCa;
+            if (dataCategorys.getDataItemNew()==null){
+                dataItemNewCa = new ArrayList<>();
+            }else {
+                dataItemNewCa = dataCategorys.getDataItemNew();
+            }
+            dataItemNewCa.add(dataItemNew.getId());
+            dataCategorys.setDataItemNew(dataItemNewCa);
+            dataCategorysDao.save(dataCategorys);
+        }
+        return jsonResult;
+    }
+
+
+
+
 
 }

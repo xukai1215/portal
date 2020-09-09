@@ -28,4 +28,6 @@ public class DataItemResultDTO {
 
     int viewCount=0;
 
+    String dataType;
+
 }

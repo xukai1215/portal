@@ -91,10 +91,8 @@
                                             </ul>
                                             <div class="step-content">
                                                 <div class="step-tab-panel" id="step21">
-                                                    <!--<div class="col-md-3 col-sm-4 tree" id="tree">-->
-                                                    <!--</div>-->
                                                     <div class="col-md-3 col-sm-4"
-                                                         style="overflow-y: auto;height: 450px;">
+                                                         style="overflow-y: auto;height: 450px;width: auto">
                                                         <el-card>
                                                             <div slot="header" class="clearfix text-center">
                                                                 <span style="font-size: 20px;color:#444">Data Classifications</span>
@@ -112,7 +110,7 @@
                                                             </el-tree>
                                                         </el-card>
                                                     </div>
-                                                    <div class="col-md-9 col-sm-8">
+                                                    <div class="col-sm-8">
                                                         <div class="form-group">
                                                             <!--classificaation-->
                                                             <label for="classification"><span class="star">* </span>Category:</label><br>
@@ -158,27 +156,14 @@
 
                                                             <!--data resources url-->
                                                             <label><span class="star">* </span>Data Type:</label><br>
-                                                            <div class="input-group col-md-5">
-                                                                <label style="margin-right: 20px; font-size: 20px">
-                                                                    <input type="radio" name="ContentType"
-                                                                           value="Resources Url" checked="checked"/>
-                                                                    <label style="float:left; margin-left: 5px;">Resources Url</label>
-                                                                </label>
-                                                                <label style="margin-right: 20px; font-size: 20px">
-                                                                    <input type="radio" name="ContentType"
-                                                                           value="Resource"/>
-                                                                    <label style="float:left; margin-left: 5px;">Resource</label>
-                                                                </label>
+                                                            <div class="input-group col-md-5" style="width: 400px;">
+                                                                <el-radio-group v-model="dataItemAddDTO.dataType">
+                                                                    <el-radio label="Url">Resources Url</el-radio>
+                                                                    <el-radio label="File">Resource</el-radio>
+                                                                </el-radio-group>
                                                             </div><br>
-                                                            <!--<input type="text" class="form-control" id="dataresoureurl"/><br>-->
-                                                            <!--<small   class="form-text text-muted">Please input the url of online data.</small>-->
-
-
-
-
                                                             <div class="flexCol">
                                                                 <label for="imgFile">Displays:</label>
-                                                                <!--<input type="file"     id="displays" size="1"  />-->
 
                                                                 <div class="flexRow">
                                                                     <img id="imgShow" src=""/>
@@ -192,28 +177,24 @@
                                                                        style="display: none"
                                                                        accept="image/*"/>
                                                                 <br>
-
                                                                 <small id="displaysHelp" class="form-text text-muted">Please
                                                                     upload
                                                                     pictures of the data which you are ready to upload.
                                                                 </small>
                                                             </div>
-
-
-
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="step-tab-panel" id="step22">
                                                     <!--非作者用户编辑，展示作者选择的data，当前用户不是作者时此div可见-->
-                                                    <div id="ResourcesUrl">
+                                                    <div id="ResourcesUrl" v-if="dataItemAddDTO.dataType=='Url'">
                                                         <label>Please Input Your Resource Url:</label><br><br><br>
                                                         <input type="text" class="form-control" id="ResourcesUrlText"
                                                                aria-describedby="emailHelp"
                                                                placeholder="Please input the url of the data which you are ready to select."
                                                                required="required"/>
                                                     </div>
-                                                    <div id="Resource" style="display: none">
+                                                    <div id="Resource" v-if="dataItemAddDTO.dataType=='File'">
                                                         <label for="classification">You can select some data from you
                                                             data space:</label><br><br>
                                                         <el-button type="primary" @click="dialogVisible = true">+ Add
@@ -241,7 +222,9 @@
 
                                                                     <el-row>
                                                                         <el-col :span="6">&nbsp</el-col>
-                                                                        <el-col :span="12"><a><img :src="'/static/img/filebrowser/'+resource.suffix+'.svg'" style="height: 60%;width:100%"></a>
+                                                                        <el-col :span="12"><a><img :src="'/static/img/filebrowser/'+resource.suffix+'.svg'"
+                                                                         onerror="this.onerror='';src='/static/img/filebrowser/unknow.svg'"
+                                                                         style="height: 60%;width:100%"></a>
                                                                         </el-col>
                                                                         <el-col :span="6">&nbsp</el-col>
                                                                     </el-row>
@@ -249,7 +232,7 @@
                                                                         <el-col :span="2">&nbsp</el-col>
                                                                         <el-col :span="20">
 
-                                                                            <p style="word-wrap: break-word;word-break: break-all;text-align: center">{{resource.label}}.{{resource.suffix}}</p>
+                                                                            <p style="word-wrap: break-word;word-break: break-all;text-align: center">{{resource.name}}.{{resource.suffix}}</p>
                                                                         </el-col>
                                                                         <el-col :span="2">&nbsp</el-col>
 
@@ -375,7 +358,7 @@
 
                                                 </div>
                                             </div>
-                                            <div class="step-footer">
+                                            <div class="step-footer" style="margin: 0 100px 0 0;">
                                                 <button id="next" class="btn btn-primary next pull-right"
                                                         data-direction="next">
                                                     Next

@@ -21,32 +21,22 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DataItemAddDTO {
-
     String name;
     String status;
     String contentType;
     String description;
     String detail;
     String author;
-
     String reference;
-
     List<String> keywords;
     List<String> classifications;
     List<String> displays;
-//    List<String> contributers;
     List<AuthorInfo> authorship;
-//    List<String> userDataOid;
-    List<FileMetaUser> userDataList;
     String dataType;
-
-
     List<DataMeta> dataList;
-
     int shareCount=0;
     int viewCount=0;
     int thumbsUpCount=0;
-
     DataItemMeta meta;
-
+    String uploadImage;
 }

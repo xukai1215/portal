@@ -52,10 +52,10 @@ public class UserRestController {
     @Value("${dataContainerIpAndPort}")
     String dataContainerIpAndPort;
 
-    @Scheduled(cron = "0 0 9 ? MON *")  // 表示 在指定时间执行
-    private void sendEmail() {
-
-    }
+//    @Scheduled(cron = "0 0 9 ? MON *")  // 表示 在指定时间执行
+//    private void sendEmail() {
+//
+//    }
 
     @RequestMapping(value = "/sendEmailTest", method = RequestMethod.POST)
     public void sendEmailTest(@RequestParam("uid") String uid,@RequestParam("email") String email){

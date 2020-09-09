@@ -31,4 +31,6 @@ public class DataItemFindDTO {
     //用做多条件查询
     //private List<String> properties;
 
+    String dataType;
+
 }

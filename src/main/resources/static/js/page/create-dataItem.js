@@ -35,22 +35,27 @@ var createDataItem = Vue.extend({
             data_img: [],
 
             dataItemAddDTO: {
+                id:"",
                 name: '',
                 status: 'Public',
                 description: '',
                 detail: '',
                 author: '',
                 reference: '',
+                dataType:"Url",//默认Url
                 keywords: [],
                 classifications: [],
                 displays: [],
+                uploadImage:"",
                 authorship: [],
                 meta: {
                     coordinateSystem: '',
                     geographicProjection: '',
                     coordinateUnits: '',
                     boundingRectangle: []
-                }
+                },
+                viewCount:0,
+
 
             },
 
@@ -82,8 +87,9 @@ var createDataItem = Vue.extend({
             authorDataList:[],
             dialogVisible: false,
             fileSelect:"",
-            dataType:"Url",//默认Url
-
+            // dataType:"Url",//默认Url
+            id:"",
+            imageExist:false,
         }
     },
     methods: {
@@ -175,12 +181,12 @@ var createDataItem = Vue.extend({
             for (i=0;i<this.selectedFile.length;i++){
                 let fileMetaUser = {
                     id:"",
-                    label:"",
+                    name:"",
                     suffix:"",
                     url:""
-                }
+                };
                 fileMetaUser.id = this.selectedFile[i].id;
-                fileMetaUser.label = this.selectedFile[i].label;
+                fileMetaUser.name = this.selectedFile[i].label;
                 fileMetaUser.suffix = this.selectedFile[i].suffix;
                 fileMetaUser.url = this.selectedFile[i].url;
                 this.userDataList.push(fileMetaUser);
@@ -200,6 +206,17 @@ var createDataItem = Vue.extend({
             this.dataItemAddDTO.classifications = this.cls;
             // this.dataItemAddDTO.displays.push($("#displays").val())
             this.dataItemAddDTO.displays = this.data_img;
+            let subStr = $('#imgShow').get(0).src.toString().substring(0,9);
+            console.log(subStr);
+            if(subStr === "data:imag"){
+                this.imageExist = true;
+            }
+            // if ()
+            if (this.imageExist!=false) {
+                this.dataItemAddDTO.uploadImage = $('#imgShow').get(0).src;
+            }else {
+                this.dataItemAddDTO.uploadImage = "";
+            }
 
             this.dataItemAddDTO.reference = $("#ResourcesUrlText").val();
 
@@ -213,7 +230,7 @@ var createDataItem = Vue.extend({
             this.dataItemAddDTO.meta.coordinateUnits = $("#coordinateUnits").val();
 
             this.dataItemAddDTO.meta.boundingRectangle = [];
-            this.dataItemAddDTO.dataType = this.dataType;
+            // this.dataItemAddDTO.dataType = this.dataType;
 
 
             var authorship = [];
@@ -234,18 +251,16 @@ var createDataItem = Vue.extend({
 
             }
             this.dataItemAddDTO.authorship = authorship;
-            this.dataItemAddDTO.userDataList = this.userDataList;
+            this.dataItemAddDTO.dataList = this.userDataList;
 
 
             var thedata = this.dataItemAddDTO;
 
             var that = this;
-
-                axios.post("/dataItem/", thedata)
-                    .then(res => {
-                        if (res.status == 200) {
-
-
+         if ((this.id === "0") || (this.id === "") || (this.id == null)) {
+            axios.post("/dataItem/", thedata)
+                 .then(res => {
+                        if (res.status === 200) {
                             //创建静态页面
                             axios.get("/dataItem/adddataitembyuser", {
                                 params: {
@@ -256,8 +271,6 @@ var createDataItem = Vue.extend({
                             });
                             $(".prev").click();
                             $(".prev").click();
-
-
                             //清空
                             $("#classification").val('')
                             $("#dataname").val('');
@@ -274,21 +287,18 @@ var createDataItem = Vue.extend({
                             $("#bottomrightx").val("")
                             $("#bottomrighty").val("");
                             $("#imgFile").val("");
-
                             var categoryAddDTO = {
                                 id: res.data.data.id,
-                                cate: that.cls
-                            }
+                                cate: that.cls,
+                                dataType: that.dataItemAddDTO.dataType
+                            };
                             axios.post('/dataItem/addcate', categoryAddDTO).then(res => {
                                 // console.log(res)
                             });
-
                             //每次创建完条目后清空category内容
                             that.ctegorys = [];
                             //清空displays内容
-                            that.data_img = []
-
-
+                            that.data_img = [];
                             this.$confirm('<div style=\'font-size: 18px\'>Create data item successfully!</div>', 'Tip', {
                                 dangerouslyUseHTMLString: true,
                                 confirmButtonText: 'View',
@@ -303,10 +313,37 @@ var createDataItem = Vue.extend({
                             }).catch(() => {
                                 window.location.href = "/user/userSpace#/data/dataitem";
                             });
-
                         }
                     })
+            }else {
+                this.dataItemAddDTO.dataItemId = this.id;
+                var thedata1 = this.dataItemAddDTO;
+                axios.post("/dataItem/update/",thedata1)
+                    .then(result=>{
+                        if (result.status ===200){
+                            if (result.data.code === 0) {
+                                if(result.data.data.method==="update") {
+                                    alert("Update Success");
+                                    $("#editModal", parent.document).remove();
+                                    window.location.href = "/dataItem/" + result.data.data.oid;
+                                }
+                                else{
+                                    alert("Success! Changes have been submitted, please wait for the author to review.");
+                                    //产生信号调用计数，启用websocket
 
+                                    window.location.href = "/user/userSpace";
+                                }
+                            }
+                            else if(result.data.code==-2){
+                                alert("Please login first!");
+                                window.location.href="/user/login";
+                            }
+                            else{
+                                alert(result.data.msg);
+                            }
+                        }
+                    })
+            }
         },
 
         next() {
@@ -332,7 +369,6 @@ var createDataItem = Vue.extend({
                 });
         },
         resClick(e){
-
             let path=e.path;
             for(i=0;i<path.length;i++){
                 let obj=path[i];
@@ -350,7 +386,7 @@ var createDataItem = Vue.extend({
                 for (var i = 0; i < this.selectedFile.length; i++) {
                     if (this.selectedFile[i] === file) {
                         //删除
-                        this.selectedFile.splice(i, 1)
+                        this.selectedFile.splice(i, 1);
                         // this.downloadDataSetName.splice(i, 1)
                         break
                     }
@@ -374,9 +410,11 @@ var createDataItem = Vue.extend({
     },
     mounted() {
         //初始化的时候吧curIndex传给父组件，来控制bar的高亮显示
-        this.sendcurIndexToParent()
+        this.sendcurIndexToParent();
 
-        var tha = this
+
+        var tha = this;
+        tha.id = this.$route.params.editId;
 
         this.classif = [];
         $("#classification").val('');
@@ -384,53 +422,46 @@ var createDataItem = Vue.extend({
         axios.get("/dataItem/createTree")
             .then(res => {
                 tha.tObj = res.data;
-                let i=0
-                for (var e in tha.tObj) {
-                    var children = []
-                    for(let ele of tha.tObj[e]){
-                        let child={
-                            label:ele.category,
-                            id:ele.id
-                        }
-                        if (child.label!="...All") {
-                            children.push(child);
-                        }
-                    }
+                let tree = [];
+                for (let i in Object.values(tha.tObj)){
+                    // console.log(grandpa);
+                    let grandpa = Object.values(tha.tObj)[i];
+                    // let grandpa = tha.tObj[i];
+                    for (let j in Object.values(Object.values(grandpa))){
+                        let father = Object.values(grandpa)[j];
+                        let gChildren=[];
+                        for (let k in Object.values((Object.values(father)))){
+                            let son = Object.values(Object.values((father)[k]));
+                            let sons = son[0];
+                            let children = [];
+                            for (let ii=0;ii<sons.length;ii++){
+                                let child = {
+                                    label : Object.keys(sons[ii])[0],
+                                    id:Object.values(sons[ii])[0]
+                                }
 
-                    var a = {
-                        label: e,
-                        children: children
-                    }
-                    if (e != 'Data Resouces Hubs') {
-                        tha.categoryTree.push(a);
-                        tha.treeData = tha.categoryTree
-                    }
-                }
-                //排序treeData
-                let subTreeData = new Array(6);
-                for (let i=0;i<tha.treeData.length;i++){
-                    switch (tha.treeData[i].label) {
-                        case "Earth System":
-                            subTreeData[0] = tha.treeData[i];
-                            break;
-                        case "Physical Geography":
-                            subTreeData[1] = tha.treeData[i];
-                            break;
-                        case "Human Geography":
-                            subTreeData[2] = tha.treeData[i];
-                            break;
-                        case "Geographic Information":
-                            subTreeData[3] = tha.treeData[i];
-                            break;
-                        case "Natural Resources":
-                            subTreeData[4] = tha.treeData[i];
-                            break;
-                        case "Region and Area":
-                            subTreeData[5] = tha.treeData[i];
-                            break;
+                                if (child.label!="all"){
+                                    children.push(child);
+                                }
+                            }
+                            var s = {
+                                label:Object.keys(father[k])[0],
+                                children:children,
+                            }
+                            if(s.label!="all"){
+                                gChildren.push(s)
+                            }
+                        }
+
+                        let g = {
+                            label:Object.keys(grandpa)[0],
+                            children:gChildren,
+                        }
+                        console.log(g);
+                        tree.push(g);
                     }
                 }
-                tha.treeData = subTreeData;
+                tha.treeData = tree;
             })
         var that = this;
 
@@ -639,12 +670,18 @@ var createDataItem = Vue.extend({
                     alert("Please login");
                     window.location.href = "/user/login";
                 }else if(resData.data.noResult!=1){
-                    let data = resData.data.result
+                    let data = resData.data.result;
 
-                    let classificationId = data.classifications
+                    let classificationId = data.classifications;
+                    this.dataItemAddDTO.dataType = data.contentType;
+                    $("#ResourcesUrlText").val(data.reference);//url内容填充
+
+                    this.selectedFile = data.dataList;
 
                     this.$refs.tree2.setCheckedKeys(data.classifications);
                     this.clsStr=data.categories;
+                    this.cls = data.classifications;
+                    this.dataItemAddDTO.viewCount = data.viewCount;
                     //清空
                     // $("#classification").val('')
                     $("#dataname").val(data.name);
@@ -665,10 +702,18 @@ var createDataItem = Vue.extend({
                     $("#detail").html(data.detail);
                     this.authorDataList = data.userDataList;
 
-                    $('#imgShow').get(0).src = data.displays[0];
-                    $('#imgShow').show();
+                    // $('#imgShow').get(0).src = data.image;
+                    // $('#imgShow').show();
+
+                    if (data.image!=null&&data.image!="") {
+                        $('#imgShow').attr("src", "/static" + data.image);
+                        $('#imgShow').show();
+                        that.imageExist = true;
+                    }else {
+                        that.imageExist = false;
+                    }
                     $("#displays").val('');
-                    $("#dataresoureurl").val(data.reference)
+                    $("#dataresoureurl").val(data.reference);
 
                     $("#coordinateSystem").val(data.meta.coordinateSystem);
                     $("#geographicProjection").val(data.meta.geographicProjection)
@@ -979,32 +1024,5 @@ var createDataItem = Vue.extend({
                 $(this).parents('.panel').eq(0).children('.panel-heading').children().children().html("NEW");
             }
         })
-        //激活jQuery的icheck插件
-        $("input[name='ContentType']").iCheck({
-            //checkboxClass: 'icheckbox_square-blue',  // 注意square和blue的对应关系
-            radioClass: 'iradio_flat-green',
-            increaseArea: '0%' // optional
-
-        });
-        $("input[name='author_confirm']").iCheck({
-            //checkboxClass: 'icheckbox_square-blue',  // 注意square和blue的对应关系
-            radioClass: 'iradio_flat-green',
-            increaseArea: '0%' // optional
-
-        });
-        $("input:radio[name='ContentType']").on('ifChecked', function(event){
-
-            if($(this).val()=="Resources Url"){
-                that.dataType = "Url";
-                $("#ResourcesUrl").show();
-                $("#Resource").hide();
-            }
-            else{
-                that.dataType = "File";
-                $("#ResourcesUrl").hide();
-                $("#Resource").show();
-            }
-
-        });
     }
 })

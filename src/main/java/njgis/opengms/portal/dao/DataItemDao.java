@@ -63,4 +63,6 @@ public interface DataItemDao extends MongoRepository<DataItem,String> {
 
     List<DataItem> findByKeywordsLike(String author);
     List<DataItem> findByClassificationsLike(String author);
+
+    List<DataItem> findByDataType(String type);
 }
