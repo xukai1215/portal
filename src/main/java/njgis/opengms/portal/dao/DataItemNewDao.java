@@ -14,6 +14,7 @@ import java.util.List;
  * @Date 2020.09.02 23:41
  */
 public interface DataItemNewDao extends MongoRepository<DataItemNew,String> {
+    DataItemNew findFirstById(String id);
     DataItemNew findFirstByAuthor(String author);
     DataItemNew findAllByCreateTime(Date time);
     DataItemNew findFirstByName(String name);
@@ -22,4 +23,5 @@ public interface DataItemNewDao extends MongoRepository<DataItemNew,String> {
     DataItemNew findFirstByClassifications(List<String> classifications);
     DataItemNew findFirstByAuthorship(List<AuthorInfo> authorship);
     DataItemNew findFirstByReference(String reference);
+    DataItemNew findFirstByDistributedNodeDataId(String distributedId);
 }

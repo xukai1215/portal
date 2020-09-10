@@ -1503,24 +1503,24 @@ public class DataItemService {
     /**
      * 分布式节点数据方法
      */
-    public DataItem insertDistributeData(String id,String oid,String name,String date,String type,Boolean authority,String token,JSONObject meta, String ip){
-        DataItem dataItem = new DataItem();
+    public DataItemNew insertDistributeData(String id,String oid,String name,String date,String type,Boolean authority,String token,JSONObject meta, String ip){
+        DataItemNew dataItemNew = new DataItemNew();
         Date now = new Date();
         //将dto中的数据转换到dataItem里
-        dataItem.setDistributedNodeDataId(id);
-        dataItem.setAuthor(oid);
-        dataItem.setDate(date);
-        dataItem.setName(name);
-        dataItem.setType(type);
-        dataItem.setAuthority(authority);
-        dataItem.setToken(token);
-        dataItem.setCreateTime(now);
-        dataItem.setWorkSpace(meta.getString("workSpace"));
-        dataItem.setDescription(meta.getString("description"));
-        dataItem.setDetail(meta.getString("detail"));
-        dataItem.setDataPath(meta.getString("dataPath"));
-        dataItem.setDataType("DistributedNode");
-        dataItem.setIp(ip);
+        dataItemNew.setDistributedNodeDataId(id);
+        dataItemNew.setAuthor(oid);
+        dataItemNew.setDate(date);
+        dataItemNew.setName(name);
+        dataItemNew.setType(type);
+        dataItemNew.setAuthority(authority);
+        dataItemNew.setToken(token);
+        dataItemNew.setCreateTime(now);
+        dataItemNew.setWorkSpace(meta.getString("workSpace"));
+        dataItemNew.setDescription(meta.getString("description"));
+        dataItemNew.setDetail(meta.getString("detail"));
+        dataItemNew.setDataPath(meta.getString("dataPath"));
+        dataItemNew.setDataType("DistributedNode");
+        dataItemNew.setIp(ip);
 //        dataItem.setOnlineStatus(onlineStatus);
         JSONArray tags = new JSONArray();
         tags = meta.getJSONArray("tags");
@@ -1528,9 +1528,9 @@ public class DataItemService {
         for (int i=0;i<tags.size();i++){
             list.add(tags.getString(i));
         }
-        dataItem.setClassifications(list);
+        dataItemNew.setClassifications(list);
 
-        return dataItemDao.insert(dataItem);
+        return dataItemNewDao.insert(dataItemNew);
     }
 
     //分布式节点注册至门户

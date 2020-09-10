@@ -782,10 +782,10 @@ public class DataItemRestController {
                                   @RequestParam("ip") String ip) throws IOException {
         JsonResult jsonResult = new JsonResult();
         //检查该id是否已经存在于数据库中
-        if (dataItemDao.findFirstByDistributedNodeDataId(id) != null){
-            DataItem dataItem = dataItemDao.findFirstByDistributedNodeDataId(id);
+        if (dataItemNewDao.findFirstByDistributedNodeDataId(id) != null){
+            DataItemNew dataItemNew = dataItemNewDao.findFirstByDistributedNodeDataId(id);
             jsonResult.setCode(-2);
-            jsonResult.setMsg("/dataItem/" + dataItem.getId());
+            jsonResult.setMsg("/dataItem/" + dataItemNew.getId());
             return jsonResult;
         }
 
@@ -796,9 +796,9 @@ public class DataItemRestController {
             jsonResult.setMsg("user information error");
             return jsonResult;
         }
-        DataItem dataItem = dataItemService.insertDistributeData(id,oid,name,date,type,authority,token,meta,ip);
-        dataItemService.insertDistributeNode(ip,dataItem.getId(),oid);
-        jsonResult.setData("/dataItem/"+dataItem.getId());
+        DataItemNew dataItemNew = dataItemService.insertDistributeData(id,oid,name,date,type,authority,token,meta,ip);
+        dataItemService.insertDistributeNode(ip,dataItemNew.getId(),oid);
+        jsonResult.setData("/dataItem/"+dataItemNew.getId());
         //将data item的id加到对应的类别下，用于data items页面的显示
         JSONArray tags = new JSONArray();
         tags = meta.getJSONArray("tags");
@@ -807,7 +807,7 @@ public class DataItemRestController {
             list.add(tags.getString(i));
         }
         CategoryAddDTO categoryAddDTO = new CategoryAddDTO();
-        categoryAddDTO.setId(dataItem.getId());
+        categoryAddDTO.setId(dataItemNew.getId());
         categoryAddDTO.setCate(list);
         categoryAddDTO.setDataType("DistributedNode");
         dataItemService.addCateId(categoryAddDTO);
@@ -821,7 +821,7 @@ public class DataItemRestController {
         JSONObject jsonObject = new JSONObject();
 
         jsonObject.put("msg","req");
-        DataItem dataItem = dataItemDao.findFirstById(dataOid);
+        DataItemNew dataItemNew = dataItemNewDao.findFirstById(dataOid);
         //判断是否登录
         if(session.getAttribute("oid")==null){
             jsonResult.setCode(-1);
@@ -830,16 +830,16 @@ public class DataItemRestController {
         }else{
             jsonObject.put("reqUsrOid",session.getAttribute("oid").toString());
         }
-        if (dataItem.getDataUrl()!=null){
-            jsonResult.setData(dataItem.getDataUrl());
+        if (dataItemNew.getDataUrl()!=null){
+            jsonResult.setData(dataItemNew.getDataUrl());
             jsonResult.setCode(1);
             return jsonResult;
         }
 
-        jsonObject.put("name", dataItem.getName());
-        jsonObject.put("token",dataItem.getToken());
-        jsonObject.put("id",dataItem.getDistributedNodeDataId());
-        jsonObject.put("wsId",dataItem.getId());
+        jsonObject.put("name", dataItemNew.getName());
+        jsonObject.put("token",dataItemNew.getToken());
+        jsonObject.put("id",dataItemNew.getDistributedNodeDataId());
+        jsonObject.put("wsId",dataItemNew.getId());
 
         jsonResult.setCode(0);
         jsonResult.setMsg("Success");
@@ -850,12 +850,13 @@ public class DataItemRestController {
     //第一次请求后将该数据下载url存储下来
     @RequestMapping(value = "/saveUrl",method = RequestMethod.POST)
     JsonResult saveUrl(@RequestParam(value = "dataOid") String  dataOid,
-                       @RequestParam(value = "dataUrl") String  dataUrl,
+                       @RequestParam(value = "rId") String  rId,
                        HttpServletRequest request){
         JsonResult jsonResult = new JsonResult();
-        DataItem dataItem = dataItemDao.findFirstById(dataOid);
-        dataItem.setDataUrl(dataUrl);
-        dataItemDao.save(dataItem);
+        DataItemNew dataItemNew = dataItemNewDao.findFirstById(dataOid);
+        String dataUrl = "http://111.229.14.128:8899/data?uid="+ rId;
+        dataItemNew.setDataUrl(dataUrl);
+        dataItemNewDao.save(dataItemNew);
 
         return jsonResult;
     }
@@ -877,18 +878,18 @@ public class DataItemRestController {
         int existCount1 = 0;
         int existCount2 = 0;
         for (int i=0;i<dataIds.length;i++){
-            if (dataItemDao.findFirstByDistributedNodeDataId(dataIds[i]) == null){
+            if (dataItemNewDao.findFirstByDistributedNodeDataId(dataIds[i]) == null){
                 jsonResult.setCode(-2);
                 jsonResult.setMsg(dataIds[i] + " no public");
                 return jsonResult;
             }
-            DataItem dataItem = dataItemDao.findFirstByDistributedNodeDataId(dataIds[i]);
-            url.add("/dataItem/" + dataItem.getId());
+            DataItemNew dataItemNew = dataItemNewDao.findFirstByDistributedNodeDataId(dataIds[i]);
+            url.add("/dataItem/" + dataItemNew.getId());
             //首先判断该条目是否已有该处理方法，如果已有则不再绑定
             if (type.equals("Processing")) {
                 Boolean exist = false;
-                if (dataItem.getRelatedProcessings() != null) {
-                    List<RelatedProcessing> relatedProcessings = dataItem.getRelatedProcessings();
+                if (dataItemNew.getRelatedProcessings() != null) {
+                    List<RelatedProcessing> relatedProcessings = dataItemNew.getRelatedProcessings();
                     for (int j = 0; j < relatedProcessings.size(); j++) {
                         if (relatedProcessings.get(j).getProId().equals(proId)) {
                             exist = true;
@@ -908,16 +909,16 @@ public class DataItemRestController {
                 relatedProcessing.setXml(xml);
                 List<RelatedProcessing> relatedProcessings = new LinkedList<>();//记录List的初始化
                 relatedProcessings.add(relatedProcessing);
-                if (dataItem.getRelatedProcessings() == null) {
-                    dataItem.setRelatedProcessings(relatedProcessings);
+                if (dataItemNew.getRelatedProcessings() == null) {
+                    dataItemNew.setRelatedProcessings(relatedProcessings);
                 } else {
-                    dataItem.getRelatedProcessings().add(relatedProcessing);
+                    dataItemNew.getRelatedProcessings().add(relatedProcessing);
                 }
-                dataItemDao.save(dataItem);
+                dataItemNewDao.save(dataItemNew);
             }else if (type.equals("Visualization")){
                 Boolean exist = false;
-                if (dataItem.getRelatedVisualizations() != null) {
-                    List<RelatedVisualization> relatedVisualizations = dataItem.getRelatedVisualizations();
+                if (dataItemNew.getRelatedVisualizations() != null) {
+                    List<RelatedVisualization> relatedVisualizations = dataItemNew.getRelatedVisualizations();
                     for (int j = 0; j < relatedVisualizations.size(); j++) {
                         if (relatedVisualizations.get(j).getProId().equals(proId)) {
                             exist = true;
@@ -937,12 +938,12 @@ public class DataItemRestController {
                 relatedVisualization.setXml(xml);
                 List<RelatedVisualization> relatedVisualizations = new LinkedList<>();//记录List的初始化
                 relatedVisualizations.add(relatedVisualization);
-                if (dataItem.getRelatedVisualizations() == null) {
-                    dataItem.setRelatedVisualizations(relatedVisualizations);
+                if (dataItemNew.getRelatedVisualizations() == null) {
+                    dataItemNew.setRelatedVisualizations(relatedVisualizations);
                 } else {
-                    dataItem.getRelatedVisualizations().add(relatedVisualization);
+                    dataItemNew.getRelatedVisualizations().add(relatedVisualization);
                 }
-                dataItemDao.save(dataItem);
+                dataItemNewDao.save(dataItemNew);
             }
         }
         if (existCount1 == dataIds.length||existCount2 == dataIds.length){
@@ -966,9 +967,9 @@ public class DataItemRestController {
             return jsonObject;
         }
         String xml = "";
-        DataItem dataItem = dataItemDao.findFirstById(dataItemId);
+        DataItemNew dataItemNew = dataItemNewDao.findFirstById(dataItemId);
         if (type.equals("process")) {
-            List<RelatedProcessing> relatedProcessings = dataItem.getRelatedProcessings();
+            List<RelatedProcessing> relatedProcessings = dataItemNew.getRelatedProcessings();
             for (int i=0;i<relatedProcessings.size();i++){
                 if (relatedProcessings.get(i).getProId().equals(processingId)){
                     jsonObject.put("xml",relatedProcessings.get(i).getXml());
@@ -977,7 +978,7 @@ public class DataItemRestController {
                 }
             }
         }else {
-            List<RelatedVisualization> relatedVisualizations = dataItem.getRelatedVisualizations();
+            List<RelatedVisualization> relatedVisualizations = dataItemNew.getRelatedVisualizations();
             for (int i=0;i<relatedVisualizations.size();i++){
                 if (relatedVisualizations.get(i).getProId().equals(processingId)){
                     jsonObject.put("xml",relatedVisualizations.get(i).getXml());
@@ -1017,11 +1018,11 @@ public class DataItemRestController {
         HttpSession session = request.getSession();
         String userId = session.getAttribute("oid").toString();
         JSONObject jsonObject = new JSONObject();
-        DataItem dataItem = dataItemDao.findFirstById(dataItemId);
-        String dataItemName = dataItem.getName();
+        DataItemNew dataItemNew = dataItemNewDao.findFirstById(dataItemId);
+        String dataItemName = dataItemNew.getName();
         String token = "";
         if (type.equals("process")) {
-            List<RelatedProcessing> relatedProcessings = dataItem.getRelatedProcessings();
+            List<RelatedProcessing> relatedProcessings = dataItemNew.getRelatedProcessings();
             for (int i = 0; i < relatedProcessings.size(); i++) {
                 if (relatedProcessings.get(i).getProId().equals(processingId)) {
                     token = relatedProcessings.get(i).getToken();
@@ -1029,7 +1030,7 @@ public class DataItemRestController {
                 }
             }
         }else {
-            List<RelatedVisualization> relatedVisualizations = dataItem.getRelatedVisualizations();
+            List<RelatedVisualization> relatedVisualizations = dataItemNew.getRelatedVisualizations();
             for (int i=0;i<relatedVisualizations.size();i++){
                 if (relatedVisualizations.get(i).getProId().equals(processingId)){
                     token = relatedVisualizations.get(i).getToken();
@@ -1040,7 +1041,7 @@ public class DataItemRestController {
         jsonObject.put("dataItemName", dataItemName);
         jsonObject.put("token", token);
         jsonObject.put("userId", userId);
-        jsonObject.put("dataId", dataItem.getDistributedNodeDataId());
+        jsonObject.put("dataId", dataItemNew.getDistributedNodeDataId());
         return jsonObject;
     }
 
@@ -1052,38 +1053,38 @@ public class DataItemRestController {
         if (type.equals("process")) {
             org.springframework.data.mongodb.core.query.Criteria criteria = org.springframework.data.mongodb.core.query.Criteria.where("RelatedProcessing").elemMatch(Criteria.where("proId").is(pcsId));
             Query query = new Query(criteria);
-            List<DataItem> dataItems = mongoTemplate.find(query, DataItem.class);
-            if (dataItems.size() == 0){
+            List<DataItemNew> dataItemNews = mongoTemplate.find(query, DataItemNew.class);
+            if (dataItemNews.size() == 0){
                 exist = false;
             }
-            for (int i = 0; i < dataItems.size(); i++) {
-                DataItem dataItem = dataItems.get(i);
-                List<RelatedProcessing> relatedProcessings = dataItem.getRelatedProcessings();
+            for (int i = 0; i < dataItemNews.size(); i++) {
+                DataItemNew dataItemNew = dataItemNews.get(i);
+                List<RelatedProcessing> relatedProcessings = dataItemNew.getRelatedProcessings();
                 for (int j = 0; j < relatedProcessings.size(); j++) {
                     if (relatedProcessings.get(j).getProId().equals(pcsId)) {
                         relatedProcessings.remove(j);
                         break;
                     }
                 }
-                dataItemDao.save(dataItem);
+                dataItemNewDao.save(dataItemNew);
             }
         }else if (type.equals("visual")){
             Criteria criteria = Criteria.where("relatedVisualizations").elemMatch(Criteria.where("proId").is(pcsId));
             Query query = new Query(criteria);
-            List<DataItem> dataItems = mongoTemplate.find(query, DataItem.class);
-            if (dataItems.size() == 0){
+            List<DataItemNew> dataItemNews = mongoTemplate.find(query, DataItemNew.class);
+            if (dataItemNews.size() == 0){
                 exist = false;
             }
-            for (int i=0;i<dataItems.size();i++){
-                DataItem dataItem = dataItems.get(i);
-                List<RelatedVisualization>relatedVisualizations = dataItem.getRelatedVisualizations();
+            for (int i=0;i<dataItemNews.size();i++){
+                DataItemNew dataItemNew = dataItemNews.get(i);
+                List<RelatedVisualization>relatedVisualizations = dataItemNew.getRelatedVisualizations();
                 for (int j=0;j<relatedVisualizations.size();j++){
                     if (relatedVisualizations.get(j).getProId().equals(pcsId)){
                         relatedVisualizations.remove(j);
                         break;
                     }
                 }
-                dataItemDao.save(dataItem);
+                dataItemNewDao.save(dataItemNew);
             }
         }
         if (exist == false){

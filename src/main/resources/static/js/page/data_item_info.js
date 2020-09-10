@@ -1258,15 +1258,9 @@ var  data_item_info= new Vue({
         },
         downLoadDistributedNodeData(){
             this.loading = true;
-
-            // $(".connect").attr('style','display: inline-block;color: mediumblue;font-size: larger;font-weight: 600;');
-
-            // let obj;
             let data = {
                 dataOid: this.dataItemId,
             };
-            // console.log('sd');
-            // var time = new Date();
             $.ajax({
                 url:"/dataItem/getDistributedObj",
                 type:"GET",
@@ -1281,15 +1275,11 @@ var  data_item_info= new Vue({
                         window.location.href="/user/login";
                     }else if (json.code = "1"){
                         this.loading = false;
-                        // $(".connect").hide();
                         let dataUrl = json.data;
                         window.location.href=dataUrl;
                     }
                 }
             })
-            // if (obj!=null) {
-            //     ws.send(JSON.stringify(obj));
-            // }
         },
         invokeProcessing($event){
             this.processingType = "process";
@@ -1300,10 +1290,6 @@ var  data_item_info= new Vue({
                     this.processingId = processingInvokes[i].id;
                 }
             }
-            // var url = window.location.href;
-            // var index = url.lastIndexOf("\/");
-            // let dataItemId = url.substring(index+1,url.length);
-            // this.dataItemId = dataItemId;
             let formData = new FormData();
             formData.append("dataItemId", this.dataItemId);
             formData.append("processingId",this.processingId);
@@ -1336,9 +1322,6 @@ var  data_item_info= new Vue({
                     this.processingId = processingInvokes[i].id;
                 }
             }
-            // var url = window.location.href;
-            // var index = url.lastIndexOf("\/");
-            // let dataItemId = url.substring(index+1,url.length);
             let formData = new FormData();
             formData.append("dataItemId", this.dataItemId);
             formData.append("processingId",this.processingId);
@@ -1363,19 +1346,7 @@ var  data_item_info= new Vue({
         },
         invokeProcessingNow(){
             this.loading2 = true;
-            // let obj = {
-            //     msg:"",
-            //     dataId:"",
-            //     pcsId:"",
-            //     params:[],
-            //     name:"",
-            //     token:"",
-            //     reqUsrOid:"",
-            // };
             this.objProcess.msg = 'reqPcs';//固定值，区分消息类型
-            // var url = window.location.href;
-            // var index = url.lastIndexOf("\/");
-            // let dataItemId = url.substring(index+1,url.length);
             let formData = new FormData();
             formData.append("dataItemId", this.dataItemId);
             formData.append("processingId",this.processingId);
@@ -1401,64 +1372,6 @@ var  data_item_info= new Vue({
                     this.objProcess.reqUsrOid = json.userId;
                     this.objProcess.dataId = json.dataId;
                     this.objProcess.wsId = this.dataItemId + "pcs";
-                    // this.objProcess.wsId = this.dataItemId;
-
-                    //成功后向111进行请求
-                    // if(window.WebSocket) {
-                    //     var ws = new WebSocket('ws://111.229.14.128:1708');
-                    //     ws.onopen = function (e) {
-                    //         let obj = {
-                    //             msg: 'regist',
-                    //             token: dataItemId + "pcs",
-                    //         }
-                    //         ws.send(JSON.stringify(obj));
-                    //     }
-                    //     ws.onclose = function (e) {
-                    //         console.log("服务器关闭");
-                    //     }
-                    //     ws.onerror = function () {
-                    //         console.log("连接出错");
-                    //     }
-                    //
-                    //     ws.onmessage = function (e) {
-                    //         //没有对应数据
-                    //         if (e.data === 'no data in service node!') {
-                    //             this.loading2 = false;
-                    //             alert('no data in service node!')
-                    //         } else
-                    //         //没有权限
-                    //         if (e.data === 'no authority') {
-                    //             this.loading2 = false;
-                    //             alert('no authority')
-                    //         } else
-                    //         //服务结点离线
-                    //         if (e.data == 'node offline') {
-                    //             this.loading2 = false;
-                    //             alert('service node offline')
-                    //         } else
-                    //         //注册门户到中转服务器成功
-                    //         if (e.data === 'success') {
-                    //             // alert("连接成功")
-                    //         } else {
-                    //             //心跳检测
-                    //             if (e.data === 'beat') {
-                    //                 ws.send('online')
-                    //
-                    //             } else {
-                    //             }
-                    //             let r = JSON.parse(e.data)
-                    //             if (r.msg == 'insitudata') {
-                    //                 // alert(e.data)
-                    //                 this.loading2 = false;
-                    //                 window.location.href = "http://111.229.14.128:8899/data?uid="+ r.id;
-                    //                 return
-                    //             }
-                    //         }
-                    //         if (obj!=null&&e.data!="node offline") {
-                    //             ws.send(JSON.stringify(obj));
-                    //         }
-                    //     }
-                    // }
                     this.linkWebsocket("process");
                 }
             })
@@ -1529,12 +1442,26 @@ var  data_item_info= new Vue({
                         let r = JSON.parse(e.data)
                         if (r.msg == 'insitudata') {
                             // alert(e.data)
+                            let data = {
+                                dataOid: that.dataItemId,
+                                rid: r.id
+                            }
+                            $.ajax({
+                                url:"/dataItem/saveUrl",
+                                type:"POST",
+                                data:data,
+                                success:(json)=>{
+
+                                }
+                            })
                             if (type=="process"){
                                 that.loading2 = false;
+                                window.location.href = "http://111.229.14.128:8899/data?uid="+ r.id;
                             }else {
                                 that.loading = false;
+                                window.location.href = "http://111.229.14.128:8899/data?uid="+ r.id;
                             }
-                            window.location.href = "http://111.229.14.128:8899/data?uid="+ r.id;
+                            // window.location.href = "http://111.229.14.128:8899/data?uid="+ r.id;
                             return
                         }
                     }
@@ -1616,153 +1543,6 @@ var  data_item_info= new Vue({
             $(".fullPaper").remove();
         })
 
-        //配置websocket
-        // if(window.WebSocket){
-        //     var ws = new WebSocket('ws://111.229.14.128:1708');
-        //
-        //     ws.onopen = function(e){
-        //         // let sube = e;
-        //
-        //         let obj={
-        //             msg:'regist',
-        //             token:dataItemId,
-        //
-        //         }
-        //         ws.send(JSON.stringify(obj));
-        //     }
-        //     ws.onclose = function(e){
-        //         console.log("服务器关闭");
-        //     }
-        //     ws.onerror = function(){
-        //         console.log("连接出错");
-        //     }
-        //
-        //     ws.onmessage = function(e){
-        //
-        //         var local_url = window.location.href;
-        //         var index = local_url.lastIndexOf("\/");
-        //         dataOid = local_url.substring(index + 1,local_url.length);
-        //         if(e.data==='no data in service node!'){
-        //             // $(".connect").hide();
-        //             that.loading = false;
-        //             alert('no data in service node!')
-        //         }else
-        //         if(e.data==='no authority'){
-        //             that.loading = false;
-        //             // $(".connect").hide();
-        //             alert('no authority')
-        //         }else
-        //         //服务结点离线
-        //         if(e.data=='node offline'){
-        //             that.loading = false;
-        //             // $(".connect").hide();
-        //             alert('service node offline')
-        //         }else
-        //         //注册门户到中转服务器成功
-        //         if(e.data==='success'){
-        //             // alert("连接成功")
-        //         }else{
-        //             //心跳检测
-        //             if(e.data==='beat'){
-        //                 ws.send('online')
-        //
-        //             }else{}
-        //             let r=JSON.parse(e.data);
-        //             if(r.msg=='insitudata'){
-        //                 that.loading = false;
-        //
-        //                 let dataUrl = "http://111.229.14.128:8899/data?uid="+ r.id;
-        //                 let data = {
-        //                     dataOid:dataOid,
-        //                     dataUrl: dataUrl,
-        //                 };
-        //
-        //                 $.ajax({
-        //                     url:"/dataItem/saveUrl",
-        //                     data:data,
-        //                     type:"POST",
-        //                     async:false,
-        //                     success:(json)=>{
-        //                         if (json.code == "0") {
-        //                             console.log("success");
-        //                         }
-        //                     }
-        //
-        //                 })
-        //                 window.location.href = "http://111.229.14.128:8899/data?uid="+ r.id;
-        //
-        //                 // alert(e.data);
-        //                 return
-        //             }
-        //         }
-        //         let sube = e;
-        //         document.querySelector(".value").onclick = function(e){
-        //             that.loading = true;
-        //             // $(".connect").attr('style','display: inline-block;color: mediumblue;font-size: larger;font-weight: 600;');
-        //             if(sube.data==='no data in service node!'){
-        //                 that.loading = false;
-        //                 // $(".connect").hide();
-        //                 alert('no data in service node!')
-        //             }else
-        //             if(sube.data==='no authority'){
-        //                 that.loading = false;
-        //                 // $(".connect").hide();
-        //                 alert('no authority')
-        //             }else
-        //             //服务结点离线
-        //             if(sube.data=='node offline'){
-        //                 that.loading = false;
-        //                 // $(".connect").hide();
-        //                 alert('service node offline')
-        //             }else
-        //             //注册门户到中转服务器成功
-        //             if(sube.data==='success'){
-        //                 // alert("连接成功")
-        //             }else{
-        //                 //心跳检测
-        //                 if(sube.data==='beat'){
-        //                     ws.send('online')
-        //
-        //                 }else{}
-        //                 let r=JSON.parse(sube.data);
-        //                 if(r.msg=='insitudata'){
-        //                     that.loading = false;
-        //                     // $(".connect").hide();
-        //                     window.location.href = "http://111.229.14.128:8899/data?uid="+ r.id;
-        //                     return
-        //                 }
-        //             }
-        //             let obj;
-        //             let data = {
-        //                 dataOid: dataOid,
-        //             };
-        //             console.log('sd');
-        //             var time = new Date();
-        //             $.ajax({
-        //                 url:"/dataItem/getDistributedObj",
-        //                 type:"GET",
-        //                 data:data,
-        //                 async:false,
-        //                 success:(json)=>{
-        //                     if (json.code == "0") {
-        //                         obj = json.data;
-        //                     }else if(json.code==-1){
-        //                         alert("Please login first!");
-        //                         window.location.href="/user/login";
-        //                     }else if (json.code = "1"){
-        //                         that.loading = false;
-        //                         // $(".connect").hide();
-        //                         let dataUrl = json.data;
-        //                         window.location.href=dataUrl;
-        //                     }
-        //                 }
-        //             })
-        //             if (obj!=null) {
-        //                 ws.send(JSON.stringify(obj));
-        //             }
-        //         }
-        //     }
-        // }
     },
 
 });
