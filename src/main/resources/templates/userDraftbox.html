@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<template id="userDraftBox" th:fragment="userDraftBox">
+    <div class="innerShadowCol">
+
+        <!--el-dialog放在这一层-->
+        <div  class="page-content clearfix scrollbar el-col-lg-21 el-col-md-20 pageContent acrylicBack"
+              style="margin-left: 240px;padding-bottom: 100px"
+              :style="{'height':ScreenMinHeight,'min-height':ScreenMinHeight,'max-height':ScreenMaxHeight}"
+              id="pageContent">
+            <!--            <div class="titleContainer"><h4>My Space</h4></div>-->
+            <div class="flexColContainer mainContent" style="padding:20px 10px;max-width: 1120px">
+                <section role="description" class="flexJustBetween flexColCenter contentSection"
+                         style="max-width: 1050px">
+                    <div class="flexRowContainer flexColCenter" style="margin-bottom: 20px">
+                        <i class="ms-Icon ms-Icon--EditNote"
+                           style="margin-top: 7px;font-size: 40px;color: #05c4ff;"></i>
+                        <h3 style="margin-left: 10px">Draft Box</h3>
+
+                    </div>
+                    <!--                        <h5>You can manager your model and data here</h5>-->
+
+                </section>
+
+                <el-card id="draftBoxContainer">
+                    <el-tabs v-model="activeName" stretch="stretch">
+                        <el-tab-pane label="Model Item" name="first">
+                            <el-card>
+                                <div class="block">
+                                    <div class="flexJustStart flexAlignCenter">
+                                        Sort by time:
+                                        <el-button size="mini" type="primary" plain v-on:click="changeSort" style=";margin-left: 5px;padding: 5px 6px;">
+                                            <i v-if="!asc" class="fa fa-sort-numeric-desc" style="font-size: 14px"></i>
+                                            <i v-else class="fa fa-sort-numeric-asc" style="font-size: 14px"></i>
+                                        </el-button>
+                                    </div>
+                                    <div class="no-mess icon-th-list overview" style="color: #ccc;font-size: 16px;margin: 20px;text-align: center;display: none;">
+                                        <span style="margin-left: 5px;    font-family: 'Microsoft YaHei';">This page is temporarily empty</span>
+                                    </div>
+                                    <div v-if="await" class="progress-cover progress-cover-primary" style="margin: 40px 0;">
+                                        <div class="progress progress-medium fluent-position">
+                                            <span class="progress-span"></span>
+                                            <span class="progress-span"></span>
+                                            <span class="progress-span"></span>
+                                            <span class="progress-span"></span>
+                                            <span class="progress-span"></span>
+                                        </div>
+                                    </div>
+                                    <div class="flexCenter">
+                                        <div class="innerBorder" style="margin-left: 11px;width: calc(50% - 70px);"></div>
+                                        <h4 style="flex: 1;text-align: center;text-wrap: none">Model Item</h4>
+                                        <div class="innerBorder" style="margin-right: 11px;width: calc(50% - 70px);"></div>
+                                    </div>
+                                    <div v-if="modelItemDraftList.create.length>0">
+                                        <div class="flexAlignCenter">
+                                            <div class="wzhCreate wzhBigDot" style="margin-right: 10px"></div>
+                                            <h5>Create</h5>
+                                        </div>
+                                        <el-row :gutter="20">
+                                            <el-col :span="cardSpan" v-for="draft in modelItemDraftList.create">
+
+                                                <el-card class="grid-content bg-purple flexCenter draftCard" >
+                                                    <div class="flexRow flexAlignStrench draftCardText">
+                                                        <div style="width: 125px"><p>Create Item:</p></div>
+                                                        <div><b class="twoLine" style="max-width: 120px">{{draft.content.name}}</b></div>
+                                                    </div>
+                                                    <div class="flexRow flexAlignStrench">
+                                                        <div style="width: 125px"><p>Last Modify time:</p></div>
+                                                        <div><b>{{draft.lastModifyTime.substring(0,10)+' '+ draft.lastModifyTime.substring(11,16)}}</b></div>
+                                                    </div>
+                                                    <div class="flexAlignCenter dropMask">
+                                                        <div class="flexCol flexCenter" style="width: 50%" @click="viewDraftDetail(draft)">
+                                                            <i class="ms-Icon ms-Icon--View"></i>
+                                                            <p>View Details</p>
+                                                        </div>
+                                                        <div class="innerBorderCol"></div>
+                                                        <div class="flexCol flexCenter" style="width: 50%" @click="continueToEdit(0,draft)">
+                                                            <i class="ms-Icon ms-Icon--PenWorkspace"></i>
+                                                            <p>Continue Editing</p>
+                                                        </div>
+                                                    </div>
+                                                </el-card>
+                                            </el-col>
+                                        </el-row>
+                                    </div>
+                                    <div v-if="modelItemDraftList.edit.length>0">
+                                        <div class="flexAlignCenter">
+                                            <div class="wzhCreate wzhBigDot" style="margin-right: 10px;border: 3px solid #a4ddff"></div>
+                                            <h5>Edit</h5>
+                                        </div>
+                                        <el-row :gutter="20">
+
+                                            <el-col :span="cardSpan" v-for="draft in modelItemDraftList.edit" style="margin-bottom: 20px">
+
+                                                <el-card class="grid-content bg-purple flexCenter draftCard">
+                                                    <div class="flexRow flexAlignStrench draftCardText">
+                                                        <div style="width: 125px"><p>Create Item:</p></div>
+                                                        <div><b class="twoLine" style="max-width: 120px">{{draft.content.name}}</b></div>
+                                                    </div>
+                                                    <div class="flexRow flexAlignStrench">
+                                                        <div style="width: 125px"><p>Last Modify time:</p></div>
+                                                        <div><b>{{draft.lastModifyTime.substring(0,10)+' '+ draft.lastModifyTime.substring(11,16)}}</b></div>
+                                                    </div>
+                                                    <div class="flexAlignCenter dropMask">
+                                                        <div class="flexCol flexCenter" style="width: 50%" @click="viewDraftDetail(draft)">
+                                                            <i class="ms-Icon ms-Icon--View"></i>
+                                                            <p>View Details</p>
+                                                        </div>
+                                                        <div class="innerBorderCol"></div>
+                                                        <div class="flexCol flexCenter" style="width: 50%" @click="continueToEdit(1,draft)">
+                                                            <i class="ms-Icon ms-Icon--PenWorkspace"></i>
+                                                            <p>Continue Editing</p>
+                                                        </div>
+                                                    </div>
+                                                </el-card>
+                                            </el-col>
+                                        </el-row>
+                                    </div>
+
+                                </div>
+                            </el-card>
+                        </el-tab-pane>
+                        <el-tab-pane label="Data Item" name="second">
+                            <div slot="label">
+                                Data Item
+                            </div>
+
+                            <el-tabs type="border-card"  stretch="stretch">
+
+                            </el-tabs>
+
+                        </el-tab-pane>
+                        <el-tab-pane label="Community" name="third">
+
+                        </el-tab-pane>
+                    </el-tabs>
+                </el-card>
+            </div>
+
+
+        </div>
+        <el-dialog title="Draft Details" :visible.sync="draftDetailDialog" width="40%">
+            <div class="flexRow flexAlignStrench draftDetailText">
+                <div style="width: 125px"><p>Classifications:</p></div>
+                <div style="flex: 1;max-width: 625px" class="flexRow flexWrap">
+                   <b v-for="ele in clsStr" >{{ele}}</b>
+                </div>
+            </div>
+            <div class="flexRow flexAlignStrench draftDetailText">
+                <div style="width: 125px"><p>Status:</p></div>
+                <div style="flex: 1"><b>{{draftShow.content.status}}</b></div>
+            </div>
+            <div class="flexRow flexAlignStrench draftDetailText">
+                <div style="width: 125px"><p>Name:</p></div>
+                <div style="flex: 1"><b>{{draftShow.content.name}}</b></div>
+            </div>
+            <div class="flexRow flexAlignStrench draftDetailText">
+                <div style="width: 125px"><p>overview:</p></div>
+                <div style="flex: 1"><b>{{draftShow.content.overview}}</b></div>
+            </div>
+            <div class="flexRow flexAlignStrench draftDetailText">
+                <div style="width: 125px"><p>Keywords:</p></div>
+                <div style="flex: 1"><b v-for="ele in draftShow.content.keywords">{{ele}}</b></div>
+            </div>
+            <div class="flexRow flexAlignStrench draftDetailText">
+                <div style="width: 125px"><p>Decription:</p></div>
+                <div style="flex: 1"><b>{{draftShow.content.detail}}</b></div>
+            </div>
+            <div class="flexRow flexAlignStrench draftDetailText">
+                <div style="width: 125px"><p>Authorship:</p></div>
+                <div style="flex: 1;max-width: 625px" class="flexRow flexWrap">
+                    <b v-for="ele in draftShow.content.authorship">{{ele.name}}</b>
+                </div>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                        <el-button @click="deleteDraftClick(draftShow.oid)"
+                                   type="danger">Delete</el-button>
+                        <el-button type="primary" style="margin-right: 15px"
+                                   @click="draftDetailDialog=false">Cancel</el-button>
+            </span>
+        </el-dialog>
+    </div>
+</template>
+</body>
+</html>

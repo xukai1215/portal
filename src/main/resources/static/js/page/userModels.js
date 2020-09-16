@@ -116,7 +116,7 @@ var userModels = Vue.extend(
             }
         },
 
-        props:['itemindexRaw'],
+        props:[],
 
         components: {
         },
@@ -423,6 +423,10 @@ var userModels = Vue.extend(
                                 window.location.href = "/user/login";
                             } else {
                                 data = json.data;
+                                if(data.modelItems.length==0&&this.page>1){
+                                    this.searchItems(--this.page)
+                                    return
+                                }
                                 this.resourceLoad = false;
                                 this.totalNum = data.count;
                                 this.searchCount = Number.parseInt(data["count"]);
@@ -455,58 +459,91 @@ var userModels = Vue.extend(
             },
 
             deleteItem(index,oid) {
-                let a=this.$route.params.modelitemKind
-                if (confirm("Are you sure to delete this model?")) {
-                    var urls = {
-                         'modelitem':      "/modelItem/delete",
-                         'conceptualmodel':"/conceptualModel/delete",
-                         'logicalmodel':   "/logicalModel/delete",
-                         'computablemodel':"/computableModel/delete",
-                    };
+                let a = this.$route.params.modelitemKind
+                const h = this.$createElement;
+                this.$msgbox({
+                    title: ' ',
+                    message: h('p', null, [
+                        h('span', null, 'Are you sure to '),
+                        h('span', {style: 'font-weight:600'}, 'delete'),
+                        h('span', null, ' this item?'),
+                    ]),
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'confirm',
+                    cancelButtonText: 'cancel',
+                    beforeClose: (action, instance, done) => {
 
-                    $.ajax({
-                        type: "POST",
-                        url: urls[a],
-                        data: {
-                            oid: oid
-                        },
-                        cache: false,
-                        async: true,
-                        dataType: "json",
-                        xhrFields: {
-                            withCredentials: true
-                        },
-                        crossDomain: true,
-                        success: (json) => {
-                            if (json.code == -1) {
-                                alert("Please log in first!")
-                            } else {
-                                if (json.data == 1) {
-                                    this.$alert("delete successfully!")
-                                } else if(json.data == -1) {
-                                    this.$alert("delete failed!")
-                                }else
-                                    this.$alert("please refresh the page!")
-                            }
-                            if (this.searchText.trim() != "") {
-                                this.searchModels();
-                            } else {
-                                this.getModels(index);
-                            }
+                        if (action === 'confirm') {
+                            instance.confirmButtonLoading = true;
+                            instance.confirmButtonText = 'deleting...';
+                            setTimeout(() => {
+                                var urls = {
+                                    'modelitem': "/modelItem/delete",
+                                    'conceptualmodel': "/conceptualModel/delete",
+                                    'logicalmodel': "/logicalModel/delete",
+                                    'computablemodel': "/computableModel/delete",
+                                };
 
+
+                                $.ajax({
+                                    type: "POST",
+                                    url: urls[a],
+                                    data: {
+                                        oid: oid
+                                    },
+                                    cache: false,
+                                    async: true,
+                                    dataType: "json",
+                                    xhrFields: {
+                                        withCredentials: true
+                                    },
+                                    crossDomain: true,
+                                    success: (json) => {
+                                        if (json.code == -1) {
+                                            alert("Please log in first!")
+                                        } else {
+                                            if (json.data == 1) {
+                                                // this.$alert("delete successfully!")
+                                            } else if (json.data == -1) {
+                                                this.$alert("delete failed!")
+                                            } else
+                                                this.$alert("please refresh the page!")
+                                        }
+                                        if (this.searchText.trim() != "") {
+                                            this.searchItems(this.page);
+                                        } else {
+                                            this.getModels(index);
+                                        }
+
+                                    }
+                                })
+                                done();
+                                setTimeout(() => {
+                                    instance.confirmButtonLoading = false;
+                                }, 300);
+                            }, 300);
+                        } else {
+                            done();
                         }
-                    })
-                }
+                    }
+                }).then(action => {
+                    this.$message({
+                        type: 'success',
+                        message: 'delete successful '
+                    });
+                });
             },
 
             getIcon(){
+                let a=this.$route.params.modelitemKind
                 var srcs={
-                    1:'/static/img/model/model.png',
-                    2:'/static/img/model/conceptual.png',
-                    3:'/static/img/model/logical.png',
-                    4:'/static/img/model/calcModel.png',
+                    'modelitem':      '/static/img/model/model.png',
+                    'conceptualmodel':'/static/img/model/conceptual.png',
+                    'logicalmodel':   '/static/img/model/logical.png',
+                    'computablemodel':'/static/img/model/calcModel.png',
                 }
-                return srcs[this.itemIndex]
+                return srcs[a]
 
             },
 
@@ -552,7 +589,6 @@ var userModels = Vue.extend(
                     },
                     crossDomain: true,
                     success: (data) => {
-                        data = JSON.parse(data);
 
                         console.log(data);
 

@@ -61,7 +61,10 @@ Vue.component('headSideBar', {
                     this.curIndex = 8
                 else if(path.indexOf('feedback') != -1)
                     this.curIndex = 9
-
+                else if(path.indexOf('notice') != -1)
+                    this.curIndex = 10
+                else if(path.indexOf('draft') != -1)
+                    this.curIndex = 11
             },
             immediate:true
         }
@@ -79,8 +82,10 @@ Vue.component('headSideBar', {
                 6:'/user/userSpace#/community',
                 7:'/user/userSpace#/userTheme',
                 8:'/user/userSpace#/account',
-                9:'/user/userSpace#/feedback',
                 10:'/user/userSpace#/notice',
+                9:'/user/userSpace#/feedback',
+                11:'/user/userSpace#/draftBox',
+
             }
 
             this.setSession('curIndex',index)

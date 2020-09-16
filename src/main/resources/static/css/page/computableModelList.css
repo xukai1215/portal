@@ -81,13 +81,13 @@ hr{
     margin-bottom:0px;
 }
 
-.content-body .list-item{
+.content-body .comModelItem{
     border:solid #d8d8d8 1px;
     border-width: 1px 1px;
     padding:15px 20px;
     padding-bottom:13px;
 }
-.content-body .list-item:not(:first-child){
+.content-body .comModelItem:not(:first-child){
     margin-top:-1px;
 }
 

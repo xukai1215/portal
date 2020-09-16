@@ -620,7 +620,6 @@ Vue.component("edit-modelitem-module",
                     },
                     crossDomain: true,
                     success: (data) => {
-                        data = JSON.parse(data);
 
                         console.log(data);
 
@@ -665,33 +664,6 @@ Vue.component("edit-modelitem-module",
 
                 //this.getModels();
             });
-
-            $.ajax({
-                type: "GET",
-                url: "/user/load",
-                data: {
-
-                },
-                cache: false,
-                async: false,
-                success: (data) => {
-                    data=JSON.parse(data);
-                    console.log(data);
-                    if (data.oid == "") {
-                        alert("Please login");
-                        window.location.href = "/user/login";
-                    }
-                    else {
-                        this.userId = data.oid;
-                        this.userName = data.name;
-                        //$("#provider_body .providers h4 a").eq(0).text(data.name);
-                        // $.get("http://localhost:8081/GeoModelingNew/UserInfoServlet",{"userId":this.userId},(result)=> {
-                        //     this.userInfo=eval('('+result+')');
-                        //     console.log(this.userInfo)
-                        // })
-                    }
-                }
-            })
 
             var oid = this.modelEditOid;
 

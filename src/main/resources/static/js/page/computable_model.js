@@ -43,6 +43,8 @@ new Vue({
             mDiagram: null,
             editComputableModelDialog:false,
             modelOid:'',
+
+            rightMenuShow:false,
         }
     },
     methods: {
@@ -184,7 +186,6 @@ new Vue({
                 },
                 crossDomain: true,
                 success: (data) => {
-                    data = JSON.parse(data);
                     if (data.oid == "") {
                         this.$confirm('<div style=\'font-size: 18px\'>This function requires an account, <br/>please login first.</div>', 'Tip', {
                             dangerouslyUseHTMLString: true,
@@ -287,6 +288,7 @@ new Vue({
         generateId(key){
             return key;
         },
+
         getid(eval){
             alert(eval);
             this.dataid=eval;
@@ -481,6 +483,22 @@ new Vue({
 
                 }
             }
+        },
+
+        openRightMenu(e,id){
+            e.preventDefault();
+            let width = document.documentElement.clientWidth;
+            if(width>950){
+                this.$refs.rightMenu.style.top = e.pageY- 240 + "px"
+                // 125 > window.innerHeight
+                //     ? `${window.innerHeight - 127}px` : `${e.pageY}px`;
+                this.$refs.rightMenu.left = e.pageX - 310 + "px";
+            }else {
+                dom[0].style.top = e.pageY - 300 + "px"
+                dom[0].style.left = e.pageX - 65 + "px";
+            }
+
+            this.rightMenuShow = true
         },
 
         showMxGraph(){

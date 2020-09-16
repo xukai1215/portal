@@ -39,8 +39,8 @@ var communityItem = Vue.extend({
             let urls={
                 'concept&semantic':'repository/concept',
                 'spatialReference':'repository/spatialReference',
-                'dataTemplate':'repository/template',
-                'unit&metric':'repository/unit'
+                'dataTemplate':    'repository/template',
+                'unit&metric':     'repository/unit'
             }
             window.location.href='/'+urls[a]+'/'+oid
         },
@@ -177,6 +177,18 @@ var userCommunities = Vue.extend(
                 window.location.href=urls[index]
                 this.getCommunity();
 
+
+            },
+
+            getIcon(){
+                let a=this.$route.params.communityKind
+                var srcs={
+                    'concept&semantic':'/static/img/model/semantics.png',
+                    'spatialReference':'/static/img/model/spatialreference.png',
+                    'dataTemplate':    '/static/img/model/template.png',
+                    'unit&metric':     '/static/img/model/unit.png',
+                }
+                return srcs[a]
 
             },
 
@@ -513,46 +525,79 @@ var userCommunities = Vue.extend(
 
             deleteItem(index,oid) {
                 let a=this.$route.params.communityKind
-                if (confirm("Are you sure to delete this model?")) {
-                    var urls = {
-                        'concept&semantic':"/repository/deleteConcept",
-                        'spatialReference':"/repository/deleteSpatialReference",
-                        'dataTemplate':    "/repository/deleteTemplate",
-                        'unit&metric':     "/repository/deleteUnit",
-                    };
+                const h = this.$createElement;
+                this.$msgbox({
+                    title: ' ',
+                    message: h('p', null, [
+                        h('span', null, 'Are you sure to '),
+                        h('span', {style: 'font-weight:600'}, 'delete'),
+                        h('span', null, ' this item?'),
+                    ]),
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'confirm',
+                    cancelButtonText: 'cancel',
+                    beforeClose: (action, instance, done) => {
 
-                    $.ajax({
-                        type: "POST",
-                        url: urls[a],
-                        data: {
-                            oid: oid
-                        },
-                        cache: false,
-                        async: true,
-                        dataType: "json",
-                        xhrFields: {
-                            withCredentials: true
-                        },
-                        crossDomain: true,
-                        success: (json) => {
-                            if (json.code == -1) {
-                                alert("Please log in first!")
-                            } else {
-                                if (json.data == 1) {
-                                    alert("delete successfully!")
-                                } else {
-                                    alert("delete failed!")
-                                }
-                            }
-                            if (this.searchText.trim() != "") {
-                                this.searchModels();
-                            } else {
-                                this.getCommunity();
-                            }
+                        if (action === 'confirm') {
+                            instance.confirmButtonLoading = true;
+                            instance.confirmButtonText = 'deleting...';
+                            setTimeout(() => {
+                                var urls = {
+                                    'concept&semantic':"/repository/deleteConcept",
+                                    'spatialReference':"/repository/deleteSpatialReference",
+                                    'dataTemplate':    "/repository/deleteTemplate",
+                                    'unit&metric':     "/repository/deleteUnit",
+                                };
 
+
+                                $.ajax({
+                                    type: "POST",
+                                    url: urls[a],
+                                    data: {
+                                        oid: oid
+                                    },
+                                    cache: false,
+                                    async: true,
+                                    dataType: "json",
+                                    xhrFields: {
+                                        withCredentials: true
+                                    },
+                                    crossDomain: true,
+                                    success: (json) => {
+                                        if (json.code == -1) {
+                                            alert("Please log in first!")
+                                        } else {
+                                            if (json.data == 1) {
+                                                // this.$alert("delete successfully!")
+                                            } else if (json.data == -1) {
+                                                this.$alert("delete failed!")
+                                            } else
+                                                this.$alert("please refresh the page!")
+                                        }
+                                        if (this.searchText.trim() != "") {
+                                            this.searchCommunity();
+                                        } else {
+                                            this.getCommunity(index);
+                                        }
+
+                                    }
+                                })
+                                done();
+                                setTimeout(() => {
+                                    instance.confirmButtonLoading = false;
+                                }, 300);
+                            }, 300);
+                        } else {
+                            done();
                         }
-                    })
-                }
+                    }
+                }).then(action => {
+                    this.$message({
+                        type: 'success',
+                        message: 'delete successful '
+                    });
+                });
             },
 
             sendcurIndexToParent(){
@@ -596,7 +641,6 @@ var userCommunities = Vue.extend(
                     },
                     crossDomain: true,
                     success: (data) => {
-                        data = JSON.parse(data);
 
                         console.log(data);
 

@@ -41,7 +41,7 @@
 <body>
 <div id="app">
   <template id="userDataSpaceModule" th:fragment="userDataSpaceModule">
-    <div>
+    <div style="height: 100%;">
 
       <!--el-dialog放在这一层-->
       <section class="flexRowContainer flexWrap contentSection" style="max-width: 100%;height: 100%;min-height: 300px;">
@@ -53,7 +53,7 @@
                   <div style="height: 100%">
                     <el-card class="filebrowserfunction" shadow="never">
 
-                      <el-row id="" class="filebrowser flexColCenter" shadow="never">
+                      <el-row id="" class="filebrowser flexAlignCenter" shadow="never">
 
                         <el-col :span="18" shadow="never">
                           <!--<el-button  id="selectalldata" icon="el-icon-check"  >sellect all</el-button>-->
@@ -85,14 +85,10 @@
                                   @click="deleteAll()">
                             <i class="glyphicon glyphicon-share"></i><span style="font-size: 15px">Delete all</span>
                           </button>
-                          <button class="dwload btn btn-success btn-round" v-if="downloadDataSet.length==1"
-                                  @click="selectData()">
-                            <i class="glyphicon glyphicon-share"></i><span style="font-size: 15px">Select Data</span>
-                          </button>
-                          <!--//todo share-->
-                          <!--<button class="dwload btn btn-primary btn-md"   @click="share">-->
-                          <!--<i class="glyphicon glyphicon-share">&nbsp;share</i>-->
-                          <!--</button>-->
+<!--                          <button class="dwload btn btn-success btn-round" v-if="downloadDataSet.length==1"-->
+<!--                                  @click="selectData()">-->
+<!--                            <i class="glyphicon glyphicon-share"></i><span style="font-size: 15px">Select Data</span>-->
+<!--                          </button>-->
 
 
                         </el-col>
@@ -121,18 +117,18 @@
 
                     </div>
                     <el-row style="height: calc(100% - 100px);">
-                      <el-col :span="24" class="fileTemplate" style="height: 100%">
-                        <el-card class="fileContainer" style="height:100%;overflow-y:auto;width:100%" id="browsercont1"
+                      <el-col :span="24" id="filePlate" class="fileTemplate" style="height: 100%">
+                        <el-card class="fileContainer" style="height:100%;width:100%" id="browsercont1"
                                  v-loading="managerloading"
                                  :style="{display:fileSpaceIndex==1?'block':'none'}">
-                          <div style="width: 100%;height: 20px;margin-left: -5px;display: flex;justify-content: space-between;align-items: center">
+                          <div style="width: 100%;height: 27px;margin-left: -5px;display: flex;justify-content: space-between;align-items: center">
                             <div class="showPathContainer">
                               <div class="squareButton" id="backFatherBtn" @click="backToFather">
                                 <i class="fa fa-arrow-left" style="margin-right:2px "></i>
                               </div>
                               <div class="squareButton" id="refreshPackageBtn"
-                                   @click="refreshPackage($event,1)">
-                                <i class="fa fa-refresh" style="font-weight: 600"></i>
+                                   @click="refreshPackage(1)">
+                                <i class="fa fa-refresh" style="font-weight: 600;transition: .5s ease-out"></i>
                               </div>
                               <div class="showPathContainer" style="margin-left: 10px">
                                 <div>path</div>
@@ -151,65 +147,75 @@
 <!--                              Left or right click can call out some function</p>-->
                           </div>
                           <h4 v-if="myFileShown.length==0" style="margin-top: 30px;text-align: center;color: #999999">
-                          No content to show
-                        </h4>
-                          <div v-if="myFileShown.length!=0" :title="showtitle(item)"
-                               class="el-card dataitemisol" shadow="never"
-                               :id="generateId(key)"
-                               :class="{clickdataitem:downloadDataSet.indexOf(item)>-1}"
-                               v-for="(item,key) in myFileShown"
-                               :key="key"
+                            No content to show
+                          </h4>
+                          <div>
 
-                               @mouseover="addDataClass($event,item)"
-                               @mouseout="removeClass($event,item)"
-                               >
-                            <el-row style="height: 80%"
-                                    @dblclick.native="getPackageContent($event,item,key)">
-                              <el-col :span="5">&nbsp
-                                <div class="squareButtonMini flexCenter"
-                                     style="margin: 4px;float: inherit;cursor: pointer"
-                                     @click="singleClick($event,item)"
-                                     v-if="item.package==false">
-                                  <i style="font-size: 16px;color:#1b7cde"
-                                     :style="{display:(downloadDataSet.indexOf(item)>-1)?'block':'none'}"
-                                     class="fa fa-check"></i>
+                          </div>
+                          <div class="wzhScrollbar" style="height: calc(100% - 27px);">
+                            <el-row  style="width: 100%" :gutter="10"
+                                    v-if="myFileShown.length!=0">
+                              <el-col :span="fileCard" v-for="(item,key) in myFileShown">
+                                <div :title="showtitle(item)"
+                                     class="el-card dataitemisol" shadow="never"
+                                     :id="generateId(key)"
+                                     :class="(   isSelected(downloadDataSet,item))?'clickdataitem':''"
+                                     :key="key"
+
+                                     @mouseover="addDataClass($event,item)"
+                                     @mouseout="removeClass($event,item)"
+                                >
+                                  <el-row style="height: 80%"
+                                          @dblclick.native="getPackageContent($event,item,key)">
+                                    <el-col :span="5">&nbsp
+                                      <div class="squareButtonMini flexCenter"
+                                           style="margin: 4px;float: inherit;cursor: pointer"
+                                           @click="singleClick($event,item)"
+                                           v-if="item.package==false">
+                                        <i style="font-size: 16px;color:#1b7cde"
+                                           :style="{display:(isSelected(downloadDataSet,item))?'block':'none'}"
+                                           class="fa fa-check"></i>
+                                      </div>
+                                    </el-col>
+                                    <el-col :span="15" style="height: 100%;">
+                                      <img class="fileImg" :src="getImg(item)" align="middle"
+                                           onerror=src="/static/img/filebrowser/unknow.svg"
+                                           style="height: 100%;width:100%;object-fit: contain;cursor: pointer">
+                                    </el-col>
+                                    <el-col :span="4">&nbsp
+                                      <div v-if="item.upload==true"
+                                           style="margin-right: 5px;margin-top: 4px;float: right">
+                                        <i class="fa fa-user-circle-o"
+                                           style="font-size: 16px;color:#1b7cde"></i>
+                                      </div>
+                                    </el-col>
+                                  </el-row>
+                                  <el-row type="flex" justify="center" v-show="renameIndex!=item.id"
+                                          v-if="item" class="fileName"
+                                          @click.native="getPackageContent($event,item,key)"
+                                          style="cursor: pointer">
+                                    <p style="text-align: center;word-break: break-all;" v-if="item">
+                                      {{item.label}}</p>
+                                    <p v-if="item.suffix">.</p>
+                                    <p v-if="item.suffix">{{item.suffix}}</p>
+                                  </el-row>
+                                  <el-row type="flex" justify="center" v-show="renameIndex==item.id"
+                                          v-if="item" class="renameContainer">
+                                    <input class="wzhMicroInput InputCenter renameFileInput">
+                                    <p v-if="item.suffix">.{{item.suffix}}</p>
+                                    <div class="squareButton23 flexCenter"
+                                         style="position: absolute; right:calc(20% - 23px) ;background-color: #07b9ff;cursor: pointer"
+                                         @click="renameConfirm">
+                                      <i class="fa fa-check"
+                                         style="margin-right:2px;color: whitesmoke "></i>
+                                    </div>
+
+                                  </el-row>
+                                  <!--menu item -->
                                 </div>
                               </el-col>
-                              <el-col :span="15" style="height: 100%;">
-                                <img class="fileImg" :src="getImg(item)"  align="middle"
-                                     onerror=src="/static/img/filebrowser/unknow.svg"
-                                     style="height: 100%;width:100%;object-fit: contain;cursor: pointer">
-                              </el-col>
-                              <el-col :span="4">&nbsp
-                                <div v-if="item.upload==true"
-                                     style="margin-right: 5px;margin-top: 4px;float: right">
-                                  <i class="fa fa-user-circle-o"
-                                     style="font-size: 16px;color:#1b7cde"></i>
-                                </div>
-                              </el-col>
                             </el-row>
-                            <el-row type="flex" justify="center" v-show="renameIndex!=item.id"
-                                    v-if="item" class="fileName"
-                                    @click.native="getPackageContent($event,item,key)"
-                                    style="cursor: pointer">
-                              <p style="text-align: center;word-break: break-all;" v-if="item">
-                                {{item.label}}</p>
-                              <p v-if="item.suffix">.</p>
-                              <p v-if="item.suffix">{{item.suffix}}</p>
-                            </el-row>
-                            <el-row type="flex" justify="center" v-show="renameIndex==item.id"
-                                    v-if="item" class="renameContainer">
-                              <input class="wzhMicroInput InputCenter renameFileInput">
-                              <p v-if="item.suffix">.{{item.suffix}}</p>
-                              <div class="squareButton23 flexCenter"
-                                   style="position: absolute; right:calc(20% - 23px) ;background-color: #07b9ff;cursor: pointer"
-                                   @click="renameConfirm">
-                                <i class="fa fa-check"
-                                   style="margin-right:2px;color: whitesmoke "></i>
-                              </div>
 
-                            </el-row>
-                            <!--menu item -->
                           </div>
 
                         </el-card>
@@ -278,11 +284,11 @@
 
 <!--        <textarea id="detail" style="display: none"-->
 <!--                  placeholder="Input detail about the data here."></textarea>-->
-      <el-dialog modal-append-to-body append-to-body
-
+      <el-dialog
+              modal-append-to-body append-to-body
               title="Upload Data"
               :visible.sync="uploadDialogVisible"
-              width="30%"
+              width="32%"
               :before-close="uploadBeforeClose"
       >
 
@@ -294,13 +300,16 @@
 
 
         <div class="uploaded" v-loading="uploadLoading">
+          <div  class="headProgressContainer" v-show="progressFlag">
+            <el-progress class="headProgress" type="circle" :percentage="uploadProgress"></el-progress>
+          </div>
           <div class="form-group flexColContainer">
-            <label style="margin-right:5px;">Name :</label>
+            <label style="margin-right:5px;font-size: 1.4rem">Name :</label>
             <el-input v-model="uploadName" placeholder="Dataset name"></el-input>
           </div>
 
           <div class="form-group flexColContainer">
-            <label style="margin-right:5px;">Data template :</label>
+            <label style="margin-right:5px;font-size: 1.4rem">Data template :</label>
             <el-select
                     v-model="selectValue"
                     filterable
@@ -319,16 +328,20 @@
           </div>
 
           <div class="form-group flexColContainer">
-            <label style="margin-right:5px;">Storage path :</label>
-            <el-button type="primary" plain size="mini" @click="selectFolder"
-                       v-if="selectedPath.length==0&&uploadInPath==0">Select Folder
-            </el-button>
-            <div class="showPathContainer" style="margin-left: 10px;margin-bottom: 5px"
-                 v-if="uploadInPath==0">
-              <div v-for="(path,index) in selectedPath" @click="selectFolder"
-                   style="text-decoration:underline;cursor: pointer"> /{{path.label}}
+            <label style="margin-right:5px;font-size: 1.4rem">Storage path :</label>
+            <div class="flexJustBetween">
+              <div class="showPathContainer" style="margin-left: 10px;margin-bottom: 5px"
+                   v-if="uploadInPath==0">
+                <div v-for="(path,index) in selectedPath" @click="selectFolder"
+                     style="text-decoration:underline;cursor: pointer"> /{{path.label}}
+                </div>
+
               </div>
+              <el-button type="primary" plain size="mini" @click="selectFolder"
+                         v-if="uploadInPath==0">Change
+              </el-button>
             </div>
+
             <div class="showPathContainer" style="margin-left: 10px;margin-bottom: 5px"
                  v-if="uploadInPath==1">
               <div v-for="(path,index) in pathShown"> /{{path.label}}</div>
@@ -338,19 +351,18 @@
             <!--                                                    </el-button>-->
           </div>
           <div class="form-group flexColContainer" style="margin-bottom: -15px">
-            <label style="margin-right:5px;">Upload files :</label>
-            <el-button size="mini" @click="selectFile()">Select File</el-button>
+            <label style="margin-right:5px;font-size: 1.4rem">Upload files :</label>
+            <el-button size="mini" type="primary" plain @click="selectFile()" style="margin-top: 5px">Select File</el-button>
           </div>
           <el-upload
-                  class="upload-demo"
+                  class="upload-demo wzhScrollbar customUpload"
                   multiple="true"
                   ref="upload"
                   :on-change="uploadChange"
                   :on-remove="uploadRemove"
-
                   :on-success="handleSuccess"
                   :file-list="uploadFileList"
-                  :auto-upload="false">
+                  :auto-upload="false" style="min-height: 35px;max-height: 99px;margin-top: 15px">
             <el-button id="uploadFile" style="display:none" slot="trigger" size="small"
                        type="primary">选取文件
             </el-button>
@@ -360,17 +372,17 @@
         </div>
 
         <span slot="footer" class="dialog-footer">
-                                  <el-button @click="uploadClose">
-                                      Cancel
-                                  </el-button>
+                                <el-button @click="uploadClose">
+                                    Cancel
+                                </el-button>
 
-                                  <el-button type="primary" @click="submitUpload">
-                                      Confirm
-                                  </el-button>
-                              </span>
+                                <el-button type="primary" @click="submitUpload">
+                                    Confirm
+                                </el-button>
+                            </span>
       </el-dialog>
 
-      <el-dialog append-to-body :visible.sync="addFolderIndex" title="Add New Folder">
+      <el-dialog append-to-body :visible.sync="addFolderIndex" title="Add New Folder" width="32%">
         <div class="showPathContainer">
           <div class="containerWithBorder">path</div>
           :
@@ -382,12 +394,12 @@
         </div>
         <el-input placeholder="Please input the name of the new folder"
                   v-model="newFolderName"
-                  style="width: calc(100% - 30px);margin:0 15px"></el-input>
+                  style="width: calc(100% - 10px);margin:5px 5px 0"></el-input>
         <span slot="footer" class="dialog-footer">
-                                                      <el-button class="pull-left" type="primary"
-                                                                 icon="el-icon-folder-add" @click="addFolder()">Add new folder</el-button>
-                                                      <el-button @click="addFolderIndex = false">Cancel</el-button>
-                                                  </span>
+                        <el-button @click="addFolderIndex = false">Cancel</el-button>
+                        <el-button type="primary" style="margin-right: 5px"
+                                   icon="el-icon-folder-add" @click="addFolder()">Confirm</el-button>
+                                                </span>
       </el-dialog>
 
       <el-dialog append-to-body
@@ -769,22 +781,15 @@
 
 <script type="text/javascript" src="/static/js/tinymce/tinymce.min.js"></script>
 
-
-<!--<script src="/static/js/common/echarts.min.js"></script>-->
-<!--<script src="/static/js/common/world.js"></script>-->
 <script src="/static/js/common/axios.min.js"></script>
 <script src="/static/js/common/vue.min.js"></script>
 
-<!--<script src="http://code.jquery.com/jquery-latest.min.js"></script>-->
 <script type="text/javascript" src="/static/js/common/jquery-steps.js"></script>
 <script src="/static/element-ui/index.js"></script>
-<!--<script src="https://unpkg.com/element-ui/lib/index.js"></script>-->
 
 <script type="text/javascript" src="/static/js/common/jquery.tag-editor.js"></script>
 <script src="/static/js/common/bootstrap-tagsinput.js"></script>
 <script src="/static/element-ui/umd/locale/en.js"></script>
-<!--<script src="/static/js/page/user_space.js"></script>-->
-<!--<script src="/static/js/page/userSpace1.js"></script>-->
 <script src="/static/js/page/userDataSpace.js"></script>
 <script src="/static/js/page/create-dataItem.js"></script>
 </html>

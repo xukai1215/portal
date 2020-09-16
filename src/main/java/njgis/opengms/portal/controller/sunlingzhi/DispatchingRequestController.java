@@ -62,12 +62,40 @@ public class DispatchingRequestController {
         part.add("origination", origination);
 
         JSONObject jsonObject = restTemplate.postForObject(url, part, JSONObject.class);
+
+        part=null;
+        files=null;
         if(jsonObject.getIntValue("code")==-1){
             throw new MyException("远程服务出错");
         }
         return jsonObject;
 
     }
+
+//    @RequestMapping (value="/uploadMutiFilesTest",method = RequestMethod.POST)
+//    JsonResult uploadMutiFilesTest(
+//            @RequestParam("ogmsdata") MultipartFile[] files,
+//            @RequestParam("name")String uploadName,
+//            @RequestParam("userId")String userName,
+//            @RequestParam("serverNode")String serverNode,
+//            @RequestParam("origination")String origination
+//
+//    ) throws IOException {
+//        String url="http://"+ dataContainerIpAndPort +"/data";
+//        Map<String,String> a=new HashMap<>();
+//        a.put("host",host);
+//        a.put("port",port);
+//        a.put("type",type);
+//        a.put("userName",userName);
+//
+//        Map<String,MultipartFile[]> b=new HashMap<>();
+//        b.put("ogmsdata",files);
+//        JSONObject j=JSONObject.parseObject(MyHttpUtils.POSTMultiPartFileToDataServer(url,"utf-8",a,b));
+//        if(j.getIntValue("code")==-1){
+//            throw new MyException("远程服务出错");
+//        }
+//        return ResultUtils.success(j.getJSONObject("data"));
+//    }
 
     @RequestMapping (value="/upload",method = RequestMethod.POST)
     JsonResult upload(@RequestParam("file")MultipartFile file,

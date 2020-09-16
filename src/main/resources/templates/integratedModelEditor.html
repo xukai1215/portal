@@ -195,11 +195,46 @@
 
   }
 
+  function setNodeStyle(frontId,status) {
+    let style={
+      'waiting':'rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#0073e8;fillColor=#d9edf7;',
+      'running':'rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#449d44;fillColor=#ffd058;',
+      'completed':'rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#449d44;fillColor=#EEFFEE;',
+      'failed':'rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#a94442;fillColor=#ede2e2;',
+    }
+    var cells = graph.getModel().cells;
+    var models = graph.getModel();
+    for (let i in cells) {
+      if(cells[i].frontId===frontId){
+        // let style = cells[i].getStyle()
+        // console.log(style)
+        cells[i].setStyle(style[status])
+        if(status==='completed'){
+          setLinkStyle(cells[i],cells,'shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#449d44;fillColor=none;')
+        }
+        graph.refresh(cells[i])
+      }
+    }
+  }
+
+  function setLinkStyle(cell,cells,style) {
+    for(let j in cells){
+      if(cells[j].edge==true&&cells[j].source==cell){
+        if(cells[j].target.eid!=undefined){
+          cells[j].target.setStyle(style)
+          graph.refresh(cells[j].target)
+        }
+        setLinkStyle(cells[j].target,cells,style)
+      }
+    }
+  }
+
   function getModels() {
     currentXml = getCXml();
 
     var models = [];
     var cells = graph.getModel().cells;
+    linkDataFlow(cells)
     for (let i in cells) {
       if (typeof cells[i].md5 != "undefined") {
         var modelTmp = {};
@@ -207,8 +242,12 @@
         modelTmp.pid = cells[i].mid;
         modelTmp.description = cells[i].description;
         modelTmp.md5 = cells[i].md5;
-        modelTmp.inputEvents = getInputEvents(cells[i], cells);
-        modelTmp.outputEvents = getOutputEvents(cells[i], cells);
+        modelTmp.frontId = cells[i].frontId;
+        // modelTmp.inputEvents = getInputEvents(cells[i], cells);
+        modelTmp.inputEvents = cells[i].inputEvents;
+        // modelTmp.outputEvents = getOutputEvents(cells[i], cells,modelTmp);
+        setOutput(cells[i])
+        modelTmp.outputEvents =cells[i].outputEvents;
 
         models.push(modelTmp);
       }
@@ -217,26 +256,72 @@
     return models;
   }
 
+  function linkDataFlow(cells) {//连接数据流，主要用于处理inputevent
+    for(let i in cells){
+      let cell = cells[i]
+      if(cell.edge){//如果是一条线，则去两端寻找
+        if(cell.value==null){//说明是手动连接的两个event,则此处有dataFlow
+          let fromEvent = cell.source
+          let toEvent = cell.target//这是某一个模型的input
+          let model
+          for(let edge of toEvent.edges){//找到该模型
+            if(edge.value===''){
+              model = edge.target
+              break;
+            }
+          }
+          for(let input of model.inputEvents){//对该模型对应event的值修改
+            if(input.eventId===toEvent.eid){
+              input.type='link'
+              input.link=fromEvent.eid//链接的event的id和名字
+              input.linkEvent=fromEvent.value
+            }else{
+              input.link=''
+            }
+          }
+        }
+      }
+      for(let j in cells){
+        if(cells[j].md5!=undefined){
+          if(cells[j].inputEvents[0].link!=undefined){//有link值，说明该模型已经配置过，忽略
+            continue;
+          }
+          for(let input of cells[j].inputEvents){
+            if(input.link==undefined){
+              input.link=''
+            }
+          }
+        }
+      }
+    }
+  }
+
+  function setOutput(model) {//配置output
+    for(let output of model.outputEvents){
+      output.type='url'
+    }
+  }
+
   function getInputEvents(model, cells) {
-    var inputEvents = [];
+    var inputEvents = model.inputEvents;
     var event = {};
 
-    var target = model.id;
+    var modelId = model.id;
     for (let i in cells) {
       //寻找input
-      if (cells[i].target != null && cells[i].target.id == target) {
-        var source = cells[i].source.id;
-        var input = cells[source];
-        var target2 = input.id;
+      if (cells[i].target != null && cells[i].target.id == modelId) {
+        let source = cells[i].source.id;
+        let input = cells[source];
+        let target2 = input.id;
         //寻找input的来源
         for (let j in cells) {
           if (cells[j].target != null && cells[j].target.id == target2) {
             var eid = cells[cells[j].source.id].eid;
-            var iName = cells[cells[j].source.id].value;
+            var iName = cells[cells[j].source.id].value;//这个event的名字
             event = {};
             event.state = input.state;
             event.event = input.value;
-            event.value = eid;
+            event.link = eid; //迭代运行需要两个值来标识,一个是初始值，一个是迭代值 -- wzh
             event.iName = iName;
             event.dataId = input.eid;
             event.type = "link";
@@ -249,34 +334,10 @@
       }
     }
 
-
-    for (var i = 0; i < model.inputEvents.length; i++) {
-      var e = model.inputEvents[i];
-      var flag = false;
-      for (var j = 0; j < inputEvents.length; j++) {
-        if (e.eventId == inputEvents[j].dataId) {
-          flag = true;
-          break;
-        }
-      }
-      if (flag) continue;
-      event = {};
-      event.state = e.stateName;
-      event.event = e.eventName;
-      event.value = "";
-      event.dataId = e.eventId;
-      event.type = "url";
-      event.optional = e.optional;
-      event.description = e.eventDesc;
-      event.data = e.data;
-      inputEvents.push(event);
-
-    }
-
     return inputEvents;
   }
 
-  function getOutputEvents(model, cells) {
+  function getOutputEvents(model, cells,modelTmp) {//传入modelTmp打上multi标识
     var outputEvents = [];
     var event = {};
     var source = model.id;
@@ -289,6 +350,10 @@
         event.value = "";
         event.dataId = output.eid;
         event.type = "url";
+        event.mutiple = output.multiple;
+        if(event.mutiple==true){
+          modelTmp.hasMultiOut=true
+        }
         outputEvents.push(event);
       }
     }
@@ -303,14 +368,18 @@
       }
       if (flag) continue;
       event = {};
-      event.state = e.stateName;
-      event.event = e.eventName;
+      event.stateName = e.stateName;
+      event.eventName = e.eventName;
       event.value = "";
-      event.dataId = e.eventId;
+      event.eventId = e.eventId;
       event.type = "url";
       event.optional = e.optional;
-      event.description = e.eventDesc;
+      event.eventDesc = e.eventDesc;
       event.data = e.data;
+      event.mutiple = e.multiple;
+      if(event.mutiple==true){
+        modelTmp.hasMultiOut=true
+      }
       outputEvents.push(event);
 
     }
@@ -318,6 +387,7 @@
     return outputEvents;
   }
 
+  //获得模型
   function getModelListByPage(num) {
     var url = "/computableModel/integratingList";
     $.ajax({
@@ -387,6 +457,7 @@
     })
   }
 
+  //翻页
   function changeNext() {
     if (page >= 4 && page < computableModelList.totalPages - 5) {
       var i = (page + 1) % 3;

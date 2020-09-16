@@ -1,9 +1,10 @@
 package njgis.opengms.portal.dao;
 
 import njgis.opengms.portal.entity.Classification;
-import njgis.opengms.portal.entity.ConceptClassification;
 import njgis.opengms.portal.entity.SpatialReferenceClassification;
 import org.springframework.data.mongodb.repository.MongoRepository;
+
+import java.util.List;
 
 /**
  * @ClassName ClassificationDao
@@ -16,6 +17,8 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 public interface SpatialReferenceClassificationDao extends MongoRepository<SpatialReferenceClassification,String> {
 
     Classification findFirstByOid(String id);
+
+    List<Classification> findAllByParentId(String id);
 
     Classification findFirstByNameEn(String nameEn);
 }

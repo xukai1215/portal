@@ -248,6 +248,10 @@ span:focus {
     width: 120px;
 }
 
+.fileContainer .el-card__body{
+    height: 100%;
+}
+
 .profile {
     width: 100%;
     float: left;
@@ -1974,7 +1978,7 @@ body {
 }
 
 .dataitemisol {
-    width: 15.6%;
+    width: 100%;
     height: 120px;
     margin-right: 9px;
     margin-top: 5px;
@@ -3088,7 +3092,9 @@ input[type=file] {
     z-index: -1;
 }
 
-
+.customUpload .el-upload.el-upload--text{
+    display: none;
+}
 
 @media only screen and (min-width: 1000px) {
     .mainContent {

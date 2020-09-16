@@ -61,7 +61,6 @@ new Vue({
                 },
                 crossDomain: true,
                 success: (data) => {
-                    data = JSON.parse(data);
                     if (data.oid == "") {
                         alert("Please login first");
                         window.location.href = "/user/login";
@@ -120,7 +119,6 @@ new Vue({
                 },
                 crossDomain:true,
                 success: (data) => {
-                    data=JSON.parse(data);
                     if (data.oid == "") {
                         alert("Please login first");
                         window.location.href = "/user/login";

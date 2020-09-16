@@ -1,0 +1,79 @@
+.editImageContainer{
+    border: 1px solid #cccccc;
+    padding: 15px 10px;
+    min-height: 250px;
+    height: calc(100% - 60px);
+}
+
+.imgOverview{
+    height: 75%;
+}
+
+#imgChange {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    width: 115px;
+    height: 115px;
+    text-align: center;
+    line-height: 150px;
+    vertical-align: middle;
+    color: #ccc;
+    float: left;
+}
+
+.circlePhotoFrame{
+    width: 150px;
+    height: 150px;
+    position: relative;
+    overflow: hidden;
+}
+
+.circlePhotoFrameShade{
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle, rgba(140, 140, 140, 0) 65px, rgba(225, 226, 226,0.45) 3.2%);
+    position: absolute;
+}
+
+.circlePhotoFrame canvas{
+    /*width: 150px;*/
+    /*height: 150px;*/
+    /*position: relative;*/
+    /*background: radial-gradient(circle, rgba(140, 140, 140, 0) 65px, rgba(225, 226, 226,0.45) 3.2%);*/
+    /*background-size:;*/
+    background-repeat: no-repeat;
+    cursor: grab;
+}
+
+.circlePhotoFrame canvas:focus{
+    cursor: grabbing;
+}
+
+.dragBar{
+    position: relative;
+    width: 200px;
+    height: 6px;
+    border-radius: 3px;
+    /*border: 1px solid #05adff;*/
+    background-color: #d9d9d9;
+}
+
+.dragBlock{
+    position: absolute;
+    top: -4px;
+    left: -7px;
+    width: 14px;
+    height: 14px;
+    border-radius: 7px;
+    background-color: #4285f4;
+    cursor: pointer;
+}
+
+#imgShowBig{
+    background-repeat: no-repeat;
+    background-position: center center;
+
+}
