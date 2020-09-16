@@ -423,6 +423,10 @@ var userModels = Vue.extend(
                                 window.location.href = "/user/login";
                             } else {
                                 data = json.data;
+                                if(data.modelItems.length==0&&this.page>1){
+                                    this.searchItems(--this.page)
+                                    return
+                                }
                                 this.resourceLoad = false;
                                 this.totalNum = data.count;
                                 this.searchCount = Number.parseInt(data["count"]);
@@ -507,7 +511,7 @@ var userModels = Vue.extend(
                                                 this.$alert("please refresh the page!")
                                         }
                                         if (this.searchText.trim() != "") {
-                                            this.searchModels();
+                                            this.searchItems(this.page);
                                         } else {
                                             this.getModels(index);
                                         }

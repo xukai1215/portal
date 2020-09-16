@@ -3,8 +3,8 @@ package njgis.opengms.portal.controller.rest;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.ApiOperation;
-import njgis.opengms.portal.bean.LoginRequired;
 import njgis.opengms.portal.bean.JsonResult;
+import njgis.opengms.portal.bean.LoginRequired;
 import njgis.opengms.portal.dao.ComputableModelDao;
 import njgis.opengms.portal.dto.task.ResultDataDTO;
 import njgis.opengms.portal.dto.task.TestDataUploadDTO;
@@ -319,6 +319,7 @@ public class TaskRestController {
             Task task=taskService.findByTaskId(taskId);
             JSONObject data = responseEntity.getBody().getJSONObject("data");
             int status = data.getInteger("status");
+            JSONObject taskInfo = data.getJSONObject("taskInfo");
             switch (status){
                 case 0:
                     break;
@@ -328,7 +329,7 @@ public class TaskRestController {
                     break;
                 case 1:
                     task.setStatus(2);
-                    task.setModels(data.getJSONArray("models").toJavaList(Model.class));
+                    task.setModels(taskInfo.getJSONArray("models").toJavaList(Model.class));
                     taskService.save(task);
                     break;
             }

@@ -648,6 +648,25 @@ h1.h_lite,h2.h_lite,h3.h_lite,h4.h_lite,span.h_lite{
     transition: .4s;
 }
 
+.wzhCard_w100{
+    background-color: white;
+    border-radius: 3px;
+    margin: 5px ;
+    border: 1px solid #dadce0;
+    /*border-bottom: 8px solid #64b0ff;*/
+    box-sizing: border-box;
+    width: 100%;
+    flex-shrink: 1;
+    /*margin-left: 12px;*/
+    /*margin-right: 12px;*/
+    min-width: 0;
+
+}
+
+.w100{
+    width: 100%;
+}
+
 @media only screen and (min-width:1150px) {
     .wzhSectionContainer .imgContainerW100{
         display: none;

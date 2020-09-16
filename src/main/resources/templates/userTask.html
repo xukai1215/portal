@@ -76,8 +76,8 @@
                                 <h3 style="margin-left: 10px" >Task</h3>
                             </div>
                             <!--                        <h5>You can manager your model and data here</h5>-->
-                            <div class="col-md-3 flexRowContainer flexColCenter wzhSelectContainer">Task status:
-                                <el-select v-model="taskStatus" placeholder="task status" size="mini" @change="changeTaskStatus">
+                            <div class="col-md-3 flexRowContainer flexColCenter wzhSelectContainer" style="margin-top: 10px">Task status:
+                                <el-select v-model="taskStatus" placeholder="task status" size="mini" @change="changeTaskStatus" >
                                     <el-option
                                             v-for="item in options"
                                             :key="item.value"
@@ -544,7 +544,7 @@
                         <el-table-column
                                 prop="url"
                                 label="url"
-                                width="225">
+                                width="240">
                         </el-table-column>
                         <el-table-column
                                 prop=""
@@ -552,11 +552,15 @@
                             <template slot-scope="scope">
                                 <el-button plain circle type="success"
                                            @click="shareOutput(scope.row.url)">
-                                    <i class="fa fa-share-square-o"></i>
+                                    <i class="fa fa-share-square-o" style="width: 14px"></i>
                                 </el-button>
                                 <el-button plain circle type="warning"
                                            @click="downloadSingle(scope.row.url)">
-                                    <i class="fa fa-download"></i>
+                                    <i class="fa fa-download" style="width: 14px"></i>
+                                </el-button>
+                                <el-button plain circle type="primary"
+                                           @click="addOutputToMyData(scope.row)">
+                                    <i class="fa fa-plus" style="width: 14px"></i>
                                 </el-button>
 <!--                                <el-button plain circle type="primary"-->
 <!--                                           v-if="scope.row.visual"-->

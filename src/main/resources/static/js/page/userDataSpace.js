@@ -612,10 +612,23 @@ var userDataSpace = Vue.extend(
 
                 console.log(node);
                 let paths=[];
+                let pathList=[];
+
                 while(node.key!=undefined&&node.key!=0){
+                    //TODO
+                    pathList.push({
+                        key:node.key,
+                        label:node.label,
+                        data:node.data,
+                    });
                     paths.push(node.key);
                     node=node.parent;
                 }
+                pathList.push({
+                    key:'0',
+                    label:'All folder'
+
+                })
                 if(paths.length==0) paths.push('0')
                 console.log(paths)
 
@@ -658,8 +671,9 @@ var userDataSpace = Vue.extend(
 
                                 if(this.myFileShown.length===0)
                                     this.addChild(this.myFile,paths[0],newChild)
-                                this.myFileShown.push(newChild);
+                                // this.myFileShown.push(newChild);
 
+                                this.refreshPackage(0,pathList.reverse());
                                 setTimeout(()=>{
                                     this.$refs.folderTree.setCurrentKey(newChild.id)
                                 },100)
@@ -1473,7 +1487,7 @@ var userDataSpace = Vue.extend(
                     processData: false,
                     contentType: false,
                     async: true,
-                    timeout:20000,
+                    timeout:55000,
                     onUploadProgress: (progressEvent) => {
 
                         this.uploadProgress = progressEvent.loaded / progressEvent.total * 100 | 0;  //百分比
@@ -2603,7 +2617,7 @@ var userDataSpace = Vue.extend(
                 $("#refreshPackageBtn").click(
                     function () {
                         value += 180;
-                        $('.fa-refresh').rotate({animateTo: value})
+                        $('.fa-refresh').css('transform', 'rotate(' + value + 'deg)');
                     }
                 );
 

@@ -1784,13 +1784,16 @@ public class UserService {
             String name = files.get(i).get("label").toString();
             String suffix = files.get(i).get("suffix").toString();
             String id = UUID.randomUUID().toString();
-            String templateId = files.get(i).get("templateId").toString();
+            String templateId = "";
+            if(files.get(i).get("templateId")!=null){
+                templateId = files.get(i).get("templateId").toString();
+            }
 
             pathsCopy.addAll(paths);
             user.setFileContainer(aFile(pathsCopy, user.getFileContainer(), name, suffix, id, "0", url, templateId));
             JSONObject obj = new JSONObject();
             for (String tempId : visualTemplateIds) {
-                if (tempId.equals(files.get(i).get("templateId").toString())) {
+                if (tempId.equals(templateId)) {
                     obj.put("visual", true);
                     break;
                 }
@@ -1924,7 +1927,7 @@ public class UserService {
                     jsonObject.put("package", fileMeta.getIsFolder());
                     jsonObject.put("father", fileMeta.getFather());
                     for (String id : visualTemplateIds) {
-                        if (id.equals(fileMeta.getTemplateId())) {
+                        if (fileMeta.getTemplateId()!=null&&id.equals(fileMeta.getTemplateId())) {
                             jsonObject.put("visual", true);
                             break;
                         }
@@ -1985,7 +1988,7 @@ public class UserService {
                     jsonObject.put("suffix", fileMeta.getSuffix());
                     jsonObject.put("url", fileMeta.getUrl());
                     for (String id : visualTemplateIds) {
-                        if (id.equals(fileMeta.getTemplateId())) {
+                        if (fileMeta.getTemplateId()!=null&&id.equals(fileMeta.getTemplateId())) {
                             jsonObject.put("visual", true);
                             break;
                         }
@@ -2080,7 +2083,7 @@ public class UserService {
                     jsonObject.put("url", fileMeta.getUrl());
                     jsonObject.put("children", gAllFile(fileMeta.getContent()));
                     for (String id : visualTemplateIds) {
-                        if (id.equals(fileMeta.getTemplateId())) {
+                        if (fileMeta.getTemplateId()!=null&&id.equals(fileMeta.getTemplateId())) {
                             jsonObject.put("visual", true);
                             break;
                         }

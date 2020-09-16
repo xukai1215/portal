@@ -358,7 +358,7 @@ Vue.component("computable-models",
             searchResult:[],
 
           },
-          checkModelList:[]
+          // checkModelList:[]
         }
 
       },
@@ -387,6 +387,27 @@ Vue.component("computable-models",
             }
           })
         },
+
+        getComputableModelByOid(oid){
+          let model = {}
+          $.ajax({
+            url:"/computableModel/getModelByOid",
+            data:{
+              oid:oid,
+
+            },
+            async: false,
+            success:function(result){
+              if (result.code != 0)
+                return
+
+              var data = result.data;
+              model=data;
+            }
+          })
+          return model
+        },
+
         search(){
           var _this = this;
           if (this.searchText!=""){
@@ -439,6 +460,7 @@ Vue.component("computable-models",
             }
           }
           if (!flag){
+            model=this.getComputableModelByOid(model.oid)
             this.checkModelList.push(model)
             e.currentTarget.style.background = "#d9edf7"
           }

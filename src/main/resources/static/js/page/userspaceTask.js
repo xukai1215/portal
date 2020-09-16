@@ -464,7 +464,6 @@ var userTask = Vue.extend(
                 this.pageControlIndex = '6';
             },
 
-
             searchTasks(page) {
                 let url = "/task/searchTasksByUserId";
                 let name = "tasks";
@@ -806,9 +805,11 @@ var userTask = Vue.extend(
                 let urls = output.url.substring(1, output.url.length-1).split(',')
                 for(let i = 0;urls&&i<urls.length;i++){
                     let obj={
-                        name:output.tag+''+output.suffix,
+                        name:output.tag+'.'+output.suffix,
                         url:urls[i].substring(1,urls[i].length-1),
-                        visual:output.visual
+                        visual:output.visual,
+                        event:output.event,
+                        suffix:output.suffix
                     }
                     this.outputMultiFile.push(obj)
                 }

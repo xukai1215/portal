@@ -177,7 +177,7 @@
                                                                 </div>
                                                                 <div class="squareButton" id="refreshPackageBtn"
                                                                      @click="refreshPackage(1)">
-                                                                    <i class="fa fa-refresh" style="font-weight: 600"></i>
+                                                                    <i class="fa fa-refresh" style="font-weight: 600;transition: .5s ease-out"></i>
                                                                 </div>
                                                                 <div class="showPathContainer" style="margin-left: 10px">
                                                                     <div>path</div>
@@ -621,14 +621,13 @@
                     </div>
                     <el-input placeholder="Please input the name of the new folder"
                               v-model="newFolderName"
-                              style="width: calc(100% - 30px);margin:0 15px"></el-input>
+                              style="width: calc(100% - 10px);margin:5px 5px 0"></el-input>
                     <span slot="footer" class="dialog-footer">
                         <el-button @click="addFolderIndex = false">Cancel</el-button>
-                        <el-button type="primary" style="margin-right: 15px"
-                                    icon="el-icon-folder-add" @click="addFolder()">Confirm</el-button>
+                        <el-button type="primary" style="margin-right: 5px"
+                                   icon="el-icon-folder-add" @click="addFolder()">Confirm</el-button>
                                                 </span>
                 </el-dialog>
-
                 <el-dialog
                         title="Select Folder"
                         :visible.sync="selectFolderVisible"

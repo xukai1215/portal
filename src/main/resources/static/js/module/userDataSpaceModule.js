@@ -167,6 +167,9 @@ Vue.component("user-data",
                 uploadFiles: [],
                 uploadLoading: false,
 
+                progressFlag:false,
+                uploadProgress:0,
+
                 fileContainerWidth:1200,
             }
         },
@@ -375,7 +378,7 @@ Vue.component("user-data",
 
             },
 
-            refreshPackage(event, index) {
+            refreshPackage(index,pathList) {
 
                 let paths = []
                 if (index == 1) {
@@ -387,16 +390,16 @@ Vue.component("user-data",
                     if (paths.length == 0) paths = ['0']
 
                 } else {
-                    let i = this.selectedPath.length - 1;//selectPath中含有all folder这个不存在的文件夹，循环索引有所区别
-                    while (i >= 1) {
-                        paths.push(this.selectedPath[i].key);
+                    let i=pathList.length-1;//selectPath中含有all folder这个不存在的文件夹，循环索引有所区别
+                    while (i>=1) {
+                        paths.push(pathList[i].key);
                         i--;
                     }
-                    if (paths.length == 0) paths = ['0']
+                    if (paths.length==0) paths=['0']
 
-                    this.pathShown = []
-                    for (i = 1; i < this.selectedPath.length; i++) {
-                        this.pathShown.push(this.selectedPath[i].data)
+                    this.pathShown=[]
+                    for(i=1;i<pathList.length;i++){
+                        this.pathShown.push(pathList[i].data)
                     }
                 }
 
@@ -526,6 +529,7 @@ Vue.component("user-data",
                                 if (this.myFileShown.length === 0)
                                     this.addChild(this.myFile, paths[0], newChild)
                                 this.myFileShown.push(newChild);//myfileShown是一个指向myFile子元素的地址，修改则myFile也变化
+
                                 // console.log(this.myFileShown)
                                 // this.getFilePackage();
                                 // console.log(this.myFile)
@@ -540,49 +544,63 @@ Vue.component("user-data",
                 }
             },
 
-            addFolderinTree(pageIndex, index) {
-                var node, data
-                if (pageIndex == 'myData') {
-                    data = this.$refs.folderTree.getCurrentNode();
-                    if (data == undefined)
+            addFolderinTree(pageIndex,index){
+                var node,data
+                if(pageIndex=='myData'){
+                    data=this.$refs.folderTree.getCurrentNode();
+                    if(data==undefined)
                         this.$alert('Please select a file directory.', 'Tip', {
-                            type: 'warning',
+                            type:'warning',
                             confirmButtonText: 'comfirm',
                         })
-                    node = this.$refs.folderTree.getNode(data);
-                } else {
-                    data = this.$refs.folderTree2[index].getCurrentNode();
+                    node=this.$refs.folderTree.getNode(data);
+                }
+                else{
+                    data=this.$refs.folderTree2[index].getCurrentNode();
                     this.$alert('Please select a file directory.', 'Tip', {
-                        type: 'warning',
+                        type:'warning',
                         confirmButtonText: 'comfirm',
                     })
-                    node = this.$refs.folderTree2[index].getNode(data);
+                    node=this.$refs.folderTree2[index].getNode(data);
                 }
 
-                let folderExited = data.children
+                let folderExited=data.children
 
                 console.log(node);
-                let paths = [];
-                while (node.key != undefined && node.key != 0) {
+                let paths=[];
+                let pathList=[];
+
+                while(node.key!=undefined&&node.key!=0){
+                    //TODO
+                    pathList.push({
+                        key:node.key,
+                        label:node.label,
+                        data:node.data,
+                    });
                     paths.push(node.key);
-                    node = node.parent;
+                    node=node.parent;
                 }
-                if (paths.length == 0) paths.push('0')
+                pathList.push({
+                    key:'0',
+                    label:'All folder'
+
+                })
+                if(paths.length==0) paths.push('0')
                 console.log(paths)
 
-                var newChild = {id: ""}
+                var newChild={id:""}
 
                 this.$prompt(null, 'Enter Folder Name', {
                     confirmButtonText: 'OK',
                     cancelButtonText: 'Cancel',
                     // inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
                     // inputErrorMessage: '邮箱格式不正确'
-                }).then(({value}) => {
-                    if (folderExited.some((item) => {
-                        return item.label === value;
-                    }) == true) {
+                }).then(({ value }) => {
+                    if(folderExited.some((item)=>{
+                        return  item.label===value;
+                    })==true){
                         this.$alert('This name is existing in this path, please input a new one.', 'Tip', {
-                            type: 'warning',
+                            type:'warning',
                             confirmButtonText: 'comfirm',
                         })
                         return
@@ -599,29 +617,22 @@ Vue.component("user-data",
                                 alert("Please login first!")
                                 window.sessionStorage.setItem("history", window.location.href);
                                 window.location.href = "/user/login"
-                            } else {
-                                newChild = {
-                                    id: json.data,
-                                    label: value,
-                                    children: [],
-                                    father: data.id,
-                                    package: true,
-                                    suffix: '',
-                                    upload: false,
-                                    url: '',
-                                };
+                            }
+                            else {
+                                newChild = {id: json.data, label: value, children: [], father: data.id ,package:true,suffix:'',upload:false, url:'',};
                                 if (!data.children) {
                                     this.$set(data, 'children', []);
                                 }
                                 data.children.push(newChild);
 
-                                if (this.myFileShown.length === 0)
-                                    this.addChild(this.myFile, paths[0], newChild)
-                                this.myFileShown.push(newChild);
+                                if(this.myFileShown.length===0)
+                                    this.addChild(this.myFile,paths[0],newChild)
+                                // this.myFileShown.push(newChild);
 
-                                setTimeout(() => {
+                                this.refreshPackage(0,pathList.reverse());
+                                setTimeout(()=>{
                                     this.$refs.folderTree.setCurrentKey(newChild.id)
-                                }, 100)
+                                },100)
                             }
 
                         }
@@ -629,7 +640,7 @@ Vue.component("user-data",
                     });
 
 
-                }).then(() => {
+                }).then(()=>{
 
                 }).catch(() => {
                     this.$message({
@@ -1364,12 +1375,19 @@ Vue.component("user-data",
             },
 
             uploadRemove(file, fileList) {
-
                 this.uploadFiles = fileList;
+                if(this.uploadFiles.length==0)
+                    this.uploadName = ''
             },
+
             uploadChange(file, fileList) {
                 console.log(fileList)
                 this.uploadFiles = fileList;
+                let index=this.uploadFiles[0].name.lastIndexOf(".")
+                if(this.uploadName=='')
+                    this.uploadName=this.uploadFiles[0].name.substring(0,index);
+                if(this.uploadFiles.length==0)
+                    this.uploadName = ''
             },
 
             uploadClose() {
@@ -1426,52 +1444,61 @@ Vue.component("user-data",
 
                 // $.get("/dataManager/dataContainerIpAndPort", (result) => {
                 //     let ipAndPort = result.data;
-
-                $.ajax({
+                this.progressFlag=true
+                this.uploadProgress = 0
+                axios({
                     url: '/dispatchRequest/uploadMutiFiles',
-                    type: 'post',
+                    method: 'post',
                     data: formData,
                     cache: false,
                     processData: false,
                     contentType: false,
                     async: true,
-                    timeout: 20000
-                }).done((res) => {
-                    if (res.code == 0) {
-                        let data = res.data;
-                        if (this.uploadFiles.length == 1) {
-                            data.suffix = this.uploadFiles[0].name.split(".")[1];
-                        } else {
-                            data.suffix = "zip";
+                    timeout:55000,
+                    onUploadProgress: (progressEvent) => {
+
+                        this.uploadProgress = progressEvent.loaded / progressEvent.total * 100 | 0;  //百分比
+                    }
+                }).then((res)=> {
+                    if(res.data.code==0){
+                        let data=res.data.data;
+                        if(this.uploadFiles.length==1){
+                            let index=this.uploadFiles[0].name.lastIndexOf(".")
+                            data.suffix=this.uploadFiles[0].name.substring(index+1,this.uploadFiles[0].name.length);
                         }
-                        data.label = data.file_name;
-                        data.file_name += "." + data.suffix;
-                        data.upload = true;
-                        data.templateId = this.selectValue;
-                        this.addDataToPortalBack(data, this.selectValue);
+                        else{
+                            data.suffix="zip";
+                        }
+                        data.label=data.file_name;
+                        data.file_name+="."+data.suffix;
+                        data.upload=true;
+                        data.templateId=this.selectValue;
+                        this.addDataToPortalBack(data,this.selectValue);
 
 
                         //reset
-                        this.uploadName = "";
-                        this.selectValue = "";
-                        this.selectedPath = [];
-                        this.uploadFiles = [];
-                        this.uploadLoading = false;
-                        this.uploadDialogVisible = false;
+                        this.uploadName="";
+                        this.selectValue="";
+                        // this.selectedPath=[];
+                        this.uploadFiles=[];
+                        if(this.uploadProgress==100){
+                            this.progressFlag=false
+                        }
+                        this.uploadLoading=false;
+                        // this.uploadDialogVisible=false;
                         this.remoteMethod("");
                         this.$refs.upload.clearFiles();
 
 
-                    } else {
+                    }else{
                         this.$message.error('Upload failed!');
                     }
 
 
                     console.log(res);
-                }).fail((res) => {
+                }).catch((res)=> {
 
-                    this.uploadLoading = false;
-                    this.uploadDialogVisible = false;
+                    this.uploadLoading=false;
                     this.$message.error('Upload failed!');
                 });
                 // });
@@ -1511,15 +1538,32 @@ Vue.component("user-data",
 
             },
 
-            uploadClick(index) {
-                this.uploadInPath = index;
-                this.uploadSource = [];
-                this.selectedPath = [];
-                this.uploadFileList = [];
-                this.uploadLoading = false;
-                setTimeout(() => {
-                        this.uploadDialogVisible = true;
-                    }, 100
+            uploadClick(index){
+                this.uploadInPath=index;
+                this.uploadSource=[];
+                this.uploadName=''
+                this.selectValue='none'
+                this.progressFlag=false
+                let allFder={
+                    key:'0',
+                    label:'All Folder'
+                }
+                this.selectedPath=[allFder];
+                for(let i=0;i<this.pathShown.length;i++){
+                    let obj={
+                        key:this.pathShown[i].id,
+                        label:this.pathShown[i].label,
+                        data:this.pathShown[i]
+                    }
+                    this.selectedPath.push(obj)
+                }
+
+                this.uploadFileList=[];
+                this.uploadLoading=false;
+                setTimeout(()=>{
+                        this.uploadDialogVisible=true;
+                    },100
+
                 )
 
 
@@ -1530,21 +1574,21 @@ Vue.component("user-data",
                 this.$refs.upload.clearFiles();
             },
 
-            selectFolder() {
-                this.selectFolderVisible = true;
-                this.selectedPath = [];
+            selectFolder(){
+                this.selectFolderVisible=true;
 
-                axios.get("/user/getFolder", {})
-                    .then(res => {
-                        let json = res.data;
-                        if (json.code == -1) {
+                axios.get("/user/getFolder",{})
+                    .then(res=> {
+                        let json=res.data;
+                        if(json.code==-1){
                             alert("Please login first!")
                             window.sessionStorage.setItem("history", window.location.href);
-                            window.location.href = "/user/login"
-                        } else {
-                            this.folderTree = res.data.data;
-                            this.selectPathDialog = true;
-                            this.$nextTick(() => {
+                            window.location.href="/user/login"
+                        }
+                        else {
+                            this.folderTree=res.data.data;
+                            this.selectPathDialog=true;
+                            this.$nextTick(()=>{
                                 this.$refs.folderTree.setCurrentKey(null); //打开树之前先清空选择
                             })
                         }
@@ -1552,22 +1596,23 @@ Vue.component("user-data",
                     });
             },
 
-            confirmFolder() {
-                let data = this.$refs.folderTree.getCurrentNode();
-                let node = this.$refs.folderTree.getNode(data);
+            confirmFolder(){
+                this.selectedPath=[];
+                let data=this.$refs.folderTree.getCurrentNode();
+                let node=this.$refs.folderTree.getNode(data);
 
-                while (node.key != undefined && node.key != 0) {
+                while(node.key!=undefined&&node.key!=0){
                     this.selectedPath.unshift(node);
-                    node = node.parent;
+                    node=node.parent;
                 }
-                let allFder = {
-                    key: '0',
-                    label: 'All Folder'
+                let allFder={
+                    key:'0',
+                    label:'All Folder'
                 }
                 this.selectedPath.unshift(allFder)
                 console.log(this.selectedPath)
-                this.selectPathDialog = false;
-                this.selectFolderVisible = false;
+                this.selectPathDialog=false;
+                this.selectFolderVisible=false;
 
             },
 
@@ -1669,6 +1714,9 @@ Vue.component("user-data",
                     if (paths.length == 0) paths = ['0']
                 }
                 let that = this;
+
+                let pathList = this.selectedPath
+
                 $.ajax({
                     type: "POST",
                     url: "/user/addFile",
@@ -1718,7 +1766,7 @@ Vue.component("user-data",
                                     }
                                 } else {
                                     setTimeout(() => {
-                                        this.refreshPackage(0)
+                                        this.refreshPackage(0,pathList)
                                     }, 300);
                                     //要写一个前台按路径查找的函数
                                 }
@@ -1728,7 +1776,11 @@ Vue.component("user-data",
                                 obj.url = idList[0].url
                                 if (this.myFileShown.length === 0)
                                     this.addChild(this.myFile, paths[0], item)
-                                this.myFileShown.push(item);
+                                setTimeout(()=>{
+                                    this.refreshPackage(0,pathList)
+                                    this.managerloading = false
+                                },400);//pathList为所选的文件上传路径
+                                // this.myFileShown.push(item);
                             }
 
                             this.addFolderIndex = false;
@@ -1940,39 +1992,6 @@ Vue.component("user-data",
                 }
             },
 
-            getTasks(callback) {
-                $.ajax({
-                    type: "Get",
-                    url: "/task/getTasksByUserIdNoPage",
-                    data: {
-
-                        sortType: 'runTime',
-                        asc: -1
-                    },
-                    cache: false,
-                    async: true,
-
-                    xhrFields: {
-                        withCredentials: true
-                    },
-                    crossDomain: true,
-                    success: (json) => {
-
-                        if (json.code != 0) {
-                            alert("Please login first!");
-                            window.location.href = "/user/login";
-                        } else {
-                            const data = json.data;
-                            this.resourceLoad = false;
-                            // this.researchItems = data.list;
-                            this.userTaskFullInfo = data;
-
-                            this.getAllPackageTasks();
-                        }
-                    }
-                })
-            },
-
             chooseTaskDataCate(item, e) {
                 let exist = false;
                 let cls = this.taskDataForm.classifications;
@@ -2092,7 +2111,7 @@ Vue.component("user-data",
         },
 
         created() {
-            this.getTasks();
+            // this.getTasks();
             console.log(this.deleteButton)
         },
 
@@ -2291,7 +2310,7 @@ Vue.component("user-data",
                 $("#refreshPackageBtn").click(
                     function () {
                         value += 180;
-                        $('.fa-refresh').rotate({animateTo: value})
+                        $('.fa-refresh').css('transform', 'rotate(' + value + 'deg)');
                     }
                 );
 

@@ -3727,30 +3727,31 @@ Sidebar.prototype.addModelToGraph = function (models) {
     var model = models[i]
     hasSearchedTermsComputableModel.push(model)
     var pt = graph.getFreeInsertPoint();
-    var cell = graph.insertVertex(parent, null, model.name, pt.x, pt.y, 210, 50, "rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#006600;fillColor=#EEFFEE;");
+    var cell = graph.insertVertex(parent, null, model.name, pt.x, pt.y, 210, 50, "rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#0073e8;fillColor=#d9edf7");
 
     cell.mid = model.id;
     cell.md5 = model.md5;
+    cell.frontId = model.frontId;
     cell.description = model.description;
 
-    var inputEvents = [];
-    var outputEvents = [];
-    var states = model.mdlJson.mdl.states;
-    for (var j = 0; j < states.length; j++) {
-      var state = states[j];
-      for (var k = 0; k < state.event.length; k++) {
-        var event = state.event[k];
-        event.stateName = state.name;
-        if (event.eventType == "response") {
-          inputEvents.push(event);
-        } else {
-          outputEvents.push(event);
-        }
-      }
-    }
+    // var inputEvents = [];
+    // var outputEvents = [];
+    // var states = model.mdlJson.mdl.states;
+    // for (var j = 0; j < states.length; j++) {
+    //   var state = states[j];
+    //   for (var k = 0; k < state.event.length; k++) {
+    //     var event = state.event[k];
+    //     event.stateName = state.name;
+    //     if (event.eventType == "response") {
+    //       inputEvents.push(event);
+    //     } else {
+    //       outputEvents.push(event);
+    //     }
+    //   }
+    // }
 
-    cell.inputEvents = inputEvents;
-    cell.outputEvents = outputEvents;
+    cell.inputEvents = model.inputEvents;
+    cell.outputEvents = model.outputEvents;
     console.log(cell)
   }
 

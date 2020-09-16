@@ -127,8 +127,8 @@
                                 <i class="fa fa-arrow-left" style="margin-right:2px "></i>
                               </div>
                               <div class="squareButton" id="refreshPackageBtn"
-                                   @click="refreshPackage($event,1)">
-                                <i class="fa fa-refresh" style="font-weight: 600"></i>
+                                   @click="refreshPackage(1)">
+                                <i class="fa fa-refresh" style="font-weight: 600;transition: .5s ease-out"></i>
                               </div>
                               <div class="showPathContainer" style="margin-left: 10px">
                                 <div>path</div>
@@ -284,11 +284,11 @@
 
 <!--        <textarea id="detail" style="display: none"-->
 <!--                  placeholder="Input detail about the data here."></textarea>-->
-      <el-dialog modal-append-to-body append-to-body
-
+      <el-dialog
+              modal-append-to-body append-to-body
               title="Upload Data"
               :visible.sync="uploadDialogVisible"
-              width="30%"
+              width="32%"
               :before-close="uploadBeforeClose"
       >
 
@@ -300,13 +300,16 @@
 
 
         <div class="uploaded" v-loading="uploadLoading">
+          <div  class="headProgressContainer" v-show="progressFlag">
+            <el-progress class="headProgress" type="circle" :percentage="uploadProgress"></el-progress>
+          </div>
           <div class="form-group flexColContainer">
-            <label style="margin-right:5px;">Name :</label>
+            <label style="margin-right:5px;font-size: 1.4rem">Name :</label>
             <el-input v-model="uploadName" placeholder="Dataset name"></el-input>
           </div>
 
           <div class="form-group flexColContainer">
-            <label style="margin-right:5px;">Data template :</label>
+            <label style="margin-right:5px;font-size: 1.4rem">Data template :</label>
             <el-select
                     v-model="selectValue"
                     filterable
@@ -325,16 +328,20 @@
           </div>
 
           <div class="form-group flexColContainer">
-            <label style="margin-right:5px;">Storage path :</label>
-            <el-button type="primary" plain size="mini" @click="selectFolder"
-                       v-if="selectedPath.length==0&&uploadInPath==0">Select Folder
-            </el-button>
-            <div class="showPathContainer" style="margin-left: 10px;margin-bottom: 5px"
-                 v-if="uploadInPath==0">
-              <div v-for="(path,index) in selectedPath" @click="selectFolder"
-                   style="text-decoration:underline;cursor: pointer"> /{{path.label}}
+            <label style="margin-right:5px;font-size: 1.4rem">Storage path :</label>
+            <div class="flexJustBetween">
+              <div class="showPathContainer" style="margin-left: 10px;margin-bottom: 5px"
+                   v-if="uploadInPath==0">
+                <div v-for="(path,index) in selectedPath" @click="selectFolder"
+                     style="text-decoration:underline;cursor: pointer"> /{{path.label}}
+                </div>
+
               </div>
+              <el-button type="primary" plain size="mini" @click="selectFolder"
+                         v-if="uploadInPath==0">Change
+              </el-button>
             </div>
+
             <div class="showPathContainer" style="margin-left: 10px;margin-bottom: 5px"
                  v-if="uploadInPath==1">
               <div v-for="(path,index) in pathShown"> /{{path.label}}</div>
@@ -344,19 +351,18 @@
             <!--                                                    </el-button>-->
           </div>
           <div class="form-group flexColContainer" style="margin-bottom: -15px">
-            <label style="margin-right:5px;">Upload files :</label>
-            <el-button size="mini" @click="selectFile()">Select File</el-button>
+            <label style="margin-right:5px;font-size: 1.4rem">Upload files :</label>
+            <el-button size="mini" type="primary" plain @click="selectFile()" style="margin-top: 5px">Select File</el-button>
           </div>
           <el-upload
-                  class="upload-demo"
+                  class="upload-demo wzhScrollbar customUpload"
                   multiple="true"
                   ref="upload"
                   :on-change="uploadChange"
                   :on-remove="uploadRemove"
-
                   :on-success="handleSuccess"
                   :file-list="uploadFileList"
-                  :auto-upload="false">
+                  :auto-upload="false" style="min-height: 35px;max-height: 99px;margin-top: 15px">
             <el-button id="uploadFile" style="display:none" slot="trigger" size="small"
                        type="primary">选取文件
             </el-button>
@@ -366,17 +372,17 @@
         </div>
 
         <span slot="footer" class="dialog-footer">
-                                  <el-button @click="uploadClose">
-                                      Cancel
-                                  </el-button>
+                                <el-button @click="uploadClose">
+                                    Cancel
+                                </el-button>
 
-                                  <el-button type="primary" @click="submitUpload">
-                                      Confirm
-                                  </el-button>
-                              </span>
+                                <el-button type="primary" @click="submitUpload">
+                                    Confirm
+                                </el-button>
+                            </span>
       </el-dialog>
 
-      <el-dialog append-to-body :visible.sync="addFolderIndex" title="Add New Folder">
+      <el-dialog append-to-body :visible.sync="addFolderIndex" title="Add New Folder" width="32%">
         <div class="showPathContainer">
           <div class="containerWithBorder">path</div>
           :
@@ -388,12 +394,12 @@
         </div>
         <el-input placeholder="Please input the name of the new folder"
                   v-model="newFolderName"
-                  style="width: calc(100% - 30px);margin:0 15px"></el-input>
+                  style="width: calc(100% - 10px);margin:5px 5px 0"></el-input>
         <span slot="footer" class="dialog-footer">
-                                                      <el-button class="pull-left" type="primary"
-                                                                 icon="el-icon-folder-add" @click="addFolder()">Add new folder</el-button>
-                                                      <el-button @click="addFolderIndex = false">Cancel</el-button>
-                                                  </span>
+                        <el-button @click="addFolderIndex = false">Cancel</el-button>
+                        <el-button type="primary" style="margin-right: 5px"
+                                   icon="el-icon-folder-add" @click="addFolder()">Confirm</el-button>
+                                                </span>
       </el-dialog>
 
       <el-dialog append-to-body

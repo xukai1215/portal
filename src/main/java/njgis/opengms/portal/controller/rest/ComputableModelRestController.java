@@ -297,6 +297,13 @@ public class ComputableModelRestController {
         return ResultUtils.success(list);
     }
 
+    @RequestMapping(value = "/getModelByOid")
+    JsonResult getModelByOid(@RequestParam("oid")String oid){
+        ComputableModel computableModel = computableModelService.getModelByOid(oid);
+
+        return ResultUtils.success(computableModel);
+    }
+
     @RequestMapping(value = "/test")
     ModelAndView test(){
         ModelAndView mv = new ModelAndView("integratedModelList");

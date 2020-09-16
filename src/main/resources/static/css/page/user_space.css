@@ -2692,9 +2692,7 @@ ul.flexLi {
     top: 0;
 }
 
-.w100{
-    width: 100%;
-}
+
 
 .content_w32 {
     width: 32%;
@@ -3238,6 +3236,10 @@ nav .totalContainer{
 
 .customUpload .el-upload.el-upload--text{
     display: none;
+}
+
+.wzhSelectContainer input{
+    width: 125px;
 }
 
 @media only screen and (min-width: 1000px) {

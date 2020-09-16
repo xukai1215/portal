@@ -3092,7 +3092,9 @@ input[type=file] {
     z-index: -1;
 }
 
-
+.customUpload .el-upload.el-upload--text{
+    display: none;
+}
 
 @media only screen and (min-width: 1000px) {
     .mainContent {
