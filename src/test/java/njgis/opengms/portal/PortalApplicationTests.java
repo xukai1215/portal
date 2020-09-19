@@ -808,6 +808,8 @@ public class PortalApplicationTests {
             user.setTemplates(templateList.size());
             user.setThemes(themeList.size());
 
+            System.out.println(modelItemList.size());
+            System.out.println("No."+i);
             userDao.save(user);
 
         }

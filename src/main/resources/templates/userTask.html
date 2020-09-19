@@ -76,8 +76,8 @@
                                 <h3 style="margin-left: 10px" >Task</h3>
                             </div>
                             <!--                        <h5>You can manager your model and data here</h5>-->
-                            <div class="col-md-3 flexRowContainer flexColCenter wzhSelectContainer">Task status:
-                                <el-select v-model="taskStatus" placeholder="task status" size="mini" @change="changeTaskStatus">
+                            <div class="col-md-3 flexRowContainer flexColCenter wzhSelectContainer" style="margin-top: 10px">Task status:
+                                <el-select v-model="taskStatus" placeholder="task status" size="mini" @change="changeTaskStatus" >
                                     <el-option
                                             v-for="item in options"
                                             :key="item.value"
@@ -234,13 +234,19 @@
                                         </div>
                                     </div>
                                 </div>
-                                <h4 class="col-sm-12 text-center" v-if="resourceLoad">Loading ...</h4>
-                                <h4 class="col-sm-12 text-center" v-if="searchResult.length==0&&resourceLoad==false">No
-                                    calculation tasks</h4>
+                                <div style="margin-top: 50px">
+                                    <h4 class="col-sm-12 text-center" v-if="resourceLoad"><i class="ms-Icon ms-Icon--ProgressRingDots rotate_cw_1" style="margin-right: 10px"></i>Loading ...</h4>
+                                    <h4 class="col-sm-12 text-center" v-if="searchResult.length==0&&resourceLoad==false">No
+                                        calculation tasks</h4>
+                                </div>
                             </div>
                             <div class="flexRowCenter">
-                                <nav v-if="searchResult.length!=0&&resourceLoad==false" aria-label="Page navigation example">
-                                    <ul class="pagination pagination-circle pg-blue wzhPageControl">
+                                <nav v-if="searchResult.length!=0&&resourceLoad==false" class="flexCenter" style="width: 100%;position: relative"  aria-label="Page navigation example">
+                                    <div class="flexCenter totalContainer">
+                                        <p class="noMargin">Total Num: </p>
+                                        <h5 style="margin: 0 0 1px 0">{{totalNum}}</h5>
+                                    </div>
+                                    <ul class="pagination pagination-circle pg-blue wzhPageControl flexJustAround">
                                         <li class="page-item" :class="curPage!=1?'':'disabled'" @click="changePage(1)"><a
                                                 class="page-link"
                                                 style="border-radius: 10%;background-color: inherit">First</a></li>
@@ -266,7 +272,10 @@
                                             <a class="page-link">Last</a></li>
 
                                     </ul>
+
+
                                 </nav>
+
                             </div>
                         </div>
                     </div>
@@ -519,7 +528,7 @@
                 </el-dialog>
 
                 <!-- 多文件展示-->
-                <el-dialog :visible.sync="multiFileDialog" class="h600Dialog">
+                <el-dialog title="Multiple File" :visible.sync="multiFileDialog" class="h600Dialog">
                     <el-table
                             :data="outputMultiFile" style="width: 100%">
                         <el-table-column
@@ -535,7 +544,7 @@
                         <el-table-column
                                 prop="url"
                                 label="url"
-                                width="225">
+                                width="240">
                         </el-table-column>
                         <el-table-column
                                 prop=""
@@ -543,11 +552,15 @@
                             <template slot-scope="scope">
                                 <el-button plain circle type="success"
                                            @click="shareOutput(scope.row.url)">
-                                    <i class="fa fa-share-square-o"></i>
+                                    <i class="fa fa-share-square-o" style="width: 14px"></i>
                                 </el-button>
                                 <el-button plain circle type="warning"
                                            @click="downloadSingle(scope.row.url)">
-                                    <i class="fa fa-download"></i>
+                                    <i class="fa fa-download" style="width: 14px"></i>
+                                </el-button>
+                                <el-button plain circle type="primary"
+                                           @click="addOutputToMyData(scope.row)">
+                                    <i class="fa fa-plus" style="width: 14px"></i>
                                 </el-button>
 <!--                                <el-button plain circle type="primary"-->
 <!--                                           v-if="scope.row.visual"-->

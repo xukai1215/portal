@@ -6,7 +6,7 @@ function gotoTop(minHeight){
 
         })
 
-    // 获取页面的最小高度，无传入值则默认为600像素
+    // 获取页面的最小高度，无传入值则默认为5000像素
     minHeight? minHeight = minHeight:minHeight = 5000;
 
     // 为窗口的scroll事件绑定处理函数

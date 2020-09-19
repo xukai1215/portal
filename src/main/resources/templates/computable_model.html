@@ -210,7 +210,7 @@
                         <div class="el-card dataitemisol is-never-shadow"
                              th:each="data,key:${resources}"
                              th:title="${data.name}" shadow="never" th:id="${key.index}"
-                             th:key="${key.index}" @click.native="getid(id)"
+                             th:key="${key.index}" @click.native="getid(id)" @contextmenu.prevent="openMenu($event,id)"
                              style="width: 150px;"><!---->
                             <a target="_blank"
                                th:href="${loadPath}+'/computableModel/'+${modelInfo.contentType}+${data.path}"
@@ -241,7 +241,7 @@
                     </div>
 
 
-                    <el-card class="browsermenu">
+                    <el-card v-if="rightMenuShow" class="browsermenu" ref="rightMenu">
                         <el-button id="dbtn" icon="el-icon-download" @click="downloaddata()" type="text">download
                         </el-button>
                         <br>
@@ -648,7 +648,7 @@
     <div th:replace="fragments/footer :: footer"></div>
 
 </div>
-<template th:replace="fragments/editComputableModelModule :: editComputableModelModule"></template>
+<template th:replace="modules/editComputableModelModule :: editComputableModelModule"></template>
 
 </body>
 

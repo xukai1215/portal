@@ -17,7 +17,7 @@ var userCommunity = Vue.extend(
 
                 },
 
-
+                countInfo:{},
             }
         },
 
@@ -93,7 +93,6 @@ var userCommunity = Vue.extend(
                     },
                     crossDomain: true,
                     success: (data) => {
-                        data = JSON.parse(data);
 
                         console.log(data);
 
@@ -101,6 +100,7 @@ var userCommunity = Vue.extend(
                             alert("Please login");
                             window.location.href = "/user/login";
                         } else {
+                            this.countInfo = data.countInfo
                             this.userId = data.oid;
                             this.userName = data.name;
                             console.log(this.userId)

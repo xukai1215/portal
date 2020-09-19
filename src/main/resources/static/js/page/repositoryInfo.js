@@ -266,6 +266,53 @@ new Vue({
         ],
 
         coordianate:{wkname:''},
+
+        loading:false,
+
+        loadSpatialDialog:false,
+
+        transformVisible:false,
+        inputCoordinate:{
+            geogcs:{
+                unit:{
+                    key:''
+                }
+            }
+        },
+        inputX:'',
+        inputY:'',
+        inputLong:'',
+        inputLat:'',
+        outputCoordinate:{
+            geogcs:{
+                unit:{
+                    key:''
+                }
+            }
+        },
+        outputX:'',
+        outputY:'',
+        outputLong:'',
+        outputLat:'',
+
+        pageOption: {
+            paginationShow:false,
+            progressBar: true,
+            sortAsc: false,
+            currentPage: 1,
+            pageSize: 10,
+
+            total: 11,
+        },
+        searchText:'',
+
+        isInSearch:0,
+
+        loadStatus:0,
+
+        searchResult:[{
+            name:'',
+        }],
     },
     methods: {
         submitLocalization(){
@@ -466,7 +513,6 @@ new Vue({
                 },
                 crossDomain: true,
                 success: (data) => {
-                    data = JSON.parse(data);
                     if (data.oid === "") {
                         this.$confirm('<div style=\'font-size: 18px\'>This function requires an account, <br/>please login first.</div>', 'Tip', {
                             dangerouslyUseHTMLString: true,
@@ -584,24 +630,25 @@ new Vue({
             return i
         },
 
-        initCompd(wkt){
+        initCompd(coordianate,wkt){
             let index=wkt.indexOf('COMPD_CS')
             let regex = /"([^"]*)"/g;
             let currentResult=regex.exec(wkt);
-            this.coordianate.name=currentResult[1]
+            coordianate.coName=currentResult[1]
         },
 
-        initProj(wkt){
+        initProj(coordianate,wkt){
             let index=wkt.indexOf('PROJCS')
             let str=wkt.substring(index,wkt.length)
             let regex = /"([^"]*)"/g;
             let currentResult=regex.exec(str);
-            if (this.coordianate.compd==0) {
-                this.coordianate.name=currentResult[1]
+            if (coordianate.compd==0) {
+                coordianate.coName=currentResult[1]
             }
             let obj={}
             obj.name=currentResult[1]
-            let eleStart=wkt.indexOf('PARAMETER')
+            let a = wkt.indexOf('GEOGCS')+6
+            let eleStart = this.bracketMatch(wkt.substring(a),1)+2
             let eleEnd=wkt.indexOf('VERT_CS')==-1?wkt.length:wkt.indexOf('VERT_CS')
             obj.parameters=this.initEle("PARAMETER",wkt.substring(eleStart,eleEnd))
             obj.unit=this.initEle("UNIT",wkt.substring(eleStart,eleEnd))[0]
@@ -706,65 +753,65 @@ new Vue({
 
         },
 
-
-        wktTransfer(wkt){
+        wktTransfer(coordinate,wkt){
             let obj={};
+            // if(wkt.indexOf('GEOGCS')==-1) return
             // let subStrIndex=this.findFirstCoupe(wkt)
             if(wkt.indexOf('COMPD_CS')!=-1){
-                this.coordianate.compd=1
-                this.initCompd(wkt)
+                coordinate.compd=1
+                this.initCompd(coordinate,wkt)
 
             }
             else{
-                this.coordianate.compd=0
+                coordinate.compd=0
                 // this.initGeog(wkt)
             }
             if(wkt.indexOf('PROJCS')!=-1){
-                this.coordianate.projcs=this.initProj(wkt)
+                coordinate.projcs=this.initProj(coordinate,wkt)
             }
 
             if(wkt.indexOf('GEOGCS')!=-1){
                 let start = wkt.indexOf('GEOGCS')+6
                 let end = this.bracketMatch(wkt.substring(start),1)
-                this.coordianate.geogcs=this.initGeog(wkt.substring(start+1,end+start))
+                coordinate.geogcs=this.initGeog(wkt.substring(start+1,end+start))
             }
 
             if(wkt.indexOf('DATUM')!=-1) {
                 let start = wkt.indexOf('DATUM') + 5
                 let end = this.bracketMatch(wkt.substring(start), 1)
-                this.coordianate.datum = this.initDatum(wkt.substring(start + 1, end+start))
+                coordinate.datum = this.initDatum(wkt.substring(start + 1, end+start))
             }
 
             if(wkt.indexOf('SPHEROID')!=-1) {
                 let start = wkt.indexOf('SPHEROID') + 8
                 let end = this.bracketMatch(wkt.substring(start), 1)
-                this.coordianate.spheroid = this.initSpheoid(wkt.substring(start + 1, end+start))
+                coordinate.spheroid = this.initSpheoid(wkt.substring(start + 1, end+start))
             }
 
             if(wkt.indexOf('PRIMEM')!=-1) {
                 let start = wkt.indexOf('PRIMEM') + 6
                 let end = this.bracketMatch(wkt.substring(start), 1)
-                this.coordianate.prime = this.initPrime(wkt.substring(start + 1, end+start))
+                coordinate.prime = this.initPrime(wkt.substring(start + 1, end+start))
             }
 
             if(wkt.indexOf('PROJECTION')!=-1) {
                 let start = wkt.indexOf('PROJECTION') + 10
                 let end = this.bracketMatch(wkt.substring(start), 1)
-                this.coordianate.projection = this.initProjection(wkt.substring(start + 1, end+start))
+                coordinate.projection = this.initProjection(wkt.substring(start + 1, end+start))
             }
 
             if(wkt.indexOf('VERT_CS')!=-1) {
                 let start = wkt.indexOf('VERT_CS') + 7
                 let end = this.bracketMatch(wkt.substring(start), 1)
-                this.coordianate.vertcs = this.initGeog(wkt.substring(start + 1, end+start))
+                coordinate.vertcs = this.initGeog(wkt.substring(start + 1, end+start))
             }
 
             if(wkt.indexOf('VERT_DATUM')!=-1) {
                 let start = wkt.indexOf('VERT_DATUM') + 10
                 let end = this.bracketMatch(wkt.substring(start), 1)
-                this.coordianate.vDatum = this.initGeog(wkt.substring(start + 1, end+start))
+                coordinate.vDatum = this.initGeog(wkt.substring(start + 1, end+start))
             }
-            console.log(this.coordianate)
+
         },
 
         findFirstCoupe(str){
@@ -778,26 +825,263 @@ new Vue({
         loadCSDetails(){
             let href = window.location.href;
             let hrefs = href.split('/');
+            let item = hrefs[hrefs.length - 2].split("#")[0];
             let oid = hrefs[hrefs.length - 1].split("#")[0];
-
-            axios.get('/spatial/getWKT',{
-                params:{
-                    oid:oid,
-                }
-                }
-
-            ).then(res=>{
-                if(res.data.code==0){
-                    let data = res.data.data;
-                    if(data.wktname!=null||data.wktname!=''){
-                        this.coordianate.wkname=data.wktname;
-                    }
-                    if(data.wkt!=null||data.wkt!=''){
-                        this.wktTransfer(data.wkt);
+            if(item=='spatialReference'){
+                axios.get('/spatial/getWKT',{
+                        params:{
+                            oid:oid,
+                        }
                     }
 
+                ).then(res=>{
+                    if(res.data.code==0){
+                        let data = res.data.data;
+                        if(data.wktname!=null||data.wktname!=''){
+                            this.coordianate.wkname=data.wktname;
+                        }
+                        if(data.wkt!=null||data.wkt!=''){
+                            this.wktTransfer(this.coordianate,data.wkt);
+                            console.log(this.coordianate)
+                        }
+
+                    }
+                })
             }
-            })
+
+        },
+
+        isNum(val){
+            var regPos = /^\d+(\.\d+)?$/; //非负浮点数
+            var regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; //负浮点数
+            if(regPos.test(val) || regNeg.test(val)) {
+                return true;
+            } else {
+                return false;
+            }
+        },
+
+        loadSpatialReferenceClick(status) {
+            this.loadSpatialDialog = true;
+            this.loadStatus=status
+            this.pageOption.currentPage = 1;
+            this.searchResult = '';
+            this.loadSpatialReference();
+
+        },
+
+        handlePageChange(val) {
+            this.pageOption.currentPage = val;
+
+            if(this.inSearch==0)
+                this.loadSpatialReference();
+            else
+                this.searchSpatialReference()
+        },
+        loadSpatialReference(){
+            this.inSearch = 0
+            this.loading = true;
+            axios.get('/spatial/getSpatialReference',{
+                params:{
+                    asc:0,
+                    page:this.pageOption.currentPage-1,
+                    size:6,
+                }
+            }).then(
+                (res)=>{
+                    if(res.data.code==0){
+                        let data = res.data.data;
+                        this.searchResult = data.content
+                        this.pageOption.total = data.total;
+                        setTimeout(()=>{
+                            this.loading = false;
+                        },100)
+                    }else{
+                        this.$alert('Please try again','Warning', {
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                this.loading = false;
+                            }
+                        })
+
+                    }
+                }
+            )
+        },
+
+        searchSpatialReference(page){
+            this.inSearch = 1
+            this.loading = true;
+            let targetPage = page==undefined?this.pageOption.currentPage:page
+            this.pageOption.currentPage=targetPage
+            axios.get('/spatial/searchSpatialReference',{
+                params:{
+                    asc:0,
+                    page:targetPage-1,
+                    size:6,
+                    searchText: this.searchText,
+                }
+            }).then(
+                (res)=>{
+                    if(res.data.code==0){
+                        let data = res.data.data;
+                        this.searchResult = data.content
+                        this.pageOption.total = data.total;
+                        setTimeout(()=>{
+                            this.loading = false;
+                        },150)
+
+                    }else{
+                        this.$alert('Please try again','Warning', {
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                this.loading = false;
+                            }
+                        })
+
+                    }
+                }
+            )
+        },
+
+        loadCoordinate(item){
+            this.inputX=this.inputY=this.inputLat=this.inputLong=this.outputX=this.outputY=this.outputLat=this.outputLong=''
+            this.loadSpatialDialog=false
+            if(this.loadStatus==0){
+                this.inputCoordinate= item
+                this.inputCoordinate.name = item.name
+                this.inputCoordinate.wkt = item.wkt
+                this.wktTransfer(this.inputCoordinate,this.inputCoordinate.wkt)
+            }else{
+                this.outputCoordinate = item
+                this.outputCoordinate.name = item.name
+                this.outputCoordinate.wkt = item.wkt
+                this.wktTransfer(this.outputCoordinate,this.outputCoordinate.wkt)
+            }
+
+        },
+
+        judgeUnit(coordinate){
+            if(coordinate.geogcs==undefined) return 'metre'
+            if(coordinate.geogcs.unit.key.toLowerCase().indexOf('metre')==-1) {
+                if (coordinate.projcs!=undefined&&coordinate.projcs.unit.key.toLowerCase().indexOf('metre') != -1) {
+                    return 'metre'
+                } else {
+                    return 'degree'
+                }
+            }else{
+                if (coordinate.projcs!=undefined&&coordinate.projcs.unit.key.toLowerCase().indexOf('metre') != -1) {
+                    return 'metre'
+                } else {
+                    return 'degree'
+                }
+            }
+
+        },
+
+        transformXY(){
+            if(this.judgeUnit(this.inputCoordinate)==='metre'){
+                if(this.inputCoordinate.name==''){
+                    this.$alert('Please select the input coordinate system')
+                    return
+                }
+                if(this.inputX==''||this.inputY==''||!this.isNum(this.inputX)||!this.isNum(this.inputY)){
+                    this.$alert('Please input valid value')
+                    return
+                }
+
+            }else{
+                if(this.inputCoordinate.name==''){
+                    this.$alert('Please select the input coordinate system')
+                    return
+                }
+                if(this.inputLong==''||this.inputLat==''||!this.isNum(this.inputLong)||!this.isNum(this.inputLat)){
+                    this.$alert('Please input valid value')
+                    return
+                }
+            }
+
+            if(this.outputCoordinate.name==''){
+                this.$alert('Please select the output coordinate system')
+                return
+            }
+
+            let inX = parseFloat(this.judgeUnit(this.inputCoordinate)==='metre'?this.inputX:this.inputLong)
+            let inY = parseFloat(this.judgeUnit(this.inputCoordinate)==='metre'?this.inputY:this.inputLat)
+
+            var firstProjection = this.inputCoordinate.wkt;
+            var secondProjection = this.outputCoordinate.wkt;
+
+            if(firstProjection.indexOf('GEOGCS')==-1||secondProjection.indexOf('GEOGCS')==-1){
+                this.$alert('The selected coordinates are not supported to transform.')
+                return
+            }
+
+            let result
+            try{
+                result=proj4(firstProjection,secondProjection,[inX,inY]);
+            }catch (e) {
+                this.$alert('The selected coordinates are not supported to transform.')
+            }
+
+            if(this.judgeUnit(this.outputCoordinate)==='metre') {
+                this.outputX = result[0].toFixed(5)
+                this.outputY = result[1].toFixed(5)
+            }else{
+                this.outputLong = result[0].toFixed(5)
+                this.outputLat = result[1].toFixed(5)
+            }
+            // let inCoorNum=this.inputCoordinate.substring(this.inputCoordinate.indexOf('.')+1)
+            // let outCoorNum=this.outputCoordinate.substring(this.outputCoordinate.indexOf('.')+1)
+            //
+            // let obj={
+            //     inCoordinate:inCoorNum,
+            //     inX:inX,
+            //     inY:inY,
+            //     outCoordinate:outCoorNum,
+            // }
+            // var vthis=this
+            // $.ajax({
+            //     url: 'http://epsg.io/trans',
+            //     dataType: "jsonp",
+            //     data: {
+            //         x:inX,
+            //         y:inY,
+            //         s_srs:inCoorNum,
+            //         t_srs:outCoorNum
+            //     },
+            //     success: (data) => {
+            //         if(data!=null){
+            //             this.outputX=data.x
+            //             this.outputY=data.y
+            //
+            //         }else{
+            //             this.$alert('Connection timed out, please try again')
+            //         }
+            //     }
+            // });
+
+        },
+
+        exchangeIO(){
+            let a = this.inputCoordinate
+            this.inputCoordinate = this.outputCoordinate
+            this.outputCoordinate = a
+
+            if(this.judgeUnit(this.inputCoordinate)==='metre'){
+                this.inputX=this.outputX
+                this.outputX=''
+
+                this.inputY=this.outputY
+                this.outputY=''
+
+            }else{
+                this.inputLong=this.outputLong
+                this.outputLong=''
+
+                this.inputLat=this.outputLat
+                this.outputLat=''
+            }
         },
 
         setSession(name, value) {
@@ -807,7 +1091,7 @@ new Vue({
     mounted() {
         this.setSession("history", window.location.href);
         $.get("/user/load", {}, (result) => {
-            let res=JSON.parse(result);
+            let res=result;
 
                 if (res.oid != '') {
                     this.useroid = res.oid;
@@ -829,6 +1113,13 @@ new Vue({
         });
 
         this.loadCSDetails()
+
+        this.inputCoordinate.name = window.spatialRfInPage.name
+        this.inputCoordinate.wkt = window.spatialRfInPage.wkt
+        this.wktTransfer(this.inputCoordinate,this.inputCoordinate.wkt)
+        this.outputCoordinate.name = window.spatialRfInPage.name
+        this.outputCoordinate.wkt = window.spatialRfInPage.wkt
+        this.wktTransfer(this.outputCoordinate,this.outputCoordinate.wkt)
     }
 
 
@@ -846,3 +1137,4 @@ for(i=0;i<qrcodes.length;i++) {
         correctLevel: QRCode.CorrectLevel.H
     });
 }
+

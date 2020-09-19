@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Simulation | OpenGMS</title>
+
+
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/index/bootstrap.min.css" />
+    <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
+    <link rel="stylesheet" href="/static/css/base/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/base/style.css">
+    <link rel="stylesheet" href="/static/css/base/universal.css">
+    <link rel="stylesheet" href="/static/css/common/wzhStyle.css">
+    <link rel="stylesheet" href="/static/css/common/wzhFlexContainer.css">
+    <link rel="stylesheet" href="/static/css/page/user_space.css">
+    <link rel="stylesheet" href="/static/css/page/demo.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css" />
+
+</head>
+<body>
+<div id="app">
+    <div th:replace="fragments/navbar :: unlog"></div>
+    <div class="clearfix" :style="{'min-height':ScreenMinHeight}" v-cloak>
+        <div class="flexCenter" style="width: 100%">
+            <div style="width: 50%">
+                <div class="wzhDashedCard borderBlue" style="padding: 35px">
+                    <p v-if="modelList[0]!=undefined">{{modelList[0].name}}</p>
+                    <el-button size="small" type="success" @click="loadDeployedModelClick(0)">Select model</el-button>
+                </div>
+            </div>
+            <div style="width: 50%">
+                <div v-if="targetTaskModel[1]==undefined||targetTaskModel[1].length==0" class="wzhDashedCard borderBlue"  style="padding: 35px">
+                    <p v-if="modelList[1]!=undefined">{{modelList[1].name}}</p>
+                    <el-button size="small" type="success" @click="loadDeployedModelClick(1)">Select model</el-button>
+                </div>
+                <div v-else v-for="(taskModel,index) in targetTaskModel[1]" class="wzhDashedCard" :class="getStatus(taskModel)" style="padding: 35px">
+                    <p v-if="modelList[1]!=undefined">{{modelList[1].name}}</p>
+                    <el-button size="small" type="success" @click="setData(index)">Invoke</el-button>
+                </div>
+            </div>
+
+        </div>
+        <el-dialog title="Deployed models" :visible.sync="loadDeployedModelDialog">
+            <div v-loading="loading">
+                <div class="flexRow flexJustCenter" style="margin-top: 12px; margin-left: 10px;">
+                    <div class="flexRow flexColCenter" style="width: 50%;mini-width:250px">
+                        <input placeholder="Search for ..." v-model="searchText" class="noBorderInput miniInput" @keyup.enter="searchDeployedModel(1)">
+                    </div>
+                    <i class="fa fa-search cursorPointer" style="font-size: 18px;" @click="searchDeployedModel(1)"></i>
+                </div>
+                <el-table style="padding-left:10px "
+                          :data="deployedModel">
+                    <el-table-column
+                            label="Name"
+                    >
+                        <template slot-scope="scope">
+                            <a :href="'/computableModel/'+scope.row.oid">{{scope.row.name}}</a>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            label="Option"
+                            width="180"
+                    >
+                        <template slot-scope="scope">
+                            <el-button size="mini" round type="success" @click="invokeModel(scope.row)">Invoke</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <el-pagination style="text-align: center;margin-top:20px"
+                               @current-change="handlePageChange"
+                               :current-page="pageOption.currentPage"
+                               layout="total, prev, pager, next, jumper"
+                               :page-size="6"
+                               :total="pageOption.total">
+                </el-pagination>
+
+            </div>
+            <div slot="footer" class="dialog-footer">
+                <span style="float:left;font-size: 16px">Or you can click <a style="cursor:pointer" @click="jump">here</a> to create a new one.</span>
+                <el-button @click="dialogTableVisible = false;">Cancel</el-button>
+                <el-button type="primary" @click="confirm()">OK</el-button>
+            </div>
+        </el-dialog>
+        <el-dialog :visible.sync="taskConfigurationDialog">
+            <div v-loading="taskConfigurationLoading" style="min-height: 220px">
+                <el-row class="state-container wzhScrollbar" v-for="(state,index) in info.modelInfo.states"
+                        :key="index"
+                        justify="start" style="flex-wrap:wrap">
+                    <div class="leftContainer">
+                        <div class="modelState">
+                            <p class="state-name"> {{state.name}}</p>
+                            <p class="state-desc"> {{state.desc}}</p>
+                        </div>
+                    </div>
+                    <div style="width: 100%">
+                        <div class="_params-group">
+                            <el-row v-if="inEventList(state).length!==0" class="_title">Input</el-row>
+                            <div class="_items">
+                                <el-row v-for="(modelInEvent,inEventIndex) in inEventList(state)"
+                                        :key="inEventIndex" class="_item">
+                                    <el-row>
+                                        <el-col :span="11" class="_event-desc">
+                                    <span class="event-name" :title="modelInEvent.eventName">
+                                        <span v-show="!modelInEvent.optional" style="color:red">
+                                            *
+                                        </span>
+                                        {{modelInEvent.eventName}}
+                                    </span>
+                                            <span v-if="modelInEvent.data[0].externalId!=undefined">
+                                        <el-tag type="info" :disable-transitions="true">
+                                            Data Type:
+                                            <a style="text-decoration: underline" :href="'/repository/template/'+modelInEvent.data[0].externalId.toLowerCase()"
+                                               target="_blank">{{modelInEvent.data[0].text}}</a>
+                                        </el-tag>
+                                    </span>
+                                        </el-col>
+                                        <div v-if="modelInEvent.data[0].nodes==undefined">
+                                            <el-col :span="6" :offset="1">
+                                                <!--:value="modelInEvent.tag"-->
+                                                <el-input class="model-input"
+                                                          :value="modelInEvent.tag==undefined?'':(modelInEvent.tag+'.'+modelInEvent.suffix)"
+                                                          :id="'datainput'+inEventIndex"
+                                                          :disabled="true">
+                                                </el-input>
+                                            </el-col>
+
+                                            <el-col :span="6">
+                                                <div class="_btn-group">
+                                                    <!--<el-button plain round type="primary"-->
+                                                    <!--@click="editParam(modelInEvent)"-->
+                                                    <!--circle>-->
+                                                    <!--<i class="fa fa-edit"></i>-->
+                                                    <!--</el-button>-->
+
+                                                    <!--<el-button  plain round type="primary"-->
+                                                    <!--@click="upload(modelInEvent)" :disabled="modelInEvent.uploading">-->
+                                                    <!--<i v-if="!modelInEvent.uploading" class="fa fa-cloud-upload"></i>-->
+                                                    <!--<i v-else class="el-icon-loading" style="font-size: 15px;font-weight: bold"></i>-->
+                                                    <!--</el-button>-->
+
+                                                    <!--<el-button plain round type="primary"-->
+                                                    <!--@click="selectFromDataItem(modelInEvent)"-->
+                                                    <!--circle>-->
+                                                    <!--<i class="fa fa-th-large"></i>-->
+                                                    <!--</el-button>-->
+                                                    <el-button plain round type="success"
+                                                               @click="checkPersonData(modelInEvent)">
+                                                        <i class="fa fa-folder-open"></i>
+                                                    </el-button>
+                                                    <el-button plain round type="success" v-if="outputList.length>0"
+                                                               @click="checkOutputData(modelInEvent)">
+                                                        <i class="fa fa-table"></i>
+                                                    </el-button>
+                                                    <el-button plain round type="warning"
+                                                               v-if="modelInEvent.url!=''&&modelInEvent.url!=null"
+                                                               @click="download(modelInEvent)">
+                                                        <i class="fa fa-download"></i>
+                                                    </el-button>
+
+                                                    <el-button plain round type="primary"
+                                                               v-if="modelInEvent.visual"
+                                                               @click="visualize(modelInEvent)">
+                                                        <i class="fa fa-eye"></i>
+                                                    </el-button>
+                                                </div>
+                                            </el-col>
+                                        </div>
+                                    </el-row>
+
+                                    <el-row>
+                                        <el-table v-if="modelInEvent.children!=undefined"
+                                                  :data="modelInEvent.children"
+                                                  border
+                                                  style="width: 100%">
+                                            <el-table-column
+                                                    prop="eventName"
+                                                    label="Parameter"
+                                            >
+                                            </el-table-column>
+                                            <el-table-column
+                                                    prop="eventDesc"
+                                                    label="Description"
+                                            >
+                                            </el-table-column>
+                                            <el-table-column
+                                                    label="Data Type"
+                                            >
+                                                <template slot-scope="scope">
+                                                    <el-tag type="info" :disable-transitions="true">
+                                                        {{scope.row.eventType}}
+                                                    </el-tag>
+                                                </template>
+                                            </el-table-column>
+                                            <el-table-column
+
+                                                    label="Value">
+                                                <template slot-scope="scope">
+                                                    <el-input class="model-input"
+                                                              v-model="scope.row.value"
+                                                    >
+                                                    </el-input>
+                                                </template>
+                                            </el-table-column>
+                                        </el-table>
+                                    </el-row>
+                                    <el-row>
+                                        <p class="event-desc" :title="modelInEvent.eventDesc">
+                                            {{modelInEvent.eventDesc}}
+
+                                        </p>
+                                    </el-row>
+
+                                </el-row>
+                            </div>
+                        </div>
+
+                        <div class="_params-group">
+                            <el-row v-if="outEventList(state).length!==0" class="_title">Output</el-row>
+                            <div class="_items">
+                                <el-row v-for="(modelOutEvent,outEventIndex) in outEventList(state)"
+                                        :key="outEventIndex" class="_item">
+                                    <el-row>
+                                        <el-col :span="11" class="_event-desc">
+                                    <span class="event-name" :title="modelOutEvent.eventName">
+                                        {{modelOutEvent.eventName}}
+                                    </span>
+                                            <span v-if="modelOutEvent.data[0].externalId!=undefined">
+                                        <el-tag type="info" :disable-transitions="true">
+                                            Data Type:
+                                            <a style="text-decoration: underline" :href="'/repository/template/'+modelOutEvent.data[0].externalId.toLowerCase()"
+                                               target="_blank">{{modelOutEvent.data[0].text}}</a>
+                                        </el-tag>
+                                    </span>
+                                        </el-col>
+                                        <el-col :span="6" :offset="1">
+                                            <el-input v-if="!modelOutEvent.multiple" class="model-input"
+                                                      :value="modelOutEvent.tag==undefined?'':(modelOutEvent.tag+'.'+modelOutEvent.suffix)"
+                                                      :disabled="true">
+                                            </el-input>
+                                            <el-tag v-else @click="checkMultiContent(modelOutEvent)"
+                                                    style="margin-top: 7px;width: 100%">
+                                                <div class="flexCenter cursorPointer">
+                                                    <i class="ms-Icon ms-Icon--StackIndicator"
+                                                       style="font-size: 14px;margin-right: 5px"></i>
+                                                    Multiple File
+                                                </div>
+
+                                            </el-tag>
+                                        </el-col>
+                                        <el-col :span="6" v-show="modelOutEvent.url!=null">
+                                            <div class="_btn-group">
+                                                <el-button v-if="!modelOutEvent.multiple" plain round
+                                                           type="warning"
+                                                           @click="download(modelOutEvent)">
+                                                    <i class="fa fa-download"></i>
+                                                </el-button>
+
+                                                <el-button plain round type="primary"
+                                                           v-if="modelOutEvent.visual"
+                                                           @click="visualize(modelOutEvent)">
+                                                    <i class="fa fa-eye"></i>
+                                                </el-button>
+                                            </div>
+
+
+                                        </el-col>
+                                    </el-row>
+                                    <el-row>
+                                        <p class="event-desc" :title="modelOutEvent.eventDesc">
+                                            {{modelOutEvent.eventDesc}}</p>
+                                    </el-row>
+
+                                </el-row>
+                            </div>
+                        </div>
+                    </div>
+                </el-row>
+            </div>
+
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="invoke">invoke</el-button>
+                <el-button v-if="runnedList.length>0" @click="continueTask">continue</el-button>
+            </div>
+        </el-dialog>
+
+        <el-dialog :visible.sync="showDataChose">
+            <user-data
+                    @com-selectfile="selectDataspaceFile"
+                    @com-removefile="removeDataspaceFile"
+                    single-choice
+                    ref="userDataSpace" style="height: 505px;"></user-data>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="showDataChose = false">Cancel</el-button>
+                <el-button type="primary" @click="selectDataFromPersonal">Confirm</el-button>
+
+            </span>
+        </el-dialog>
+
+        <el-dialog :visible.sync="outputDialog">
+            <el-table
+                    :data="outputList">
+                <el-table-column
+                        label="Name"
+                >
+                    <template slot-scope="scope">
+                        <p>{{scope.row.tag+'.'+scope.row.suffix}}</p>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        label="Muti"
+                >
+                    <template slot-scope="scope">
+                        <el-tag v-if="scope.row.length>1"
+                                style="margin-top: 7px;width: 100%">
+                            <div class="flexCenter cursorPointer">
+                                <i class="ms-Icon ms-Icon--StackIndicator"
+                                   style="font-size: 14px;margin-right: 5px"></i>
+                                Multiple File
+                            </div>
+
+                        </el-tag>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        label="Option"
+                        width="180"
+                >
+                    <template slot-scope="scope">
+                        <el-button size="mini" round type="success" @click="addOutput(scope.row)">add</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </el-dialog>
+    </div>
+
+    <div th:replace="fragments/footer :: footer"></div>
+</div>
+</body>
+<template th:replace="modules/userDataSpaceModule :: userDataSpaceModule"></template>
+<script src="/static/js/common/jquery-3.3.1.min.js"></script>
+<script src="/static/js/common/vue.min.js"></script>
+<script src="/static/js/index/bootstrap.min.js"></script>
+<script src="/static/js/common/axios.min.js"></script>
+<script src="/static/element-ui/index.js"></script>
+<script src="/static/element-ui/umd/locale/en.js"></script>
+<script src="/static/js/page/simulation.js"></script>
+<script src="/static/js/module/userDataSpaceModule.js"></script>
+<script src="/static/js/common/navbar.js"></script>
+</html>

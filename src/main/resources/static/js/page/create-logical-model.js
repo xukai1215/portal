@@ -325,7 +325,6 @@ var createLogicalModel = Vue.extend({
                 },
                 crossDomain: true,
                 success: (data) => {
-                    data = JSON.parse(data);
 
                     console.log(data);
 
@@ -407,7 +406,6 @@ var createLogicalModel = Vue.extend({
             },
             crossDomain: true,
             success: (data) => {
-                data = JSON.parse(data);
                 if (data.oid == "") {
                     alert("Please login");
                     window.location.href = "/user/login";

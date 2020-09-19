@@ -1,5 +1,11 @@
 var createModelItem = Vue.extend({
     template:'#createModelItem',
+
+    components: {
+        'avatar': VueAvatar.Avatar,
+        // 'vue-cropper':VueCropper.
+    },
+
     data() {
     return {
         defaultActive: '2-1',
@@ -346,8 +352,62 @@ var createModelItem = Vue.extend({
         doiLoading:false,
 
         doi:'',
+
+        itemName:'',
+
+        editType:'',
+
+        draft:{
+            oid:'',
+        },
+
+        toCreate:1,
+
+        timeOut:{},
+
+        savingDraft:false,
+
+        step:1,
+
+        draftList:[],
+
+        draftListDialog:false,
+
+        matchedDraft:{},
+
+        matchedCreateDraft:{},
+
+        matchedCreateDraftDialog:false,
+
+        draftLoading:false,
+
+        pageOption: {
+            paginationShow:false,
+            progressBar: true,
+            sortAsc: false,
+            currentPage: 1,
+            pageSize: 10,
+
+            total: 11,
+            searchResult: [],
+        },
+
+        inSearch:0,
+
+        imgClipDialog:false,
+
+        cancelDraftDialog:false,
+
+        loading:true,
+
+        dragReady:false,
     }
     },
+
+    computed(){
+
+    },
+
     methods: {
         // handleSelect(index,indexPath){
         //     this.setSession("index",index);
@@ -374,12 +434,432 @@ var createModelItem = Vue.extend({
 
         },
 
+        onInputName(){
+            console.log(1)
+            if(this.toCreate==1){
+                this.toCreate=0
+                this.timeOut=setTimeout(()=>{
+                    this.toCreate=1
+                },30000)
+                this.createDraft()
+            }
+        },
+        //drafts
+        getStep(){
+            let domID=$('.step-tab-panel.active')[0].id
+            return parseInt(domID.substring(domID.length-1,domID.length))
+        },
+
+        getContent(step) {
+            let content = {
+                classification: this.cls,
+                status: this.status,
+                name: this.itemName
+            }
+            content.overView = $("#descInput").val()
+            content.keywords = $("#tagInput").val().split(",");
+            content.image = $('#imgShow').get(0).currentSrc;
+            let references = new Array();
+            var ref_lines = $("#dynamic-table tr");
+            for (let i = 1; i < ref_lines.length; i++) {
+                var ref_prop = ref_lines.eq(i).children("td");
+                if (ref_prop != 0) {
+                    var ref = {};
+                    ref.title = ref_prop.eq(0).text();
+                    if (ref.title == "No data available in table")
+                        break;
+                    ref.author = ref_prop.eq(1).text().split(",");
+                    ref.date = ref_prop.eq(2).text();
+                    ref.journal = ref_prop.eq(3).text();
+                    ref.volume = ref_prop.eq(4).text();
+                    ref.pages = ref_prop.eq(5).text();
+                    ref.links = ref_prop.eq(6).text();
+                    ref.doi = ref_prop.eq(7).text();
+                    references.push(ref);
+                }
+            }
+            content.references = references
+
+            content.detail = tinyMCE.activeEditor.getContent().trim();
+
+            content.authorship = []
+            userspace.getUserData($("#providersPanel .user-contents .form-control"), content.authorship);
+
+            return content
+        },
+
+        createDraft(){//请求后台创建一个草稿实例,如果存在则更新
+            this.savingDraft=true
+
+            var step = this.getStep()
+            let content=this.getContent(step)
+
+            let urls=window.location.href.split('/')
+            let item=urls[6]
+            item=item.substring(6,item.length)
+            let obj={
+                content:content,
+                editType:this.editType,
+                itemType:item,
+                user:this.userId,
+                oid:this.draft.oid,
+            }
+            if(this.editType) {
+                obj.itemOid=this.$route.params.editId?this.$route.params.editId:null
+                obj.itemName= this.itemName;
+            }
+
+            axios.post('/draft/init',obj
+                ).then(
+                    res=>{
+                        if(res.data.code==0){
+                            this.draft=res.data.data;
+                            setTimeout(()=>{
+                                this.savingDraft=false
+                            },1005)
+                        }
+                    }
+            )
+        },
+
+        handlePageChange(val) {
+            this.pageOption.currentPage = val;
+
+            if(this.inSearch==0)
+                this.loadDraft();
+            else
+                this.searchDraft()
+        },
+
+        searchDraft(){
+
+        },
+
+        loadDraftClick(){
+            this.draftListDialog=true;
+
+            this.pageOption.currentPage = 1;
+            this.loadDraft()
+        },
+
+        loadDraft(){
+            axios.get('/draft/pageByUser',{
+                params:{
+                    asc:0,
+                    page:this.pageOption.currentPage-1,
+                    size:6,
+                }
+            }).then(res=>{
+                    if(res.data.code==0){
+                        let data=res.data.data
+                        this.draftList=data.content
+                        this.pageOption.total = data.total;
+                    }else{
+                        this.$alert('Please login first!', 'Error', {
+                            type:"error",
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                window.location.href = "/user/login";
+                            }
+                        });
+                    }
+                })
+        },
+
+        loadDraftByOid(){
+            axios.get('/draft/getByOid',{
+                params:{
+                    oid:this.draft.oid
+                }
+            }).then(res=>{
+                if(res.data.code==0){
+                    this.insertDraft(res.data.data)
+                }
+            })
+        },
+
+        loadMatchedDraft(){//匹配edit对应的
+            this.matchedDraft={}
+            axios.get('/draft/getByItemAndUser',{
+                params:{
+                    itemOid:this.$route.params.editId
+                }
+            }).then(res=>{
+                if(res.data.code==0){
+                    this.matchedDraft=res.data.data;
+                    if(this.matchedDraft!={}&&this.matchedDraft!=null){
+                        this.$confirm('You have a existed draft about this Item, do you want to load it? If not, this draft will be overwrited.', 'Tips', {
+                            confirmButtonText: 'Yes',
+                            cancelButtonText: 'No',
+                            type: 'warning'
+                        }).then(() => {
+                            this.insertDraft(this.matchedDraft)
+                        }).catch(() => {
+                            this.draft.oid=this.matchedDraft.oid
+                        });
+                    }
+                }
+
+
+            })
+        },
+
+        loadMatchedCreateDraft(){
+            this.loadCreateDraft()
+        },
+
+        loadCreateDraft(){//
+            this.matchedCreateDraft={}
+            axios.get('/draft/getCreateDraftByUserByType',{
+                params:{
+                    itemType:'ModelItem',
+                    editType:'create',
+                }
+            }).then(res=>{
+                if(res.data.code==0){
+                    if(res.data.data.length>1){
+                        this.matchedCreateDraft=res.data.data;
+                        this.matchedCreateDraftDialog=true
+                    }
+                }
+
+
+            })
+        },
+
+        insertDraft(draft){
+            this.draft=draft;
+            let content = draft.content;
+            this.cls=typeof(content.classification)=="undefined"?[]: content.classification
+            this.status=content.status
+            let ids=[];
+            this.clsStr=[]
+            for(let i=0;i<this.cls.length;i++){
+                for(let j=0;j<2;j++){
+                    for(let k=0;k<this.treeData[j].children.length;k++){
+                        let children=this.treeData[j].children[k].children;
+                        if(children==null) {
+                            if (this.cls[i] == this.treeData[j].children[k].oid) {
+                                ids.push(this.treeData[j].children[k].id);
+                                this.clsStr += this.treeData[j].children[k].label;
+                                if (i != this.cls.length - 1) {
+                                    this.clsStr += ", ";
+                                }
+                                break;
+                            }
+                        }
+                        else{
+                            for(let x=0;x<children.length;x++){
+                                if (this.cls[i] == children[x].oid) {
+                                    ids.push(children[x].id);
+                                    this.clsStr += children[x].label;
+                                    if (i != this.cls.length - 1) {
+                                        this.clsStr += ", ";
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+
+                    }
+                    if(ids.length-1==i){
+                        break;
+                    }
+                }
+            }
+
+            this.$refs.tree2.setCheckedKeys(ids);
+
+            $(".providers").children(".panel").remove();
+
+            let authorship = content.authorship;
+            var user_num = 0;
+            if(authorship!=null) {
+                for (let i = 0; i < authorship.length; i++) {
+                    user_num++;
+                    var content_box = $(".providers");
+                    var str = "<div class='panel panel-primary'> <div class='panel-heading'> <h4 class='panel-title'> <a class='accordion-toggle collapsed' style='color:white' data-toggle='collapse' data-target='#user";
+                    str += user_num;
+                    str += "' href='javascript:;'> NEW </a> </h4><a href='javascript:;' class='fa fa-times author_close' style='float:right;margin-top:8px;color:white'></a></div><div id='user";
+                    str += user_num;
+                    str += "' class='panel-collapse collapse in'><div class='panel-body user-contents'> <div class='user-attr'>\n" +
+                        "                                                                                                    <div>\n" +
+                        "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
+                        "                                                                                                               style='font-weight: bold;'>\n" +
+                        "                                                                                                            Name:\n" +
+                        "                                                                                                        </lable>\n" +
+                        "                                                                                                        <div class='input-group col-sm-10'>\n" +
+                        "                                                                                                            <input type='text'\n" +
+                        "                                                                                                                   name=\"name\"\n" +
+                        "                                                                                                                   class='form-control' value='" +
+                        authorship[i].name +
+                        "'>\n" +
+                        "                                                                                                        </div>\n" +
+                        "                                                                                                    </div>\n" +
+                        "                                                                                                    <div style=\"margin-top:10px\">\n" +
+                        "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
+                        "                                                                                                               style='font-weight: bold;'>\n" +
+                        "                                                                                                            Affiliation:\n" +
+                        "                                                                                                        </lable>\n" +
+                        "                                                                                                        <div class='input-group col-sm-10'>\n" +
+                        "                                                                                                            <input type='text'\n" +
+                        "                                                                                                                   name=\"ins\"\n" +
+                        "                                                                                                                   class='form-control' value='" +
+                        authorship[i].ins +
+                        "'>\n" +
+                        "                                                                                                        </div>\n" +
+                        "                                                                                                    </div>\n" +
+                        "                                                                                                    <div style=\"margin-top:10px\">\n" +
+                        "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
+                        "                                                                                                               style='font-weight: bold;'>\n" +
+                        "                                                                                                            Email:\n" +
+                        "                                                                                                        </lable>\n" +
+                        "                                                                                                        <div class='input-group col-sm-10'>\n" +
+                        "                                                                                                            <input type='text'\n" +
+                        "                                                                                                                   name=\"email\"\n" +
+                        "                                                                                                                   class='form-control' value='" +
+                        authorship[i].email +
+                        "'>\n" +
+                        "                                                                                                        </div>\n" +
+                        "                                                                                                    </div>\n" +
+                        "                                                                                                    <div style=\"margin-top:10px\">\n" +
+                        "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
+                        "                                                                                                               style='font-weight: bold;'>\n" +
+                        "                                                                                                            Homepage:\n" +
+                        "                                                                                                        </lable>\n" +
+                        "                                                                                                        <div class='input-group col-sm-10'>\n" +
+                        "                                                                                                            <input type='text'\n" +
+                        "                                                                                                                   name=\"homepage\"\n" +
+                        "                                                                                                                   class='form-control' value='" +
+                        authorship[i].homepage +
+                        "'>\n" +
+                        "                                                                                                        </div>\n" +
+                        "                                                                                                    </div>\n" +
+                        "                                                                                                </div></div> </div> </div>"
+                    content_box.append(str)
+                }
+            }
+
+
+            this.itemName=content.name//填入name input
+            $("#descInput").val(content.overView);
+            //image
+            if (content.image != "") {
+                $("#imgShow").attr("src", content.image);
+                $('#imgShow').show();
+            }
+            //reference
+
+            for (i = 0; i < content.references.length; i++) {
+                var ref = content.references[i];
+                table.row.add([
+                    ref.title,
+                    ref.author,
+                    ref.date,
+                    ref.journal,
+                    ref.volume,
+                    ref.pages,
+                    ref.links,
+                    ref.doi,
+                    "<center><a href='javascript:;' class='fa fa-times refClose' style='color:red'></a></center>"]).draw();
+            }
+            if (content.references.length > 0) {
+                $("#dynamic-table").css("display", "block")
+            }
+
+            //tags
+            $('#tagInput').tagEditor('destroy');
+            $('#tagInput').tagEditor({
+                initialTags: content.keywords,
+                forceLowercase: false,
+                placeholder: 'Enter keywords ...'
+            });
+
+
+            //detail
+            tinyMCE.remove(tinyMCE.editors[0])
+            $("#modelItemText").html(content.detail);//可能会赋值不成功
+            $("#modelItemText").val(content.detail);
+            initTinymce('textarea#modelItemText')
+
+            this.draftListDialog=false;
+
+            this.matchedCreateDraftDialog=false;
+        },
+
+        cancelEditClick(){
+            if(this.draft.oid!=''){
+                this.cancelDraftDialog=true
+            }else{
+                setTimeout(() => {
+                    window.location.href = "/user/userSpace#/models/modelitem";
+                }, 905)
+            }
+            // this.$confirm('You have a draft about this Item, do you want to save the latest version of it? If not, this draft will be deleted.', 'Tips', {
+            //     confirmButtonText: 'Yes',
+            //     cancelButtonText: 'No',
+            //     type: 'warning'
+            // }).then(() => {
+            //     this.saveDraft()
+            // }).catch(() => {
+            //     this.deleteDraft()
+            //     setTimeout(()=>{
+            //         window.location.href = "/user/userSpace#/models/modelitem";
+            //     },905)
+            // });
+        },
+
+        cancelEdit() {
+            this.deleteDraft()
+            setTimeout(() => {
+                window.location.href = "/user/userSpace#/models/modelitem";
+            }, 905)
+        },
+
+        saveDraft(){
+            this.savingDraft=true
+            let content=this.getContent()
+            let obj={
+                content:content,
+                oid:this.draft.oid,
+
+            }
+            axios.post('/draft/update',obj
+            ).then(
+                res=>{
+                    if(res.data.code==0){
+                       this.$message({message: 'Save successfully',type: 'success'})
+                    }
+                    setTimeout(()=>{
+                        this.savingDraft=false
+                    },895)
+                    setTimeout(()=>{
+                        window.location.href = "/user/userSpace#/models/modelitem";
+                    },905)
+                }
+            ).catch(()=>{
+                this.$message({message: 'Something wrong',type: 'warning'})
+                setTimeout(()=>{
+                    this.savingDraft=false
+                },195)
+            })
+        },
+
+        deleteDraft(){
+            axios.delete('/draft/deleteByOid?oid='+this.draft.oid)
+        },
+
+        checkItem(item){
+            let itemType = item.itemType.substring(0,1).toLowerCase()+item.itemType.substring(1)
+            window.location.href='/'+itemType+'/'+item.itemOid
+        },
+
         //reference
         searchDoi(){
             if(this.doi == ''){
                 this.$alert('Please input the DOI', 'Tip', {
                         type:"warning",
-                        confirmButtonText: 'Confirm',
+                        confirmButtonText: 'OK',
                         callback: ()=>{
                             return
                         }
@@ -393,13 +873,13 @@ var createModelItem = Vue.extend({
                 //         this.doiLoading = false;
                 //     },200)
                 // this.lastDoi=this.doi;
-
+                let modelOid=this.$route.params.editId?this.$route.params.editId:''
                 $.ajax({
                     type: "POST",
                     url: "/modelItem/searchByDOI",
                     data: {
                         doi: this.doi,
-                        modelOid:this.$route.params.editId
+                        modelOid:modelOid
                     },
                     cache: false,
                     async: true,
@@ -418,7 +898,7 @@ var createModelItem = Vue.extend({
                         if (data.find == -1) {
                             this.$alert('Failed to connect, please try again!', 'Tip', {
                                     type:"warning",
-                                    confirmButtonText: 'Confirm',
+                                    confirmButtonText: 'OK',
                                     callback: ()=>{
                                         return
                                     }
@@ -427,7 +907,7 @@ var createModelItem = Vue.extend({
                         }else if(data.find==0){
                             this.$alert('Find no result, check the DOI you have input or fill information manually.', 'Tip', {
                                     type:"warning",
-                                    confirmButtonText: 'Confirm',
+                                    confirmButtonText: 'OK',
                                     callback: ()=>{
                                         return
                                     }
@@ -450,7 +930,7 @@ var createModelItem = Vue.extend({
                         $("#doi_searchBox").removeClass("spinner")
                         this.$alert('Failed to connect, please try again!', 'Tip', {
                                 type:"warning",
-                                confirmButtonText: 'Confirm',
+                                confirmButtonText: 'OK',
                                 callback: ()=>{
                                     return
                                 }
@@ -470,7 +950,7 @@ var createModelItem = Vue.extend({
             if(tags.length<1||$("#refTitle").val()==''){
                 this.$alert('Please enter the Title and at least one Author.', 'Tip', {
                         type:"warning",
-                        confirmButtonText: 'Confirm',
+                        confirmButtonText: 'OK',
                         callback: ()=>{
                             return
                         }
@@ -541,6 +1021,25 @@ var createModelItem = Vue.extend({
             $("#refLink").val('');
 
             this.doi ='';
+        },
+
+        imgUpload(){
+            this.imgClipDialog = true
+            this.$nextTick(()=>{
+                let canvas = document.getElementsByTagName('canvas')[0]
+                canvas.style.backgroundImage = ''
+
+                context = canvas.getContext('2d');
+                //清除画布
+                context.clearRect(0,0,150,150);
+
+                document.getElementsByClassName('dragBlock')[0].style.left = '-7px'
+            })
+
+        },
+
+        closeImgUpload(){
+            this.dragReady = false
         },
 
         changeOpen(n) {
@@ -695,6 +1194,13 @@ var createModelItem = Vue.extend({
         var vthis = this;
         that.init();
 
+        (()=>{
+            window.onresize = () => {
+                this.editImageContainerWidth = this.$refs.editImageContainer.offsetWidth;
+            };
+
+        })()
+
         //初始化的时候吧curIndex传给父组件，来控制bar的高亮显示
         this.sendcurIndexToParent();
 
@@ -722,8 +1228,6 @@ var createModelItem = Vue.extend({
                 },
                 crossDomain: true,
                 success: (data) => {
-                    data = JSON.parse(data);
-
                     console.log(data);
 
                     if (data.oid == "") {
@@ -777,7 +1281,6 @@ var createModelItem = Vue.extend({
             cache: false,
             async: false,
             success: (data) => {
-                data=JSON.parse(data);
                 console.log(data);
                 if (data.oid == "") {
                     alert("Please login");
@@ -799,16 +1302,28 @@ var createModelItem = Vue.extend({
 
         var oid = this.$route.params.editId;
 
+        this.draft.oid=window.localStorage.getItem('draft')
+        window.localStorage.removeItem('draft')
         var user_num = 0;
 
         if ((oid === "0") || (oid === "") || (oid === null)|| (oid === undefined)) {
 
+            this.editType = 'create'
             // $("#title").text("Create Model Item")
             $("#subRteTitle").text("/Create Model Item")
 
             initTinymce('textarea#modelItemText')
+
+            this.loadMatchedCreateDraft()
+            if(this.draft.oid!='')
+                this.loadDraftByOid()
+
         }
         else {
+
+            this.editType = 'edit'
+            if(this.draft.oid==''||this.draft.oid==null||typeof (this.draft.oid)=="undefined")
+                this.loadMatchedDraft()
             // $("#title").text("Modify Model Item")
             $("#subRteTitle").text("/Modify Model Item");
 
@@ -934,7 +1449,7 @@ var createModelItem = Vue.extend({
 
                     $("#nameInput").val(basicInfo.name);
                     $("#descInput").val(basicInfo.description);
-
+                    this.itemName=basicInfo.name
                     //image
                     if (basicInfo.image != "") {
                         $("#imgShow").attr("src", basicInfo.image);
@@ -969,13 +1484,16 @@ var createModelItem = Vue.extend({
 
 
                     //detail
-                    //tinymce.remove("textarea#modelItemText");
+                    // tinymce.remove("textarea#modelItemText");
                     $("#modelItemText").html(basicInfo.detail);
                     initTinymce('textarea#modelItemText')
+
                 }
             })
             // window.sessionStorage.setItem("editModelItem_id", "");
         }
+        if(this.draft.oid!=''&&this.draft.oid!=null&&typeof (this.draft.oid)!="undefined")
+            this.loadDraftByOid()
 
         $("#step").steps({
             onFinish: function () {
@@ -1005,9 +1523,12 @@ var createModelItem = Vue.extend({
                         });
                         return false;
                     } else {
+                        if(this.draft.oid!='')
+                            this.createDraft();
                         return true;
                     }
                 } else{
+                    // this.saveDraft();
                     return true;
                 }
             }
@@ -1021,27 +1542,27 @@ var createModelItem = Vue.extend({
             forceLowercase: false
         })
 
-        $("#imgChange").click(function () {
-            $("#imgFile").click();
-        });
-        $("#imgFile").change(function () {
-            //获取input file的files文件数组;
-            //$('#filed')获取的是jQuery对象，.get(0)转为原生对象;
-            //这边默认只能选一个，但是存放形式仍然是数组，所以取第一个元素使用[0];
-            var file = $('#imgFile').get(0).files[0];
-            //创建用来读取此文件的对象
-            var reader = new FileReader();
-            //使用该对象读取file文件
-            reader.readAsDataURL(file);
-            //读取文件成功后执行的方法函数
-            reader.onload = function (e) {
-                //读取成功后返回的一个参数e，整个的一个进度事件
-                //选择所要显示图片的img，要赋值给img的src就是e中target下result里面
-                //的base64编码格式的地址
-                $('#imgShow').get(0).src = e.target.result;
-                $('#imgShow').show();
-            }
-        });
+        // $("#imgChange").click(function () {
+        //     $("#imgFile").click();
+        // });
+        // $("#imgFile").change(function () {
+        //     //获取input file的files文件数组;
+        //     //$('#filed')获取的是jQuery对象，.get(0)转为原生对象;
+        //     //这边默认只能选一个，但是存放形式仍然是数组，所以取第一个元素使用[0];
+        //     var file = $('#imgFile').get(0).files[0];
+        //     //创建用来读取此文件的对象
+        //     var reader = new FileReader();
+        //     //使用该对象读取file文件
+        //     reader.readAsDataURL(file);
+        //     //读取文件成功后执行的方法函数
+        //     reader.onload = function (e) {
+        //         //读取成功后返回的一个参数e，整个的一个进度事件
+        //         //选择所要显示图片的img，要赋值给img的src就是e中target下result里面
+        //         //的base64编码格式的地址
+        //         // $('#imgShow').get(0).src = e.target.result;
+        //         // $('#imgShow').show();
+        //     }
+        // });
 
         //table
         table = $('#dynamic-table').DataTable({
@@ -1242,6 +1763,13 @@ var createModelItem = Vue.extend({
 
             let formData=new FormData();
 
+            const loading = userspace.$loading({
+                lock: true,
+                text: 'Loading',
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+            });
+
             if ((oid === "0") || (oid === "") || (oid == null)) {
                 let file = new File([JSON.stringify(modelItemObj)],'ant.txt',{
                     type: 'text/plain',
@@ -1255,8 +1783,8 @@ var createModelItem = Vue.extend({
                     async: true,
                     data: formData,
                     success: (result)=> {
-                        userspace.fullscreenLoading=false;
-                        // loading.close();
+                        // userspace.fullscreenLoading=false;
+                        loading.close();
                         if (result.code == 0) {
 
                             this.$confirm('<div style=\'font-size: 18px\'>Create model item successfully!</div>', 'Tip', {
@@ -1296,14 +1824,13 @@ var createModelItem = Vue.extend({
                     }
                 })
             } else {
-
                 modelItemObj["oid"] = oid;
 
                 let file = new File([JSON.stringify(modelItemObj)],'ant.txt',{
                     type: 'text/plain',
                 });
                 formData.append("info",file);
-                userspace.fullscreenLoading=true;
+
                 $.ajax({
                     url: "/modelItem/update",
                     type: "POST",
@@ -1314,8 +1841,7 @@ var createModelItem = Vue.extend({
 
                     success: (result)=> {
                         // setTimeout(()=>{loading.close();},1000)
-                        // loading.close()
-                        userspace.fullscreenLoading=false;
+                        loading.close()
                         if (result.code === 0) {
                             if(result.data.method==="update") {
                                 this.$confirm('<div style=\'font-size: 18px\'>Update model item successfully!</div>', 'Tip', {
@@ -1376,6 +1902,8 @@ var createModelItem = Vue.extend({
                     }
                 })
             }
+
+            this.deleteDraft()
         });
 
         // $(".prev").click(()=>{
@@ -1461,11 +1989,441 @@ var createModelItem = Vue.extend({
             }
         })
 
+        const timer = setInterval(()=>{
+            if(this.itemName!=''){
+                this.createDraft()
+            }
+        },30000)
+
+
+        this.$once('hook:beforeDestroy', ()=>{
+            clearInterval(timer)
+            clearTimeout(this.timeOut)
+        })
+
         //var mid = window.sessionStorage.getItem("editModelItem_id");
         // if (mid === undefined || mid == null) {
         //     this.editorUrl = "http://127.0.0.1:8081http://127.0.0.1:8081/GeoModelingNew/modelItem/createModelItem.html";
         // } else {
         //     this.editorUrl = "http://127.0.0.1:8081http://127.0.0.1:8081/GeoModelingNew/modelItem/createModelItem.html?mid=" + mid;
         // }
+
+        //上传头像
+        var targetW,targetH//设为上层变量便于后续调用
+        var maxW,maxH,canvas,context,oImg,oldTarW,oldTarH,endX,endY
+
+        function fileUpload(fileInput,size,callBack){
+            //获取input file的files文件数组;
+            //$('#filed')获取的是jQuery对象，.get(0)转为原生对象;
+            //这边默认只能选一个，但是存放形式仍然是数组，所以取第一个元素使用[0];
+            var file = fileInput.files[0];
+            let fileSize = (file.size / 1024).toFixed(0)
+            // if(fileSize>size){
+            //     alert('The upload file should be less than 1.5M')
+            //     return
+            // }
+            callBack(file);
+        }
+        $("#imgChange").click(function () {
+            imgChange();
+        })
+
+        function imgChange(){
+            $("#imgFile").click()
+            $("#imgFile").change(function () {
+
+                fileUpload(this,1500,function (file) {
+
+
+                    //创建一个图像对象，用于接收读取的文件
+                    oImg=new Image();
+                    //创建用来读取此文件的对象
+                    var reader = new FileReader();
+                    //使用该对象读取file文件
+                    reader.readAsDataURL(file);
+                    //读取文件成功后执行的方法函数
+                    reader.onload = function (e) {
+                        //读取成功后返回的一个参数e，整个的一个进度事件
+                        //选择所要显示图片的img，要赋值给img的src就是e中target下result里面
+                        //的base64编码格式的地址
+                        // $('#imgShowBig').get(0).src = this.result;
+                        oImg.src=this.result
+                    }
+                    targetW=0
+                    targetH=0
+                    //图像加载完成绘制canvas
+                    oImg.onload = ()=>{
+                        canvas = document.createElement('canvas');
+                        context = canvas.getContext('2d');
+
+                        let originW = oImg.width;//图像初始宽度
+                        let originH = oImg.height;
+
+                        maxW=130
+                        maxH=130
+                        targetW=originW
+                        targetH=originH
+
+                        //设置canvas的宽、高
+                        canvas.width=150
+                        canvas.height=150
+
+                        var positionX
+                        var positionY
+                        //判断图片是否超过限制  等比缩放
+                        if(originW > maxW || originH > maxH) {
+                            if(originH/originW < maxH/maxW) {//图片宽
+                                targetH = maxH;
+                                targetW = Math.round(maxH * (originW / originH));
+                                positionX=75-targetW/2+'px'
+                                positionY='10px'
+                                canvas.style.backgroundSize = "auto 130px "
+                            }else {
+                                targetW = maxW;
+                                targetH = Math.round(maxW * (originH / originW));
+                                positionX='10px'
+                                positionY=75-targetH/2+'px'
+                                console.log(positionY)
+                                canvas.style.backgroundSize = "130px auto"
+
+                            }
+                        }
+
+                        if(originW <= maxW || originH <= maxH) {
+                            if(originH/originW < maxH/maxW) {//图片宽
+                                targetH = maxH;
+                                targetW = Math.round(maxH * (originW / originH));
+                                positionX=75-targetW/2+'px'
+                                positionY='10px'
+                                canvas.style.backgroundSize = "auto 130px "
+                            }else {
+                                targetW = maxW;
+                                targetH = Math.round(maxW * (originH / originW));
+                                positionX='10px'
+                                positionY=75-targetH/2+'px'
+                                console.log(positionY)
+                                canvas.style.backgroundSize = "130px auto"
+                            }
+                        }
+
+                        oldTarW=targetW
+                        oldTarH=targetH
+                        //清除画布
+                        context.clearRect(0,0,150,150);
+
+                        let img="url("+oImg.src+")";
+                        console.log(oImg.src===img)
+
+                        canvas.style.backgroundPositionX = positionX
+                        canvas.style.backgroundPositionY = positionY
+
+                        endX=positionX
+                        endY=positionY
+
+                        // canvas.style.backgroundPositionY = positionY
+                        canvas.style.backgroundImage = img
+                        // var back= context.createPattern(oImg,"no-repeat")
+                        // context.fillStyle=back;
+                        // context.beginPath()
+                        // if(originW>originH)
+                        //     context.fillRect(0,10,targetW,targetH);
+                        // else
+                        //     context.fillRect(10,0,targetW,targetH);
+                        // context.closePath()
+
+                        // 利用drawImage将图片oImg按照目标宽、高绘制到画布上
+                        // if(originW>originH)
+                        //     context.drawImage(oImg,0,10,targetW,targetH);
+                        // else
+                        //     context.drawImage(oImg,10,0,targetW,targetH);
+
+                        context.fillStyle = 'rgba(204,204,204,0.62)';
+                        context.beginPath()
+                        context.rect(0,0,150,150);
+                        context.closePath()
+                        context.fill()
+
+                        context.globalCompositeOperation='destination-out'
+
+                        context.fillStyle='yellow'
+                        context.beginPath()
+                        context.rect(10,10,130,130)
+                        context.closePath()
+                        context.fill();
+
+                        canvas.toBlob(function (blob) {
+                            console.log(blob);
+                            //之后就可以对blob进行一系列操作
+                        },file.type || 'image/png');
+                        $('.circlePhotoFrame').eq(0).children('canvas').remove();
+                        document.getElementsByClassName('circlePhotoFrame')[0].appendChild(canvas);
+                        // $('.dragBar').eq(0).css('background-color','#cfe5fa')
+
+                        vthis.dragReady=true
+                    }
+
+                })
+
+
+
+            });
+
+        }
+
+        function canvasToggle(){
+            var startX,startY,moveX,moveY,width,height,posX,posY,limitX,limitY,leaveX,leaveY,
+                lastX,lastY,dirR,dirD,noUseMoveR,noUseMoveD
+            var dragable=false
+            console.log('~~~~~~'+targetW,targetH)
+            $(document).off('mousemove')
+            $(document).off('mousedown')
+            $(document).on('mousedown','canvas',(e)=>{
+                $('.circlePhotoFrame').eq(0).children('canvas').css('cursor','grabbing')
+                var canvas = e.currentTarget
+                startX = e.pageX;
+                startY = e.pageY;
+
+                lastX = startX
+                lastY = startY
+
+                leaveX = 0
+                leaveY = 0
+                console.log(startX,startY)
+                posX=canvas.style.backgroundPositionX.split('p')[0]
+                posY=canvas.style.backgroundPositionY.split('p')[0]
+
+                endX=canvas.style.backgroundPositionX
+                endY=canvas.style.backgroundPositionX
+
+                // console.log(e.currentTarget)
+                dragable=true
+                return;
+            })
+
+            $(document).on('mousemove',(e)=>{
+                if (dragable === true) {
+                    console.log($('.circlePhotoFrame').eq(0).children('canvas'))
+                    console.log(targetW)
+                    var canvas = document.getElementsByTagName('canvas')[0]
+
+                    limitX=targetW-maxW
+                    limitY=targetH-maxH
+
+                    let maxMoveXR=10-parseFloat(posX)
+                    let maxMoveXD=10-parseFloat(posY)
+
+                    if(e.pageX>lastX) dirR=1  //向左方向值
+                    else dirR=-1
+
+                    if(e.pageY>lastY) dirD=1  //向下方向值
+                    else dirD=-1
+
+                    console.log(e.pageX - startX)
+
+                    if(e.pageX - startX>maxMoveXR){
+                        if(dirR===1){
+                            lastX = e.pageX
+                            noUseMoveR=e.pageX - startX - maxMoveXR
+                            console.log('nouse'+noUseMoveR)
+                        }
+
+                        else{
+                            lastX = e.pageX
+                            // e.pageX-=noUseMoveR
+                            console.log('left'+e.pageX)
+                            console.log(e.pageX - startX)
+                        }
+
+                    }else{
+                        lastX = e.pageX
+                    }
+
+
+                    lastY = e.pageY
+
+                    moveX = e.pageX - startX;
+                    moveY = e.pageY - startY;
+
+                    endX = moveX + parseFloat(posX)
+                    endY = moveY + parseFloat(posY)
+
+                    console.log(moveX, moveY)
+
+                    console.log(endX, endY)
+                    if (endX <= 10&&endX>=-limitX+10) {
+                        endX = endX + 'px'
+                        canvas.style.backgroundPositionX = endX
+                    }
+
+                    if (endY <= 10&&endY>=-limitY+10) {
+                        endY = endY + 'px'
+                        canvas.style.backgroundPositionY = endY
+                    }
+
+
+                }
+            })
+
+            $(document).on('mouseup',(e)=>{
+                dragable = false
+                $('.circlePhotoFrame').eq(0).children('canvas').css('cursor','grab')
+                // $('.circlePhotoFrame').off('mousemove','canvas')
+                // var canvas=e.currentTarget
+                // endX=e.pageX-startX;
+                // endY=e.pageY-startY;
+                // endX=endX+'px'
+                // endY=endY+'px'
+                // // console.log(e.currentTarget)
+                // canvas.style.backgroundPositionX=endX
+                // canvas.style.backgroundPositionY=endY
+            })
+
+            $(document).on('mouseleave','canvas',(e)=>{
+                leaveX=e.pageX
+                leaveY=e.pageY
+                // dragable = false
+
+            })
+
+            $("#saveUserImgButton").click(()=>{
+
+                let x=parseFloat(canvas.style.backgroundPositionX.split('p')[0])
+                let y=parseFloat(canvas.style.backgroundPositionY.split('p')[0])
+
+                // var back= context.createPattern(oImg,"no-repeat")
+                context.globalCompositeOperation='source-out'
+                // context.fillStyle=back;
+                // context.beginPath()
+                // context.fillRect(0,10,targetW,targetH);
+                //
+                // context.closePath()
+                context.clearRect(0,0,150,150)
+                canvas.style.backgroundImage = ""
+                if(targetW<targetH){
+                    let nx=0-(10-x)/130*150
+                    let ny=0-(10-y)/130*150
+                    context.drawImage(oImg,nx,ny,targetW/130*150,targetH/130*150);
+                }else{
+                    let nx=0-(10-x)/130*150
+                    let ny=0-(10-y)/130*150
+                    context.drawImage(oImg,nx,ny,targetW/130*150,targetH/130*150);
+                }
+                let url= canvas.toDataURL();
+                saveImage(url)
+            })
+        }
+
+        function dragBar() {
+            // 获取元素
+            var block = $('.dragBlock').eq(0);
+            var bar = $('.dragBar').eq(0);
+            var left,leftStart,leftPos,leaveLeft,times,newTW=targetW,newTH=targetH,newX,newY
+            length=bar.width()
+
+            var dragBarAble=false
+
+            // 拖动原理
+            $(document).on('mousedown','.dragBlock',(e)=>{
+                dragBarAble=true
+                leftStart=e.pageX
+                leaveLeft=0
+                left=block.css('left')
+                console.log(leftStart)
+                return;
+            })
+
+            $(document).on('mousemove',(e)=>{
+                if(dragBarAble==true&&vthis.dragReady==true){
+                    var move=e.pageX-leftStart
+
+                    let x=parseFloat(canvas.style.backgroundPositionX.split('p')[0])
+                    let y=parseFloat(canvas.style.backgroundPositionY.split('p')[0])
+
+                    leftPos=move + parseFloat(left)
+
+                    if(leftPos>=-7&&leftPos<=length-7){//减去block自身半径
+
+                        times=(leftPos+7+100)/100  //算出加大倍数
+
+                        newTW=oldTarW*times
+                        newTH=oldTarH*times
+
+                        let backgsize=newTW+'px'+' '+newTH+"px"
+                        console.log(backgsize)
+                        canvas.style.backgroundSize=backgsize
+
+                        let timesP=newTW/targetW
+
+                        // let eX,eY
+                        // if(typeof(endX)=='string'){
+                        //     eX=parseFloat(endX.split('p')[0])
+                        //     eY=parseFloat(endY.split('p')[0])
+                        // }else{
+                        //     eX=endX
+                        //     eY=endY
+                        // }
+                        // eX=75-(75-x)/times
+                        // eY=75-(75-y)/times
+                        // console.log(eX,eY)
+
+                        newX=75-(75-x)*timesP
+                        newY=75-(75-y)*timesP
+                        if(newY>10)//防止缩放超出边界
+                            newY=10
+                        else if(newY+newTH<140)
+                            newY=140-newTH
+                        if(newX>10)
+                            newX=10
+                        else if(newX+newTW<140)
+                            newX=140-newTW
+                        console.log(timesP)
+                        console.log("wz"+newX,newY)
+
+                        newX=newX+'px'
+                        newY=newY+'px'
+
+                        canvas.style.backgroundPositionX = newX
+                        canvas.style.backgroundPositionY = newY
+
+                        leftPos=leftPos+'px'
+                        console.log(leftPos)
+                        block.css('left',leftPos)
+
+                        targetW=newTW
+                        targetH=newTH
+                    }
+
+                }
+            })
+
+            $(document).on('mouseup',(e)=>{
+                dragBarAble=false
+            })
+
+            $(document).on('mouseleave','.dragBlock',(e)=>{
+                leaveLeft=e.pageX
+                // dragable = false
+
+            })
+
+        }
+
+        canvasToggle();
+
+        dragBar();
+
+        function saveImage(img) {
+
+            $('#imgShow').get(0).src = img;
+            $('#imgShow').show();
+            vthis.loading=true
+            vthis.dragReady=false
+            setTimeout(()=>{
+                vthis.imgClipDialog=false
+                vthis.loading=false
+            },150)
+
+        }
+
     }
 })

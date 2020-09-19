@@ -181,10 +181,11 @@ var vue = new Vue({
         checkMultiContent(output){
             this.multiFileDialog = true;
             this.outputMultiFile = [];
-            for(let i = 0;output.urls&&i<output.urls.length;i++){
+            let urls = output.url.substring(1, output.url.length-1).split(',')
+            for(let i = 0;urls&&i<urls.length;i++){
                 let obj={
                     name:output.tag+''+output.suffix,
-                    url:output.urls[i],
+                    url:urls[i].substring(1,urls[i].length-1),
                     visual:output.visual
                 }
                 this.outputMultiFile.push(obj)
@@ -266,7 +267,7 @@ var vue = new Vue({
 
         share(url){
             this.shareIndex=true;
-            this.downloadUrl='https://geomodeling.njnu.edu.cn/dispatchRequest/download?url='+url;
+            this.downloadUrl=url;
 
         },
 
@@ -460,11 +461,11 @@ var vue = new Vue({
             console.log(this.clipBoard);
             let vthis = this;
             this.clipBoard.on('success', function () {
-                vthis.$alert('Copy link successly',{type:'success',confirmButtonText: 'comfirm',})
+                vthis.$alert('Copy link successly',{type:'success',confirmButtonText: 'OK',})
                 this.clipBoard.destroy()
             });
             this.clipBoard.on('error', function () {
-                vthis.$alert("Failed to copy link",{type:'error',confirmButtonText: 'comfirm',})
+                vthis.$alert("Failed to copy link",{type:'error',confirmButtonText: 'OK',})
                 this.clipBoard.destroy()
             });
             this.shareIndex=false

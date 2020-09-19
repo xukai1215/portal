@@ -536,7 +536,6 @@ var  data_item_info= new Vue({
                 },
                 crossDomain: true,
                 success: (data) => {
-                    data = JSON.parse(data);
                     if (data.oid == "") {
                         this.confirmLogin();
                     }
@@ -566,7 +565,6 @@ var  data_item_info= new Vue({
                 },
                 crossDomain:true,
                 success: (data) => {
-                    data=JSON.parse(data);
                     if (data.oid == "") {
                         this.confirmLogin();
                     }
@@ -1269,7 +1267,6 @@ var  data_item_info= new Vue({
                 },
                 crossDomain: true,
                 success: (data) => {
-                    data = JSON.parse(data);
                     if (data.oid == "") {
                         this.confirmLogin()
 

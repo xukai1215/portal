@@ -357,7 +357,7 @@ Format.prototype.refresh = function()
 	label.className = 'geFormatSection';
 	label.style.textAlign = 'center';
 	label.style.fontWeight = 'bold';
-	label.style.paddingTop = '8px';
+	label.style.paddingTop = '12px';
 	label.style.fontSize = '13px';
 	label.style.borderWidth = '0px 0px 1px 1px';
 	label.style.borderStyle = 'solid';
@@ -5960,6 +5960,7 @@ OutputEventPanel.prototype.addOutputEventInfo = function(div,event,modelName){
     var modelLabel = document.createElement("p");
     var model = document.createElement("input");
     modelLabel.textContent = "Computable Model : ";
+	modelLabel.style.marginBottom="5px"
     model.value = modelName;
     model.disabled = "false";
     div.appendChild(modelLabel);
@@ -5968,6 +5969,7 @@ OutputEventPanel.prototype.addOutputEventInfo = function(div,event,modelName){
     var nameLabel = document.createElement("p");
     var name = document.createElement("input");
     nameLabel.textContent = "Event Name : ";
+	nameLabel.style.marginBottom="5px"
     name.value = event.eventName;
     name.disabled = "false";
     div.appendChild(nameLabel);
@@ -5976,6 +5978,7 @@ OutputEventPanel.prototype.addOutputEventInfo = function(div,event,modelName){
     var typeLabel = document.createElement("p");
     var type = document.createElement("input");
     typeLabel.textContent = "Event Type : ";
+	typeLabel.style.marginBottom="5px"
     type.value = event.eventType;
     type.disabled = "false";
     div.appendChild(typeLabel);
@@ -5984,19 +5987,31 @@ OutputEventPanel.prototype.addOutputEventInfo = function(div,event,modelName){
     var optionalLabel = document.createElement("p");
     var optional = document.createElement("input");
     optionalLabel.textContent = "Optional : ";
+	optionalLabel.style.marginBottom="5px"
     optional.value = event.optional;
     optional.disabled = "false";
     div.appendChild(optionalLabel);
     div.appendChild(optional);
 
+	if(event.multiple!=undefined){
+		var multiLabel = document.createElement("p");
+		var muti = document.createElement("input");
+		multiLabel.textContent = "Multiple File : ";
+		multiLabel.style.marginBottom="5px"
+		muti.value = event.multiple;
+		muti.disabled = "false";
+		div.appendChild(multiLabel);
+		div.appendChild(muti);
+	}
+
     var descLabel = document.createElement("p");
     var desc = document.createElement("textarea");
     descLabel.textContent = "Event Description : ";
+	descLabel.style.marginBottom="5px"
     desc.value = event.eventDesc;
     desc.disabled = "false";
     div.appendChild(descLabel);
     div.appendChild(desc);
-
 
     div.style.borderTop = "1px solid #dadce0";
     return div;

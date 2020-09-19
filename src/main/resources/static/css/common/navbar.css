@@ -521,13 +521,23 @@
         width: 83px !important;
     }
 
+    #subModel{
+        left: 233px !important;
+
+    }
+
+    #subData{
+        left: 311px !important;
+
+    }
+
     #subCommunity{
-        left: 379px !important;
+        left: 373px !important;
 
     }
 
     #subHelp{
-        left: 487px !important;
+        left: 498px !important;
     }
 
 }

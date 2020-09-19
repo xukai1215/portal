@@ -61,14 +61,14 @@
                      :style="{'height':ScreenMinHeight,'min-height':ScreenMinHeight,'max-height':ScreenMaxHeight}"
                      id="pageContent">
                     <!--            <div class="titleContainer"><h4>My Space</h4></div>-->
-                    <div class="flexColContainer mainContent" style="max-width: 1500px;height: 100%;min-height: 300px;">
+                    <div class="flexColContainer mainContent mainDataSpaceContent" style="max-width: 1500px;height: 100%;min-height: 300px;">
                         <section role="description" class="flexCol flexCenter contentSection" style="max-width: 100%">
                             <h3>Data Space</h3>
                         </section>
                         <section class="flexRowContainer flexWrap contentSection" style="max-width: 100%;height: 100%">
                             <div class="page-content-wrap container-fluid  myDataContainer">
 
-                                <div class="col-md-12 col-sm-12 showHidden" :class="{showActive:dataChosenIndex==1}"
+                                <div class="dataSpaceContent showHidden" :class="{showActive:dataChosenIndex==1}"
                                      style="height: 100%">
                                     <div class="panel panel-success" style="border: none;height: 100%;overflow: hidden">
                                         <!--<div class="panel-heading">-->
@@ -120,9 +120,11 @@
                                                     </el-col>
                                                     <el-col :span="6" style="float: right">
                                                         <el-input id="searchinput"
+                                                                  clearable
                                                                   placeholder="file name..."
                                                                   v-model="searchContent"
                                                                   @keyup.enter.native="keywordsSearch()"
+                                                                  @clear="keywordsSearch()"
                                                         >
                                                             <el-button slot="append" icon="el-icon-search"
                                                                        @click="keywordsSearch()"></el-button>
@@ -164,18 +166,18 @@
                                                 <!--                                        </el-card>-->
                                                 <!--                                    </el-col>-->
 
-                                                <el-col :span="24" class="fileTemplate" style="height: 100%">
-                                                    <el-card style="height:100%;overflow-y:auto;width:100%" class="fileContainer" id="browsercont1"
+                                                <el-col :span="24" id="filePlate" style="height: 100%">
+                                                    <el-card style="height:100%;width:100%" class="fileContainer" id="browsercont1"
                                                              v-loading="managerloading"
                                                              :style="{display:fileSpaceIndex==1?'block':'none'}">
-                                                        <div style="width: 100%;height: 20px;margin-left: -5px;display: flex;justify-content: space-between;align-items: center">
+                                                        <div style="width: 100%;height: 32px;margin-left: -5px;display: flex;justify-content: space-between;align-items: center">
                                                             <div class="showPathContainer">
                                                                 <div class="squareButton" id="backFatherBtn" @click="backToFather">
                                                                     <i class="fa fa-arrow-left" style="margin-right:2px "></i>
                                                                 </div>
                                                                 <div class="squareButton" id="refreshPackageBtn"
                                                                      @click="refreshPackage(1)">
-                                                                    <i class="fa fa-refresh" style="font-weight: 600"></i>
+                                                                    <i class="fa fa-refresh" style="font-weight: 600;transition: .5s ease-out"></i>
                                                                 </div>
                                                                 <div class="showPathContainer" style="margin-left: 10px">
                                                                     <div>path</div>
@@ -196,64 +198,68 @@
                                                         <h4 v-if="myFileShown.length==0" style="margin-top: 50px;text-align: center;color: #999999">
                                                             No content to show
                                                         </h4>
-                                                        <div v-if="myFileShown.length!=0" :title="showtitle(item)"
-                                                             class="el-card dataitemisol" shadow="never"
-                                                             :id="generateId(key)"
-                                                             :class="{clickdataitem:downloadDataSet.indexOf(item)>-1}"
-                                                             v-for="(item,key) in myFileShown"
-                                                             :key="key"
+                                                        <el-row class="wzhScrollbar" style="height: 445px" :gutter="10" v-if="myFileShown.length!=0" >
+                                                            <el-col :span="fileCard" v-for="(item,key) in myFileShown">
+                                                                <div :title="showtitle(item)"
+                                                                     class="el-card dataitemisol" shadow="never"
+                                                                     :id="generateId(key)"
+                                                                     :class="(isSelected(downloadDataSet,item))?'clickdataitem':''"
+                                                                     :key="key"
 
-                                                             @mouseover="addDataClass($event,item)"
-                                                             @mouseout="removeClass($event,item)"
-                                                             @click.right="rightMenu($event,item,key)">
-                                                            <el-row style="height: 80%"
-                                                                    @dblclick.native="getPackageContent($event,item,key)">
-                                                                <el-col :span="5">&nbsp
-                                                                    <div class="squareButtonMini flexCenter"
-                                                                         style="margin: 4px;float: inherit;cursor: pointer"
-                                                                         @click="singleClick($event,item)"
-                                                                         v-if="item.package==false">
-                                                                        <i style="font-size: 16px;color:#1b7cde"
-                                                                           :style="{display:(downloadDataSet.indexOf(item)>-1)?'block':'none'}"
-                                                                           class="fa fa-check"></i>
-                                                                    </div>
-                                                                </el-col>
-                                                                <el-col :span="15" style="height: 100%;">
-                                                                    <img class="fileImg" :src="getImg(item)"  align="middle"
-                                                                         onerror=src="/static/img/filebrowser/unknow.svg"
-                                                                         style="height: 100%;width:100%;object-fit: contain;cursor: pointer">
-                                                                </el-col>
-                                                                <el-col :span="4">&nbsp
-                                                                    <div v-if="item.upload==true"
-                                                                         style="margin-right: 5px;margin-top: 4px;float: right">
-                                                                        <i class="fa fa-user-circle-o"
-                                                                           style="font-size: 16px;color:#1b7cde"></i>
-                                                                    </div>
-                                                                </el-col>
-                                                            </el-row>
-                                                            <el-row type="flex" justify="center" v-show="renameIndex!=item.id"
-                                                                    v-if="item" class="fileName"
-                                                                    @click.native="getPackageContent($event,item,key)"
-                                                                    style="cursor: pointer">
-                                                                <p style="text-align: center;word-break: break-all;" v-if="item">
-                                                                    {{item.label}}</p>
-                                                                <p v-if="item.suffix">.</p>
-                                                                <p v-if="item.suffix">{{item.suffix}}</p>
-                                                            </el-row>
-                                                            <el-row type="flex" justify="center" v-show="renameIndex==item.id"
-                                                                    v-if="item" class="renameContainer">
-                                                                <input class="wzhMicroInput InputCenter renameFileInput">
-                                                                <div class="squareButton23 flexCenter"
-                                                                     style="position: absolute; margin-left: 56px;background-color: #07b9ff;cursor: pointer"
-                                                                     @click="renameConfirm">
-                                                                    <i class="ms-Icon ms-Icon--Accept"
-                                                                       style="margin-right:2px;color: whitesmoke "></i>
+                                                                     @mouseover="addDataClass($event,item)"
+                                                                     @mouseout="removeClass($event,item)"
+                                                                     @click.right="rightMenu($event,item,key)">
+                                                                    <el-row style="height: 80%"
+                                                                            @dblclick.native="getPackageContent($event,item,key)">
+                                                                        <el-col :span="5">&nbsp
+                                                                            <div class="squareButtonMini selectSection flexCenter"
+                                                                                 style="margin: 4px;float: inherit;cursor: pointer"
+                                                                                 @click="singleClick($event,item)"
+                                                                                 v-if="item.package==false">
+                                                                                <i style="font-size: 16px;color:#1b7cde"
+                                                                                   :style="{display:(isSelected(downloadDataSet,item))?'block':'none'}"
+                                                                                   class="fa fa-check"></i>
+                                                                            </div>
+                                                                        </el-col>
+                                                                        <el-col :span="15" style="height: 100%;">
+                                                                            <img class="fileImg" :src="getImg(item)"  align="middle"
+                                                                                 onerror=src="/static/img/filebrowser/unknow.svg"
+                                                                                 style="height: 100%;width:100%;object-fit: contain;cursor: pointer">
+                                                                        </el-col>
+                                                                        <el-col :span="4">&nbsp
+                                                                            <div v-if="item.upload==true"
+                                                                                 style="margin-right: 5px;margin-top: 4px;float: right">
+                                                                                <i class="fa fa-user-circle-o"
+                                                                                   style="font-size: 16px;color:#1b7cde"></i>
+                                                                            </div>
+                                                                        </el-col>
+                                                                    </el-row>
+                                                                    <el-row type="flex" justify="center" v-show="renameIndex!=item.id"
+                                                                            v-if="item" class="fileName"
+                                                                            @click.native="getPackageContent($event,item,key)"
+                                                                            style="cursor: pointer">
+                                                                        <p style="text-align: center;word-break: break-all;" v-if="item">
+                                                                            {{item.label}}</p>
+                                                                        <p v-if="item.suffix">.</p>
+                                                                        <p v-if="item.suffix">{{item.suffix}}</p>
+                                                                    </el-row>
+                                                                    <el-row type="flex" justify="center" v-show="renameIndex==item.id"
+                                                                            v-if="item" class="renameContainer">
+                                                                        <input class="wzhMicroInput InputCenter renameFileInput">
+                                                                        <div class="squareButton23 flexCenter"
+                                                                             style="position: absolute; right: 21px;background-color: #07b9ff;cursor: pointer"
+                                                                             @click="renameConfirm">
+                                                                            <i class="ms-Icon ms-Icon--Accept"
+                                                                               style="margin-right:2px;color: whitesmoke "></i>
+                                                                        </div>
+                                                                        <p v-if="item.suffix">.{{item.suffix}}</p>
+
+                                                                    </el-row>
+                                                                    <!--menu item -->
                                                                 </div>
-                                                                <p v-if="item.suffix">.{{item.suffix}}</p>
+                                                            </el-col>
+                                                        </el-row>
 
-                                                            </el-row>
-                                                            <!--menu item -->
-                                                        </div>
 
                                                         <!--<div class="el-card dataitemisol flexCenter" style="width: 115px;" title="upload file" data-toggle="modal"-->
                                                         <!--data-target="#managerUpload" @click="uploadClick(1)"-->
@@ -295,33 +301,35 @@
                                                         </div>
                                                     </el-card>
 
+                                                    <el-card v-show="rightMenuShow" class="browsermenu" ref="browsermenu">
+                                                        <el-button id="dbtn" @click="right_download()" v-if="!rightTargetItem.package"
+                                                                   type="text">Download
+                                                        </el-button>
+                                                        <br v-if="!rightTargetItem.package">
+                                                        <el-button id="dbtn" @click="copyFile()" v-if="!rightTargetItem.package"
+                                                                   type="text">Copy
+                                                        </el-button>
+                                                        <br v-if="!rightTargetItem.package">
+                                                        <!--                                    <el-button id="dbtn" @click="pasteFile()" v-if="!rightTargetItem.package" type="text">paste</el-button>-->
+                                                        <!--                                    <br v-if="!rightTargetItem.package">-->
+                                                        <el-button id="dbtn" @click="right_deleteFile()" type="text">Delete</el-button>
+                                                        <br>
+                                                        <el-button id="sbtn" @click="right_share" v-if="!rightTargetItem.package" type="text">Link</el-button>
+                                                        <br v-if="!rightTargetItem.package">
+                                                        <el-button id="sbtn" @click="rename" type="text"
+                                                        >
+                                                            Rename
+                                                        </el-button>
+                                                        <!--                                    <el-button id="sbtn" @click="relatedModels_dataManager()" type="text">relatedModels-->
+                                                        <!--                                    </el-button>-->
+                                                    </el-card>
+
                                                 </el-col>
                                             </el-row>
                                             <!--<el-button icon="el-icon-sold-out" class="dall" @click="dall()">download selected all files-->
                                             <!--</el-button>-->
                                             <!--  右键菜单-->
-                                            <el-card v-show="rightMenuShow" class="browsermenu" ref="browsermenu">
-                                                <el-button id="dbtn" @click="right_download()" v-if="!rightTargetItem.package"
-                                                           type="text">Download
-                                                </el-button>
-                                                <br v-if="!rightTargetItem.package">
-                                                <el-button id="dbtn" @click="copyFile()" v-if="!rightTargetItem.package"
-                                                           type="text">Copy
-                                                </el-button>
-                                                <br v-if="!rightTargetItem.package">
-                                                <!--                                    <el-button id="dbtn" @click="pasteFile()" v-if="!rightTargetItem.package" type="text">paste</el-button>-->
-                                                <!--                                    <br v-if="!rightTargetItem.package">-->
-                                                <el-button id="dbtn" @click="right_deleteFile()" type="text">Delete</el-button>
-                                                <br>
-                                                <el-button id="sbtn" @click="right_share" v-if="!rightTargetItem.package" type="text">Link</el-button>
-                                                <br v-if="!rightTargetItem.package">
-                                                <el-button id="sbtn" @click="rename" type="text"
-                                                >
-                                                    Rename
-                                                </el-button>
-                                                <!--                                    <el-button id="sbtn" @click="relatedModels_dataManager()" type="text">relatedModels-->
-                                                <!--                                    </el-button>-->
-                                            </el-card>
+
 
 
                                         </div>
@@ -519,6 +527,9 @@
 
 
                     <div class="uploaded" v-loading="uploadLoading">
+                        <div  class="headProgressContainer" v-show="progressFlag">
+                            <el-progress class="headProgress" type="circle" :percentage="uploadProgress"></el-progress>
+                        </div>
                         <div class="form-group flexColContainer">
                             <label style="margin-right:5px;font-size: 1.4rem">Name :</label>
                             <el-input v-model="uploadName" placeholder="Dataset name"></el-input>
@@ -571,14 +582,14 @@
                             <el-button size="mini" type="primary" plain @click="selectFile()" style="margin-top: 5px">Select File</el-button>
                         </div>
                         <el-upload
-                                class="upload-demo wzhScrollbar"
+                                class="upload-demo wzhScrollbar customUpload"
                                 multiple="true"
                                 ref="upload"
                                 :on-change="uploadChange"
                                 :on-remove="uploadRemove"
                                 :on-success="handleSuccess"
                                 :file-list="uploadFileList"
-                                :auto-upload="false" style="height: 50px">
+                                :auto-upload="false" style="min-height: 35px;max-height: 99px;margin-top: 15px">
                             <el-button id="uploadFile" style="display:none" slot="trigger" size="small"
                                        type="primary">选取文件
                             </el-button>
@@ -610,14 +621,13 @@
                     </div>
                     <el-input placeholder="Please input the name of the new folder"
                               v-model="newFolderName"
-                              style="width: calc(100% - 30px);margin:0 15px"></el-input>
+                              style="width: calc(100% - 10px);margin:5px 5px 0"></el-input>
                     <span slot="footer" class="dialog-footer">
                         <el-button @click="addFolderIndex = false">Cancel</el-button>
-                        <el-button type="primary" style="margin-right: 15px"
-                                    icon="el-icon-folder-add" @click="addFolder()">Confirm</el-button>
+                        <el-button type="primary" style="margin-right: 5px"
+                                   icon="el-icon-folder-add" @click="addFolder()">Confirm</el-button>
                                                 </span>
                 </el-dialog>
-
                 <el-dialog
                         title="Select Folder"
                         :visible.sync="selectFolderVisible"
@@ -651,7 +661,7 @@
                     </div>
                 </el-dialog>
 
-                <el-dialog id="allFileShareDialog" top="40px" width="80%" title="Sharing as Data Item"
+                <el-dialog id="allFileShareDialog" top="40px" width="80%" title="Share as Data Item"
                            :visible.sync="allFileTaskSharingVisible" center="true" :before-close="handleCloseandInit"
                            @close="closeAndClear">
 
@@ -677,7 +687,7 @@
                                 <el-card shadow="never" style="width: 99%;margin-left: 1%">
                                     <el-table
                                             ref="multipleTableMyData"
-                                            :data="databrowser"
+                                            :data="uploadedFile"
                                             tooltip-effect="dark"
                                             stripe
                                             style="width: 100%"
@@ -688,7 +698,7 @@
                                         </el-table-column>
                                         <el-table-column
                                                 label="Name"
-                                                prop="fileName"
+                                                prop="label"
 
                                         >
                                         </el-table-column>
@@ -699,99 +709,99 @@
                                         </el-table-column>
                                         <el-table-column
                                                 label="Upload Time"
-                                                prop="createDate"
+                                                prop="createTime"
                                         >
                                         </el-table-column>
                                     </el-table>
                                 </el-card>
                             </li>
-<!--                            <li style="cursor: pointer" @click="dataTreeClick(2)"><span-->
-<!--                                    class="el-tree-node__expand-icon el-icon-caret-right treeLi"></span>-->
-<!--                                <span style="font-size: 16px;margin-left: 5px">Output Data</span></li>-->
-<!--                            <ul class="flexLi" style="margin-left: 18px">-->
-<!--                                <div class="filePackageList">-->
-<!--                                    <li v-for="(item,index) in userTaskFullInfo.tasks"-->
-<!--                                        @click="dropPackageContent(item,index)">-->
-<!--                                        <span class="el-tree-node__expand-icon el-icon-caret-right treeChildLi"></span>-->
-<!--                                        <span style="font-size: 16px;margin-left: 8px">{{item.computableName}}@{{formatDate(item.runTime)}}</span>-->
-<!--                                        <div class="packageContent">-->
-<!--                                            <el-card shadow="never">-->
-<!--                                                <el-table-->
-<!--                                                        ref="multipleTableDataSharing"-->
-<!--                                                        :data="taskDataList"-->
-<!--                                                        tooltip-effect="dark"-->
+                            <li style="cursor: pointer" @click="dataTreeClick(2)"><span
+                                    class="el-tree-node__expand-icon el-icon-caret-right treeLi"></span>
+                                <span style="font-size: 16px;margin-left: 5px">Output Data</span></li>
+                            <ul class="flexLi" style="margin-left: 18px">
+                                <div class="filePackageList">
+                                    <li v-for="(item,index) in userTaskFullInfo.tasks"
+                                        @click="dropPackageContent(item,index)">
+                                        <span class="el-tree-node__expand-icon el-icon-caret-right treeChildLi"></span>
+                                        <span style="font-size: 16px;margin-left: 8px">{{item.computableName}}@{{formatDate(item.runTime)}}</span>
+                                        <div class="packageContent">
+                                            <el-card shadow="never">
+                                                <el-table
+                                                        ref="multipleTableDataSharing"
+                                                        :data="taskDataList"
+                                                        tooltip-effect="dark"
 
-<!--                                                        style="width: 100%"-->
-<!--                                                        @select="handleSelectionChange">-->
-<!--                                                    <el-table-column-->
-<!--                                                            type="selection"-->
-<!--                                                            width="55">-->
-<!--                                                    </el-table-column>-->
-<!--                                                    <el-table-column-->
-<!--                                                            prop="type"-->
-<!--                                                            label="Type"-->
-<!--                                                            width="120"-->
-<!--                                                            :filters="[{ text: 'Input', value: 'Input' }, { text: 'Output', value: 'Output' }]"-->
-<!--                                                            :filter-method="filterType"-->
-<!--                                                            filter-placement="bottom-start"-->
-<!--                                                            filter-multiple="false"-->
-<!--                                                            show-overflow-tooltip>-->
-<!--                                                        <template slot-scope="scope">-->
-<!--                                                            <el-tag-->
-<!--                                                                    :type="scope.row.type === 'Input' ? 'primary' : 'success'"-->
-<!--                                                                    disable-transitions>{{scope.row.type}}-->
-<!--                                                            </el-tag>-->
-<!--                                                        </template>-->
-<!--                                                    </el-table-column>-->
-<!--                                                    <el-table-column-->
-<!--                                                            label="Name"-->
-<!--                                                    >-->
-<!--                                                        <template slot-scope="scope">{{ scope.row.tag }}</template>-->
-<!--                                                    </el-table-column>-->
-<!--                                                    <el-table-column-->
-<!--                                                            prop="event"-->
-<!--                                                            label="Event"-->
-<!--                                                    >-->
-<!--                                                    </el-table-column>-->
-<!--                                                    <el-table-column-->
-<!--                                                            prop="statename"-->
-<!--                                                            label="State"-->
-<!--                                                            :filters="stateFilters"-->
-<!--                                                            :filter-method="filterState"-->
-<!--                                                            filter-placement="bottom-start"-->
-<!--                                                            show-overflow-tooltip>-->
-<!--                                                    </el-table-column>-->
+                                                        style="width: 100%"
+                                                        @select="handleSelectionChange">
+                                                    <el-table-column
+                                                            type="selection"
+                                                            width="55">
+                                                    </el-table-column>
+                                                    <el-table-column
+                                                            prop="type"
+                                                            label="Type"
+                                                            width="120"
+                                                            :filters="[{ text: 'Input', value: 'Input' }, { text: 'Output', value: 'Output' }]"
+                                                            :filter-method="filterType"
+                                                            filter-placement="bottom-start"
+                                                            filter-multiple="false"
+                                                            show-overflow-tooltip>
+                                                        <template slot-scope="scope">
+                                                            <el-tag
+                                                                    :type="scope.row.type === 'Input' ? 'primary' : 'success'"
+                                                                    disable-transitions>{{scope.row.type}}
+                                                            </el-tag>
+                                                        </template>
+                                                    </el-table-column>
+                                                    <el-table-column
+                                                            label="Name"
+                                                    >
+                                                        <template slot-scope="scope">{{ scope.row.tag }}</template>
+                                                    </el-table-column>
+                                                    <el-table-column
+                                                            prop="event"
+                                                            label="Event"
+                                                    >
+                                                    </el-table-column>
+                                                    <el-table-column
+                                                            prop="statename"
+                                                            label="State"
+                                                            :filters="stateFilters"
+                                                            :filter-method="filterState"
+                                                            filter-placement="bottom-start"
+                                                            show-overflow-tooltip>
+                                                    </el-table-column>
 
 
-<!--                                                    <el-table-column-->
-<!--                                                            label="Download"-->
-<!--                                                            width="120">-->
-<!--                                                        <template slot-scope="scope">-->
-<!--                                                            <el-button-->
-<!--                                                                    size="mini"-->
-<!--                                                                    type="default"-->
-<!--                                                                    @click="downloadSingle(scope.row.url)">-->
-<!--                                                                Download-->
-<!--                                                            </el-button>-->
-<!--                                                        </template>-->
-<!--                                                    </el-table-column>-->
-<!--                                                </el-table>-->
-<!--                                            </el-card>-->
-<!--                                        </div>-->
-<!--                                    </li>-->
-<!--                                </div>-->
-<!--                            </ul>-->
-<!--                            <li style="cursor: pointer" @click="dataTreeClick(3)"><span-->
-<!--                                    class="el-tree-node__expand-icon el-icon-caret-right treeLi"></span>-->
-<!--                                <span style="font-size: 16px;margin-left: 5px">Fork Data</span></li>-->
-<!--                            <li class="flexLi">-->
-<!--                                <el-card shadow="never" style="width: 99%;margin-left: 1%">-->
-<!--                                    <el-table>-->
+                                                    <el-table-column
+                                                            label="Download"
+                                                            width="120">
+                                                        <template slot-scope="scope">
+                                                            <el-button
+                                                                    size="mini"
+                                                                    type="default"
+                                                                    @click="downloadSingle(scope.row.url)">
+                                                                Download
+                                                            </el-button>
+                                                        </template>
+                                                    </el-table-column>
+                                                </el-table>
+                                            </el-card>
+                                        </div>
+                                    </li>
+                                </div>
+                            </ul>
+                            <li style="cursor: pointer" @click="dataTreeClick(3)"><span
+                                    class="el-tree-node__expand-icon el-icon-caret-right treeLi"></span>
+                                <span style="font-size: 16px;margin-left: 5px">Fork Data</span></li>
+                            <li class="flexLi">
+                                <el-card shadow="never" style="width: 99%;margin-left: 1%">
+                                    <el-table>
 
-<!--                                    </el-table>-->
-<!--                                </el-card>-->
+                                    </el-table>
+                                </el-card>
 
-<!--                            </li>-->
+                            </li>
                         </ul>
                         <el-card class="dataItemShare" :style="{display:(taskSharingActive==1?'block':'none')}"
                                  shadow="never">

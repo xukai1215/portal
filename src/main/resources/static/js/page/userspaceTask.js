@@ -415,6 +415,7 @@ var userTask = Vue.extend(
 
             showTasksByStatus(status) {
                 let name = 'tasks'
+                this.resourceLoad = true
                 this.taskStatus = status
                 this.isInSearch = 0;
                 if (this.taskStatus === 'successful')
@@ -463,12 +464,12 @@ var userTask = Vue.extend(
                 this.pageControlIndex = '6';
             },
 
-
             searchTasks(page) {
                 let url = "/task/searchTasksByUserId";
                 let name = "tasks";
                 this.await = true
                 this.isInSearch = 1;
+                this.resourceLoad = true
                 let targetPage = page==undefined?this.page:page
                 $.ajax({
                     type: "Get",
@@ -533,18 +534,18 @@ var userTask = Vue.extend(
 
             shareOutput(url){
                 this.shareIndex=true;
-                this.downloadUrl='https://geomodeling.njnu.edu.cn/dispatchRequest/download?url='+url;
+                this.downloadUrl=url;
             },
 
             copyLink(){
                 console.log(this.clipBoard);
                 let vthis = this;
                 this.clipBoard.on('success', function () {
-                    vthis.$alert('Copy link successly',{type:'success',confirmButtonText: 'comfirm',})
+                    vthis.$alert('Copy link successly',{type:'success',confirmButtonText: 'OK',})
                     this.clipBoard.destroy()
                 });
                 this.clipBoard.on('error', function () {
-                    vthis.$alert("Failed to copy link",{type:'error',confirmButtonText: 'comfirm',})
+                    vthis.$alert("Failed to copy link",{type:'error',confirmButtonText: 'OK',})
                     this.clipBoard.destroy()
                 });
                 this.shareIndex=false
@@ -801,11 +802,14 @@ var userTask = Vue.extend(
             checkMultiContent(output){
                 this.multiFileDialog = true;
                 this.outputMultiFile = [];
-                for(let i = 0;output.urls&&i<output.urls.length;i++){
+                let urls = output.url.substring(1, output.url.length-1).split(',')
+                for(let i = 0;urls&&i<urls.length;i++){
                     let obj={
-                        name:output.tag+''+output.suffix,
-                        url:output.urls[i],
-                        visual:output.visual
+                        name:output.tag+'.'+output.suffix,
+                        url:urls[i].substring(1,urls[i].length-1),
+                        visual:output.visual,
+                        event:output.event,
+                        suffix:output.suffix
                     }
                     this.outputMultiFile.push(obj)
                 }
@@ -1380,8 +1384,6 @@ var userTask = Vue.extend(
                     },
                     crossDomain: true,
                     success: (data) => {
-                        data = JSON.parse(data);
-
                         console.log(data);
 
                         if (data.oid == "") {

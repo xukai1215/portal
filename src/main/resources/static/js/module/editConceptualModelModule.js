@@ -381,8 +381,6 @@ Vue.component("editConceptualModelModule",
                     },
                     crossDomain: true,
                     success: (data) => {
-                        data = JSON.parse(data);
-
                         console.log(data);
 
                         if (data.oid == "") {

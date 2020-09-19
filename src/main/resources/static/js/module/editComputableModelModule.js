@@ -386,8 +386,6 @@ Vue.component("editComputableModelModule",
                     },
                     crossDomain: true,
                     success: (data) => {
-                        data = JSON.parse(data);
-
                         console.log(data);
 
                         if (data.oid == "") {
@@ -890,9 +888,9 @@ Vue.component("editComputableModelModule",
                 else{
                     this.computableModel.oid=oid;
 
-                    for(i=0;i<this.fileArray.length;i++){
-                        this.formData.append("resources",this.fileArray[i]);
-                    }
+                    // for(i=0;i<this.fileArray.length;i++){
+                    //     this.formData.append("resources",this.fileArray[i]);
+                    // }
 
                     let file = new File([JSON.stringify(this.computableModel)],'ant.txt',{
                         type: 'text/plain',

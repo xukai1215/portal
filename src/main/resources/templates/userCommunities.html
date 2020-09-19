@@ -61,7 +61,7 @@
                                  style="max-width: 1050px">
                             <div class="flexRowContainer flexColCenter">
                                 <img class="square_40" style="margin-top: 10px"
-                                     src="../../../static/img/model/model.png">
+                                     :src="getIcon()">
                                 <div class="dropdown flexRow flexColCenter">
                                     <h3 style="margin-left: 10px" >{{itemTitle}}</h3>
 
@@ -116,8 +116,12 @@
                             <!--                        <model-item :searchResultRaw="searchResult"></model-item>-->
                             <h4 style="margin:80px auto;color: #666666" v-if="searchResult.length==0&&!await ">No Result Found ...</h4>
                             <!--                        页码-->
-                            <nav v-if="searchResult.length>0&&!await"  aria-label="Page navigation example">
-                                <ul class="pagination pagination-circle pg-blue wzhPageControl">
+                            <nav v-if="searchResult.length>0&&!await" class="flexCenter" style="width: 100%;position: relative"  aria-label="Page navigation example">
+                                <div class="flexCenter totalContainer">
+                                    <p class="noMargin">Total Num: </p>
+                                    <h5 style="margin: 0 0 1px 0">{{totalNum}}</h5>
+                                </div>
+                                <ul class="pagination pagination-circle pg-blue wzhPageControl flexJustAround">
                                     <li class="page-item" :class="curPage!=1?'':'disabled'" @click="changePage(1)"><a
                                             class="page-link"
                                             style="border-radius: 10%;background-color: inherit">First</a></li>
@@ -143,6 +147,8 @@
                                         <a class="page-link">Last</a></li>
 
                                 </ul>
+
+
                             </nav>
                         </section>
                     </div>

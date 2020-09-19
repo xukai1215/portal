@@ -24,11 +24,15 @@ public interface UnitDao extends MongoRepository<Unit,String> {
 
     Page<UnitResultDTO> findByNameContainsIgnoreCase(String name, Pageable pageable);
 
-    Page<UnitResultDTO> findAllBy(Pageable pageable);
+    Page<UnitResultDTO> findByNameContainsIgnoreCaseAndStatusIn(String name,List<String> status, Pageable pageable);
+
+    Page<UnitResultDTO> findAllByAndStatusIn(List<String> status,Pageable pageable);
 
     Page<UnitResultDTO> findByParentIdIn(List<String> parentIds, Pageable pageable);
 
     Page<UnitResultDTO> findByClassificationsIn(List<String> parentIds, Pageable pageable);
+
+    Page<UnitResultDTO> findByClassificationsInAndStatusIn(List<String> parentIds,List<String> status, Pageable pageable);
 
     Page<UnitResultDTO> findByAuthor(String author, Pageable pageable);
 

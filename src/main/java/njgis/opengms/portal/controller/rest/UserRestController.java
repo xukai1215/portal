@@ -248,25 +248,13 @@ public class UserRestController {
     }
 
     @RequestMapping(value = "/load", method = RequestMethod.GET)
-    public String loadUser(HttpServletRequest request) {
+    public JSONObject loadUser(HttpServletRequest request) {
         System.out.println("loadUser");
 
         HttpSession session = request.getSession();
         Object oid = session.getAttribute("oid");
 
-        JSONObject user = new JSONObject();
-
-        if (oid == null) {
-            user.put("oid", "");
-            return user.toString();
-        } else {
-
-            user.put("oid", session.getAttribute("oid").toString());
-            user.put("uid", session.getAttribute("uid").toString());
-            user.put("name", session.getAttribute("name").toString());
-            user.put("image", userService.getImage(session.getAttribute("oid").toString()));
-            return user.toString();
-        }
+        return userService.loadUser(oid.toString());
     }
 
     @RequestMapping(value = "/getUserSimpleInfo", method = RequestMethod.GET)
@@ -819,6 +807,11 @@ public class UserRestController {
 
         return ResultUtils.success();
 
+    }
+
+    @RequestMapping(value = "/sendEmail",method = RequestMethod.POST)
+    void sendEmail(@RequestBody Map<String,String> email){
+        userService.sendMyEmail(email);
     }
 
     @RequestMapping(value = "/listArticle",method = RequestMethod.GET)

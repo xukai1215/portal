@@ -154,6 +154,10 @@ var router = new VueRouter({
                 component:createTheme,
             },
             {
+                path:'/draftBox',
+                component:userDraftBox,
+            },
+            {
                 path:'/account',
                 component:userAccount,
             },
@@ -394,7 +398,6 @@ var userspace = new Vue(
                     },
                     crossDomain: true,
                     success: (data) => {
-                        data = JSON.parse(data);
 
                         // console.log(data);
 

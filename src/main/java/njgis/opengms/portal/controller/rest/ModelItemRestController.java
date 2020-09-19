@@ -83,6 +83,16 @@ public class ModelItemRestController {
 
     }
 
+    @RequestMapping(value="/simulation",method = RequestMethod.GET)
+    public ModelAndView getSimulation() {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("simulation");
+
+
+        return modelAndView;
+
+    }
 
     @RequestMapping(value="/add",method = RequestMethod.POST)
     public JsonResult addModelItem(HttpServletRequest request) throws IOException {
