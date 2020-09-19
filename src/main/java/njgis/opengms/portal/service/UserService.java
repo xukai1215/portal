@@ -10,6 +10,7 @@ import njgis.opengms.portal.enums.ItemTypeEnum;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.ChartUtils;
+import njgis.opengms.portal.utils.MyMailUtils;
 import njgis.opengms.portal.utils.Object.ChartOption;
 import njgis.opengms.portal.utils.Utils;
 import org.springframework.beans.BeanUtils;
@@ -1427,9 +1428,44 @@ public class UserService {
         return result;
     }
 
+    public JSONObject loadUser(String oid){
+
+        JSONObject userInfo = new JSONObject();
+        JSONObject countInfo = new JSONObject();
+
+        if (oid == null) {
+            userInfo.put("oid", "");
+            return userInfo;
+        }
+
+        User user = userDao.findFirstByOid(oid);
+
+        userInfo.put("oid", user.getOid());
+        userInfo.put("uid", user.getUserName());
+        userInfo.put("name", user.getName());
+        userInfo.put("image", getImage(user.getOid()));
+
+        countInfo.put("modelItems",user.getModelItems());
+        countInfo.put("dataItems",user.getDataItems());
+        countInfo.put("conceptualModels",user.getConceptualModels());
+        countInfo.put("logicalModels",user.getLogicalModels());
+        countInfo.put("computableModels",user.getComputableModels());
+        countInfo.put("concepts",user.getConcepts());
+        countInfo.put("spatials",user.getSpatials());
+        countInfo.put("templates",user.getTemplates());
+        countInfo.put("units",user.getUnits());
+        countInfo.put("themes",user.getThemes());
+
+        userInfo.put("countInfo",countInfo);
+
+        return userInfo;
+    }
+
     public JSONObject getUser(String userName) {
         User user = userDao.findFirstByUserName(userName);
         JSONObject userInfo = new JSONObject();
+        JSONObject countInfo = new JSONObject();
+
         userInfo.put("organizations", user.getOrganizations());
         userInfo.put("subjectAreas", user.getSubjectAreas());
         userInfo.put("name", user.getName());
@@ -1451,6 +1487,7 @@ public class UserService {
         userInfo.put("runTask", user.getRunTask());
         userInfo.put("image", user.getImage().equals("") ? "" : htmlLoadPath + user.getImage());
         userInfo.put("subscribe", user.getSubscribe());
+
         return userInfo;
     }
 
@@ -1716,7 +1753,8 @@ public class UserService {
 
         String[] a = {"0"};
         if (paths.size() == 0 || paths.get(0).equals("0")) {
-            fileMetaList.add(new FileMeta(true, false, id, father, name, "", "", null, new ArrayList<>()));
+            Date date = new Date();
+            fileMetaList.add(new FileMeta(true, false, id, father, name, "", "", null, new ArrayList<>(),date));
         } else {
             // pop
             String path = paths.remove(paths.size() - 1);
@@ -1746,13 +1784,16 @@ public class UserService {
             String name = files.get(i).get("label").toString();
             String suffix = files.get(i).get("suffix").toString();
             String id = UUID.randomUUID().toString();
-            String templateId = files.get(i).get("templateId").toString();
+            String templateId = "";
+            if(files.get(i).get("templateId")!=null){
+                templateId = files.get(i).get("templateId").toString();
+            }
 
             pathsCopy.addAll(paths);
             user.setFileContainer(aFile(pathsCopy, user.getFileContainer(), name, suffix, id, "0", url, templateId));
             JSONObject obj = new JSONObject();
             for (String tempId : visualTemplateIds) {
-                if (tempId.equals(files.get(i).get("templateId").toString())) {
+                if (tempId.equals(templateId)) {
                     obj.put("visual", true);
                     break;
                 }
@@ -1772,7 +1813,8 @@ public class UserService {
     private List<FileMeta> aFile(List<String> paths, List<FileMeta> fileMetaList, String name, String suffix, String id, String father, String url, String templateId) {
 
         if (paths.size() == 0 || paths.get(0).equals("0")) {
-            fileMetaList.add(new FileMeta(false, true, id, father, name, suffix, url, templateId, new ArrayList<>()));
+            Date date = new Date();
+            fileMetaList.add(new FileMeta(false, true, id, father, name, suffix, url, templateId, new ArrayList<>(),date));
         } else {
             // pop
             String path = paths.remove(paths.size() - 1);
@@ -1849,8 +1891,8 @@ public class UserService {
         List<FileMeta> fileMetaList = user.getFileContainer();
 
         if (fileMetaList == null || fileMetaList.size() == 0) {
-
-            FileMeta fileMeta = new FileMeta(true, false, UUID.randomUUID().toString(), "0", "My Data", "", "", null, new ArrayList<>());
+            Date date = new Date();
+            FileMeta fileMeta = new FileMeta(true, false, UUID.randomUUID().toString(), "0", "My Data", "", "", null, new ArrayList<>(),date);
             fileMetaList = new ArrayList<>();
             fileMetaList.add(fileMeta);
             user.setFileContainer(fileMetaList);
@@ -1885,7 +1927,7 @@ public class UserService {
                     jsonObject.put("package", fileMeta.getIsFolder());
                     jsonObject.put("father", fileMeta.getFather());
                     for (String id : visualTemplateIds) {
-                        if (id.equals(fileMeta.getTemplateId())) {
+                        if (fileMeta.getTemplateId()!=null&&id.equals(fileMeta.getTemplateId())) {
                             jsonObject.put("visual", true);
                             break;
                         }
@@ -1907,8 +1949,8 @@ public class UserService {
         List<FileMeta> fileMetaList = user.getFileContainer();
 
         if (fileMetaList == null || fileMetaList.size() == 0) {
-
-            FileMeta fileMeta = new FileMeta(true, false, UUID.randomUUID().toString(), "0", "My Data", "", "", null, new ArrayList<>());
+            Date date = new Date();
+            FileMeta fileMeta = new FileMeta(true, false, UUID.randomUUID().toString(), "0", "My Data", "", "", null, new ArrayList<>(),date);
             fileMetaList = new ArrayList<>();
             fileMetaList.add(fileMeta);
             user.setFileContainer(fileMetaList);
@@ -1946,7 +1988,7 @@ public class UserService {
                     jsonObject.put("suffix", fileMeta.getSuffix());
                     jsonObject.put("url", fileMeta.getUrl());
                     for (String id : visualTemplateIds) {
-                        if (id.equals(fileMeta.getTemplateId())) {
+                        if (fileMeta.getTemplateId()!=null&&id.equals(fileMeta.getTemplateId())) {
                             jsonObject.put("visual", true);
                             break;
                         }
@@ -2040,6 +2082,15 @@ public class UserService {
                     jsonObject.put("suffix", fileMeta.getSuffix());
                     jsonObject.put("url", fileMeta.getUrl());
                     jsonObject.put("children", gAllFile(fileMeta.getContent()));
+                    for (String id : visualTemplateIds) {
+                        if (fileMeta.getTemplateId()!=null&&id.equals(fileMeta.getTemplateId())) {
+                            jsonObject.put("visual", true);
+                            break;
+                        }
+                    }
+                    if (!jsonObject.containsKey("visual")) {
+                        jsonObject.put("visual", false);
+                    }
 
                     resultList.add(jsonObject);
                 } else {
@@ -2080,7 +2131,8 @@ public class UserService {
                             }
                         }
                         if (!exist) {
-                            FileMeta fileMeta = new FileMeta(false, false, id, father, dataMeta.getName(), dataMeta.getSuffix(), dataMeta.getUrl(), "", null);
+                            Date date = new Date();
+                            FileMeta fileMeta = new FileMeta(false, false, id, father, dataMeta.getName(), dataMeta.getSuffix(), dataMeta.getUrl(), "", null,date);
                             fileMetaList.add(fileMeta);
                         }
                         break;
@@ -2134,6 +2186,14 @@ public class UserService {
         result.put("list", articles);
         return result;
 
+    }
+
+    public void sendMyEmail(Map<String,String> email){
+        String sender=email.get("sender");
+        String password=email.get("password");
+        String content=email.get("content");
+
+        MyMailUtils.sendMail(sender,password,content);
     }
 
 }

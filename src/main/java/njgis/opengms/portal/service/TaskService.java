@@ -17,10 +17,7 @@ import njgis.opengms.portal.entity.DataItem;
 import njgis.opengms.portal.entity.Task;
 import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.entity.intergrate.Model;
-import njgis.opengms.portal.entity.support.ParamInfo;
-import njgis.opengms.portal.entity.support.TaskData;
-import njgis.opengms.portal.entity.support.UserTaskInfo;
-import njgis.opengms.portal.entity.support.ZipStreamEntity;
+import njgis.opengms.portal.entity.support.*;
 import njgis.opengms.portal.utils.MyHttpUtils;
 import njgis.opengms.portal.utils.ResultUtils;
 import njgis.opengms.portal.utils.Utils;
@@ -44,6 +41,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.Future;
 import java.util.zip.ZipEntry;
@@ -56,6 +54,9 @@ public class TaskService {
 
     @Autowired
     ComputableModelService computableModelService;
+
+    @Autowired
+    UserService userService;
 
     @Autowired
     ComputableModelDao computableModelDao;
@@ -187,7 +188,7 @@ public class TaskService {
 
         user = userDao.findFirstByUserName(userName);
 
-        userJson.put("name", user.getName());
+        userJson.put("userName", user.getUserName());
         userJson.put("userOid", user.getOid());
 
         JSONObject result = new JSONObject();
@@ -278,7 +279,7 @@ public class TaskService {
         result.put("userInfo", userJson);
         result.put("modelInfo", model_Info);
         result.put("taskInfo", taskInfo);
-        result.put("dxInfo", dxInfo);
+//        result.put("dxInfo", dxInfo);
         System.out.println(result);
 
         return result;
@@ -704,189 +705,6 @@ public class TaskService {
 
     }
 
-    public List<UploadDataDTO> getTestDataUploadArrayDataItem(TestDataUploadDTO testDataUploadDTO, JSONObject mdlJson) throws Exception {
-        JSONArray states = mdlJson.getJSONObject("mdl").getJSONArray("states");
-        //根据dataItemId获取数据下载链接,并获取数据流
-        DataItem dataItem = dataItemDao.findFirstById(testDataUploadDTO.getDataItemId());
-        InputStream inputStream = null;
-        FileOutputStream fileOutputStream = null;
-        if (dataItem.getDataUrl()!=null){
-            URL url = new URL(dataItem.getDataUrl());
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setConnectTimeout(5000);
-            conn.setReadTimeout(60000);
-            inputStream = conn.getInputStream();
-        }
-        String testPath = resourcePath + "/" + testDataUploadDTO.getOid();
-        File localFile = new File(testPath);
-        if (!localFile.exists()) {
-            localFile.mkdirs();
-        }
-        String path = testPath + "/" + "downLoad.zip";
-        localFile = new File(path);
-        try {
-            //将数据下载至resourcePath下
-            if (localFile.exists()) {
-                //如果文件存在删除文件
-                boolean delete = localFile.delete();
-                if (delete == false) {
-//                    log.error("Delete exist file \"{}\" failed!!!", path, new Exception("Delete exist file \"" + path + "\" failed!!!"));
-                }
-            }
-            //创建文件
-            if (!localFile.exists()) {
-                //如果文件不存在，则创建新的文件
-                localFile.createNewFile();
-//                log.info("Create file successfully,the file is {}", path);
-            }
-
-            fileOutputStream = new FileOutputStream(localFile);
-            byte[] bytes = new byte[1024];
-            int len = -1;
-            while ((len = inputStream.read(bytes)) != -1) {
-                fileOutputStream.write(bytes, 0, len);
-            }
-            fileOutputStream.close();
-            inputStream.close();
-
-        } catch (FileNotFoundException e){
-            e.printStackTrace();
-        }catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (fileOutputStream != null) {
-                    fileOutputStream.close();
-                }
-                if (inputStream != null) {
-                    inputStream.close();
-                }
-            }catch (IOException e) {
-                e.printStackTrace();
-//                logger.error("InputStream or OutputStream close error : {}", e);
-            }
-        }
-
-        //将写入的zip文件进行解压
-        //需要进行判断
-        String destDirPath = resourcePath + "/" + testDataUploadDTO.getOid();
-        zipUncompress(path,destDirPath);
-        //解压后删除zip包，此时测试数据路径就变为testPath
-        deleteFile(path);
-
-        //下面为复用getTestDataUploadArray()代码
-        String oid = testDataUploadDTO.getOid();
-        String parentDirectory = testPath;
-        String configPath = parentDirectory + "/" + "config.xml";
-        JSONArray configInfoArray = getConfigInfo(configPath, parentDirectory, oid);
-        if (configInfoArray == null) {
-            return null;
-        }
-        //进行遍历
-        List<UploadDataDTO> dataUploadList = new ArrayList<>();
-        for (int i = 0; i < configInfoArray.size(); i++) {
-            JSONObject temp = configInfoArray.getJSONObject(i);
-            UploadDataDTO uploadDataDTO = new UploadDataDTO();
-            uploadDataDTO.setEvent(temp.getString("event"));
-            uploadDataDTO.setState(temp.getString("state"));
-            uploadDataDTO.setFilePath(temp.getString("file"));
-            uploadDataDTO.setChildren(temp.getJSONArray("children").toJavaList(ParamInfo.class));
-
-            for(int j=0;j<states.size();j++){
-                JSONObject state = states.getJSONObject(j);
-                if(state.getString("Id").equals(uploadDataDTO.getState())){
-                    JSONArray events=state.getJSONArray("event");
-                    for(int k=0;k<events.size();k++){
-                        JSONObject event=events.getJSONObject(k);
-                        if(event.getString("eventName").equals(uploadDataDTO.getEvent())){
-                            JSONObject data=event.getJSONArray("data").getJSONObject(0);
-                            if(data.getString("dataType").equals("external")){
-                                uploadDataDTO.setType("id");
-                                uploadDataDTO.setTemplate(data.getString("externalId").toLowerCase());
-                                for(String id:visualTemplateIds){
-                                    if(uploadDataDTO.getTemplate().equals(id)){
-                                        uploadDataDTO.setVisual(true);
-                                        break;
-                                    }
-                                }
-                            }else{
-                                if(data.getString("schema")!=null) {
-                                    uploadDataDTO.setType("schema");
-                                    uploadDataDTO.setTemplate(data.getString("schema"));
-                                    uploadDataDTO.setVisual(false);
-                                }else{
-                                    uploadDataDTO.setType("none");
-                                    uploadDataDTO.setTemplate("");
-                                    uploadDataDTO.setVisual(false);
-                                }
-                            }
-
-                            break;
-                        }
-                    }
-                    break;
-                }
-            }
-            if(uploadDataDTO.getType()==null){
-                uploadDataDTO.setType("none");
-                uploadDataDTO.setTemplate("");
-                uploadDataDTO.setVisual(false);
-            }
-
-            dataUploadList.add(uploadDataDTO);
-        }
-        return dataUploadList;
-    }
-    public void zipUncompress(String inputFile,String destDirPath) throws Exception {
-        File srcFile = new File(inputFile);
-        if (!srcFile.exists()){
-            throw new Exception(srcFile.getPath() + "所指文件不存在");
-        }
-        ZipFile zipFile = new ZipFile(srcFile);
-        Enumeration<?> entries = zipFile.entries();
-        while (entries.hasMoreElements()) {
-            ZipEntry entry = (ZipEntry) entries.nextElement();
-            // 如果是文件夹，就创建个文件夹
-            if (entry.isDirectory()) {
-                String dirPath = destDirPath + "/" + entry.getName();
-                srcFile.mkdirs();
-            } else {
-                // 如果是文件，就先创建一个文件，然后用io流把内容copy过去
-                File targetFile = new File(destDirPath + "/" + entry.getName());
-                // 保证这个文件的父文件夹必须要存在
-                if (!targetFile.getParentFile().exists()) {
-                    targetFile.getParentFile().mkdirs();
-                }
-                targetFile.createNewFile();
-                // 将压缩文件内容写入到这个文件中
-                InputStream is = zipFile.getInputStream(entry);
-                FileOutputStream fos = new FileOutputStream(targetFile);
-                int len;
-                byte[] buf = new byte[1024];
-                while ((len = is.read(buf)) != -1) {
-                    fos.write(buf, 0, len);
-                }
-                // 关流顺序，先打开的后关闭
-
-                fos.close();
-                is.close();
-            }
-        }
-        zipFile.close();
-    }
-    public boolean deleteFile(String sPath) {
-        boolean delLog;
-        delLog = false;
-        File file = new File(sPath);
-        // 路径为文件且不为空则进行删除
-        if (file.isFile() && file.exists()) {
-            file.delete();
-            delLog = true;
-        }
-        return delLog;
-    }
-
-
 
 //    public UploadDataDTO getPublishedTask(String taskId){
 //
@@ -975,6 +793,147 @@ public class TaskService {
         paramMap.put("username", username);
 
         JSONObject result = postJSON(urlStr, paramMap);
+
+        return result;
+    }
+
+    public String[] mutiInvoke(List<JSONObject> lists,String userName) {
+        String[] result = new String[lists.size()];
+        int sucCount = 0; //成功次数计数
+        for (int i = 0; i < lists.size(); i++) {
+            ComputableModel computableModel = computableModelService.getByOid(lists.get(i).getString("oid"));
+
+            String mdlStr = computableModel.getMdl();
+            JSONObject mdlJson = Utils.convertMdl(mdlStr);
+            System.out.println(mdlJson);
+            JSONObject mdl = mdlJson.getJSONObject("mdl");
+            JSONArray states = mdl.getJSONArray("states");
+            //截取RelatedDatasets字符串
+
+            JSONArray outputs = new JSONArray();
+            for (int k = 0; k < states.size(); k++) {
+                JSONObject state = states.getJSONObject(k);
+                JSONArray events = state.getJSONArray("event");
+                for (int j = 0; j < events.size(); j++) {
+                    JSONObject event = events.getJSONObject(j);
+                    String eventType = event.getString("eventType");
+                    if (eventType.equals("noresponse")) {
+                        JSONObject output = new JSONObject();
+                        output.put("statename", state.getString("name"));
+                        output.put("event", event.getString("eventName"));
+                        JSONObject template = new JSONObject();
+
+                        JSONArray dataArr = event.getJSONArray("data");
+                        if (dataArr != null) {
+                            JSONObject data = dataArr.getJSONObject(0);
+                            String dataType = data.getString("dataType");
+                            if (dataType.equals("external")) {
+                                String externalId = data.getString("externalId");
+
+                                template.put("type", "id");
+                                template.put("value", externalId.toLowerCase());
+                                output.put("template", template);
+
+                            } else if (dataType.equals("internal")) {
+                                JSONArray nodes = data.getJSONArray("nodes");
+                                if (nodes != null) {
+                                    if (data.getString("schema") != null) {
+                                        template.put("type", "schema");
+                                        template.put("value", data.getString("schema"));
+                                        output.put("template", template);
+                                    } else {
+                                        template.put("type", "none");
+                                        template.put("value", "");
+                                        output.put("template", template);
+                                    }
+                                } else {
+                                    template.put("type", "none");
+                                    template.put("value", "");
+                                    output.put("template", template);
+                                }
+                            } else {
+                                template.put("type", "none");
+                                template.put("value", "");
+                                output.put("template", template);
+                            }
+                        } else {
+                            template.put("type", "none");
+                            template.put("value", "");
+                            output.put("template", template);
+                        }
+                        outputs.add(output);
+                    }
+                }
+            }
+            lists.get(i).put("outputs", outputs);
+//            JSONObject jsonObject = JSONObject.parseObject(lists);
+            lists.get(i).put("username", userName);
+
+            result[i] = invoke(lists.get(i));
+            if (result != null) {
+                sucCount++;
+                Task task = new Task();
+                task.setOid(UUID.randomUUID().toString());
+                task.setComputableId(lists.get(i).getString("oid"));
+
+                task.setComputableName(computableModel.getName());
+                task.setTaskId(result[i]);
+                task.setUserId(userName);
+                task.setIntegrate(false);
+                task.setPermission("private");
+                task.setIp(lists.get(i).getString("ip"));
+                task.setPort(lists.get(i).getInteger("port"));
+                task.setRunTime(new Date());
+                task.setStatus(0);
+                JSONArray inputs = lists.get(i).getJSONArray("inputs");
+                task.setInputs(JSONObject.parseArray(inputs.toJSONString(), TaskData.class));
+                task.setOutputs(null);
+//                for(int i=0;i<inputs.size();i++)
+//                {
+//                    JSONObject input=inputs.getJSONObject(i);
+//                    BeanUtils.copyProperties(input,);
+//                }
+
+                save(task);
+                UserTaskInfo userTaskInfo = new UserTaskInfo();
+                userTaskInfo.setCreateTime(task.getRunTime());
+                userTaskInfo.setModelName(task.getComputableName());
+                userTaskInfo.setTaskId(task.getTaskId());
+
+                Date now = new Date();
+                DailyViewCount newInvokeCount = new DailyViewCount(now, 1);
+                List<DailyViewCount> dailyInvokeCount = computableModel.getDailyInvokeCount();
+//                if(computableModel.getDailyInvokeCount()!=null){
+//                    dailyInvokeCount = computableModel.getDailyInvokeCount();
+//                }
+                if (dailyInvokeCount.size() > 0) {
+                    DailyViewCount dailyViewCount = dailyInvokeCount.get(dailyInvokeCount.size() - 1);
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+                    if (sdf.format(dailyViewCount.getDate()).equals(sdf.format(now))) {
+                        dailyViewCount.setCount(dailyViewCount.getCount() + 1);
+                        dailyInvokeCount.set(dailyInvokeCount.size() - 1, dailyViewCount);
+                    } else {
+                        dailyInvokeCount.add(newInvokeCount);
+                    }
+                } else {
+                    dailyInvokeCount.add(newInvokeCount);
+                }
+                computableModel.setInvokeCount(computableModel.getInvokeCount() + 1);
+                computableModelDao.save(computableModel);
+
+                //存入用户信息记录
+                String msg = userService.addTaskInfo(userName, userTaskInfo);
+            }
+
+//                result=result.concat("&").concat(msg);
+
+        }
+
+        if(sucCount==0){
+            String[] res=new String[]{"run failed"};
+            return res;
+        }
 
         return result;
     }
@@ -1123,6 +1082,7 @@ public class TaskService {
                     param.put("ip", task.getIp());
                     param.put("port", task.getPort());
                     param.put("tid", task.getTaskId());
+                    param.put("integrate", task.getIntegrate());
 
                     futures.add(asyncTask.getRecordCallback(param, managerServerIpAndPort));
                 }
@@ -1315,6 +1275,61 @@ public class TaskService {
 
     }
 
+    public void updateUserTasks(String userName) {//多线程通过managerserver更新数据库
+        AsyncTask asyncTask = new AsyncTask();
+        List<Future> futures = new ArrayList<>();
+
+        List<Task> ts = taskDao.findByUserId(userName);
+        try {
+            for (int i = 0; i < ts.size(); i++) {
+                Task task = ts.get(i);
+                if (task.getStatus() != 2 && task.getStatus() != -1) {
+                    JSONObject param = new JSONObject();
+                    param.put("ip", task.getIp());
+                    param.put("port", task.getPort());
+                    param.put("tid", task.getTaskId());
+                    param.put("integrate", task.getIntegrate());
+
+                    futures.add(asyncTask.getRecordCallback(param, managerServerIpAndPort));
+                }
+            }
+
+            for (Future<?> future : futures) {
+                while (true) {//CPU高速轮询：每个future都并发轮循，判断完成状态然后获取结果，这一行，是本实现方案的精髓所在。即有10个future在高速轮询，完成一个future的获取结果，就关闭一个轮询
+                    if (future.isDone() && !future.isCancelled()) {//获取future成功完成状态，如果想要限制每个任务的超时时间，取消本行的状态判断+future.get(1000*1, TimeUnit.MILLISECONDS)+catch超时异常使用即可。
+                        String result = (String) future.get();//获取结果
+                        JSONObject jsonResult = JSON.parseObject(result);
+                        String tid = jsonResult.getString("tid");
+                        int remoteStatus = jsonResult.getInteger("status");
+                        List<TaskData> outputs = jsonResult.getJSONArray("outputs").toJavaList(TaskData.class);
+                        Task task = taskDao.findFirstByTaskId(tid);
+
+                        if (task.getStatus() != remoteStatus) {
+                            task.setStatus(remoteStatus);
+                            task.setOutputs(outputs);
+                            taskDao.save(task);
+                            for (int i = 0; i < ts.size(); i++) {
+                                Task task1 = ts.get(i);
+                                if (task1.getTaskId().equals(tid)) {
+                                    task1.setStatus(remoteStatus);
+                                    task1.setOutputs(outputs);
+                                    break;
+                                }
+                            }
+                        }
+                        break;//当前future获取结果完毕，跳出while
+                    } else {
+                        Thread.sleep(1);//每次轮询休息1毫秒（CPU纳秒级），避免CPU高速轮循耗空CPU---》新手别忘记这个
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+    }
+
     public JSONObject getTasksByUserIdByStatus(String userName, String status, int page, String sortType, int sortAsc) {
 
         AsyncTask asyncTask = new AsyncTask();
@@ -1323,6 +1338,9 @@ public class TaskService {
         Sort sort = new Sort(sortAsc == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "runTime");
         Pageable pageable = PageRequest.of(page, 10, sort);
         Page<Task> tasks = Page.empty();
+
+        updateUserTasks(userName);//先利用这个函数更新一下数据库
+
         if (status.equals("calculating")) {
             tasks = taskDao.findByUserIdAndStatusBetween(userName, -1, 2, pageable);
         } else if (status.equals("successful")) {
@@ -1461,6 +1479,95 @@ public class TaskService {
         }
 
         return out;
+    }
+
+    public List<JSONObject> getMutiTaskResult(JSONObject data) {
+        List<JSONObject> taskResults = new ArrayList<>();
+        AsyncTask asyncTask = new AsyncTask();
+        List<Future> futures = new ArrayList<>();
+
+        String[] tids = data.getObject("tid",String[].class);
+        try {
+            for (int i = 0; i < tids.length; i++) {
+                if(tids!=null){
+                    Task task = taskDao.findFirstByTaskId(tids[i]);
+                    if (task.getStatus() != 2 && task.getStatus() != -1) {
+                        JSONObject param = new JSONObject();
+                        param.put("ip", task.getIp());
+                        param.put("port", task.getPort());
+                        param.put("tid", task.getTaskId());
+                        param.put("integrate", task.getIntegrate());
+
+                        futures.add(asyncTask.getRecordCallback(param, managerServerIpAndPort));
+                    }
+                }
+
+            }
+
+            for (Future<?> future : futures) {
+                while (true) {//CPU高速轮询：每个future都并发轮循，判断完成状态然后获取结果，这一行，是本实现方案的精髓所在。即有10个future在高速轮询，完成一个future的获取结果，就关闭一个轮询
+                    if (future.isDone() && !future.isCancelled()) {//获取future成功完成状态，如果想要限制每个任务的超时时间，取消本行的状态判断+future.get(1000*1, TimeUnit.MILLISECONDS)+catch超时异常使用即可。
+                        String result = (String) future.get();//获取结果
+                        JSONObject jsonResult = JSON.parseObject(result);
+                        String tid = jsonResult.getString("tid");
+                        int remoteStatus = jsonResult.getInteger("status");
+                        ////update model status to Started, Started: 1, Finished: 2, Inited: 0, Error: -1
+                        Task task = findByTaskId(tid);
+                        int state = task.getStatus();
+                        int remoteState = jsonResult.getInteger("status");
+
+                        if (remoteState != state) {
+                            task.setStatus(remoteState);
+                        }
+                        if (remoteState == 2) {
+                            boolean hasValue = false;
+                            JSONArray outputs = jsonResult.getJSONArray("outputs");
+                            for (int i = 0; i < outputs.size(); i++) {
+                                if (!outputs.getJSONObject(i).getString("url").equals("")) {
+                                    hasValue = true;
+                                    break;
+                                }
+                            }
+                            if (!hasValue) {
+                                task.setStatus(-1);
+                            }
+                            for (int i = 0; i < outputs.size(); i++) {
+                                if (outputs.getJSONObject(i).getString("url").contains("[")) {//说明是单event多输出的情况
+                                    outputs.getJSONObject(i).put("multiple", true);
+                                }
+                            }
+
+                            task.setOutputs(outputs.toJavaList(TaskData.class));
+
+                            task = templateMatch(task);
+                        }
+                        save(task);
+                        JSONObject out = new JSONObject();
+
+                        out.put("tid",tid );
+                        if (task.getStatus() == 0) {
+                            out.put("status", 0);
+                        } else if (task.getStatus() == 1) {
+                            out.put("status", 1);
+                        } else if (task.getStatus() == 2) {
+                            out.put("status", 2);
+                            out.put("outputdata", task.getOutputs());
+                        } else {
+                            out.put("status", -1);
+                        }
+                        taskResults.add(out);
+                        break;
+                    } else {
+                        Thread.sleep(1);//每次轮询休息1毫秒（CPU纳秒级），避免CPU高速轮循耗空CPU---》新手别忘记这个
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        return taskResults;
     }
 
     public String addDescription(String taskId, String description) {

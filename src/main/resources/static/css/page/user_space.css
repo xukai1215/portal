@@ -1974,9 +1974,8 @@ body {
 }
 
 .dataitemisol {
-    width: 15.6%;
+    width: 100%;
     height: 120px;
-    margin-right: 9px;
     margin-top: 5px;
     float: left;
     box-sizing: border-box;
@@ -1984,10 +1983,11 @@ body {
 
 }
 
-.dataitemisol:hover {
-    /*cursor: pointer;*/
-    border: 2px solid rgba(49, 143, 194, 0.92);
-}
+/*.dataitemisol:hover {*/
+/*    !*cursor: pointer;*!*/
+/*    border: 2px solid rgba(49, 143, 194, 0.92);*/
+/*    background-color: #ecf5ff;*/
+/*}*/
 
 .dataitemhover {
     /*border: 2px solid #72d600eb;*/
@@ -2021,7 +2021,7 @@ body {
 }
 
 .filebrowserfunction {
-    height: 60px;
+    min-height: 60px;
 }
 
 .filebrowser .el-button {
@@ -2160,7 +2160,7 @@ body {
 .innerBorder{
     align-self: center;
     width: 95.5%;
-    border-bottom: 1px solid #d1d1d1;
+    border-bottom: 1px solid #d9d9d9;
 }
 
 overviewContainer {
@@ -2250,6 +2250,10 @@ overviewContainer {
 
 }
 
+.customUpload .el-upload.el-upload--text{
+    display: none;
+}
+
 .containerWithDottedLine {
     display: flex;
     flex-direction: column;
@@ -2308,6 +2312,26 @@ overviewContainer {
     display: flex;
     justify-content: center;
 
+}
+
+.headProgressContainer{
+    position: absolute;
+    left: 50%;
+    right: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    width: 100%;
+    height: 100%;
+    background: rgba(242, 242, 242, 0.60);
+}
+
+.headProgress{
+    position: absolute;
+    top: 50%;
+    margin-left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
 }
 
 .squareButton {
@@ -2668,9 +2692,7 @@ ul.flexLi {
     top: 0;
 }
 
-.w100{
-    width: 100%;
-}
+
 
 .content_w32 {
     width: 32%;
@@ -2770,9 +2792,6 @@ ul.flexLi {
     margin-left: 0;
 }
 
-.noMargin{
-    margin: 0;
-}
 
 .noPadding{
     padding: 0;
@@ -2987,6 +3006,17 @@ ul.flexLi {
     float: left;
 }
 
+.loadImg{
+    border: 1px solid #ccc;
+    width: 100px;
+    height: 100px;
+    text-align: center;
+    line-height: 150px;
+    vertical-align: middle;
+    color: #ccc;
+    float: left;
+}
+
 .noScroll{
     overflow-y: hidden;
     overflow-x: hidden;
@@ -2997,6 +3027,9 @@ ul.flexLi {
     overflow-x: hidden;
 }
 
+.noMargin{
+    margin: 0;
+}
 
 /*scrollbar样式*/
 
@@ -3138,7 +3171,76 @@ input[type=file] {
     z-index: -1;
 }
 
+.draftCard{
+    position: relative;
+    cursor: pointer;
+    height: 100px;
+    border-bottom: 3px solid #a4ddff;
+    box-shadow: 0 2px 3px 0 rgba(0,0,0,.1) !important;
+    transition: .3s;
+}
 
+.draftCard:hover{
+    box-shadow: 0 2px 12px 0 rgba(0,0,0,.1) !important;
+}
+
+.draftCard:hover .dropMask{
+    height: 100%;
+}
+
+.dropMask{
+    position: absolute;
+    width: 100%;
+    height: 0;
+    left: 0;
+    top: 0;
+    background-color: #0e7fc9db;
+    color: whitesmoke;
+    transition: .4s;
+    overflow: hidden;
+}
+
+.dropMask i{
+    font-size: 18px;
+}
+
+.dropMask .innerBorderCol{
+    background-color: rgba(204, 204, 204, 0.50);
+}
+
+.draftDetailText{
+    margin-bottom: 10px;
+}
+
+#editImageDialog{
+    height: 351px;
+}
+
+nav .totalContainer{
+    position: absolute;
+    right: 5px;
+}
+
+.numTag{
+    padding: 1px 5px;
+    border-radius: 99px;
+    border:2px solid ;
+}
+
+.numTag p{
+    margin: 0;
+    font-size: 12px;
+    transform:scale(0.95);
+    font-weight: 600;
+}
+
+.customUpload .el-upload.el-upload--text{
+    display: none;
+}
+
+.wzhSelectContainer input{
+    width: 125px;
+}
 
 @media only screen and (min-width: 1000px) {
     .mainContent {
@@ -3148,6 +3250,13 @@ input[type=file] {
 
     .contentSection{
 
+    }
+}
+
+
+@media only screen and (min-width: 700px) {
+    .dataSpaceContent{
+        padding: 0 15px;
     }
 }
 
@@ -3170,6 +3279,10 @@ input[type=file] {
         margin-bottom: 66px;
     }
 
+    .mainDataSpaceContent{
+        margin-bottom: 116px;
+    }
+
     .innerShadowCol{
         width: 100%;
     }
@@ -3181,11 +3294,24 @@ input[type=file] {
     .contentCard{
         width: 45%;
     }
+
+    #editImageDialog{
+        height: auto;
+    }
+
+    .editImageContainer{
+        flex-direction: column;
+    }
 }
 
 @media only screen and (max-width: 789px) {
     .contentCard{
         width: 100%;
+    }
+
+    nav .totalContainer{
+        right: auto;
+        top: 60px;
     }
 }
 
@@ -3204,6 +3330,15 @@ input[type=file] {
     .fa{
         margin-right: 0 !important;
     }
+
+    .draftCard .draftCardText{
+        /*flex-direction: column;*/
+    }
+
+    .mainDataSpaceContent{
+        padding-left: 0;
+        padding-right: 0;
+    }
 }
 
 @media only screen and (max-width: 460px){
@@ -3213,6 +3348,11 @@ input[type=file] {
 
     .mainContent{
         padding: 20px 10px !important;
+    }
+
+    .mainDataSpaceContent{
+        padding-left: 0 !important;
+        padding-right: 0 !important;
     }
 }
 

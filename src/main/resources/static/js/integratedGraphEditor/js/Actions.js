@@ -217,7 +217,14 @@ Actions.prototype.init = function()
 				
 				graph.setSelectionCells(select);
 			}
+
+			if(window.parent.deleteModel && typeof(window.parent.deleteModel) == 'function' ){//调用integrateModel页面的方法
+				for(let i = 0;i<cells.length;i++){
+					window.parent.deleteModel(cells[i].frontId,cells[i].md5)
+				}
+			}
 		}
+
 	};
 	
 	this.addAction('delete', function(evt)

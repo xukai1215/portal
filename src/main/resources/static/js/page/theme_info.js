@@ -548,7 +548,6 @@ var vue = new Vue({
                 },
                 crossDomain: true,
                 success: (data) => {
-                    data = JSON.parse(data);
                     let arr = window.location.href.split("/");
                     let bindOid = arr[arr.length - 1].split("#")[0];
                     this.setSession("bindOid", bindOid);
@@ -778,7 +777,6 @@ var vue = new Vue({
                     },
                     crossDomain: true,
                     success: (data) => {
-                        data = JSON.parse(data);
                         $.ajax({
                             url: "/theme/getInfo/" + this.themeoid,
                             type: "GET",
@@ -1225,7 +1223,6 @@ var vue = new Vue({
             },
             crossDomain: true,
             success: (data) => {
-                data = JSON.parse(data);
                 let href = window.location.href;
                 let hrefs = href.split('/');
                 that.themeoid = hrefs[hrefs.length - 1].split("#")[0];

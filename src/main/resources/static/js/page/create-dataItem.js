@@ -535,8 +535,6 @@ var createDataItem = Vue.extend({
                 },
                 crossDomain: true,
                 success: (data) => {
-                    data = JSON.parse(data);
-
                     console.log(data);
 
                     if (data.oid == "") {
@@ -589,7 +587,6 @@ var createDataItem = Vue.extend({
             cache: false,
             async: false,
             success: (data) => {
-                data=JSON.parse(data);
                 console.log(data);
                 if (data.oid == "") {
                     alert("Please login");

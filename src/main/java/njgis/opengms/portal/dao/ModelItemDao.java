@@ -54,6 +54,8 @@ public interface ModelItemDao extends MongoRepository<ModelItem,String> {
 
     Page<ModelItemResultDTO> findByNameContainsIgnoreCaseAndClassificationsIn(String name,List<String> classes,Pageable pageable);
 
+    Page<ModelItemResultDTO> findByNameContainsIgnoreCaseAndClassificationsInAndStatusIn(String name,List<String> classes,List<String> status,Pageable pageable);
+
     Page<ModelItemResultDTO> findByNameContainsIgnoreCaseAndClassificationsInAndAuthor(String name,List<String> classes,String author, Pageable pageable);
 
     Page<ModelItemResultDTO> findByAuthor(String author, Pageable pageable);
@@ -64,7 +66,7 @@ public interface ModelItemDao extends MongoRepository<ModelItem,String> {
 
     Page<ModelItemResultDTO> findByNameContainsIgnoreCaseAndAuthor(String name, String author, Pageable pageable);
 
-    Page<ModelItemResultDTO> findByNameContainsIgnoreCaseAndAuthorAndStatusIn(String name, String author,List<String> classes, Pageable pageable);
+    Page<ModelItemResultDTO> findByNameContainsIgnoreCaseAndAuthorAndStatusIn(String name, String author,List<String> status, Pageable pageable);
 
     List<ModelItem> findAllByClassificationsIn(String cla);
 

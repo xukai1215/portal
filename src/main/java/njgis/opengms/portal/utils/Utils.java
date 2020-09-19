@@ -523,6 +523,14 @@ public class Utils {
                                     eventObj.put("optional", false);
                                 }
                             }
+                            if(Event.attribute("multiple") != null){//判断是否可以多输出
+                                if(Event.attributeValue("multiple").equalsIgnoreCase("True")){
+                                    eventObj.put("multiple", true);
+
+                                }else{
+                                    eventObj.put("multiple", false);
+                                }
+                            }
                         }
 
                         for (int i = 0; i < mdlObj.getJSONArray("DataItems").size(); i++) {

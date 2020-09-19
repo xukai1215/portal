@@ -78,7 +78,7 @@
 
           <div class="modelPanel">
             <div class="content-body" style="height: 500px;overflow: scroll">
-              <div v-cloak class="list-item" @click="selectModel(modelItem,event)" v-for="(modelItem,key) in pageOption.searchResult" style="width: 32%;margin: 0.6%;display: inline-block">
+              <div v-cloak class="comModelItem" @click="selectModel(modelItem,event)" v-for="(modelItem,key) in pageOption.searchResult" style="width: 32%;margin: 0.6%;display: inline-block">
                 <div class="detail_title" style="font-size: 20px;color: #333;text-align: center;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
                   {{modelItem.name}}&nbsp&nbsp
                 </div>
@@ -131,5 +131,5 @@
 <script src="/static/js/common/vue.min.js"></script>
 <script src="/static/js/common/vue-avatar.min.js"></script>
 <script src="/static/js/common/element-ui-index.js"></script>
-<script src="/static/js/page/computableModelList.js"></script>
+<script src="/static/js/module/computableModelList.js"></script>
 </html>

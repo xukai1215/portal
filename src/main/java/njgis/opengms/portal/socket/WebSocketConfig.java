@@ -15,6 +15,7 @@ public class WebSocketConfig {
 //    部署时注释掉！！！
     @Bean
     public ServerEndpointExporter serverEndpointExporter() {
+
         return new ServerEndpointExporter();
     }
 

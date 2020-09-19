@@ -1181,7 +1181,7 @@ var vue = new Vue({
 
         shareOutput(url){
             this.shareIndex=true;
-            this.downloadUrl='https://geomodeling.njnu.edu.cn/dispatchRequest/download?url='+url;
+            this.downloadUrl=url;
         },
 
         copyLink(){
@@ -1455,7 +1455,7 @@ var vue = new Vue({
             if (this.currentDataUrl != "") {
                 this.showDataChose = false;
                 console.log(this.eventChoosing, this.downloadDataSetName)
-                this.eventChoosing.tag = this.downloadDataSetName[0].name;
+                this.eventChoosing.tag = this.downloadDataSetName[0].label;
                 this.eventChoosing.suffix = this.downloadDataSetName[0].suffix;
                 this.eventChoosing.url = this.downloadDataSetName[0].url;
                 this.eventChoosing.visual = this.downloadDataSetName[0].visual;
@@ -1467,6 +1467,14 @@ var vue = new Vue({
                 this.$message("Please select data first!")
             }
 
+        },
+
+        selectDataspaceFile(file) {
+            this.downloadDataSetName[0] = file
+        },
+
+        removeDataspaceFile(file) {
+            this.downloadDataSetName[0] = {}
         },
 
         async handleCurrentChange(val) {
@@ -1898,6 +1906,7 @@ var vue = new Vue({
                                         this.$set(event, "tag", el.tag);
                                         this.$set(event, "suffix", el.suffix);
                                         this.$set(event, "url", el.url);
+                                        this.$set(event, "multiple", el.multiple);
                                     });
 
                                     loading.close();
@@ -2439,10 +2448,11 @@ var vue = new Vue({
         checkMultiContent(output){
             this.multiFileDialog = true;
             this.outputMultiFile = [];
-            for(let i = 0;output.urls&&i<output.urls.length;i++){
+            let urls = output.url.substring(1, output.url.length-1).split(',')
+            for(let i = 0;urls&&i<urls.length;i++){
                 let obj={
                     name:output.tag+''+output.suffix,
-                    url:output.urls[i],
+                    url:urls[i].substring(1,urls[i].length-1),
                     visual:output.visual
                 }
                 this.outputMultiFile.push(obj)

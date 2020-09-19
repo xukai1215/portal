@@ -93,7 +93,7 @@ var info=new Vue({
     methods: {
         claim(){
             $.get("/user/load",{},(result)=>{
-                let json = JSON.parse(result);
+                let json = result;
                 if (json.oid == "") {
                     this.confirmLogin();
                 }
@@ -309,7 +309,6 @@ var info=new Vue({
                 },
                 crossDomain: true,
                 success: (data) => {
-                    data = JSON.parse(data);
                     if (data.oid == "") {
                         this.confirmLogin()
 
@@ -379,7 +378,6 @@ var info=new Vue({
                 },
                 crossDomain: true,
                 success: (data) => {
-                    data = JSON.parse(data);
                     if (data.oid == "") {
                         this.confirmLogin()
                     }
@@ -857,7 +855,6 @@ var info=new Vue({
                 },
                 crossDomain: true,
                 success: (data) => {
-                    data = JSON.parse(data);
                     if (data.oid == "") {
                         this.confirmLogin()
 

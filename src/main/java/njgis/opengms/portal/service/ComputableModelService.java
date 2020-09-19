@@ -9,7 +9,6 @@ import com.mongodb.client.model.Filters;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.dto.ComputableModel.ComputableModelFindDTO;
-import njgis.opengms.portal.dto.ComputableModel.ComputableModelIngtegratedDTO;
 import njgis.opengms.portal.dto.ComputableModel.ComputableModelResultDTO;
 import njgis.opengms.portal.dto.modelItem.ModelItemFindDTO;
 import njgis.opengms.portal.entity.*;
@@ -220,6 +219,14 @@ public class ComputableModelService {
             computableModel.setMdlJson(convertMdl(mdl));
         }
         return  list;
+    }
+
+    public ComputableModel getModelByOid(String oid) {
+        ComputableModel computableModel = computableModelDao.findFirstByOid(oid);
+        String mdl = computableModel.getMdl();
+        computableModel.setMdlJson(convertMdl(mdl));
+
+        return  computableModel;
     }
 
     public JSONObject listPage(ModelItemFindDTO modelItemFindDTO, List<String> classes) {

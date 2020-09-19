@@ -108,6 +108,9 @@ public class RepositoryService {
     @Value("${htmlLoadPath}")
     private String htmlLoadPath;
 
+    @Value(value = "Public,Discoverable")
+    private List<String> itemStatusVisible;
+
     //toUpperCase
     public void toUpperCase() {
         List<Concept> concepts = conceptDao.findAll();
@@ -407,7 +410,7 @@ public class RepositoryService {
         Sort sort = new Sort(repositoryQueryDTO.getAsc() == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "name");
         Pageable pageable = PageRequest.of(repositoryQueryDTO.getPage(), repositoryQueryDTO.getPageSize(), sort);
 
-        Page<ConceptResultDTO> concepts = conceptDao.findByNameContainsIgnoreCase(repositoryQueryDTO.getSearchText(), pageable);
+        Page<ConceptResultDTO> concepts = conceptDao.findByNameContainsIgnoreCaseAndStatusIn(repositoryQueryDTO.getSearchText(),itemStatusVisible, pageable);
 
         List<ConceptResultDTO> conceptList = concepts.getContent();
         List<UserResultDTO> userList = new ArrayList<>();
@@ -431,7 +434,7 @@ public class RepositoryService {
         Page<ConceptResultDTO> concepts;
         String classOid = repositoryQueryDTO.getOid();
         if (classOid == null || classOid.equals("")) {
-            concepts = conceptDao.findAllBy(pageable);
+            concepts = conceptDao.findAllByStatusIn(itemStatusVisible,pageable);
         } else {
             List<String> clas = new ArrayList<>();
             boolean add = clas.add(repositoryQueryDTO.getOid());
@@ -440,7 +443,7 @@ public class RepositoryService {
             ) {
                 clas.add(c);
             }
-            concepts = conceptDao.findByClassificationsIn(clas, pageable);
+            concepts = conceptDao.findByClassificationsInAndStatusIn(clas,itemStatusVisible, pageable);
         }
 
         List<ConceptResultDTO> conceptList = concepts.getContent();
@@ -641,7 +644,7 @@ public class RepositoryService {
         Concept concept = conceptDao.findByOid(oid);
         if (concept != null) {
             String image = concept.getImage();
-            if (image.contains("/concept/")) {
+            if (image!=null&&image.contains("/concept/")) {
                 File file = new File(resourcePath + concept.getImage());
                 if (file.exists() && file.isFile())
                     file.delete();
@@ -783,7 +786,7 @@ public class RepositoryService {
         Sort sort = new Sort(repositoryQueryDTO.getAsc() == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "name");
         Pageable pageable = PageRequest.of(repositoryQueryDTO.getPage(), repositoryQueryDTO.getPageSize(), sort);
 
-        Page<SpatialResultDTO> spatialReferences = spatialReferenceDao.findByNameContainsIgnoreCase(repositoryQueryDTO.getSearchText(), pageable);
+        Page<SpatialResultDTO> spatialReferences = spatialReferenceDao.findByNameContainsIgnoreCaseAndStatusIn(repositoryQueryDTO.getSearchText(), itemStatusVisible,pageable);
 
         List<SpatialResultDTO> SpatialList = spatialReferences.getContent();
         List<UserResultDTO> userList = new ArrayList<>();
@@ -807,7 +810,7 @@ public class RepositoryService {
         Page<SpatialResultDTO> spatialReferences;
         String classOid = repositoryQueryDTO.getOid();
         if (classOid == null || classOid.equals("")) {
-            spatialReferences = spatialReferenceDao.findAllBy(pageable);
+            spatialReferences = spatialReferenceDao.findAllByAndStatusIn(itemStatusVisible,pageable);
         } else {
             List<String> clas = new ArrayList<>();
             clas.add(repositoryQueryDTO.getOid());
@@ -816,7 +819,7 @@ public class RepositoryService {
             ) {
                 clas.add(c);
             }
-            spatialReferences = spatialReferenceDao.findByClassificationsIn(clas, pageable);
+            spatialReferences = spatialReferenceDao.findByClassificationsInAndStatusIn(clas, itemStatusVisible,pageable);
         }
 
         List<SpatialResultDTO> SpatialList = spatialReferences.getContent();
@@ -973,7 +976,7 @@ public class RepositoryService {
         SpatialReference spatial = spatialReferenceDao.findByOid(oid);
         if (spatial != null) {
             String image = spatial.getImage();
-            if (image.contains("/concept/")) {
+            if (image!=null&&image.contains("/concept/")) {
                 File file = new File(resourcePath + spatial.getImage());
                 if (file.exists() && file.isFile())
                     file.delete();
@@ -1089,7 +1092,7 @@ public class RepositoryService {
         Sort sort = new Sort(repositoryQueryDTO.getAsc() == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "name");
         Pageable pageable = PageRequest.of(repositoryQueryDTO.getPage(), repositoryQueryDTO.getPageSize(), sort);
 
-        Page<TemplateResultDTO> templates = templateDao.findByNameContainsIgnoreCase(repositoryQueryDTO.getSearchText(), pageable);
+        Page<TemplateResultDTO> templates = templateDao.findByNameContainsIgnoreCaseAndStatusIn(repositoryQueryDTO.getSearchText(),itemStatusVisible, pageable);
 
         List<TemplateResultDTO> TemplateList = templates.getContent();
         List<UserResultDTO> userList = new ArrayList<>();
@@ -1113,7 +1116,7 @@ public class RepositoryService {
         Page<TemplateResultDTO> templates;
         String classOid = repositoryQueryDTO.getOid();
         if (classOid == null || classOid.equals("")) {
-            templates = templateDao.findAllBy(pageable);
+            templates = templateDao.findAllByAndStatusIn(itemStatusVisible,pageable);
         } else {
             List<String> clas = new ArrayList<>();
             clas.add(repositoryQueryDTO.getOid());
@@ -1122,7 +1125,7 @@ public class RepositoryService {
             ) {
                 clas.add(c);
             }
-            templates = templateDao.findByClassificationsIn(clas, pageable);
+            templates = templateDao.findByClassificationsInAndStatusIn(clas,itemStatusVisible, pageable);
         }
 
         List<TemplateResultDTO> TemplateList = templates.getContent();
@@ -1279,7 +1282,7 @@ public class RepositoryService {
         Template template = templateDao.findByOid(oid);
         if (template != null) {
             String image = template.getImage();
-            if (image.contains("/concept/")) {
+            if (image!=null&&image.contains("/concept/")) {
                 File file = new File(resourcePath + template.getImage());
                 if (file.exists() && file.isFile())
                     file.delete();
@@ -1397,7 +1400,7 @@ public class RepositoryService {
         Sort sort = new Sort(repositoryQueryDTO.getAsc() == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "name");
         Pageable pageable = PageRequest.of(repositoryQueryDTO.getPage(), repositoryQueryDTO.getPageSize(), sort);
 
-        Page<UnitResultDTO> units = unitDao.findByNameContainsIgnoreCase(repositoryQueryDTO.getSearchText(), pageable);
+        Page<UnitResultDTO> units = unitDao.findByNameContainsIgnoreCaseAndStatusIn(repositoryQueryDTO.getSearchText(),itemStatusVisible, pageable);
 
         List<UnitResultDTO> unitList = units.getContent();
         List<UserResultDTO> userList = new ArrayList<>();
@@ -1421,7 +1424,7 @@ public class RepositoryService {
         Page<UnitResultDTO> units;
         String classOid = repositoryQueryDTO.getOid();
         if (classOid == null || classOid.equals("")) {
-            units = unitDao.findAllBy(pageable);
+            units = unitDao.findAllByAndStatusIn(itemStatusVisible,pageable);
         } else {
             List<String> clas = new ArrayList<>();
             clas.add(repositoryQueryDTO.getOid());
@@ -1430,7 +1433,7 @@ public class RepositoryService {
             ) {
                 clas.add(c);
             }
-            units = unitDao.findByClassificationsIn(clas, pageable);
+            units = unitDao.findByClassificationsInAndStatusIn(clas,itemStatusVisible, pageable);
         }
 
         List<UnitResultDTO> unitList = units.getContent();
@@ -1613,7 +1616,7 @@ public class RepositoryService {
         Unit unit = unitDao.findByOid(oid);
         if (unit != null) {
             String image = unit.getImage();
-            if (image.contains("/concept/")) {
+            if (image!=null&&image.contains("/concept/")) {
                 File file = new File(resourcePath + unit.getImage());
                 if (file.exists() && file.isFile())
                     file.delete();
