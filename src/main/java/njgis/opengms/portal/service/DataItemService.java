@@ -3,11 +3,13 @@ package njgis.opengms.portal.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import njgis.opengms.portal.PortalApplication;
 import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.dto.categorys.CategoryAddDTO;
-import njgis.opengms.portal.dto.dataItem.*;
+import njgis.opengms.portal.dto.dataItem.DataItemAddDTO;
+import njgis.opengms.portal.dto.dataItem.DataItemFindDTO;
+import njgis.opengms.portal.dto.dataItem.DataItemResultDTO;
+import njgis.opengms.portal.dto.dataItem.DataItemUpdateDTO;
 import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.entity.support.DataMeta;
 import njgis.opengms.portal.enums.ResultEnum;
@@ -479,9 +481,9 @@ public class DataItemService {
         Pageable pageable = PageRequest.of(page, pageSize, sort);
         Page<DataItemResultDTO> dataItemPage;
         if(userOid==null){
-            dataItemPage = dataItemDao.findByNameLikeIgnoreCase(pageable, searchText);
+            dataItemPage = dataItemDao.findByNameLikeIgnoreCaseAndStatusNotLike(pageable, searchText,"Private");
         }else{
-            dataItemPage = dataItemDao.findByNameLikeAndAuthorIgnoreCase(pageable, searchText,userOid);
+            dataItemPage = dataItemDao.findByNameLikeAndAuthorIgnoreCaseAndStatusNotLike(pageable, searchText,userOid,"Private");
         }
 
 
@@ -526,11 +528,11 @@ public class DataItemService {
         Sort sort = new Sort(asc ? Sort.Direction.ASC : Sort.Direction.DESC, sortElement);
         Pageable pageable = PageRequest.of(page, pageSize, sort);
         Page<DataItem> dataItemResultDTOPage = Page.empty();
-        if(loadUser==null||!loadUser.equals(oid)) {
+//        if(loadUser==null||!loadUser.equals(oid)) {
             dataItemResultDTOPage = dataItemDao.findByAuthorAndNameContainsAndStatusIn(pageable, oid, name, itemStatusVisible);
-        }else{
-            dataItemResultDTOPage = dataItemDao.findByAuthorAndNameContains(pageable, oid, name);
-        }
+//        }else{
+//            dataItemResultDTOPage = dataItemDao.findByAuthorAndNameContains(pageable, oid, name);
+//        }
         JSONObject result = new JSONObject();
         result.put("list", dataItemResultDTOPage.getContent());
         result.put("total", dataItemResultDTOPage.getTotalElements());
@@ -1292,6 +1294,10 @@ public class DataItemService {
             String oid = relationDelete.get(i);
             if (!oid.equals("")) {
                 ModelItem modelItem = modelItemDao.findFirstByOid(oid);
+                if(modelItem.getStatus().equals("Private")){
+                    relations.add(modelItem.getOid());
+                    continue;
+                }
                 if (modelItem.getRelatedData() != null) {
                     modelItem.getRelatedData().remove(id);
                     modelItemDao.save(modelItem);

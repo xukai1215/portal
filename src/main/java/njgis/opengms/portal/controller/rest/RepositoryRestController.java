@@ -816,6 +816,7 @@ public class RepositoryRestController {
             JSONObject themeR = new JSONObject();
             themeR.put("oid",themes.get(i).getOid());
             themeR.put("img",themes.get(i).getImage());
+            themeR.put("status",themes.get(i).getStatus());
             themeR.put("creator_name",themes.get(i).getCreator_name());
             themeR.put("creator_oid",themes.get(i).getCreator_oid());
             themeR.put("name",themes.get(i).getThemename());

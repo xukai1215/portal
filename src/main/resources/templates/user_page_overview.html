@@ -37,6 +37,11 @@
         .user-interest .content-body span:last-child{
             /*margin-bottom:0px;*/
         }
+
+        .detail_overview p{
+            -webkit-line-clamp: 6;
+            -webkit-box-orient: vertical;
+        }
     </style>
 </head>
 <body>
@@ -1681,7 +1686,7 @@
                                                 <a class="img" :href="'/modelItem/'+ modelItem.oid" target="_blank">
 <!--                                                    <avatar v-if="dataItem.image==''||dataItem.image==null"  :username="dataItem.name" :size="120"-->
 <!--                                                            :rounded="false"></avatar>-->
-                                                    <img v-if="dataItem.image!=''&&dataItem.image!=null" :src="'/static/'+dataItem.image" onerror=src="../static/img/model/myData.png"
+                                                    <img v-if="dataItem.image!=''&&dataItem.image!=null" :src="'/static/'+dataItem.image" onerror=src="/static/img/model/myData.png"
                                                          style="width:120px;height: 120px;">
                                                     <img v-else src="../static/img/model/myData.png"
                                                          style="width:120px;height: 120px;">
@@ -1773,7 +1778,7 @@
 <!--                                                    <avatar v-if="conceptualModel.image==''||conceptualModel.image==null" :username="conceptualModel.name" :size="120"-->
 <!--                                                            :rounded="false"></avatar>-->
 
-                                                    <img v-if="conceptualModel.image!=''&&conceptualModel.image!=null" :src="'/static/'+conceptualModel.image" onerror=src="../static/img/model/conceptual.png"
+                                                    <img v-if="conceptualModel.image!=''&&conceptualModel.image!=null" :src="'/static/'+conceptualModel.image" onerror=src="/static/img/model/conceptual.png"
                                                          style="width:120px;height: 120px;">
                                                     <img v-else src="../static/img/model/conceptual.png"
                                                          style="width:120px;height: 120px;">
@@ -1866,7 +1871,7 @@
 <!--                                                    <avatar v-if="logicalModel.image==''||logicalModel.image==null" :username="logicalModel.name" :size="120"-->
 <!--                                                            :rounded="false"></avatar>-->
 
-                                                    <img v-if="logicalModel.image!=''&&logicalModel.image!=null" :src="'/static/'+logicalModel.image" onerror=src="../static/img/model/logical.png"
+                                                    <img v-if="logicalModel.image!=''&&logicalModel.image!=null" :src="'/static/'+logicalModel.image" onerror=src="/static/img/model/logical.png"
                                                          style="width:120px;height: 120px;">
                                                     <img v-else src="../static/img/model/logical.png"
                                                          style="width:120px;height: 120px;">
@@ -1957,7 +1962,7 @@
 <!--                                                    <avatar v-if="computableModel.image==''||computableModel.image==null" :username="computableModel.name" :size="120"-->
 <!--                                                            :rounded="false"></avatar>-->
 
-                                                    <img v-if="computableModel.image!=''&&computableModel.image!=null" :src="'/static/'+computableModel.image" onerror=src="../static/img/model/calcModel.png"
+                                                    <img v-if="computableModel.image!=''&&computableModel.image!=null" :src="'/static/'+computableModel.image" onerror=src="/static/img/model/calcModel.png"
                                                          style="width:120px;height: 120px;">
                                                     <img v-else src="../static/img/model/calcModel.png"
                                                          style="width:120px;height: 120px;">
@@ -2048,7 +2053,7 @@
 <!--                                                    <avatar v-if="concept.image==''||concept.image==null" :username="concept.name" :size="120"-->
 <!--                                                            :rounded="false"></avatar>-->
 
-                                                    <img v-if="concept.image!=''&&concept.image!=null" :src="concept.image" onerror=src="../static/img/model/semantics.png"
+                                                    <img v-if="concept.image!=''&&concept.image!=null" :src="'/static'+concept.image" onerror=src="../static/img/model/semantics.png"
                                                          style="width:120px;height: 120px;">
                                                     <img v-else src="../static/img/model/semantics.png"
                                                          style="width:120px;height: 120px;">
@@ -2142,7 +2147,7 @@
 <!--                                                    <avatar v-if="spatial.image==''||spatial.img==null" :username="spatial.name" :size="120"-->
 <!--                                                            :rounded="false"></avatar>-->
 
-                                                    <img v-if="spatial.image!=''&&spatial.img!=null" :src="spatial.image" onerror=src="../static/img/model/spatialReference.png"
+                                                    <img v-if="spatial.image!=''&&spatial.img!=null" :src="'/static'+spatial.image" onerror=src="../static/img/model/spatialReference.png"
                                                          style="width:120px;height: 120px;">
                                                     <img v-else src="../static/img/model/spatialReference.png"
                                                          style="width:120px;height: 120px;">
@@ -2233,7 +2238,7 @@
 <!--                                                    <avatar v-if="template.image==''||template.image==null" :username="template.name" :size="120"-->
 <!--                                                            :rounded="false"></avatar>-->
 
-                                                    <img v-if="template.image!=''&&template.image!=null" :src="template.image" onerror=src="../static/img/model/template.png"
+                                                    <img v-if="template.image!=''&&template.image!=null" :src="'/static'+template.image" onerror=src="../static/img/model/template.png"
                                                          style="width:120px;height: 120px;">
                                                     <img v-else src="../static/img/model/template.png"
                                                          style="width:120px;height: 120px;">
@@ -2324,7 +2329,7 @@
 <!--                                                    <avatar v-if="unit.image==''||unit.image==null" :username="unit.name" :size="120"-->
 <!--                                                            :rounded="false"></avatar>-->
 
-                                                    <img v-if="unit.image!=''&&unit.image!=null" :src="unit.image" onerror=src="../static/img/model/unit.png"
+                                                    <img v-if="unit.image!=''&&unit.image!=null" :src="'/static'+unit.image" onerror=src="../static/img/model/unit.png"
                                                          style="width:120px;height: 120px;">
                                                     <img v-else src="../static/img/model/unit.png"
                                                          style="width:120px;height: 120px;">

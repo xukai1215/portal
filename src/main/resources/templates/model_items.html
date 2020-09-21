@@ -61,6 +61,9 @@
 
             <div class="el-row">
                 <h2 class="main-title">Model Item Repository</h2>
+                <!--<el-button type="primary">All</el-button>-->
+                <!--<el-button @click="window.location.href='/modelItem/repository1'">1</el-button>-->
+                <!--<el-button @click="window.location.href='/modelItem/repository2'">2</el-button>-->
                 <h4 class="sub-title">The repository of models (include tools, algorithms, packages, et al.)</h4>
                 <button id="contributeBtn" class="btn btn-success btn-lg" style="font-size: 15px;margin:10px;" @click="contribute()">+ Contribute</button>
                 <hr>
@@ -71,15 +74,15 @@
                     <div slot="header" class="clearfix text-center">
                         <span style="font-size: 20px;color:#444">Model Classifications</span>
                     </div>
+
                     <el-tree
                             id="tree1"
                             ref="tree1"
                             :data="treeData"
                             :highlight-current="true"
-                            :expand-on-click-node="false"
                             node-key="id"
-                            :default-expanded-keys="[64,66]"
-                            :current-node-key="2"
+                            :default-expanded-keys="[1,64]"
+                            :current-node-key="1"
                             @current-change="handleCurrentChange"
                             :props="defaultProps">
                     </el-tree>
@@ -96,8 +99,26 @@
                             :props="defaultProps">
                     </el-tree>
                 </el-card>
-            </div>
 
+                <!--<el-card class="box-card categoryList" style="position:relative">-->
+                    <!--<div slot="header" class="clearfix text-center">-->
+                        <!--<span style="font-size: 20px;color:#444">Model Classifications 2</span>-->
+                    <!--</div>-->
+
+                    <!--<el-tree-->
+                            <!--id="tree3"-->
+                            <!--ref="tree3"-->
+                            <!--:data="treeData2"-->
+                            <!--:highlight-current="true"-->
+                            <!--node-key="id"-->
+                            <!--:default-expanded-keys="[1,14,19,24]"-->
+
+                            <!--@current-change="handleCurrentChange2"-->
+                            <!--:props="defaultProps">-->
+                    <!--</el-tree>-->
+
+                <!--</el-card>-->
+            </div>
             <div class="el-col el-col-18 minScreen_maxWidth">
                 <div class="searcherPanel">
                     <div class="searcherInputPanel" @keydown.enter="search()">
@@ -214,6 +235,7 @@
                     <div class="content-body">
                         <div v-cloak class="list-item" v-for="(modelItem,key) in pageOption.searchResult">
                             <div class="detail_title">
+                                <!--<el-button style="padding:7px;" class="pull-right" type="primary" icon="el-icon-edit" @click="getClassifications(modelItem)" circle></el-button>-->
                                 <el-tooltip popper-class="fontsize-15" effect="light" :content="modelItem.status" placement="left">
                                     <i v-if="modelItem.status=='Public'" class="el-icon-unlock public fontsize-24 pull-right"></i>
                                     <i v-if="modelItem.status=='Discoverable'" class="el-icon-unlock discoverable fontsize-24 pull-right"></i>
@@ -298,7 +320,74 @@
             </div>
 
         </div>
+
     </div>
+
+    <el-dialog title="Edit Classification" :visible.sync="editClassification" width="65%">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label for="parentNode2"
+                       class="col-sm-2 control-label"><span class="xing">* </span>Classifications</label>
+                <div class="col-sm-10">
+                                                                            <textarea class="form-control"
+                                                                                      id="parentNode2"
+                                                                                      v-model="clsStr"
+                                                                                      readonly></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label for="parentNode"
+                       class="col-sm-2 control-label"><span class="xing">* </span>Classifications2</label>
+                <div class="col-sm-10">
+                                                                            <textarea class="form-control"
+                                                                                      id="parentNode"
+                                                                                      v-model="clsStr2"
+                                                                                      readonly></textarea>
+                </div>
+            </div>
+        </div>
+        <el-card style="width:50%;float:left;">
+            <div slot="header" class="clearfix text-center">
+                <span style="font-size: 20px;color:#444">Model Classifications 1</span>
+            </div>
+            <el-tree style="height: 260px;overflow: auto"
+                     class="wzhScrollbar"
+                     id="tree12"
+                     ref="tree12"
+                     :data="treeData"
+                     show-checkbox
+                     node-key="id"
+                     :default-expanded-keys="[1,64]"
+
+                     @check-change="handleCheckChange12"
+                     :props="defaultProps">
+            </el-tree>
+        </el-card>
+        <el-card style="width:50%;">
+            <div slot="header" class="clearfix text-center">
+                <span style="font-size: 20px;color:#444">Model Classifications 2</span>
+            </div>
+            <el-tree style="height: 260px;overflow: auto"
+                     class="wzhScrollbar"
+                     id="tree14"
+                     ref="tree14"
+                     :data="treeData2"
+                     show-checkbox
+                     node-key="id"
+                     :default-expanded-keys="[1,14,19,24]"
+
+                     @check-change="handleCheckChange14"
+                     :props="defaultProps">
+            </el-tree>
+        </el-card>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="editClassification = false">Cancel</el-button>
+            <el-button type="primary" @click="submitClassifications">Submit</el-button>
+        </span>
+    </el-dialog>
 
     <div th:replace="fragments/footer :: footer"></div>
 

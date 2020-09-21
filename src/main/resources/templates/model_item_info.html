@@ -25,6 +25,16 @@
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css"/>
 
     <style>
+
+        .blockEdit{
+            display:none;
+            margin-top:-5px;
+            background-color:white;
+            float:right;
+            padding-left:10px;
+            padding-right:5px;
+        }
+
         #description .block_content h1 {
             font-size: 24px;
         }
@@ -64,8 +74,12 @@
             background-color: #bbbbbb;
         }
 
-        .label{
+        .label {
             vertical-align: text-top;
+        }
+
+        .el-form-item {
+            margin-bottom: 0;
         }
 
     </style>
@@ -76,21 +90,32 @@
     <div th:replace="fragments/navbar :: unlog"></div>
 
     <div class="clearfix" style="margin:40px 0px;height: auto;">
-        <div class="left-panel el-col" >
+        <div class="left-panel el-col">
             <div class="detail">
                 <div class="detail_title">
                     <h2 th:utext="${modelInfo.name}"
-                        style="display: inline-block;word-wrap:break-word; word-break:break-all;margin-right:15px"></h2>
-                    <el-tooltip popper-class="fontsize-15" th:content="${modelInfo.status}" effect="light" placement="left">
-                        <i th:if="${modelInfo.status=='Public'}" class="el-icon-unlock public fontsize-2em pull-right"></i>
-                        <i th:if="${modelInfo.status=='Discoverable'}" class="el-icon-unlock discoverable fontsize-2em pull-right"></i>
-                        <i th:if="${modelInfo.status=='Private'}" class="el-icon-lock private fontsize-2em pull-right"></i>
-                    </el-tooltip>
-                    <a th:if="${modelInfo.status=='Public'&&modelInfo.lock!=true}" href="javascript:void(0)" class='fa fa-pencil fa-2x' aria-hidden='true' @click="edit"></a>
-                    <el-tooltip popper-class="fontsize-15" content="There is another version haven't been reviewed, you can edit it later or contact us." effect="light" placement="left">
-                        <li th:if="${modelInfo.status=='Public'&&modelInfo.lock==true}" class='fa fa-pencil fa-2x' style="color:#cccccc" aria-hidden='true'></li>
-                    </el-tooltip>
-                    <!--<a href="javascript:void(0)" class='fa fa-star-o fa-2x pull-right' aria-hidden='true'></a>-->
+                        style="display: inline-block;word-wrap:break-word; word-break:break-all;width:90%;"></h2>
+                    <div class="pull-right" style="width:10%;">
+                        <el-tooltip popper-class="fontsize-15" content="Edit" effect="light" placement="top">
+                            <a th:if="${modelInfo.status=='Public'&&modelInfo.lock!=true}" href="javascript:void(0)"
+                               class='fa fa-pencil fa-2x' aria-hidden='true' @click="edit"></a>
+                        </el-tooltip>
+                        <el-tooltip popper-class="fontsize-15"
+                                    content="There is another version haven't been reviewed, you can edit it later or contact us."
+                                    effect="light" placement="top">
+                            <li th:if="${modelInfo.status=='Public'&&modelInfo.lock==true}" class='fa fa-pencil fa-2x'
+                                style="color:#cccccc" aria-hidden='true'></li>
+                        </el-tooltip>
+                        <el-tooltip popper-class="fontsize-15" th:content="${modelInfo.status}" effect="light"
+                                    placement="top">
+                            <i th:if="${modelInfo.status=='Public'}" class="el-icon-unlock public fontsize-2em "></i>
+                            <i th:if="${modelInfo.status=='Discoverable'}"
+                               class="el-icon-unlock discoverable fontsize-2em "></i>
+                            <i th:if="${modelInfo.status=='Private'}" class="el-icon-lock private fontsize-2em "></i>
+                        </el-tooltip>
+
+                        <!--<a href="javascript:void(0)" class='fa fa-star-o fa-2x pull-right' aria-hidden='true'></a>-->
+                    </div>
                 </div>
                 <div class="detail_overview">
 
@@ -121,11 +146,29 @@
 
             </div>
 
+            <div id="alias" class="detail_block" th:if="${modelInfo.alias!=null&&#lists.size(modelInfo.alias)>0}">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Alias</h4>
+                    </div>
+                </div>
+                <div class="block_content" style="margin-bottom:10px;">
+
+                    <!--<el-tag type="success"  v-for="iter in dataCategory" @click="clickDataItemInfo(iter.id)" style="margin-left: 10px;font-weight: bold;color: #3396ef"> {{iter.cateContent}}</el-tag>-->
+
+                    <el-tag th:each="classS:${modelInfo.alias}" th:text="${classS}"
+                            style="margin: 0 10px 10px 0;font-weight: bold;color: #3396ef"></el-tag>
+
+                </div>
+            </div>
+
             <div id="Contributor0" class="detail_block minScreen">
                 <div class="block_head">
                     <div class="head_text" style="padding-left: 10px;padding-right: 15px;display: inline-flex">
                         <h4>Contributor</h4>
-                        <el-tooltip popper-class="fontsize-15" effect="light" content="Contributor is the person who contributes the item to OpenGMS, may not be the author of the item." placement="top">
+                        <el-tooltip popper-class="fontsize-15" effect="light"
+                                    content="Contributor is the person who contributes the item to OpenGMS, may not be the author of the item."
+                                    placement="top">
                             <i class="fa fa-question-circle-o" aria-hidden="true" style="margin-top:4px;"></i>
                         </el-tooltip>
                     </div>
@@ -139,7 +182,8 @@
                         </div>
                         <div class="el-col">
                             <div class="pull-left" style="display: block;margin-left: 15px;">
-                                <a th:href="'/user/'+${user.oid}"><h4 th:text="${user.name}" style="padding: 0;">Tom Marvolo Riddle</h4></a>
+                                <a th:href="'/user/'+${user.oid}"><h4 th:text="${user.name}" style="padding: 0;">Tom
+                                    Marvolo Riddle</h4></a>
                             </div>
                         </div>
                     </div>
@@ -152,19 +196,20 @@
             </div>
 
             <div id="Authorship0" class="detail_block minScreen"
-                 >
+            >
                 <div class="block_head">
                     <div class="head_text" style="padding-left: 10px;">
                         <h4>Authorship</h4>
                     </div>
                 </div>
-                <div class="block_content text-center" style="padding-left:10px" >
+                <div class="block_content text-center" style="padding-left:10px">
 
-                    <div th:if="${modelInfo.authorship!=null&&#lists.size(modelInfo.authorship)!=0}" style="text-align: left;" th:each="author,key:${modelInfo.authorship}">
+                    <div th:if="${modelInfo.authorship!=null&&#lists.size(modelInfo.authorship)!=0}"
+                         style="text-align: left;" th:each="author,key:${modelInfo.authorship}">
                         <span role="button" tabindex="0" class="ab" style="float: right;"
                               th:class="${key.index==0?'ab':'ab transform180'}"><a
                                 data-toggle="collapse" th:href="'#authorshipPhone'+${key.index}" class="detail-toggle"
-                                aria-expanded="true" ><i class="fa fa-caret-up" style="font-size: 21px"></i></a></span>
+                                aria-expanded="true"><i class="fa fa-caret-up" style="font-size: 21px"></i></a></span>
                         <li class="NavHead" style="font-size: 16px;" th:text="${author.name}">NNU_Group</li>
                         <div th:id="'authorshipPhone'+${key.index}" class="panel-collapse" name="authorshipContent"
                              th:class="${key.index==0?'in':'collapse'}" aria-expanded="true"
@@ -183,7 +228,15 @@
                         </div>
                     </div>
                     <div th:if="${modelInfo.authorship==null||#lists.size(modelInfo.authorship)==0}">
-                        <el-tag type="info">Authorship is unclear, you can <a href="javascript:void(0)" @click="claim" style="text-decoration: underline">claim</a> the item.</el-tag>
+                        <el-tag type="info">Authorship is unclear, you can <a href="javascript:void(0)" @click="claim"
+                                                                              style="text-decoration: underline">claim</a>
+                            the item.
+                        </el-tag>
+                    </div>
+                    <div th:if="${#lists.size(modelInfo.authorship)>0}">
+                        <el-tag type="info">Is authorship not correct? <a href="javascript:void(0)" @click="feedBack"
+                                                                          style="text-decoration: underline">Feed
+                            back</a></el-tag>
                     </div>
                 </div>
             </div>
@@ -193,12 +246,41 @@
                     <div class="head_text">
                         <h4>Classification(s)</h4>
                     </div>
+                    <span class="blockEdit">
+                        <el-button type="primary" icon="el-icon-edit" @click="getClassifications" circle></el-button>
+                    </span>
+
                 </div>
                 <div class="block_content" style="margin-top:20px;">
                     <div th:each="classS:${classifications}">
                         <span style="font-size:24px;margin-right: 8px">●</span>
                         <el-breadcrumb separator-class="el-icon-arrow-right">
-                            <el-breadcrumb-item th:each="class:${classS}" th:text="${class.name}"  th:onclick="window.open('/modelItem/repository?category='+[[${class.oid}]])" :to="{ path: '/' }">Earth
+                            <el-breadcrumb-item th:each="class:${classS}" th:text="${class.name}"
+                                                th:onclick="window.open('/modelItem/repository?category='+[[${class.oid}]])"
+                                                :to="{ path: '/' }">Earth
+                                System Classification
+                            </el-breadcrumb-item>
+                        </el-breadcrumb>
+                    </div>
+
+                </div>
+            </div>
+
+            <div id="classification2" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Classification2(s)</h4>
+                    </div>
+                    <span class="blockEdit">
+                        <el-button type="primary" icon="el-icon-edit" @click="getClassifications" circle></el-button>
+                    </span>
+                </div>
+                <div class="block_content" style="margin-top:20px;">
+                    <div th:each="classS:${classifications2}">
+                        <span style="font-size:24px;margin-right: 8px">●</span>
+                        <el-breadcrumb separator-class="el-icon-arrow-right">
+                            <el-breadcrumb-item th:each="class:${classS}" th:text="${class.name}"
+                                                :to="{ path: '/' }">Earth
                                 System Classification
                             </el-breadcrumb-item>
                         </el-breadcrumb>
@@ -212,6 +294,9 @@
                     <div class="head_text">
                         <h4>Detailed Description</h4>
                     </div>
+                    <!--<span class="blockEdit">-->
+                        <!--<el-button type="primary" icon="el-icon-edit" @click="getClassifications" circle></el-button>-->
+                    <!--</span>-->
                 </div>
                 <div class="block_content">
                     <div th:utext="${detail}" id="detail" class="detailIntroducePanel">
@@ -293,7 +378,7 @@
 
                     </el-tab-pane>
                     <el-tab-pane name="Conceptual Model">
-                        <div slot="label">Conceptual Model List
+                        <div slot="label">Conceptual-schematic Model List
                             <span class="el-badge__content el-badge__content--undefined"
                                   th:text="${#lists.size(conceptualModels)}">
                             </span>
@@ -333,7 +418,7 @@
                         </div>
                     </el-tab-pane>
                     <el-tab-pane name="Logical Model">
-                        <div slot="label">Logical Model List
+                        <div slot="label">Logical-schematic Model List
                             <span class="el-badge__content el-badge__content--undefined"
                                   th:text="${#lists.size(logicalModels)}">
                             </span>
@@ -346,7 +431,7 @@
                                     <img th:case="*" th:src="${model.image}">
                                 </a>
                                 <div class="info" style="margin-top:0px;">
-                                    <a th:href="'/logicalModel/'+${model.oid}"  th:text="${model.name}">Ground
+                                    <a th:href="'/logicalModel/'+${model.oid}" th:text="${model.name}">Ground
                                         Water Flow System</a>
                                     <p style="margin-top: 0px" th:text="${model.description}">ANN-CA uses the artificial
                                         neural network method to extract
@@ -399,6 +484,10 @@
                                 <div class="info" style="margin-top:0px;">
                                     <a th:href="'/modelItem/'+${model.oid}"
                                        th:text="${model.name}">Ground Water Flow System</a>
+                                    <span class="label label-success" th:text="${model.relation}"
+                                          style="margin-left:5px;">
+                                            relation
+                                        </span>
                                     <p style="margin-top: 0px" th:text="${model.description}">ANN-CA uses the artificial
                                         neural network method to extract
                                         land use change rules in the study area, and then applies the rules to
@@ -710,6 +799,22 @@
                 </div>
             </div>
 
+            <div id="copyright" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Copyright and Disclaimer</h4>
+                    </div>
+                </div>
+                <div class="block_content">
+                    <div class="copyright_text">
+                        All copyrights of a material (model, data, article, etc.) in the OpenGMS fully belong to its
+                        author/developer/designer (or any other wording about the owner). The OpenGMS takes every care
+                        to avoid copyright infringement, contributor(s) should carefully employ materials from other
+                        sources and give proper citations.
+                    </div>
+                </div>
+            </div>
+
             <div id="Knowledge_Graph0" class="detail_block minScreen" th:if="${modelInfo.knowledgeGraph!=null}">
                 <div class="block_head">
                     <div class="head_text" style="padding-left: 10px;">
@@ -761,7 +866,7 @@
                 </div>
                 <div class="block_content">
 
-                    <div class="qrcode"  style="width:200px;height:200px;margin:0 auto"></div>
+                    <div class="qrcode" style="width:200px;height:200px;margin:0 auto"></div>
 
 
                 </div>
@@ -777,7 +882,9 @@
                 <div class="block_head">
                     <div class="head_text" style="padding-left: 10px;padding-right: 15px;display: inline-flex">
                         <h4>Contributor</h4>
-                        <el-tooltip popper-class="fontsize-15" effect="light" content="Contributor is the person who contributed the item to OpenGMS, may not be the author of the item." placement="top">
+                        <el-tooltip popper-class="fontsize-15" effect="light"
+                                    content="Contributor is the person who contributed the item to OpenGMS, may not be the author of the item."
+                                    placement="top">
                             <i class="fa fa-question-circle-o" aria-hidden="true" style="margin-top:4px;"></i>
                         </el-tooltip>
                     </div>
@@ -791,7 +898,8 @@
                         </div>
                         <div class="el-col">
                             <div class="pull-left" style="display: block;margin-left: 15px;">
-                                <a th:href="'/user/'+${user.oid}"><h4 th:text="${user.name}" style="padding: 0;">Tom Marvolo Riddle</h4></a>
+                                <a th:href="'/user/'+${user.oid}"><h4 th:text="${user.name}" style="padding: 0;">Tom
+                                    Marvolo Riddle</h4></a>
                             </div>
                         </div>
                     </div>
@@ -804,7 +912,7 @@
             </div>
 
             <div id="Authorship" class="detail_block"
-                 >
+            >
                 <div class="block_head">
                     <div class="head_text" style="padding-left: 10px;">
                         <h4>Authorship</h4>
@@ -812,7 +920,9 @@
                 </div>
                 <div class="block_content text-center" style="padding-left:10px">
 
-                    <div style="text-align: left;" th:if="${modelInfo.authorship!=null&&#lists.size(modelInfo.authorship)!=0}" th:each="author,key:${modelInfo.authorship}">
+                    <div style="text-align: left;"
+                         th:if="${modelInfo.authorship!=null&&#lists.size(modelInfo.authorship)!=0}"
+                         th:each="author,key:${modelInfo.authorship}">
                         <span role="button" tabindex="0" class="ab" style="float: right;"
                               th:class="${key.index==0?'ab':'ab transform180'}"><a
                                 data-toggle="collapse" th:href="'#authorship'+${key.index}" class="detail-toggle"
@@ -835,7 +945,15 @@
                         </div>
                     </div>
                     <div th:if="${modelInfo.authorship==null||#lists.size(modelInfo.authorship)==0}">
-                        <el-tag type="info">Authorship is unclear, you can <a href="javascript:void(0)" @click="claim" style="text-decoration: underline">claim</a> the item.</el-tag>
+                        <el-tag type="info">Authorship is unclear, you can <a href="javascript:void(0)" @click="claim"
+                                                                              style="text-decoration: underline">claim</a>
+                            the item.
+                        </el-tag>
+                    </div>
+                    <div th:if="${#lists.size(modelInfo.authorship)>0}">
+                        <el-tag type="info">Is authorship not correct? <a href="javascript:void(0)" @click="feedBack"
+                                                                          style="text-decoration: underline">Feed
+                            back</a></el-tag>
                     </div>
                 </div>
             </div>
@@ -902,7 +1020,7 @@
 
 
     <!--Relation 弹出框-->
-    <el-dialog :visible.sync="dialogTableVisible" :title="relateTitle"  width="70%"
+    <el-dialog :visible.sync="dialogTableVisible" :title="relateTitle" width="70%"
                top="40px">
 
         <div style="padding: 8px 16px;
@@ -911,7 +1029,9 @@
                         border-left: 5px solid #50bfff;
                         margin: 0 0 10px;">
             <p style="font-size: 14px;color: #5e6d82;line-height: 1.5em;margin:0;">
-                You can link related <code style="background-color: #f9fafc;color: #5e6d82;">{{typeName}}</code> from your personal space to this model item, or you can <a style="cursor:pointer;text-decoration: underline" @click="jump">create</a> a new <span>{{typeName.toLowerCase()}}</span>.
+                You can link related <code style="background-color: #f9fafc;color: #5e6d82;">{{typeName}}</code> from
+                repository to this model item, or you can <a style="cursor:pointer;text-decoration: underline"
+                                                                      @click="jump">create</a> a new <span>{{typeName.toLowerCase()}}</span>.
             </p>
         </div>
 
@@ -925,14 +1045,14 @@
                     ref="leftTable"
                     :max-height="tableMaxHeight">
                 <!--<el-table-column type="expand">-->
-                    <!--<template slot-scope="props">-->
-                        <!--<el-form label-position="left" inline class="demo-table-expand">-->
-                            <!--<el-form-item label="Contributor">-->
-                                <!--<span>{{ props.row.author }}</span>-->
-                            <!--</el-form-item>-->
+                <!--<template slot-scope="props">-->
+                <!--<el-form label-position="left" inline class="demo-table-expand">-->
+                <!--<el-form-item label="Contributor">-->
+                <!--<span>{{ props.row.author }}</span>-->
+                <!--</el-form-item>-->
 
-                        <!--</el-form>-->
-                    <!--</template>-->
+                <!--</el-form>-->
+                <!--</template>-->
                 <!--</el-table-column>-->
                 <el-table-column
                         label="Name">
@@ -940,18 +1060,43 @@
                         <a :href="'/'+relateType+'/'+props.row.oid" target="_blank">{{props.row.name}}</a>
                     </template>
                 </el-table-column>
+                <el-table-column Label="Relation" v-if="relateType=='modelItem'">
+                    <template slot-scope="props">
+                        <el-select v-model="props.row.relation" value-key="props.row.relation" placeholder="Select">
+                            <el-option-group
+                                    v-for="group in options"
+                                    :key="group.label"
+                                    :label="group.label">
+                                <el-option
+                                        v-for="item in group.options"
+                                        :key="item.value"
+                                        :label="item.value"
+                                        :value="item.value">
+                                </el-option>
+                            </el-option-group>
+                        </el-select>
+                    </template>
+
+                </el-table-column>
 
                 <el-table-column fixed="right" label="Operation" width="100">
                     <template slot-scope="scope">
+                        <!--<el-button-->
+                                <!--v-if="relateType=='concept'||relateType=='spatialReference'||relateType=='template'||relateType=='unit'"-->
+                                <!--size="mini"-->
+                                <!--type="danger"-->
+                                <!--@click="handleDelete(scope.$index, scope.row)">Remove-->
+                        <!--</el-button>-->
+                        <!--<el-button-->
+                                <!--v-else-->
+                                <!--:disabled="scope.row.author_uid!=userUid&&scope.row.author!=userUid&&scope.row.userName!=userUid"-->
+                                <!--size="mini"-->
+                                <!--type="danger"-->
+                                <!--@click="handleDelete(scope.$index, scope.row)">Remove-->
+                        <!--</el-button>-->
+
                         <el-button
-                                v-if="relateType=='concept'||relateType=='spatialReference'||relateType=='template'||relateType=='unit'"
-                                size="mini"
-                                type="danger"
-                                @click="handleDelete(scope.$index, scope.row)">Remove
-                        </el-button>
-                        <el-button
-                                v-else
-                                :disabled="scope.row.author_uid!=userUid&&scope.row.author!=userUid&&scope.row.userName!=userUid"
+
                                 size="mini"
                                 type="danger"
                                 @click="handleDelete(scope.$index, scope.row)">Remove
@@ -964,61 +1109,138 @@
         </el-card>
 
 
-        <el-card shadow="never" class="box-card" style="width:59%;">
-            <el-input placeholder="Please enter name..." v-model="relateSearch" class="input-with-select" clearable="true">
-                <el-button slot="append" icon="el-icon-search" @keyup.enter.native="search()" @click="search()"></el-button>
-            </el-input>
-            <el-table
-                    :data="pageOption.searchResult"
-                    style="margin-top:17px;"
-                    :max-height="tableMaxHeight">
-                <el-table-column type="expand">
-                    <template slot-scope="props">
-                        <el-form label-position="left" inline class="demo-table-expand">
-                            <el-form-item label="Overview">
-                                <span>{{ props.row.description }}</span>
-                            </el-form-item>
+        <el-tabs type="border-card" :stretch="true" v-model="activeName_dialog" style="width:59%;float: left;">
+            <el-tab-pane name="my" label="My Repository" v-if="relateType!='concept'&&relateType!='spatialReference'&&relateType!='template'&&relateType!='unit'">
 
-                        </el-form>
-                    </template>
-                </el-table-column>
-                <el-table-column
-                        label="Name">
-                    <template slot-scope="props">
-                        <a :href="'/repository/'+relateType+'/'+props.row.oid" target="_blank">{{props.row.name}}</a>
-                    </template>
-                </el-table-column>
-                <!--<el-table-column-->
-                        <!--label="Contributor"-->
-                        <!--prop="author">-->
-                <!--</el-table-column>-->
-                <el-table-column fixed="right" label="Operation" width="100">
-                    <template slot-scope="scope">
-                        <el-button
-                                size="mini"
-                                @click="handleEdit(scope.$index, scope.row)">Add
-                        </el-button>
+                <el-input placeholder="Please enter name..." v-model="pageOption.relateSearch" class="input-with-select"
+                          clearable="true" @keyup.enter.native="search()">
+                    <el-button slot="append" icon="el-icon-search" @click="search()"></el-button>
+                </el-input>
+                <el-table
+                        :data="pageOption.searchResult"
+                        style="margin-top:17px;"
+                        :max-height="tableMaxHeight">
+                    <el-table-column type="expand">
+                        <template slot-scope="props">
+                            <el-form label-position="left" inline class="demo-table-expand">
+                                <el-form-item label="Overview">
+                                    <span>{{ props.row.description }}</span>
+                                </el-form-item>
 
-                    </template>
-                </el-table-column>
-            </el-table>
-            <el-pagination style="text-align: center;margin-top:20px"
-                           @current-change="handlePageChange"
-                           :current-page="pageOption.currentPage"
-                           layout="total, prev, pager, next, jumper"
-                           :page-size="6"
-                           :total="pageOption.total">
-            </el-pagination>
-        </el-card>
+                            </el-form>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            label="Name">
+                        <template slot-scope="props">
+                            <a :href="'/repository/'+relateType+'/'+props.row.oid"
+                               target="_blank">{{props.row.name}}</a>
+                        </template>
+                    </el-table-column>
+                    <!--<el-table-column-->
+                    <!--label="Contributor"-->
+                    <!--prop="author">-->
+                    <!--</el-table-column>-->
+                    <el-table-column fixed="right" label="Operation" width="100">
+                        <template slot-scope="scope">
+                            <el-button
+                                    v-if="!isCurrentItem(scope.row)&&!hasAdded(scope.row)"
+                                    size="mini"
+                                    @click="handleEdit(scope.$index, scope.row)">Add
+                            </el-button>
+                            <el-button
+                                    v-if="hasAdded(scope.row)"
+                                    size="mini"
+                                    type="danger"
+                                    @click="handleDelete(scope.$index, scope.row)">Remove
+                            </el-button>
+
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <el-pagination style="text-align: center;margin-top:20px"
+                               @current-change="handlePageChange"
+                               :current-page="pageOption.currentPage"
+                               layout="total, prev, pager, next, jumper"
+                               :page-size="pageOption.pageSize"
+                               :total="pageOption.total">
+                </el-pagination>
+            </el-tab-pane>
+            <el-tab-pane name="all" label="All Repository">
+
+                <el-input placeholder="Please enter name..." v-model="pageOption2.relateSearch" class="input-with-select"
+                          clearable="true" @keyup.enter.native="search('all')">
+                    <el-button slot="append" icon="el-icon-search" @click="search('all')"></el-button>
+                </el-input>
+                <el-table
+                        :data="pageOption2.searchResult"
+                        style="margin-top:17px;"
+                        :max-height="tableMaxHeight">
+                    <el-table-column type="expand">
+                        <template slot-scope="props">
+                            <el-form label-position="left" inline class="demo-table-expand">
+                                <el-form-item label="Overview">
+                                    <span>{{ props.row.description }}</span>
+                                </el-form-item>
+
+                            </el-form>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            label="Name">
+                        <template slot-scope="props">
+                            <a :href="'/repository/'+relateType+'/'+props.row.oid"
+                               target="_blank">{{props.row.name}}</a>
+                        </template>
+                    </el-table-column>
+                    <!--<el-table-column-->
+                    <!--label="Contributor"-->
+                    <!--prop="author">-->
+                    <!--</el-table-column>-->
+                    <el-table-column fixed="right" label="Operation" width="100">
+                        <template slot-scope="scope">
+                            <el-button
+                                    v-if="!isCurrentItem(scope.row)&&!hasAdded(scope.row)"
+                                    size="mini"
+                                    @click="handleEdit(scope.$index, scope.row)">Add
+                            </el-button>
+                            <el-button
+                                    v-if="hasAdded(scope.row)"
+                                    size="mini"
+                                    type="danger"
+                                    @click="handleDelete(scope.$index, scope.row)">Remove
+                            </el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <el-pagination style="text-align: center;margin-top:20px"
+                               @current-change="handlePageChange"
+                               :current-page="pageOption2.currentPage"
+                               layout="total, prev, pager, next, jumper"
+                               :page-size="pageOption2.pageSize"
+                               :total="pageOption2.total">
+                </el-pagination>
+            </el-tab-pane>
+        </el-tabs>
+
         <div slot="footer" class="dialog-footer">
-            <span style="float:left;font-size: 16px">Or you can click <a style="cursor:pointer" @click="jump">here</a> to create a new one.</span>
+
             <el-button @click="dialogTableVisible = false;">Cancel</el-button>
             <el-button type="primary" @click="confirm()">OK</el-button>
         </div>
     </el-dialog>
 
     <!-- claim authorship-->
-    <el-dialog title="Add Authorship" :visible.sync="authorshipFormVisible">
+    <el-dialog title="Claim" :visible.sync="authorshipFormVisible">
+        <div style="padding: 8px 16px;
+                        background-color: #ecf8ff;
+                        border-radius: 4px;
+                        border-left: 5px solid #50bfff;
+                        margin: 0 0 10px;">
+            <p style="font-size: 14px;color: #5e6d82;line-height: 1.5em;margin:0;">
+                These authorship information will be submitted to the contributor to review.
+            </p>
+        </div>
         <el-form :model="authorshipForm">
             <el-form-item label="Name" :label-width="formLabelWidth">
                 <el-input v-model="authorshipForm.name" autocomplete="off"></el-input>
@@ -1044,6 +1266,72 @@
     <!-- edit -->
     <el-dialog title="Edit Model Item" class="responseDialog" :visible.sync="editModelItemDialog" width="65%">
         <edit-modelitem-module :model-edit-oid="modelOid"></edit-modelitem-module>
+    </el-dialog>
+
+    <el-dialog title="Edit Classification" :visible.sync="editClassification" width="65%">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label for="parentNode2"
+                       class="col-sm-2 control-label"><span class="xing">* </span>Classifications</label>
+                <div class="col-sm-10">
+                                                                            <textarea class="form-control"
+                                                                                      id="parentNode2"
+                                                                                      v-model="clsStr"
+                                                                                      readonly></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label for="parentNode"
+                       class="col-sm-2 control-label"><span class="xing">* </span>Classifications2</label>
+                <div class="col-sm-10">
+                                                                            <textarea class="form-control"
+                                                                                      id="parentNode"
+                                                                                      v-model="clsStr2"
+                                                                                      readonly></textarea>
+                </div>
+            </div>
+        </div>
+        <el-card style="width:50%;float:left;">
+            <div slot="header" class="clearfix text-center">
+                <span style="font-size: 20px;color:#444">Model Classifications 1</span>
+            </div>
+            <el-tree style="height: 260px;overflow: auto"
+                     class="wzhScrollbar"
+                     id="tree2"
+                     ref="tree2"
+                     :data="treeData"
+                     show-checkbox
+                     node-key="id"
+                     :default-expanded-keys="[1,64]"
+
+                     @check-change="handleCheckChange"
+                     :props="defaultProps">
+            </el-tree>
+        </el-card>
+        <el-card style="width:50%;">
+            <div slot="header" class="clearfix text-center">
+                <span style="font-size: 20px;color:#444">Model Classifications 2</span>
+            </div>
+            <el-tree style="height: 260px;overflow: auto"
+                     class="wzhScrollbar"
+                     id="tree4"
+                     ref="tree4"
+                     :data="treeData2"
+                     show-checkbox
+                     node-key="id"
+                     :default-expanded-keys="[1,14,19,24]"
+
+                     @check-change="handleCheckChange2"
+                     :props="defaultProps">
+            </el-tree>
+        </el-card>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="editClassification = false">Cancel</el-button>
+            <el-button type="primary" @click="submitClassifications">Submit</el-button>
+        </span>
     </el-dialog>
 
     <div th:replace="fragments/footer :: footer"></div>

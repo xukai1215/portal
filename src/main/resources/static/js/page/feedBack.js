@@ -46,9 +46,15 @@ var feedback = Vue.extend(
                     },
 
 
-                    success: function (result) {
-                        alert('send suggestion successfully!')
-                        that.content = '';
+                    success: (result)=> {
+                        this.$alert('Send suggestion successfully!', 'Success', {
+                            type:'success',
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                that.content = '';
+                            }
+                        });
+
                     }
                     }
                 )

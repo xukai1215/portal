@@ -9,12 +9,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Localization implements Comparable<Localization> {
 
-    String local;
+    String localCode;
+    String localName;
     String name;
     String description;
 
     @Override
     public int compareTo(Localization localization){
-        return this.local.compareTo(localization.local);
+        return this.localName.compareTo(localization.localName);
     }
 }

@@ -42,11 +42,11 @@ public class TemplateService {
 
         Pageable pageable = PageRequest.of(page, pageSize, sort);
         Page<TemplateResultDTO> templates = Page.empty();
-        if(loadUser == null||!loadUser.equals(oid)) {
+//        if(loadUser == null||!loadUser.equals(oid)) {
             templates = templateDao.findByAuthorAndStatusIn(userId, itemStatusVisible,pageable);
-        }else{
-            templates = templateDao.findByAuthor(userId, pageable);
-        }
+//        }else{
+//            templates = templateDao.findByAuthor(userId, pageable);
+//        }
         JSONObject TemplateObject = new JSONObject();
         TemplateObject.put("count", templates.getTotalElements());
         TemplateObject.put("templates", templates.getContent());
@@ -68,11 +68,11 @@ public class TemplateService {
 
         Page<TemplateResultDTO> templateResultDTOPage = Page.empty();
 
-        if(loadUser == null||!loadUser.equals(oid)) {
+//        if(loadUser == null||!loadUser.equals(oid)) {
             templateResultDTOPage = templateDao.findByNameContainsIgnoreCaseAndAuthorAndStatusIn(name, userName, itemStatusVisible,pageable);
-        }else{
-            templateResultDTOPage = templateDao.findByNameContainsIgnoreCaseAndAuthor(name, userName, pageable);
-        }
+//        }else{
+//            templateResultDTOPage = templateDao.findByNameContainsIgnoreCaseAndAuthor(name, userName, pageable);
+//        }
 
         JSONObject result=new JSONObject();
         result.put("list",templateResultDTOPage.getContent());

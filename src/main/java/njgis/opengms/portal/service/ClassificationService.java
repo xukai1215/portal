@@ -6,14 +6,12 @@ import com.mongodb.client.MongoCollection;
 import njgis.opengms.portal.dao.ClassificationDao;
 import njgis.opengms.portal.dao.ModelDao;
 import njgis.opengms.portal.entity.Classification;
-import njgis.opengms.portal.entity.ModelItem;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,6 +32,7 @@ public class ClassificationService {
     @Autowired
     ClassificationDao classificationDao;
 
+
     public Classification getByOid(String id){
         try {
             return classificationDao.findFirstByOid(id);
@@ -43,6 +42,7 @@ public class ClassificationService {
             throw new MyException(ResultEnum.NO_OBJECT);
         }
     }
+
 
     public JSONArray getTree(){
         try {

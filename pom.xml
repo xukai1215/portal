@@ -11,7 +11,7 @@
     <groupId>njgis.opengms</groupId>
     <artifactId>portal</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
     <name>portal</name>
     <description>OpenGMS Portal</description>
 
@@ -360,7 +360,7 @@
     </dependencies>
 
     <build>
-        <finalName>portal</finalName>
+        <finalName>portal-test</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
