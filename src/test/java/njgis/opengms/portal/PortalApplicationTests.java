@@ -89,6 +89,9 @@ public class PortalApplicationTests {
     AuthorshipDao authorshipDao;
 
     @Autowired
+    Classification2Dao classification2Dao;
+
+    @Autowired
     ConceptService conceptService;
 
     @Autowired
@@ -105,6 +108,103 @@ public class PortalApplicationTests {
 
     @Value("${managerServerIpAndPort}")
     private String managerServerIpAndPort;
+
+    @Test
+    public void class2null(){
+        List<ModelItem> modelItemList = modelItemDao.findAll();
+        for(ModelItem modelItem:modelItemList){
+            if(modelItem.getClassifications2()!=null) {
+                if (modelItem.getClassifications2().size() == 0)
+                    modelItem.setClassifications2(null);
+                modelItemDao.save(modelItem);
+            }
+        }
+    }
+
+    @Test
+    public void changeClass(){
+        List<ModelItem> modelItemList = new ArrayList<>();
+
+        modelItemList = modelItemDao.findAllByClassificationsIn("1fd56a5d-1532-4ea6-ad0a-226e78a12861");
+        for(ModelItem modelItem:modelItemList){
+            List<String> cls2 = new ArrayList<>();
+            cls2.add("d33a1ebe-b2f5-4ed3-9c76-78cfb61c23ee");
+            modelItem.setClassifications2(cls2);
+            modelItemDao.save(modelItem);
+        }
+        modelItemList = modelItemDao.findAllByClassificationsIn("52e69d15-cc83-43fb-a445-0c15e5f46878");
+        for(ModelItem modelItem:modelItemList){
+            List<String> cls2 = new ArrayList<>();
+            cls2.add("d3ba6e0b-78ec-4fe8-9985-4d5708f28e3e");
+            modelItem.setClassifications2(cls2);
+            modelItemDao.save(modelItem);
+        }
+    }
+
+    @Test
+    public void addClassification2(){
+
+        JSONArray jsonArray = new JSONArray();
+
+        List<String> lines = new ArrayList<>();
+
+        File file = new File("C:\\Users\\kai\\Desktop\\classification2.txt");
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                lines.add(line);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        int count = 0;
+        Classification2 classification2_parent = new Classification2();
+        JSONObject parent = new JSONObject();
+        JSONArray childrenOfParent = new JSONArray();
+        List<String> children = new ArrayList<>();
+        for(int i=0;i<lines.size();i++){
+            String line = lines.get(i);
+            if(line.equals("") || i==lines.size()-1){
+                classification2_parent.setChildrenId(children);
+                classification2Dao.insert(classification2_parent);
+                parent.put("children",childrenOfParent);
+                jsonArray.add(parent);
+                parent = new JSONObject();
+                classification2_parent = new Classification2();
+            }else{
+                if(!line.contains("\t")){
+                    classification2_parent.setOid(UUID.randomUUID().toString());
+                    classification2_parent.setNameEn(line.trim());
+                    classification2_parent.setNameCn("");
+                    classification2_parent.setParentId(null);
+                    parent.put("id",++count);
+                    parent.put("label",classification2_parent.getNameEn());
+                    parent.put("oid",classification2_parent.getOid());
+                    children = new ArrayList<>();
+                    childrenOfParent = new JSONArray();
+                }else{
+                    Classification2 child = new Classification2();
+                    child.setOid(UUID.randomUUID().toString());
+                    child.setParentId(classification2_parent.getOid());
+                    child.setNameEn(line.trim());
+                    child.setNameCn("");
+                    child.setChildrenId(new ArrayList<>());
+                    classification2Dao.insert(child);
+
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("id",++count);
+                    jsonObject.put("label",child.getNameEn());
+                    jsonObject.put("oid",child.getOid());
+                    childrenOfParent.add(jsonObject);
+
+                    children.add(child.getOid());
+                }
+            }
+        }
+        System.out.println(jsonArray.toString());
+    }
 
     @Test
     public void addConceptViewCount(){
@@ -2068,9 +2168,9 @@ public class PortalApplicationTests {
                     Element Localization = root.element("Localization");
 
                     String name = Localization.attributeValue("name");
-                    spatialReference.setName_EN(name);
+//                    spatialReference.setName_EN(name);
                     String description = Localization.attributeValue("description");
-                    spatialReference.setDescription_EN(description);
+//                    spatialReference.setDescription_EN(description);
 
                     spatialReferenceDao.save(spatialReference);
                     Utils.count();

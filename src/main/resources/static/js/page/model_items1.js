@@ -546,7 +546,6 @@ new Vue({
                 });
             })
         },
-
         switchInit(){
             this.statistic=['Overview','Overview','Overview','Overview','Overview','Overview','Overview','Overview','Overview','Overview'];
         },
@@ -676,7 +675,7 @@ new Vue({
                 // data对象中的属性名要和服务端控制器的参数名一致 login(name, password)
                 // dataType : 'json',
                 success: function (result) {
-                    var json = result;
+                    var json = JSON.parse(result);
                     if (json.oid != '') {
                         window.location.href="/user/userSpace#/model/createModelItem";
                     }
@@ -696,26 +695,25 @@ new Vue({
             this.classifications1=["all"];
             this.$refs.tree1.setCurrentKey(null);
             this.currentClass="ALL"
-            this.classType = null;
-            this.getModels(this.classType);
+            this.getModels();
         },
         //页码change
         handlePageChange(val) {
             this.switchInit();
             let data=this.$refs.tree1.getCurrentNode();
             if(data!=null) {
-                this.setUrl("/modelItem/repository?category=" + data.oid + "&page=" + val);
+                // this.setUrl("/modelItem/repository?category=" + data.oid + "&page=" + val);
             }
             this.pageOption.currentPage = val;
 
             window.scrollTo(0, 0);
-            this.getModels(this.classType);
+            this.getModels();
         },
 
         handleCurrentChange(data) {
 
             this.switchInit();
-            this.setUrl("/modelItem/repository?category="+data.oid);
+            // this.setUrl("/modelItem/repository?category="+data.oid);
             // this.pageOption.searchResult=[];
             this.pageOption.total=0;
             this.pageOption.paginationShow=false;
@@ -726,14 +724,13 @@ new Vue({
             //this.getChildren(data.children)
             this.pageOption.currentPage=1;
             this.searchText="";
-            this.classType = 1;
-            this.getModels(this.classType);
+            this.getModels();
         },
 
         handleCurrentChange2(data) {
 
             this.switchInit();
-            this.setUrl("/modelItem/repository?category2="+data.oid);
+            // this.setUrl("/modelItem/repository?category2="+data.oid);
             // this.pageOption.searchResult=[];
             this.pageOption.total=0;
             this.pageOption.paginationShow=false;
@@ -744,8 +741,7 @@ new Vue({
             //this.getChildren(data.children)
             this.pageOption.currentPage=1;
             this.searchText="";
-            this.classType = 2;
-            this.getModels(this.classType);
+            this.getModels(2);
         },
 
         getChildren(children) {
@@ -824,9 +820,10 @@ new Vue({
         Query(data, type) {
             console.log(data)
             let sendDate = (new Date()).getTime();
+            data.classNum = 1;
             $.ajax({
                 type: "POST",
-                url: type == "normal" ? "/modelItem/list" : "/modelItem/advance",
+                url: type == "normal" ? "/modelItem/searchClass" : "/modelItem/advance",
                 data: data,
                 async: true,
                 success: (json) => {

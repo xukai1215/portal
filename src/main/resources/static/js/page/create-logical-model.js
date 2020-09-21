@@ -424,10 +424,6 @@ var createLogicalModel = Vue.extend({
                         async: true,
                         success: (json) => {
                             if (json.data != null) {
-                                $("#bind").html("unbind")
-                                $("#bind").removeClass("btn-success");
-                                $("#bind").addClass("btn-warning")
-                                document.getElementById("search-box").readOnly = true;
                                 this.logicalModel.bindModelItem = json.data.name;
                                 this.clearSession();
                             }

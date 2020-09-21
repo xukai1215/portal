@@ -11,11 +11,11 @@ new Vue({
             activeIndex: '2',
             queryType: 'normal',
             searchText: '',
-            classifications1: ["652bf1f8-2f3e-4f93-b0dc-f66505090873"],
+            classifications1: ["9f7816be-c6e3-44b6-addf-98251e3d2e19"],
             classifications2: [],
             classifications3: [],
 
-            currentClass: "Earth System Subject",
+            currentClass: "Application-focused categories",
 
             pageOption: {
                 paginationShow:false,
@@ -676,7 +676,7 @@ new Vue({
                 // data对象中的属性名要和服务端控制器的参数名一致 login(name, password)
                 // dataType : 'json',
                 success: function (result) {
-                    var json = result;
+                    var json = JSON.parse(result);
                     if (json.oid != '') {
                         window.location.href="/user/userSpace#/model/createModelItem";
                     }
@@ -694,28 +694,27 @@ new Vue({
             this.setUrl("/modelItem/repository")
             this.pageOption.currentPage = 1;
             this.classifications1=["all"];
-            this.$refs.tree1.setCurrentKey(null);
+            this.$refs.tree3.setCurrentKey(null);
             this.currentClass="ALL"
-            this.classType = null;
-            this.getModels(this.classType);
+            this.getModels(2);
         },
         //页码change
         handlePageChange(val) {
             this.switchInit();
-            let data=this.$refs.tree1.getCurrentNode();
+            let data=this.$refs.tree3.getCurrentNode();
             if(data!=null) {
-                this.setUrl("/modelItem/repository?category=" + data.oid + "&page=" + val);
+                // this.setUrl("/modelItem/repository?category=" + data.oid + "&page=" + val);
             }
             this.pageOption.currentPage = val;
 
             window.scrollTo(0, 0);
-            this.getModels(this.classType);
+            this.getModels(2);
         },
 
         handleCurrentChange(data) {
 
             this.switchInit();
-            this.setUrl("/modelItem/repository?category="+data.oid);
+            // this.setUrl("/modelItem/repository?category="+data.oid);
             // this.pageOption.searchResult=[];
             this.pageOption.total=0;
             this.pageOption.paginationShow=false;
@@ -726,14 +725,13 @@ new Vue({
             //this.getChildren(data.children)
             this.pageOption.currentPage=1;
             this.searchText="";
-            this.classType = 1;
-            this.getModels(this.classType);
+            this.getModels();
         },
 
         handleCurrentChange2(data) {
 
             this.switchInit();
-            this.setUrl("/modelItem/repository?category2="+data.oid);
+            // this.setUrl("/modelItem/repository?category2="+data.oid);
             // this.pageOption.searchResult=[];
             this.pageOption.total=0;
             this.pageOption.paginationShow=false;
@@ -744,8 +742,7 @@ new Vue({
             //this.getChildren(data.children)
             this.pageOption.currentPage=1;
             this.searchText="";
-            this.classType = 2;
-            this.getModels(this.classType);
+            this.getModels(2);
         },
 
         getChildren(children) {
@@ -769,7 +766,7 @@ new Vue({
             this.classifications2 = classes;
             console.log(this.classifications2);
             this.pageOption.currentPage=1;
-            this.getModels();
+            this.getModels(2);
         },
         getModels(classType) {
             this.pageOption.progressBar = true;
@@ -824,9 +821,11 @@ new Vue({
         Query(data, type) {
             console.log(data)
             let sendDate = (new Date()).getTime();
+
+            data.classNum = 2;
             $.ajax({
                 type: "POST",
-                url: type == "normal" ? "/modelItem/list" : "/modelItem/advance",
+                url: type == "normal" ? "/modelItem/searchClass" : "/modelItem/advance",
                 data: data,
                 async: true,
                 success: (json) => {
@@ -930,7 +929,7 @@ new Vue({
             this.classifications1.push(category);
             for(i=0;i<this.treeData.length;i++){
                 if(category==this.treeData[i].oid){
-                    this.$refs.tree1.setCurrentKey(this.treeData[i].id);
+                    this.$refs.tree3.setCurrentKey(this.treeData[i].id);
                     this.currentClass=this.treeData[i].label;
                     break;
                 }
@@ -940,7 +939,7 @@ new Vue({
                     for(j=0;j<children.length;j++){
                         if(category==children[j].oid){
                             find=true;
-                            this.$refs.tree1.setCurrentKey(children[j].id);
+                            this.$refs.tree3.setCurrentKey(children[j].id);
                             this.currentClass=children[j].label;
                             $(".el-tree-node__expand-icon").eq(i).click();
                             break;
@@ -951,7 +950,7 @@ new Vue({
                                 for (k = 0; k < childrens.length; k++) {
                                     if (category == childrens[k].oid) {
                                         find = true;
-                                        this.$refs.tree1.setCurrentKey(childrens[k].id);
+                                        this.$refs.tree3.setCurrentKey(childrens[k].id);
                                         this.currentClass = childrens[k].label;
                                         $(".el-tree-node__expand-icon").eq(1).click();
                                         var index=j+2;
@@ -975,7 +974,7 @@ new Vue({
             }
         }
         else{
-            // this.$refs.tree1.setCurrentKey(2);
+            // this.$refs.tree3.setCurrentKey(2);
             // //展开分类树第一层
             // $(".el-tree-node__expand-icon").eq(0).click();
             // $(".el-tree-node__expand-icon").eq(1).click();
@@ -984,7 +983,7 @@ new Vue({
             this.pageOption.currentPage=page;
         }
 
-        this.getModels();
+        this.getModels(2);
 
         // if(category!=null||page!=null){
         //     this.getModels();

@@ -50,6 +50,9 @@ public class CommonService {
     @Autowired
     ClassificationService classificationService;
 
+    @Autowired
+    Classification2Service classification2Service;
+
     @Value("${resourcePath}")
     private String resourcePath;
 
@@ -141,6 +144,37 @@ public class CommonService {
 
                 array.add(jsonObject);
                 classId=classification.getParentId();
+            }while(classId!=null);
+
+            JSONArray array1=new JSONArray();
+            for(int j=array.size()-1;j>=0;j--){
+                array1.add(array.get(j));
+            }
+
+            classResult.add(array1);
+
+        }
+        System.out.println(classResult);
+        return classResult;
+    }
+
+    public JSONArray getClassifications2(List<String> classifications){
+        JSONArray classResult=new JSONArray();
+
+        for(int i=0;i<classifications.size();i++){
+
+            JSONArray array=new JSONArray();
+            String classId=classifications.get(i);
+
+            do{
+                Classification classification2=classification2Service.getByOid(classId);
+
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("name",classification2.getNameEn());
+                jsonObject.put("oid",classification2.getOid());
+
+                array.add(jsonObject);
+                classId=classification2.getParentId();
             }while(classId!=null);
 
             JSONArray array1=new JSONArray();

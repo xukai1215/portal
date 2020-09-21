@@ -18,6 +18,7 @@ public class ModelItem extends Item {
     String knowledgeGraph;
 
     List<String> classifications = new ArrayList<>();
+    List<String> classifications2;
     List<Reference> references = new ArrayList<>();
     List<String> relatedData = new ArrayList<>();
 

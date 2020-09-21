@@ -254,7 +254,13 @@ public class UserRestController {
         HttpSession session = request.getSession();
         Object oid = session.getAttribute("oid");
 
-        return userService.loadUser(oid.toString());
+        if (oid == null) {
+            JSONObject user = new JSONObject();
+            user.put("oid", "");
+            return user;
+        } else {
+            return userService.loadUser(oid.toString());
+        }
     }
 
     @RequestMapping(value = "/getUserSimpleInfo", method = RequestMethod.GET)

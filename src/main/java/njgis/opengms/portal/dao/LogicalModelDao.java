@@ -23,24 +23,25 @@ public interface LogicalModelDao extends MongoRepository<LogicalModel,String> {
 
     //Page<ModelItem> findByNameLike(String name, Pageable pageable);
 
+    Page<LogicalModel> findByStatusNotLike(String statusNotLike, Pageable pageable);
 
-    Page<LogicalModel> findByNameContainsIgnoreCase(String name, Pageable pageable);
+    Page<LogicalModel> findByNameContainsIgnoreCaseAndStatusNotLike(String name,String statusNotLike, Pageable pageable);
 
-    Page<LogicalModel> findByClassificationsIn(List<String> classes, Pageable pageable);
+    Page<LogicalModel> findByClassificationsInAndStatusNotLike(List<String> classes,String statusNotLike, Pageable pageable);
 
-    Page<LogicalModel> findByClassificationsInAndAuthor(List<String> classes, String author, Pageable pageable);
+    Page<LogicalModel> findByClassificationsInAndAuthorAndStatusNotLike(List<String> classes, String author,String statusNotLike, Pageable pageable);
 
-    Page<LogicalModel> findByNameContainsIgnoreCaseAndClassificationsIn(String name, List<String> classes, Pageable pageable);
+    Page<LogicalModel> findByNameContainsIgnoreCaseAndClassificationsInAndStatusNotLike(String name, List<String> classes,String statusNotLike, Pageable pageable);
 
-    Page<LogicalModel> findByNameContainsIgnoreCaseAndClassificationsInAndAuthor(String name, List<String> classes,String author, Pageable pageable);
+    Page<LogicalModel> findByNameContainsIgnoreCaseAndClassificationsInAndAuthorAndStatusNotLike(String name, List<String> classes,String author,String statusNotLike, Pageable pageable);
 
-    Page<LogicalModel> findByAuthor(String author,Pageable pageable);
+    Page<LogicalModel> findByAuthorAndStatusNotLike(String author,String statusNotLike,Pageable pageable);
 
     Page<LogicalModel> findByAuthorAndStatusIn(String author,List<String> status,Pageable pageable);
 
     List<Item> findByAuthor(String author);
 
-    Page<LogicalModel> findByNameContainsIgnoreCaseAndAuthor(String name, String author,Pageable pageable);
+    Page<LogicalModel> findByNameContainsIgnoreCaseAndAuthorAndStatusNotLike(String name, String author,String statusNotLike,Pageable pageable);
 
     Page<LogicalModelResultDTO> findLoModelByNameContainsIgnoreCaseAndAuthor(String name, String author, Pageable pageable);
 

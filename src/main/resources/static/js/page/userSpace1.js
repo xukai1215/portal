@@ -402,8 +402,13 @@ var userspace = new Vue(
                         // console.log(data);
 
                         if (data.oid == "") {
-                            alert("Please login");
-                            window.location.href = "/user/login";
+                            this.$alert('Please login first!', 'Error', {
+                                type:'error',
+                                confirmButtonText: 'OK',
+                                callback: action => {
+                                    window.location.href = "/user/login";
+                                }
+                            });
                         } else {
                             this.userId = data.oid;
                             this.userName = data.name;

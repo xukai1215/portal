@@ -62,9 +62,9 @@ new Vue({
             { value: 'zh', label: 'Chinese' },
             { value: 'zh-HK', label: 'Chinese (Hong Kong)' },
             { value: 'zh-MO', label: 'Chinese (Macau)' },
-            { value: 'zh-CN', label: 'Chinese (S)' },
+            { value: 'zh-CN', label: 'Chinese (Simplified)' },
             { value: 'zh-SG', label: 'Chinese (Singapore)' },
-            { value: 'zh-TW', label: 'Chinese (T)' },
+            { value: 'zh-TW', label: 'Chinese (Traditional)' },
             { value: 'hr', label: 'Croatian' },
             { value: 'hr-BA', label: 'Croatian (Bosnia and Herzegovina)' },
             { value: 'hr-HR', label: 'Croatian (Croatia)' },
@@ -315,6 +315,11 @@ new Vue({
         }],
     },
     methods: {
+        getLanguageList(){
+            $.get("/static/languageList.json").success((content)=>{
+                this.languageList = content;
+            })
+        },
         submitLocalization(){
             let hrefs = window.location.href.split('/');
             let type = hrefs[hrefs.length - 2];

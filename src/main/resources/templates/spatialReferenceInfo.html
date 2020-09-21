@@ -171,44 +171,6 @@
                 </div>
             </div>
 
-            <div id="description" class="detail_block">
-                <div class="block_head">
-                    <div class="head_text">
-                        <h4>Detailed Description</h4>
-                    </div>
-                </div>
-                <div class="block_content">
-                    <div th:if="${info.detail==null}" class="LanguageInfoContainer" th:each="localization:${localizations}" th:id="${localization.language}">
-                        <table class="table table-bordered">
-                            <thead>
-                            <tr>
-                                <th class="thMain" th:text="${localization.language}"></th>
-                            </tr>
-                            </thead>
-                        </table>
-                        <table class="table table-bordered">
-                            <colgroup>
-                                <col width="25%">
-                                <col width="75%">
-                            </colgroup>
-                            <tr th:if="${localization.name!=''}">
-                                <td>Name</td>
-                                <td class="enName" th:text="${localization.name}"></td>
-                            </tr>
-                            <tr th:if="${localization.desc!=''}">
-                                <td>Description</td>
-                                <td class="enDesc" th:text="${localization.desc}"></td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div th:if="${info.detail!=null}" th:utext="${info.detail}"></div>
-                </div>
-            </div>
-
-            <!--<div th:if="${info.detail==null}"  class="text-center" >-->
-                <!--<a id="addLocalization" style="cursor:pointer;font-size:16px;" data-toggle="modal" data-target="#myModal">Add Localization<i class="fa fa-plus" style="margin-left: 10px;color:#339fff;font-weight: bold" aria-hidden="true"></i></a>-->
-            <!--</div>-->
-
             <div id="transform" class="detail_block" v-cloak>
                 <div class="block_head">
                     <div class="head_text">
@@ -275,6 +237,46 @@
                 </div>
             </div>
 
+            <div id="description" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Detailed Description</h4>
+                    </div>
+                </div>
+                <div class="block_content">
+                    <div class="LanguageInfoContainer" th:each="localization:${info.localizationList}" th:id="${localization.localCode}">
+                        <table class="table table-bordered" >
+                            <thead>
+                            <tr>
+                                <th class="thMain" th:text="${localization.localName}"></th>
+                            </tr>
+                            </thead>
+                        </table>
+                        <table class="table table-bordered">
+                            <colgroup>
+                                <col width="25%">
+                                <col width="75%">
+                            </colgroup>
+                            <tr th:if="${localization.name!=''}">
+                                <td>Name</td>
+                                <td class="enName" th:text="${localization.name}"></td>
+                            </tr>
+                            <tr th:if="${localization.description!=''}">
+                                <td>Description</td>
+                                <td class="enDesc" th:utext="${localization.description}"></td>
+                            </tr>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+
+            <!--<div th:if="${info.detail==null}"  class="text-center" >-->
+                <!--<a id="addLocalization" style="cursor:pointer;font-size:16px;" data-toggle="modal" data-target="#myModal">Add Localization<i class="fa fa-plus" style="margin-left: 10px;color:#339fff;font-weight: bold" aria-hidden="true"></i></a>-->
+            <!--</div>-->
+
+
+
             <div id="cite" class="detail_block">
                 <div class="block_head">
                     <div class="head_text">
@@ -293,6 +295,19 @@
                     </div>
                     <div id="copy" class="btn btn-info">
                         Copy
+                    </div>
+                </div>
+            </div>
+
+            <div id="copyright" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Copyright and Disclaimer</h4>
+                    </div>
+                </div>
+                <div class="block_content">
+                    <div class="copyright_text">
+                        All copyrights of a material (model, data, article, etc.) in the OpenGMS fully belong to its author/developer/designer (or any other wording about the owner). The OpenGMS takes every care to avoid copyright infringement, contributor(s) should carefully employ materials from other sources and give proper citations.
                     </div>
                 </div>
             </div>

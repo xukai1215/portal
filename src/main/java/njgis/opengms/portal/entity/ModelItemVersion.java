@@ -17,6 +17,7 @@ public class ModelItemVersion extends Version {
     String originOid;//正式数据库对应条目的oid
     String oid;
     String name;//
+    List<String> alias;
     String image;//
     String description;//
     String detail;//
@@ -28,6 +29,7 @@ public class ModelItemVersion extends Version {
     int verStatus;//版本状态
 
     List<String> classifications;//
+    List<String> classifications2;//
     List<String> keywords;//
     List<Reference> references;//
     List<AuthorInfo> authorship;//

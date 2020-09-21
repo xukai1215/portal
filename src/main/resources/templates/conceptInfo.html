@@ -176,11 +176,11 @@
                     </div>
                 </div>
                 <div class="block_content">
-                    <div class="LanguageInfoContainer" th:each="localization:${info.localizationList}" th:id="${localization.local}">
+                    <div class="LanguageInfoContainer" th:each="localization:${info.localizationList}" th:id="${localization.localCode}">
                         <table class="table table-bordered" >
                             <thead>
                             <tr>
-                                <th class="thMain" th:text="${localization.local}"></th>
+                                <th class="thMain" th:text="${localization.localName}"></th>
                             </tr>
                             </thead>
                         </table>
@@ -195,7 +195,7 @@
                             </tr>
                             <tr th:if="${localization.description!=''}">
                                 <td>Description</td>
-                                <td class="enDesc" th:text="${localization.description}"></td>
+                                <td class="enDesc" th:utext="${localization.description}"></td>
                             </tr>
                         </table>
                     </div>
@@ -225,6 +225,19 @@
                     </div>
                     <div id="copy" class="btn btn-info">
                         Copy
+                    </div>
+                </div>
+            </div>
+
+            <div id="copyright" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Copyright and Disclaimer</h4>
+                    </div>
+                </div>
+                <div class="block_content">
+                    <div class="copyright_text">
+                        All copyrights of a material (model, data, article, etc.) in the OpenGMS fully belong to its author/developer/designer (or any other wording about the owner). The OpenGMS takes every care to avoid copyright infringement, contributor(s) should carefully employ materials from other sources and give proper citations.
                     </div>
                 </div>
             </div>
@@ -370,7 +383,7 @@
 
     </div>
 
-    <el-dialog title="Add Localization" :visible.sync="addLocalVisible">
+    <el-dialog title="Add Localization Description" :visible.sync="addLocalVisible">
         <el-form :model="localization">
             <el-form-item label="Language" >
                 <br/>
@@ -379,7 +392,7 @@
                             v-for="item in languages"
                             :key="item.value"
                             :label="item.label"
-                            :value="item.value">
+                            :value="item">
                         <span style="float: left">{{ item.label }}</span>
                         <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
                     </el-option>

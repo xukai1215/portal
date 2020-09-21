@@ -75,4 +75,13 @@ public enum RelationTypeEnum {
         }
         return null;
     }
+
+    public static RelationTypeEnum getRelationTypeByText(String text){
+        for(RelationTypeEnum itemTypeEnum:RelationTypeEnum.values()){
+            if(itemTypeEnum.getText().toUpperCase().equals(text.toUpperCase())){
+                return itemTypeEnum;
+            }
+        }
+        return null;
+    }
 }

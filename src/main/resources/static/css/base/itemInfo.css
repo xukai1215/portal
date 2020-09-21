@@ -203,3 +203,15 @@ dd{
     font-size:16px;
     width:55%;
 }
+
+.copyright_text{
+    background-color: #ecf5ff;
+    padding: 15px;
+    margin: 10px 0 10px 0;
+    /*line-height: 25px;*/
+    font-size: 16px;
+    color: #409eff;
+    border: 1px solid #d9ecff;
+    border-radius: 4px;
+    box-sizing: border-box;
+}

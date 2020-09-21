@@ -60,10 +60,10 @@
         <div class="mainContent">
 
             <div class="el-row">
-                <h2 class="main-title">Model Item Repository</h2>
-                <!--<el-button type="primary">All</el-button>-->
-                <!--<el-button @click="window.location.href='/modelItem/repository1'">1</el-button>-->
-                <!--<el-button @click="window.location.href='/modelItem/repository2'">2</el-button>-->
+                <h2 class="main-title">Model Item Repository 1</h2>
+                <el-button @click="window.location.href='/modelItem/repository'">All</el-button>
+                <el-button type="primary">1</el-button>
+                <el-button @click="window.location.href='/modelItem/repository2'">2</el-button>
                 <h4 class="sub-title">The repository of models (include tools, algorithms, packages, et al.)</h4>
                 <button id="contributeBtn" class="btn btn-success btn-lg" style="font-size: 15px;margin:10px;" @click="contribute()">+ Contribute</button>
                 <hr>
@@ -72,7 +72,7 @@
 
                 <el-card class="box-card categoryList" style="position:relative">
                     <div slot="header" class="clearfix text-center">
-                        <span style="font-size: 20px;color:#444">Model Classifications</span>
+                        <span style="font-size: 20px;color:#444">Model Classifications 1</span>
                     </div>
 
                     <el-tree
@@ -100,25 +100,10 @@
                     </el-tree>
                 </el-card>
 
-                <!--<el-card class="box-card categoryList" style="position:relative">-->
-                    <!--<div slot="header" class="clearfix text-center">-->
-                        <!--<span style="font-size: 20px;color:#444">Model Classifications 2</span>-->
-                    <!--</div>-->
 
-                    <!--<el-tree-->
-                            <!--id="tree3"-->
-                            <!--ref="tree3"-->
-                            <!--:data="treeData2"-->
-                            <!--:highlight-current="true"-->
-                            <!--node-key="id"-->
-                            <!--:default-expanded-keys="[1,14,19,24]"-->
-
-                            <!--@current-change="handleCurrentChange2"-->
-                            <!--:props="defaultProps">-->
-                    <!--</el-tree>-->
-
-                <!--</el-card>-->
             </div>
+
+
             <div class="el-col el-col-18 minScreen_maxWidth">
                 <div class="searcherPanel">
                     <div class="searcherInputPanel" @keydown.enter="search()">
@@ -235,7 +220,7 @@
                     <div class="content-body">
                         <div v-cloak class="list-item" v-for="(modelItem,key) in pageOption.searchResult">
                             <div class="detail_title">
-                                <!--<el-button style="padding:7px;" class="pull-right" type="primary" icon="el-icon-edit" @click="getClassifications(modelItem)" circle></el-button>-->
+                                <el-button style="padding:7px;" class="pull-right" type="primary" icon="el-icon-edit" @click="getClassifications(modelItem)" circle></el-button>
                                 <el-tooltip popper-class="fontsize-15" effect="light" :content="modelItem.status" placement="left">
                                     <i v-if="modelItem.status=='Public'" class="el-icon-unlock public fontsize-24 pull-right"></i>
                                     <i v-if="modelItem.status=='Discoverable'" class="el-icon-unlock discoverable fontsize-24 pull-right"></i>
@@ -320,7 +305,6 @@
             </div>
 
         </div>
-
     </div>
 
     <el-dialog title="Edit Classification" :visible.sync="editClassification" width="65%">
@@ -402,7 +386,7 @@
 <script src="/static/js/common/bootstrap-select.js"></script>
 <script src="/static/js/common/echarts.min.js"></script>
 <script src="/static/driver/driver.min.js"></script>
-<script src="/static/js/page/model_items.js"></script>
+<script src="/static/js/page/model_items1.js"></script>
 <script src="/static/js/common/loadUser.js"></script>
 <script src="/static/element-ui/umd/locale/en.js"></script>
 <script src="/static/js/common/navbar.js"></script>

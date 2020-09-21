@@ -3,7 +3,7 @@ package njgis.opengms.portal.service;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.mongodb.client.MongoCollection;
-import njgis.opengms.portal.dao.ClassificationDao;
+import njgis.opengms.portal.dao.Classification2Dao;
 import njgis.opengms.portal.dao.ModelDao;
 import njgis.opengms.portal.entity.Classification;
 import njgis.opengms.portal.enums.ResultEnum;
@@ -23,26 +23,24 @@ import java.util.List;
  * TODO 分类查询
  */
 @Service
-public class ClassificationService {
+public class Classification2Service {
 
     private ModelDao modelDao=new ModelDao();
     JSONArray modelRepositoryTreeArray = new JSONArray();
     int index = 0;
 
     @Autowired
-    ClassificationDao classificationDao;
-
+    Classification2Dao classification2Dao;
 
     public Classification getByOid(String id){
         try {
-            return classificationDao.findFirstByOid(id);
+            return classification2Dao.findFirstByOid(id);
         }
         catch (Exception e)  {
             System.out.println("有人乱查数据库！！该ID不存在Classification对象");
             throw new MyException(ResultEnum.NO_OBJECT);
         }
     }
-
 
     public JSONArray getTree(){
         try {
@@ -73,7 +71,7 @@ public class ClassificationService {
     }
 
     private void traverseJson(MongoCollection<Document> col, String rootId, JSONObject jsonObject) {
-        Classification classification=classificationDao.findFirstByOid(rootId);
+        Classification classification= classification2Dao.findFirstByOid(rootId);
 //        Document document = modelDao.RetrieveDocById(col,rootId);
         JSONObject modelRepositoryTreeObj = new JSONObject();
         String nameEn=classification.getNameEn();
