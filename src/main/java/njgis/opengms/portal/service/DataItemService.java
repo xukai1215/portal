@@ -11,6 +11,10 @@ import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.dto.categorys.CategoryAddDTO;
 import njgis.opengms.portal.dto.dataItem.*;
 import njgis.opengms.portal.dto.theme.ThemeUpdateDTO;
+import njgis.opengms.portal.dto.dataItem.DataItemAddDTO;
+import njgis.opengms.portal.dto.dataItem.DataItemFindDTO;
+import njgis.opengms.portal.dto.dataItem.DataItemResultDTO;
+import njgis.opengms.portal.dto.dataItem.DataItemUpdateDTO;
 import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.entity.support.Application;
 import njgis.opengms.portal.entity.support.DataMeta;
@@ -420,6 +424,35 @@ public class DataItemService {
         return dataItemDao.insert(dataItem);
     }
 
+    public DataItem insertDistributeData(String id,String oid,String name,String date,String type,Boolean authority,String token,JSONObject meta){
+        DataItem dataItem = new DataItem();
+        Date now = new Date();
+        //将dto中的数据转换到dataItem里
+        dataItem.setDistributedNodeDataId(id);
+        dataItem.setAuthor(oid);
+        dataItem.setDate(date);
+        dataItem.setName(name);
+        dataItem.setType(type);
+        dataItem.setAuthority(authority);
+        dataItem.setToken(token);
+        dataItem.setCreateTime(now);
+        dataItem.setWorkSpace(meta.getString("workSpace"));
+        dataItem.setDescription(meta.getString("description"));
+        dataItem.setDetail(meta.getString("detail"));
+        dataItem.setDataPath(meta.getString("dataPath"));
+        dataItem.setDataType("DistributedNode");
+        JSONArray tags = new JSONArray();
+        tags = meta.getJSONArray("tags");
+        List<String> list = new ArrayList<>();
+        for (int i=0;i<tags.size();i++){
+            list.add(tags.getString(i));
+        }
+        dataItem.setClassifications(list);
+
+        return dataItemDao.insert(dataItem);
+    }
+
+
     public Page<DataItem> test(DataItemFindDTO dataItemFindDTO) {
         Sort sort = new Sort(dataItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "createDate");
         Pageable pageable = PageRequest.of(dataItemFindDTO.getPage(), dataItemFindDTO.getPageSize(), sort);
@@ -637,11 +670,11 @@ public class DataItemService {
         Sort sort = new Sort(asc ? Sort.Direction.ASC : Sort.Direction.DESC, sortElement);
         Pageable pageable = PageRequest.of(page, pageSize, sort);
         Page<DataItem> dataItemResultDTOPage = Page.empty();
-        if(loadUser==null||!loadUser.equals(oid)) {
+//        if(loadUser==null||!loadUser.equals(oid)) {
             dataItemResultDTOPage = dataItemDao.findByAuthorAndNameContainsAndStatusIn(pageable, oid, name, itemStatusVisible);
-        }else{
-            dataItemResultDTOPage = dataItemDao.findByAuthorAndNameContains(pageable, oid, name);
-        }
+//        }else{
+//            dataItemResultDTOPage = dataItemDao.findByAuthorAndNameContains(pageable, oid, name);
+//        }
         JSONObject result = new JSONObject();
         result.put("list", dataItemResultDTOPage.getContent());
         result.put("total", dataItemResultDTOPage.getTotalElements());
@@ -1471,6 +1504,10 @@ public class DataItemService {
             String oid = relationDelete.get(i);
             if (!oid.equals("")) {
                 ModelItem modelItem = modelItemDao.findFirstByOid(oid);
+                if(modelItem.getStatus().equals("Private")){
+                    relations.add(modelItem.getOid());
+                    continue;
+                }
                 if (modelItem.getRelatedData() != null) {
                     modelItem.getRelatedData().remove(id);
                     modelItemDao.save(modelItem);

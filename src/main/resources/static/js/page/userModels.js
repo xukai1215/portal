@@ -17,6 +17,12 @@ var modelItem = Vue.extend({
     data() {
         return {
             itemIndex:1,
+
+            chartDialogVisible:false,
+            chartDialogTitle:"",
+
+            currentOid:'',
+            currentName:'',
         }
 
     },
@@ -52,8 +58,65 @@ var modelItem = Vue.extend({
             this.$emit('com-edit',index,oid)
         },
 
-        statistics(oid){
-            window.open("/statistics/computableModel/"+oid)
+        modelStats(){
+            let chart=echarts.init(document.getElementById('chart'));
+            chart.showLoading();
+            $.get("/modelItem/getDailyViewCount",{oid:this.currentOid},(result)=> {
+                let valueList = result.data.valueList;//[0, 0, 0, 0, 0];
+                console.log(result)
+                chart.hideLoading();
+
+                let series = [];
+                for(i=1;i<valueList.length;i++){
+                    series.push({type: 'line', smooth: false, seriesLayoutBy: 'row'});
+                }
+                let option = {
+                    legend: {},
+                    tooltip: {
+                        trigger: 'axis',
+                        showContent: true
+                    },
+                    dataset: {
+                        source:valueList
+                        //     [
+                        //     ['product', '2012', '2013', '2014', '2015', '2016', '2017'],
+                        //     ['Matcha Latte', 41.1, 30.4, 65.1, 53.3, 83.8, 98.7],
+                        //     ['Milk Tea', 86.5, 92.1, 85.7, 83.1, 73.4, 55.1],
+                        //     ['Cheese Cocoa', 24.1, 67.2, 79.5, 86.4, 65.2, 82.5],
+                        //     ['Walnut Brownie', 55.2, 67.1, 69.2, 72.4, 53.9, 39.1]
+                        // ]
+                    },
+                    xAxis: {
+                        type: 'category',
+                        axisTick:{
+                            show:false,
+                        }
+                    },
+                    yAxis: {gridIndex: 0},
+                    grid: {top: '15%',bottom:'15%'},
+                    series:series
+                    //     [
+                    //     {type: 'line', smooth: true, seriesLayoutBy: 'row'},
+                    //     {type: 'line', smooth: true, seriesLayoutBy: 'row'},
+                    //     {type: 'line', smooth: true, seriesLayoutBy: 'row'},
+                    //     {type: 'line', smooth: true, seriesLayoutBy: 'row'},
+                    //
+                    // ]
+                };
+
+                chart.setOption(option)
+            })
+        },
+
+        statistics(oid,name){
+            if(this.getType()=='computablemodel') {
+                window.open("/statistics/computableModel/" + oid)
+            }else if (this.getType() == 'modelitem'){
+                this.chartDialogVisible = true;
+                this.currentOid = oid;
+                this.chartDialogTitle = name + " Statistics"
+            }
+
         },
 
         comDeleteItem(index,oid){
@@ -75,6 +138,7 @@ var userModels = Vue.extend(
         template: "#userModels",
         data(){
             return{
+
                 //页面样式控制
                 loading: 'false',
                 load: true,
@@ -130,6 +194,7 @@ var userModels = Vue.extend(
         // router:modelRouter,
 
         methods:{
+
             //公共功能
             formatDate(value,callback) {
                 const date = new Date(value);

@@ -8,7 +8,6 @@
     <title>Create Concept & Semantic | OpenGMS</title>
 
 
-
     <link rel="stylesheet" type="text/css" media="screen"
           href="/static/css/font-awesome/css/font-awesome.min.css"
     />
@@ -30,120 +29,121 @@
     <link rel="stylesheet" type="text/css" href="/static/css/page/user_space.css">
     <link rel="stylesheet" href="/static/css/common/newSideBar.css">
 
+
     <style>
-    .btn-block {
-        padding: 6px 12px;
-    }
+        .btn-block {
+            padding: 6px 12px;
+        }
 
-    tbody tr td {
-        word-wrap: break-word;
-        word-break: break-all;
-        overflow: hidden;
-    }
+        tbody tr td {
+            word-wrap: break-word;
+            word-break: break-all;
+            overflow: hidden;
+        }
 
-    .searcherPanel {
-        margin-top: 30px;
-    }
+        .searcherPanel {
+            margin-top: 30px;
+        }
 
-    .searcherPanel .searcherInputPanel {
-        display: inline-flex;
-        width: 100%;
-    }
+        .searcherPanel .searcherInputPanel {
+            display: inline-flex;
+            width: 100%;
+        }
 
-    .searcherPanel .searcherInputPanel input {
-        font-size: 14px;
-        line-height: 28px;
-        display: block;
-        box-sizing: border-box;
-        width: 100%;
-        height: 40px;
-        padding: 5px 10px;
-        color: #999;
-        border: 1px solid #2277da;
-    }
+        .searcherPanel .searcherInputPanel input {
+            font-size: 14px;
+            line-height: 28px;
+            display: block;
+            box-sizing: border-box;
+            width: 100%;
+            height: 40px;
+            padding: 5px 10px;
+            color: #999;
+            border: 1px solid #2277da;
+        }
 
-    .searcherPanel .searcherInputPanel button {
-        background: #008af1;
-        border: none;
-        height: 40px;
-        color: #fff;
-        text-align: center;
-        width: 92px;
-        font-size: 14px;
-        cursor: pointer;
-        vertical-align: middle;
-    }
+        .searcherPanel .searcherInputPanel button {
+            background: #008af1;
+            border: none;
+            height: 40px;
+            color: #fff;
+            text-align: center;
+            width: 92px;
+            font-size: 14px;
+            cursor: pointer;
+            vertical-align: middle;
+        }
 
-    .searcherPanel {
-        margin-top: 0px;
-    }
+        .searcherPanel {
+            margin-top: 0px;
+        }
 
-    .content-body .list-item {
-        border: solid #d8d8d8 1px;
-        border-width: 1px 1px;
-        padding: 15px 20px;
-        padding-bottom: 13px;
-    }
+        .content-body .list-item {
+            border: solid #d8d8d8 1px;
+            border-width: 1px 1px;
+            padding: 15px 20px;
+            padding-bottom: 13px;
+        }
 
-    .detail_title a {
-        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-        position: relative;
-        padding-right: 25px;
-        font-size: 20px;
-        color: #333;
-        margin-left: 0px;
-    }
+        .detail_title a {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            position: relative;
+            padding-right: 25px;
+            font-size: 20px;
+            color: #333;
+            margin-left: 0px;
+        }
 
-    .detail_title {
-        margin-left: 10px;
-    }
+        .detail_title {
+            margin-left: 10px;
+        }
 
-    .detail_overview {
-        min-height: 90px;
-        margin: 10px 0px 15px 8px;
-    }
+        .detail_overview {
+            min-height: 90px;
+            margin: 10px 0px 15px 8px;
+        }
 
-    .detail_option {
-        float: right;
-        margin-top: 5px;
-    }
+        .detail_option {
+            float: right;
+            margin-top: 5px;
+        }
 
-    .info {
-        margin-top: 10px;
-        margin-left: 105px;
-        display: block;
-        padding-top: 5px;
-    }
+        .info {
+            margin-top: 10px;
+            margin-left: 105px;
+            display: block;
+            padding-top: 5px;
+        }
 
-    .el-col-6 {
-        width: 25%;
-    }
+        .el-col-6 {
+            width: 25%;
+        }
 
-    .el-col-18 {
-        width: 75%;
-    }
+        .el-col-18 {
+            width: 75%;
+        }
 
-    .detail_option {
-        float: right;
-    }
+        .detail_option {
+            float: right;
+        }
 
-    .img {
-        float: left;
-    }
+        .img {
+            float: left;
+        }
 
-    hr {
-        border-color: #d8d8d8;
-        margin: 0px;
-    }
+        hr {
+            border-color: #d8d8d8;
+            margin: 0px;
+        }
 
-    .el-col-20 {
-        width: 98%;
-    }
+        .el-col-20 {
+            width: 98%;
+        }
 
-    .table .thMain {
-        border-top: none;
-    }
-</style>
+        .table .thMain {
+            border-top: none;
+        }
+    </style>
 </head>
 
 <body class="scrollbar">
@@ -193,10 +193,10 @@
                                                                 <a href="#step1">Basic Info</a>
                                                             </li>
                                                             <li>
-                                                                <a href="#step2">Related</a>
+                                                                <a href="#step2">Content</a>
                                                             </li>
                                                             <li>
-                                                                <a href="#step3">Content</a>
+                                                                <a href="#step3">Related</a>
                                                             </li>
                                                         </ul>
 
@@ -227,7 +227,8 @@
                                                                         <div class="form-horizontal">
                                                                             <div class="form-group">
                                                                                 <label for="parentNode"
-                                                                                       class="col-sm-2 control-label"><span class="xing">* </span>Classifications</label>
+                                                                                       class="col-sm-2 control-label"><span
+                                                                                        class="xing">* </span>Classifications</label>
                                                                                 <div class="col-sm-10">
                                                                             <textarea class="form-control"
                                                                                       id="parentNode"
@@ -240,17 +241,36 @@
                                                                         <div class="form-horizontal">
                                                                             <div class="form-group">
                                                                                 <label for="nameInput"
-                                                                                       class="col-sm-2 control-label"><span class="xing">* </span>Status</label>
+                                                                                       class="col-sm-2 control-label"><span
+                                                                                        class="xing">* </span>Status</label>
                                                                                 <div class="col-sm-10">
-                                                                                    <el-radio-group v-model="status" size="medium">
-                                                                                        <el-tooltip popper-class="fontsize-15" effect="light" content="Can be retrieved, shared and edited." placement="top">
-                                                                                            <el-radio-button label="Public"></el-radio-button>
+                                                                                    <el-radio-group v-model="status"
+                                                                                                    size="medium">
+                                                                                        <el-tooltip
+                                                                                                popper-class="fontsize-15"
+                                                                                                effect="light"
+                                                                                                content="Can be retrieved, shared and edited."
+                                                                                                placement="top">
+                                                                                            <el-radio-button
+                                                                                                    label="Public"></el-radio-button>
                                                                                         </el-tooltip>
-                                                                                        <el-tooltip popper-class="fontsize-15" class="item" effect="light" content="Can be retrieved and shared, can ONLY be edited by creator." placement="top">
-                                                                                            <el-radio-button label="Discoverable"></el-radio-button>
+                                                                                        <el-tooltip
+                                                                                                popper-class="fontsize-15"
+                                                                                                class="item"
+                                                                                                effect="light"
+                                                                                                content="Can be retrieved and shared, can ONLY be edited by creator."
+                                                                                                placement="top">
+                                                                                            <el-radio-button
+                                                                                                    label="Discoverable"></el-radio-button>
                                                                                         </el-tooltip>
-                                                                                        <el-tooltip popper-class="fontsize-15" class="item" effect="light" content="Can NOT be retrieved and shared, can ONLY be edited by creator." placement="top">
-                                                                                            <el-radio-button label="Private"></el-radio-button>
+                                                                                        <el-tooltip
+                                                                                                popper-class="fontsize-15"
+                                                                                                class="item"
+                                                                                                effect="light"
+                                                                                                content="Can NOT be retrieved and shared, can ONLY be edited by creator."
+                                                                                                placement="top">
+                                                                                            <el-radio-button
+                                                                                                    label="Private"></el-radio-button>
                                                                                         </el-tooltip>
 
                                                                                     </el-radio-group>
@@ -261,11 +281,23 @@
                                                                         <div class="form-horizontal">
                                                                             <div class="form-group">
                                                                                 <label for="nameInput"
-                                                                                       class="col-sm-2 control-label"><span class="xing">* </span>Name</label>
+                                                                                       class="col-sm-2 control-label"><span
+                                                                                        class="xing">* </span>Name</label>
                                                                                 <div class="col-sm-10">
                                                                                     <input type="text"
                                                                                            class="form-control"
                                                                                            id="nameInput"/>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="form-horizontal">
+                                                                            <div class="form-group">
+                                                                                <label for="aliasInput"
+                                                                                       class="col-sm-2 control-label">Alias</label>
+                                                                                <div class="col-sm-10">
+                                                                            <textarea class="form-control"
+                                                                                      id="aliasInput"></textarea>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -280,6 +312,7 @@
                                                                                 </div>
                                                                             </div>
                                                                         </div>
+
 
                                                                         <div class="form-horizontal">
                                                                             <div class="form-group">
@@ -300,7 +333,7 @@
                                                                 </div>
                                                             </div>
 
-                                                            <div class="step-tab-panel" id="step2">
+                                                            <div class="step-tab-panel" id="step3">
                                                                 <div class="el-col el-col-20 ">
                                                                     <div class="el-col el-col-6">
                                                                         <el-card class="box-card">
@@ -441,61 +474,92 @@
                                                                 </div>
                                                             </div>
 
-                                                            <div class="step-tab-panel" id="step3">
-                                                        <textarea id="conceptText">
-                                                            <div>
-                                                                 <table class="table table-bordered"
-                                                                        style=" width:100%;margin-bottom: 0px;border-collapse: collapse;border: 1px solid #ddd;"
-                                                                        v-if="${conceptInfo.name_EN != ''}">
-                                                                    <thead>
-                                                                        <tr>
-                                                                            <th class="thMain"> EN_US</th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                </table>
-                                                                <table class="table table-bordered"
-                                                                       style="width:100%;margin-bottom: 20px;border-collapse: collapse;border: 1px solid #ddd;"
-                                                                       v-if="${conceptInfo.name_EN != ''}">
-                                                                    <colgroup>
-                                                                        <col width="25%">
-                                                                        <col width="75%">
-                                                                    </colgroup>
-                                                                    <tr>
-                                                                        <td>Name</td>
-                                                                        <td>{{conceptInfo.name_EN}}</td>
-                                                                    </tr>
-                                                                    <tr v-if="${conceptInfo.description_EN != ''}">
-                                                                        <td>Description</td>
-                                                                        <td>{{conceptInfo.description_EN}}</td>
-                                                                    </tr>
-                                                                </table>
-                                                                <table class="table table-bordered"
-                                                                       style="width:100%;margin-bottom: 0px;border-collapse: collapse;border: 1px solid #ddd;"
-                                                                       v-if="${conceptInfo.name_ZH != ''}">
-                                                                    <thead>
-                                                                        <tr>
-                                                                            <th class="thMain"> ZH_CN</th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                </table>
-                                                                <table class="table table-bordered "
-                                                                       style="width:100%;margin-bottom: 20px;border-collapse: collapse;border: 1px solid #ddd;"
-                                                                       v-if="${conceptInfo.name_ZH != ''}">
-                                                                    <colgroup>
-                                                                        <col width="25%">
-                                                                        <col width="75%">
-                                                                    </colgroup>
-                                                                    <tr>
-                                                                        <td>Name</td>
-                                                                        <td>{{conceptInfo.name_ZH}}</td>
-                                                                    </tr>
-                                                                    <tr v-if="${conceptInfo.description_ZH != ''}">
-                                                                        <td>Description</td>
-                                                                        <td>{{conceptInfo.description_ZH}}</td>
-                                                                    </tr>
-                                                                </table>
-                                                            </div>
-                                                        </textarea>
+
+                                                            <div class="step-tab-panel" id="step2">
+                                                                <div v-if="editType=='create'" class="singleLocalization">
+                                                                    <div style="margin-bottom:10px;">
+                                                                        <div><b>Language :</b> (After creating, you can describe the item in different languages by editing)</div>
+                                                                        <el-select v-model="languageAdd.local" filterable placeholder="Please select language">
+                                                                            <el-option
+                                                                                    v-for="item in languageList"
+                                                                                    :key="item.value"
+                                                                                    :label="item.label"
+                                                                                    :value="item">
+                                                                                <span style="float: left">{{ item.label }}</span>
+                                                                                <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
+                                                                            </el-option>
+                                                                        </el-select>
+                                                                    </div>
+                                                                    <div style="margin-bottom:10px;">
+                                                                        <div><b>Concept Name :</b> </div>
+                                                                        <el-input v-model="currentLocalization.name" placeholder="Please enter concept's name in your selected language"></el-input>
+                                                                    </div>
+                                                                    <div style="margin-bottom:10px;">
+                                                                        <div><b>Description :</b> </div>
+                                                                        <textarea id="singleDescription"></textarea>
+                                                                    </div>
+                                                                </div>
+                                                                <div v-if="editType=='modify'" class="localization">
+                                                                    <el-card style="width: 30%;float:left">
+                                                                        <div slot="header" class="clearfix">
+                                                                            <span style="font-weight: bold">Localization Description</span>
+                                                                            <el-button
+                                                                                    style="float: right; padding: 3px 0"
+                                                                                    type="text" @click="addLocalization">+ Add
+                                                                            </el-button>
+                                                                        </div>
+                                                                        <el-collapse-transition>
+                                                                            <div v-show="languageAdd.show">
+                                                                                <el-select v-model="languageAdd.local" filterable placeholder="Please select language" style="width:80%;float: left;">
+                                                                                    <el-option
+                                                                                            v-for="item in languageList"
+                                                                                            :key="item.value"
+                                                                                            :label="item.label"
+                                                                                            :value="item">
+                                                                                        <span style="float: left">{{ item.label }}</span>
+                                                                                        <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
+                                                                                    </el-option>
+                                                                                </el-select>
+                                                                                <el-button @click="confirmAddLocal" type="success" style="width:10%;float: left;"><i class="el-icon-check"></i></el-button>
+                                                                                <el-button @click="cancelAddLocal" type="danger" style="width:10%;"><i class="el-icon-close"></i></el-button>
+                                                                            </div>
+                                                                        </el-collapse-transition>
+                                                                        <div class="clearfix" style="height:400px;overflow: auto;">
+                                                                            <el-table
+                                                                                :data="localizationList"
+                                                                                :show-header="false"
+                                                                            >
+                                                                            <el-table-column>
+                                                                                <template slot-scope="props">
+                                                                                    <el-tooltip class="item" effect="light" :content="props.row.localCode" placement="top">
+                                                                                        <el-button
+                                                                                                :class="{localizationSelected:props.row.selected}"
+                                                                                                style="width:90%;float:left;"
+                                                                                                @click="changeLocalization(props.row)">
+                                                                                            {{props.row.localName}}
+                                                                                        </el-button>
+                                                                                    </el-tooltip>
+
+                                                                                        <el-button style="width:10%;" @click="deleteLocalization(props.row)"><i
+                                                                                                class="el-icon-close"></i>
+                                                                                        </el-button>
+
+                                                                                </template>
+                                                                            </el-table-column>
+                                                                        </el-table>
+                                                                        </div>
+                                                                    </el-card>
+                                                                    <el-card style="width: 70%;">
+                                                                        <div slot="header" class="clearfix">
+                                                                            <span>Concept Name : </span>
+                                                                            <el-input v-model="currentLocalization.name" placeholder="Please enter concept's localized name"></el-input>
+
+                                                                        </div>
+                                                                        <textarea id="conceptText" style="float:left">
+
+                                                                    </textarea>
+                                                                    </el-card>
+                                                                </div>
                                                             </div>
 
                                                         </div>
@@ -527,7 +591,7 @@
             </div>
         </template>
 
-        </div>
+    </div>
 </body>
 
 <script src="/static/js/common/jquery-3.3.1.min.js"></script>

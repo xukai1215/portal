@@ -12,12 +12,16 @@ dd{
     margin-bottom:3px;
 }
 
+.fa-pencil{
+    margin: 4px 10px 0 0;
+}
+
 .el-icon-unlock{
-    padding: 4px 20px 0 0;
+    margin: 4px 16px 0 0;
 }
 
 .el-icon-lock{
-    padding: 4px 20px 0 0;
+    margin: 4px 16px 0 0;
 }
 
 .left-panel {
@@ -198,4 +202,16 @@ dd{
     display: inline-block;
     font-size:16px;
     width:55%;
+}
+
+.copyright_text{
+    background-color: #ecf5ff;
+    padding: 15px;
+    margin: 10px 0 10px 0;
+    /*line-height: 25px;*/
+    font-size: 16px;
+    color: #409eff;
+    border: 1px solid #d9ecff;
+    border-radius: 4px;
+    box-sizing: border-box;
 }

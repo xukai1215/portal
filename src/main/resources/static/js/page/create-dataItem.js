@@ -712,46 +712,14 @@ var createDataItem = Vue.extend({
                     $("#displays").val('');
                     $("#dataresoureurl").val(data.reference);
 
-                    $("#coordinateSystem").val(data.meta.coordinateSystem);
-                    $("#geographicProjection").val(data.meta.geographicProjection)
-                    $("#coordinateUnits").val(data.meta.coordinateUnits)
+                    // $("#coordinateSystem").val(data.meta.coordinateSystem);
+                    // $("#geographicProjection").val(data.meta.geographicProjection)
+                    // $("#coordinateUnits").val(data.meta.coordinateUnits)
 
 
                     $("#detail").html(data.detail);
                     //tinymce.remove('textarea#detail');//先销毁已有tinyMCE实例
-                    tinymce.init({
-                        selector: "textarea#detail",
-                        height: 205,
-                        theme: 'silver',
-                        plugins: ['link', 'table', 'image', 'media'],
-                        image_title: true,
-                        // enable automatic uploads of images represented by blob or data URIs
-                        automatic_uploads: true,
-                        // URL of our upload handler (for more details check: https://www.tinymce.com/docs/configure/file-image-upload/#images_upload_url)
-                        // images_upload_url: 'postAcceptor.php',
-                        // here we add custom filepicker only to Image dialog
-                        file_picker_types: 'image',
-
-                        file_picker_callback: function (cb, value, meta) {
-                            var input = document.createElement('input');
-                            input.setAttribute('type', 'file');
-                            input.setAttribute('accept', 'image/*');
-                            input.onchange = function () {
-                                var file = input.files[0];
-
-                                var reader = new FileReader();
-                                reader.readAsDataURL(file);
-                                reader.onload = function () {
-                                    var img = reader.result.toString();
-                                    cb(img, {title: file.name});
-                                }
-                            };
-                            input.click();
-                        },
-                        images_dataimg_filter: function (img) {
-                            return img.hasAttribute('internal-blob');
-                        }
-                    });
+                    initTinymce("textarea#detail");
 
                     let authorship = data.authorship;
                     if(authorship!=null) {
@@ -1021,5 +989,32 @@ var createDataItem = Vue.extend({
                 $(this).parents('.panel').eq(0).children('.panel-heading').children().children().html("NEW");
             }
         })
+        //激活jQuery的icheck插件
+        $("input[name='ContentType']").iCheck({
+            //checkboxClass: 'icheckbox_square-blue',  // 注意square和blue的对应关系
+            radioClass: 'iradio_flat-green',
+            increaseArea: '0%' // optional
+
+        });
+        $("input[name='author_confirm']").iCheck({
+            //checkboxClass: 'icheckbox_square-blue',  // 注意square和blue的对应关系
+            radioClass: 'iradio_flat-green',
+            increaseArea: '0%' // optional
+
+        });
+        $("input:radio[name='ContentType']").on('ifChecked', function(event){
+
+            if($(this).val()=="Resources Url"){
+                that.dataType = "Url";
+                $("#ResourcesUrl").show();
+                $("#Resource").hide();
+            }
+            else{
+                that.dataType = "File";
+                $("#ResourcesUrl").hide();
+                $("#Resource").show();
+            }
+
+        });
     }
 })

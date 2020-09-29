@@ -119,10 +119,26 @@ var  data_item_info= new Vue({
                 reqUsrOid:"",
             },
             objDistributed:{},
+
+            authorshipFormVisible:false,
+
         }
 
     } ,
     methods: {
+
+        feedBack(){
+            $.get("/user/load",{},(result)=>{
+                let json = JSON.parse(result);
+                if (json.oid == "") {
+                    this.confirmLogin();
+                }
+                else {
+                    window.location.href = "/user/userSpace#/feedback"
+                }
+            })
+        },
+
         confirmLogin(){
             this.$confirm('<div style=\'font-size: 18px\'>This function requires an account, <br/>please login first.</div>', 'Tip', {
                 dangerouslyUseHTMLString: true,
@@ -480,12 +496,23 @@ var  data_item_info= new Vue({
                 data: data,
                 async: true,
                 success: (json) => {
-                    alert("Success!");
-                    this.dialogTableVisible=false;
-                    window.location.reload();
+                    this.$alert('Success!', 'Tip', {
+                        type:'success',
+                        confirmButtonText: 'OK',
+                        callback: action => {
+                            this.dialogTableVisible = false;
+                            window.location.reload();
+                        }
+                    });
                 },
                 error:(json)=>{
-                    alert("Error!")
+                    this.$alert('Submitted failed!', 'Error', {
+                        type:'error',
+                        confirmButtonText: 'OK',
+                        callback: action => {
+
+                        }
+                    });
                 }
             })
         },
