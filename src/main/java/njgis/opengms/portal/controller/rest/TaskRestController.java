@@ -6,13 +6,14 @@ import io.swagger.annotations.ApiOperation;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.bean.LoginRequired;
 import njgis.opengms.portal.dao.ComputableModelDao;
+import njgis.opengms.portal.dto.task.IntegratedTaskAddDto;
 import njgis.opengms.portal.dto.task.ResultDataDTO;
 import njgis.opengms.portal.dto.task.TestDataUploadDTO;
 import njgis.opengms.portal.dto.task.UploadDataDTO;
 import njgis.opengms.portal.entity.ComputableModel;
+import njgis.opengms.portal.entity.ModelAction;
 import njgis.opengms.portal.entity.Task;
 import njgis.opengms.portal.entity.intergrate.Model;
-import njgis.opengms.portal.entity.intergrate.ModelParam;
 import njgis.opengms.portal.entity.support.DailyViewCount;
 import njgis.opengms.portal.entity.support.TaskData;
 import njgis.opengms.portal.entity.support.UserTaskInfo;
@@ -337,13 +338,99 @@ public class TaskRestController {
         }
     }
 
+    @RequestMapping(value = "/updateIntegrateTaskId", method = RequestMethod.POST)//把managerserver返回的taskid更新到门户数据库
+    JsonResult updateIntegrateTaskId(@RequestParam("taskOid") String taskOid,
+                                     @RequestParam("taskId") String taskId){
+        return ResultUtils.success(taskService.updateIntegrateTaskId(taskOid,taskId));
+    }
+
     @RequestMapping(value = "/saveIntegratedTask", method = RequestMethod.POST)
-    JsonResult saveIntegratedTask(@RequestParam("taskId") String taskId, @RequestParam("graphXml") String graphXml, @RequestParam("modelParams") List<ModelParam> modelParams){
-        Task task = taskService.findByTaskId(taskId);
-        task.setGraphXml(graphXml);
-        task.setModelParams(modelParams);
-        taskService.save(task);
-        return ResultUtils.success(task);
+    JsonResult saveIntegratedTask(@RequestBody IntegratedTaskAddDto integratedTaskAddDto,
+                                  HttpServletRequest request
+                                  ){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid") == null){
+            return ResultUtils.error(-1, "no login");
+        }else {
+            String userName = session.getAttribute("uid").toString();
+            String xml = integratedTaskAddDto.getXml();
+            String mxgraph = integratedTaskAddDto.getMxgraph();
+            List<Map<String,String>> models = integratedTaskAddDto.getModels();
+            List<ModelAction> modelActions = integratedTaskAddDto.getModelActions();
+            String description = integratedTaskAddDto.getDescription();
+            String taskName = integratedTaskAddDto.getTaskName();
+
+            return ResultUtils.success(taskService.saveIntegratedTask( xml, mxgraph, models, modelActions,userName,taskName,description));
+        }
+    }
+
+    @RequestMapping(value = "/deleteIntegratedTask", method = RequestMethod.DELETE)
+    JsonResult saveIntegratedTask(@RequestParam(value = "taskOid") String oid,
+                                  HttpServletRequest request
+    ){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid") == null){
+            return ResultUtils.error(-1, "no login");
+        }else {
+
+            return ResultUtils.success(taskService.deleteIntegratedTask(oid));
+        }
+    }
+
+    @RequestMapping(value = "/getIntegrateTaskByUser",method = RequestMethod.GET)
+    JsonResult getIntegrateTaskByUser(HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid") == null){
+            return ResultUtils.error(-1, "no login");
+        }else {
+            String userName = session.getAttribute("uid").toString();
+            return ResultUtils.success(taskService.getIntegrateTaskByUser(userName));
+        }
+
+    }
+
+    @RequestMapping(value = "/updateIntegrateTaskName",method = RequestMethod.POST)
+    JsonResult updateIntegrateTaskName(@RequestParam(value = "taskOid")String taskOid,
+                                       @RequestParam(value = "taskName")String taskName,
+                                       HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid") == null){
+            return ResultUtils.error(-1, "no login");
+        }else {
+            String userName = session.getAttribute("uid").toString();
+            return ResultUtils.success(taskService.updateIntegrateTaskName(taskOid,taskName));
+        }
+
+    }
+
+    @RequestMapping(value = "/updateIntegrateTaskDescription",method = RequestMethod.POST)
+    JsonResult updateIntegrateTaskDescription(@RequestParam(value = "taskOid")String taskOid,
+                                       @RequestParam(value = "taskDescription")String taskDescription,
+                                       HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid") == null){
+            return ResultUtils.error(-1, "no login");
+        }else {
+            String userName = session.getAttribute("uid").toString();
+            return ResultUtils.success(taskService.updateIntegrateTaskDescription(taskOid,taskDescription));
+        }
+
+    }
+
+    @RequestMapping(value = "/pageIntegrateTaskByUser",method = RequestMethod.GET)
+    JsonResult pageIntegrateTaskByUser(@RequestParam(value = "pageNum") int pageNum,
+                                       @RequestParam(value = "pageSize") int pageSize,
+                                       @RequestParam(value = "asc") int asc,
+                                       @RequestParam(value = "sortElement") String sortElement,
+                                       HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid") == null){
+            return ResultUtils.error(-1, "no login");
+        }else {
+            String userName = session.getAttribute("uid").toString();
+            return ResultUtils.success(taskService.PageIntegrateTaskByUser(userName,pageNum,pageSize,asc,sortElement));
+        }
+
     }
 
     /**/

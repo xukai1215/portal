@@ -411,11 +411,11 @@ public class ConceptualModelService {
         Pageable pageable = PageRequest.of(page, pageSize, sort);
         User user = userDao.findFirstByOid(oid);
         Page<ConceptualModel> modelItemPage = Page.empty();
-//        if(loadUser == null||!loadUser.equals(oid)){
+        if(loadUser == null||!loadUser.equals(oid)){
             modelItemPage = conceptualModelDao.findByAuthorAndStatusIn(user.getUserName(),itemStatusVisible, pageable);
-//        }else{
-//            modelItemPage = conceptualModelDao.findByAuthor(user.getUserName(), pageable);
-//        }
+        }else{
+            modelItemPage = conceptualModelDao.findByAuthor(user.getUserName(), pageable);
+        }
 
 
 
@@ -442,13 +442,13 @@ public class ConceptualModelService {
         Page<ConceptualModel> conceptualPage = null;
 
         if (searchText.equals("") && classes.get(0).equals("all")) {
-            conceptualPage = conceptualModelDao.findByStatusNotLike("Private",pageable);
+            conceptualPage = conceptualModelDao.findAll(pageable);
         } else if (!searchText.equals("") && classes.get(0).equals("all")) {
-            conceptualPage = conceptualModelDao.findByNameContainsIgnoreCaseAndStatusNotLike(searchText,"Private", pageable);
+            conceptualPage = conceptualModelDao.findByNameContainsIgnoreCase(searchText, pageable);
         } else if (searchText.equals("") && !classes.get(0).equals("all")) {
-            conceptualPage = conceptualModelDao.findByClassificationsInAndStatusNotLike(classes,"Private", pageable);
+            conceptualPage = conceptualModelDao.findByClassificationsIn(classes, pageable);
         } else {
-            conceptualPage = conceptualModelDao.findByNameContainsIgnoreCaseAndClassificationsInAndStatusNotLike(searchText, classes,"Private", pageable);
+            conceptualPage = conceptualModelDao.findByNameContainsIgnoreCaseAndClassificationsIn(searchText, classes, pageable);
         }
 
 
@@ -474,13 +474,13 @@ public class ConceptualModelService {
         Page<ConceptualModel> conceptualPage = null;
 
         if (searchText.equals("") && classes.get(0).equals("all")) {
-            conceptualPage = conceptualModelDao.findByAuthorAndStatusNotLike(userName,"Private", pageable);
+            conceptualPage = conceptualModelDao.findByAuthor(userName, pageable);
         } else if (!searchText.equals("") && classes.get(0).equals("all")) {
-            conceptualPage = conceptualModelDao.findByNameContainsIgnoreCaseAndAuthorAndStatusNotLike(searchText, userName,"Private", pageable);
+            conceptualPage = conceptualModelDao.findByNameContainsIgnoreCaseAndAuthor(searchText, userName, pageable);
         } else if (searchText.equals("") && !classes.get(0).equals("all")) {
-            conceptualPage = conceptualModelDao.findByClassificationsInAndAuthorAndStatusNotLike(classes, userName,"Private", pageable);
+            conceptualPage = conceptualModelDao.findByClassificationsInAndAuthor(classes, userName, pageable);
         } else {
-            conceptualPage = conceptualModelDao.findByNameContainsIgnoreCaseAndClassificationsInAndAuthorAndStatusNotLike(searchText, classes, userName,"Private", pageable);
+            conceptualPage = conceptualModelDao.findByNameContainsIgnoreCaseAndClassificationsInAndAuthor(searchText, classes, userName, pageable);
         }
 
 
@@ -617,7 +617,7 @@ public class ConceptualModelService {
 
         Pageable pageable = PageRequest.of(page, 10, sort);
 
-        Page<ConceptualModel> conceptualModels = conceptualModelDao.findByAuthorAndStatusNotLike(userId,"all", pageable);
+        Page<ConceptualModel> conceptualModels = conceptualModelDao.findByAuthor(userId, pageable);
 
         JSONObject conceptualModelObject = new JSONObject();
         conceptualModelObject.put("count", conceptualModels.getTotalElements());
@@ -633,7 +633,7 @@ public class ConceptualModelService {
 
         Pageable pageable = PageRequest.of(page, 10, sort);
 
-        Page<ConceptualModel> modelItems = conceptualModelDao.findByNameContainsIgnoreCaseAndAuthorAndStatusNotLike(searchText, userId, "all", pageable);
+        Page<ConceptualModel> modelItems = conceptualModelDao.findByNameContainsIgnoreCaseAndAuthor(searchText, userId, pageable);
 
         JSONObject modelItemObject = new JSONObject();
         modelItemObject.put("count", modelItems.getTotalElements());
@@ -654,11 +654,11 @@ public class ConceptualModelService {
         Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.DESC,sortElement);
         Pageable pageable=PageRequest.of(page,pageSize,sort);
         Page<ConceptualModelResultDTO> articleResultDTOPage = Page.empty();
-//        if(loadUser == null||!loadUser.equals(oid)){
+        if(loadUser == null||!loadUser.equals(oid)){
             articleResultDTOPage = conceptualModelDao.findConModelByNameContainsIgnoreCaseAndAuthorAndStatusIn(title, userName,itemStatusVisible, pageable);
-//        }else {
-//            articleResultDTOPage = conceptualModelDao.findConModelByNameContainsIgnoreCaseAndAuthor(title, userName, pageable);
-//        }
+        }else {
+            articleResultDTOPage = conceptualModelDao.findConModelByNameContainsIgnoreCaseAndAuthor(title, userName, pageable);
+        }
         JSONObject result=new JSONObject();
         result.put("list",articleResultDTOPage.getContent());
         result.put("total",articleResultDTOPage.getTotalElements());

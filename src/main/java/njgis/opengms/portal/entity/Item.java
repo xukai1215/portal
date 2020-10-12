@@ -3,7 +3,6 @@ package njgis.opengms.portal.entity;
 import lombok.Data;
 import njgis.opengms.portal.entity.support.AuthorInfo;
 import njgis.opengms.portal.entity.support.DailyViewCount;
-import njgis.opengms.portal.entity.support.Localization;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -24,7 +23,6 @@ public class Item implements Serializable {
     String id;
     String oid;
     String name;
-    List<String> alias;
     //String image;
     String description;
     String detail;
@@ -39,10 +37,8 @@ public class Item implements Serializable {
     //Public, Discoverable or Private
     String status;
 
-    List<Localization> localizationList = new ArrayList<>();
-
     //authorship
-    List<AuthorInfo> authorship = new ArrayList<>();
+    List<AuthorInfo> authorship;
 
     //version
     String lastModifier;

@@ -23,14 +23,14 @@ var vue = new Vue({
         let websocket = null;
 
 //判断当前浏览器是否支持WebSocket
-//         if ('WebSocket' in window) {
-//             websocket = new WebSocket(websocketAddress);
-//             console.log("websocket 已连接");
-//         }
-//         else {
-//             alert('当前浏览器 Not support websocket');
-//             console.log("websocket 无法连接");
-//         }
+        if ('WebSocket' in window) {
+            websocket = new WebSocket(websocketAddress);
+            console.log("websocket 已连接");
+        }
+        else {
+            alert('当前浏览器 Not support websocket');
+            console.log("websocket 无法连接");
+        }
 
 //连接发生错误的回调方法
         websocket.onerror = function () {

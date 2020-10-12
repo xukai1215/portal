@@ -16,7 +16,7 @@ new Vue({
             pageOption: {
                 paginationShow:false,
                 progressBar: true,
-                sortAsc: false,
+                sortAsc: true,
                 currentPage: 1,
                 pageSize: 10,
                 sortType: "default",

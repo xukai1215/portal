@@ -2,6 +2,7 @@ package njgis.opengms.portal.dao;
 
 import njgis.opengms.portal.dto.ComputableModel.ComputableModelIngtegratedDTO;
 import njgis.opengms.portal.dto.ComputableModel.ComputableModelResultDTO;
+import njgis.opengms.portal.dto.ComputableModel.ComputableModelSimpleDTO;
 import njgis.opengms.portal.entity.ComputableModel;
 import njgis.opengms.portal.entity.Item;
 import org.springframework.data.domain.Page;
@@ -24,21 +25,19 @@ public interface ComputableModelDao extends MongoRepository<ComputableModel,Stri
 
     //Page<ModelItem> findByNameLike(String name, Pageable pageable);
 
-    Page<ComputableModel> findByStatusNotLike(String statusNotLike, Pageable pageable);
-
     List<ComputableModel> findAllByMd5(String md5);
 
     List<ComputableModel> findAllByNameContainsIgnoreCase(String key);
 
-    Page<ComputableModel> findByNameContainsIgnoreCaseAndStatusNotLike(String name, String statusNotLike,Pageable pageable);
+    Page<ComputableModel> findByNameContainsIgnoreCase(String name, Pageable pageable);
 
-    Page<ComputableModel> findByClassificationsInAndStatusNotLike(List<String> classes,String statusNotLike, Pageable pageable);
+    Page<ComputableModel> findByClassificationsIn(List<String> classes, Pageable pageable);
 
-    Page<ComputableModel> findByClassificationsInAndAuthorAndStatusNotLike(List<String> classes, String author,String statusNotLike, Pageable pageable);
+    Page<ComputableModel> findByClassificationsInAndAuthor(List<String> classes, String author, Pageable pageable);
 
-    Page<ComputableModel> findByNameContainsIgnoreCaseAndClassificationsInAndStatusNotLike(String name, List<String> classes,String statusNotLike, Pageable pageable);
+    Page<ComputableModel> findByNameContainsIgnoreCaseAndClassificationsIn(String name, List<String> classes, Pageable pageable);
 
-    Page<ComputableModel> findByNameContainsIgnoreCaseAndClassificationsInAndAuthorAndStatusNotLike(String name, List<String> classes, String author,String statusNotLike, Pageable pageable);
+    Page<ComputableModel> findByNameContainsIgnoreCaseAndClassificationsInAndAuthor(String name, List<String> classes, String author, Pageable pageable);
 
     List<ComputableModel> findByDeployedServiceNotNull(Pageable pageable);
 
@@ -48,17 +47,15 @@ public interface ComputableModelDao extends MongoRepository<ComputableModel,Stri
 
     List<ComputableModel> findByNameContainsIgnoreCaseAndContentType(String name, String contentType);
 
-    Page<ComputableModel> findByAuthorAndStatusNotLike(String author,String statusNotLike, Pageable pageable);
-
-    Page<ComputableModel> findByAuthorAndContentType(String author,String contentType,Pageable pageable);
+    Page<ComputableModel> findByAuthor(String author,Pageable pageable);
 
     Page<ComputableModel> findByAuthorAndStatusIn(String author,List<String> status,Pageable pageable);
 
+    Page<ComputableModelSimpleDTO> findAllByAuthorAndContentType(String username, String contentType, Pageable pageable);
+
     List<Item> findAllByAuthor(String author);
 
-    List<Item> findAllByAuthorAndContentType(String author,String contentType);
-
-    Page<ComputableModel> findByNameContainsIgnoreCaseAndAuthorAndStatusNotLike(String name,String author,String statusNotLike,Pageable pageable);
+    Page<ComputableModel> findByNameContainsIgnoreCaseAndAuthor(String name,String author,Pageable pageable);
 
     Page<ComputableModelResultDTO> findComModelByNameContainsIgnoreCaseAndAuthor(String name, String author, Pageable pageable);
 

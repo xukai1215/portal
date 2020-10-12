@@ -23,25 +23,24 @@ public interface ConceptualModelDao extends MongoRepository<ConceptualModel,Stri
 
     //Page<ModelItem> findByNameLike(String name, Pageable pageable);
 
-    Page<ConceptualModel> findByStatusNotLike(String statusNotLike, Pageable pageable);
 
-    Page<ConceptualModel> findByNameContainsIgnoreCaseAndStatusNotLike(String name, String statusNotLike, Pageable pageable);
+    Page<ConceptualModel> findByNameContainsIgnoreCase(String name, Pageable pageable);
 
-    Page<ConceptualModel> findByClassificationsInAndStatusNotLike(List<String> classes, String statusNotLike, Pageable pageable);
+    Page<ConceptualModel> findByClassificationsIn(List<String> classes, Pageable pageable);
 
-    Page<ConceptualModel> findByClassificationsInAndAuthorAndStatusNotLike(List<String> classes, String author,String statusNotLike, Pageable pageable);
+    Page<ConceptualModel> findByClassificationsInAndAuthor(List<String> classes, String author, Pageable pageable);
 
-    Page<ConceptualModel> findByNameContainsIgnoreCaseAndClassificationsInAndStatusNotLike(String name, List<String> classes,String statusNotLike, Pageable pageable);
+    Page<ConceptualModel> findByNameContainsIgnoreCaseAndClassificationsIn(String name, List<String> classes, Pageable pageable);
 
-    Page<ConceptualModel> findByNameContainsIgnoreCaseAndClassificationsInAndAuthorAndStatusNotLike(String name, List<String> classes, String author,String statusNotLike, Pageable pageable);
+    Page<ConceptualModel> findByNameContainsIgnoreCaseAndClassificationsInAndAuthor(String name, List<String> classes, String author, Pageable pageable);
 
-    Page<ConceptualModel> findByAuthorAndStatusNotLike(String author,String statusNotLike, Pageable pageable);
+    Page<ConceptualModel> findByAuthor(String author, Pageable pageable);
 
     Page<ConceptualModel> findByAuthorAndStatusIn(String author, List<String> status,Pageable pageable);
 
     List<Item> findAllByAuthor(String author);
 
-    Page<ConceptualModel> findByNameContainsIgnoreCaseAndAuthorAndStatusNotLike(String name,String author,String statusNotLike,Pageable pageable);
+    Page<ConceptualModel> findByNameContainsIgnoreCaseAndAuthor(String name,String author,Pageable pageable);
 
     Page<ConceptualModelResultDTO> findConModelByNameContainsIgnoreCaseAndAuthor(String name, String author, Pageable pageable);
 
