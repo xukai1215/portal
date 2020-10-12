@@ -242,15 +242,14 @@ public class ComputableModelService {
 
         Page<ComputableModel> computableModelPage;
 
-        String statusNotLike = "Private";
         if (searchText.equals("") && classes.get(0).equals("all")) {
-            computableModelPage = computableModelDao.findByStatusNotLike(statusNotLike,pageable);
+            computableModelPage = computableModelDao.findAll(pageable);
         } else if (!searchText.equals("") && classes.get(0).equals("all")) {
-            computableModelPage = computableModelDao.findByNameContainsIgnoreCaseAndStatusNotLike(searchText,statusNotLike, pageable);
+            computableModelPage = computableModelDao.findByNameContainsIgnoreCase(searchText, pageable);
         } else if (searchText.equals("") && !classes.get(0).equals("all")) {
-            computableModelPage = computableModelDao.findByClassificationsInAndStatusNotLike(classes,statusNotLike, pageable);
+            computableModelPage = computableModelDao.findByClassificationsIn(classes, pageable);
         } else {
-            computableModelPage = computableModelDao.findByNameContainsIgnoreCaseAndClassificationsInAndStatusNotLike(searchText, classes,statusNotLike, pageable);
+            computableModelPage = computableModelDao.findByNameContainsIgnoreCaseAndClassificationsIn(searchText, classes, pageable);
 
         }
 
@@ -1086,7 +1085,7 @@ public class ComputableModelService {
 
         Pageable pageable = PageRequest.of(page, 10, sort);
 
-        Page<ComputableModel> modelItems = computableModelDao.findByNameContainsIgnoreCaseAndAuthorAndStatusNotLike(searchText, userId,"all", pageable);
+        Page<ComputableModel> modelItems = computableModelDao.findByNameContainsIgnoreCaseAndAuthor(searchText, userId, pageable);
 
         JSONObject modelItemObject = new JSONObject();
         modelItemObject.put("count", modelItems.getTotalElements());
@@ -1102,7 +1101,7 @@ public class ComputableModelService {
 
         Pageable pageable = PageRequest.of(page, 10, sort);
 
-        Page<ComputableModel> computableModels = computableModelDao.findByAuthorAndStatusNotLike(userId,"Private", pageable);
+        Page<ComputableModel> computableModels = computableModelDao.findByAuthor(userId, pageable);
 
         JSONObject computableModelObject = new JSONObject();
         computableModelObject.put("count", computableModels.getTotalElements());
@@ -1121,11 +1120,11 @@ public class ComputableModelService {
         User user = userDao.findFirstByOid(oid);
         Page<ComputableModel> modelItemPage = Page.empty();
 
-//        if(loadUser == null||!loadUser.equals(oid)) {
+        if(loadUser == null||!loadUser.equals(oid)) {
             modelItemPage = computableModelDao.findByAuthorAndStatusIn(user.getUserName(),itemStatusVisible, pageable);
-//        }else{
-//            modelItemPage = computableModelDao.findByAuthor(user.getUserName(), pageable);
-//        }
+        }else{
+            modelItemPage = computableModelDao.findByAuthor(user.getUserName(), pageable);
+        }
 
         JSONObject result = new JSONObject();
 
@@ -1149,15 +1148,15 @@ public class ComputableModelService {
 
         Page<ComputableModel> computableModelPage;
 
-        String statusNotLike = "Private";
         if (searchText.equals("") && classes.get(0).equals("all")) {
-            computableModelPage = computableModelDao.findByStatusNotLike(statusNotLike,pageable);
+            computableModelPage = computableModelDao.findAll(pageable);
         } else if (!searchText.equals("") && classes.get(0).equals("all")) {
-            computableModelPage = computableModelDao.findByNameContainsIgnoreCaseAndStatusNotLike(searchText, statusNotLike,pageable);
+            computableModelPage = computableModelDao.findByNameContainsIgnoreCase(searchText, pageable);
         } else if (searchText.equals("") && !classes.get(0).equals("all")) {
-            computableModelPage = computableModelDao.findByClassificationsInAndStatusNotLike(classes,statusNotLike, pageable);
+            computableModelPage = computableModelDao.findByClassificationsIn(classes, pageable);
         } else {
-            computableModelPage = computableModelDao.findByNameContainsIgnoreCaseAndClassificationsInAndStatusNotLike(searchText, classes,statusNotLike, pageable);
+            computableModelPage = computableModelDao.findByNameContainsIgnoreCaseAndClassificationsIn(searchText, classes, pageable);
+
         }
 
 
@@ -1182,15 +1181,14 @@ public class ComputableModelService {
 
         Page<ComputableModel> computableModelPage;
 
-        String statusNotLike = "Private";
         if (searchText.equals("") && classes.get(0).equals("all")) {
-            computableModelPage = computableModelDao.findByAuthorAndStatusNotLike(userName,statusNotLike,pageable);
+            computableModelPage = computableModelDao.findByAuthor(userName,pageable);
         } else if (!searchText.equals("") && classes.get(0).equals("all")) {
-            computableModelPage = computableModelDao.findByNameContainsIgnoreCaseAndAuthorAndStatusNotLike(searchText, userName,statusNotLike, pageable);
+            computableModelPage = computableModelDao.findByNameContainsIgnoreCaseAndAuthor(searchText, userName, pageable);
         } else if (searchText.equals("") && !classes.get(0).equals("all")) {
-            computableModelPage = computableModelDao.findByClassificationsInAndAuthorAndStatusNotLike(classes, userName,statusNotLike, pageable);
+            computableModelPage = computableModelDao.findByClassificationsInAndAuthor(classes, userName, pageable);
         } else {
-            computableModelPage = computableModelDao.findByNameContainsIgnoreCaseAndClassificationsInAndAuthorAndStatusNotLike(searchText, classes, userName,statusNotLike, pageable);
+            computableModelPage = computableModelDao.findByNameContainsIgnoreCaseAndClassificationsInAndAuthor(searchText, classes, userName, pageable);
         }
 
 
@@ -1367,11 +1365,11 @@ public class ComputableModelService {
         Pageable pageable=PageRequest.of(page,pageSize,sort);
         Page<ComputableModelResultDTO> computableModelResultDTOPage = Page.empty();
 
-//        if(loadUser == null||!loadUser.equals(oid)) {
+        if(loadUser == null||!loadUser.equals(oid)) {
             computableModelResultDTOPage=computableModelDao.findComModelByNameContainsIgnoreCaseAndAuthorAndStatusIn(name,userName,itemStatusVisible,pageable);
-//        }else{
-//            computableModelResultDTOPage=computableModelDao.findComModelByNameContainsIgnoreCaseAndAuthor(name,userName,pageable);
-//        }
+        }else{
+            computableModelResultDTOPage=computableModelDao.findComModelByNameContainsIgnoreCaseAndAuthor(name,userName,pageable);
+        }
 
 
 

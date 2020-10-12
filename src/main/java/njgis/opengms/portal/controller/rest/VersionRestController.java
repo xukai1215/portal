@@ -94,14 +94,12 @@ public class VersionRestController {
 
         System.out.println("versionCheck");
         ModelAndView modelAndView = new ModelAndView();
-        if(userName==null){
-            modelAndView.setViewName("error/404");
-        }
-        else if(userName.equals("yuesongshan")||userName.equals("njgis")){
+        if(userName.equals("yuesongshan")||userName.equals("njgis")){
             modelAndView.setViewName("version/versionCheck");
         }
         else {
             modelAndView.setViewName("error/404");
+            modelAndView.addObject("name", "OpenGMS");
         }
         return modelAndView;
     }

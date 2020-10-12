@@ -160,17 +160,6 @@
                                                                             </div>
                                                                         </div>
 
-                                                                        <div class="form-horizontal">
-                                                                            <div class="form-group">
-                                                                                <label for="aliasInput"
-                                                                                       class="col-sm-2 control-label">Alias</label>
-                                                                                <div class="col-sm-10">
-                                                                            <textarea class="form-control"
-                                                                                      id="aliasInput"></textarea>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-
                                                                         <div class="form-horizontal" >
                                                                             <div class="form-group">
                                                                                 <label for="descInput"
@@ -226,90 +215,32 @@
                                                             </div>
 
                                                             <div class="step-tab-panel" id="step2">
-                                                                <div v-if="editType=='create'" class="singleLocalization">
-                                                                    <div style="margin-bottom:10px;">
-                                                                        <div><b>Language :</b> (After creating, you can describe the item in different languages by editing)</div>
-                                                                        <el-select v-model="languageAdd.local" filterable placeholder="Please select language">
-                                                                            <el-option
-                                                                                    v-for="item in languageList"
-                                                                                    :key="item.value"
-                                                                                    :label="item.label"
-                                                                                    :value="item">
-                                                                                <span style="float: left">{{ item.label }}</span>
-                                                                                <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
-                                                                            </el-option>
-                                                                        </el-select>
-                                                                    </div>
-                                                                    <div style="margin-bottom:10px;">
-                                                                        <div><b>Spatiotemporal Reference Name :</b> </div>
-                                                                        <el-input v-model="currentLocalization.name" placeholder="Please enter concept's name in your selected language"></el-input>
-                                                                    </div>
-                                                                    <div style="margin-bottom:10px;">
-                                                                        <div><b>Description :</b> </div>
-                                                                        <textarea id="singleDescription"></textarea>
-                                                                    </div>
-                                                                </div>
-                                                                <div v-if="editType=='modify'" class="localization">
-                                                                    <el-card style="width: 30%;float:left">
-                                                                        <div slot="header" class="clearfix">
-                                                                            <span style="font-weight: bold">Localization Description</span>
-                                                                            <el-button
-                                                                                    style="float: right; padding: 3px 0"
-                                                                                    type="text" @click="addLocalization">+ Add
-                                                                            </el-button>
-                                                                        </div>
-                                                                        <el-collapse-transition>
-                                                                            <div v-show="languageAdd.show">
-                                                                                <el-select v-model="languageAdd.local" filterable placeholder="Please select language" style="width:80%;float: left;">
-                                                                                    <el-option
-                                                                                            v-for="item in languageList"
-                                                                                            :key="item.value"
-                                                                                            :label="item.label"
-                                                                                            :value="item">
-                                                                                        <span style="float: left">{{ item.label }}</span>
-                                                                                        <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
-                                                                                    </el-option>
-                                                                                </el-select>
-                                                                                <el-button @click="confirmAddLocal" type="success" style="width:10%;float: left;"><i class="el-icon-check"></i></el-button>
-                                                                                <el-button @click="cancelAddLocal" type="danger" style="width:10%;"><i class="el-icon-close"></i></el-button>
-                                                                            </div>
-                                                                        </el-collapse-transition>
-                                                                        <div class="clearfix" style="height:400px;overflow: auto;">
-                                                                            <el-table
-                                                                                    :data="localizationList"
-                                                                                    :show-header="false"
-                                                                            >
-                                                                                <el-table-column>
-                                                                                    <template slot-scope="props">
-                                                                                        <el-tooltip class="item" effect="light" :content="props.row.localCode" placement="top">
-                                                                                            <el-button
-                                                                                                    :class="{localizationSelected:props.row.selected}"
-                                                                                                    style="width:90%;float:left;"
-                                                                                                    @click="changeLocalization(props.row)">
-                                                                                                {{props.row.localName}}
-                                                                                            </el-button>
-                                                                                        </el-tooltip>
+                                                        <textarea id="spatialText">
+                                                            <div>
+                                                                 <table class="table table-bordered"style=" width:100%;margin-bottom: 0px;border-collapse: collapse;border: 1px solid #ddd;">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th class="thMain"> EN_US</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                </table>
+                                                                <table class="table table-bordered" style="width:100%;margin-bottom: 20px;border-collapse: collapse;border: 1px solid #ddd;" >
+                                                                    <colgroup>
+                                                                        <col width="25%">
+                                                                        <col width="75%">
+                                                                    </colgroup>
+                                                                    <tr>
+                                                                        <td>Name</td>
+                                                                        <td >{{referenceInfo.name_EN}}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Description</td>
+                                                                        <td >{{referenceInfo.description_EN}}</td>
+                                                                    </tr>
+                                                                </table>
+                                                            </div>
 
-                                                                                        <el-button style="width:10%;" @click="deleteLocalization(props.row)"><i
-                                                                                                class="el-icon-close"></i>
-                                                                                        </el-button>
-
-                                                                                    </template>
-                                                                                </el-table-column>
-                                                                            </el-table>
-                                                                        </div>
-                                                                    </el-card>
-                                                                    <el-card style="width: 70%;">
-                                                                        <div slot="header" class="clearfix">
-                                                                            <span>Spatiotemporal Reference Name : </span>
-                                                                            <el-input v-model="currentLocalization.name" placeholder="Please enter concept's localized name"></el-input>
-
-                                                                        </div>
-                                                                        <textarea id="conceptText" style="float:left">
-
-                                                                    </textarea>
-                                                                    </el-card>
-                                                                </div>
+                                                        </textarea>
                                                             </div>
 
                                                         </div>

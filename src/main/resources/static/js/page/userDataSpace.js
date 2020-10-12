@@ -178,7 +178,8 @@ var userDataSpace = Vue.extend(
                 }else {
                     return 4
                 }
-            }
+            },
+
         },
         methods:{
             //公共功能
@@ -2594,12 +2595,12 @@ var userDataSpace = Vue.extend(
                 //     console.log(e.currentTarget)
                 // })
 
-                $('#filePlate').on('click',':not(.wzhMicroInput)',function (e) {
+                $('#filePlate').on('click',':not(.wzhMicroInput):not(#renameBtn>span)',function (e) {
 
                     e.stopPropagation();
                     if(vue_this.rightMenuShow==true)//vue组件命名为userDataSpace
                         vue_this.rightMenuShow=false
-                    if(e.currentTarget.className.indexOf('renameContainer')==-1&&userDataSpace.renameIndex!=''){
+                    if(e.currentTarget.className.indexOf('renameContainer')==-1&&vue_this.renameIndex!=''&&e.currentTarget.id!=='renameBtn'){
                         console.log(e.currentTarget.className)
                         vue_this.renameIndex=''
                     }

@@ -662,22 +662,51 @@ var createDataItem = Vue.extend({
                     $("#detail").html(data.detail);
                     this.authorDataList = data.userDataList;
 
-                    if(data.displays.length>0) {
-                        $('#imgShow').get(0).src = data.displays[0];
-                        $('#imgShow').show();
-                    }
-
+                    $('#imgShow').get(0).src = data.displays[0];
+                    $('#imgShow').show();
                     $("#displays").val('');
                     $("#dataresoureurl").val(data.reference)
 
-                    // $("#coordinateSystem").val(data.meta.coordinateSystem);
-                    // $("#geographicProjection").val(data.meta.geographicProjection)
-                    // $("#coordinateUnits").val(data.meta.coordinateUnits)
+                    $("#coordinateSystem").val(data.meta.coordinateSystem);
+                    $("#geographicProjection").val(data.meta.geographicProjection)
+                    $("#coordinateUnits").val(data.meta.coordinateUnits)
 
 
                     $("#detail").html(data.detail);
                     //tinymce.remove('textarea#detail');//先销毁已有tinyMCE实例
-                    initTinymce("textarea#detail");
+                    tinymce.init({
+                        selector: "textarea#detail",
+                        height: 205,
+                        theme: 'silver',
+                        plugins: ['link', 'table', 'image', 'media'],
+                        image_title: true,
+                        // enable automatic uploads of images represented by blob or data URIs
+                        automatic_uploads: true,
+                        // URL of our upload handler (for more details check: https://www.tinymce.com/docs/configure/file-image-upload/#images_upload_url)
+                        // images_upload_url: 'postAcceptor.php',
+                        // here we add custom filepicker only to Image dialog
+                        file_picker_types: 'image',
+
+                        file_picker_callback: function (cb, value, meta) {
+                            var input = document.createElement('input');
+                            input.setAttribute('type', 'file');
+                            input.setAttribute('accept', 'image/*');
+                            input.onchange = function () {
+                                var file = input.files[0];
+
+                                var reader = new FileReader();
+                                reader.readAsDataURL(file);
+                                reader.onload = function () {
+                                    var img = reader.result.toString();
+                                    cb(img, {title: file.name});
+                                }
+                            };
+                            input.click();
+                        },
+                        images_dataimg_filter: function (img) {
+                            return img.hasAttribute('internal-blob');
+                        }
+                    });
 
                     let authorship = data.authorship;
                     if(authorship!=null) {
