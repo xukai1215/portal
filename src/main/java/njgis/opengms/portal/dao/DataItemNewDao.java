@@ -1,8 +1,12 @@
 package njgis.opengms.portal.dao;
 
+import njgis.opengms.portal.dto.dataItem.DataItemResultDTO;
+import njgis.opengms.portal.dto.modelItem.ModelItemResultDTO;
 import njgis.opengms.portal.entity.DataItem;
 import njgis.opengms.portal.entity.DataItemNew;
 import njgis.opengms.portal.entity.support.AuthorInfo;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Date;
@@ -24,4 +28,5 @@ public interface DataItemNewDao extends MongoRepository<DataItemNew,String> {
     DataItemNew findFirstByAuthorship(List<AuthorInfo> authorship);
     DataItemNew findFirstByReference(String reference);
     DataItemNew findFirstByDistributedNodeDataId(String distributedId);
+    Page<DataItemResultDTO> findAllByClassificationsIn(String classification, Pageable pageable);
 }

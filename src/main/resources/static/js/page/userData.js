@@ -32,7 +32,9 @@ var userData = Vue.extend(
 
             creatItem(index){
                 window.sessionStorage.removeItem('editOid');
-                if(index === 1) {
+                if (index ===0){
+                    window.location.href='/user/userSpace#/data/createDataHubs';
+                }else if(index === 1) {
                     window.location.href='/user/userSpace#/data/createDataItem'
                 }else if (index === 21) {
                     window.location.href='/user/userSpace#/data/createDataApplication'
@@ -45,7 +47,7 @@ var userData = Vue.extend(
                 var urls={
                     1:'/user/userSpace#/data/myDataSpace',
                     2:'/user/userSpace#/data/distributedNode',
-                    3:'/user/userSpace#/data/dataitem',
+                    3:'/user/userSpace#/data/dataHubs',
                     4:'/user/userSpace#/data/dataitem',
                     5:'/user/userSpace#/data/processingApplication',
                     6:'/user/userSpace#/data/visualizationApplication',

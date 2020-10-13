@@ -98,6 +98,9 @@ public class ThemeService {
     @Autowired
     DataApplicationDao dataApplicationDao;
 
+    @Autowired
+    DataHubsVersionDao dataHubsVersionDao;
+
 
     @Value("${resourcePath}")
     private String resourcePath;
@@ -1689,7 +1692,6 @@ public class ThemeService {
         }
 
 
-        //todo dataItemVersion
         //dataItem
         List<DataItemVersion> dataItemVersions = dataItemVersionDao.findAll();
         List<DataItemVersion> dataItemVersions1 = new ArrayList<>();
@@ -1978,6 +1980,168 @@ public class ThemeService {
             jsonObject.put("ex_type","Data Application");
 
             int status = dataApplicationVersion.getVerStatus();
+            if (status == 0) {
+                uncheck_self.add(jsonObject);
+            } else if (status == 1) {
+                accept_self.add(jsonObject);
+            } else if (status == -1) {
+                reject_self.add(jsonObject);
+            }
+        }
+
+        //dataHubs
+        List<DataHubsVersion> dataHubsVersions = dataHubsVersionDao.findAll();
+        List<DataHubsVersion> dataHubsVersions1 = new ArrayList<>();
+
+        for (int i=0;i<dataHubsVersions.size();i++){
+            if (oid.equals(dataHubsVersions.get(i).getCreator())){
+                dataHubsVersions1.add(dataHubsVersions.get(i));
+            }
+        }
+
+
+        for (DataHubsVersion dataHubsVersion : dataHubsVersions1) {
+
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("name", dataHubsVersion.getName());
+            jsonObject.put("oid", dataHubsVersion.getOid());//
+            jsonObject.put("originId", dataHubsVersion.getOriginId());
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            jsonObject.put("modifyTime", sdf.format(dataHubsVersion.getModifyTime()));
+            SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+            jsonObject.put("modifyTimeDay",sdf1.format(dataHubsVersion.getModifyTime()));
+            if (dataHubsVersion.getAcceptTime()!=null){
+                jsonObject.put("acceptTime",sdf.format(dataHubsVersion.getAcceptTime()));
+                jsonObject.put("acceptTimeDay",sdf1.format(dataHubsVersion.getAcceptTime()));
+            }
+            if (dataHubsVersion.getRejectTime()!=null){
+                jsonObject.put("rejectTime",sdf.format(dataHubsVersion.getRejectTime()));
+                jsonObject.put("rejectTimeDay",sdf1.format(dataHubsVersion.getRejectTime()));
+            }
+            JSONObject modifier = new JSONObject();
+
+            modifier.put("modifier", dataHubsVersion.getModifier());
+            List<User> users = userDao.findAll();
+            for (int i=0;i<users.size();i++){
+                if (dataHubsVersion.getModifier().equals(users.get(i).getOid())){
+                    modifier.put("modifier_oid",users.get(i).getOid());
+                    modifier.put("modifier_name",users.get(i).getName());
+                    break;
+                }
+            }
+//                jsonObject.putAll(modifier);
+            jsonObject.put("modifier",modifier);
+            String statuss = new String();
+            if (dataHubsVersion.getVerStatus() == 0){
+                statuss = "unchecked";
+            }else if (dataHubsVersion.getVerStatus() == -1){
+                statuss = "reject";
+            }else {
+                statuss = "confirmed";
+            }
+
+            jsonObject.put("status",statuss);
+
+//            jsonObject.put("type","model");
+
+
+            //前台展示需要用户的name，所以通过uid获取用户的name
+//                String name = new String();
+//                List<User> users = userDao.findAll();
+//                for (int i=0;i<users.size();i++){
+//                    if (modelItemVersion.getModifier().equals(users.get(i).getUserName())){
+//                        name = users.get(i).getName();
+//                        break;
+//                    }
+//                }
+//                jsonObject.put("modifierName", name);
+            jsonObject.put("type", "dataHubs");
+            jsonObject.put("ex_type","Data Hubs");
+
+            int status = dataHubsVersion.getVerStatus();
+            if (status == 0) {
+                uncheck.add(jsonObject);
+                edit.add(jsonObject);
+            } else if (status == 1) {
+                accept.add(jsonObject);
+                edit.add(jsonObject);
+            } else if (status == -1) {
+                reject.add(jsonObject);
+                edit.add(jsonObject);
+            }
+        }
+
+        //self
+        List<DataHubsVersion> dataHubsVersions_self = dataHubsVersionDao.findAll();
+        List<DataHubsVersion> dataHubsVersions1_self = new ArrayList<>();
+        for (int i=0;i<dataHubsVersions_self.size();i++){
+            if (oid.equals(dataHubsVersions_self.get(i).getModifier())){
+                dataHubsVersions1_self.add(dataHubsVersions_self.get(i));
+            }
+        }
+
+
+        for (DataHubsVersion dataHubsVersion : dataHubsVersions1_self) {
+
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("name", dataHubsVersion.getName());
+            jsonObject.put("oid", dataHubsVersion.getOid());//
+            jsonObject.put("originId", dataHubsVersion.getOriginId());
+            jsonObject.put("readStatus",dataHubsVersion.getReadStatus());
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            jsonObject.put("modifyTime", sdf.format(dataHubsVersion.getModifyTime()));
+            SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+            jsonObject.put("modifyTimeDay",sdf1.format(dataHubsVersion.getModifyTime()));
+            if (dataHubsVersion.getAcceptTime()!=null){
+                jsonObject.put("acceptTime",sdf.format(dataHubsVersion.getAcceptTime()));
+                jsonObject.put("acceptTimeDay",sdf1.format(dataHubsVersion.getAcceptTime()));
+            }
+            if (dataHubsVersion.getRejectTime()!=null){
+                jsonObject.put("rejectTime",sdf.format(dataHubsVersion.getRejectTime()));
+                jsonObject.put("rejectTimeDay",sdf1.format(dataHubsVersion.getRejectTime()));
+            }
+            JSONObject modifier = new JSONObject();
+
+            modifier.put("modifier", dataHubsVersion.getModifier());
+            List<User> users = userDao.findAll();
+            for (int i=0;i<users.size();i++){
+                if (dataHubsVersion.getModifier().equals(users.get(i).getOid())){
+                    modifier.put("modifier_oid",users.get(i).getOid());
+                    modifier.put("modifier_name",users.get(i).getName());
+                    break;
+                }
+            }
+//                jsonObject.putAll(modifier);
+            jsonObject.put("modifier",modifier);
+            String statuss = new String();
+            if (dataHubsVersion.getVerStatus() == 0){
+                statuss = "unchecked";
+            }else if (dataHubsVersion.getVerStatus() == -1){
+                statuss = "reject";
+            }else {
+                statuss = "confirmed";
+            }
+
+            jsonObject.put("status",statuss);
+
+//            jsonObject.put("type","model");
+
+
+            //前台展示需要用户的name，所以通过uid获取用户的name
+//                String name = new String();
+//                List<User> users = userDao.findAll();
+//                for (int i=0;i<users.size();i++){
+//                    if (modelItemVersion.getModifier().equals(users.get(i).getUserName())){
+//                        name = users.get(i).getName();
+//                        break;
+//                    }
+//                }
+//                jsonObject.put("modifierName", name);
+            jsonObject.put("type", "dataHubs");
+            jsonObject.put("ex_type","Data Hubs");
+
+            int status = dataHubsVersion.getVerStatus();
             if (status == 0) {
                 uncheck_self.add(jsonObject);
             } else if (status == 1) {

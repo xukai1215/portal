@@ -13,4 +13,5 @@ public class CategoryAddDTO {
     String id;
     List<String> cate;
     String dataType;//标识Url、File、DistributedNode
+    String tabType;//标识四个tabs，包括hubs、repository、network与application
 }

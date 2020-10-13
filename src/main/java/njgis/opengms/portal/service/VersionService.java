@@ -104,6 +104,12 @@ public class VersionService {
     @Autowired
     DataApplicationVersionDao dataApplicationVersionDao;
 
+    @Autowired
+    DataHubsVersionDao dataHubsVersionDao;
+
+    @Autowired
+    DataCategorysDao dataCategorysDao;
+
 
     @Value("${resourcePath}")
     private String resourcePath;
@@ -1127,6 +1133,97 @@ public class VersionService {
             System.out.println(e.getMessage());
             throw new MyException(e.getMessage());
         }
+    }
+
+    public ModelAndView getDataHubsHistoryPage(String id){
+        ModelAndView modelAndView = new ModelAndView();
+        DataHubsVersion dataHubsVersion = new DataHubsVersion();
+        try {
+            dataHubsVersion = dataHubsVersionDao.findFirstByOid(id);
+        }catch (MyException e){
+            modelAndView.setViewName("error/404");
+            return modelAndView;
+        }
+
+        //authorship
+        String authorshipString="";
+        List<AuthorInfo> authorshipList=dataHubsVersion.getAuthorship();
+        if(authorshipList!=null){
+            for (AuthorInfo author:authorshipList) {
+                if(authorshipString.equals("")){
+                    authorshipString+=author.getName();
+                }
+                else{
+                    authorshipString+=", "+author.getName();
+                }
+            }
+        }
+
+        //related models
+        JSONArray modelItemArray=new JSONArray();
+        List<String> relatedModels=dataHubsVersion.getRelatedModels();
+        if(relatedModels!=null) {
+            for (String mid : relatedModels) {
+                try {
+                    ModelItem modelItem = modelItemDao.findFirstByOid(mid);
+                    JSONObject modelItemJson = new JSONObject();
+                    modelItemJson.put("name", modelItem.getName());
+                    modelItemJson.put("oid", modelItem.getOid());
+                    modelItemJson.put("description", modelItem.getDescription());
+                    modelItemJson.put("image", modelItem.getImage().equals("") ? null : htmlLoadPath + modelItem.getImage());
+                    modelItemArray.add(modelItemJson);
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        //classification
+        List<String> classifications=new ArrayList<>();
+        List<String> categories = dataHubsVersion.getClassifications();
+        for (String category : categories) {
+            DataCategorys dataCategorys = dataCategorysDao.findFirstById(category);
+            String name = dataCategorys.getCategory();
+            classifications.add(name);
+        }
+
+        //fileName
+        ArrayList<String> fileName = new ArrayList<>();
+        if (dataHubsVersion.getDataType()!=null&&dataHubsVersion.getDataType().equals("DistributedNode")){
+            fileName.add(dataHubsVersion.getName());
+        }
+
+        if (dataHubsVersion.getRelatedProcessings()!=null){
+            modelAndView.addObject("relatedProcessing",dataHubsVersion.getRelatedProcessings());
+        }
+        if (dataHubsVersion.getRelatedVisualizations()!=null){
+            modelAndView.addObject("relatedVisualization",dataHubsVersion.getRelatedVisualizations());
+        }
+
+        //时间
+        Date date = dataHubsVersion.getModifyTime();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String dateResult = simpleDateFormat.format(date);
+
+        //用户信息
+        User user = userDao.findFirstByOid(dataHubsVersion.getModifier());
+        String userName = user.getUserName();
+        JSONObject userJson = userService.getItemUserInfo(userName);
+
+
+        modelAndView.setViewName("data_item_info");
+        modelAndView.addObject("datainfo", ResultUtils.success(dataHubsVersion));
+        modelAndView.addObject("user",userJson);
+        modelAndView.addObject("classifications",classifications);
+        modelAndView.addObject("relatedModels",modelItemArray);
+        modelAndView.addObject("authorship",authorshipString);
+        modelAndView.addObject("fileName",fileName);//后期应该是放该name下的所有数据
+
+        modelAndView.addObject("history",true);
+        return modelAndView;
     }
 
 }

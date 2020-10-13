@@ -711,6 +711,189 @@ public class TaskService {
     }
 
 
+    public List<UploadDataDTO> getTestDataUploadArrayDataItem(TestDataUploadDTO testDataUploadDTO, JSONObject mdlJson) throws Exception {
+        JSONArray states = mdlJson.getJSONObject("mdl").getJSONArray("states");
+        //根据dataItemId获取数据下载链接,并获取数据流
+        DataItem dataItem = dataItemDao.findFirstById(testDataUploadDTO.getDataItemId());
+        InputStream inputStream = null;
+        FileOutputStream fileOutputStream = null;
+        if (dataItem.getDataUrl()!=null){
+            URL url = new URL(dataItem.getDataUrl());
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setConnectTimeout(5000);
+            conn.setReadTimeout(60000);
+            inputStream = conn.getInputStream();
+        }
+        String testPath = resourcePath + "/" + testDataUploadDTO.getOid();
+        File localFile = new File(testPath);
+        if (!localFile.exists()) {
+            localFile.mkdirs();
+        }
+        String path = testPath + "/" + "downLoad.zip";
+        localFile = new File(path);
+        try {
+            //将数据下载至resourcePath下
+            if (localFile.exists()) {
+                //如果文件存在删除文件
+                boolean delete = localFile.delete();
+                if (delete == false) {
+//                    log.error("Delete exist file \"{}\" failed!!!", path, new Exception("Delete exist file \"" + path + "\" failed!!!"));
+                }
+            }
+            //创建文件
+            if (!localFile.exists()) {
+                //如果文件不存在，则创建新的文件
+                localFile.createNewFile();
+//                log.info("Create file successfully,the file is {}", path);
+            }
+
+            fileOutputStream = new FileOutputStream(localFile);
+            byte[] bytes = new byte[1024];
+            int len = -1;
+            while ((len = inputStream.read(bytes)) != -1) {
+                fileOutputStream.write(bytes, 0, len);
+            }
+            fileOutputStream.close();
+            inputStream.close();
+
+        } catch (FileNotFoundException e){
+            e.printStackTrace();
+        }catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (fileOutputStream != null) {
+                    fileOutputStream.close();
+                }
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+            }catch (IOException e) {
+                e.printStackTrace();
+//                logger.error("InputStream or OutputStream close error : {}", e);
+            }
+        }
+
+        //将写入的zip文件进行解压
+        //需要进行判断
+        String destDirPath = resourcePath + "/" + testDataUploadDTO.getOid();
+        zipUncompress(path,destDirPath);
+        //解压后删除zip包，此时测试数据路径就变为testPath
+        deleteFile(path);
+
+        //下面为复用getTestDataUploadArray()代码
+        String oid = testDataUploadDTO.getOid();
+        String parentDirectory = testPath;
+        String configPath = parentDirectory + "/" + "config.xml";
+        JSONArray configInfoArray = getConfigInfo(configPath, parentDirectory, oid);
+        if (configInfoArray == null) {
+            return null;
+        }
+        //进行遍历
+        List<UploadDataDTO> dataUploadList = new ArrayList<>();
+        for (int i = 0; i < configInfoArray.size(); i++) {
+            JSONObject temp = configInfoArray.getJSONObject(i);
+            UploadDataDTO uploadDataDTO = new UploadDataDTO();
+            uploadDataDTO.setEvent(temp.getString("event"));
+            uploadDataDTO.setState(temp.getString("state"));
+            uploadDataDTO.setFilePath(temp.getString("file"));
+            uploadDataDTO.setChildren(temp.getJSONArray("children").toJavaList(ParamInfo.class));
+
+            for(int j=0;j<states.size();j++){
+                JSONObject state = states.getJSONObject(j);
+                if(state.getString("Id").equals(uploadDataDTO.getState())){
+                    JSONArray events=state.getJSONArray("event");
+                    for(int k=0;k<events.size();k++){
+                        JSONObject event=events.getJSONObject(k);
+                        if(event.getString("eventName").equals(uploadDataDTO.getEvent())){
+                            JSONObject data=event.getJSONArray("data").getJSONObject(0);
+                            if(data.getString("dataType").equals("external")){
+                                uploadDataDTO.setType("id");
+                                uploadDataDTO.setTemplate(data.getString("externalId").toLowerCase());
+                                for(String id:visualTemplateIds){
+                                    if(uploadDataDTO.getTemplate().equals(id)){
+                                        uploadDataDTO.setVisual(true);
+                                        break;
+                                    }
+                                }
+                            }else{
+                                if(data.getString("schema")!=null) {
+                                    uploadDataDTO.setType("schema");
+                                    uploadDataDTO.setTemplate(data.getString("schema"));
+                                    uploadDataDTO.setVisual(false);
+                                }else{
+                                    uploadDataDTO.setType("none");
+                                    uploadDataDTO.setTemplate("");
+                                    uploadDataDTO.setVisual(false);
+                                }
+                            }
+
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+            if(uploadDataDTO.getType()==null){
+                uploadDataDTO.setType("none");
+                uploadDataDTO.setTemplate("");
+                uploadDataDTO.setVisual(false);
+            }
+
+            dataUploadList.add(uploadDataDTO);
+        }
+        return dataUploadList;
+    }
+    public void zipUncompress(String inputFile,String destDirPath) throws Exception {
+        File srcFile = new File(inputFile);
+        if (!srcFile.exists()){
+            throw new Exception(srcFile.getPath() + "所指文件不存在");
+        }
+        ZipFile zipFile = new ZipFile(srcFile);
+        Enumeration<?> entries = zipFile.entries();
+        while (entries.hasMoreElements()) {
+            ZipEntry entry = (ZipEntry) entries.nextElement();
+            // 如果是文件夹，就创建个文件夹
+            if (entry.isDirectory()) {
+                String dirPath = destDirPath + "/" + entry.getName();
+                srcFile.mkdirs();
+            } else {
+                // 如果是文件，就先创建一个文件，然后用io流把内容copy过去
+                File targetFile = new File(destDirPath + "/" + entry.getName());
+                // 保证这个文件的父文件夹必须要存在
+                if (!targetFile.getParentFile().exists()) {
+                    targetFile.getParentFile().mkdirs();
+                }
+                targetFile.createNewFile();
+                // 将压缩文件内容写入到这个文件中
+                InputStream is = zipFile.getInputStream(entry);
+                FileOutputStream fos = new FileOutputStream(targetFile);
+                int len;
+                byte[] buf = new byte[1024];
+                while ((len = is.read(buf)) != -1) {
+                    fos.write(buf, 0, len);
+                }
+                // 关流顺序，先打开的后关闭
+
+                fos.close();
+                is.close();
+            }
+        }
+        zipFile.close();
+    }
+    public boolean deleteFile(String sPath) {
+        boolean delLog;
+        delLog = false;
+        File file = new File(sPath);
+        // 路径为文件且不为空则进行删除
+        if (file.isFile() && file.exists()) {
+            file.delete();
+            delLog = true;
+        }
+        return delLog;
+    }
+
+
 //    public UploadDataDTO getPublishedTask(String taskId){
 //
 //    }

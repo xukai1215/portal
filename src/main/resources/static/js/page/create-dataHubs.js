@@ -1,5 +1,5 @@
-var createDataItem = Vue.extend({
-    template: "#createDataItem",
+var createDataHubs = Vue.extend({
+    template: "#createDataHubs",
     data() {
         return {
 
@@ -87,6 +87,7 @@ var createDataItem = Vue.extend({
             authorDataList:[],
             dialogVisible: false,
             fileSelect:"",
+            // dataType:"Url",//默认Url
             id:"",
             imageExist:false,
         }
@@ -176,22 +177,7 @@ var createDataItem = Vue.extend({
         },
 
         //add data item
-        createDataItem() {
-            for (i=0;i<this.selectedFile.length;i++){
-                let fileMetaUser = {
-                    id:"",
-                    name:"",
-                    suffix:"",
-                    url:""
-                };
-                fileMetaUser.id = this.selectedFile[i].id;
-                fileMetaUser.name = this.selectedFile[i].label;
-                fileMetaUser.suffix = this.selectedFile[i].suffix;
-                fileMetaUser.url = this.selectedFile[i].url;
-                this.userDataList.push(fileMetaUser);
-            }
-
-
+        createDataHubs() {
             this.dataItemAddDTO.name = $("#dataname").val();
 
             this.dataItemAddDTO.description = $("#description").val();
@@ -256,9 +242,9 @@ var createDataItem = Vue.extend({
             var thedata = this.dataItemAddDTO;
 
             var that = this;
-         if ((this.id === "0") || (this.id === "") || (this.id == null)) {
-            axios.post("/dataItem/", thedata)
-                 .then(res => {
+            if ((this.id === "0") || (this.id === "") || (this.id == null)) {
+                axios.post("/dataItem/createHubs/", thedata)
+                    .then(res => {
                         if (res.status === 200) {
                             //创建静态页面
                             axios.get("/dataItem/adddataitembyuser", {
@@ -289,7 +275,7 @@ var createDataItem = Vue.extend({
                             var categoryAddDTO = {
                                 id: res.data.data.id,
                                 cate: that.cls,
-                                dataType: that.dataItemAddDTO.dataType
+                                tabType: "hubs"
                             };
                             axios.post('/dataItem/addcate', categoryAddDTO).then(res => {
                                 // console.log(res)
@@ -298,7 +284,7 @@ var createDataItem = Vue.extend({
                             that.ctegorys = [];
                             //清空displays内容
                             that.data_img = [];
-                            this.$confirm('<div style=\'font-size: 18px\'>Create data item successfully!</div>', 'Tip', {
+                            this.$confirm('<div style=\'font-size: 18px\'>Create data hubs successfully!</div>', 'Tip', {
                                 dangerouslyUseHTMLString: true,
                                 confirmButtonText: 'View',
                                 cancelButtonText: 'Go Back',
@@ -308,7 +294,7 @@ var createDataItem = Vue.extend({
                                 center: true,
                                 showClose: false,
                             }).then(() => {
-                                window.location.href = "/dataItem/" + res.data.data.id;
+                                window.location.href = "/dataItem/hub/" + res.data.data.id;
                             }).catch(() => {
                                 window.location.href = "/user/userSpace#/data/dataitem";
                             });
@@ -317,14 +303,14 @@ var createDataItem = Vue.extend({
             }else {
                 this.dataItemAddDTO.dataItemId = this.id;
                 var thedata1 = this.dataItemAddDTO;
-                axios.post("/dataItem/update/",thedata1)
+                axios.post("/dataItem/updateHubs/",thedata1)
                     .then(result=>{
                         if (result.status ===200){
                             if (result.data.code === 0) {
                                 if(result.data.data.method==="update") {
                                     alert("Update Success");
                                     $("#editModal", parent.document).remove();
-                                    window.location.href = "/dataItem/" + result.data.data.oid;
+                                    window.location.href = "/dataItem/hub/" + result.data.data.oid;
                                 }
                                 else{
                                     alert("Success! Changes have been submitted, please wait for the author to review.");
@@ -606,7 +592,7 @@ var createDataItem = Vue.extend({
         if ((oid === "0") || (oid === "") || (oid === null)|| (oid === undefined)) {
 
             // $("#title").text("Create Model Item")
-            $("#subRteTitle").text("/Create Data Item")
+            $("#subRteTitle").text("/Create Data Hubs")
             $("#keywords").tagEditor('destory');
             $("#keywords").tagEditor({
                 forceLowercase: false,
@@ -655,132 +641,132 @@ var createDataItem = Vue.extend({
         }
         else {
             // $("#title").text("Modify Model Item")
-            $("#subRteTitle").text("/Modify Data Item")
+            $("#subRteTitle").text("/Modify Data Hubs")
 
-            document.title="Modify Data Item | OpenGMS"
-            axios.get('/dataItem/getDataItemByDataId',{params:{
-                dataId:oid,
-            }}).then(res=>{
-                const resData = res.data
-                if(resData.code==-1){
-                    alert("Please login");
-                    window.location.href = "/user/login";
-                }else if(resData.data.noResult!=1){
-                    let data = resData.data.result;
+            document.title="Modify Data Hubs | OpenGMS"
+            axios.get('/dataItem/getDataHubsByDataId',{params:{
+                    dataId:oid,
+                }}).then(res=>{
+                    const resData = res.data
+                    if(resData.code==-1){
+                        alert("Please login");
+                        window.location.href = "/user/login";
+                    }else if(resData.data.noResult!=1){
+                        let data = resData.data.result;
 
-                    let classificationId = data.classifications;
-                    this.dataItemAddDTO.dataType = data.dataType;
-                    $("#ResourcesUrlText").val(data.reference);//url内容填充
+                        let classificationId = data.classifications;
+                        this.dataItemAddDTO.dataType = data.contentType;
+                        $("#ResourcesUrlText").val(data.reference);//url内容填充
 
-                    this.selectedFile = data.dataList;
+                        this.selectedFile = data.dataList;
 
-                    this.$refs.tree2.setCheckedKeys(data.classifications);
-                    this.clsStr=data.categories;
-                    this.cls = data.classifications;
-                    this.dataItemAddDTO.viewCount = data.viewCount;
-                    //清空
-                    // $("#classification").val('')
-                    $("#dataname").val(data.name);
-                    $("#description").val(data.description);
-                    $("#keywords").tagEditor('destory');
-                    $("#keywords").tagEditor({
-                        initialTags: data.keywords,
-                        forceLowercase: false,
-                        placeholder: 'Enter keywords ...'
-                    });
-                    $("#contributers").tagEditor('destory');
-                    $("#contributers").tagEditor({
-                        initialTags: data.contributers,
-                        forceLowercase: false,
-                        placeholder: 'Enter keywords ...'
-                    });
+                        this.$refs.tree2.setCheckedKeys(data.classifications);
+                        this.clsStr=data.categories;
+                        this.cls = data.classifications;
+                        this.dataItemAddDTO.viewCount = data.viewCount;
+                        //清空
+                        // $("#classification").val('')
+                        $("#dataname").val(data.name);
+                        $("#description").val(data.description);
+                        $("#keywords").tagEditor('destory');
+                        $("#keywords").tagEditor({
+                            initialTags: data.keywords,
+                            forceLowercase: false,
+                            placeholder: 'Enter keywords ...'
+                        });
+                        $("#contributers").tagEditor('destory');
+                        $("#contributers").tagEditor({
+                            initialTags: data.contributers,
+                            forceLowercase: false,
+                            placeholder: 'Enter keywords ...'
+                        });
 
-                    $("#detail").html(data.detail);
-                    this.authorDataList = data.userDataList;
+                        $("#detail").html(data.detail);
+                        this.authorDataList = data.userDataList;
 
-                    // $('#imgShow').get(0).src = data.image;
-                    // $('#imgShow').show();
+                        // $('#imgShow').get(0).src = data.image;
+                        // $('#imgShow').show();
 
-                    if (data.image!=null&&data.image!="") {
-                        $('#imgShow').attr("src", "/static" + data.image);
-                        $('#imgShow').show();
-                        that.imageExist = true;
-                    }else {
-                        that.imageExist = false;
-                    }
-                    $("#displays").val('');
-                    $("#dataresoureurl").val(data.reference);
-
-                    // $("#coordinateSystem").val(data.meta.coordinateSystem);
-                    // $("#geographicProjection").val(data.meta.geographicProjection)
-                    // $("#coordinateUnits").val(data.meta.coordinateUnits)
-
-
-                    $("#detail").html(data.detail);
-                    //tinymce.remove('textarea#detail');//先销毁已有tinyMCE实例
-                    initTinymce("textarea#detail");
-
-                    let authorship = data.authorship;
-                    if(authorship!=null) {
-                        for (i = 0; i < authorship.length; i++) {
-                            user_num++;
-                            var content_box = $(".providers");
-                            var str = "<div class='panel panel-primary'> <div class='panel-heading newAuthorHeader'> <h4 class='panel-title'> <a class='accordion-toggle collapsed' style='color:white' data-toggle='collapse' data-target='#user";
-                            str += user_num;
-                            str += "' href='javascript:;'> NEW </a> </h4><a href='javascript:;' class='fa fa-times author_close' style='float:right;margin-top:8px;color:white'></a></div><div id='user";
-                            str += user_num;
-                            str += "' class='panel-collapse collapse in'><div class='panel-body user-contents'> <div class='user-attr'>\n" +
-                                "                                                                                                    <div>\n" +
-                                "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
-                                "                                                                                                               style='font-weight: bold;'>\n" +
-                                "                                                                                                            Name:\n" +
-                                "                                                                                                        </lable>\n" +
-                                "                                                                                                        <div class='input-group col-sm-10'>\n" +
-                                "                                                                                                            <input type='text'\n" +
-                                "                                                                                                                   name=\"name\"\n" +
-                                "                                                                                                                   class='form-control' value='" +
-                                authorship[i].name +
-                                "'>\n" +
-                                "                                                                                                        </div>\n" +
-                                "                                                                                                    </div>\n" +
-                                "                                                                                                    <div style=\"margin-top:10px\">\n" +
-                                "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
-                                "                                                                                                               style='font-weight: bold;'>\n" +
-                                "                                                                                                            Email:\n" +
-                                "                                                                                                        </lable>\n" +
-                                "                                                                                                        <div class='input-group col-sm-10'>\n" +
-                                "                                                                                                            <input type='text'\n" +
-                                "                                                                                                                   name=\"email\"\n" +
-                                "                                                                                                                   class='form-control' value='" +
-                                authorship[i].email +
-                                "'>\n" +
-                                "                                                                                                        </div>\n" +
-                                "                                                                                                    </div>\n" +
-                                "                                                                                                    <div style=\"margin-top:10px\">\n" +
-                                "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
-                                "                                                                                                               style='font-weight: bold;'>\n" +
-                                "                                                                                                            Homepage:\n" +
-                                "                                                                                                        </lable>\n" +
-                                "                                                                                                        <div class='input-group col-sm-10'>\n" +
-                                "                                                                                                            <input type='text'\n" +
-                                "                                                                                                                   name=\"homepage\"\n" +
-                                "                                                                                                                   class='form-control' value='" +
-                                authorship[i].homepage +
-                                "'>\n" +
-                                "                                                                                                        </div>\n" +
-                                "                                                                                                    </div>\n" +
-                                "                                                                                                </div></div> </div> </div>"
-                            content_box.append(str)
+                        if (data.image!=null&&data.image!="") {
+                            $('#imgShow').attr("src", "/static" + data.image);
+                            $('#imgShow').show();
+                            that.imageExist = true;
+                        }else {
+                            that.imageExist = false;
                         }
+                        $("#displays").val('');
+                        $("#dataresoureurl").val(data.reference);
+
+                        // $("#coordinateSystem").val(data.meta.coordinateSystem);
+                        // $("#geographicProjection").val(data.meta.geographicProjection)
+                        // $("#coordinateUnits").val(data.meta.coordinateUnits)
+
+
+                        $("#detail").html(data.detail);
+                        //tinymce.remove('textarea#detail');//先销毁已有tinyMCE实例
+                        initTinymce("textarea#detail");
+
+                        let authorship = data.authorship;
+                        if(authorship!=null) {
+                            for (i = 0; i < authorship.length; i++) {
+                                user_num++;
+                                var content_box = $(".providers");
+                                var str = "<div class='panel panel-primary'> <div class='panel-heading newAuthorHeader'> <h4 class='panel-title'> <a class='accordion-toggle collapsed' style='color:white' data-toggle='collapse' data-target='#user";
+                                str += user_num;
+                                str += "' href='javascript:;'> NEW </a> </h4><a href='javascript:;' class='fa fa-times author_close' style='float:right;margin-top:8px;color:white'></a></div><div id='user";
+                                str += user_num;
+                                str += "' class='panel-collapse collapse in'><div class='panel-body user-contents'> <div class='user-attr'>\n" +
+                                    "                                                                                                    <div>\n" +
+                                    "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
+                                    "                                                                                                               style='font-weight: bold;'>\n" +
+                                    "                                                                                                            Name:\n" +
+                                    "                                                                                                        </lable>\n" +
+                                    "                                                                                                        <div class='input-group col-sm-10'>\n" +
+                                    "                                                                                                            <input type='text'\n" +
+                                    "                                                                                                                   name=\"name\"\n" +
+                                    "                                                                                                                   class='form-control' value='" +
+                                    authorship[i].name +
+                                    "'>\n" +
+                                    "                                                                                                        </div>\n" +
+                                    "                                                                                                    </div>\n" +
+                                    "                                                                                                    <div style=\"margin-top:10px\">\n" +
+                                    "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
+                                    "                                                                                                               style='font-weight: bold;'>\n" +
+                                    "                                                                                                            Email:\n" +
+                                    "                                                                                                        </lable>\n" +
+                                    "                                                                                                        <div class='input-group col-sm-10'>\n" +
+                                    "                                                                                                            <input type='text'\n" +
+                                    "                                                                                                                   name=\"email\"\n" +
+                                    "                                                                                                                   class='form-control' value='" +
+                                    authorship[i].email +
+                                    "'>\n" +
+                                    "                                                                                                        </div>\n" +
+                                    "                                                                                                    </div>\n" +
+                                    "                                                                                                    <div style=\"margin-top:10px\">\n" +
+                                    "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
+                                    "                                                                                                               style='font-weight: bold;'>\n" +
+                                    "                                                                                                            Homepage:\n" +
+                                    "                                                                                                        </lable>\n" +
+                                    "                                                                                                        <div class='input-group col-sm-10'>\n" +
+                                    "                                                                                                            <input type='text'\n" +
+                                    "                                                                                                                   name=\"homepage\"\n" +
+                                    "                                                                                                                   class='form-control' value='" +
+                                    authorship[i].homepage +
+                                    "'>\n" +
+                                    "                                                                                                        </div>\n" +
+                                    "                                                                                                    </div>\n" +
+                                    "                                                                                                </div></div> </div> </div>"
+                                content_box.append(str)
+                            }
+                        }
+                        $("#email").val("")
+                        $("#home_page").val("")
+                        $("#upperleftx").val("")
+                        $("#upperlefty").val("")
+                        $("#bottomrightx").val("")
+                        $("#bottomrighty").val("");
+                        $("#imgFile").val("");
                     }
-                    $("#email").val("")
-                    $("#home_page").val("")
-                    $("#upperleftx").val("")
-                    $("#upperlefty").val("")
-                    $("#bottomrightx").val("")
-                    $("#bottomrighty").val("");
-                    $("#imgFile").val("");
-                }
                 }
             )
             // window.sessionStorage.setItem("editModelItem_id", "");
@@ -843,8 +829,8 @@ var createDataItem = Vue.extend({
                     if (data == "ERROR") {
                         alert(data);
                     }
-                    // if(!json.doi){
-                    //     alert("ERROR")
+                        // if(!json.doi){
+                        //     alert("ERROR")
                     // }
                     else {
                         var json = eval('(' + data + ')');

@@ -100,6 +100,12 @@ public class VersionRestController {
     @Autowired
     DataApplicationDao dataApplicationDao;
 
+    @Autowired
+    DataHubsDao dataHubsDao;
+
+    @Autowired
+    DataHubsVersionDao dataHubsVersionDao;
+
     @RequestMapping(value = "/review", method = RequestMethod.GET)
     public ModelAndView getRegister(HttpServletRequest request) {
         HttpSession session = request.getSession();
@@ -356,6 +362,9 @@ public class VersionRestController {
                 break;
             case "dataItem":
                 modelAndView = versionService.getDataItemHistoryPage(id);
+                break;
+            case "dataHubs":
+                modelAndView = versionService.getDataHubsHistoryPage(id);
                 break;
             case "dataApplication":
                 modelAndView = versionService.getDataApplicationHistoryPage(id);
@@ -906,6 +915,65 @@ public class VersionRestController {
             userService.messageNumMinusMinus(authorUserName);
             dataApplicationVersion.setAcceptTime(curDate);
             dataApplicationVersionDao.save(dataApplicationVersion);
+        }else if (versionDTO.getType().equals("dataHubs")){
+            DataHubs dataHubs = dataHubsDao.findFirstById(versionDTO.getOriginOid());
+            String author = dataHubs.getAuthor();
+            Date createTime = dataHubs.getCreateTime();
+            User user = userDao.findFirstByOid(dataHubs.getAuthor());
+            authorUserName = user.getUserName();
+            if (dataHubs.getVersions() == null || dataHubs.getVersions().size() == 0) {
+                DataHubsVersion dataHubsVersion = new DataHubsVersion();
+                BeanUtils.copyProperties(dataHubs, dataHubsVersion, "id");
+                dataHubsVersion.setOid(UUID.randomUUID().toString());
+                dataHubsVersion.setOriginId(dataHubs.getOid());
+                dataHubsVersion.setVerNumber((long) 0);
+                dataHubsVersion.setVerStatus(2);
+                dataHubsVersion.setModifier(dataHubs.getAuthor());
+                dataHubsVersion.setModifyTime(dataHubs.getCreateTime());
+                dataHubsVersionDao.insert(dataHubsVersion);
+
+                List<String> versions = dataHubs.getVersions();
+                if (versions == null) versions = new ArrayList<>();
+                versions.add(dataHubsVersion.getOid());
+                dataHubs.setVersions(versions);
+            }
+
+            DataHubsVersion dataHubsVersion = dataHubsVersionDao.findFirstByOid(versionDTO.getOid());
+            //版本更替
+            BeanUtils.copyProperties(dataHubsVersion, dataHubs, "id");
+            dataHubs.setAuthor(author);
+            dataHubs.setCreateTime(createTime);
+            dataHubs.setOid(dataHubsVersion.getOriginId());
+            List<String> versions = dataHubs.getVersions();
+            if (versions == null) versions = new ArrayList<>();
+            versions.add(dataHubsVersion.getOid());
+            dataHubs.setVersions(versions);
+
+            List<String> contributors = dataHubs.getContributors();
+            contributors = contributors == null ? new ArrayList<>() : contributors;
+            String contributor = dataHubsVersion.getModifier();
+            boolean exist = false;
+            for (int i = 0; i < contributors.size(); i++) {
+                if (contributors.get(i).equals(contributor)) {
+                    exist = true;
+                }
+            }
+            if (!exist && !contributor.equals(dataHubs.getAuthor())) {
+                contributors.add(contributor);
+                dataHubs.setContributors(contributors);
+            }
+
+            dataHubs.setLastModifier(contributor);
+            dataHubs.setLock(false);
+            dataHubs.setLastModifyTime(dataHubsVersion.getModifyTime());
+            dataHubsDao.save(dataHubs);
+
+            dataHubsVersion.setVerStatus(1);
+            user = userDao.findFirstByOid(versionDTO.getModifier());
+            userService.messageNumPlusPlus(user.getUserName());
+            userService.messageNumMinusMinus(authorUserName);
+            dataHubsVersion.setAcceptTime(curDate);
+            dataHubsVersionDao.save(dataHubsVersion);
         }
 
         return ResultUtils.success();
@@ -1032,6 +1100,19 @@ public class VersionRestController {
             dataApplicationVersionDao.save(dataApplicationVersion);
             dataApplication.setLock(false);
             dataApplicationDao.save(dataApplication);
+        } else if (versionDTO.getType().equals("dataHubs")){
+            DataHubs dataHubs = dataHubsDao.findFirstById(versionDTO.getOriginOid());
+//            authorUserName = dataItem.getAuthor();
+            DataHubsVersion dataHubsVersion = dataHubsVersionDao.findFirstByOid(versionDTO.getOid());
+            dataHubsVersion.setVerStatus(-1);
+            user = userDao.findFirstByOid(versionDTO.getModifier());
+            userService.messageNumPlusPlus(user.getUserName());
+            user = userDao.findFirstByOid(dataHubs.getAuthor());
+            userService.messageNumMinusMinus(user.getUserName());
+            dataHubsVersion.setRejectTime(curDate);
+            dataHubsVersionDao.save(dataHubsVersion);
+            dataHubs.setLock(false);
+            dataHubsDao.save(dataHubs);
         }
         return ResultUtils.success();
     }
@@ -1590,6 +1671,47 @@ public class VersionRestController {
             }
         }
 
+        List<DataHubsVersion> dataHubsVersions = dataHubsVersionDao.findAll();
+        for (DataHubsVersion dataHubsVersion : dataHubsVersions){
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("name", dataHubsVersion.getName());
+            jsonObject.put("oid", dataHubsVersion.getOid());
+            jsonObject.put("originOid", dataHubsVersion.getOriginId());
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            jsonObject.put("modifyTime", sdf.format(dataHubsVersion.getModifyTime()));
+            if (dataHubsVersion.getAcceptTime()!=null){
+                jsonObject.put("acceptTime",sdf.format(dataHubsVersion.getAcceptTime()));
+            }
+            if (dataHubsVersion.getRejectTime()!=null){
+                jsonObject.put("rejectTime",sdf.format(dataHubsVersion.getRejectTime()));
+            }
+            User user = new User();
+            user = userDao.findFirstByOid(dataHubsVersion.getModifier());
+            String userName =  user.getUserName();
+            jsonObject.put("modifier", userName);
+            String statuss = new String();
+            if (dataHubsVersion.getVerStatus() == 0){
+                statuss = "unchecked";
+            }else if (dataHubsVersion.getVerStatus() == -1){
+                statuss = "reject";
+            }else {
+                statuss = "confirmed";
+            }
+            jsonObject.put("status",statuss);
+            jsonObject.put("type", "dataHubs");
+            int status = dataHubsVersion.getVerStatus();
+            if (status == 0) {
+                uncheck.add(jsonObject);
+                edit.add(jsonObject);
+            } else if (status == 1) {
+                accept.add(jsonObject);
+                edit.add(jsonObject);
+            } else if (status == -1) {
+                reject.add(jsonObject);
+                edit.add(jsonObject);
+            }
+        }
+
         List<DataApplicationVersion> dataApplicationVersions = dataApplicationVersionDao.findAll();
         for (DataApplicationVersion dataApplicationVersion : dataApplicationVersions){
             JSONObject jsonObject = new JSONObject();
@@ -1816,6 +1938,18 @@ public class VersionRestController {
                     dataItemVersionDao.save(dataItemVersion);
                     break;
                 }
+                case "dataHubs":{
+                    DataHubsVersion dataHubsVersion = dataHubsVersionDao.findFirstByOid(myEditions.getOids().get(i).getOid());
+                    dataHubsVersion.setReadStatus(1);
+                    dataHubsVersionDao.save(dataHubsVersion);
+                    break;
+                }
+                case "dataApplication":{
+                    DataApplicationVersion dataApplicationVersion= dataApplicationVersionDao.findFirstByOid(myEditions.getOids().get(i).getOid());
+                    dataApplicationVersion.setReadStatus(1);
+                    dataApplicationVersionDao.save(dataApplicationVersion);
+                    break;
+                }
             }
         }
         return "ok";
@@ -1828,6 +1962,10 @@ public class VersionRestController {
     @RequestMapping(value = "/dataApplication/{id}", method = RequestMethod.GET)
     public ModelAndView getDataApplicationCompare(@PathVariable("id") String id) {
         return versionService.getDataApplicationHistoryPage(id);
+    }
+    @RequestMapping(value = "/dataHubs/{id}", method = RequestMethod.GET)
+    public ModelAndView getDataHubsCompare(@PathVariable("id") String id) {
+        return versionService.getDataHubsHistoryPage(id);
     }
 
 }

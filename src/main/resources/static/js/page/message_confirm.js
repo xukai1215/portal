@@ -327,7 +327,7 @@ var notice = Vue.extend({
                         }else if (json.data.accept[i].type == "theme") {
                             this.theme_tableData2.push(json.data.accept[i]);
                             this.sum_tableData.push(json.data.accept[i]);
-                        } else if (json.data.accept[i].type == "dataItem"||json.data.accept[i].type == "dataApplication"){
+                        } else if (json.data.accept[i].type == "dataItem"||json.data.accept[i].type == "dataApplication"||json.data.accept[i].type=="dataHubs"){
                             this.dataItem_tableData2.push(json.data.accept[i]);
                             this.sum_tableData.push(json.data.accept[i]);
                         }
@@ -342,7 +342,7 @@ var notice = Vue.extend({
                         }else if (json.data.reject[i].type == "theme") {
                             this.theme_tableData3.push(json.data.reject[i]);
                             this.sum_tableData.push(json.data.reject[i]);
-                        }else if (json.data.reject[i].type == "dataItem"||json.data.reject[i].type == "dataApplication"){
+                        }else if (json.data.reject[i].type == "dataItem"||json.data.reject[i].type == "dataApplication"||json.data.reject[i].type=="dataHubs"){
                             this.dataItem_tableData3.push(json.data.reject[i]);
                             this.sum_tableData.push(json.data.reject[i]);
                         }
@@ -360,7 +360,7 @@ var notice = Vue.extend({
                             this.theme_tableData1.push(json.data.uncheck[i]);
                             // this.sum_tableData.push(json.data.uncheck[i]);
                             // this.message_num++;
-                        }else if (json.data.uncheck[i].type == "dataItem" || json.data.uncheck[i].type == "dataApplication"){
+                        }else if (json.data.uncheck[i].type == "dataItem" || json.data.uncheck[i].type == "dataApplication"||json.data.uncheck[i].type=="dataHubs"){
                             this.dataItem_tableData1.push(json.data.uncheck[i]);
                         }
                     }
@@ -390,7 +390,7 @@ var notice = Vue.extend({
                                 theme_accept_num ++;
                             }
                             //this.sum_tableData.push(json.data.accept[i]);
-                        }else if (json.data.accept_self[i].type == "dataItem"||json.data.accept_self[i].type == "dataApplication"){
+                        }else if (json.data.accept_self[i].type == "dataItem"||json.data.accept_self[i].type == "dataApplication"||json.data.accept_self[i].type=="dataHubs"){
                             this.dataItem_tableData2_self.push(json.data.accept_self[i]);
                             if (json.data.accept_self[i].readStatus == 0){
                                 dataItem_accept_num ++;
@@ -426,7 +426,7 @@ var notice = Vue.extend({
                                 theme_reject_num++;
                             }
                             //this.sum_tableData.push(json.data.reject[i]);
-                        }else if (json.data.reject_self[i].type == "dataItem"||json.data.reject_self[i].type == "dataApplication") {
+                        }else if (json.data.reject_self[i].type == "dataItem"||json.data.reject_self[i].type == "dataApplication"||json.data.reject_self[i].type=="dataHubs") {
                             this.dataItem_tableData3_self.push(json.data.reject_self[i]);
                             if (json.data.reject_self[i].readStatus == 0) {
                                 dataItem_reject_num ++;
@@ -453,7 +453,7 @@ var notice = Vue.extend({
                             this.theme_tableData1_self.push(json.data.uncheck_self[i]);
                             // this.sum_tableData.push(json.data.uncheck[i]);
                             //this.message_num++;
-                        }else if (json.data.uncheck_self[i].type == "dataItem"||json.data.uncheck_self[i].type == "dataApplication") {
+                        }else if (json.data.uncheck_self[i].type == "dataItem"||json.data.uncheck_self[i].type == "dataApplication"||json.data.uncheck_self[i].type=="dataHubs") {
                             this.dataItem_tableData1_self.push(json.data.uncheck_self[i]);
                             // this.sum_tableData.push(json.data.uncheck[i]);
                             //this.message_num++;

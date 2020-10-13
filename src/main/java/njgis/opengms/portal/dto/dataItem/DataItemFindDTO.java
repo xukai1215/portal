@@ -20,6 +20,7 @@ public class DataItemFindDTO {
     String categoryId;
     List<String> searchContent;
     String searchText;
+    String tabType;
 
     String userId;
 

@@ -16,7 +16,7 @@ import java.util.List;
 public class Categorys {
     @Id
     String id;
-    List<String> dataItem;//原先的数据
+    List<String> dataItem;//原先的数据//待删
     List<String> dataRepository;//个人文件
     List<String> dataNetwork;//就地共享数据
     List<String> processingApplication;

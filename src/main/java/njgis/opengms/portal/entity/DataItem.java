@@ -25,29 +25,25 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class DataItem extends Item{
-//   @Id
-//    String id;
-//    String name;
 
     String contentType;
     String userName;
     String reference;
+    String tabType;//标识四个tabs，包括hubs、repository、network与application
 
     List<String> classifications;
     List<String> displays;
     String image;
     List<String> relatedModels;
     List<DataMeta> dataList;
-    List<FileMetaUser> userDataList;//待删
-//    List<String> contributers;
+//    List<FileMetaUser> userDataList;//待删
 
     DataItemMeta meta;
     String token;
-    String dataType;//标识Url、File、DistributedNode
+    String dataType;//标识Hub、Url、File、DistributedNode,目前新增了tabType，此字段可删除
 
     //Share in place
     String distributedNodeDataId;
-//    String size;
     String type;
     Boolean authority;
     String workSpace;

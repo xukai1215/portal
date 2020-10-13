@@ -75,6 +75,10 @@ var router = new VueRouter({
                 component:createDataItem,
             },
             {
+                path:'/data/createDataHubs',
+                component:createDataHubs,
+            },
+            {
                 path:'/data/createDataApplication',
                 component:createDataApplication,
             },
@@ -87,6 +91,10 @@ var router = new VueRouter({
                 component:createDataItem,
             },
             {
+                path:'/data/manageDataHubs/:editId',
+                component:createDataHubs,
+            },
+            {
                 path:'/data/manageDataApplication/:editId',
                 component:createDataApplication,
             },
@@ -97,6 +105,10 @@ var router = new VueRouter({
             {
                 path:'/data/dataitem',
                 component:userDataItems,
+            },
+            {
+                path:'/data/dataHubs',
+                component:userDataHubs,
             },
             {
                 path:'/data/processingApplication',
