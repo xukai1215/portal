@@ -197,14 +197,9 @@ var createTheme = Vue.extend({
             this.mcnum++;
             this.tableflag1++;
             this.tabledataflag++;
-            // $("#categoryname").attr('id','categoryname_past');//改变当前id名称
-
-
             $(".el-tabs__new-tab").eq(0).click();
         },
         dataClass_add(){
-            // this.themeObj.dataClassInfo[this.dcnum].dcname = $("#categoryname2"+this.tableflag2).val();
-
             this.dcnum++;
             this.tableflag2++;
             this.tabledataflag1++;
@@ -231,14 +226,8 @@ var createTheme = Vue.extend({
                     content: '2'
                 });
                 this.editableTabsValue_model = newTabName + '';
-
             }
             if (action === 'remove') {
-
-                // this.tabIndex_model--;
-                // let last_tab = $(".el-tabs__item").last();
-                // console.log(last_tab);
-                // this.tab_dele_num_model++;
                 let tabs = this.editableTabs_model;
                 let activeName = this.editableTabsValue_model;
                 if (activeName === targetName) {
@@ -254,27 +243,6 @@ var createTheme = Vue.extend({
 
                 this.editableTabsValue_model = activeName;
                 this.editableTabs_model = tabs.filter(tab => tab.name !== targetName);
-
-
-                //当remove操作时，将remove的tab的后面的tab的id中的数字均减一
-                // let tablist = $(".el-tabs__nav").eq(0);
-                // let last_tab = tablist.find('.el-tabs__item').last();//取出tab中的当前最新的tab的id
-                // console.log(last_tab);
-                // let str = last_tab[0].id;
-                // let tabnum = parseInt(str.substring(1).substring(1).substring(1).substring(1));//取出当前tab的数字
-                // console.log(tabnum);
-                // for (let i= parseInt(targetName)+1;i<=tabnum;i++){
-                //     let id = '#' + 'tab-' + i;
-                //     let new_id ='tab-' + (i-1);
-                //     let new_aria = 'pane-'+(i-1);
-                //     // let nid = '#' + 'tab-' + (i-1);
-                //     $(id).attr("aria-controls",new_aria);
-                //     $(id).attr('id',new_id);
-                // }
-                // this.remove_flag++;
-                // this.tabIndex_model = tabnum-1;
-                // this.editableTabsValue_model--;
-
                 let num;
                 for (i=0;i<this.themeObj.classinfo.length;i++) {
                     if(this.themeObj.classinfo[i].id == targetName){
@@ -282,14 +250,11 @@ var createTheme = Vue.extend({
                         break;
                     }
                 }
-                // delete this.themeObj.classinfo[num];//将存入到themeObj中的数据也移除
                 this.themeObj.classinfo.splice(num,1);
             }
 
         },
         handleTabsEdit_data(targetName, action) {
-            // this.confirmflag1 = 0;
-
             if (action === 'add') {
                 let newTabName = ++this.tabIndex_data + '';
                 // this.idflag = newTabName;
@@ -333,24 +298,10 @@ var createTheme = Vue.extend({
                         break;
                     }
                 }
-                // if (this.themeObj.dataClassInfo.id)
-                // delete this.themeObj.classinfo[num];//将存入到themeObj中的数据也移除,这种方式不行，只是将元素置为undefine
                 this.themeObj.dataClassInfo.splice(num,1);
             }
         },
         handleTabsEdit_applications(targetName, action) {
-            // var app = {};
-            // app.applicationname = $("#applicationname").val();
-            // app.applicationlink = $("#applicationlink").val();
-            // app.upload_application_image = $(".img_Show1").get(0).currentSrc;
-            // this.themeObj.application.push(app);
-
-
-            // $("#applicationname").attr('id','applicationname_past');//改变当前id名称
-            // $("#applicationlink").attr('id','applicationlink_past');//改变当前id名称
-            // $("#imgShow1").attr('id','imgShow1_past');//改变当前id名称
-            // $("#imgChange1").attr('id','imgChange1_past');//改变当前id名称
-
             if (action === 'add') {
                 let newTabName = ++this.tabIndex_application + '';
                 this.themeObj.application.push({
@@ -510,6 +461,7 @@ var createTheme = Vue.extend({
                 searchText: this.relateSearch,
                 sortType: "default",
                 classifications: ["all"],
+                dataType:"all",
             };
             let url, contentType;
             switch (this.relateType) {
@@ -521,7 +473,8 @@ var createTheme = Vue.extend({
                         asc: true,
                         classifications: [],
                         category: '',
-                        searchText: this.relateSearch
+                        searchText: this.relateSearch,
+                        dataType:"all",
                     }
                     data=JSON.stringify(data);
                     contentType = "application/json";
@@ -580,15 +533,6 @@ var createTheme = Vue.extend({
             })
         },
         handleEdit(index, row) {
-            // let tablist = $(".el-tabs__nav").eq(0);//取出model的tablist
-            // let tab_id = tablist.find('.is-active');//过滤出active的tab
-            // console.log(tab_id[0].id);
-            // let str = tab_id[0].id;
-            // let num = parseInt(str.substring(1).substring(1).substring(1).substring(1));//取出当前tab的数字
-            // console.log(num);
-            // console.log(row);
-            // num--;
-            // num = num - this.tab_dele_num_model;
             let flag = false;
             let j=0;
             let num;
@@ -616,14 +560,6 @@ var createTheme = Vue.extend({
             }
         },
         handleEdit1(index, row) {
-            // let tablist = $(".el-tabs__nav").eq(1);//取出model的tablist
-            // let tab_id = tablist.find('.is-active');//过滤出active的tab
-            // console.log(tab_id[0].id);
-            // let str = tab_id[0].id;
-            // let num = parseInt(str.substring(1).substring(1).substring(1).substring(1));//取出当前tab的数字
-            // console.log(num);
-            // console.log(row);
-            // num--;
             let flag = false;
             let j=0;
             let num;
@@ -854,16 +790,6 @@ var createTheme = Vue.extend({
             const minH = height-60;
             $(".infoPanel").css("min-height",minH+"px");
         };
-
-        // $("#step1_next").click(function () {
-        //     var theme_name = $("#nameInput").val();
-        //     if (theme_name==""){
-        //         alert("Please input theme name!");
-        //         window.location.href = "/user/createTheme";
-        //         return false;
-        //     }
-        //
-        // })
         $(".step").steps({
 
             onFinish: function () {
@@ -981,19 +907,12 @@ var createTheme = Vue.extend({
         })
 
         var oid = this.$route.params.editId;//取得所要edit的id
-
-        //var model_num = 1;
-        //var data_num = 1;
         var m_attr = 0;
         var d_attr = 0;
 
         if ((oid === "0") || (oid === "") || (oid === null)|| (oid === undefined)) {
-
-            // $("#title").text("Create Theme");
             $("#subRteTitle").text("/Create Theme");
-
-            initTinymce('textarea#themeText')
-
+            initTinymce('textarea#themeText');
         }
         else {
             // $("#title").text("Modify Theme")
@@ -1317,24 +1236,27 @@ var createTheme = Vue.extend({
                 spinner: "el-icon-loading",
                 background: "rgba(0, 0, 0, 0.7)"
             });
-            if(that.themeObj.application.length==1&&that.themeObj.application[0].applicationname==""&&that.themeObj.application[0].applicationlink==""&&that.themeObj.application[0].upload_application_image==""){
+            if(that.themeObj.application.length===1&&that.themeObj.application[0].applicationname===""&&that.themeObj.application[0].applicationlink===""
+                &&that.themeObj.application[0].upload_application_image===""){
 
             }else {
                 for(i = 0;i<that.themeObj.application.length; i++){
-                    if (that.themeObj.application[i].applicationname == ""||that.themeObj.application[i].applicationlink ==""||that.themeObj.application[i].upload_application_image==""){
+                    if (that.themeObj.application[i].applicationname === ""||that.themeObj.application[i].applicationlink ===""||
+                        that.themeObj.application[i].upload_application_image===""){
                         alert("Please complete the information");
                         return false;
                     }
                 }
             }
             //查看classinfo与dataClassInfo，如果存在一个也未输入，则删除
-            if (that.themeObj.classinfo.length==1&&that.themeObj.classinfo[0].mcname==""&&that.themeObj.classinfo[0].modelsoid.length==0) {
+            if (that.themeObj.classinfo.length===1&&that.themeObj.classinfo[0].mcname===""&&that.themeObj.classinfo[0].modelsoid.length===0) {
                 that.themeObj.classinfo.splice(0,1);
             }
-            if (that.themeObj.dataClassInfo.length==1&&that.themeObj.dataClassInfo[0].dcname==""&&that.themeObj.dataClassInfo[0].datasoid.length==0) {
+            if (that.themeObj.dataClassInfo.length===1&&that.themeObj.dataClassInfo[0].dcname===""&&that.themeObj.dataClassInfo[0].datasoid.length===0) {
                 that.themeObj.dataClassInfo.splice(0,1);
             }
-            if(that.themeObj.application.length==1&&that.themeObj.application[0].applicationname==""&&that.themeObj.application[0].applicationlink==""&&that.themeObj.application[0].upload_application_image==""){
+            if(that.themeObj.application.length===1&&that.themeObj.application[0].applicationname===""&&that.themeObj.application[0].applicationlink===""
+                &&that.themeObj.application[0].upload_application_image===""){
                 that.themeObj.application.splice(0,1);
             }
 

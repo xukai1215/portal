@@ -38,6 +38,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.rmi.CORBA.Util;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
@@ -688,8 +689,49 @@ public class TaskRestController {
             });
             return ResultUtils.success(resultDataDTOs);
         }
+    }
 
+    @RequestMapping(value = "/loadDataItemData", method = RequestMethod.POST)
+    public JsonResult loadDataItemData(@RequestBody TestDataUploadDTO testDataUploadDTO,HttpServletRequest request) throws Exception {
+        JsonResult jsonResult = new JsonResult();
+        String oid = testDataUploadDTO.getOid();
+        ComputableModel computableModel= computableModelDao.findFirstByOid(oid);
+        JSONObject mdlJSON = Utils.convertMdl(computableModel.getMdl());
 
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid")==null){
+            return ResultUtils.error(-2,"no login");
+        }else {
+            String userName = session.getAttribute("uid").toString();
+            String[] dataIpAndPort = dataContainerIpAndPort.split(":");
+            testDataUploadDTO.setHost(dataIpAndPort[0]);
+            testDataUploadDTO.setPort(Integer.parseInt(dataIpAndPort[1]));
+
+            List<UploadDataDTO> uploadDataDTOs = taskService.getTestDataUploadArrayDataItem(testDataUploadDTO, mdlJSON);
+            if (uploadDataDTOs == null) {
+                return ResultUtils.error(-1, "No Test Data");
+            }
+            List<Future<ResultDataDTO>> futures = new ArrayList<>();
+            //开启异步任务
+            uploadDataDTOs.forEach((UploadDataDTO obj) -> {
+                Future<ResultDataDTO> future = taskService.uploadDataToServer(obj, testDataUploadDTO, userName);
+                futures.add(future);
+            });
+            List<ResultDataDTO> resultDataDTOs = new ArrayList<>();
+
+            futures.forEach((future) -> {
+                try {
+                    ResultDataDTO resultDatadto = (ResultDataDTO) future.get();
+                    resultDataDTOs.add(resultDatadto);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+
+            });
+            return ResultUtils.success(resultDataDTOs);
+        }
     }
 
     @RequestMapping(value ="/loadPublishedData", method = RequestMethod.POST)

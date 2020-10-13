@@ -6,28 +6,28 @@
     <meta name="viewport"
           content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 
-    <link rel="icon" type="image/x-icon" th:href="@{../../static/img/logo/favicon.ico}">
-    <link rel="stylesheet" th:href="@{../static/element-ui/theme-chalk/index.css}">
+    <link rel="icon" type="image/x-icon" th:href="@{/../static/img/logo/favicon.ico}">
+    <link rel="stylesheet" th:href="@{/static/element-ui/theme-chalk/index.css}">
 
     <link rel="stylesheet" href="../static/css/base/bootstrap.min.css"
-          th:href="@{../../static/css/base/bootstrap.min.css}">
+          th:href="@{/../static/css/base/bootstrap.min.css}">
     <link rel="stylesheet" href="../static/css/font-awesome/css/font-awesome.min.css"
-          th:href="@{../../static/css/font-awesome/css/font-awesome.min.css}">
+          th:href="@{/../static/css/font-awesome/css/font-awesome.min.css}">
     <link rel="stylesheet" href="../static/css/font-awesome/fonts/fontawesome-webfont.woff"
-          th:href="@{../../static/css/font-awesome/fonts/fontawesome-webfont.woff}">
+          th:href="@{/../static/css/font-awesome/fonts/fontawesome-webfont.woff}">
 
     <link rel="stylesheet" href="/static/css/base/relate_item.css">
 
-    <link rel="stylesheet" href="../static/css/base/style.css" th:href="@{../../static/css/base/style.css}">
-    <link rel="stylesheet" href="../static/css/base/universal.css" th:href="@{../../static/css/base/universal.css}">
+    <link rel="stylesheet" href="../static/css/base/style.css" th:href="@{/../static/css/base/style.css}">
+    <link rel="stylesheet" href="../static/css/base/universal.css" th:href="@{/../static/css/base/universal.css}">
     <link rel="stylesheet" href="/static/css/base/itemInfo.css">
     <link rel="stylesheet" href="../static/css/page/data_item_info.css"
-          th:href="@{../../static/css/page/data_item_info.css}">
+          th:href="@{/../static/css/page/data_item_info.css}">
     <link rel="stylesheet" href="../static/css/components/file-manager.css"
-          th:href="@{../../static/css/components/file-manager.css}">
+          th:href="@{/../static/css/components/file-manager.css}">
 
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/common/footerResponse.css"/>
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/common/navbar.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css"/>
 
     <style type="text/css" th:inline="css">
         .col-md-5 {
@@ -71,12 +71,13 @@
                 </div>
 
                 <div class="detail_overview">
-
-                    <div class="img" th:object="${datainfo}">
-                        <!--<img th:if="${datainfo.data.type == 'option1'}" th:src="@{/static/img/model/model.png}">-->
-                        <avatar th:username="${datainfo.data.name}" :size="90" :rounded="false"></avatar>
-
-                        <!--<img th:unless="${datainfo.data.image!=Null}" th:src="${datainfo.data.image}">-->
+                    <div class="img" th:object="${datainfo}" v-if="">
+                        <div th:if="${#strings.isEmpty(datainfo.data.image)}">
+                            <avatar th:username="${datainfo.data.name}" :size="90" :rounded="false"></avatar>
+                        </div>
+                        <div th:unless="${#strings.isEmpty(datainfo.data.image)}">
+                            <img th:src="'/static'+${datainfo.data.image}" class="image">
+                        </div>
                     </div>
 
                     <div class="info" th:object="${datainfo}">
@@ -84,8 +85,6 @@
                         <div class="tags">
                             <span class="badge badge-info" th:each="key,iter : ${datainfo.data.keywords}"
                                   th:text="${iter.current}">itercurrent</span>
-
-
                         </div>
                     </div>
 
@@ -103,8 +102,11 @@
             <div id="Owner0" class="detail_block minScreen">
 
                 <div class="block_head">
-                    <div class="head_text" style="padding-left: 10px;">
+                    <div class="head_text" style="padding-left: 10px;padding-right: 15px;display: inline-flex">
                         <h4>Contributor</h4>
+                        <el-tooltip popper-class="fontsize-15" effect="light" content="Contributor is the person who contributes the item to OpenGMS, may not be the author of the item." placement="top">
+                            <i class="fa fa-question-circle-o" aria-hidden="true" style="margin-top:4px;"></i>
+                        </el-tooltip>
                     </div>
                 </div>
                 <div class="block_content">
@@ -145,7 +147,7 @@
                         </span>
                         <li class="NavHead" style="font-size: 16px;" th:text="${author.name}">NNU_Group</li>
                         <div th:id="'authorship'+${key.index}" class="panel-collapse" th:class="${key.index==0?'in':'collapse'}"aria-expanded="true"
-                             style="">6
+                             style="">
                             <div class="panel-body" style="padding-left: 20px; padding-top: 7px; padding-right: 0px;">
                                 <dl>
                                     <dt th:if="${author.ins!=''&&author.ins!=null}">Affiliation：</dt>
@@ -160,6 +162,9 @@
                             </div>
                         </div>
                     </div>
+                    <div th:if="${#lists.size(datainfo.data.authorship)>0}">
+                        <el-tag type="info">Is authorship not correct? <a href="javascript:void(0)" @click="feedBack" style="text-decoration: underline">Feed back</a></el-tag>
+                    </div>
                 </div>
             </div>
 
@@ -170,12 +175,8 @@
                     </div>
                 </div>
                 <div class="block_content" style="margin-bottom:10px;">
-
-                    <!--<el-tag type="success"  v-for="iter in dataCategory" @click="clickDataItemInfo(iter.id)" style="margin-left: 10px;font-weight: bold;color: #3396ef"> {{iter.cateContent}}</el-tag>-->
-
                     <el-tag type="success" th:each="classS:${classifications}" th:text="${classS}"
                             style="margin: 0 10px 10px 0;font-weight: bold;color: #3396ef"></el-tag>
-
                 </div>
             </div>
 
@@ -280,7 +281,8 @@
                 </div>&nbsp;&nbsp;
                 <div>
                     <p style="display: inline-block">You can apply to download this data:</p>
-                    <button class="value"  style="display: inline-block">DownLoad</button>
+                    <el-button class="value" type="success" round style="display: inline-block" @click="downLoadDistributedNodeData">DownLoad</el-button>
+                    <!--<p class="connect" style="display: none;color: mediumblue;font-size: larger;font-weight: 600;">Connecting Distributed Node...</p>-->
                 </div>
             </div>&nbsp;&nbsp;
 
@@ -729,6 +731,19 @@
                 </div>
             </div>
 
+            <div id="copyright" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Copyright and Disclaimer</h4>
+                    </div>
+                </div>
+                <div class="block_content">
+                    <div class="copyright_text">
+                        All copyrights of a material (model, data, article, etc.) in the OpenGMS fully belong to its author/developer/designer (or any other wording about the owner). The OpenGMS takes every care to avoid copyright infringement, contributor(s) should carefully employ materials from other sources and give proper citations.
+                    </div>
+                </div>
+            </div>
+
             <div id="QR0" class="detail_block minScreen">
                 <div class="block_head">
                     <div class="head_text" style="padding-left: 10px;">
@@ -769,9 +784,16 @@
             <div id="Owner" class="detail_block">
 
                 <div class="block_head">
-                    <div class="head_text" style="padding-left: 10px;">
+<!--                    <div class="head_text" style="padding-left: 10px;">-->
+<!--                        <h4 th:if="${history!=true}">Contributor</h4>-->
+<!--                        <h4 th:if="${history==true}">Modifier</h4>-->
+                    <div class="head_text" style="padding-left: 10px;padding-right: 15px;display: inline-flex">
                         <h4>Contributor</h4>
+                        <el-tooltip popper-class="fontsize-15" effect="light" content="Contributor is the person who contributes the item to OpenGMS, may not be the author of the item." placement="top">
+                            <i class="fa fa-question-circle-o" aria-hidden="true" style="margin-top:4px;"></i>
+                        </el-tooltip>
                     </div>
+
                 </div>
                 <div class="block_content">
                     <div class="el-row" style="margin-bottom: 3px;height: 40px;display: flex;justify-content: center;align-items: center;">
@@ -825,6 +847,11 @@
                             </div>
                         </div>
                     </div>
+
+                    <div th:if="${#lists.size(datainfo.data.authorship)>0}">
+                        <el-tag type="info">Is authorship not correct? <a href="javascript:void(0)" @click="feedBack" style="text-decoration: underline">Feed back</a></el-tag>
+                    </div>
+
                 </div>
             </div>
 
@@ -842,6 +869,8 @@
             </div>
 
         </div>
+        <div th:if="${history==true}"
+             style="pointer-events:none;position: absolute;top:62px;bottom: 0;left: 0;right: 0;background-image: url('/static/img/historyBackground.png')"></div>
 
         <!--Relation 弹出框-->
         <el-dialog style="float:left" :visible.sync="dialogTableVisible" title="Add Related Model Item"
@@ -889,8 +918,8 @@
             </el-card>
 
             <el-card shadow="never" class="box-card" style="width:59%;">
-                <el-input placeholder="Please enter name..." v-model="relateSearch" class="input-with-select" clearable="true">
-                    <el-button slot="append" icon="el-icon-search" @keyup.enter.native="search()" @click="search()"></el-button>
+                <el-input placeholder="Please enter name..." v-model="relateSearch" class="input-with-select" clearable="true" @keyup.enter.native="search()">
+                    <el-button slot="append" icon="el-icon-search" @click="search()"></el-button>
                 </el-input>
                 <el-table
                         :data="pageOption.searchResult"
@@ -968,7 +997,6 @@
             </span>
         </el-dialog>
 
-
     </div>
 
     <div th:replace="fragments/footer :: footer"></div>
@@ -978,19 +1006,19 @@
 
 </body>
 
-<script th:src="@{../static/js/common/vue.min.js}"></script>
-<script th:src="@{../static/element-ui/index.js}"></script>
-<script th:src="@{../static/js/common/jquery-3.3.1.min.js}"></script>
-<script th:src="@{../static/js/common/jquery.rotate.min.js}"></script>
+<script th:src="@{/static/js/common/vue.min.js}"></script>
+<script th:src="@{/static/element-ui/index.js}"></script>
+<script th:src="@{/static/js/common/jquery-3.3.1.min.js}"></script>
+<script th:src="@{/static/js/common/jquery.rotate.min.js}"></script>
 <script src="/static/js/common/bootstrap.min.js"></script>
 
 <script src="/static/js/common/vue-avatar.min.js"></script>
 
-<script th:src="@{../static/js/common/axios.min.js}"></script>
+<script src="/static/js/common/axios.min.js"></script>
 
 <script src="/static/js/common/qrcode.min.js"></script>
 
-<script src="/static/js/page/data_item_info.js" th:src="@{../static/js/page/data_item_info.js}"></script>
+<script src="/static/js/page/data_item_info.js" th:src="@{/static/js/page/data_item_info.js}"></script>
 <script src="/static/js/common/loadUser.js"></script>
 <script src="/static/js/common/copy.js"></script>
 <script src="/static/element-ui/umd/locale/en.js"></script>

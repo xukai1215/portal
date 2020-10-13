@@ -107,6 +107,7 @@ var  data_item_info= new Vue({
             parameters:[],
             loading: false,
             loading2:false,
+            loading3:false,
             processingType:"",
             dataItemId:"",
             objProcess:{
@@ -119,10 +120,26 @@ var  data_item_info= new Vue({
                 reqUsrOid:"",
             },
             objDistributed:{},
+
+            authorshipFormVisible:false,
+
         }
 
     } ,
     methods: {
+
+        feedBack(){
+            $.get("/user/load",{},(result)=>{
+                let json = JSON.parse(result);
+                if (json.oid == "") {
+                    this.confirmLogin();
+                }
+                else {
+                    window.location.href = "/user/userSpace#/feedback"
+                }
+            })
+        },
+
         confirmLogin(){
             this.$confirm('<div style=\'font-size: 18px\'>This function requires an account, <br/>please login first.</div>', 'Tip', {
                 dangerouslyUseHTMLString: true,
@@ -301,26 +318,26 @@ var  data_item_info= new Vue({
                 // inputErrorMessage: '邮箱格式不正确'
             }).then(({ value }) => {
 
-                    $.ajax({
-                        type: "POST",
-                        url: "/user/addFolder",
-                        data: {paths: paths, name: value},
-                        async: true,
-                        contentType: "application/x-www-form-urlencoded",
-                        success: (json) => {
-                            if (json.code == -1) {
-                                this.confirmLogin();
-                            }
-                            else {
-                                const newChild = {id: json.data, label: value, children: []};
-                                if (!data.children) {
-                                    this.$set(data, 'children', []);
-                                }
-                                data.children.push(newChild);
-                            }
-
+                $.ajax({
+                    type: "POST",
+                    url: "/user/addFolder",
+                    data: {paths: paths, name: value},
+                    async: true,
+                    contentType: "application/x-www-form-urlencoded",
+                    success: (json) => {
+                        if (json.code == -1) {
+                            this.confirmLogin();
                         }
-                    });
+                        else {
+                            const newChild = {id: json.data, label: value, children: []};
+                            if (!data.children) {
+                                this.$set(data, 'children', []);
+                            }
+                            data.children.push(newChild);
+                        }
+
+                    }
+                });
 
 
             }).catch(() => {
@@ -509,6 +526,7 @@ var  data_item_info= new Vue({
                 },
                 crossDomain: true,
                 success: (data) => {
+                    data = JSON.parse(data);
                     if (data.oid == "") {
                         this.confirmLogin();
                     }
@@ -538,6 +556,7 @@ var  data_item_info= new Vue({
                 },
                 crossDomain:true,
                 success: (data) => {
+                    data=JSON.parse(data);
                     if (data.oid == "") {
                         this.confirmLogin();
                     }
@@ -563,8 +582,8 @@ var  data_item_info= new Vue({
             };
             let url,contentType;
 
-                    url="/modelItem/listByAuthor";
-                    contentType="application/x-www-form-urlencoded";
+            url="/modelItem/listByAuthor";
+            contentType="application/x-www-form-urlencoded";
 
             $.ajax({
                 type: "POST",
@@ -598,9 +617,9 @@ var  data_item_info= new Vue({
         handleShare(index,row){
 
         },
-         getImg(item){
+        getImg(item){
             return "/static/img/filebrowser/"+item.suffix+".svg"
-         },
+        },
         generateId(key){
             return key;
         },
@@ -613,9 +632,9 @@ var  data_item_info= new Vue({
 
             if(currentData!=''){
                 let url ="/dispatchRequest/download?url=" + currentData;
-                 this.$alert("<input style='width: 100%' value="+'https://geomodeling.njnu.edu.cn'+url+">",{
-                     dangerouslyUseHTMLString: true
-                 })
+                this.$alert("<input style='width: 100%' value="+'https://geomodeling.njnu.edu.cn'+url+">",{
+                    dangerouslyUseHTMLString: true
+                })
                 // this.dataid='';
 
             }else {
@@ -639,13 +658,13 @@ var  data_item_info= new Vue({
             }
 
 
-             let link =document.createElement("a");
-             link.style.display='none';
-             link.href=downloadAllZipUrl;
-             link.setAttribute("download","allData.zip");
+            let link =document.createElement("a");
+            link.style.display='none';
+            link.href=downloadAllZipUrl;
+            link.setAttribute("download","allData.zip");
 
-             document.body.appendChild(link);
-             link.click();
+            document.body.appendChild(link);
+            link.click();
 
         },
         showtitle(ev){
@@ -932,7 +951,7 @@ var  data_item_info= new Vue({
         },
         //格式化评论时间
         formatDate(date){
-                var dateee=new Date(date).toJSON();
+            var dateee=new Date(date).toJSON();
             var da = new Date(+new Date(dateee)+8*3600*1000).toISOString().replace(/T/g,' ').replace(/\.[\d]{3}Z/,'')
             return da
         },
@@ -1021,26 +1040,26 @@ var  data_item_info= new Vue({
         loadAddMore(e){
 
             let that=this
-                if ( e.target.scrollHeight - e.target.clientHeight-e.target.scrollTop <10) { //到达底部100px时,加载新内容
+            if ( e.target.scrollHeight - e.target.clientHeight-e.target.scrollTop <10) { //到达底部100px时,加载新内容
 
-                    clearTimeout(this.timer);
+                clearTimeout(this.timer);
 
-                    this.timer=setTimeout(()=>{
-                            that.searchAddModelPage+=1// 这里加载数据..
-
-
-
-                            if(this.value1==='1'){
-                                that.addSearchFromUser()
-                            }else if(this.value1==='2'){
-                                that.addSearchFromAll()
-                            }
+                this.timer=setTimeout(()=>{
+                        that.searchAddModelPage+=1// 这里加载数据..
 
 
-                        },
-                        500)
 
-                }
+                        if(this.value1==='1'){
+                            that.addSearchFromUser()
+                        }else if(this.value1==='2'){
+                            that.addSearchFromAll()
+                        }
+
+
+                    },
+                    500)
+
+            }
 
 
         },
@@ -1057,16 +1076,16 @@ var  data_item_info= new Vue({
             axios.get("/modelItem/searchModelItemsByUserId",{
                 params:data
             })
-            .then((res)=>{
+                .then((res)=>{
 
-                if(res.status===200){
-                    that.loading=false
-                    that.searchAddRelatedModels=that.searchAddRelatedModels.concat(res.data.data.modelItems)
-                }
+                    if(res.status===200){
+                        that.loading=false
+                        that.searchAddRelatedModels=that.searchAddRelatedModels.concat(res.data.data.modelItems)
+                    }
 
 
 
-            })
+                })
 
         },
         addSearchFromAll(){
@@ -1240,6 +1259,7 @@ var  data_item_info= new Vue({
                 },
                 crossDomain: true,
                 success: (data) => {
+                    // data = JSON.parse(data);
                     if (data.oid == "") {
                         this.confirmLogin()
 
@@ -1248,7 +1268,14 @@ var  data_item_info= new Vue({
                         let href = window.location.href;
                         let hrefs = href.split('/');
                         let oid = hrefs[hrefs.length - 1].split("#")[0];
-                        window.location.href = '/user/userSpace#/data/manageDataItem/'+oid
+                        //正则匹配hub
+                        let re = "hub";
+                        let result = href.match("hub");
+                        if (result!=null){
+                            window.location.href = '/user/userSpace#/data/manageDataHubs/'+oid
+                        }else {
+                            window.location.href = '/user/userSpace#/data/manageDataItem/' + oid
+                        }
                     }
                 }
             })
@@ -1264,6 +1291,7 @@ var  data_item_info= new Vue({
             };
             // console.log('sd');
             // var time = new Date();
+            let that=this
             $.ajax({
                 url:"/dataItem/getDistributedObj",
                 type:"GET",
@@ -1271,13 +1299,15 @@ var  data_item_info= new Vue({
                 async:false,
                 success:(json)=>{
                     if (json.code == "0") {
-                        this.objDistributed = json.data;
-                        this.linkWebsocket("distributed");
+                        that.objDistributed = json.data;
+                        // that.linkWebsocket("distributed");
+                        that.mseeageByWebSocket("distributed")
+
                     }else if(json.code==-1){
                         alert("Please login first!");
                         window.location.href="/user/login";
                     }else if (json.code = "1"){
-                        this.loading = false;
+                        that.loading = false;
                         // $(".connect").hide();
                         let dataUrl = json.data;
                         window.location.href=dataUrl;
@@ -1359,20 +1389,9 @@ var  data_item_info= new Vue({
             })
         },
         invokeProcessingNow(){
-            this.loading2 = true;
-            // let obj = {
-            //     msg:"",
-            //     dataId:"",
-            //     pcsId:"",
-            //     params:[],
-            //     name:"",
-            //     token:"",
-            //     reqUsrOid:"",
-            // };
+            //this.loading = true;
+            this.loading3 = true;
             this.objProcess.msg = 'reqPcs';//固定值，区分消息类型
-            // var url = window.location.href;
-            // var index = url.lastIndexOf("\/");
-            // let dataItemId = url.substring(index+1,url.length);
             let formData = new FormData();
             formData.append("dataItemId", this.dataItemId);
             formData.append("processingId",this.processingId);
@@ -1397,153 +1416,140 @@ var  data_item_info= new Vue({
                     this.objProcess.token = json.token;
                     this.objProcess.reqUsrOid = json.userId;
                     this.objProcess.dataId = json.dataId;
-                    this.objProcess.wsId = this.dataItemId + "pcs";
-                    // this.objProcess.wsId = this.dataItemId;
+                    this.objProcess.wsId = this.dataItemId;
 
-                    //成功后向111进行请求
-                    // if(window.WebSocket) {
-                    //     var ws = new WebSocket('ws://111.229.14.128:1708');
-                    //     ws.onopen = function (e) {
-                    //         let obj = {
-                    //             msg: 'regist',
-                    //             token: dataItemId + "pcs",
-                    //         }
-                    //         ws.send(JSON.stringify(obj));
-                    //     }
-                    //     ws.onclose = function (e) {
-                    //         console.log("服务器关闭");
-                    //     }
-                    //     ws.onerror = function () {
-                    //         console.log("连接出错");
-                    //     }
-                    //
-                    //     ws.onmessage = function (e) {
-                    //         //没有对应数据
-                    //         if (e.data === 'no data in service node!') {
-                    //             this.loading2 = false;
-                    //             alert('no data in service node!')
-                    //         } else
-                    //         //没有权限
-                    //         if (e.data === 'no authority') {
-                    //             this.loading2 = false;
-                    //             alert('no authority')
-                    //         } else
-                    //         //服务结点离线
-                    //         if (e.data == 'node offline') {
-                    //             this.loading2 = false;
-                    //             alert('service node offline')
-                    //         } else
-                    //         //注册门户到中转服务器成功
-                    //         if (e.data === 'success') {
-                    //             // alert("连接成功")
-                    //         } else {
-                    //             //心跳检测
-                    //             if (e.data === 'beat') {
-                    //                 ws.send('online')
-                    //
-                    //             } else {
-                    //             }
-                    //             let r = JSON.parse(e.data)
-                    //             if (r.msg == 'insitudata') {
-                    //                 // alert(e.data)
-                    //                 this.loading2 = false;
-                    //                 window.location.href = "http://111.229.14.128:8899/data?uid="+ r.id;
-                    //                 return
-                    //             }
-                    //         }
-                    //         if (obj!=null&&e.data!="node offline") {
-                    //             ws.send(JSON.stringify(obj));
-                    //         }
-                    //     }
-                    // }
-                    this.linkWebsocket("process");
+                    this.mseeageByWebSocket("process");
                 }
             })
         },
-        linkWebsocket(type){
+        mseeageByWebSocket(type){
+
+
             let objSend;
             if (type=="process"){
                 objSend = this.objProcess;
             } else if (type == "distributed") {
                 objSend = this.objDistributed;
             }
-            let that = this;
-            if(window.WebSocket) {
-                var ws = new WebSocket('ws://111.229.14.128:1708');
-                ws.onopen = function (e) {
-                    let obj = {
-                        msg: 'regist',
-                        token: that.dataItemId,
-                    }
-                    ws.send(JSON.stringify(obj));
-                }
-                ws.onclose = function (e) {
-                    console.log("服务器关闭");
-                }
-                ws.onerror = function () {
-                    console.log("连接出错");
-                }
 
-                ws.onmessage = function (e) {
-                    //没有对应数据
-                    if (e.data === 'no data in service node!') {
-                        if (type=="process"){
-                            that.loading2 = false;
-                        }else {
-                            that.loading = false;
-                        }
-                        // loading = false;
-                        alert('no data in service node!')
-                    } else
+            let _ws=this.$root.$el._myws,that=this
+            _ws.send(JSON.stringify(objSend))
+            this.$root.$el._myws.onmessage=function (e) {
+
+                //没有对应数据
+                if (e.data === 'no data in service node!') {
+                    if (type=="process"){
+                        that.loading2 = false;
+                        that.loading3 = false;
+                    }else {
+                        that.loading = false;
+                    }
+                    // loading = false;
+                    alert('no data in service node!')
+                } else
                     //没有权限
-                    if (e.data === 'no authority') {
-                        if (type=="process"){
-                            that.loading2 = false;
-                        }else {
-                            that.loading = false;
-                        }
-                        alert('no authority')
-                    } else
-                    //服务结点离线
-                    if (e.data == 'node offline') {
-                        if (type=="process"){
-                            that.loading2 = false;
-                        }else {
-                            that.loading = false;
-                        }
-                        alert('service node offline')
-                    } else
-                    //注册门户到中转服务器成功
-                    if (e.data === 'success') {
-                        // alert("连接成功")
-                    } else {
-                        //心跳检测
-                        if (e.data === 'beat') {
-                            ws.send('online')
-
-                        } else {
-                        }
-                        let r = JSON.parse(e.data)
-                        if (r.msg == 'insitudata') {
-                            // alert(e.data)
-                            if (type=="process"){
-                                that.loading2 = false;
-                            }else {
-                                that.loading = false;
-                            }
-                            window.location.href = "http://111.229.14.128:8899/data?uid="+ r.id;
-                            return
-                        }
+                if (e.data === 'no authority') {
+                    if (type=="process"){
+                        that.loading2 = false; that.loading3 = false;
+                    }else {
+                        that.loading = false;
                     }
-                    if (objSend!=null&&e.data!="node offline") {
-                        ws.send(JSON.stringify(objSend));
+                    alert('no authority')
+                } else
+                    //服务结点离线
+                if (e.data == 'node offline') {
+                    if (type=="process"){
+                        that.loading2 = false; that.loading3 = false;
+                    }else {
+                        that.loading = false;
+                    }
+                    alert('service node offline')
+                } else
+                    //注册门户到中转服务器成功
+                if (e.data === 'success') {
+                    // alert("连接成功")
+                } else {
+                    //心跳检测
+                    if (e.data === 'beat') {
+                        _ws.send('online')
+
+                    } else {
+                    }
+                    let r = JSON.parse(e.data)
+                    if (r.msg == 'insitudata') {
+                        // alert(e.data)
+                        let data = {
+                            dataOid: that.dataItemId,
+                            rId: r.id
+                        }
+                        $.ajax({
+                            url:"/dataItem/saveUrl",
+                            type:"POST",
+                            data:data,
+                            success:(json)=>{
+                                console.log(json);
+                                console.log("success");
+
+                            }
+                        })
+                        if (type=="process"){
+                            that.loading2 = false; that.loading3 = false;
+                        }else {
+                            that.loading = false;
+                        }
+
+                        window.location.href = "http://111.229.14.128:8899/data?uid="+ r.id;
+
+                        return
                     }
                 }
+                // if (objSend!=null&&e.data!="node offline") {
+                //     _ws.send(JSON.stringify(objSend));
+                // }
+
+
             }
+
+
         },
+
     },
 
     mounted(){
+
+
+        // let that=_this
+
+        if(window.WebSocket) {
+            this.$root.$el._myws = new WebSocket('ws://111.229.14.128:1708');
+            this.$root.$el._myws.onopen = function (e) {
+                let obj = {
+                    msg: 'regist',
+                    token: that.dataItemId,
+                }
+                that.$root.$el._myws.send(JSON.stringify(obj));
+            }
+            this.$root.$el._myws.onclose = function (e) {
+                console.log("服务器关闭");
+            }
+            this.$root.$el._myws.onerror = function () {
+                console.log("连接出错");
+            }
+
+            this.$root.$el._myws.onmessage=function (e) {
+
+                if (e.data === 'success') {
+                    console.log("websocket set up")
+                }
+
+            }
+
+        }
+
+
+
+
+
         let that = this;
         //获取当前数据条目的id
         var url = window.location.href;
@@ -1613,153 +1619,6 @@ var  data_item_info= new Vue({
             $(".fullPaper").remove();
         })
 
-        //配置websocket
-        // if(window.WebSocket){
-        //     var ws = new WebSocket('ws://111.229.14.128:1708');
-        //
-        //     ws.onopen = function(e){
-        //         // let sube = e;
-        //
-        //         let obj={
-        //             msg:'regist',
-        //             token:dataItemId,
-        //
-        //         }
-        //         ws.send(JSON.stringify(obj));
-        //     }
-        //     ws.onclose = function(e){
-        //         console.log("服务器关闭");
-        //     }
-        //     ws.onerror = function(){
-        //         console.log("连接出错");
-        //     }
-        //
-        //     ws.onmessage = function(e){
-        //
-        //         var local_url = window.location.href;
-        //         var index = local_url.lastIndexOf("\/");
-        //         dataOid = local_url.substring(index + 1,local_url.length);
-        //         if(e.data==='no data in service node!'){
-        //             // $(".connect").hide();
-        //             that.loading = false;
-        //             alert('no data in service node!')
-        //         }else
-        //         if(e.data==='no authority'){
-        //             that.loading = false;
-        //             // $(".connect").hide();
-        //             alert('no authority')
-        //         }else
-        //         //服务结点离线
-        //         if(e.data=='node offline'){
-        //             that.loading = false;
-        //             // $(".connect").hide();
-        //             alert('service node offline')
-        //         }else
-        //         //注册门户到中转服务器成功
-        //         if(e.data==='success'){
-        //             // alert("连接成功")
-        //         }else{
-        //             //心跳检测
-        //             if(e.data==='beat'){
-        //                 ws.send('online')
-        //
-        //             }else{}
-        //             let r=JSON.parse(e.data);
-        //             if(r.msg=='insitudata'){
-        //                 that.loading = false;
-        //
-        //                 let dataUrl = "http://111.229.14.128:8899/data?uid="+ r.id;
-        //                 let data = {
-        //                     dataOid:dataOid,
-        //                     dataUrl: dataUrl,
-        //                 };
-        //
-        //                 $.ajax({
-        //                     url:"/dataItem/saveUrl",
-        //                     data:data,
-        //                     type:"POST",
-        //                     async:false,
-        //                     success:(json)=>{
-        //                         if (json.code == "0") {
-        //                             console.log("success");
-        //                         }
-        //                     }
-        //
-        //                 })
-        //                 window.location.href = "http://111.229.14.128:8899/data?uid="+ r.id;
-        //
-        //                 // alert(e.data);
-        //                 return
-        //             }
-        //         }
-        //         let sube = e;
-        //         document.querySelector(".value").onclick = function(e){
-        //             that.loading = true;
-        //             // $(".connect").attr('style','display: inline-block;color: mediumblue;font-size: larger;font-weight: 600;');
-        //             if(sube.data==='no data in service node!'){
-        //                 that.loading = false;
-        //                 // $(".connect").hide();
-        //                 alert('no data in service node!')
-        //             }else
-        //             if(sube.data==='no authority'){
-        //                 that.loading = false;
-        //                 // $(".connect").hide();
-        //                 alert('no authority')
-        //             }else
-        //             //服务结点离线
-        //             if(sube.data=='node offline'){
-        //                 that.loading = false;
-        //                 // $(".connect").hide();
-        //                 alert('service node offline')
-        //             }else
-        //             //注册门户到中转服务器成功
-        //             if(sube.data==='success'){
-        //                 // alert("连接成功")
-        //             }else{
-        //                 //心跳检测
-        //                 if(sube.data==='beat'){
-        //                     ws.send('online')
-        //
-        //                 }else{}
-        //                 let r=JSON.parse(sube.data);
-        //                 if(r.msg=='insitudata'){
-        //                     that.loading = false;
-        //                     // $(".connect").hide();
-        //                     window.location.href = "http://111.229.14.128:8899/data?uid="+ r.id;
-        //                     return
-        //                 }
-        //             }
-        //             let obj;
-        //             let data = {
-        //                 dataOid: dataOid,
-        //             };
-        //             console.log('sd');
-        //             var time = new Date();
-        //             $.ajax({
-        //                 url:"/dataItem/getDistributedObj",
-        //                 type:"GET",
-        //                 data:data,
-        //                 async:false,
-        //                 success:(json)=>{
-        //                     if (json.code == "0") {
-        //                         obj = json.data;
-        //                     }else if(json.code==-1){
-        //                         alert("Please login first!");
-        //                         window.location.href="/user/login";
-        //                     }else if (json.code = "1"){
-        //                         that.loading = false;
-        //                         // $(".connect").hide();
-        //                         let dataUrl = json.data;
-        //                         window.location.href=dataUrl;
-        //                     }
-        //                 }
-        //             })
-        //             if (obj!=null) {
-        //                 ws.send(JSON.stringify(obj));
-        //             }
-        //         }
-        //     }
-        // }
     },
 
 });
@@ -1768,60 +1627,81 @@ var dataSelection=[];
 //JQuery
 $(function () {
 
-        //数据项点击样式事件
-        $(".filecontent .el-card").on('click',function (e) {
-            console.log(e.currentTarget.id)
-            let exist=false;
-            for(i=0;i<dataSelection.length;i++)
-            {
-                let data=dataSelection[i];
-                if(data==e.currentTarget.id){
-                    exist=true;
-                    dataSelection.splice(i,1);
-                    $(this).removeClass("clickdataitem");
-                    break;
-                }
+    //数据项点击样式事件
+    $(".filecontent .el-card").on('click',function (e) {
+        console.log(e.currentTarget.id)
+        let exist=false;
+        for(i=0;i<dataSelection.length;i++)
+        {
+            let data=dataSelection[i];
+            if(data==e.currentTarget.id){
+                exist=true;
+                dataSelection.splice(i,1);
+                $(this).removeClass("clickdataitem");
+                break;
             }
+        }
 
-            if(!exist){
-                dataSelection.push(e.currentTarget.id);
-                $(this).addClass("clickdataitem");
-            }
+        if(!exist){
+            dataSelection.push(e.currentTarget.id);
+            $(this).addClass("clickdataitem");
+        }
 
-        });
-
-
-        //contents白板右键点击菜单事件，是否添加有待进一步思考
-        $(".filecontent").contextmenu(function (e) {
-            e.preventDefault();
-            // $(".browser").css({
-            //     "left":e.pageX,
-            //     "top":e.pageY
-            // }).show();
-
-        });
+    });
 
 
+    //contents白板右键点击菜单事件，是否添加有待进一步思考
+    $(".filecontent").contextmenu(function (e) {
+        e.preventDefault();
+        // $(".browser").css({
+        //     "left":e.pageX,
+        //     "top":e.pageY
+        // }).show();
 
-        //下载全部按钮为所有数据项添加样式事件
-        $(".downloadAll").click(function () {
-            $(".dataitemisol").addClass("clickdataitem")
+    });
 
-            let downloadAllZipUrl="/dataManager/downloadSomeRemote"
 
-            let data=$(".dataitemisol");
-            console.log($(".dataitemisol").get(1));
-            for(i=0;i<data.length;i++){
-                let url=data.eq(i).attr('id');
-                let id=getUrlParam(url);
+
+    //下载全部按钮为所有数据项添加样式事件
+    $(".downloadAll").click(function () {
+        $(".dataitemisol").addClass("clickdataitem")
+
+        let downloadAllZipUrl="/dataManager/downloadSomeRemote"
+
+        let data=$(".dataitemisol");
+        console.log($(".dataitemisol").get(1));
+        for(i=0;i<data.length;i++){
+            let url=data.eq(i).attr('id');
+            let id=getUrlParam(url);
+
+            downloadAllZipUrl+=i==0?'?':'&';
+            downloadAllZipUrl+=id;
+
+        }
+
+        // let downloadallzipurl="http://172.21.212.64:8082/dataResource/getResourcesRelatedDataItem/"+url[url.length-1];
+        //
+        let link =document.createElement("a");
+        link.style.display='none';
+        link.href=downloadAllZipUrl;
+        link.setAttribute("download","allData.zip");
+
+        document.body.appendChild(link);
+        link.click();
+
+    });
+
+    $(".dwload").click(function () {
+        let downloadAllZipUrl="/dataManager/downloadSomeRemote";
+        if(dataSelection.length!=0) {
+            for(i=0;i<dataSelection.length;i++){
+
+                let id=getUrlParam(dataSelection[i]);
 
                 downloadAllZipUrl+=i==0?'?':'&';
                 downloadAllZipUrl+=id;
 
             }
-
-            // let downloadallzipurl="http://172.21.212.64:8082/dataResource/getResourcesRelatedDataItem/"+url[url.length-1];
-            //
             let link =document.createElement("a");
             link.style.display='none';
             link.href=downloadAllZipUrl;
@@ -1829,70 +1709,49 @@ $(function () {
 
             document.body.appendChild(link);
             link.click();
+        }
+        else{
+            alert('please select file first!!');
+        }
 
-        });
 
-        $(".dwload").click(function () {
-            let downloadAllZipUrl="/dataManager/downloadSomeRemote";
-            if(dataSelection.length!=0) {
-                for(i=0;i<dataSelection.length;i++){
+    });
 
-                    let id=getUrlParam(dataSelection[i]);
 
-                    downloadAllZipUrl+=i==0?'?':'&';
-                    downloadAllZipUrl+=id;
+    //搜索结果样式效果和菜单事件
+    $("#browsercont").on('click',function (e) {
 
-                }
-                let link =document.createElement("a");
-                link.style.display='none';
-                link.href=downloadAllZipUrl;
-                link.setAttribute("download","allData.zip");
+        $(".el-card.dataitemisol.is-never-shadow.sresult").click(function () {
+            $(this).addClass("clickdataitem");
 
-                document.body.appendChild(link);
-                link.click();
-            }
-            else{
-                alert('please select file first!!');
-            }
-
+            $(this).siblings().removeClass("clickdataitem");
 
         });
 
 
-        //搜索结果样式效果和菜单事件
-        $("#browsercont").on('click',function (e) {
+        $(".el-card.dataitemisol.is-never-shadow.sresult").contextmenu(function () {
 
-            $(".el-card.dataitemisol.is-never-shadow.sresult").click(function () {
-                $(this).addClass("clickdataitem");
+            $(".browsermenu").css({
+                "left":e.pageX,
+                "top":e.pageY
+            }).show();
 
-                $(this).siblings().removeClass("clickdataitem");
-
-            });
-
-
-            $(".el-card.dataitemisol.is-never-shadow.sresult").contextmenu(function () {
-
-                $(".browsermenu").css({
-                    "left":e.pageX,
-                    "top":e.pageY
-                }).show();
-
-            })
+        })
 
 
-        });
+    });
 
-        //contents白板点击隐藏数据项菜单事件
-        $(".filecontent").click(function () {
-            $(".browsermenu").hide();
-            //$(".dataitemisol").removeClass("clickdataitem")
+    //contents白板点击隐藏数据项菜单事件
+    $(".filecontent").click(function () {
+        $(".browsermenu").hide();
+        //$(".dataitemisol").removeClass("clickdataitem")
 
-        });
+    });
 
-        //光标移入输入框隐藏数据项右键菜单
-        $("#searchinput").on("mouseenter",function () {
-            $(".browsermenu").hide();
-        });
+    //光标移入输入框隐藏数据项右键菜单
+    $("#searchinput").on("mouseenter",function () {
+        $(".browsermenu").hide();
+    });
 
 
     function getUrlParam(url,name) {

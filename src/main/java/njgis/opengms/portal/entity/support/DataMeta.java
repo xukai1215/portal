@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DataMeta {
+    String id;
     String name;
     String suffix;
     String url;

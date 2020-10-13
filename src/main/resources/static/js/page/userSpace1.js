@@ -75,16 +75,56 @@ var router = new VueRouter({
                 component:createDataItem,
             },
             {
+                path:'/data/createDataHubs',
+                component:createDataHubs,
+            },
+            {
+                path:'/data/createDataApplication',
+                component:createDataApplication,
+            },
+            {
+                path:'/data/createDataVisualApplication',
+                component:createDataVisualApplication,
+            },
+            {
                 path:'/data/manageDataItem/:editId',
                 component:createDataItem,
+            },
+            {
+                path:'/data/manageDataHubs/:editId',
+                component:createDataHubs,
+            },
+            {
+                path:'/data/manageDataApplication/:editId',
+                component:createDataApplication,
+            },
+            {
+                path:'/data/manageDataVisualApplication/:editId',
+                component:createDataVisualApplication,
             },
             {
                 path:'/data/dataitem',
                 component:userDataItems,
             },
             {
+                path:'/data/dataHubs',
+                component:userDataHubs,
+            },
+            {
+                path:'/data/processingApplication',
+                component:userDataApplication,
+            },
+            {
+                path:'/data/visualizationApplication',
+                component:userDataVisualApplication,
+            },
+            {
                 path:'/data/myDataSpace',
                 component:userDataSpace,
+            },
+            {
+                path:'/data/distributedNode',
+                component:distributedNode,
             },
             {
                 path:'/server',

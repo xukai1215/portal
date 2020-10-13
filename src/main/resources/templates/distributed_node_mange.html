@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Distributed Nodes Mange</title>
+    <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
+    <link rel="stylesheet" href="/static/css/page/message_confirm.css">
+    <link rel="stylesheet" href="/static/css/common/navbar.css">
+    <link rel="stylesheet" href="/static/css/base/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/base/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/iCheck/skins/flat/green.css"/>
+    <link rel="stylesheet" href="/static/css/base/universal.css">
+</head>
+<body>
+<div id="app">
+    <head-side-bar :user-infoin-parent="userInfo"></head-side-bar>
+    <template id="distributedNode" th:fragment="distributedNode">
+        <div>
+            <div class="innerShadowCol">
+                <div class="page-content clearfix scrollbar el-col-lg-21 el-col-md-20 pageContent acrylicBack"
+                     style="margin-left: 240px;overflow-x: hidden"
+                     :style="{'height':ScreenMinHeight,'min-height':ScreenMinHeight,'max-height':ScreenMaxHeight}"
+                     id="pageContent">
+                    <section role="description" class="flexJustBetween flexColCenter contentSection"
+                             style="max-width: 1050px;margin: 50px 10px;">
+                        <div class="flexRowContainer flexColCenter" style="margin-left: 18px">
+                            <img class="square_40" style="margin-top: 10px" src="../../static/img/model/conceptual.png">
+                            <h3 style="margin-left: 10px">
+                                <a class="itemTitle">Distributed Nodes Mange</a>
+                                <span id="subRteTitle"></span>
+                            </h3>
+                        </div>
+                    </section>
+                    <template>
+                        <el-card style="width: 90%;margin-left: 5%;">
+                            <el-table
+                                ref="filterTable"
+                                :data="tableData"
+                                style="width: 100%;margin: 0 5% 0 5%;">
+                            <el-table-column
+                                    prop="date"
+                                    label="Time"
+                                    sortable
+                                    min-width="10%"
+                                    column-key="date"
+                            >
+                            </el-table-column>
+                            <el-table-column
+                                    prop="userName"
+                                    label="User Name"
+                                    min-width="10%">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="ip"
+                                    label="IP"
+                                    min-width="10%">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="onlineStatus"
+                                    label="Online Status"
+                                    min-width="10%">
+                                <template slot-scope="scope">
+                                    <el-tag
+                                            :type="scope.row.onlineStatus === 'Online' ? 'primary' : 'danger'"
+                                            disable-transitions>{{scope.row.onlineStatus}}</el-tag>
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                        label="Data Item List"
+                                        min-width="10%">
+                                <template slot-scope="scope">
+                                    <el-button @click="handleClick(scope.row);dialogVisible = true" type="text" size="small">Show</el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                        </el-card>
+                    </template>
+                </div>
+                <el-dialog
+                        title="Data Item List"
+                        :visible.sync="dialogVisible"
+                        width="50%"
+                        :before-close="handleClose">
+                    <el-table
+                            ref="filterTable"
+                            :data="dataItemList"
+                            style="width: 100%;margin: 0 5% 0 5%;">
+                        <el-table-column
+                                prop="name"
+                                label="Data Item Name"
+                                sortable
+                                min-width="10%"
+                        >
+                        </el-table-column>
+                        <el-table-column
+                                prop="id"
+                                label="Link"
+                                min-width="10%">
+                            <template slot-scope="scope">
+                                <el-button @click="handleClick1(scope.row)" type="text" size="small">Open Link</el-button>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                prop="author"
+                                label="Author"
+                                min-width="10%">
+                        </el-table-column>
+                    </el-table>
+                    <span slot="footer" class="dialog-footer">
+                        <!--<el-button @click="dialogVisible = false">Cancel</el-button>-->
+                        <el-button type="primary" @click="dialogVisible = false">Close</el-button>
+                    </span>
+                </el-dialog>
+            </div>
+        </div>
+    </template>
+</div>
+
+</body>
+<script src="/static/js/common/jquery-3.3.1.min.js"></script>
+<script src="/static/js/common/vue.min.js"></script>
+<script src="/static/js/common/vue-avatar.min.js"></script>
+<script src="/static/element-ui/index.js"></script>
+<script src="/static/element-ui/umd/locale/en.js"></script>
+<script src="/static/js/page/distributed_node_mange.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jutils-src"></script>
+</html>

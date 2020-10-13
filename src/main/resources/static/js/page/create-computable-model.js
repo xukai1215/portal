@@ -554,6 +554,8 @@ var createComputableModel = Vue.extend({
                     this.computableModel.bindOid=basicInfo.relateModelItem;
                     this.computableModel.status=basicInfo.status;
 
+                    this.computableModel.contentType = basicInfo.contentType;
+
                     $(".providers").children(".panel").remove();
 
                     //detail

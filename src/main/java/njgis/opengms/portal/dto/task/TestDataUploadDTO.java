@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TestDataUploadDTO {
+    String dataItemId;
     String oid;
     String host;
     int port;

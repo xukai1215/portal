@@ -52,10 +52,10 @@ public class UserRestController {
     @Value("${dataContainerIpAndPort}")
     String dataContainerIpAndPort;
 
-    @Scheduled(cron = "0 0 9 ? MON *")  // 表示 在指定时间执行
-    private void sendEmail() {
-
-    }
+//    @Scheduled(cron = "0 0 9 ? MON *")  // 表示 在指定时间执行
+//    private void sendEmail() {
+//
+//    }
 
     @RequestMapping(value = "/sendEmailTest", method = RequestMethod.POST)
     public void sendEmailTest(@RequestParam("uid") String uid,@RequestParam("email") String email){
@@ -466,6 +466,18 @@ public class UserRestController {
     ) {
         return ResultUtils.success(dataItemService.getUsersUploadData(userOid, page - 1, pagesize, asc));
     }
+
+    //get data hubs table
+    @RequestMapping(value = "/getDataHubs", method = RequestMethod.GET)
+    JsonResult getUserUploadDataHubs(@RequestParam(value = "userOid", required = false) String userOid,
+                                 @RequestParam(value = "page", required = false) Integer page,
+                                 @RequestParam(value = "pagesize", required = false) Integer pagesize,
+                                 @RequestParam(value = "asc", required = false) Integer asc
+    ) {
+        return ResultUtils.success(dataItemService.getUsersUploadDataHubs(userOid, page - 1, pagesize, asc));
+    }
+
+
     //get oid
 
     @RequestMapping(value = "/updateUserIntro", method = RequestMethod.POST)
