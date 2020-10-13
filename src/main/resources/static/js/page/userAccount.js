@@ -78,76 +78,13 @@ var userAccount = Vue.extend(
 
             },
 
-            forgetPass() {
-                $('#myModal1').modal('hide');
-                // this.reset=true;
-                this.$prompt('Please enter your email:', 'Reset Password', {
-                    confirmButtonText: 'Confirm',
-                    cancelButtonText: 'Cancel',
-                    inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
-                    inputErrorMessage: 'E-mail format is incorrect.'
-                }).then(({ value }) => {
-                    let info=this.$notify.info({
-                        title: 'Reseting password',
-                        message: 'Please wait for a while, new password will be sent to your email.',
-                        offset: 70,
-                        duration: 0
-                    });
-                    $.ajax({
-                        url: '/user/resetPassword',
-                        type: 'post',
-                        // data对象中的属性名要和服务端控制器的参数名一致 login(name, password)
-                        data: {
-                            email:value
-                        },
-                        // dataType : 'json',
-                        success: (result) => {
-                            info.close();
-                            // this.reset=false;
-                            if (result.data=="suc") {
-
-                                this.$notify.success({
-                                    title: 'Success',
-                                    message: 'New password has been sent to your email. If you can not find the password, please check the spam box.',
-                                    offset: 70,
-                                    duration: 0
-                                });
-
-                            }
-                            else if(result.data=="no user") {
-                                this.$notify({
-                                    title: 'Failed',
-                                    message: 'Email does not exist, please check again or register a new account.',
-                                    offset: 70,
-                                    type: 'warning',
-                                    duration: 0
-                                });
-                            }
-                            else{
-                                this.$notify.error({
-                                    title: 'Failed',
-                                    message: 'Reset password failed, Please try again or contact opengms@njnu.edu.cn',
-                                    offset: 70,
-                                    duration: 0
-                                });
-                            }
-                        },
-                        error: function (e) {
-                            alert("reset password error");
-                        }
-                    });
-                }).catch(() => {
-
-                });
-            },
-
             setSubscribe(){
 
                 $.post("/user/setSubscribe",{subscribe:this.subscribe},(result)=>{
                     let data = result.data;
                     if(result.code==-1){
                         this.$alert('Please login first', 'Tip', {
-                            type:"info",
+                            type:"success",
                             confirmButtonText: 'OK',
                             callback: action => {
                                 window.location.href="/user/login";
@@ -197,47 +134,8 @@ var userAccount = Vue.extend(
 
             editSubscribedList(){
                 // this.getSubscribedList();
-                $.get("/user/getModelCounts",{},(result)=>{
-                    if(result.code==-1) {
-                        this.$alert('Please login first', 'Tip', {
-                            type: "info",
-                            confirmButtonText: 'OK',
-                            callback: action => {
-                                window.location.href = "/user/login";
-                            }
-                        });
-                    }else{
-                        let data = result.data;
-                        if(data.computableModel>0){
-                            this.search();
-                            this.dialogTableVisible = true;
-                        }else {
-                            let information = "You have ";
-                            if(data.modelItem>0){
-                                information+=data.modelItem+" model item";
-                                if(data.modelItem>1){
-                                    information+="s";
-                                }
-                                information += " and ";
-                            }
-                            information += "no computable model, please create a computable model first."
-                            this.$confirm(information, 'Tip', {
-                                dangerouslyUseHTMLString: true,
-                                confirmButtonText: 'Create',
-                                cancelButtonClass: 'fontsize-15',
-                                confirmButtonClass: 'fontsize-15',
-                                type: 'info',
-                                center: true,
-                                showClose: false,
-                            }).then(() => {
-                                window.location.href = "/user/login";
-                            }).catch(() => {
-
-                            });
-                        }
-                    }
-                })
-
+                this.search();
+                this.dialogTableVisible = true;
             },
 
             handleDelete(index, row) {
@@ -285,7 +183,7 @@ var userAccount = Vue.extend(
                         asc: this.pageOption.sortAsc,
                         page: this.pageOption.currentPage - 1,
                         pageSize: this.pageOption.pageSize,
-                        searchText: this.searchText,
+                        searchText: this.pageOption.searchText,
                         sortType: "default",
                         classifications: ["all"],
                     };
@@ -487,14 +385,8 @@ var userAccount = Vue.extend(
                         data: data,
                         success: function (result) {
                             if (result.code == -1) {
-                                this.$alert('Please login first', 'Tip', {
-                                    type:"info",
-                                    confirmButtonText: 'OK',
-                                    callback: action => {
-                                        window.location.href="/user/login";
-                                    }
-                                });
-
+                                alert("Please login first!")
+                                window.location.href="/user/login";
                             } else {
                                 let data = result.data;
                                 if (data == 1) {
@@ -559,13 +451,8 @@ var userAccount = Vue.extend(
                         console.log(data);
 
                         if (data.oid == "") {
-                            this.$alert('Please login first', 'Tip', {
-                                type:"info",
-                                confirmButtonText: 'OK',
-                                callback: action => {
-                                    window.location.href="/user/login";
-                                }
-                            });
+                            alert("Please login");
+                            window.location.href = "/user/login";
                         } else {
                             this.userId = data.oid;
                             this.userName = data.name;

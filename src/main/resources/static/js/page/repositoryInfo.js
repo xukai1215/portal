@@ -62,9 +62,9 @@ new Vue({
             { value: 'zh', label: 'Chinese' },
             { value: 'zh-HK', label: 'Chinese (Hong Kong)' },
             { value: 'zh-MO', label: 'Chinese (Macau)' },
-            { value: 'zh-CN', label: 'Chinese (Simplified)' },
+            { value: 'zh-CN', label: 'Chinese (S)' },
             { value: 'zh-SG', label: 'Chinese (Singapore)' },
-            { value: 'zh-TW', label: 'Chinese (Traditional)' },
+            { value: 'zh-TW', label: 'Chinese (T)' },
             { value: 'hr', label: 'Croatian' },
             { value: 'hr-BA', label: 'Croatian (Bosnia and Herzegovina)' },
             { value: 'hr-HR', label: 'Croatian (Croatia)' },
@@ -315,11 +315,6 @@ new Vue({
         }],
     },
     methods: {
-        getLanguageList(){
-            $.get("/static/languageList.json").success((content)=>{
-                this.languageList = content;
-            })
-        },
         submitLocalization(){
             let hrefs = window.location.href.split('/');
             let type = hrefs[hrefs.length - 2];
@@ -598,7 +593,7 @@ new Vue({
             })
         },
 
-        getQuateMarkContent(str){
+        getQuateMarkContent(str){//获得引号之间的内容
             if(str.indexOf('"')!=-1){
                 let regex = /"([^"]*)"/g;
                 let currentResult=regex.exec(str);
@@ -607,7 +602,7 @@ new Vue({
             else return ['"'+str+'"',str]
         },
 
-        getSqBracketContent(str){
+        getSqBracketContent(str){//获得方括号之间内容
             if(str.indexOf("[")!=-1){
                 let regex=/\[([^\]]*)]/g
                 let currentResult=regex.exec(str);
@@ -635,6 +630,7 @@ new Vue({
             return i
         },
 
+        //以下是解析wkt各部分的字段
         initCompd(coordianate,wkt){
             let index=wkt.indexOf('COMPD_CS')
             let regex = /"([^"]*)"/g;
@@ -758,6 +754,7 @@ new Vue({
 
         },
 
+        //解析wkt,分别对每个字段节点解析
         wktTransfer(coordinate,wkt){
             let obj={};
             // if(wkt.indexOf('GEOGCS')==-1) return
@@ -966,25 +963,31 @@ new Vue({
 
         },
 
+        //判断坐标系单位
         judgeUnit(coordinate){
             if(coordinate.geogcs==undefined) return 'metre'
-            if(coordinate.geogcs.unit.key.toLowerCase().indexOf('metre')==-1) {
-                if (coordinate.projcs!=undefined&&coordinate.projcs.unit.key.toLowerCase().indexOf('metre') != -1) {
-                    return 'metre'
-                } else {
-                    return 'degree'
-                }
-            }else{
-                if (coordinate.projcs!=undefined&&coordinate.projcs.unit.key.toLowerCase().indexOf('metre') != -1) {
-                    return 'metre'
-                } else {
-                    return 'degree'
-                }
+            if (coordinate.projcs!=undefined&&coordinate.projcs.unit.key.toLowerCase().indexOf('metre') != -1) {
+                return 'metre'
+            } else {
+                return 'degree'
             }
+            // if(coordinate.geogcs.unit.key.toLowerCase().indexOf('metre')==-1) {
+            //     if (coordinate.projcs!=undefined&&coordinate.projcs.unit.key.toLowerCase().indexOf('metre') != -1) {
+            //         return 'metre'
+            //     } else {
+            //         return 'degree'
+            //     }
+            // }else{
+            //     if (coordinate.projcs!=undefined&&coordinate.projcs.unit.key.toLowerCase().indexOf('metre') != -1) {
+            //         return 'metre'
+            //     } else {
+            //         return 'degree'
+            //     }
+            // }
 
         },
 
-        transformXY(){
+        async transformClick(){
             if(this.judgeUnit(this.inputCoordinate)==='metre'){
                 if(this.inputCoordinate.name==''){
                     this.$alert('Please select the input coordinate system')
@@ -1011,6 +1014,27 @@ new Vue({
                 return
             }
 
+            this.transFormByGDAL().then(res =>{
+                let gdalResult = res
+                if(gdalResult == null||gdalResult == undefined){
+                    this.transformXY()
+                }else {
+                    if(this.judgeUnit(this.outputCoordinate)==='metre') {
+                        this.outputX = gdalResult[0].toFixed(5)
+                        this.outputY = gdalResult[1].toFixed(5)
+                    }else{
+                        this.outputLong = gdalResult[0].toFixed(5)
+                        this.outputLat = gdalResult[1].toFixed(5)
+                    }
+                }
+            })
+
+
+
+
+        },
+
+        transformXY(){
             let inX = parseFloat(this.judgeUnit(this.inputCoordinate)==='metre'?this.inputX:this.inputLong)
             let inY = parseFloat(this.judgeUnit(this.inputCoordinate)==='metre'?this.inputY:this.inputLat)
 
@@ -1021,6 +1045,8 @@ new Vue({
                 this.$alert('The selected coordinates are not supported to transform.')
                 return
             }
+
+
 
             let result
             try{
@@ -1065,7 +1091,25 @@ new Vue({
             //         }
             //     }
             // });
+        },
 
+        async transFormByGDAL(){
+            let refInfo={
+                inputRefName:this.inputCoordinate.name,
+                inputRefX:this.judgeUnit(this.inputCoordinate)==='metre'?this.inputX:this.inputLong,
+                inputRefY:this.judgeUnit(this.inputCoordinate)==='metre'?this.inputY:this.inputLat,
+                outputRefName:this.outputCoordinate.name,
+            }
+
+            let data
+
+            await axios.post('/GDAL/transformSpactialRef',refInfo).then(
+                res=>{
+                    data = res.data
+                }
+            )
+
+            return data
         },
 
         exchangeIO(){
@@ -1087,6 +1131,8 @@ new Vue({
                 this.inputLat=this.outputLat
                 this.outputLat=''
             }
+
+            this.transformXY();
         },
 
         setSession(name, value) {

@@ -155,7 +155,7 @@ new Vue({
                         }
                         else if(result.data=="no user") {
                             this.$notify({
-                                title: 'Failed',
+                                title: 'Fail',
                                 message: 'Email does not exist, please check again or register a new account.',
                                 offset: 70,
                                 type: 'warning',
@@ -164,7 +164,7 @@ new Vue({
                         }
                         else{
                             this.$notify.error({
-                                title: 'Failed',
+                                title: 'Fail',
                                 message: 'Reset password failed, Please try again or contact opengms@njnu.edu.cn',
                                 offset: 70,
                                 duration: 0

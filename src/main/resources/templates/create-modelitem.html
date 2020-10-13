@@ -177,16 +177,6 @@
                                                                                 </div>
                                                                             </div>
 
-                                                                            <div class="form-horizontal">
-                                                                                <div class="form-group">
-                                                                                    <label for="aliasInput"
-                                                                                           class="col-sm-2 control-label">Alias</label>
-                                                                                    <div class="col-sm-10">
-                                                                            <textarea class="form-control"
-                                                                                      id="aliasInput"></textarea>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
 
                                                                             <div class="form-horizontal">
                                                                                 <div class="form-group">
@@ -472,90 +462,7 @@
                                                                     </div>
                                                                 </div>
                                                                 <div class="step-tab-panel" id="step2">
-                                                                    <div v-if="editTypeLocal=='create'" class="singleLocalization">
-                                                                        <div style="margin-bottom:10px;">
-                                                                            <div><b>Language :</b> (After creating, you can describe the item in different languages by editing)</div>
-                                                                            <el-select v-model="languageAdd.local" filterable placeholder="Please select language">
-                                                                                <el-option
-                                                                                        v-for="item in languageList"
-                                                                                        :key="item.value"
-                                                                                        :label="item.label"
-                                                                                        :value="item">
-                                                                                    <span style="float: left">{{ item.label }}</span>
-                                                                                    <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
-                                                                                </el-option>
-                                                                            </el-select>
-                                                                        </div>
-                                                                        <div style="margin-bottom:10px;">
-                                                                            <div><b>Model Item Name :</b> </div>
-                                                                            <el-input v-model="currentLocalization.name" placeholder="Please enter concept's name in your selected language"></el-input>
-                                                                        </div>
-                                                                        <div style="margin-bottom:10px;">
-                                                                            <div><b>Description :</b> </div>
-                                                                            <textarea id="singleDescription"></textarea>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div v-if="editTypeLocal=='modify'" class="localization">
-                                                                        <el-card style="width: 30%;float:left">
-                                                                            <div slot="header" class="clearfix">
-                                                                                <span style="font-weight: bold">Localization Description</span>
-                                                                                <el-button
-                                                                                        style="float: right; padding: 3px 0"
-                                                                                        type="text" @click="addLocalization">+ Add
-                                                                                </el-button>
-                                                                            </div>
-                                                                            <el-collapse-transition>
-                                                                                <div v-show="languageAdd.show">
-                                                                                    <el-select v-model="languageAdd.local" filterable placeholder="Please select language" style="width:80%;float: left;">
-                                                                                        <el-option
-                                                                                                v-for="item in languageList"
-                                                                                                :key="item.value"
-                                                                                                :label="item.label"
-                                                                                                :value="item">
-                                                                                            <span style="float: left">{{ item.label }}</span>
-                                                                                            <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
-                                                                                        </el-option>
-                                                                                    </el-select>
-                                                                                    <el-button @click="confirmAddLocal" type="success" style="width:10%;float: left;"><i class="el-icon-check"></i></el-button>
-                                                                                    <el-button @click="cancelAddLocal" type="danger" style="width:10%;"><i class="el-icon-close"></i></el-button>
-                                                                                </div>
-                                                                            </el-collapse-transition>
-                                                                            <div class="clearfix" style="height:400px;overflow: auto;">
-                                                                                <el-table
-                                                                                        :data="localizationList"
-                                                                                        :show-header="false"
-                                                                                >
-                                                                                    <el-table-column>
-                                                                                        <template slot-scope="props">
-                                                                                            <el-tooltip class="item" effect="light" :content="props.row.localCode" placement="top">
-                                                                                                <el-button
-                                                                                                        :class="{localizationSelected:props.row.selected}"
-                                                                                                        style="width:90%;float:left;"
-                                                                                                        @click="changeLocalization(props.row)">
-                                                                                                    {{props.row.localName}}
-                                                                                                </el-button>
-                                                                                            </el-tooltip>
-
-                                                                                            <el-button style="width:10%;" @click="deleteLocalization(props.row)"><i
-                                                                                                    class="el-icon-close"></i>
-                                                                                            </el-button>
-
-                                                                                        </template>
-                                                                                    </el-table-column>
-                                                                                </el-table>
-                                                                            </div>
-                                                                        </el-card>
-                                                                        <el-card style="width: 70%;">
-                                                                            <div slot="header" class="clearfix">
-                                                                                <span>Model Item Name : </span>
-                                                                                <el-input v-model="currentLocalization.name" placeholder="Please enter concept's localized name"></el-input>
-
-                                                                            </div>
-                                                                            <textarea id="conceptText" style="float:left">
-
-                                                                    </textarea>
-                                                                        </el-card>
-                                                                    </div>
+                                                                    <textarea id="modelItemText"></textarea>
                                                                 </div>
                                                             </div>
                                                             <div class="step-footer text-right">
@@ -586,16 +493,16 @@
                     </div>
                 </div>
 
-                <el-dialog title="Reference Info" :close-on-click-modal="false" :visible.sync = "editArticleDialog" width="33%" custom-class="min400w" >
-                    <div class="wzhScrollbar" style="max-height: 500px;padding-right:10px" >
+                <el-dialog title="Reference info" :visible.sync = "editArticleDialog" width="33%" custom-class="min400w" >
+                    <div class="wzhScrollbar" style="max-height: 500px" >
                         <div class="tab-content" v-loading="doiLoading">
                             <div class="tab-pane active articleInfo" id="manually" >
                                 <div class="form-group">
                                     <label for="doiTitle" class="col-sm-2 control-label">
                                         Get by doi :
                                     </label>
-                                    <el-tag size="middle" primary>Enter the doi and click search, information may be filled automaticly. </el-tag>
-                                    <div class="input-group col-md-12">
+                                    <el-tag size="mini" primary>Input the doi and click search, information may be filled automaticly. </el-tag>
+                                    <div class="input-group col-md-12" style="padding: 0 15px">
                                         <input id="doiTitle" type="text"
                                                class="form-control" v-model="doi">
                                         <span class="input-group-btn" style="width: 19%">
@@ -608,16 +515,16 @@
 
                                 <div class="form-group">
                                     <label for="refTitle"
-                                           class="col-sm-12 control-label">Title</label>
-                                    <div>
+                                           class="col-sm-4 control-label">Title</label>
+                                    <div class="col-sm-12">
                                         <input type="text" class="form-control"
                                                id="refTitle"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="refAuthor"
-                                           class="col-sm-12 control-label">Author</label>
-                                    <div>
+                                           class="col-sm-4 control-label">Author</label>
+                                    <div class="col-sm-12">
                                         <input type="text" class="form-control"
                                                id="refAuthor"/>
                                         <!--                                                        <ul class="tag-editor"><li style="width:.1px">&nbsp;</li></ul>-->
@@ -626,40 +533,40 @@
 
                                 <div class="form-group">
                                     <label for="refDate"
-                                           class="col-sm-12 control-label">Date</label>
-                                    <div>
+                                           class="col-sm-4 control-label">Date</label>
+                                    <div class="col-sm-12">
                                         <input type="text" class="form-control"
                                                id="refDate"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="refJournal"
-                                           class="col-sm-12 control-label">Journal</label>
-                                    <div>
+                                           class="col-sm-4 control-label">Journal</label>
+                                    <div class="col-sm-12">
                                         <input type="text" class="form-control"
                                                id="refJournal"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="volumeIssue"
-                                           class="col-sm-12 control-label">Volume(issue)</label>
-                                    <div>
+                                           class="col-sm-4 control-label">Volume(issue)</label>
+                                    <div class="col-sm-12">
                                         <input type="text" class="form-control"
                                                id="volumeIssue"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="refPages"
-                                           class="col-sm-12 control-label">Page Range</label>
-                                    <div>
+                                           class="col-sm-4 control-label">Page Range</label>
+                                    <div class="col-sm-12" style="display: flex;justify-content: space-between">
                                         <input type="text" class="form-control"
                                                id="refPages"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="refLink"
-                                           class="col-sm-12 control-label">Link</label>
-                                    <div>
+                                           class="col-sm-4 control-label">Link</label>
+                                    <div class="col-sm-12">
                                         <input type="text" class="form-control"
                                                id="refLink"/>
                                     </div>
@@ -679,7 +586,7 @@
                     </div>
                     <span slot="footer" class="dialog-footer">
                                         <el-button type="primary" @click="updateArticleConfirmClick" id="modal_save">Add</el-button>
-                                        <el-button @click="cancelSearch()">Cancel</el-button>
+                                        <el-button @click="cancelSearch()">cancel</el-button>
 
                                 </span>
                 </el-dialog>
@@ -721,7 +628,7 @@
                             <span style="color: #2b95f7"> uploaded</span> yet.</p>
                     </div>
                     <span slot="footer" class="dialog-footer">
-                                <el-button @click="showUploadedArticleDialog = false">OK</el-button>
+                                <el-button @click="showUploadedArticleDialog = false">Confirm</el-button>
                             </span>
                     <!--                            <span slot="footer" class="dialog-footer">-->
                     <!--                                <el-button type="success" @click="addContributorConfirm()"-->

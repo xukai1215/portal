@@ -37,8 +37,8 @@ public class ConceptService {
         Collections.sort(concept.getLocalizationList());
         String description = "";
         for(Localization localization:concept.getLocalizationList()){
-            String local = localization.getLocalCode();
-            if(local.equals("en")||local.equals("zh")||local.contains("en-")||local.contains("zh-")){
+            String local = localization.getLocal();
+            if(local.contains("EN_")||local.contains("ZH_")){
                 String localDesc = localization.getDescription();
                 if(localDesc!=null&&!localDesc.equals("")) {
                     description = localization.getDescription();
@@ -74,11 +74,11 @@ public class ConceptService {
 
         Page<ConceptResultDTO> concepts = Page.empty();
 
-//        if(loadUser == null||!loadUser.equals(oid)) {
+        if(loadUser == null||!loadUser.equals(oid)) {
             concepts = conceptDao.findByAuthorAndStatusIn(userId, itemStatusVisible, pageable);
-//        }else{
-//            concepts = conceptDao.findByAuthor(userId, pageable);
-//        }
+        }else{
+            concepts = conceptDao.findByAuthor(userId, pageable);
+        }
 
         JSONObject ConceptObject = new JSONObject();
         ConceptObject.put("count", concepts.getTotalElements());
@@ -99,11 +99,11 @@ public class ConceptService {
         Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.DESC,sortElement);
         Pageable pageable= PageRequest.of(page,pageSize,sort);
         Page<ConceptResultDTO> conceptResultDTOPage = Page.empty();
-//        if(loadUser==null||!loadUser.equals(oid)){
+        if(loadUser==null||!loadUser.equals(oid)){
             conceptResultDTOPage = conceptDao.findByNameContainsIgnoreCaseAndAuthorAndStatusIn(name, userName,itemStatusVisible, pageable);
-//        }else {
-//            conceptResultDTOPage = conceptDao.findByNameContainsIgnoreCaseAndAuthor(name, userName, pageable);
-//        }
+        }else {
+            conceptResultDTOPage = conceptDao.findByNameContainsIgnoreCaseAndAuthor(name, userName, pageable);
+        }
         JSONObject result=new JSONObject();
         result.put("list",conceptResultDTOPage.getContent());
         result.put("total",conceptResultDTOPage.getTotalElements());

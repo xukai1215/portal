@@ -13,9 +13,8 @@ new Vue({
             searchText: '',
             classifications1: ["652bf1f8-2f3e-4f93-b0dc-f66505090873"],
             classifications2: [],
-            classifications3: [],
 
-            currentClass: "Earth System Subject",
+            currentClass: "Hydrosphere",
 
             pageOption: {
                 paginationShow:false,
@@ -28,8 +27,7 @@ new Vue({
                 searchResult: [],
             },
 
-            treeData: [
-                {
+            treeData: [{
                 id: 1,
                 label: 'Earth System Subject',
                 oid: 'fc236e9d-3ae9-4594-b9b8-de0ac336a1d7',
@@ -315,237 +313,15 @@ new Vue({
             }]}
 
             ],
-            treeData2:[
-                {"children": [{
-                        "children": [{
-                            "id": 2,
-                            "label": "Land regions",
-                            "oid": "a24cba2b-9ce1-44de-ac68-8ec36a535d0e"
-                        }, {"id": 3, "label": "Ocean regions", "oid": "75aee2b7-b39a-4cd0-9223-3b7ce755e457"}, {
-                            "id": 4,
-                            "label": "Frozen regions",
-                            "oid": "1bf4f381-6bd8-4716-91ab-5a56e51bd2f9"
-                        }, {"id": 5, "label": "Atmospheric regions", "oid": "8f4d4fca-4d09-49b4-b6f7-5021bc57d0e5"}, {
-                            "id": 6,
-                            "label": "Space earth",
-                            "oid": "d33a1ebe-b2f5-4ed3-9c76-78cfb61c23ee"
-                        }, {"id": 7, "label": "Solid earth", "oid": "d3ba6e0b-78ec-4fe8-9985-4d5708f28e3e"}, {
-                            "id": 8,
-                            "label": "Integrated perspective",
-                            "oid": "eb1d8ddc-6be1-41ef-bab6-a8d940d46499"
-                        }], "id": 1, "label": "Natural-perspective", "oid": "6b2c8632-964a-4a65-a6c5-c360b2b515f0"
-                    }, {
-                        "children": [{
-                            "id": 10,
-                            "label": "Administrative regions",
-                            "oid": "808e74a4-41c6-4558-a850-4daec1f199df"
-                        }, {"id": 11, "label": "Social regions", "oid": "40534cf8-039a-4a0a-8db9-7c9bff484190"}, {
-                            "id": 12,
-                            "label": "Economic regions",
-                            "oid": "cf9cd106-b873-4a8a-9336-dd72398fc769"
-                        }, {"id": 13, "label": "Integrated perspective", "oid": "65dbe5a9-ada9-4c02-8353-5029a84d7628"}],
-                        "id": 9,
-                        "label": "Human-perspective",
-                        "oid": "77e7482c-1844-4bc3-ae37-cb09b61572da"
-                    }], "id": 24, "label": "Application-focused categories", "oid": "9f7816be-c6e3-44b6-addf-98251e3d2e19"},
-                {"children": [{
-                        "children": [{
-                            "id": 15,
-                            "label": "Geoinformation analysis",
-                            "oid": "afa99af9-4224-4fac-a81f-47a7fb663dba"
-                        }, {
-                            "id": 16,
-                            "label": "Remote sensing analysis",
-                            "oid": "f20411a5-2f55-4ee9-9590-c2ec826b8bd5"
-                        }, {
-                            "id": 17,
-                            "label": "Geostatistical analysis",
-                            "oid": "1c876281-a032-4575-8eba-f1a8fb4560d8"
-                        }, {"id": 18, "label": "Machine Learning analysis", "oid": "c6fcc899-8ca4-4269-a21e-a39d38c034a6"}],
-                        "id": 14,
-                        "label": "Data-perspective",
-                        "oid": "4785308f-b2ef-4193-a74b-b9fe025cbc5e"
-                    }, {
-                        "children": [{
-                            "id": 20,
-                            "label": "Physical process calculation",
-                            "oid": "1d564d0f-51c6-40ca-bd75-3f9489ccf1d6"
-                        }, {
-                            "id": 21,
-                            "label": "Chemical process calculation",
-                            "oid": "63266a14-d7f9-44cb-8204-c877eaddcaa1"
-                        }, {
-                            "id": 22,
-                            "label": "Biological process calculation",
-                            "oid": "6d1efa2c-830d-4546-b759-c66806c4facc"
-                        }, {"id": 23, "label": "Human-activity calculation", "oid": "6952d5b2-cb0f-4ba7-96fd-5761dd566344"}],
-                        "id": 19,
-                        "label": "Process-perspective",
-                        "oid": "746887cf-d490-4080-9754-1dc389986cf2"
-                    }], "id": 25, "label": "Method-focused categories", "oid": "5f74872a-196c-4889-a7b8-9c9b04e30718"}],
             defaultProps: {
                 children: 'children',
                 label: 'label'
             },
-            driver : null,
-            stepsConfig : null,
-
-            editClassification:false,
-            modelOid:"",
-            cls:[],
-            clsStr:"",
-            cls2:[],
-            clsStr2:"",
-            classType:null,
+            "driver" : null,
+            "stepsConfig" : null
         }
     },
     methods: {
-
-
-        handleCheckChange12(data, checked, indeterminate) {
-            let checkedNodes = this.$refs.tree12.getCheckedNodes()
-            let classes = [];
-            let str='';
-            for (let i = 0; i < checkedNodes.length; i++) {
-                // console.log(checkedNodes[i].children)
-                if(checkedNodes[i].children!=undefined){
-                    continue;
-                }
-
-                classes.push(checkedNodes[i].oid);
-                str+=checkedNodes[i].label;
-                if(i!=checkedNodes.length-1){
-                    str+=", ";
-                }
-            }
-            this.cls=classes;
-            this.clsStr=str;
-
-        },
-        handleCheckChange14(data, checked, indeterminate) {
-            let checkedNodes = this.$refs.tree14.getCheckedNodes()
-            let classes = [];
-            let str='';
-            for (let i = 0; i < checkedNodes.length; i++) {
-                // console.log(checkedNodes[i].children)
-                if(checkedNodes[i].children!=undefined){
-                    continue;
-                }
-
-                classes.push(checkedNodes[i].oid);
-                str+=checkedNodes[i].label;
-                if(i!=checkedNodes.length-1){
-                    str+=", ";
-                }
-            }
-            this.cls2=classes;
-            this.clsStr2=str;
-
-        },
-        getClassifications(modelItem){
-            this.editClassification = true;
-            this.modelOid = modelItem.oid;
-            $.get("/modelItem/getClassification/"+modelItem.oid,{},(result)=>{
-                //cls
-                this.cls = result.data.class1;
-
-                let ids=[];
-                for(i=0;i<this.cls.length;i++){
-                    for(j=0;j<2;j++){
-                        for(k=0;k<this.treeData[j].children.length;k++){
-                            let children=this.treeData[j].children[k].children;
-                            if(children==null) {
-                                if (this.cls[i] == this.treeData[j].children[k].oid) {
-                                    ids.push(this.treeData[j].children[k].id);
-                                    this.clsStr += this.treeData[j].children[k].label;
-                                    if (i != this.cls.length - 1) {
-                                        this.clsStr += ", ";
-                                    }
-                                    break;
-                                }
-                            }
-                            else{
-                                for(x=0;x<children.length;x++){
-                                    if (this.cls[i] == children[x].oid) {
-                                        ids.push(children[x].id);
-                                        this.clsStr += children[x].label;
-                                        if (i != this.cls.length - 1) {
-                                            this.clsStr += ", ";
-                                        }
-                                        break;
-                                    }
-                                }
-                            }
-
-                        }
-                        if(ids.length-1==i){
-                            break;
-                        }
-                    }
-                }
-
-                this.$refs.tree12.setCheckedKeys(ids);
-
-                //cls
-                this.cls2 = result.data.class2;
-                let ids2=[];
-                if(this.cls2 != null) {
-                    for (i = 0; i < this.cls2.length; i++) {
-                        for (j = 0; j < 2; j++) {
-                            for (k = 0; k < this.treeData2[j].children.length; k++) {
-                                let children = this.treeData2[j].children[k].children;
-                                if (children == null) {
-                                    if (this.cls2[i] == this.treeData2[j].children[k].oid) {
-                                        ids2.push(this.treeData2[j].children[k].id);
-                                        this.clsStr2 += this.treeData2[j].children[k].label;
-                                        if (i != this.cls2.length - 1) {
-                                            this.clsStr2 += ", ";
-                                        }
-                                        break;
-                                    }
-                                }
-                                else {
-                                    for (x = 0; x < children.length; x++) {
-                                        if (this.cls2[i] == children[x].oid) {
-                                            ids2.push(children[x].id);
-                                            this.clsStr2 += children[x].label;
-                                            if (i != this.cls2.length - 1) {
-                                                this.clsStr2 += ", ";
-                                            }
-                                            break;
-                                        }
-                                    }
-                                }
-
-                            }
-                            if (ids2.length - 1 == i) {
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                this.$refs.tree14.setCheckedKeys(ids2);
-            });
-
-        },
-        submitClassifications(){
-            let data = {
-                oid:this.modelOid,
-                class1:this.cls,
-                class2:this.cls2,
-            };
-            $.post("/modelItem/updateClass",data,(result)=>{
-                this.$alert("Change classification successfully!", 'Success', {
-                    type: 'success',
-                    confirmButtonText: 'OK',
-                    callback: action => {
-                        this.editClassification = false;
-                        this.getModels(this.classType);
-                    }
-                });
-            })
-        },
 
         switchInit(){
             this.statistic=['Overview','Overview','Overview','Overview','Overview','Overview','Overview','Overview','Overview','Overview'];
@@ -696,8 +472,7 @@ new Vue({
             this.classifications1=["all"];
             this.$refs.tree1.setCurrentKey(null);
             this.currentClass="ALL"
-            this.classType = null;
-            this.getModels(this.classType);
+            this.getModels();
         },
         //页码change
         handlePageChange(val) {
@@ -709,11 +484,9 @@ new Vue({
             this.pageOption.currentPage = val;
 
             window.scrollTo(0, 0);
-            this.getModels(this.classType);
+            this.getModels();
         },
-
-        handleCurrentChange(data) {
-
+        handleCurrentChange(data, checked, indeterminate) {
             this.switchInit();
             this.setUrl("/modelItem/repository?category="+data.oid);
             // this.pageOption.searchResult=[];
@@ -726,28 +499,8 @@ new Vue({
             //this.getChildren(data.children)
             this.pageOption.currentPage=1;
             this.searchText="";
-            this.classType = 1;
-            this.getModels(this.classType);
+            this.getModels();
         },
-
-        handleCurrentChange2(data) {
-
-            this.switchInit();
-            this.setUrl("/modelItem/repository?category2="+data.oid);
-            // this.pageOption.searchResult=[];
-            this.pageOption.total=0;
-            this.pageOption.paginationShow=false;
-            this.currentClass=data.label;
-            let classes = [];
-            classes.push(data.oid);
-            this.classifications3 = classes;
-            //this.getChildren(data.children)
-            this.pageOption.currentPage=1;
-            this.searchText="";
-            this.classType = 2;
-            this.getModels(this.classType);
-        },
-
         getChildren(children) {
             if (children != null) {
                 for (let i = 0; i < children.length; i++) {
@@ -767,11 +520,11 @@ new Vue({
                 classes.push(checkedNodes[i].oid);
             }
             this.classifications2 = classes;
-            console.log(this.classifications2);
+            console.log(this.classifications2)
             this.pageOption.currentPage=1;
             this.getModels();
         },
-        getModels(classType) {
+        getModels() {
             this.pageOption.progressBar = true;
             var data = {
                 asc: this.pageOption.sortAsc,
@@ -782,14 +535,7 @@ new Vue({
             switch (this.queryType) {
                 case "normal":
                     data.searchText = this.searchText.trim();
-                    if(classType==2) {
-                        data.classifications = this.classifications3.length == 0 ? ["all"] : this.classifications3
-                        data.classType=classType;
-                    }else{
-                        data.classifications = this.classifications1.length == 0 ? ["all"] : this.classifications1;
-                        data.classType=1;
-                    }
-
+                    data.classifications = this.classifications1.length == 0 ? ["all"] : this.classifications1
                     break;
                 case "advanced":
                     var connects = $(".connect");
@@ -885,7 +631,7 @@ new Vue({
                         "element": ".searcherInputPanel",
                         "popover": {
                             "title": "Search",
-                            "description": "Here you can search for models by model name.",
+                            "description": "Here you can search for models by keyword or model name.",
                             "position": "bottom-right",
                         }
                     },
@@ -925,61 +671,61 @@ new Vue({
         let page=this.GetQueryString("page");
         console.log(category,page)
 
-        if(category!=null) {
-            this.classifications1=[];
-            this.classifications1.push(category);
-            for(i=0;i<this.treeData.length;i++){
-                if(category==this.treeData[i].oid){
-                    this.$refs.tree1.setCurrentKey(this.treeData[i].id);
-                    this.currentClass=this.treeData[i].label;
-                    break;
-                }
-                else{
-                    let children = this.treeData[i].children;
-                    let find=false;
-                    for(j=0;j<children.length;j++){
-                        if(category==children[j].oid){
-                            find=true;
-                            this.$refs.tree1.setCurrentKey(children[j].id);
-                            this.currentClass=children[j].label;
-                            $(".el-tree-node__expand-icon").eq(i).click();
-                            break;
-                        }
-                        else{
-                            let childrens=children[j].children;
-                            if(childrens!=undefined) {
-                                for (k = 0; k < childrens.length; k++) {
-                                    if (category == childrens[k].oid) {
-                                        find = true;
-                                        this.$refs.tree1.setCurrentKey(childrens[k].id);
-                                        this.currentClass = childrens[k].label;
-                                        $(".el-tree-node__expand-icon").eq(1).click();
-                                        var index=j+2;
-                                        setTimeout(function(){
-                                            console.log($(".el-tree-node__expand-icon"))
-                                            $(".el-tree-node__expand-icon").eq(index).click();
-                                        },200);
-
-                                        break;
-                                    }
-                                }
-                            }
-
-                        }
-                    }
-                    if(find){
-                        break;
-                    }
-                }
-
-            }
-        }
-        else{
-            // this.$refs.tree1.setCurrentKey(2);
-            // //展开分类树第一层
-            // $(".el-tree-node__expand-icon").eq(0).click();
-            // $(".el-tree-node__expand-icon").eq(1).click();
-        }
+        // if(category!=null) {
+        //     this.classifications1=[];
+        //     this.classifications1.push(category);
+        //     for(i=0;i<this.treeData.length;i++){
+        //         if(category==this.treeData[i].oid){
+        //             this.$refs.tree1.setCurrentKey(this.treeData[i].id);
+        //             this.currentClass=this.treeData[i].label;
+        //             break;
+        //         }
+        //         else{
+        //             let children = this.treeData[i].children;
+        //             let find=false;
+        //             for(j=0;j<children.length;j++){
+        //                 if(category==children[j].oid){
+        //                     find=true;
+        //                     this.$refs.tree1.setCurrentKey(children[j].id);
+        //                     this.currentClass=children[j].label;
+        //                     $(".el-tree-node__expand-icon").eq(i).click();
+        //                     break;
+        //                 }
+        //                 else{
+        //                     let childrens=children[j].children;
+        //                     if(childrens!=undefined) {
+        //                         for (k = 0; k < childrens.length; k++) {
+        //                             if (category == childrens[k].oid) {
+        //                                 find = true;
+        //                                 this.$refs.tree1.setCurrentKey(childrens[k].id);
+        //                                 this.currentClass = childrens[k].label;
+        //                                 $(".el-tree-node__expand-icon").eq(1).click();
+        //                                 var index=j+2;
+        //                                 setTimeout(function(){
+        //                                     console.log($(".el-tree-node__expand-icon"))
+        //                                     $(".el-tree-node__expand-icon").eq(index).click();
+        //                                 },200);
+        //
+        //                                 break;
+        //                             }
+        //                         }
+        //                     }
+        //
+        //                 }
+        //             }
+        //             if(find){
+        //                 break;
+        //             }
+        //         }
+        //
+        //     }
+        // }
+        // else{
+        //     this.$refs.tree1.setCurrentKey(2);
+        //     //展开分类树第一层
+        //     $(".el-tree-node__expand-icon").eq(0).click();
+        //     $(".el-tree-node__expand-icon").eq(1).click();
+        // }
         if(page!=null){
             this.pageOption.currentPage=page;
         }
@@ -1126,11 +872,6 @@ new Vue({
             }
         });
 
-        if(document.cookie.indexOf("modelRep=1")==-1){
-            this.showDriver();
-            var t=new Date(new Date().getTime()+1000*60*60*24*60);
-            document.cookie="modelRep=1; expires="+t.toGMTString();
-        }
-
+        this.showDriver();
     }
 })

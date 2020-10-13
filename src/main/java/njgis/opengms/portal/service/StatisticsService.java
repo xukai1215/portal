@@ -105,7 +105,7 @@ public class StatisticsService {
         lineChart.setTypes(new String[]{"View Times","Invoke Times"});
         lineChart.setData(counts);
         lineChart.setValXis(dates);
-        lineChart.setTitle("View and Invoke Times in the Latest Quarter (UTC +08:00)");
+        lineChart.setTitle("View and Invoke Times in the latest Quarter (UTC +08:00)");
         lineChart.setSubTitle("");
 
 
@@ -127,7 +127,7 @@ public class StatisticsService {
         JSONArray hourView = statistics.getJSONArray("hourView");
 
         ChartOption chartOption = new ChartOption();
-        chartOption.setTitle("View and Invoke Times at Different Hours in the Latest Quarter (UTC +08:00)");
+        chartOption.setTitle("View and Invoke Times at Different Hours in the latest Quarter (UTC +08:00)");
         chartOption.setSubTitle("");
         chartOption.setTitlePosition("center");
 

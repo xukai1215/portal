@@ -7,6 +7,7 @@ import njgis.opengms.portal.AbstractTask.AsyncTask;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dao.ComputableModelDao;
 import njgis.opengms.portal.dao.DataItemDao;
+import njgis.opengms.portal.dao.IntegratedTaskDao;
 import njgis.opengms.portal.dao.TaskDao;
 import njgis.opengms.portal.dao.UserDao;
 import njgis.opengms.portal.dto.task.ResultDataDTO;
@@ -16,6 +17,7 @@ import njgis.opengms.portal.entity.ComputableModel;
 import njgis.opengms.portal.entity.DataItem;
 import njgis.opengms.portal.entity.Task;
 import njgis.opengms.portal.entity.User;
+import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.entity.intergrate.Model;
 import njgis.opengms.portal.entity.support.*;
 import njgis.opengms.portal.utils.MyHttpUtils;
@@ -69,6 +71,9 @@ public class TaskService {
 
     @Autowired
     DataItemDao dataItemDao;
+
+    @Autowired
+    IntegratedTaskDao integratedTaskDao;
 
     @Value("${managerServerIpAndPort}")
     private String managerServer;
@@ -956,6 +961,110 @@ public class TaskService {
 
         taskDao.save(task);
         return "suc";
+    }
+
+    public String saveIntegratedTask( String xml, String mxgraph, List<Map<String,String>> models,
+                                      List<ModelAction> modelActions,String userName,String taskName,String description){
+        IntegratedTask integratedTask = new IntegratedTask();
+
+        integratedTask.setOid(UUID.randomUUID().toString());
+        integratedTask.setModels(models);
+        integratedTask.setModelActions(modelActions);
+        integratedTask.setXml(xml);
+        integratedTask.setMxGraph(mxgraph);
+        integratedTask.setStatus(0);
+        integratedTask.setIntegrate(true);
+        integratedTask.setUserId(userName);
+        integratedTask.setTaskName(taskName);
+        integratedTask.setDescription(description);
+        Date now = new Date();
+        if(integratedTask.getCreateTime()==null){
+            integratedTask.setCreateTime(now);
+        }
+        integratedTask.setLastModifiedTime(now);
+
+        return integratedTaskDao.save(integratedTask).getOid();
+
+    }
+
+    public String updateIntegrateTaskId(String taskOid, String taskId){
+        IntegratedTask integratedTask = integratedTaskDao.findByOid(taskOid);
+
+        integratedTask.setTaskId(taskId);
+        integratedTaskDao.save(integratedTask);
+        return taskId;
+    }
+
+    public String updateIntegratedTaskStatus(String taskId, int status, List<ModelAction> finishedModelActions,List<ModelAction> failedModelActions ){
+        IntegratedTask integratedTask = integratedTaskDao.findByTaskId(taskId);
+
+        integratedTask.setStatus(status);
+
+        List<ModelAction> modelActionList = integratedTask.getModelActions();
+
+        for(ModelAction modelAction:modelActionList){
+            for(ModelAction finishedModelAction:finishedModelActions){
+                if(modelAction.getFrontId().equals(finishedModelAction.getFrontId())){
+                    modelAction.setStatus(finishedModelAction.getStatus());
+                    modelAction.setTaskIpAndPort(finishedModelAction.getTaskIpAndPort());
+                    modelAction.setTaskIp(finishedModelAction.getTaskIp());
+                    for(Map<String,String> output:modelAction.getOutputEvents()){
+                        for(Map<String,String> newOutput:finishedModelAction.getOutputEvents()){
+                            output.put("value",newOutput.get("value"));
+                        }
+                    }
+                }
+            }
+            for(ModelAction failedModelAction:failedModelActions){
+                if(modelAction.getFrontId().equals(failedModelAction.getFrontId())){
+                    modelAction.setStatus(-1);
+                }
+            }
+        }
+
+        return integratedTaskDao.save(integratedTask).getOid();
+    }
+
+    public List<IntegratedTask> getIntegrateTaskByUser(String userName){
+        return integratedTaskDao.findByUserIdAndIntegrate(userName, true);
+    }
+
+    public String updateIntegrateTaskName(String taskOid,String taskName) {
+        IntegratedTask integratedTask = integratedTaskDao.findByOid(taskOid);
+
+        integratedTask.setTaskName(taskName);
+        integratedTaskDao.save(integratedTask);
+        return taskName;
+    }
+
+    public String updateIntegrateTaskDescription(String taskOid,String taskDescription) {
+        IntegratedTask integratedTask = integratedTaskDao.findByOid(taskOid);
+
+        integratedTask.setDescription(taskDescription);
+        integratedTaskDao.save(integratedTask);
+        return taskDescription;
+    }
+
+    public JSONObject PageIntegrateTaskByUser(String userName, int pageNum, int pageSize, int asc, String sortElement){
+        Sort sort = new Sort(asc==1? Sort.Direction.ASC:Sort.Direction.DESC,sortElement);
+        Pageable pageable = PageRequest.of(pageNum,pageSize,sort);
+        Page<IntegratedTask> integratedTaskPage = integratedTaskDao.findByUserIdAndIntegrate(userName,true,pageable);
+
+        JSONObject result = new JSONObject();
+        result.put("total",integratedTaskPage.getTotalElements());
+        result.put("content",integratedTaskPage.getContent());
+
+        return result;
+    }
+
+    public int deleteIntegratedTask(String oid){
+        IntegratedTask integratedTask = integratedTaskDao.findByOid(oid);
+        if (integratedTask != null) {
+            integratedTaskDao.delete(integratedTask);
+            return 1;
+        } else {
+            return -1;
+        }
     }
 
     public int delete(String oid, String userName) {

@@ -50,11 +50,11 @@ public class SpatialService {
         Pageable pageable = PageRequest.of(page, pageSize, sort);
 
         Page<SpatialResultDTO> spatials = Page.empty();
-//        if(loadUser == null||!loadUser.equals(oid)) {
+        if(loadUser == null||!loadUser.equals(oid)) {
             spatials = spatialReferenceDao.findByAuthor(uid, pageable);
-//        }else{
-//            spatials = spatialReferenceDao.findByAuthor(uid, pageable);
-//        }
+        }else{
+            spatials = spatialReferenceDao.findByAuthor(uid, pageable);
+        }
 
         JSONObject SpatialObject = new JSONObject();
         SpatialObject.put("count", spatials.getTotalElements());
@@ -77,11 +77,11 @@ public class SpatialService {
 
         Page<SpatialResultDTO> conceptResultDTOPage = Page.empty();
 
-//        if(loadUser==null||!loadUser.equals(oid)) {
+        if(loadUser==null||!loadUser.equals(oid)) {
             conceptResultDTOPage = spatialReferenceDao.findByNameContainsIgnoreCaseAndAuthorAndStatusIn(name, userName,itemStatusVisible, pageable);
-//        }else{
-//            conceptResultDTOPage = spatialReferenceDao.findByNameContainsIgnoreCaseAndAuthor(name, userName, pageable);
-//        }
+        }else{
+            conceptResultDTOPage = spatialReferenceDao.findByNameContainsIgnoreCaseAndAuthor(name, userName, pageable);
+        }
         JSONObject result=new JSONObject();
         result.put("list",conceptResultDTOPage.getContent());
         result.put("total",conceptResultDTOPage.getTotalElements());

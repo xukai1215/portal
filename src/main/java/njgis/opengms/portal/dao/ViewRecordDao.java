@@ -10,8 +10,6 @@ import java.util.List;
 
 public interface ViewRecordDao extends MongoRepository<ViewRecord,String> {
 
-    List<ViewRecord> findAllByItemType(ItemTypeEnum itemTypeEnum);
-
     List<ViewRecord> findAllByItemTypeAndItemOid(String type,String oid);
 
     List<ViewRecord> findAllByItemTypeAndItemOidAndDateGreaterThanEqual(String type,String oid,Date date);

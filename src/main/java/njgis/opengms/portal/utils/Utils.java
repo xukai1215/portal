@@ -24,7 +24,6 @@ import java.net.URL;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.security.MessageDigest;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -76,10 +75,6 @@ public class Utils {
                             break;
                         case "Congo (Democratic Republic of the)":
                             countryName="Congo";
-                            break;
-                        case "Russian Federation":
-                            countryName="Russian";
-                            break;
                         default:
                             break;
                     }
@@ -167,26 +162,6 @@ public class Utils {
         }
 
     }
-
-    public static int caculateTotalTime(String startTime,String endTime) {
-        SimpleDateFormat formatter =   new SimpleDateFormat( "yyyy-MM-dd");
-        Date date1=null;
-        Date date = null;
-        Long l = 0L;
-        try {
-            date = formatter.parse(startTime);
-            long ts = date.getTime();
-            date1 =  formatter.parse(endTime);
-            long ts1 = date1.getTime();
-
-            l = (ts - ts1) / (1000 * 60 * 60 * 24);
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return l.intValue();
-    }
-
 
     public static JSONObject postJSON(String urlStr, JSONObject jsonParam) {
         try {

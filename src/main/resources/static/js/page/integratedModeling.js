@@ -11,10 +11,18 @@ var vue = new Vue({
         executeDisabled: true,
 
         taskName: "IntegratedModeling",
+        taskDescription: "IntegratedModeling",
+        taskNameEditing:false,
+        taskDescriptionEditing:false,
+
         modelRunType:"common",
         activeName: "",
         formData: new FormData(),
+        currentTaskOid:'',
+        currentTaskId:'',
+        currentTask:{
 
+        },
         currentEvent: {},
         iframeWindow: {},
 
@@ -32,8 +40,44 @@ var vue = new Vue({
 
         modelConfigurationVisible:false,
 
+        modelActionDescriprion:'',
         modelRunTimes:1,
+
+        savedXML:'',
+        savedModelActions:[],
+        savedModels:[],
+
+        integratedTaskList:[],
+
+        taskInfoVisible:false,
+        checkTask:{},
+
+        pageOption: {
+            paginationShow:false,
+            progressBar: true,
+            sortAsc: false,
+            currentPage: 1,
+            pageSize: 10,
+
+            total: 11,
+            searchResult: [],
+        },
+
+        inSearch:0,
+
+        taskConfigStatus:1,
+
+        activeTask:'currentTask',
     },
+
+    computed:{
+        checkTaskStatus(){
+            if(this.checkTask.taskId==null){
+                return 'Editing'
+            }
+        },
+    },
+
     methods: {
         checkMutiFlow(data){//判断是否有输入是其他模型的多输出
             for(let i=0;i<this.modelActions.length;i++){
@@ -68,13 +112,13 @@ var vue = new Vue({
             var modelEditor = $("#ModelEditor")[0].contentWindow;
 
             for(let model of this.checkModelList){
-                this.checkModelAction(model,this.modelActions)
+                let modelAction = this.checkModelAction(model,this.modelActions)
                 this.addModelList(model,this.models)
+                modelEditor.ui.sidebar.addModelToGraph(modelAction)//把这个模型action加入画布
             }
 
-            modelEditor.ui.sidebar.addModelToGraph(this.checkModelList)
 
-            this.modelActions = this.modelActions.concat(this.checkModelList)
+
             clearSelection();
             this.chooseModelVisible = false
         },
@@ -82,25 +126,38 @@ var vue = new Vue({
         addModelList(model,modelList){
             for(let ele of modelList){
                 if(ele.md5 === model.md5){
+                    ele.actionNum++
                     return
                 }
             }
+            model.actionNum=1
             modelList.push(model)
         },
 
-        checkModelAction(model,modelActionList){//可能会加入两个md5值一样的模型，加入标识码在前端区分
-            model.frontId=this.generateGUID()
-            model.iterationNum=1//迭代次数,默认为1
-            model.order=modelActionList.length
+        checkModelAction(model,modelActionList){//根据加入的model生成modelAction，并加入modelActionList
+            let modelAction = {}
+
+            modelAction.frontId=this.generateGUID()//可能会加入两个md5值一样的模型，加入标识码在前端区分
+            modelAction.iterationNum=1//迭代次数,默认为1
+            modelAction.order=modelActionList.length + 1
+            modelAction.description=''
+            modelAction.name=model.name
+            modelAction.modelName=model.name
+            modelAction.modelOid=model.oid
+            modelAction.md5 = model.md5
+
             for(let ele of modelActionList){//一样的模型order不同
-                if(model.md5===ele.md5){
-                    model.order=ele.order+1
+                if(modelAction.md5===ele.md5){
+                    modelAction.order=ele.order+1
                 }
             }
-            this.extractEvents(model)
+            this.extractEvents(model,modelAction)//拼接好input和output
+
+            modelActionList.push(modelAction)
+            return modelAction
         },
 
-        extractEvents(model){
+        extractEvents(model,modelAction){
             var inputEvents = [];
             var outputEvents = [];
             var states = model.mdlJson.mdl.states;
@@ -117,22 +174,26 @@ var vue = new Vue({
                 }
             }
 
-            model.inputEvents = inputEvents;
-            model.outputEvents = outputEvents;
+            modelAction.inputEvents = inputEvents;
+            modelAction.outputEvents = outputEvents;
         },
 
         deleteModel(frontId,md5){
-            for(let i=this.modelActions.length-1;i>=0;i--){//从尾部开始寻找，在目标之后的模型任务order都要-1
+            for(let i=this.modelActions.length-1;i>=0;i--){//从尾部开始寻找，在目标之后的模型任务step都要-1
                 if(this.modelActions[i].md5===md5&&this.modelActions[i].frontId === frontId){
                     this.modelActions.splice(i,1)
                     break
                 }else{
-                    this.modelActions[i].order--
+                    this.modelActions[i].step--
                 }
             }
-            for(let i=this.models.length-1;i>=0;i--){//从尾部开始寻找，在目标之后的模型任务order都要-1
+            for(let i=this.models.length-1;i>=0;i--){//从尾部开始寻找，如果该模型对应的action只有一个则删除
                 if(this.models[i].md5===md5){
-                    this.models.splice(i,1)
+                    if(this.models[i].actionNum>1){
+                        this.models[i].actionNum--
+                    }else{
+                        this.models.splice(i,1)
+                    }
                     break
                 }
             }
@@ -143,12 +204,19 @@ var vue = new Vue({
             this.modelRunTimes = modelAction.iterationNum==1?1:modelAction.iterationNum
             this.modelRunType = this.modelRunTimes>1?'iterative':'common'
             this.configModelAction = modelAction
+            this.modelActionDescriprion = modelAction.description
         },
 
         modelConfigurationConfirm(){
             this.configModelAction.iterationNum = this.modelRunTimes
+            this.configModelAction.description = this.modelActionDescriprion
             this.modelRunType = this.modelRunTimes>1?'iterative':'common'
             this.modelConfigurationVisible = false
+        },
+
+        modelConfigurationCancel(){
+            this.modelActionDescriprion = ''
+            this.modelRunType = 'common'
         },
 
         mxModelToModel(mxModel,model){//mxgraph中的model的关键值赋值给vue页面中的
@@ -300,13 +368,13 @@ var vue = new Vue({
         //                     "\t\t\t<InputData>\n";
         //                 for (var j = 0; j < this.modelActions[i].inputEvents.length; j++) {
         //                     if (this.modelActions[i].inputEvents[j].value != "") {
-        //                         xml += "\t\t\t\t<DataTemplate state='" + this.modelActions[i].inputEvents[j].state + "' event='" + this.modelActions[i].inputEvents[j].event + "' value='" + this.modelActions[i].inputEvents[j].value + "' dataId='" + this.modelActions[i].inputEvents[j].dataId + "' type='" + this.modelActions[i].inputEvents[j].type + "'/>\n";
+        //                         xml += "\t\t\t\t<DataConfiguration state='" + this.modelActions[i].inputEvents[j].state + "' event='" + this.modelActions[i].inputEvents[j].event + "' value='" + this.modelActions[i].inputEvents[j].value + "' dataId='" + this.modelActions[i].inputEvents[j].dataId + "' type='" + this.modelActions[i].inputEvents[j].type + "'/>\n";
         //                     }
         //                 }
         //                 xml += "\t\t\t</InputData>\n" +
         //                     "\t\t\t<OutputData>\n";
         //                 for (var k = 0; k < this.modelActions[i].outputEvents.length; k++) {
-        //                     xml += "\t\t\t\t<DataTemplate state='" + this.modelActions[i].outputEvents[k].state + "' event='" + this.modelActions[i].outputEvents[k].event + "' value='" + this.modelActions[i].outputEvents[k].value + "' dataId='" + this.modelActions[i].outputEvents[k].dataId + "' type='" + this.modelActions[i].outputEvents[k].type + "'/>\n";
+        //                     xml += "\t\t\t\t<DataConfiguration state='" + this.modelActions[i].outputEvents[k].state + "' event='" + this.modelActions[i].outputEvents[k].event + "' value='" + this.modelActions[i].outputEvents[k].value + "' dataId='" + this.modelActions[i].outputEvents[k].dataId + "' type='" + this.modelActions[i].outputEvents[k].type + "'/>\n";
         //                 }
         //                 xml += "\t\t\t</OutputData>\n" +
         //                     "\t\t</Model>\n";
@@ -455,6 +523,52 @@ var vue = new Vue({
             }
         },
 
+        editTaskNameClick(){
+            this.taskNameEditing = true
+            this.taskName = this.checkTask.taskName
+        },
+
+        editTaskDescriptionClick(){
+            this.taskDescriptionEditing = true
+            this.taskDescription = this.checkTask.description
+        },
+
+        editTaskNameComfirm() {
+            $.ajax({
+                url: "/task/updateIntegrateTaskName",
+                async: true,
+                data: {
+                    taskOid: this.checkTask.oid,
+                    taskName: this.taskName,
+                },
+                type: "POST",
+                success: (res) => {
+                    this.checkTask.taskName = res.data
+                }
+            })
+
+
+            this.taskNameEditing = false
+        },
+
+        editTaskDescriptionComfirm() {
+            $.ajax({
+                url: "/task/updateIntegrateTaskDescription",
+                async: true,
+                data: {
+                    taskOid: this.checkTask.oid,
+                    taskDescription: this.taskDescription,
+                },
+                type: "POST",
+                success: (res) => {
+                    this.checkTask.description = res.data
+                }
+
+            })
+
+            this.taskDescriptionEditing = false
+        },
+
         executeNew() {
             this.executeVisible = false;
 
@@ -464,7 +578,7 @@ var vue = new Vue({
             });
 
             var xml = "";
-            var uid = this.generateGUID();
+
             var name = this.taskName;
             var version = "1.0";
 
@@ -473,73 +587,79 @@ var vue = new Vue({
 
             let dataLinks=[]
 
-            //先把models标签拼好
-            xml += "<TaskConfiguration uid='" + uid + "' name='" + name + "' version='" + version + "'>\n"
-            if(this.models.length>0){
-                xml += "\t<Models>\n";
-                for (let i = 0; i < this.models.length; i++) {
-                    xml += "\t\t<Model name='" +this.models[i].name + "' pid='" + this.models[i].md5 + "' description='" + this.models[i].description + "'/>\n";
-                }
-                xml += "\t</Models>\n";
-            }
+            let mxgraph = this.iframeWindow.getCXml();
 
-            //modelAction标签
-            xml += "\t<ModelActions>\n";
-            for (let i = 0; i < this.modelActions.length; i++) {
-                xml += "\t\t<ModelAction id='" + this.modelActions[i].frontId + "' modelName='" + this.modelActions[i].name + "' modelId='" + this.modelActions[i].md5 + "' order='" + this.modelActions[i].order + "' iterationNum='" + this.modelActions[i].iterationNum + "'>\n" +
-                    "\t\t\t<InputData>\n";
-                for (let j = 0; j < this.modelActions[i].inputEvents.length; j++) {
-                    if ((this.modelActions[i].inputEvents[j].value != ""&&this.modelActions[i].inputEvents[j].value != undefined)
-                        ||(this.modelActions[i].inputEvents[j].link != ""&&this.modelActions[i].inputEvents[j].link != undefined)) {
-                        xml += "\t\t\t\t<DataTemplate state='" + this.modelActions[i].inputEvents[j].stateName + "' event='" + this.modelActions[i].inputEvents[j].eventName + "' value='" + this.modelActions[i].inputEvents[j].value
-                            + "' link='" + this.modelActions[i].inputEvents[j].link + "' dataId='" + this.modelActions[i].inputEvents[j].eventId + "' type='" + this.modelActions[i].inputEvents[j].type + "'/>\n";
-                        if(this.modelActions[i].inputEvents[j].link != ""&&this.modelActions[i].inputEvents[j].link != undefined){
-                            let fromAction = this.findTargetByOutputId(this.modelActions,this.modelActions[i].inputEvents[j].link)
-                            let dataLink = {
-                                from:fromAction.frontId,
-                                to:this.modelActions[i].frontId,
-                                inputEvent:this.modelActions[i].inputEvents[j].eventId,
-                                outputEvent:this.modelActions[i].inputEvents[j].link
-                            }  //to
-                            dataLinks.push(dataLink)
-                        }
-
-                    }else{
-                        this.$alert('Please check input of the model action '+this.modelActions[i].name)
-                        return;
+            // if(this.models===this.savedModels&&this.modelActions===this.savedModelActions){
+            //     xml = this.savedXML
+            // } else {
+                var uid = this.generateGUID();
+                //先把models标签拼好
+                xml += "<TaskConfiguration uid='" + uid + "' name='" + name + "' version='" + version + "'>\n"
+                if(this.models.length>0){
+                    xml += "\t<Models>\n";
+                    for (let i = 0; i < this.models.length; i++) {
+                        xml += "\t\t<Model name='" +this.models[i].name + "' pid='" + this.models[i].md5 + "' description='" + this.models[i].description + "'/>\n";
                     }
+                    xml += "\t</Models>\n";
                 }
-                xml += "\t\t\t</InputData>\n" +
-                    "\t\t\t<OutputData>\n";
-                for (var k = 0; k < this.modelActions[i].outputEvents.length; k++) {
-                    this.modelActions[i].outputEvents[k].url=''
-                    xml += "\t\t\t\t<DataTemplate state='" + this.modelActions[i].outputEvents[k].stateName + "' event='" + this.modelActions[i].outputEvents[k].eventName + "' value='" + this.modelActions[i].outputEvents[k].value
-                        + "' dataId='" + this.modelActions[i].outputEvents[k].eventId + "' type='" + this.modelActions[i].outputEvents[k].type + "'/>\n";
+
+                //modelAction标签
+                xml += "\t<ModelActions>\n";
+                for (let i = 0; i < this.modelActions.length; i++) {
+                    xml += "\t\t<ModelAction id='" + this.modelActions[i].frontId + "' model='" + this.modelActions[i].md5 + "' step ='" + this.modelActions[i].step + "' iterationNum='" + this.modelActions[i].iterationNum + "'>\n" +
+                        "\t\t\t<Inputs>\n";
+                    for (let j = 0; j < this.modelActions[i].inputEvents.length; j++) {
+                        if ((this.modelActions[i].inputEvents[j].value != ""&&this.modelActions[i].inputEvents[j].value != undefined)
+                            ||(this.modelActions[i].inputEvents[j].link != ""&&this.modelActions[i].inputEvents[j].link != undefined)) {
+                            xml += "\t\t\t\t<DataConfiguration state='" + this.modelActions[i].inputEvents[j].stateName + "' event='" + this.modelActions[i].inputEvents[j].eventName + "' value='" + this.modelActions[i].inputEvents[j].value
+                                + "' link='" + this.modelActions[i].inputEvents[j].link + "' dataId='" + this.modelActions[i].inputEvents[j].eventId + "' type='" + this.modelActions[i].inputEvents[j].type + "'/>\n";
+                            if(this.modelActions[i].inputEvents[j].link != ""&&this.modelActions[i].inputEvents[j].link != undefined){
+                                // let fromAction = this.findTargetByOutputId(this.modelActions,this.modelActions[i].inputEvents[j].link)
+                                let dataLink = {
+                                    inputEvent:this.modelActions[i].inputEvents[j].eventId,
+                                    outputEvent:this.modelActions[i].inputEvents[j].link
+                                }  //to
+                                dataLinks.push(dataLink)
+                            }
+
+                        }else{
+                            this.$alert('Please check input of the model action '+this.modelActions[i].name)
+                            return;
+                        }
+                    }
+                    xml += "\t\t\t</Inputs>\n" +
+                        "\t\t\t<Outputs>\n";
+                    for (var k = 0; k < this.modelActions[i].outputEvents.length; k++) {
+                        this.modelActions[i].outputEvents[k].url=''
+                        xml += "\t\t\t\t<DataConfiguration state='" + this.modelActions[i].outputEvents[k].stateName + "' event='" + this.modelActions[i].outputEvents[k].eventName + "' value='" + this.modelActions[i].outputEvents[k].value
+                            + "' dataId='" + this.modelActions[i].outputEvents[k].eventId + "' type='" + this.modelActions[i].outputEvents[k].type + "'/>\n";
+                    }
+                    xml += "\t\t\t</Outputs>\n" +
+                        "\t\t</ModelAction>\n";
                 }
-                xml += "\t\t\t</OutputData>\n" +
-                    "\t\t</ModelAction>\n";
-            }
-            xml += "\t</ModelActions>\n";
+                xml += "\t</ModelActions>\n";
 
-            if(dataLinks.length>0){
-                xml += "\t<DataLinks>\n";
-                for(let ele of dataLinks){
-                    xml += "\t\t<DataLink from='" + ele.from + "' to='" + ele.to + "'>\n"
-                    xml += "\t\t\t<InputEvent dataId='" + ele.inputEvent + "'/>\n"
-                    xml += "\t\t\t<OutputEvent dataId='" + ele.outputEvent + "'/>\n"
-                    xml += "\t\t</DataLink>\n"
+                if(dataLinks.length>0){
+                    xml += "\t<DataLinks>\n";
+                    for(let ele of dataLinks){
+                        xml += "\t\t<DataLink from='" + ele.inputEvent + "' to='" + ele.outputEvent + "'>\n"
+                        xml += "\t\t</DataLink>\n"
+                    }
+                    xml += "\t</DataLinks>\n";
+
                 }
-                xml += "\t</DataLinks>\n";
 
-            }
+                xml += "</TaskConfiguration>";
 
-            xml += "</TaskConfiguration>";
+                console.log(xml);
 
-            console.log(xml);
 
+            // }
+            this.saveIntegratedTask(xml,mxgraph,this.models,this.modelActions)
             let file = new File([xml], name + '.xml', {
                 type: 'text/xml',
             });
+
 
 
             var formData = new FormData();
@@ -556,6 +676,7 @@ var vue = new Vue({
                 contentType: false,
                 success: (result) => {
                     var taskId = result.data;
+                    this.updateTaskId(this.currentTaskOid,taskId)
 
                     let interval = setInterval(() => {
                        this.checkIntegratedTask(taskId,interval)
@@ -611,14 +732,10 @@ var vue = new Vue({
 
                         this.updataTaskoutput(taskInfo,doc)
 
-                        var xml = this.xml2String(doc);
-
                         this.iframeWindow.setCXml(xml);
 
-                        // Save
-                        this.saveIntegratedTask(taskId,xml)
-
                     }
+
                 }
             })
         },
@@ -713,17 +830,183 @@ var vue = new Vue({
             // this.iframeWindow.setNodeStyle('5cdd64e328e8a2097412d5f8',style['completed'])
         },
 
-        saveIntegratedTask(taskId,xml){
+        taskConfigure(index){
+            this.taskConfigStatus = index
+            this.executeVisible = true
+            this.taskName = 'IntegratedModeling'
+            this.taskDescription = 'IntegratedModeling'
+        },
+
+        saveIntegratedTaskClick(){
+            //先把models标签拼好
+
+            if(this.models.length<1){
+                this.$alert('Please select one model at least.',{
+                    confirmButtonText: 'OK',
+                })
+                return
+            }
+
+            var name = this.taskName;
+            var version = "1.0";
+            var uid = this.generateGUID();
+            let dataLinks=[]
+            let xml = ''
+            xml += "<TaskConfiguration uid='" + uid + "' name='" + name + "' version='" + version + "'>\n"
+            if(this.models.length>0){
+                xml += "\t<Models>\n";
+                for (let i = 0; i < this.models.length; i++) {
+                    xml += "\t\t<Model name='" +this.models[i].name + "' pid='" + this.models[i].md5 + "' description='" + this.models[i].description + "'/>\n";
+                }
+                xml += "\t</Models>\n";
+            }
+
+            //modelAction标签
+            xml += "\t<ModelActions>\n";
+            for (let i = 0; i < this.modelActions.length; i++) {
+                xml += "\t\t<ModelAction id='" + this.modelActions[i].frontId + "' model='" + this.modelActions[i].md5 + "' step='" + this.modelActions[i].step + "' iterationNum='" + this.modelActions[i].iterationNum + "'>\n" +
+                    "\t\t\t<Inputs>\n";
+                for (let j = 0; j < this.modelActions[i].inputEvents.length; j++) {
+                    if ((this.modelActions[i].inputEvents[j].value != ""&&this.modelActions[i].inputEvents[j].value != undefined)
+                        ||(this.modelActions[i].inputEvents[j].link != ""&&this.modelActions[i].inputEvents[j].link != undefined)) {
+                        xml += "\t\t\t\t<DataConfiguration state='" + this.modelActions[i].inputEvents[j].stateName + "' event='" + this.modelActions[i].inputEvents[j].eventName + "' value='" + this.modelActions[i].inputEvents[j].value
+                            + "' link='" + this.modelActions[i].inputEvents[j].link + "' dataId='" + this.modelActions[i].inputEvents[j].eventId + "' type='" + this.modelActions[i].inputEvents[j].type + "'/>\n";
+                        if(this.modelActions[i].inputEvents[j].link != ""&&this.modelActions[i].inputEvents[j].link != undefined){
+                            // let fromAction = this.findTargetByOutputId(this.modelActions,this.modelActions[i].inputEvents[j].link)
+                            let dataLink = {
+                                inputEvent:this.modelActions[i].inputEvents[j].eventId,
+                                outputEvent:this.modelActions[i].inputEvents[j].link
+                            }  //to
+                            dataLinks.push(dataLink)
+                        }
+
+                    }
+                }
+                xml += "\t\t\t</Inputs>\n" +
+                    "\t\t\t<Outputs>\n";
+                for (var k = 0; k < this.modelActions[i].outputEvents.length; k++) {
+                    this.modelActions[i].outputEvents[k].url=''
+                    xml += "\t\t\t\t<DataConfiguration state='" + this.modelActions[i].outputEvents[k].stateName + "' event='" + this.modelActions[i].outputEvents[k].eventName + "' value='" + this.modelActions[i].outputEvents[k].value
+                        + "' dataId='" + this.modelActions[i].outputEvents[k].eventId + "' type='" + this.modelActions[i].outputEvents[k].type + "'/>\n";
+                }
+                xml += "\t\t\t</Outputs>\n" +
+                    "\t\t</ModelAction>\n";
+            }
+            xml += "\t</ModelActions>\n";
+
+            if(dataLinks.length>0){
+                xml += "\t<DataLinks>\n";
+                for(let ele of dataLinks){
+                    xml += "\t\t<DataLink from='" + ele.inputEvent + "' to='" + ele.outputEvent + "'>\n"
+                    xml += "\t\t</DataLink>\n"
+                }
+                xml += "\t</DataLinks>\n";
+
+            }
+
+            xml += "</TaskConfiguration>";
+
+            let mxgraph = this.iframeWindow.getCXml();
+
+            this.saveIntegratedTask(xml,mxgraph,this.models,this.modelActions)
+        },
+
+        saveIntegratedTask(xml,mxgraph,models,modelActions){//保存一个集成模型配置
+            let addModels = []
+            let addModelActions = []
+
+            //拼接集成模型中的models部分
+            for(let model of models){
+                let addModel={
+                    name:model.name,
+                    oid:model.oid,
+                    md5:model.md5,
+                    description:model.description,
+                    author:model.author
+
+                }
+                addModels.push(addModel)
+            }
+
+            //拼接集成模型中的modelActions部分
+            for(let modelAction of modelActions){
+                let addModelAction={
+                    frontId:modelAction.frontId,
+                    modelOid:modelAction.modelOid,
+                    md5:modelAction.md5,
+                    name:modelAction.name,
+                    description:modelAction.description,
+                    outputEvents:[],
+                    inputEvents:[],
+                    step:modelAction.step,
+                    iterationNum:modelAction.iterationNum
+                }
+                for(let event of modelAction.outputEvents){
+                    addModelAction.outputEvents.push({
+                        eventDesc: event.eventDesc,
+                        eventId: event.eventId,
+                        eventName: event.eventName,
+                        eventType: event.eventType,
+                        optional: event.optional,
+                        stateName: event.stateName,
+                    })
+                }
+                for(let event of modelAction.inputEvents){
+                    addModelAction.inputEvents.push({
+                        eventDesc: event.eventDesc,
+                        eventId: event.eventId,
+                        eventName: event.eventName,
+                        eventType: event.eventType,
+                        optional: event.optional,
+                        stateName: event.stateName,
+                    })
+                }
+
+                addModelActions.push(addModelAction)
+            }
+
+            let data = {
+                xml: xml,
+                mxgraph:mxgraph,
+                models:addModels,
+                modelActions: addModelActions,
+                description: this.taskDescription,
+                taskName: this.taskName,
+            }
+
             $.ajax({
                 url: "/task/saveIntegratedTask",
                 async: true,
+                data: JSON.stringify(data),
+                // traditional:true,
+                contentType:'application/json',
+                type: "POST",
+                success: (result) => {
+                    this.currentTaskOid = result.data
+                    this.savedModelActions = this.modelActions
+                    this.savedModels = this.models
+                    this.savedXML = xml
+                    this.executeVisible = false
+                    this.activeTask = 'allTask'
+                    console.log(result);
+
+                    this.listIntegrateTask()
+                }
+
+            })
+        },
+
+        updateTaskId(taskOid,taskId){//把managerserver返回的taskid更新到门户数据库
+            $.ajax({
+                url: "/task/updateIntegrateTaskId",
+                async: true,
                 data: {
+                    taskOid:taskOid,
                     taskId: taskId,
-                    graphXml: xml,
-                    modelParams: this.modelParams,
                 },
                 type: "POST",
                 success: (result) => {
+                    this.currentTaskId = result.data
                     console.log(result);
                 }
 
@@ -737,6 +1020,22 @@ var vue = new Vue({
             if (true) {
                 this.executeDisabled = false;
             }
+        },
+
+        openModelPage(modelOid){
+            window.open('/computableModel/'+modelOid)
+        },
+
+        openModelContributer(modelOid){
+            axios.get("/computableModel/getUserOidByOid",{
+                params:{
+                    oid:modelOid
+                }
+            }).then(res => {
+                window.open('/user/'+res.data.data)
+                }
+
+            )
         },
 
         createAndUploadParamFile() {
@@ -801,7 +1100,6 @@ var vue = new Vue({
                     this.modelParams.push(modelPara);
                 }
             }
-
 
         },
 
@@ -886,11 +1184,13 @@ var vue = new Vue({
             var uuid = s.join("");
             return uuid;
         },
+
         string2XML(string) {
             let parser = new DOMParser();
             let xmlObject = parser.parseFromString(string, "text/xml");
             return xmlObject;
         },
+
         xml2String(xml) {
             return (new XMLSerializer()).serializeToString(xml);
         },
@@ -908,11 +1208,126 @@ var vue = new Vue({
         //     this.userDataSpaceVisible = false;
         // },
 
+
+        checkTaskInfo(task){
+            this.taskInfoVisible = true
+            this.checkTask = task
+        },
+
+        loadTask(task){
+            this.models = task.models
+            this.modelActions = task.modelActions
+            this.iframeWindow.setCXml(task.mxGraph);
+            this.taskInfoVisible = false
+        },
+
+        handlePageChange(val) {
+            this.pageOption.currentPage = val;
+
+            if(this.inSearch==0)
+                this.listIntegrateTask();
+            else
+                this.searchDeployedModel()
+        },
+
+        listIntegrateTask(){
+            axios.get("/task/pageIntegrateTaskByUser",{
+                    params:{
+                        asc:0,
+                        pageNum:this.pageOption.currentPage-1,
+                        pageSize:6,
+                        sortElement:'lastModifiedTime'
+                    }
+            }).then((res)=>{
+                if(res.data.code == -1){
+                    this.integratedTaskList = 'login'
+                }else{
+                    let data = res.data.data
+                    this.integratedTaskList = data.content
+                    this.pageOption.total = data.total;
+                }
+            })
+        },
+
+        deleteIntegrateTask(task){
+            const h = this.$createElement;
+            this.$msgbox({
+                title: ' ',
+                message: h('p', null, [
+                    h('span', {style: 'font-size:15px'}, 'All of the selected files will be deleted.'),
+                    h('br'),
+                    h('span', null, 'Are you sure to '),
+                    h('span', {style: 'color: #e6a23c;font-weight:600'}, 'continue'),
+                    h('span', null, '?'),
+                ]),
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'confirm',
+                cancelButtonText: 'cancel',
+                beforeClose: (action, instance, done) => {
+
+                    if (action === 'confirm') {
+                        instance.confirmButtonLoading = true;
+                        instance.confirmButtonText = 'deleting...';
+                        setTimeout(() => {
+                            axios.delete("/task/deleteIntegratedTask",{
+                                params:{
+                                    taskOid:task.oid
+                                }
+                            }).then((res)=>{
+                                    if(res.data.code == -1){
+                                        this.$alert('Please login first!',{
+                                            confirmButtonText:'confirm',
+                                            callback:action => {
+                                            }
+                                        })
+                                        window.location.href = "/user/login";
+                                    }
+
+                                    if(res.data.data==1){
+                                        this.$alert('Delete task successfully','success',{
+                                            confirmButtonText:'confirm',
+                                            callback:action => {
+                                            }
+                                        })
+                                    }else{
+                                        this.$alert('Cannot find this task','danger',{
+                                            confirmButtonText:'confirm',
+                                            callback:action => {
+                                            }
+                                        })
+                                    }
+                                    this.taskInfoVisible = false
+                                    this.listIntegrateTask()
+                                }
+
+                            )
+                            done();
+                            setTimeout(() => {
+                                instance.confirmButtonLoading = false;
+                            }, 300);
+                        }, 300);
+                    } else {
+                        done();
+                    }
+                }
+            }).then(action => {
+                // this.$message({
+                //     type: 'success',
+                //     message: 'delete successful '
+                // });
+            });
+
+
+
+        },
     },
 
     mounted() {
 
         this.iframeWindow = $("#ModelEditor")[0].contentWindow;
+
+        this.listIntegrateTask()
 
         //旧版本数据上传方式
         $("#uploadInputData").change(() => {
