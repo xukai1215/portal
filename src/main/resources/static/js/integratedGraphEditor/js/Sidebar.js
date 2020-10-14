@@ -3018,12 +3018,14 @@ Sidebar.prototype.addClickHandler = function (elt, ds, cells) {
     sb.currentElt = elt;
 
     if (graph.getSelectionModel().cells.length > 0) {
-      var event = graph.getSelectionModel().cells[0];
-      if (event.response == "1") {
+      var targetCell = graph.getSelectionModel().cells[0];
+      if (targetCell.response == "1") {//判断鼠标加入的cell是一个inputevent还是outputevent
         graph.insertEdge(parent, null, '', event, state, "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=2;strokeColor=#000066;");
 
-      } else if (event.response == "0") {
+      } else if (targetCell.response == "0") {
         graph.insertEdge(parent, null, '', state, event, "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=2;strokeColor=#000066;");
+
+      } else if (targetCell.md5 != ''){
 
       }
     }
