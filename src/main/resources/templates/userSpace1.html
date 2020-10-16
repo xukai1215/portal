@@ -66,9 +66,7 @@
     <script src="/static/js/common/bootstrap-tagsinput.js"></script>
     <script type="text/javascript" src="/static/data-tables/jquery.dataTables.js"></script>
 
-    <script >
-        var websocketAddress = "ws://"+window.location.host+"/websocket";
-    </script>
+
     <script src="/static/js/common/clipboard.min.js"></script>
 
     <script src="/static/js/common/vue.min.js"></script>
@@ -77,6 +75,11 @@
     <script src="/static/js/common/vue-cropper.min.js"></script>
     <script src="/static/element-ui/index.js"></script>
     <script src="/static/element-ui/umd/locale/en.js"></script>
+    <script src="/static/js/common/echarts.min.js"></script>
+    <script >
+        // ELEMENT.locale(ELEMENT.lang.en);
+        var websocketAddress = "ws://"+window.location.host+"/websocket";
+    </script>
     <style>
         .el-table .readed {
             background: #ffffff;
@@ -86,7 +89,42 @@
             background: #f5f5dc;
         }
 
-
+        .localization .el-table td{
+              padding: 0;
+          }
+        .localization .el-table .cell{
+            padding: 0;
+        }
+        .localization .el-button{
+            padding-left:0;
+            padding-right:0;
+            border: none;
+            -webkit-border-radius: 0;
+            -moz-border-radius: 0;
+            border-radius: 0;
+        }
+        .localization .el-card{
+            box-shadow: none;
+            -webkit-box-shadow: none;
+        }
+        .localization .el-card__body{
+            padding: 0;
+        }
+        .localization .tox-tinymce{
+            border: none;
+        }
+        .el-popconfirm__action .el-button + .el-button{
+            margin-left: 10px;
+        }
+        .localization .el-tag{
+            height: auto;
+            line-height: 1.42857143;
+        }
+        .localizationSelected{
+            color: #409EFF;
+            border-color: #c6e2ff;
+            background-color: #ecf5ff;
+        }
     </style>
     <!--<script src="/static/js/page/user_space.js"></script>-->
 </head>

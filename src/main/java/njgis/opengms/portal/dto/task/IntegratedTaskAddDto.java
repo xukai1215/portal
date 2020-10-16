@@ -9,6 +9,7 @@ import java.util.Map;
 @Data
 public class IntegratedTaskAddDto {
 
+    String taskOid;
     String taskId;
     String taskName;
     String description;
@@ -21,3 +22,4 @@ public class IntegratedTaskAddDto {
     String mxgraph;
 
 }
+

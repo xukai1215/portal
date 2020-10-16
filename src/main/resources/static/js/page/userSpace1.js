@@ -299,21 +299,21 @@ var userspace = new Vue(
             // websocket
             initWebSkt:function () {
 
-                if ('WebSocket' in window) {
-                    // this.userspaceSocket = new WebSocket("ws://localhost:8080/websocket");
-                    this.userspaceSocket = new WebSocket(websocketAddress)
-                    // 监听socket连接
-                    this.userspaceSocket.onopen = this.open
-                    // 监听socket错误信息
-                    this.userspaceSocket.onerror = this.error
-                    // 监听socket消息
-                    this.userspaceSocket.onmessage = this.getMessage
-
-                }
-                else {
-                    // alert('当前浏览器 Not support websocket');
-                    console.log("websocket 无法连接");
-                }
+                // if ('WebSocket' in window) {
+                //     // this.userspaceSocket = new WebSocket("ws://localhost:8080/websocket");
+                //     this.userspaceSocket = new WebSocket(websocketAddress)
+                //     // 监听socket连接
+                //     this.userspaceSocket.onopen = this.open
+                //     // 监听socket错误信息
+                //     this.userspaceSocket.onerror = this.error
+                //     // 监听socket消息
+                //     this.userspaceSocket.onmessage = this.getMessage
+                //
+                // }
+                // else {
+                //     // alert('当前浏览器 Not support websocket');
+                //     console.log("websocket 无法连接");
+                // }
             },
 
             open: function () {
@@ -442,8 +442,13 @@ var userspace = new Vue(
                         // console.log(data);
 
                         if (data.oid == "") {
-                            alert("Please login");
-                            window.location.href = "/user/login";
+                            this.$alert('Please login first!', 'Error', {
+                                type:'error',
+                                confirmButtonText: 'OK',
+                                callback: action => {
+                                    window.location.href = "/user/login";
+                                }
+                            });
                         } else {
                             this.userId = data.oid;
                             this.userName = data.name;

@@ -115,7 +115,7 @@
                                 <!--                        model item-->
                             </router-view>
                             <!--                        <model-item :searchResultRaw="searchResult"></model-item>-->
-                            <h4 style="margin:80px auto;color: #666666" v-if="searchResult.length==0&&!await ">No Result Found ...</h4>
+                            <h4 style="margin:80px auto;color: #666666" v-if="searchResult.length==0&&!await">No Result Found ...</h4>
                             <!--                        页码-->
                             <nav v-if="searchResult.length>0&&!await" class="flexCenter" style="width: 100%;position: relative"  aria-label="Page navigation example">
                                 <div class="flexCenter totalContainer">
@@ -157,18 +157,19 @@
 
                 </div>
             </div>
+
         </template>
 
 
-            <!--        </div>-->
-
-
-        </div>
     </div>
+
+
 </div>
 <!--子组件-->
 <template id="modelItemShow" th:fragment="modelItemShow">
+
     <div class="" style="width: 100%;">
+
         <div v-for="(modelItem,index) in searchResultRaw" :key="index"
              class="contentCard_w100 flexCol flexColCenter">
             <div class="content_h32 flexRow noPadding">
@@ -186,7 +187,7 @@
                         <i v-if="modelItem.status=='Discoverable'" class="el-icon-unlock discoverable fontsize-20 pull-right"></i>
                         <i v-if="modelItem.status=='Private'" class="el-icon-lock private fontsize-20 pull-right"></i>
                     </el-tooltip>
-                    <div v-if="getType()=='computablemodel'" class="lineButton flexJustStart flexColCenter" @click="statistics(modelItem.oid)">
+                    <div v-if="getType()=='computablemodel'||getType()=='modelitem'" class="lineButton flexJustStart flexColCenter" @click="statistics(modelItem.oid,modelItem.name)">
                         <i class="el-icon-data-analysis" style="margin-right: 5px;font-size: 20px"></i>
                         <!--<div class="lineButton flexCol">-->
                             <!--<p style="margin-block-end: 0">Statistics</p>-->
@@ -233,6 +234,19 @@
                 </div>
             </div>
         </div>
+        <el-dialog
+                :title="chartDialogTitle"
+                :visible.sync="chartDialogVisible"
+                @opened="modelStats"
+                :modal="true"
+                :modal-append-to-body="false"
+                :append-to-body="true"
+                :destroy-on-close="true"
+
+                width="50%"
+                style="z-index: 3000;">
+            <div id="chart" style="height: 200px"></div>
+        </el-dialog>
     </div>
 
 </template>

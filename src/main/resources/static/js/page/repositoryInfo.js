@@ -315,6 +315,11 @@ new Vue({
         }],
     },
     methods: {
+        getLanguageList(){
+            $.get("/static/languageList.json").success((content)=>{
+                this.languageList = content;
+            })
+        },
         submitLocalization(){
             let hrefs = window.location.href.split('/');
             let type = hrefs[hrefs.length - 2];

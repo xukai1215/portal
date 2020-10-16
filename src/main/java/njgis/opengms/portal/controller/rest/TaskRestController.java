@@ -309,40 +309,18 @@ public class TaskRestController {
     @RequestMapping(value="/checkIntegratedTask/{taskId}", method = RequestMethod.GET)
     JsonResult checkIntegratedTask(@PathVariable("taskId") String taskId,HttpServletRequest request){
 
-        RestTemplate restTemplate=new RestTemplate();
-        String url="http://" + managerServerIpAndPort + "/GeoModeling/task/checkTaskStatus?taskId={taskId}";//远程接口
-        Map<String, String> params = new HashMap<>();
-        params.put("taskId", taskId);
-        ResponseEntity<JSONObject> responseEntity=restTemplate.getForEntity(url,JSONObject.class,params);
-        if (responseEntity.getStatusCode()!=HttpStatus.OK){
-            throw new MyException("远程服务出错");
-        }
-        else {
-            Task task=taskService.findByTaskId(taskId);
-            JSONObject data = responseEntity.getBody().getJSONObject("data");
-            int status = data.getInteger("status");
-            JSONObject taskInfo = data.getJSONObject("taskInfo");
-            switch (status){
-                case 0:
-                    break;
-                case -1:
-                    task.setStatus(-1);
-                    taskService.save(task);
-                    break;
-                case 1:
-                    task.setStatus(2);
-                    task.setModels(taskInfo.getJSONArray("models").toJavaList(Model.class));
-                    taskService.save(task);
-                    break;
-            }
-            return ResultUtils.success(data);
-        }
+        return ResultUtils.success(taskService.checkIntegratedTask(taskId));
     }
 
     @RequestMapping(value = "/updateIntegrateTaskId", method = RequestMethod.POST)//把managerserver返回的taskid更新到门户数据库
     JsonResult updateIntegrateTaskId(@RequestParam("taskOid") String taskOid,
                                      @RequestParam("taskId") String taskId){
         return ResultUtils.success(taskService.updateIntegrateTaskId(taskOid,taskId));
+    }
+
+    @RequestMapping(value = "/getIntegrateTaskByOid", method = RequestMethod.GET)
+    JsonResult getIntegrateTaskByOid(@RequestParam("taskOid") String taskOid){
+        return ResultUtils.success(taskService.getIntegratedTaskByOid(taskOid));
     }
 
     @RequestMapping(value = "/saveIntegratedTask", method = RequestMethod.POST)
@@ -364,6 +342,29 @@ public class TaskRestController {
             return ResultUtils.success(taskService.saveIntegratedTask( xml, mxgraph, models, modelActions,userName,taskName,description));
         }
     }
+
+
+    @RequestMapping(value = "/updateIntegratedTaskInfo", method = RequestMethod.POST)
+    JsonResult updateIntegratedTaskInfo(@RequestBody IntegratedTaskAddDto integratedTaskAddDto,
+                                    HttpServletRequest request
+    ){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid") == null){
+            return ResultUtils.error(-1, "no login");
+        }else {
+            String userName = session.getAttribute("uid").toString();
+            String taskOid = integratedTaskAddDto.getTaskOid();
+            String xml = integratedTaskAddDto.getXml();
+            String mxgraph = integratedTaskAddDto.getMxgraph();
+            List<Map<String,String>> models = integratedTaskAddDto.getModels();
+            List<ModelAction> modelActions = integratedTaskAddDto.getModelActions();
+            String description = integratedTaskAddDto.getDescription();
+            String taskName = integratedTaskAddDto.getTaskName();
+
+            return ResultUtils.success(taskService.updateIntegratedTask(taskOid, xml, mxgraph, models, modelActions,userName,taskName,description));
+        }
+    }
+
 
     @RequestMapping(value = "/deleteIntegratedTask", method = RequestMethod.DELETE)
     JsonResult saveIntegratedTask(@RequestParam(value = "taskOid") String oid,

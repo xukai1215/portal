@@ -20,6 +20,7 @@ import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.entity.intergrate.Model;
 import njgis.opengms.portal.entity.support.*;
+import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.MyHttpUtils;
 import njgis.opengms.portal.utils.ResultUtils;
 import njgis.opengms.portal.utils.Utils;
@@ -34,14 +35,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -1170,42 +1173,128 @@ public class TaskService {
 
     }
 
-    public String updateIntegrateTaskId(String taskOid, String taskId){
+    public IntegratedTask getIntegratedTaskByOid(String taskOid){
         IntegratedTask integratedTask = integratedTaskDao.findByOid(taskOid);
 
-        integratedTask.setTaskId(taskId);
-        integratedTaskDao.save(integratedTask);
-        return taskId;
+        return integratedTask;
     }
 
-    public String updateIntegratedTaskStatus(String taskId, int status, List<ModelAction> finishedModelActions,List<ModelAction> failedModelActions ){
-        IntegratedTask integratedTask = integratedTaskDao.findByTaskId(taskId);
+    //用户更新集成Task的信息
+    public IntegratedTask updateIntegratedTask( String taskOid, String xml, String mxgraph, List<Map<String,String>> models,
+                                                List<ModelAction> modelActions,String userName,String taskName,String description){
+        IntegratedTask integratedTask = integratedTaskDao.findByOid(taskOid);
 
-        integratedTask.setStatus(status);
+        integratedTask.setModels(models);
+        integratedTask.setModelActions(modelActions);
+        integratedTask.setXml(xml);
+        integratedTask.setMxGraph(mxgraph);
+        integratedTask.setTaskName(taskName);
+        integratedTask.setDescription(description);
 
-        List<ModelAction> modelActionList = integratedTask.getModelActions();
+        Date now = new Date();
+        integratedTask.setLastModifiedTime(now);
 
-        for(ModelAction modelAction:modelActionList){
+        return integratedTaskDao.save(integratedTask);
+
+    }
+
+    //从managerserver获取task的最新状态
+    public JSONObject checkIntegratedTask(String taskId){
+        RestTemplate restTemplate=new RestTemplate();
+        String url="http://" + managerServerIpAndPort + "/GeoModeling/task/checkTaskStatus?taskId={taskId}";//远程接口
+        Map<String, String> params = new HashMap<>();
+        params.put("taskId", taskId);
+        ResponseEntity<JSONObject> responseEntity=restTemplate.getForEntity(url,JSONObject.class,params);
+        if (responseEntity.getStatusCode()!= HttpStatus.OK){
+            throw new MyException("远程服务出错");
+        }
+        else {
+            IntegratedTask task=integratedTaskDao.findByTaskId(taskId);
+            JSONObject data = responseEntity.getBody().getJSONObject("data");
+            int status = data.getInteger("status");
+            JSONObject taskInfo = data.getJSONObject("taskInfo");
+
+            //更新output
+            JSONObject j_modelActionList = taskInfo.getJSONObject("modelActionList");
+            converseOutputModelAction(j_modelActionList.getJSONArray("completed"));
+            List<ModelAction> finishedModelActions = j_modelActionList.getJSONArray("completed").toJavaList(ModelAction.class);
+            List<ModelAction> failedModelActions = j_modelActionList.getJSONArray("failed").toJavaList(ModelAction.class);
+            updateIntegratedTaskOutput(task,finishedModelActions,failedModelActions);
+
+            switch (status){
+                case 0:
+                    break;
+                case -1:
+                    task.setStatus(-1);
+                    integratedTaskDao.save(task);
+                    break;
+                case 1:
+                    task.setStatus(2);
+                    integratedTaskDao.save(task);
+                    break;
+            }
+            return data;
+        }
+    }
+
+    public void converseOutputModelAction(JSONArray modelActionArray) {
+        List<ModelAction> modelActionList = new ArrayList<>();
+        for (int i = 0; i < modelActionArray.size(); i++) {
+            JSONObject fromModelAction = modelActionArray.getJSONObject(i);
+            ModelAction modelAction = new ModelAction();
+            modelAction.setDescription(fromModelAction.getString("id"));
+            JSONArray output = fromModelAction.getJSONObject("outputData").getJSONArray("outputs");
+            List<Map<String,Object>> outputDatas = new ArrayList<>();
+            for(int j=0;j<output.size();j++){
+                Map<String,Object> outputData = new HashMap<>();
+                Map<String,Object> dataContent = new HashMap<>();
+                JSONObject j_dataContent = ((JSONObject)output.get(i)).getJSONObject("dataContent");
+                dataContent.put("value",output.get(i));
+                outputData.put("dataContent",dataContent);
+
+            }
+        }
+
+    }
+
+    public String updateIntegratedTaskOutput(IntegratedTask integratedTask, List<ModelAction> finishedModelActions,List<ModelAction> failedModelActions ){
+        List<ModelAction> modelActions = integratedTask.getModelActions();
+
+        for(ModelAction modelAction:modelActions){
             for(ModelAction finishedModelAction:finishedModelActions){
-                if(modelAction.getFrontId().equals(finishedModelAction.getFrontId())){
+                if(modelAction.getId().equals(finishedModelAction.getId())){
                     modelAction.setStatus(finishedModelAction.getStatus());
-                    modelAction.setTaskIpAndPort(finishedModelAction.getTaskIpAndPort());
+                    modelAction.setPort(finishedModelAction.getPort());
                     modelAction.setTaskIp(finishedModelAction.getTaskIp());
-                    for(Map<String,String> output:modelAction.getOutputEvents()){
-                        for(Map<String,String> newOutput:finishedModelAction.getOutputEvents()){
+                    for(Map<String,Object> output:modelAction.getOutputData()){
+                        for(Map<String,Object> newOutput:finishedModelAction.getOutputData()){
                             output.put("value",newOutput.get("value"));
                         }
                     }
                 }
             }
             for(ModelAction failedModelAction:failedModelActions){
-                if(modelAction.getFrontId().equals(failedModelAction.getFrontId())){
+                if(modelAction.getId().equals(failedModelAction.getId())){
                     modelAction.setStatus(-1);
                 }
             }
         }
 
+        Date now = new Date();
+        integratedTask.setLastModifiedTime(now);
+
         return integratedTaskDao.save(integratedTask).getOid();
+    }
+
+    public String updateIntegrateTaskId(String taskOid, String taskId){
+        IntegratedTask integratedTask = integratedTaskDao.findByOid(taskOid);
+
+        integratedTask.setTaskId(taskId);
+        Date now = new Date();
+        integratedTask.setLastModifiedTime(now);
+
+        integratedTaskDao.save(integratedTask);
+        return taskId;
     }
 
     public List<IntegratedTask> getIntegrateTaskByUser(String userName){
@@ -1216,6 +1305,9 @@ public class TaskService {
         IntegratedTask integratedTask = integratedTaskDao.findByOid(taskOid);
 
         integratedTask.setTaskName(taskName);
+        Date now = new Date();
+        integratedTask.setLastModifiedTime(now);
+
         integratedTaskDao.save(integratedTask);
         return taskName;
     }
@@ -1224,6 +1316,9 @@ public class TaskService {
         IntegratedTask integratedTask = integratedTaskDao.findByOid(taskOid);
 
         integratedTask.setDescription(taskDescription);
+        Date now = new Date();
+        integratedTask.setLastModifiedTime(now);
+
         integratedTaskDao.save(integratedTask);
         return taskDescription;
     }
