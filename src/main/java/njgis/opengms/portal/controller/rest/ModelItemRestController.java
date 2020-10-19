@@ -3,25 +3,33 @@ package njgis.opengms.portal.controller.rest;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.bean.JsonResult;
+import njgis.opengms.portal.dao.ModelItemDao;
+import njgis.opengms.portal.dao.UserDao;
 import njgis.opengms.portal.dto.ClaimAuthorDTO;
 import njgis.opengms.portal.dto.modelItem.ModelItemAddDTO;
 import njgis.opengms.portal.dto.modelItem.ModelItemFindDTO;
+import njgis.opengms.portal.dto.modelItem.ModelItemResultDTO;
 import njgis.opengms.portal.dto.modelItem.ModelItemUpdateDTO;
+import njgis.opengms.portal.entity.Classification;
 import njgis.opengms.portal.entity.ComputableModel;
 import njgis.opengms.portal.entity.ModelItem;
 import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.entity.support.AuthorInfo;
-import njgis.opengms.portal.service.ComputableModelService;
-import njgis.opengms.portal.service.ModelItemService;
-import njgis.opengms.portal.service.StatisticsService;
-import njgis.opengms.portal.service.UserService;
+import njgis.opengms.portal.entity.support.ModelRelation;
+import njgis.opengms.portal.enums.RelationTypeEnum;
+import njgis.opengms.portal.service.*;
 import njgis.opengms.portal.utils.ResultUtils;
 import njgis.opengms.portal.utils.Utils;
 import org.apache.commons.io.IOUtils;
 import org.dom4j.DocumentException;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -46,6 +54,11 @@ import java.util.List;
 @CacheConfig(cacheNames = "modelItemCache")
 @RequestMapping(value = "/modelItem")
 public class ModelItemRestController {
+    @Autowired
+    UserDao userDao;
+
+    @Autowired
+    ModelItemDao modelItemDao;
 
     @Autowired
     ModelItemService modelItemService;
@@ -55,6 +68,15 @@ public class ModelItemRestController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    ClassificationService classificationService;
+
+    @Autowired
+    Classification2Service classification2Service;
+
+    @Autowired
+    CommonService commonService;
 
     @Value("${htmlLoadPath}")
     private String htmlLoadPath;
@@ -71,6 +93,30 @@ public class ModelItemRestController {
 
     }
 
+    @RequestMapping(value = "/repository1", method = RequestMethod.GET)
+    public ModelAndView getModelItems1() {
+        System.out.println("model items");
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("model_items1");
+
+
+        return modelAndView;
+
+    }
+
+    @RequestMapping(value = "/repository2", method = RequestMethod.GET)
+    public ModelAndView getModelItems2() {
+        System.out.println("model items");
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("model_items2");
+
+
+        return modelAndView;
+
+    }
+
     @RequestMapping(value="/application",method = RequestMethod.GET)
     public ModelAndView getApplication() {
 
@@ -80,6 +126,18 @@ public class ModelItemRestController {
 
         return modelAndView;
 
+    }
+
+    @RequestMapping(value = "/updateClass", method = RequestMethod.POST)
+    public JsonResult updateClass(@RequestParam(value = "oid") String oid,
+                                  @RequestParam(value = "class1[]") List<String> class1,
+                                  @RequestParam(value = "class2[]",required = false) List<String> class2){
+        ModelItem modelItem = modelItemDao.findFirstByOid(oid);
+        modelItem.setClassifications(class1);
+        modelItem.setClassifications2(class2);
+        modelItemDao.save(modelItem);
+
+        return ResultUtils.success();
     }
 
     @RequestMapping(value="/simulation",method = RequestMethod.GET)
@@ -140,15 +198,7 @@ public class ModelItemRestController {
             return ResultUtils.error(-2,"The item is being edited, please do it later or contact opengms@njnu.edu.cn");
         }
         ModelItemUpdateDTO modelItemUpdateDTO = new ModelItemUpdateDTO();
-        modelItemUpdateDTO.setOid(modelItem.getOid());
-        modelItemUpdateDTO.setName(modelItem.getName());
-        modelItemUpdateDTO.setUploadImage(modelItem.getImage());
-        modelItemUpdateDTO.setDescription(modelItem.getDescription());
-        modelItemUpdateDTO.setDetail(modelItem.getDetail());
-        modelItemUpdateDTO.setStatus(modelItem.getStatus());
-        modelItemUpdateDTO.setClassifications(modelItem.getClassifications());
-        modelItemUpdateDTO.setKeywords(modelItem.getKeywords());
-        modelItemUpdateDTO.setReferences(modelItem.getReferences());
+        BeanUtils.copyProperties(modelItem, modelItemUpdateDTO);
         List<AuthorInfo> authorInfoList = modelItem.getAuthorship()==null?new ArrayList<>():modelItem.getAuthorship();
         AuthorInfo authorInfo1 = authorInfo;
         authorInfoList.add(authorInfo1);
@@ -194,10 +244,103 @@ public class ModelItemRestController {
         return ResultUtils.success(modelItem);
     }
 
-    @RequestMapping (value="/list",method = RequestMethod.POST)
-    public JsonResult list(ModelItemFindDTO modelItemFindDTO,@RequestParam(value="classifications[]") List<String> classes){
+    @RequestMapping(value = "/getClassification/{id}", method = RequestMethod.GET)
+    JsonResult getClass(@PathVariable("id") String id){
+        ModelItem modelItem = modelItemService.getByOid(id);
+        JSONObject obj = new JSONObject();
+        obj.put("class1",modelItem.getClassifications());
+        obj.put("class2",modelItem.getClassifications2());
+        return ResultUtils.success(obj);
+    }
+
+        @RequestMapping(value = "/searchClass")
+        public JsonResult searchClass(ModelItemFindDTO modelItemFindDTO,@RequestParam(value = "classNum") int num, @RequestParam(value = "classifications[]") List<String> classes){
+            int page = modelItemFindDTO.getPage();
+            int pageSize = modelItemFindDTO.getPageSize();
+            String searchText = modelItemFindDTO.getSearchText();
+            //List<String> classifications=modelItemFindDTO.getClassifications();
+            //默认以viewCount排序
+            Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
+            Pageable pageable = PageRequest.of(page, pageSize, sort);
+
+            Classification classification;
+            if(num==1) {
+                classification = classificationService.getByOid(classes.get(0));
+            }else {
+                classification = classification2Service.getByOid(classes.get(0));
+            }
+            if (classification != null) {
+                List<String> children = classification.getChildrenId();
+                if (children.size() > 0) {
+                    for (String child : children
+                            ) {
+                        classes.add(child);
+                        Classification classification1 = num==1?classificationService.getByOid(child):classification2Service.getByOid(child);
+                        List<String> children1 = classification1.getChildrenId();
+                        if (children1.size() > 0) {
+                            for (String child1 : children1) {
+                                classes.add(child1);
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            Page<ModelItemResultDTO> modelItemPage;
+            if(num==1) {
+                if(classes.get(0).equals("all")) {
+                    modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndClassifications2IsNull(searchText, pageable);
+                }else{
+                    modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndClassificationsInAndClassifications2IsNull(searchText, classes, pageable);
+                }
+            }else {
+                if(classes.get(0).equals("all")) {
+                    modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndClassifications2IsNotNull(searchText, pageable);
+                }else {
+                    modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndClassifications2In(searchText, classes, pageable);
+                }
+            }
+            List<ModelItemResultDTO> modelItems = modelItemPage.getContent();
+            JSONArray users = new JSONArray();
+            for (int i = 0; i < modelItems.size(); i++) {
+                ModelItemResultDTO modelItem = modelItems.get(i);
+                String image = modelItem.getImage();
+                if (!image.equals("")) {
+                    modelItem.setImage(htmlLoadPath + image);
+                }
+
+                JSONObject userObj = new JSONObject();
+                User user = userDao.findFirstByUserName(modelItems.get(i).getAuthor());
+                userObj.put("oid", user.getOid());
+                userObj.put("image", user.getImage().equals("") ? "" : htmlLoadPath + user.getImage());
+                userObj.put("name", user.getName());
+
+                users.add(userObj);
+
+                modelItems.get(i).setAuthor_name(user.getName());
+                modelItems.get(i).setAuthor_oid(user.getOid());
+//            modelItems.get(i).setAuthor(user.getName());
+
+            }
+
+            JSONObject obj = new JSONObject();
+            obj.put("list", modelItems);
+            obj.put("total", modelItemPage.getTotalElements());
+            obj.put("pages", modelItemPage.getTotalPages());
+            obj.put("users", users);
+
+            return ResultUtils.success(obj);
+        }
+
+    @RequestMapping(value = "/list", method = RequestMethod.POST)
+    public JsonResult list(ModelItemFindDTO modelItemFindDTO, @RequestParam(value = "classifications[]") List<String> classes, @RequestParam(value = "classType", required = false) Integer classType) {
         System.out.println("model item list");
-        return ResultUtils.success(modelItemService.list(modelItemFindDTO,null,classes));
+        if (classType == null || classType != 2) {
+            return ResultUtils.success(modelItemService.list(modelItemFindDTO, null, classes));
+        } else {
+            return ResultUtils.success(modelItemService.list2(modelItemFindDTO, null, classes));
+        }
     }
 
     @RequestMapping (value="/listByAuthor",method = RequestMethod.POST)
@@ -242,6 +385,27 @@ public class ModelItemRestController {
         return ResultUtils.success(result);
 
     }
+
+    @RequestMapping(value = "/setModelRelation/{oid}", method = RequestMethod.POST)
+    JsonResult setModelRelation(@PathVariable("oid") String oid,
+        @RequestBody JSONObject jsonObject) {
+
+            JSONArray relations = jsonObject.getJSONArray("relations");
+            List<ModelRelation> modelRelationList = new ArrayList<>();
+
+            for (int i = 0; i < relations.size(); i++) {
+                JSONObject object = relations.getJSONObject(i);
+                ModelRelation modelRelation = new ModelRelation();
+                modelRelation.setOid(object.getString("oid"));
+                modelRelation.setRelation(RelationTypeEnum.getRelationTypeByText(object.getString("relation")));
+                modelRelationList.add(modelRelation);
+            }
+
+            JSONArray result = modelItemService.setModelRelation(oid, modelRelationList);
+
+            return ResultUtils.success(result);
+
+        }
 
     @RequestMapping (value="/findNamesByName",method = RequestMethod.GET)
     JsonResult findNameByName(@RequestParam(value = "name") String name){

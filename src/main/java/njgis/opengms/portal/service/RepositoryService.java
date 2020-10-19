@@ -91,6 +91,9 @@ public class RepositoryService {
     UnitVersionDao unitVersionDao;
 
     @Autowired
+    ConceptService conceptService;
+
+    @Autowired
     ConceptClassificationDao conceptClassificationDao;
     @Autowired
     SpatialReferenceClassificationDao spatialReferenceClassificationDao;
@@ -264,7 +267,7 @@ public class RepositoryService {
 //        modelAndView.addObject("description", description);
         modelAndView.addObject("classifications", classResult);
         modelAndView.addObject("image", htmlLoadPath+concept.getImage());
-        modelAndView.addObject("year", Calendar.getInstance().getWeekYear());
+        modelAndView.addObject("year", concept.getCreateTime().getYear()+1900);
         modelAndView.addObject("date", sdf.format(concept.getCreateTime()));
         modelAndView.addObject("related", relateArray);
         modelAndView.addObject("user", userJson);
@@ -384,7 +387,7 @@ public class RepositoryService {
         modelAndView.addObject("image", htmlLoadPath+theme.getImage());
         modelAndView.addObject("detail",theme_detailDesc);
         modelAndView.addObject("year", Calendar.getInstance().getWeekYear());
-        modelAndView.addObject("date", sdf.format(theme.getCreateTime()));
+        modelAndView.addObject("year", theme.getCreateTime().getYear()+1900);
         modelAndView.addObject("references",JSONArray.parseArray(JSON.toJSONString(theme.getReferences())));
         modelAndView.addObject("modelClassInfos",classInfos_result);
         modelAndView.addObject("dataClassInfos",dataClassInfos_result);
@@ -561,6 +564,8 @@ public class RepositoryService {
         Concept concept = new Concept();
         BeanUtils.copyProperties(conceptAddDTO, concept);
 
+        conceptService.updateDescription(concept);
+
         Date now = new Date();
         concept.setCreateTime(now);
         concept.setLastModifyTime(now);
@@ -588,6 +593,7 @@ public class RepositoryService {
         if (!concept_ori.isLock()) {
             Concept concept = concept_ori;
             BeanUtils.copyProperties(conceptUpdateDTO, concept);
+            conceptService.updateDescription(concept);
             //判断是否为新图片
             String uploadImage = conceptUpdateDTO.getUploadImage();
             if (!uploadImage.contains("/concept/") && !uploadImage.equals("")) {
@@ -749,7 +755,7 @@ public class RepositoryService {
         modelAndView.addObject("info", spatialReference);
         modelAndView.addObject("classifications", classResult);
         modelAndView.addObject("image", htmlLoadPath+spatialReference.getImage());
-        modelAndView.addObject("year", Calendar.getInstance().getWeekYear());
+        modelAndView.addObject("year", spatialReference.getCreateTime().getYear()+1900);
         modelAndView.addObject("date", sdf.format(spatialReference.getCreateTime()));
         modelAndView.addObject("user", userJson);
         modelAndView.addObject("lastModifier", modifierJson);
@@ -1078,7 +1084,7 @@ public class RepositoryService {
         modelAndView.addObject("info", template);
         modelAndView.addObject("classifications", classResult);
         modelAndView.addObject("image", htmlLoadPath+template.getImage());
-        modelAndView.addObject("year", Calendar.getInstance().getWeekYear());
+        modelAndView.addObject("year", template.getCreateTime().getYear()+1900);
         modelAndView.addObject("date", sdf.format(template.getCreateTime()));
         modelAndView.addObject("user", userJson);
         modelAndView.addObject("lastModifier", modifierJson);
@@ -1386,7 +1392,7 @@ public class RepositoryService {
         modelAndView.addObject("info", unit);
         modelAndView.addObject("classifications", classResult);
         modelAndView.addObject("image", htmlLoadPath+unit.getImage());
-        modelAndView.addObject("year", Calendar.getInstance().getWeekYear());
+        modelAndView.addObject("year", unit.getCreateTime().getYear()+1900);
         modelAndView.addObject("date", sdf.format(unit.getCreateTime()));
         modelAndView.addObject("user", userJson);
         modelAndView.addObject("lastModifier", modifierJson);

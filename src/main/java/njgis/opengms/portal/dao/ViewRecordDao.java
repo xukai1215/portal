@@ -10,6 +10,8 @@ import java.util.List;
 
 public interface ViewRecordDao extends MongoRepository<ViewRecord,String> {
 
+    List<ViewRecord> findAllByItemType(ItemTypeEnum itemTypeEnum);
+
     List<ViewRecord> findAllByItemTypeAndItemOid(String type,String oid);
 
     List<ViewRecord> findAllByItemTypeAndItemOidAndDateGreaterThanEqual(String type,String oid,Date date);
@@ -19,5 +21,7 @@ public interface ViewRecordDao extends MongoRepository<ViewRecord,String> {
     List<ViewRecord> findAllByItemOidAndItemTypeAndDateGreaterThanEqual(String oid, ItemTypeEnum type, Date date);
 
     List<ViewRecord> findAllByItemOidAndFlag(String oid, boolean flag);
+
+    List<ViewRecord> findAllByItemOidAndFlagAndDateAfter(String oid, boolean flag, Date date);
 
 }

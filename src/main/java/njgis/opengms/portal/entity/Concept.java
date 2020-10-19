@@ -1,7 +1,6 @@
 package njgis.opengms.portal.entity;
 
 import lombok.Data;
-import njgis.opengms.portal.entity.support.Localization;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
@@ -13,11 +12,9 @@ public class Concept extends Item {
     List<String> classifications;
     String image;
 
-    List<Localization> localizationList;
-
     List<String> related;
 
-    String alias;
+//    String alias;
     String urn;
     String xml;
 //    String description_ZH;

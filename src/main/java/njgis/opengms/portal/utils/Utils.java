@@ -21,13 +21,13 @@ import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.security.MessageDigest;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -74,7 +74,39 @@ public class Utils {
                             countryName="Taiwan, China";
                             break;
                         case "Congo (Democratic Republic of the)":
-                            countryName="Congo";
+                            countryName="Dem. Rep. Congo";
+                            break;
+                        case "Russian Federation":
+                            countryName="Russia";
+                            break;
+                        case "Korea (Republic of)":
+                            countryName="Korea";
+                            break;
+                        case "Iran (Islamic Republic of)":
+                            countryName="Iran";
+                            break;
+                        case "Bolivia (Plurinational State of)":
+                            countryName="Bolivia";
+                            break;
+                        case "Micronesia (Federated States of)":
+                            countryName="Micronesia";
+                            break;
+                        case "Venezuela (Bolivarian Republic of)":
+                            countryName="Venezuela";
+                            break;
+                        case "Moldova (Republic of)":
+                            countryName="Moldova";
+                            break;
+                        case "Dominican Republic":
+                            countryName="Dominican Rep.";
+                            break;
+                        case "Palestine, State of":
+                            countryName="Palestine, State of";
+                            break;
+                        case "Tanzania, United Republic of":
+                            countryName="Tanzania";
+                            break;
+
                         default:
                             break;
                     }
@@ -162,6 +194,86 @@ public class Utils {
         }
 
     }
+
+    public static int caculateTotalTime(String startTime,String endTime) {
+        SimpleDateFormat formatter =   new SimpleDateFormat( "yyyy-MM-dd");
+        Date date1=null;
+        Date date = null;
+        Long l = 0L;
+        try {
+            date = formatter.parse(startTime);
+            long ts = date.getTime();
+            date1 =  formatter.parse(endTime);
+            long ts1 = date1.getTime();
+
+            l = (ts - ts1) / (1000 * 60 * 60 * 24);
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return l.intValue();
+    }
+
+    public static List<Map.Entry<String,Integer>> sortMap(Map<String, Integer> map){
+        List<Map.Entry<String,Integer>> list = new ArrayList<Map.Entry<String,Integer>>(map.entrySet());
+        Collections.sort(list,new Comparator<Map.Entry<String,Integer>>() {
+            //升序排序
+            public int compare(Map.Entry<String, Integer> o1,
+                               Map.Entry<String, Integer> o2) {
+                return -o1.getValue().compareTo(o2.getValue());
+            }
+
+        });
+
+        return list;
+    }
+
+
+    public static String sendGet(String url, String param) {
+        String result = "";
+        BufferedReader in = null;
+        try {
+            String urlNameString = url + "?" + param;
+            URL realUrl = new URL(urlNameString);
+            // 打开和URL之间的连接
+            URLConnection connection = realUrl.openConnection();
+            // 设置通用的请求属性
+            connection.setRequestProperty("accept", "*/*");
+            connection.setRequestProperty("connection", "Keep-Alive");
+            connection.setRequestProperty("user-agent",
+                    "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
+            // 建立实际的连接
+            connection.connect();
+            // 获取所有响应头字段
+            Map<String, List<String>> map = connection.getHeaderFields();
+            // 遍历所有的响应头字段
+            for (String key : map.keySet()) {
+                System.out.println(key + "--->" + map.get(key));
+            }
+            // 定义 BufferedReader输入流来读取URL的响应
+            in = new BufferedReader(new InputStreamReader(
+                    connection.getInputStream()));
+            String line;
+            while ((line = in.readLine()) != null) {
+                result += line;
+            }
+        } catch (Exception e) {
+            System.out.println("发送GET请求出现异常！" + e);
+            e.printStackTrace();
+        }
+        // 使用finally块来关闭输入流
+        finally {
+            try {
+                if (in != null) {
+                    in.close();
+                }
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+        }
+        return result;
+    }
+
 
     public static JSONObject postJSON(String urlStr, JSONObject jsonParam) {
         try {

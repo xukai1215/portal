@@ -162,7 +162,7 @@ public class VersionService {
         for(int i=0;i<classifications.size();i++){
 
             JSONArray array=new JSONArray();
-            String classId=classifications.get(i);
+            String classId=classifications1.get(i);
 
             do{
                 Classification classification=classificationService.getByOid(classId);

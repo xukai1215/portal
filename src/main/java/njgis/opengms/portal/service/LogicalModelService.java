@@ -433,11 +433,11 @@ public class LogicalModelService {
         User user = userDao.findFirstByOid(oid);
 
         Page<LogicalModel> modelItemPage =Page.empty();
-        if(loadUser == null||!loadUser.equals(oid)) {
+//        if(loadUser == null||!loadUser.equals(oid)) {
             modelItemPage = logicalModelDao.findByAuthorAndStatusIn(user.getUserName(),itemStatusVisible, pageable);
-        }else{
-            modelItemPage = logicalModelDao.findByAuthor(user.getUserName(), pageable);
-        }
+//        }else{
+//            modelItemPage = logicalModelDao.findByAuthor(user.getUserName(), pageable);
+//        }
         JSONObject result = new JSONObject();
 
         result.put("list", modelItemPage.getContent());
@@ -461,14 +461,15 @@ public class LogicalModelService {
 
         Page<LogicalModel> logicalModelPage = null;
 
+        String statusNotLike = "Private";
         if (searchText.equals("") && classes.get(0).equals("all")) {
-            logicalModelPage = logicalModelDao.findAll(pageable);
+            logicalModelPage = logicalModelDao.findByStatusNotLike(statusNotLike, pageable);
         } else if (!searchText.equals("") && classes.get(0).equals("all")) {
-            logicalModelPage = logicalModelDao.findByNameContainsIgnoreCase(searchText, pageable);
+            logicalModelPage = logicalModelDao.findByNameContainsIgnoreCaseAndStatusNotLike(searchText,statusNotLike, pageable);
         } else if (searchText.equals("") && !classes.get(0).equals("all")) {
-            logicalModelPage = logicalModelDao.findByClassificationsIn(classes, pageable);
+            logicalModelPage = logicalModelDao.findByClassificationsInAndStatusNotLike(classes,statusNotLike, pageable);
         } else {
-            logicalModelPage = logicalModelDao.findByNameContainsIgnoreCaseAndClassificationsIn(searchText, classes, pageable);
+            logicalModelPage = logicalModelDao.findByNameContainsIgnoreCaseAndClassificationsInAndStatusNotLike(searchText, classes,statusNotLike, pageable);
         }
 
 
@@ -493,15 +494,15 @@ public class LogicalModelService {
 
         Page<LogicalModel> logicalModelPage = null;
 
+        String statusNotLike = "Private";
         if (searchText.equals("") && classes.get(0).equals("all")) {
-            logicalModelPage = logicalModelDao.findByAuthor(userName, pageable);
+            logicalModelPage = logicalModelDao.findByAuthorAndStatusNotLike(userName, statusNotLike, pageable);
         } else if (!searchText.equals("") && classes.get(0).equals("all")) {
-            logicalModelPage = logicalModelDao.findByNameContainsIgnoreCaseAndAuthor(searchText, userName, pageable);
+            logicalModelPage = logicalModelDao.findByNameContainsIgnoreCaseAndAuthorAndStatusNotLike(searchText, userName,statusNotLike, pageable);
         } else if (searchText.equals("") && !classes.get(0).equals("all")) {
-            logicalModelPage = logicalModelDao.findByClassificationsInAndAuthor(classes, userName, pageable);
+            logicalModelPage = logicalModelDao.findByClassificationsInAndAuthorAndStatusNotLike(classes, userName,statusNotLike, pageable);
         } else {
-            logicalModelPage = logicalModelDao.findByNameContainsIgnoreCaseAndClassificationsInAndAuthor(searchText, classes, userName, pageable);
-        }
+            logicalModelPage = logicalModelDao.findByNameContainsIgnoreCaseAndClassificationsInAndAuthorAndStatusNotLike(searchText, classes, userName,statusNotLike, pageable);        }
 
 
         obj.put("list", logicalModelPage.getContent());
@@ -637,7 +638,7 @@ public class LogicalModelService {
 
         Pageable pageable = PageRequest.of(page, 10, sort);
 
-        Page<LogicalModel> logicalModels = logicalModelDao.findByAuthor(userId, pageable);
+        Page<LogicalModel> logicalModels = logicalModelDao.findByAuthorAndStatusNotLike(userId,"Private", pageable);
 
         JSONObject logicalModelObject = new JSONObject();
         logicalModelObject.put("count", logicalModels.getTotalElements());
@@ -686,7 +687,7 @@ public class LogicalModelService {
 
         Pageable pageable = PageRequest.of(page, 10, sort);
 
-        Page<LogicalModel> modelItems = logicalModelDao.findByNameContainsIgnoreCaseAndAuthor(searchText, userId, pageable);
+        Page<LogicalModel> modelItems = logicalModelDao.findByNameContainsIgnoreCaseAndAuthorAndStatusNotLike(searchText, userId, "all", pageable);
 
         JSONObject modelItemObject = new JSONObject();
         modelItemObject.put("count", modelItems.getTotalElements());
@@ -707,11 +708,11 @@ public class LogicalModelService {
         Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.DESC,sortElement);
         Pageable pageable=PageRequest.of(page,pageSize,sort);
         Page<LogicalModelResultDTO> logicalModelResultDTOPage =Page.empty();
-        if(loadUser == null||!loadUser.equals(oid)) {
+//        if(loadUser == null||!loadUser.equals(oid)) {
             logicalModelResultDTOPage = logicalModelDao.findLoModelByNameContainsIgnoreCaseAndAuthorAndStatusIn(name, userName,itemStatusVisible, pageable);
-        }else {
-            logicalModelResultDTOPage = logicalModelDao.findLoModelByNameContainsIgnoreCaseAndAuthor(name, userName, pageable);
-        }
+//        }else {
+//            logicalModelResultDTOPage = logicalModelDao.findLoModelByNameContainsIgnoreCaseAndAuthor(name, userName, pageable);
+//        }
         JSONObject result=new JSONObject();
         result.put("list",logicalModelResultDTOPage.getContent());
         result.put("total",logicalModelResultDTOPage.getTotalElements());
