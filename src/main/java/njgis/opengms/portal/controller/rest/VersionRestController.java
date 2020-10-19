@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.jws.soap.SOAPBinding;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
@@ -113,7 +112,10 @@ public class VersionRestController {
 
         System.out.println("versionCheck");
         ModelAndView modelAndView = new ModelAndView();
-        if(userName.equals("yuesongshan")||userName.equals("njgis")){
+        if(userName==null){
+            modelAndView.setViewName("error/404");
+        }
+        else if(userName.equals("yuesongshan")||userName.equals("njgis")){
             modelAndView.setViewName("version/versionCheck");
         }
         else {

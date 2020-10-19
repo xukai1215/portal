@@ -17,7 +17,7 @@ public class SpatialReference extends Item {
     String type;
     String parentId;
     String xml;
-    String name_EN;
-    String description_EN;
+//    String name_EN;
+//    String description_EN;
 
 }

@@ -497,12 +497,23 @@ var  data_item_info= new Vue({
                 data: data,
                 async: true,
                 success: (json) => {
-                    alert("Success!");
-                    this.dialogTableVisible=false;
-                    window.location.reload();
+                    this.$alert('Success!', 'Tip', {
+                    type:'success',
+                    confirmButtonText: 'OK',
+                    callback: action => {
+                        this.dialogTableVisible = false;
+                        window.location.reload();
+                    }
+                });
                 },
                 error:(json)=>{
-                    alert("Error!")
+                    this.$alert('Submitted failed!', 'Error', {
+                    type:'error',
+                        confirmButtonText: 'OK',
+                        callback: action => {
+
+                    }
+                });
                 }
             })
         },

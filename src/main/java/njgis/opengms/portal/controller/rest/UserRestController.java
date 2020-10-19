@@ -19,7 +19,6 @@ import njgis.opengms.portal.utils.ResultUtils;
 import njgis.opengms.portal.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
@@ -60,6 +59,24 @@ public class UserRestController {
     @RequestMapping(value = "/sendEmailTest", method = RequestMethod.POST)
     public void sendEmailTest(@RequestParam("uid") String uid,@RequestParam("email") String email){
         userService.sendEmailToUser(uid,email);
+    }
+
+    @RequestMapping(value = "/getModelCounts", method = RequestMethod.GET)
+    public JsonResult getModelCounts(HttpServletRequest request){
+        JSONObject result = new JSONObject();
+        String userName = Utils.checkLoginStatus(request.getSession());
+        if(userName!=null){
+            User user = userService.getByUid(userName);
+            result.put("modelItem",user.getModelItems());
+            result.put("conceptualModel",user.getConceptualModels());
+            result.put("logicalModel",user.getLogicalModels());
+            result.put("computableModel",user.getComputableModels());
+            return ResultUtils.success(result);
+        }
+        else{
+            return ResultUtils.error(-1,"no login");
+        }
+
     }
 
     @RequestMapping(value = "/changeSubscribedModelList", method = RequestMethod.GET)
@@ -236,7 +253,13 @@ public class UserRestController {
         HttpSession session = request.getSession();
         Object oid = session.getAttribute("oid");
 
-        return userService.loadUser(oid.toString());
+        if (oid == null) {
+            JSONObject user = new JSONObject();
+            user.put("oid", "");
+            return user;
+        } else {
+            return userService.loadUser(oid.toString());
+        }
     }
 
     @RequestMapping(value = "/getUserSimpleInfo", method = RequestMethod.GET)

@@ -7,324 +7,106 @@ var createModelItem = Vue.extend({
     },
 
     data() {
-    return {
-        defaultActive: '2-1',
-        curIndex: 2,
+        return {
+            defaultActive: '2-1',
+            curIndex: 2,
 
-        ScreenMaxHeight: "0px",
-        ScreenMinHeight: "0px",
+            ScreenMaxHeight: "0px",
+            ScreenMinHeight: "0px",
 
-        IframeHeight: "0px",
-        editorUrl: "",
-        load: false,
+            IframeHeight: "0px",
+            editorUrl: "",
+            load: false,
 
 
-        userId: "",
-        userName: "",
-        loginFlag: false,
-        activeIndex: 2,
+            userId: "",
+            userName: "",
+            loginFlag: false,
+            activeIndex: 2,
 
-        userInfo: {
-            //username:"",
-            name: "",
-            email: "",
-            phone: "",
-            insName: ""
-        },
+            userInfo: {
+                //username:"",
+                name: "",
+                email: "",
+                phone: "",
+                insName: ""
+            },
 
-        treeData: [{
-            id: 1,
-            label: 'Earth System Subject',
-            oid: 'fc236e9d-3ae9-4594-b9b8-de0ac336a1d7',
-            children: [ {
-                id: 65,
-                label: 'Sun-Earth System',
-                oid: '1fd56a5d-1532-4ea6-ad0a-226e78a12861'
-            }, {
-                id: 66,
-                label: 'Earth Surface System',
-                oid: '4f162f21-2375-468e-90af-d3267d0ba05f',
-                children: [{
-                    id: 2,
-                    label: 'Hydrosphere',
-                    oid: '652bf1f8-2f3e-4f93-b0dc-f66505090873'
-                }, {
-                    id: 3,
-                    label: 'Lithosphere',
-                    oid: 'a621ea24-26d5-4027-a8de-d418509dacb2'
-                }, {
-                    id: 4,
-                    label: 'Atmosphere',
-                    oid: '5e324fc8-93d1-40bb-a2e4-24d2dff68c4b'
-                }, {
-                    id: 5,
-                    label: 'Biosphere',
-                    oid: '76cb072d-8f56-4e34-9ea6-1a95ea7f474b'
-                }, {
-                    id: 6,
-                    label: 'Anthroposphere',
-                    oid: 'eccbe4e1-32f6-490e-9bf7-ae774be472ac'
-
-                }, {
-                    id: 7,
-                    label: 'Synthesis',
-                    oid: '1a59f012-0659-479d-a183-b74921c67a08'
-                }]
-            },{
-                id: 67,
-                label: 'Solid Earth Geophysics',
-                oid: '52e69d15-cc83-43fb-a445-0c15e5f46878'
-            },]
-        },{
-            id: 64,
-            label: 'Geography Subject',
-            oid: 'd7824a16-0f3a-4186-8cb7-41eb10028177',
-            children: [{
-                id: 8,
-                label: 'Physical Geography',
-                oid: '44068d3f-533a-4567-9bfd-07eea9d9e8af',
-                children: [{
-                    id: 9,
-                    label: 'Hydrology',
-                    oid: '158690be-1a1d-4e09-86a5-cbd5c0104206'
-                }, {
-                    id: 10,
-                    label: 'Geomorphology',
-                    oid: '17b746ad-7dcf-4aa5-90b5-104c041caf62'
-                }, {
-                    id: 11,
-                    label: 'Geology',/////
-                    oid: '19bff3af-4c8d-4d98-9ad0-18e34a818a50'
-                }, {
-                    id: 12,
-                    label: 'Glaciology',
-                    oid: 'cfc349aa-63dc-498a-a9e0-6867bad3a2a6'
-                }, {
-                    id: 13,
-                    label: 'Biogeography',
-                    oid: '7656e180-c975-47fe-8ea6-abf417a94793'
-                }, {
-                    id: 14,
-                    label: 'Meteorology',
-                    oid: 'e3e1e879-ce41-46a5-b72c-55501bb08ce8'
-                }, {
-                    id: 15,
-                    label: 'Climatology',
-                    oid: 'dcb2fa01-5507-4fbd-a533-1b7336cd497b'
-                }, {
-                    id: 16,
-                    label: 'Pedology',
-                    oid: '40d18155-6669-4416-990c-de0374ab587e'
-                }, {
-                    id: 17,
-                    label: 'Oceanography',
-                    oid: 'ea1f9c14-9bdb-4da6-b728-a9853620e95f'
-                }, {
-                    id: 18,
-                    label: 'Coastal Geography',
-                    oid: '12b11f3e-8d6e-48c9-bf3a-f9fb5c5e0dd4'
-                }, {
-                    id: 19,
-                    label: 'Landscape Ecology',
-                    oid: '00190eef-017f-42b3-8500-baf612083557'
-                }, {
-                    id: 20,
-                    label: 'Ecosystem',
-                    oid: '60d4f9cf-df22-4313-8b53-c7c314455f2d'
-                }, {
-                    id: 21,
-                    label: 'Paleogeography',
-                    oid: '6965468a-f952-4adf-87e9-6dc2988ab7f8'
-                }, {
-                    id: 22,
-                    label: 'Quaternary Science',
-                    oid: '9de1a9a7-4f84-4f8d-9ee6-3aaa33681e29'
-                }, {
-                    id: 23,
-                    label: 'Environmental Management',
-                    oid: '5d8d6338-0624-40dd-8519-ec440b47c174'
-                }, {
-                    id: 24,
-                    label: 'Global Synthesis',
-                    oid: 'a0c97d7a-54c6-4bbe-8e6d-9fe9b2234a1e'
-                }, {
-                    id: 25,
-                    label: 'Regional Synthesis',/////
-                    oid: 'aacf6bc4-8280-4f75-919d-3e4be604dd88'
-                }, {
-                    id: 26,
-                    label: 'Others',
-                    oid: 'f69d3040-abad-477d-9194-b6ee5303bd9a'
-                }]
-            }, {
-                id: 27,
-                label: 'Human Geography',
-                oid: '3a76212e-c4f2-4a99-ab98-51ae5e7cf7e0',
-                children: [{
-                    id: 28,
-                    label: 'Agricultural Geography',
-                    oid: '7cf1aa10-58c0-4329-9a1d-9ace0cc2ba33'
-                }, {
-                    id: 29,
-                    label: 'Industrial Geography',
-                    oid: 'e9590d02-c1bf-4f92-878c-4f2857fc9c33'
-                }, {
-                    id: 30,
-                    label: 'Traffic Geography',
-                    oid: '64eb0340-6312-4549-9671-6bd635d5a8b3'
-                }, {
-                    id: 31,
-                    label: 'Tourism Geography',
-                    oid: 'bfa6147d-700e-4e06-978e-c9f0266608a8'
-                }, {
-                    id: 32,
-                    label: 'Population Geography',/////
-                    oid: 'a9fc055b-99a1-40c9-82de-626de69efc04'
-                }, {
-                    id: 33,
-                    label: 'Regional Geography',
-                    oid: '0be6cd3b-a459-45df-b7e7-b2fb23aafd12'
-                }, {
-                    id: 34,
-                    label: 'Urban Geography',
-                    oid: '51574401-09d9-4819-aa3e-17994e0396fd'
-                }, {
-                    id: 35,
-                    label: 'Rural Geography',/////
-                    oid: 'b0cc3872-2c89-428a-ac50-7d30f7638373'
-                }, {
-                    id: 36,
-                    label: 'Historical Geography',
-                    oid: '9efcb0d7-9374-4fa4-b1c3-8a9409320813'
-                }, {
-                    id: 37,
-                    label: 'Cultural Geography',
-                    oid: '13e811de-f061-432b-9ed4-85bda9d385c7'
-                }, {
-                    id: 38,
-                    label: 'Social Geography',
-                    oid: 'dfb2fc17-f084-4e6b-ae89-ef35f4563be3'
-                }, {
-                    id: 39,
-                    label: 'Economic Geography',
-                    oid: '6d4b41d2-6922-4642-bfe4-235a55002f67'
-                }, {
-                    id: 40,
-                    label: 'Political Geography',
-                    oid: '7a5fdbe5-ac48-45ea-a56a-29ff10e32789'
-                }, {
-                    id: 41,
-                    label: 'Health Geography',
-                    oid: '0761b9dc-4324-46f0-a8d5-3516fd6308d9'
-                }, {
-                    id: 42,
-                    label: 'Development Geography',
-                    oid: '671c0a46-fc81-47ed-94c3-af12c696156b'
-                }, {
-                    id: 43,
-                    label: 'Behavioral Geography',
-                    oid: 'f25d4aa8-3adf-47fa-8b8d-adf885e7c5aa'
-                }, {
-                    id: 44,
-                    label: 'Global Synthesis',
-                    oid: 'd4ceefe8-0c2b-4ea1-af1d-a7e0f3c7218c'
-                }, {
-                    id: 45,
-                    label: 'Regional Synthesis',/////
-                    oid: 'ea50ad38-0b15-49b4-a183-676ba7487446'
-                }, {
-                    id: 46,
-                    label: 'Others',
-                    oid: 'ba898bbd-1902-44ae-ac3f-0cc5bc944bc5'
-                }]
-            }, {
-                id: 47,
-                label: 'GIScience & Remote Sensing',
-                oid: '3afc51dc-930d-4ab5-8a59-3e057b7eb086',
-                children: [{
-                    id: 48,
-                    "label": "Shape Processing",
-                    "oid": "e6984ef1-4f69-4f6e-be2b-c77f917de5a5",
-                },
-                    {
-                        id: 49,
-                        "label": "Grid Processing",
-                        "oid": "944d3c82-ddeb-4b02-a56c-44eb419ecc13",
-                    },
-                    {
-                        id: 50,
-                        "label": "Imagery Processing",
-                        "oid": "5e184a2e-2579-49bf-ebac-7c28b24a38e3",
-                    },
-                    {
-                        id: 51,
-                        "label": "Data Management",
-                        "oid": "6cc12923-edc1-4faf-8c7d-a14240cd897b",
-                    },
-                    {
-                        id: 52,
-                        "label": "Spatial Analysis",
-                        "oid": "d7f96d42-b6c5-4984-81f6-6589cff37285",
-                    },
-                    {
-                        id: 53,
-                        "label": "Geostatistics",
-                        "oid": "f08f8694-1909-4ca2-b943-e8db0c0f5439",
-                    },
-                    {
-                        id: 54,
-                        "label": "Terrain Analysis",
-                        "oid": "b74f0952-143b-4af7-8fa6-ad9bf4787cb9",
-                    },
-                    {
-                        id: 55,
-                        "label": "3D Analyst",
-                        "oid": "340c275a-1ed4-495b-8415-a6a4bfe4eb18",
-                    },{
-                        id: 56,
-                        "label": "Network Analysis",
-                        "oid": "fa7d7d50-098e-4cd7-92c7-31755b3ca371",
-                    },{
-                        id: 57,
-                        "label": "Geographic Simulation",
-                        "oid": "ab1f3806-1ed8-4fd9-ff06-b6c2ca020ae9",
-                    },
-                    {
-                        id: 58,
-                        "label": "Climate Tools",
-                        "oid": "40b78ccf-e430-4756-84d7-9dfdd9ccfcad"
-                    },{
-                        id: 59,
-                        "label": "Generic Tools",
-                        "oid": "77567bff-52b9-4833-885d-417bd3a6c0e9"
-                    },{
-                        id: 60,
-                        label: 'Cartography',
-                        oid: '854189a4-3811-441d-a9d1-7de58e57a37f'
-                    },
-                    {
-                        id: 61,
-                        label: 'Remote Sensing Imagery',
-                        oid: '84e1090a-3f27-43fe-b912-d0dd7e9c8677'
+            treeData: [
+                {"children": [{
+                        "children": [{
+                            "id": 2,
+                            "label": "Land regions",
+                            "oid": "a24cba2b-9ce1-44de-ac68-8ec36a535d0e"
+                        }, {"id": 3, "label": "Ocean regions", "oid": "75aee2b7-b39a-4cd0-9223-3b7ce755e457"}, {
+                            "id": 4,
+                            "label": "Frozen regions",
+                            "oid": "1bf4f381-6bd8-4716-91ab-5a56e51bd2f9"
+                        }, {"id": 5, "label": "Atmospheric regions", "oid": "8f4d4fca-4d09-49b4-b6f7-5021bc57d0e5"}, {
+                            "id": 6,
+                            "label": "Space earth",
+                            "oid": "d33a1ebe-b2f5-4ed3-9c76-78cfb61c23ee"
+                        }, {"id": 7, "label": "Soid earth", "oid": "d3ba6e0b-78ec-4fe8-9985-4d5708f28e3e"}, {
+                            "id": 8,
+                            "label": "Integrated perspective",
+                            "oid": "eb1d8ddc-6be1-41ef-bab6-a8d940d46499"
+                        }], "id": 1, "label": "Natural-perspective", "oid": "6b2c8632-964a-4a65-a6c5-c360b2b515f0"
                     }, {
-                        id: 62,
-                        label: 'Ground Feature Spectrum',
-                        oid: '63097163-10e5-4e16-8335-590dcc7156ba'
+                        "children": [{
+                            "id": 10,
+                            "label": "Administrative regions",
+                            "oid": "808e74a4-41c6-4558-a850-4daec1f199df"
+                        }, {"id": 11, "label": "Social regions", "oid": "40534cf8-039a-4a0a-8db9-7c9bff484190"}, {
+                            "id": 12,
+                            "label": "Economic regions",
+                            "oid": "cf9cd106-b873-4a8a-9336-dd72398fc769"
+                        }, {"id": 13, "label": "Integrated perspective", "oid": "65dbe5a9-ada9-4c02-8353-5029a84d7628"}],
+                        "id": 9,
+                        "label": "Human-perspective",
+                        "oid": "77e7482c-1844-4bc3-ae37-cb09b61572da"
+                    }], "id": 24, "label": "Application-focused categories", "oid": "9f7816be-c6e3-44b6-addf-98251e3d2e19"},
+                {"children": [{
+                        "children": [{
+                            "id": 15,
+                            "label": "Geoinformation analysis",
+                            "oid": "afa99af9-4224-4fac-a81f-47a7fb663dba"
+                        }, {
+                            "id": 16,
+                            "label": "Remote sensing analysis",
+                            "oid": "f20411a5-2f55-4ee9-9590-c2ec826b8bd5"
+                        }, {
+                            "id": 17,
+                            "label": "Geostatistical analysis",
+                            "oid": "1c876281-a032-4575-8eba-f1a8fb4560d8"
+                        }, {"id": 18, "label": "Machine Learning analysis", "oid": "c6fcc899-8ca4-4269-a21e-a39d38c034a6"}],
+                        "id": 14,
+                        "label": "Data-perspective",
+                        "oid": "4785308f-b2ef-4193-a74b-b9fe025cbc5e"
                     }, {
-                        id: 63,
-                        label: 'Others',/////
-                        oid: '10bef187-00bf-4cea-b192-bf1465a265b1'
-                    }]
-            }]}
-
-        ],
-        defaultProps: {
-            children: 'children',
-            label: 'label'
-        },
-        cls: [],
-        clsStr: '',
-        status: 'Public',
+                        "children": [{
+                            "id": 20,
+                            "label": "Physical process calculation",
+                            "oid": "1d564d0f-51c6-40ca-bd75-3f9489ccf1d6"
+                        }, {
+                            "id": 21,
+                            "label": "Chemical process calculation",
+                            "oid": "63266a14-d7f9-44cb-8204-c877eaddcaa1"
+                        }, {
+                            "id": 22,
+                            "label": "Biological process calculation",
+                            "oid": "6d1efa2c-830d-4546-b759-c66806c4facc"
+                        }, {"id": 23, "label": "Human-activity calculation", "oid": "6952d5b2-cb0f-4ba7-96fd-5761dd566344"}],
+                        "id": 19,
+                        "label": "Process-perspective",
+                        "oid": "746887cf-d490-4080-9754-1dc389986cf2"
+                    }], "id": 25, "label": "Method-focused categories", "oid": "5f74872a-196c-4889-a7b8-9c9b04e30718"}],
+            defaultProps: {
+                children: 'children',
+                label: 'label'
+            },
+            cls: [],
+            clsStr: '',
+            status: 'Public',
 
         socket:"",
 
@@ -402,11 +184,273 @@ var createModelItem = Vue.extend({
 
         dragReady:false,
 
-        editTypeLocal:false,
-
         itemInfo:{
             image:'',
         },
+            editTypeLocal: "",//create,modify
+            currentLocalization: {
+                localCode: "",
+                localName: "",
+                name: "",
+                description: "",
+            },
+            localIndex: 0,
+            languageAdd: {
+                show: false,
+                local: {},
+            },
+            localizationList: [
+                {
+                    localCode: "en-US",
+                    localName: "English (United States)",
+                    name: "",
+                    description: "",
+                    selected: true,
+                }
+            ],
+            languageList: [
+                {value: 'af', label: 'Afrikaans'},
+                {value: 'af-ZA', label: 'Afrikaans (South Africa)'},
+                {value: 'sq', label: 'Albanian'},
+                {value: 'sq-AL', label: 'Albanian (Albania)'},
+                {value: 'ar', label: 'Arabic'},
+                {value: 'ar-DZ', label: 'Arabic (Algeria)'},
+                {value: 'ar-BH', label: 'Arabic (Bahrain)'},
+                {value: 'ar-EG', label: 'Arabic (Egypt)'},
+                {value: 'ar-IQ', label: 'Arabic (Iraq)'},
+                {value: 'ar-JO', label: 'Arabic (Jordan)'},
+                {value: 'ar-KW', label: 'Arabic (Kuwait)'},
+                {value: 'ar-LB', label: 'Arabic (Lebanon)'},
+                {value: 'ar-LY', label: 'Arabic (Libya)'},
+                {value: 'ar-MA', label: 'Arabic (Morocco)'},
+                {value: 'ar-OM', label: 'Arabic (Oman)'},
+                {value: 'ar-QA', label: 'Arabic (Qatar)'},
+                {value: 'ar-SA', label: 'Arabic (Saudi Arabia)'},
+                {value: 'ar-SY', label: 'Arabic (Syria)'},
+                {value: 'ar-TN', label: 'Arabic (Tunisia)'},
+                {value: 'ar-AE', label: 'Arabic (U.A.E.)'},
+                {value: 'ar-YE', label: 'Arabic (Yemen)'},
+                {value: 'hy', label: 'Armenian'},
+                {value: 'hy-AM', label: 'Armenian (Armenia)'},
+                {value: 'az-AZ', label: 'Azeri (Cyrillic) (Azerbaijan)'},
+                {value: 'az', label: 'Azeri (Latin)'},
+                {value: 'az-AZ', label: 'Azeri (Latin) (Azerbaijan)'},
+                {value: 'eu', label: 'Basque'},
+                {value: 'eu-ES', label: 'Basque (Spain)'},
+                {value: 'be', label: 'Belarusian'},
+                {value: 'be-BY', label: 'Belarusian (Belarus)'},
+                {value: 'bs-BA', label: 'Bosnian (Bosnia and Herzegovina)'},
+                {value: 'bg', label: 'Bulgarian'},
+                {value: 'bg-BG', label: 'Bulgarian (Bulgaria)'},
+                {value: 'ca', label: 'Catalan'},
+                {value: 'ca-ES', label: 'Catalan (Spain)'},
+                {value: 'zh', label: 'Chinese'},
+                {value: 'zh-HK', label: 'Chinese (Hong Kong)'},
+                {value: 'zh-MO', label: 'Chinese (Macau)'},
+                {value: 'zh-CN', label: 'Chinese (Simplified)'},
+                {value: 'zh-SG', label: 'Chinese (Singapore)'},
+                {value: 'zh-TW', label: 'Chinese (Traditional)'},
+                {value: 'hr', label: 'Croatian'},
+                {value: 'hr-BA', label: 'Croatian (Bosnia and Herzegovina)'},
+                {value: 'hr-HR', label: 'Croatian (Croatia)'},
+                {value: 'cs', label: 'Czech'},
+                {value: 'cs-CZ', label: 'Czech (Czech Republic)'},
+                {value: 'da', label: 'Danish'},
+                {value: 'da-DK', label: 'Danish (Denmark)'},
+                {value: 'dv', label: 'Divehi'},
+                {value: 'dv-MV', label: 'Divehi (Maldives)'},
+                {value: 'nl', label: 'Dutch'},
+                {value: 'nl-BE', label: 'Dutch (Belgium)'},
+                {value: 'nl-NL', label: 'Dutch (Netherlands)'},
+                {value: 'en', label: 'English'},
+                {value: 'en-AU', label: 'English (Australia)'},
+                {value: 'en-BZ', label: 'English (Belize)'},
+                {value: 'en-CA', label: 'English (Canada)'},
+                {value: 'en-CB', label: 'English (Caribbean)'},
+                {value: 'en-IE', label: 'English (Ireland)'},
+                {value: 'en-JM', label: 'English (Jamaica)'},
+                {value: 'en-NZ', label: 'English (New Zealand)'},
+                {value: 'en-PH', label: 'English (Republic of the Philippines)'},
+                {value: 'en-ZA', label: 'English (South Africa)'},
+                {value: 'en-TT', label: 'English (Trinidad and Tobago)'},
+                {value: 'en-GB', label: 'English (United Kingdom)'},
+                {value: 'en-US', label: 'English (United States)'},
+                {value: 'en-ZW', label: 'English (Zimbabwe)'},
+                {value: 'eo', label: 'Esperanto'},
+                {value: 'et', label: 'Estonian'},
+                {value: 'et-EE', label: 'Estonian (Estonia)'},
+                {value: 'mk', label: 'FYRO Macedonian'},
+                {value: 'mk-MK', label: 'FYRO Macedonian (Former Yugoslav Republic of Macedonia)'},
+                {value: 'fo', label: 'Faroese'},
+                {value: 'fo-FO', label: 'Faroese (Faroe Islands)'},
+                {value: 'fa', label: 'Farsi'},
+                {value: 'fa-IR', label: 'Farsi (Iran)'},
+                {value: 'fi', label: 'Finnish'},
+                {value: 'fi-FI', label: 'Finnish (Finland)'},
+                {value: 'fr', label: 'French'},
+                {value: 'fr-BE', label: 'French (Belgium)'},
+                {value: 'fr-CA', label: 'French (Canada)'},
+                {value: 'fr-FR', label: 'French (France)'},
+                {value: 'fr-LU', label: 'French (Luxembourg)'},
+                {value: 'fr-MC', label: 'French (Principality of Monaco)'},
+                {value: 'fr-CH', label: 'French (Switzerland)'},
+                {value: 'gl', label: 'Galician'},
+                {value: 'gl-ES', label: 'Galician (Spain)'},
+                {value: 'ka', label: 'Georgian'},
+                {value: 'ka-GE', label: 'Georgian (Georgia)'},
+                {value: 'de', label: 'German'},
+                {value: 'de-AT', label: 'German (Austria)'},
+                {value: 'de-DE', label: 'German (Germany)'},
+                {value: 'de-LI', label: 'German (Liechtenstein)'},
+                {value: 'de-LU', label: 'German (Luxembourg)'},
+                {value: 'de-CH', label: 'German (Switzerland)'},
+                {value: 'el', label: 'Greek'},
+                {value: 'el-GR', label: 'Greek (Greece)'},
+                {value: 'gu', label: 'Gujarati'},
+                {value: 'gu-IN', label: 'Gujarati (India)'},
+                {value: 'he', label: 'Hebrew'},
+                {value: 'he-IL', label: 'Hebrew (Israel)'},
+                {value: 'hi', label: 'Hindi'},
+                {value: 'hi-IN', label: 'Hindi (India)'},
+                {value: 'hu', label: 'Hungarian'},
+                {value: 'hu-HU', label: 'Hungarian (Hungary)'},
+                {value: 'is', label: 'Icelandic'},
+                {value: 'is-IS', label: 'Icelandic (Iceland)'},
+                {value: 'id', label: 'Indonesian'},
+                {value: 'id-ID', label: 'Indonesian (Indonesia)'},
+                {value: 'it', label: 'Italian'},
+                {value: 'it-IT', label: 'Italian (Italy)'},
+                {value: 'it-CH', label: 'Italian (Switzerland)'},
+                {value: 'ja', label: 'Japanese'},
+                {value: 'ja-JP', label: 'Japanese (Japan)'},
+                {value: 'kn', label: 'Kannada'},
+                {value: 'kn-IN', label: 'Kannada (India)'},
+                {value: 'kk', label: 'Kazakh'},
+                {value: 'kk-KZ', label: 'Kazakh (Kazakhstan)'},
+                {value: 'kok', label: 'Konkani'},
+                {value: 'kok-IN', label: 'Konkani (India)'},
+                {value: 'ko', label: 'Korean'},
+                {value: 'ko-KR', label: 'Korean (Korea)'},
+                {value: 'ky', label: 'Kyrgyz'},
+                {value: 'ky-KG', label: 'Kyrgyz (Kyrgyzstan)'},
+                {value: 'lv', label: 'Latvian'},
+                {value: 'lv-LV', label: 'Latvian (Latvia)'},
+                {value: 'lt', label: 'Lithuanian'},
+                {value: 'lt-LT', label: 'Lithuanian (Lithuania)'},
+                {value: 'ms', label: 'Malay'},
+                {value: 'ms-BN', label: 'Malay (Brunei Darussalam)'},
+                {value: 'ms-MY', label: 'Malay (Malaysia)'},
+                {value: 'mt', label: 'Maltese'},
+                {value: 'mt-MT', label: 'Maltese (Malta)'},
+                {value: 'mi', label: 'Maori'},
+                {value: 'mi-NZ', label: 'Maori (New Zealand)'},
+                {value: 'mr', label: 'Marathi'},
+                {value: 'mr-IN', label: 'Marathi (India)'},
+                {value: 'mn', label: 'Mongolian'},
+                {value: 'mn-MN', label: 'Mongolian (Mongolia)'},
+                {value: 'ns', label: 'Northern Sotho'},
+                {value: 'ns-ZA', label: 'Northern Sotho (South Africa)'},
+                {value: 'nb', label: 'Norwegian (Bokm?l)'},
+                {value: 'nb-NO', label: 'Norwegian (Bokm?l) (Norway)'},
+                {value: 'nn-NO', label: 'Norwegian (Nynorsk) (Norway)'},
+                {value: 'ps', label: 'Pashto'},
+                {value: 'ps-AR', label: 'Pashto (Afghanistan)'},
+                {value: 'pl', label: 'Polish'},
+                {value: 'pl-PL', label: 'Polish (Poland)'},
+                {value: 'pt', label: 'Portuguese'},
+                {value: 'pt-BR', label: 'Portuguese (Brazil)'},
+                {value: 'pt-PT', label: 'Portuguese (Portugal)'},
+                {value: 'pa', label: 'Punjabi'},
+                {value: 'pa-IN', label: 'Punjabi (India)'},
+                {value: 'qu', label: 'Quechua'},
+                {value: 'qu-BO', label: 'Quechua (Bolivia)'},
+                {value: 'qu-EC', label: 'Quechua (Ecuador)'},
+                {value: 'qu-PE', label: 'Quechua (Peru)'},
+                {value: 'ro', label: 'Romanian'},
+                {value: 'ro-RO', label: 'Romanian (Romania)'},
+                {value: 'ru', label: 'Russian'},
+                {value: 'ru-RU', label: 'Russian (Russia)'},
+                {value: 'se-FI', label: 'Sami (Inari) (Finland)'},
+                {value: 'se-NO', label: 'Sami (Lule) (Norway)'},
+                {value: 'se-SE', label: 'Sami (Lule) (Sweden)'},
+                {value: 'se', label: 'Sami (Northern)'},
+                {value: 'se-FI', label: 'Sami (Northern) (Finland)'},
+                {value: 'se-NO', label: 'Sami (Northern) (Norway)'},
+                {value: 'se-SE', label: 'Sami (Northern) (Sweden)'},
+                {value: 'se-FI', label: 'Sami (Skolt) (Finland)'},
+                {value: 'se-NO', label: 'Sami (Southern) (Norway)'},
+                {value: 'se-SE', label: 'Sami (Southern) (Sweden)'},
+                {value: 'sa', label: 'Sanskrit'},
+                {value: 'sa-IN', label: 'Sanskrit (India)'},
+                {value: 'sr-BA', label: 'Serbian (Cyrillic) (Bosnia and Herzegovina)'},
+                {value: 'sr-SP', label: 'Serbian (Cyrillic) (Serbia and Montenegro)'},
+                {value: 'sr-BA', label: 'Serbian (Latin) (Bosnia and Herzegovina)'},
+                {value: 'sr-SP', label: 'Serbian (Latin) (Serbia and Montenegro)'},
+                {value: 'sk', label: 'Slovak'},
+                {value: 'sk-SK', label: 'Slovak (Slovakia)'},
+                {value: 'sl', label: 'Slovenian'},
+                {value: 'sl-SI', label: 'Slovenian (Slovenia)'},
+                {value: 'es', label: 'Spanish'},
+                {value: 'es-AR', label: 'Spanish (Argentina)'},
+                {value: 'es-BO', label: 'Spanish (Bolivia)'},
+                {value: 'es-ES', label: 'Spanish (Castilian)'},
+                {value: 'es-CL', label: 'Spanish (Chile)'},
+                {value: 'es-CO', label: 'Spanish (Colombia)'},
+                {value: 'es-CR', label: 'Spanish (Costa Rica)'},
+                {value: 'es-DO', label: 'Spanish (Dominican Republic)'},
+                {value: 'es-EC', label: 'Spanish (Ecuador)'},
+                {value: 'es-SV', label: 'Spanish (El Salvador)'},
+                {value: 'es-GT', label: 'Spanish (Guatemala)'},
+                {value: 'es-HN', label: 'Spanish (Honduras)'},
+                {value: 'es-MX', label: 'Spanish (Mexico)'},
+                {value: 'es-NI', label: 'Spanish (Nicaragua)'},
+                {value: 'es-PA', label: 'Spanish (Panama)'},
+                {value: 'es-PY', label: 'Spanish (Paraguay)'},
+                {value: 'es-PE', label: 'Spanish (Peru)'},
+                {value: 'es-PR', label: 'Spanish (Puerto Rico)'},
+                {value: 'es-ES', label: 'Spanish (Spain)'},
+                {value: 'es-UY', label: 'Spanish (Uruguay)'},
+                {value: 'es-VE', label: 'Spanish (Venezuela)'},
+                {value: 'sw', label: 'Swahili'},
+                {value: 'sw-KE', label: 'Swahili (Kenya)'},
+                {value: 'sv', label: 'Swedish'},
+                {value: 'sv-FI', label: 'Swedish (Finland)'},
+                {value: 'sv-SE', label: 'Swedish (Sweden)'},
+                {value: 'syr', label: 'Syriac'},
+                {value: 'syr-SY', label: 'Syriac (Syria)'},
+                {value: 'tl', label: 'Tagalog'},
+                {value: 'tl-PH', label: 'Tagalog (Philippines)'},
+                {value: 'ta', label: 'Tamil'},
+                {value: 'ta-IN', label: 'Tamil (India)'},
+                {value: 'tt', label: 'Tatar'},
+                {value: 'tt-RU', label: 'Tatar (Russia)'},
+                {value: 'te', label: 'Telugu'},
+                {value: 'te-IN', label: 'Telugu (India)'},
+                {value: 'th', label: 'Thai'},
+                {value: 'th-TH', label: 'Thai (Thailand)'},
+                {value: 'ts', label: 'Tsonga'},
+                {value: 'tn', label: 'Tswana'},
+                {value: 'tn-ZA', label: 'Tswana (South Africa)'},
+                {value: 'tr', label: 'Turkish'},
+                {value: 'tr-TR', label: 'Turkish (Turkey)'},
+                {value: 'uk', label: 'Ukrainian'},
+                {value: 'uk-UA', label: 'Ukrainian (Ukraine)'},
+                {value: 'ur', label: 'Urdu'},
+                {value: 'ur-PK', label: 'Urdu (Islamic Republic of Pakistan)'},
+                {value: 'uz-UZ', label: 'Uzbek (Cyrillic) (Uzbekistan)'},
+                {value: 'uz', label: 'Uzbek (Latin)'},
+                {value: 'uz-UZ', label: 'Uzbek (Latin) (Uzbekistan)'},
+                {value: 'vi', label: 'Vietnamese'},
+                {value: 'vi-VN', label: 'Vietnamese (Viet Nam)'},
+                {value: 'cy', label: 'Welsh'},
+                {value: 'cy-GB', label: 'Welsh (United Kingdom)'},
+                {value: 'xh', label: 'Xhosa'},
+                {value: 'xh-ZA', label: 'Xhosa (South Africa)'},
+                {value: 'zu', label: 'Zulu'},
+                {value: 'zu-ZA', label: 'Zulu (South Africa)'},
+            ],
+        }
+
     }
     },
 
@@ -415,6 +459,97 @@ var createModelItem = Vue.extend({
     },
 
     methods: {
+        addLocalization() {
+            this.languageAdd.show = true;
+        },
+        confirmAddLocal() {
+
+            if (this.languageAdd.local.label == undefined) {
+                this.$message({
+                    message: 'Please selcet a language!',
+                    type: 'warning'
+                });
+                return;
+            }
+            for (i = 0; i < this.localizationList.length; i++) {
+                let localization = this.localizationList[i];
+                if (localization.localName == this.languageAdd.local.label) {
+                    this.$message({
+                        message: 'This language already exists!',
+                        type: 'warning'
+                    });
+                    return;
+                }
+            }
+
+            let newLocalization = {
+                localCode: this.languageAdd.local.value,
+                localName: this.languageAdd.local.label,
+                name: "",
+                description: "",
+            };
+            this.localizationList.push(newLocalization);
+            this.languageAdd.local = {};
+
+            this.changeLocalization(newLocalization);
+        },
+        cancelAddLocal() {
+            this.languageAdd.show = false;
+        },
+        deleteLocalization(row) {
+            this.$confirm('Do you want to delete <b>' + row.localName + '</b> description?', 'Warning', {
+                dangerouslyUseHTMLString: true,
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No',
+                type: 'warning'
+            }).then(() => {
+
+                for (i = 0; i < this.localizationList.length; i++) {
+                    let localization = this.localizationList[i]
+                    if (localization.localName == row.localName) {
+                        this.localizationList.splice(i, 1);
+                        break;
+                    }
+                }
+                if (this.localizationList.length > 0) {
+                    this.changeLocalization(this.localizationList[0]);
+                } else {
+                    this.changeLocalization(null);
+                }
+
+                this.$message({
+                    type: 'success',
+                    message: 'Delete ' + row.localName + ' successfully!',
+                });
+            }).catch(() => {
+
+            });
+
+        },
+        changeLocalization(row) {
+            if (row == null) {
+                this.currentLocalization = {
+                    localCode: "",
+                    localName: "",
+                    name: "",
+                    description: "",
+                };
+                tinymce.activeEditor.setContent("");
+                // tinymce.undoManager.clear();
+            } else {
+                for (i = 0; i < this.localizationList.length; i++) {
+                    this.$set(this.localizationList[i], "selected", false);
+                    if (this.currentLocalization.localName == this.localizationList[i].localName) {
+                        this.localizationList[i].name = this.currentLocalization.name;
+                        this.localizationList[i].description = tinymce.activeEditor.getContent();
+                    }
+                }
+                this.$set(row, "selected", true);
+                this.currentLocalization = row;
+                tinymce.activeEditor.setContent(row.description);
+                // tinymce.undoManager.clear();
+            }
+        },
         formatDate(value,callback) {
             const date = new Date(value);
             y = date.getFullYear();
@@ -587,20 +722,20 @@ var createModelItem = Vue.extend({
                     size:6,
                 }
             }).then(res=>{
-                    if(res.data.code==0){
-                        let data=res.data.data
-                        this.draftList=data.content
-                        this.pageOption.total = data.total;
-                    }else{
-                        this.$alert('Please login first!', 'Error', {
-                            type:"error",
-                            confirmButtonText: 'OK',
-                            callback: action => {
-                                window.location.href = "/user/login";
-                            }
-                        });
-                    }
-                })
+                if(res.data.code==0){
+                    let data=res.data.data
+                    this.draftList=data.content
+                    this.pageOption.total = data.total;
+                }else{
+                    this.$alert('Please login first!', 'Error', {
+                        type:"error",
+                        confirmButtonText: 'OK',
+                        callback: action => {
+                            window.location.href = "/user/login";
+                        }
+                    });
+                }
+            })
         },
 
         loadDraftByOid(){
@@ -870,7 +1005,7 @@ var createModelItem = Vue.extend({
             ).then(
                 res=>{
                     if(res.data.code==0){
-                       this.$message({message: 'Save successfully',type: 'success'})
+                        this.$message({message: 'Save successfully',type: 'success'})
                     }
                     setTimeout(()=>{
                         this.savingDraft=false
@@ -998,13 +1133,18 @@ var createModelItem = Vue.extend({
                         }
                     }
                 );
+                return;
             }
             this.editArticleDialog = false
            //调用$("#modal_save").click完成
 
         },
 
-        articleDoiUploadConfirm(status){
+        cancelSearch() {
+            this.editArticleDialog = false
+        },
+
+        articleDoiUploadConfirm(status) {
             this.articleToBack = this.articleUploading;
 
             Vue.nextTick(()=>{
@@ -1129,21 +1269,21 @@ var createModelItem = Vue.extend({
 
         init:function () {
 
-            if ('WebSocket' in window) {
-                // this.socket = new WebSocket("ws://localhost:8080/websocket");
-                this.socket = new WebSocket(websocketAddress);
-                // 监听socket连接
-                this.socket.onopen = this.open;
-                // 监听socket错误信息
-                this.socket.onerror = this.error;
-                // 监听socket消息
-                this.socket.onmessage = this.getMessage
-
-            }
-            else {
-                alert('当前浏览器 Not support websocket');
-                console.log("websocket 无法连接");
-            }
+            // if ('WebSocket' in window) {
+            //     // this.socket = new WebSocket("ws://localhost:8080/websocket");
+            //     this.socket = new WebSocket(websocketAddress);
+            //     // 监听socket连接
+            //     this.socket.onopen = this.open;
+            //     // 监听socket错误信息
+            //     this.socket.onerror = this.error;
+            //     // 监听socket消息
+            //     this.socket.onmessage = this.getMessage
+            //
+            // }
+            // else {
+            //     alert('当前浏览器 Not support websocket');
+            //     console.log("websocket 无法连接");
+            // }
         },
         open: function () {
             console.log("socket连接成功")
@@ -1343,6 +1483,7 @@ var createModelItem = Vue.extend({
             cache: false,
             async: false,
             success: (data) => {
+                data=JSON.parse(data);
                 console.log(data);
                 if (data.oid == "") {
                     alert("Please login");
@@ -1370,10 +1511,23 @@ var createModelItem = Vue.extend({
 
         if ((oid === "0") || (oid === "") || (oid === null)|| (oid === undefined)) {
 
-            this.editType = 'create'
+            this.editTypeLocal = 'create'
             // $("#title").text("Create Model Item")
             $("#subRteTitle").text("/Create Model Item")
 
+            $('#aliasInput').tagEditor({
+                forceLowercase: false
+            });
+
+            this.editTypeLocal = "create";
+
+            let interval = setInterval(function () {
+                initTinymce('textarea#singleDescription')
+                clearInterval(interval);
+            }, 500);
+
+            this.$set(this.languageAdd.local, "value", "en-US");
+            this.$set(this.languageAdd.local, "label", "English (United States)");
             initTinymce('textarea#modelItemText')
 
             this.loadMatchedCreateDraft()
@@ -1383,7 +1537,7 @@ var createModelItem = Vue.extend({
         }
         else {
 
-            this.editType = 'edit'
+            this.editTypeLocal = 'edit'
             if(this.draft.oid==''||this.draft.oid==null||typeof (this.draft.oid)=="undefined")
                 this.loadMatchedDraft()
             // $("#title").text("Modify Model Item")
@@ -1545,10 +1699,19 @@ var createModelItem = Vue.extend({
 
 
                     //detail
-                    // tinymce.remove("textarea#modelItemText");
-                    $("#modelItemText").html(basicInfo.detail);
-                    initTinymce('textarea#modelItemText')
+                    initTinymce('textarea#conceptText')
+                    this.localizationList = basicInfo.localizationList;
+                    let interval = setInterval(() => {
+                        this.changeLocalization(this.localizationList[0])
+                        clearInterval(interval);
+                    }, 1000);
 
+                    //alias
+                    $('#aliasInput').tagEditor({
+                        initialTags: basicInfo.alias,
+                        forceLowercase: false,
+                        // placeholder: 'Enter alias ...'
+                    });
                 }
             })
             // window.sessionStorage.setItem("editModelItem_id", "");
@@ -1783,6 +1946,10 @@ var createModelItem = Vue.extend({
             modelItemObj.status=this.status;
             modelItemObj.classifications = this.cls;//[$("#parentNode").attr("pid")];
             modelItemObj.name = $("#nameInput").val();
+            modelItemObj.alias = $("#aliasInput").val().split(",");
+            if (modelItemObj.alias.length === 1 && modelItemObj.alias[0] === "") {
+                modelItemObj.alias = [];
+            }
             modelItemObj.keywords = $("#tagInput").val().split(",");
             modelItemObj.description = $("#descInput").val();
             // modelItemObj.uploadImage = $('#imgShow').get(0).currentSrc;
@@ -1798,6 +1965,14 @@ var createModelItem = Vue.extend({
                 alert("please select classification");
                 return;
             }
+
+            modelItemObj.localizationList = [];
+
+            this.currentLocalization.description = tinymce.activeEditor.getContent();
+            this.currentLocalization.localCode = this.languageAdd.local.value;
+            this.currentLocalization.localName = this.languageAdd.local.label;
+
+            modelItemObj.localizationList.push(this.currentLocalization);
 
             modelItemObj.references = new Array();
             var ref_lines = $("#dynamic-table tr");
@@ -1819,11 +1994,7 @@ var createModelItem = Vue.extend({
                 }
             }
 
-            var detail = tinyMCE.activeEditor.getContent();
-            modelItemObj.detail = detail.trim();
-            console.log(modelItemObj);
-
-            let formData=new FormData();
+            let formData = new FormData();
 
             const loading = userspace.$loading({
                 lock: true,
@@ -1845,8 +2016,8 @@ var createModelItem = Vue.extend({
                     async: true,
                     data: formData,
                     success: (result)=> {
-                        // userspace.fullscreenLoading=false;
-                        loading.close();
+                        userspace.fullscreenLoading=false;
+                        // loading.close();
                         if (result.code == 0) {
 
                             this.$confirm('<div style=\'font-size: 18px\'>Create model item successfully!</div>', 'Tip', {
@@ -1886,13 +2057,15 @@ var createModelItem = Vue.extend({
                     }
                 })
             } else {
+
                 modelItemObj["oid"] = oid;
 
                 let file = new File([JSON.stringify(modelItemObj)],'ant.txt',{
                     type: 'text/plain',
                 });
-                formData.append("info",file);
 
+                formData.append("info", file);
+                userspace.fullscreenLoading = true;
                 $.ajax({
                     url: "/modelItem/update",
                     type: "POST",
@@ -1903,7 +2076,8 @@ var createModelItem = Vue.extend({
 
                     success: (result)=> {
                         // setTimeout(()=>{loading.close();},1000)
-                        loading.close()
+                        // loading.close()
+                        userspace.fullscreenLoading = false;
                         if (result.code === 0) {
                             if(result.data.method==="update") {
                                 this.$confirm('<div style=\'font-size: 18px\'>Update model item successfully!</div>', 'Tip', {
@@ -1931,9 +2105,9 @@ var createModelItem = Vue.extend({
                                 that.modelitem_oid = currentUrl.substring(index + 1,currentUrl.length);
                                 console.log(that.modelitem_oid);
 
-                                that.getMessageNum(that.modelitem_oid);
-                                let params = that.message_num_socket;
-                                that.send(params);
+                                // that.getMessageNum(that.modelitem_oid);
+                                // let params = that.message_num_socket;
+                                // that.send(params);
                                 this.$alert('Changes have been submitted, please wait for the author to review.', 'Success', {
                                     type:"success",
                                     confirmButtonText: 'OK',
@@ -1981,7 +2155,9 @@ var createModelItem = Vue.extend({
         // });
 
 
-        $(document).on("click", ".author_close", function () { $(this).parents(".panel").eq(0).remove(); });
+        $(document).on("click", ".author_close", function () {
+            $(this).parents(".panel").eq(0).remove();
+        });
 
 
         //作者添加
@@ -2080,10 +2256,10 @@ var createModelItem = Vue.extend({
             //这边默认只能选一个，但是存放形式仍然是数组，所以取第一个元素使用[0];
             var file = fileInput.files[0];
             let fileSize = (file.size / 1024).toFixed(0)
-            if(fileSize>size){
-                alert('The upload file should be less than 2M')
-                return
-            }
+            // if(fileSize>size){
+            //     alert('The upload file should be less than 1.5M')
+            //     return
+            // }
             callBack(file);
         }
         $("#imgChange").click(function () {

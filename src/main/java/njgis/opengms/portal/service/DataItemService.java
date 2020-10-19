@@ -3,20 +3,15 @@ package njgis.opengms.portal.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
-import com.sun.org.apache.regexp.internal.RE;
 import lombok.extern.slf4j.Slf4j;
 import njgis.opengms.portal.PortalApplication;
 import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.dto.categorys.CategoryAddDTO;
-import njgis.opengms.portal.dto.dataItem.*;
-import njgis.opengms.portal.dto.theme.ThemeUpdateDTO;
 import njgis.opengms.portal.dto.dataItem.DataItemAddDTO;
 import njgis.opengms.portal.dto.dataItem.DataItemFindDTO;
 import njgis.opengms.portal.dto.dataItem.DataItemResultDTO;
 import njgis.opengms.portal.dto.dataItem.DataItemUpdateDTO;
 import njgis.opengms.portal.entity.*;
-import njgis.opengms.portal.entity.support.Application;
 import njgis.opengms.portal.entity.support.DataMeta;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
@@ -37,9 +32,14 @@ import sun.misc.BASE64Encoder;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.*;
-import java.net.*;
-import java.nio.Buffer;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.SocketAddress;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -817,14 +817,14 @@ public class DataItemService {
             if (tabType.equals("hub")){
                 dataItemPages = dataHubsDao.findByNameLikeIgnoreCase(pageable, searchText);
             }else {
-                dataItemPages = dataItemDao.findByNameLikeIgnoreCase(pageable, searchText);
+                dataItemPages = dataItemDao.findByNameLikeIgnoreCaseAndStatusNotLike(pageable, searchText,"Private");
             }
         }else{
             tabType = "all";
             if (tabType.equals("hub")){
                 dataItemPages = dataHubsDao.findByNameLikeAndAuthorIgnoreCase(pageable, searchText,userOid);
             }else {
-                dataItemPages = dataItemDao.findByNameLikeAndAuthorIgnoreCase(pageable, searchText, userOid);
+                dataItemPages = dataItemDao.findByNameLikeAndAuthorIgnoreCaseAndStatusNotLike(pageable, searchText,userOid,"Private");
             }
         }
 

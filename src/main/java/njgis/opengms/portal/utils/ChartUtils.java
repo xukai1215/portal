@@ -32,6 +32,8 @@ public class ChartUtils {
 
     private static final String JSpath = ClassUtils.getDefaultClassLoader().getResource("static/").getPath().substring(1)+"echarts-convert/echarts-convert1.js";
 
+    private static final String JSpath_China = ClassUtils.getDefaultClassLoader().getResource("static/").getPath().substring(1)+"echarts-convert/echarts-convert2.js";
+
     public static void main(String[] args) {
 ////        String optiona = "{\"title\":{\"text\":\"电流图\",\"subtext\":\"电流图\",\"x\":\"left\"},\"toolbox\":{\"feature\":{\"saveAsImage\":{\"show\":true,\"title\":\"保存为图片\",\"type\":\"png\",\"lang\":[\"点击保存\"]}},\"show\":true},\"tooltip\":{\"trigger\":\"axis\"},\"legend\":{\"data\":[\"邮件营销\",\"联盟广告\",\"视频广告\"]},\"xAxis\":[{\"type\":\"category\",\"boundaryGap\":false,\"data\":[\"周一\",\"周二\",\"周三\",\"周四\",\"周五\",\"周六\",\"周日\"]}],\"yAxis\":[{\"type\":\"value\"}],\"series\":[{\"name\":\"邮件营销\",\"type\":\"line\",\"stack\":\"总量\",\"data\":[120,132,101,134,90,230,210]},{\"name\":\"联盟广告\",\"type\":\"line\",\"stack\":\"总量\",\"data\":[220,182,191,234,290,330,310]},{\"name\":\"视频广告\",\"type\":\"line\",\"stack\":\"总量\",\"data\":[150,232,201,154,190,330,410]}]}";
 //        String optiona = generateLine();
@@ -55,6 +57,37 @@ public class ChartUtils {
             }
 
             String cmd = phantomjs + " " + JSpath + " -infile " + dataPath + " -outfile " + path + " -width " + width + " -height " + height;
+            System.out.println(cmd);
+            Process process = Runtime.getRuntime().exec(cmd);
+            BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line = "";
+            while ((line = input.readLine()) != null) {
+                log.info(line);
+            }
+            input.close();
+//            System.out.println(ClassUtils.getDefaultClassLoader().getResource("").getPath());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally{
+            return path;
+        }
+    }
+
+    public static String generateEChart4China(String options, int width, int height) {
+        String name=UUID.randomUUID().toString().substring(0, 8);
+        String dataPath = writeFile(options,name);
+        String fileName = name + ".png";
+        String path = resourcePath+"/chart/image/"+fileName;
+        try {
+            File file = new File(path);     //文件路径（路径+文件名）
+            if (!file.exists()) {   //文件不存在则创建文件，先创建目录
+                File dir = new File(file.getParent());
+                dir.mkdirs();
+                file.createNewFile();
+            }
+
+            String cmd = phantomjs + " " + JSpath_China + " -infile " + dataPath + " -outfile " + path + " -width " + width + " -height " + height;
             System.out.println(cmd);
             Process process = Runtime.getRuntime().exec(cmd);
             BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -180,7 +213,7 @@ public class ChartUtils {
 
         CategoryAxis category = new CategoryAxis();// 轴分类
         category.data(chartOption.getValXis());
-        category.boundaryGap(true);// 起始和结束两端空白策略
+        category.setBoundaryGap(false);// 起始和结束两端空白策略
 
         // 循环数据
         for (int i = 0; i < datas.length; i++) {
@@ -242,6 +275,51 @@ public class ChartUtils {
 
 
         return generateEChart(new Gson().toJson(option), 1000, 600);
+    }
+
+    public static String generateMapCustom(Map<String, Integer> map, String chartName, String mapType){// world china
+
+        EMap eMap = new EMap();
+
+        int max = 0;
+        Iterator<String> iter = map.keySet().iterator();
+        while(iter.hasNext()){
+            String key=iter.next();
+            int value = map.get(key);
+
+            Map<String, Object> emap = new HashMap<String, Object>(2);
+            emap.put("name",key);
+            emap.put("value",value);
+            eMap.data(emap);
+
+//            System.out.println(key+" "+value);
+            if(value>max){
+                max = value;
+            }
+        }
+
+        GsonOption option = new GsonOption();
+        option.backgroundColor("transparent");
+        option.title().text(chartName).x("center").y("90%").textStyle().fontSize(30);
+        option.dataRange().show(true).y(300).calculable(true).min(0).max(max).color(Arrays.asList("#e42515","#fad3d0")).text(Arrays.asList(" "," "));
+//        option.legend().show(true);
+
+
+//        eMap.setName("Viewers' Location");
+        eMap.setRoam(false);
+        eMap.setMapType(mapType);
+        ItemStyle itemStyle =new ItemStyle();
+        itemStyle.normal().label().setShow(false);
+        eMap.setItemStyle(itemStyle);
+
+
+        option.series(eMap);
+
+        if(mapType.equals("world")) {
+            return generateEChart(new Gson().toJson(option), 1000, 600);
+        }else{
+            return generateEChart4China(new Gson().toJson(option), 1000, 600);
+        }
     }
 
     /**
