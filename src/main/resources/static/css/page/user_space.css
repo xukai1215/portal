@@ -1960,7 +1960,7 @@ body {
     width: 100px;
     height: 100px;
     text-align: center;
-    display: none;
+    /*display: none;*/
     float: left;
     margin-right: 10px;
 }

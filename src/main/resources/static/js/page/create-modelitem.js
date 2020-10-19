@@ -403,6 +403,10 @@ var createModelItem = Vue.extend({
         dragReady:false,
 
         editTypeLocal:false,
+
+        itemInfo:{
+            image:'',
+        },
     }
     },
 
@@ -490,7 +494,8 @@ var createModelItem = Vue.extend({
             }
             content.overView = $("#descInput").val()
             content.keywords = $("#tagInput").val().split(",");
-            content.image = $('#imgShow').get(0).currentSrc;
+            // content.image = $('#imgShow').get(0).currentSrc;
+            content.image = this.itemInfo.image;
             let references = new Array();
             var ref_lines = $("#dynamic-table tr");
             for (let i = 1; i < ref_lines.length; i++) {
@@ -784,8 +789,9 @@ var createModelItem = Vue.extend({
             $("#descInput").val(content.overView);
             //image
             if (content.image != "") {
-                $("#imgShow").attr("src", content.image);
-                $('#imgShow').show();
+                this.itemInfo.image = content.image
+                // $("#imgShow").attr("src", content.image);
+                // $('#imgShow').show();
             }
             //reference
 
@@ -820,7 +826,6 @@ var createModelItem = Vue.extend({
             $("#modelItemText").html(content.detail);//可能会赋值不成功
             $("#modelItemText").val(content.detail);
             initTinymce('textarea#modelItemText')
-
 
         },
 
@@ -1077,6 +1082,26 @@ var createModelItem = Vue.extend({
 
         closeImgUpload(){
             this.dragReady = false
+        },
+
+
+        deleteImg(){
+            this.$set(this.itemInfo,'image' , '')
+            console.log(this.itemInfo.image)
+        },
+
+        editImg(){
+            this.imgClipDialog = true
+            this.$nextTick(()=>{
+                let canvas = document.getElementsByTagName('canvas')[0]
+                // canvas.style.backgroundImage = this.itemInfo.image
+
+                context = canvas.getContext('2d');
+                //清除画布
+                // context.clearRect(0,0,150,150);
+
+                document.getElementsByClassName('dragBlock')[0].style.left = '-7px'
+            })
         },
 
         changeOpen(n) {
@@ -1489,8 +1514,7 @@ var createModelItem = Vue.extend({
                     this.itemName=basicInfo.name
                     //image
                     if (basicInfo.image != "") {
-                        $("#imgShow").attr("src", basicInfo.image);
-                        $('#imgShow').show();
+                        this.itemInfo.image = basicInfo.image
                     }
                     //reference
 
@@ -1761,7 +1785,8 @@ var createModelItem = Vue.extend({
             modelItemObj.name = $("#nameInput").val();
             modelItemObj.keywords = $("#tagInput").val().split(",");
             modelItemObj.description = $("#descInput").val();
-            modelItemObj.uploadImage = $('#imgShow').get(0).currentSrc;
+            // modelItemObj.uploadImage = $('#imgShow').get(0).currentSrc;
+            modelItemObj.uploadImage = this.itemInfo.image;
             modelItemObj.authorship=[];
             userspace.getUserData($("#providersPanel .user-contents .form-control"), modelItemObj.authorship);
 
@@ -2055,10 +2080,10 @@ var createModelItem = Vue.extend({
             //这边默认只能选一个，但是存放形式仍然是数组，所以取第一个元素使用[0];
             var file = fileInput.files[0];
             let fileSize = (file.size / 1024).toFixed(0)
-            // if(fileSize>size){
-            //     alert('The upload file should be less than 1.5M')
-            //     return
-            // }
+            if(fileSize>size){
+                alert('The upload file should be less than 2M')
+                return
+            }
             callBack(file);
         }
         $("#imgChange").click(function () {
@@ -2069,7 +2094,7 @@ var createModelItem = Vue.extend({
             $("#imgFile").click()
             $("#imgFile").change(function () {
 
-                fileUpload(this,1500,function (file) {
+                fileUpload(this,2048,function (file) {
 
 
                     //创建一个图像对象，用于接收读取的文件
@@ -2197,6 +2222,8 @@ var createModelItem = Vue.extend({
                         // $('.dragBar').eq(0).css('background-color','#cfe5fa')
 
                         vthis.dragReady=true
+
+                        document.getElementsByClassName('dragBlock')[0].style.left = '-7px'//滚动条归位
                     }
 
                 })
@@ -2451,8 +2478,9 @@ var createModelItem = Vue.extend({
 
         function saveImage(img) {
 
-            $('#imgShow').get(0).src = img;
-            $('#imgShow').show();
+            // $('#imgShow').get(0).src = img;
+            // $('#imgShow').show();
+            vthis.itemInfo.image = img
             vthis.loading=true
             vthis.dragReady=false
             setTimeout(()=>{

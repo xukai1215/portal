@@ -28,7 +28,7 @@ public class GdalUtilRestController {
 
         gdal.AllRegister();
 
-        gdal.SetConfigOption("PROJ_LIB","portal/proj.db");
+        gdal.SetConfigOption("PROJ_LIB","portal/GDAL/proj.db");
         int refCode = 0;
 
         if(inputRefName.indexOf("EPSG")!=-1){
