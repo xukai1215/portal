@@ -8,12 +8,10 @@ import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.entity.support.*;
 import njgis.opengms.portal.enums.ItemTypeEnum;
-import njgis.opengms.portal.service.CommonService;
-import njgis.opengms.portal.service.ConceptService;
-import njgis.opengms.portal.service.StatisticsService;
-import njgis.opengms.portal.service.UserService;
+import njgis.opengms.portal.service.*;
 import njgis.opengms.portal.utils.ChartUtils;
 import njgis.opengms.portal.utils.MyFileUtils;
+import njgis.opengms.portal.utils.Object.ChartOption;
 import njgis.opengms.portal.utils.Utils;
 import njgis.opengms.portal.utils.XmlTool;
 import org.apache.commons.io.FileUtils;
@@ -266,65 +264,72 @@ public class PortalApplicationTests {
 
     }
 
-    public void removeViewRecord(ItemTypeEnum itemTypeEnum, String oid) {
+    public void removeViewRecord(ItemTypeEnum itemTypeEnum, String oid, String dateStr) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date date = sdf.parse(dateStr);
 
-        if (itemTypeEnum == ItemTypeEnum.ModelItem) {
-            ModelItem modelItem = modelItemDao.findFirstByOid(oid);
-            int view = modelItem.getViewCount();
-            List<DailyViewCount> dailyViewCountList = modelItem.getDailyViewCount();
-            for (int i = 0; i < dailyViewCountList.size(); i++) {
-                DailyViewCount dailyViewCount = dailyViewCountList.get(i);
-                if (!dailyViewCount.isFlag()) {
-                    view -= dailyViewCount.getCount();
-                    dailyViewCountList.remove(dailyViewCount);
-                    i--;
+            if (itemTypeEnum == ItemTypeEnum.ModelItem) {
+                ModelItem modelItem = modelItemDao.findFirstByOid(oid);
+                int view = modelItem.getViewCount();
+                List<DailyViewCount> dailyViewCountList = modelItem.getDailyViewCount();
+                for (int i = 0; i < dailyViewCountList.size(); i++) {
+                    DailyViewCount dailyViewCount = dailyViewCountList.get(i);
+                    if (!dailyViewCount.isFlag() && dailyViewCount.getDate().after(date)) {
+                        view -= dailyViewCount.getCount();
+                        dailyViewCountList.remove(dailyViewCount);
+                        i--;
+                    }
                 }
-            }
-            modelItem.setViewCount(view);
-            modelItem.setDailyViewCount(dailyViewCountList);
-            modelItemDao.save(modelItem);
-        } else if (itemTypeEnum == ItemTypeEnum.ComputableModel) {
-            ComputableModel computableModel = computableModelDao.findFirstByOid(oid);
-            int view = computableModel.getViewCount();
-            int invoke = computableModel.getInvokeCount();
+                modelItem.setViewCount(view);
+                modelItem.setDailyViewCount(dailyViewCountList);
+                modelItemDao.save(modelItem);
+            } else if (itemTypeEnum == ItemTypeEnum.ComputableModel) {
+                ComputableModel computableModel = computableModelDao.findFirstByOid(oid);
+                int view = computableModel.getViewCount();
+                int invoke = computableModel.getInvokeCount();
 
-            List<DailyViewCount> dailyViewCountList = computableModel.getDailyViewCount();
-            for (int i = 0; i < dailyViewCountList.size(); i++) {
-                DailyViewCount dailyViewCount = dailyViewCountList.get(i);
-                if (!dailyViewCount.isFlag()) {
-                    view -= dailyViewCount.getCount();
-                    dailyViewCountList.remove(dailyViewCount);
-                    i--;
+                List<DailyViewCount> dailyViewCountList = computableModel.getDailyViewCount();
+                for (int i = 0; i < dailyViewCountList.size(); i++) {
+                    DailyViewCount dailyViewCount = dailyViewCountList.get(i);
+                    if (!dailyViewCount.isFlag() && dailyViewCount.getDate().after(date)) {
+                        view -= dailyViewCount.getCount();
+                        dailyViewCountList.remove(dailyViewCount);
+                        i--;
+                    }
                 }
-            }
-            computableModel.setDailyViewCount(dailyViewCountList);
+                computableModel.setDailyViewCount(dailyViewCountList);
 
-            List<DailyViewCount> dailyInvokeCountList = computableModel.getDailyInvokeCount();
-            for (int i = 0; i < dailyInvokeCountList.size(); i++) {
-                DailyViewCount dailyInvokeCount = dailyInvokeCountList.get(i);
-                if (!dailyInvokeCount.isFlag()) {
-                    invoke -= dailyInvokeCount.getCount();
-                    dailyInvokeCountList.remove(dailyInvokeCount);
-                    i--;
+                List<DailyViewCount> dailyInvokeCountList = computableModel.getDailyInvokeCount();
+                for (int i = 0; i < dailyInvokeCountList.size(); i++) {
+                    DailyViewCount dailyInvokeCount = dailyInvokeCountList.get(i);
+                    if (!dailyInvokeCount.isFlag() && dailyInvokeCount.getDate().after(date)) {
+                        invoke -= dailyInvokeCount.getCount();
+                        dailyInvokeCountList.remove(dailyInvokeCount);
+                        i--;
+                    }
                 }
+
+                computableModel.setViewCount(view);
+                computableModel.setInvokeCount(invoke);
+                computableModel.setDailyViewCount(dailyViewCountList);
+                computableModel.setDailyInvokeCount(dailyInvokeCountList);
+                computableModelDao.save(computableModel);
             }
 
-            computableModel.setViewCount(view);
-            computableModel.setInvokeCount(invoke);
-            computableModel.setDailyViewCount(dailyViewCountList);
-            computableModel.setDailyInvokeCount(dailyInvokeCountList);
-            computableModelDao.save(computableModel);
-        }
 
+            List<ViewRecord> viewRecordList = viewRecordDao.findAllByItemOidAndFlagAndDateAfter(oid, false, date);
+            for (ViewRecord v : viewRecordList) {
+                viewRecordDao.delete(v);
+            }
 
-        List<ViewRecord> viewRecordList = viewRecordDao.findAllByItemOidAndFlag(oid, false);
-        for (ViewRecord v : viewRecordList) {
-            viewRecordDao.delete(v);
-        }
+            List<Task> taskList = taskDao.findAllByComputableIdAndFlagAndRunTimeAfter(oid, false, date);
+            for (Task task : taskList) {
+                taskDao.delete(task);
+            }
 
-        List<Task> taskList = taskDao.findAllByComputableIdAndFlag(oid, false);
-        for (Task task : taskList) {
-            taskDao.delete(task);
+        }catch (Exception e){
+            System.out.println(e);
         }
 
     }
@@ -350,12 +355,27 @@ public class PortalApplicationTests {
     public void random() {
 
         List<Item> computableModelList = computableModelDao.findAllByAuthor("yue@lreis.ac.cn");
-        for(int i=0;i<100;i++){
+        for(int i=0;i<10;i++){
             String oid = computableModelList.get(i).getOid();
             randomComputableModel(oid);
         }
+//        computableModelList = computableModelDao.findAllByAuthor("xli@geo.ecnu.edu.cn");
+//        for(int i=0;i<5;i++){
+//            String oid = computableModelList.get(i).getOid();
+//            randomComputableModel(oid);
+//        }
 
-        randomComputableModel("a15b710e-6bb3-4471-b593-ef1ac5d6748b");
+        randomModelItem("05325d5e-a511-41af-8b5f-6ce4f82d25de");// shi xun
+        randomModelItem("7c6216ab-a4e0-455a-bfc2-ef338a7fe271");// paul whitehead
+        randomModelItem("52b9f307-b29b-431a-85a1-ebc5eddda2eb");// luc anselin
+        randomModelItem("ce37cd1e-b57c-4b10-ba5b-eaccabb937f0");// dan
+
+        randomComputableModel("fcf84557-3264-405e-93cc-0827b29fae63"); // A. Stewart Fotheringham
+        randomComputableModel("ea10c109-7d10-46cb-a18a-d7ed91058d65"); // barry croke
+        randomComputableModel("a15b710e-6bb3-4471-b593-ef1ac5d6748b"); // Dong zhang
+        randomComputableModel("e915319d-8679-463f-be2b-0ca0f7779651"); // tian wei
+        randomComputableModel("3cc498a1-5a8a-424b-8d17-14299fe1fd43"); // tian wei
+        randomComputableModel("fd230933-7bc1-40ac-8f7c-d72fee956d20"); // qi zhang
 
     }
 
@@ -363,7 +383,7 @@ public class PortalApplicationTests {
     public void randomComputableModel(String itemOid) {
         ItemTypeEnum itemType = ItemTypeEnum.ComputableModel;
         //删除之前随机的记录
-        removeViewRecord(itemType, itemOid);
+        removeViewRecord(itemType, itemOid, "2020-07-16");
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -524,7 +544,7 @@ public class PortalApplicationTests {
     public void randomModelItem(String itemOid) {
         ItemTypeEnum itemType = ItemTypeEnum.ModelItem;
         //删除之前随机的记录
-        removeViewRecord(itemType, itemOid);
+        removeViewRecord(itemType, itemOid, "2020-07-16");
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -1948,6 +1968,552 @@ public class PortalApplicationTests {
 
     }
 
+//    @Autowired
+//    SpatialReferenceService spatialReferenceService;
+//
+//    @Test
+//    public void updateSpatial(){
+//        List<SpatialReference> list = spatialReferenceDao.findAll();
+//        for(int i = 0;i<list.size();i++){
+//            SpatialReference spatialReference = list.get(i);
+//            spatialReferenceService.updateDescription(spatialReference);
+//            spatialReferenceDao.save(spatialReference);
+//        }
+//    }
+
+    public static boolean isContainChinese(String str) {
+
+        Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
+        Matcher m = p.matcher(str);
+        if (m.find()) {
+            return true;
+        }
+        return false;
+    }
+
+    @Autowired
+    UnitService unitService;
+
+//    @Test
+//    public void updateUnit(){
+//        List<Unit> list = unitDao.findAll();
+//        for(int i = 0;i<list.size();i++){
+//            Unit unit = list.get(i);
+//            unitService.updateDescription(unit);
+//            unitDao.save(unit);
+//            Utils.count();
+//        }
+//    }
+
+    @Test
+    public void viewRecordStats(){
+        List<ViewRecord> viewRecordList = viewRecordDao.findAll();
+
+        int lastSessionTotalViewCount = 0;
+        int thisSessionTotalViewCount = 0;
+
+        Map<String,Integer> lastSessionIps = new HashMap<>();
+        Map<String,Integer> thisSessionIps = new HashMap<>();
+        Map<String,Integer> totalIps = new HashMap<>();
+
+
+        Map<String,Integer> lastSessionCountrys = new HashMap<>();
+        Map<String,Integer> thisSessionCountrys = new HashMap<>();
+        Map<String,Integer> totalCountrys = new HashMap<>();
+
+
+        Date now = new Date();
+        Calendar c = Calendar.getInstance();
+        c.setTime(now);
+
+        c.add(Calendar.MONTH,-3);
+        Date before1 = c.getTime();
+        c.add(Calendar.MONTH,-3);
+        Date before2 = c.getTime();
+
+        int count = 0;
+        for (ViewRecord viewRecord : viewRecordList) {
+            System.out.println(viewRecord.getDate()+" "+count++);
+
+            if (viewRecord.isFlag()) {
+                Date date = viewRecord.getDate();
+                if(date == null){
+                    continue;
+                }
+                String ip = viewRecord.getIp();
+                String countryName;
+                try {
+                    countryName = Utils.getGeoInfoMeta(ip).getCountryName();
+                }catch (Exception e){
+                    continue;
+                }
+
+                totalIps.put(ip, totalIps.getOrDefault(ip, 0)+1);
+                totalCountrys.put(countryName, totalCountrys.getOrDefault(countryName, 0)+1);
+
+
+                if (date.after(before2) && date.before(before1)) {
+                    lastSessionTotalViewCount++;
+                    System.out.println("last++");
+
+                    lastSessionIps.put(ip, lastSessionIps.getOrDefault(ip, 0)+1);
+
+                    lastSessionCountrys.put(countryName, lastSessionCountrys.getOrDefault(countryName, 0)+1);
+
+                } else if (date.after(before1) && date.before(now)) {
+                    thisSessionTotalViewCount++;
+                    System.out.println("this++");
+
+                    thisSessionIps.put(ip, thisSessionIps.getOrDefault(ip, 0)+1);
+
+                    thisSessionCountrys.put(countryName, thisSessionCountrys.getOrDefault(countryName, 0)+1);
+                }
+            }
+        }
+
+
+        List<Map.Entry<String,Integer>> ipMapList = Utils.sortMap(totalIps);
+        List<Map.Entry<String,Integer>> countryMapList = Utils.sortMap(totalCountrys);
+
+        String content;
+        content = "";
+        for(Map.Entry<String,Integer> mapping:ipMapList){
+            content += mapping.getKey()+":"+mapping.getValue()+"\n";
+        }
+        MyFileUtils.writeTxt("C:\\Users\\kai\\Desktop\\visitorOutput\\totalIps.txt",content);
+
+        content = "";
+        for(Map.Entry<String,Integer> mapping:countryMapList){
+            content += mapping.getKey()+":"+mapping.getValue()+"\n";
+        }
+        MyFileUtils.writeTxt("C:\\Users\\kai\\Desktop\\visitorOutput\\totalCountries.txt",content);
+
+
+
+        List<Map.Entry<String,Integer>> lastSessionIpMapList = Utils.sortMap(lastSessionIps);
+        List<Map.Entry<String,Integer>> lastSessionCountryMapList = Utils.sortMap(lastSessionCountrys);
+
+        content = "";
+        for(Map.Entry<String,Integer> mapping:lastSessionIpMapList){
+            content += mapping.getKey()+":"+mapping.getValue()+"\n";
+        }
+        MyFileUtils.writeTxt("C:\\Users\\kai\\Desktop\\visitorOutput\\lastSessionTotalIps.txt",content);
+
+        content = "";
+        for(Map.Entry<String,Integer> mapping:lastSessionCountryMapList){
+            content += mapping.getKey()+":"+mapping.getValue()+"\n";
+        }
+        MyFileUtils.writeTxt("C:\\Users\\kai\\Desktop\\visitorOutput\\lastSessionTotalCountries.txt",content);
+
+
+
+        List<Map.Entry<String,Integer>> thisSessionIpMapList = Utils.sortMap(thisSessionIps);
+        List<Map.Entry<String,Integer>> thisSessionCountryMapList = Utils.sortMap(thisSessionCountrys);
+
+        content = "";
+        for(Map.Entry<String,Integer> mapping:thisSessionIpMapList){
+            content += mapping.getKey()+":"+mapping.getValue()+"\n";
+        }
+        MyFileUtils.writeTxt("C:\\Users\\kai\\Desktop\\visitorOutput\\thisSessionTotalIps.txt",content);
+
+        content = "";
+        for(Map.Entry<String,Integer> mapping:thisSessionCountryMapList){
+            content += mapping.getKey()+":"+mapping.getValue()+"\n";
+        }
+        MyFileUtils.writeTxt("C:\\Users\\kai\\Desktop\\visitorOutput\\thisSessionTotalCountries.txt",content);
+
+        System.out.println("last: "+lastSessionTotalViewCount);
+        System.out.println("this: "+thisSessionTotalViewCount);
+
+
+    }
+
+    @Test
+    public void countryStatsByTime(){
+        countryStats("C:\\Users\\kai\\Desktop\\visitorOutput\\totalIps_fix.txt","total_");
+        countryStats("C:\\Users\\kai\\Desktop\\visitorOutput\\lastSessionTotalIps_fix.txt","last_");
+        countryStats("C:\\Users\\kai\\Desktop\\visitorOutput\\thisSessionTotalIps_fix.txt","this_");
+    }
+
+    public Map<String, String> pinyin_cityMap(){
+        Map<String, String> pinyin_city = new HashMap<>();
+        pinyin_city.put("beijing","北京");
+        pinyin_city.put("shanghai","上海");
+        pinyin_city.put("tiangin","天津");
+        pinyin_city.put("chongqing","重庆");
+        pinyin_city.put("xianggang","香港");
+        pinyin_city.put("aomen","澳门");
+        pinyin_city.put("anhui","安徽");
+        pinyin_city.put("fujian","福建");
+        pinyin_city.put("guangdong","广东");
+        pinyin_city.put("guangxi","广西");
+        pinyin_city.put("guizhou","贵州");
+        pinyin_city.put("gansu","甘肃");
+        pinyin_city.put("hainan","海南");
+        pinyin_city.put("hebei","河北");
+        pinyin_city.put("henan","河南");
+        pinyin_city.put("heilongjiang","黑龙江");
+        pinyin_city.put("hubei","湖北");
+        pinyin_city.put("hunan","湖南");
+        pinyin_city.put("jilin","吉林");
+        pinyin_city.put("jiangsu","江苏");
+        pinyin_city.put("jiangxi","江西");
+        pinyin_city.put("liaoning","辽宁");
+        pinyin_city.put("neimenggu","内蒙古");
+        pinyin_city.put("ningxia","宁夏");
+        pinyin_city.put("qinghai","青海");
+//        pinyin_city.put("shanxi","陕西");
+        pinyin_city.put("shanxi","山西");
+        pinyin_city.put("shandong","山东");
+        pinyin_city.put("sichuan","四川");
+        pinyin_city.put("taiWan","台湾");
+        pinyin_city.put("xizang","西藏");
+        pinyin_city.put("xinjiang","新疆");
+        pinyin_city.put("yunnan","云南");
+        pinyin_city.put("zhejiang","浙江");
+
+        return pinyin_city;
+    }
+
+    public void countryStats(String ipPath,String name){
+        File f = new File(ipPath);
+        List<String> lines = new ArrayList<>();
+        try {
+            lines = FileUtils.readLines(f, "utf-8");
+        }catch (Exception e){
+
+        }
+
+        Map<String, Integer> countryIpCount = new HashMap<>();
+        Map<String, Integer> provinceIpCount = new HashMap<>();
+        Map<String, Integer> countryViewCount = new HashMap<>();
+        Map<String, Integer> provinceViewCount = new HashMap<>();
+        Map<String, String> pinyin_city = pinyin_cityMap();
+
+        for(int i=0;i<lines.size();i++){
+            String line = lines.get(i);
+            String[] infos = line.split(":");
+            String ip = infos[0];
+            int count = Integer.parseInt(infos[1]);
+
+            GeoInfoMeta geoInfoMeta = null;
+            try {
+                geoInfoMeta = Utils.getGeoInfoMeta(ip);
+            }catch (Exception e){
+
+            }
+
+            if(geoInfoMeta != null) {
+                //world
+                String countryName = geoInfoMeta.getCountryName();
+//                if(countryName.equals("Taiwan, China")&&name.equals("total_")){
+//                    int score = judgeIpIfPeople(ip);
+//                    System.out.println(ip+" : "+score);
+//                }
+
+                if(countryName.equals("Hong Kong, China")){
+                    countryName = "China";
+                }else if(countryName.equals("Macao, China")){
+                    countryName = "China";
+                }else if(countryName.equals("Taiwan, China")){
+                    countryName = "China";
+                }
+
+                countryIpCount.put(countryName, countryIpCount.getOrDefault(countryName,0)+1);
+                countryViewCount.put(countryName, countryViewCount.getOrDefault(countryName,0)+count);
+
+                //china
+                String region = "";
+                if(countryName.equals("China")){
+                    if(geoInfoMeta.getRegion().equals("Shanxi")) {
+                        System.out.println(geoInfoMeta.getCity());
+                    }
+                    region = pinyin_city.get(geoInfoMeta.getRegion().toLowerCase());
+                }else if(countryName.equals("Hong Kong, China")){
+                    region = "香港";
+                }else if(countryName.equals("Macao, China")){
+                    region = "澳门";
+                }else if(countryName.equals("Taiwan, China")){
+                    region = "台湾";
+                }
+
+                if(region!=null && !region.equals("")) {
+                    provinceIpCount.put(region, provinceIpCount.getOrDefault(region, 0) + 1);
+                    provinceViewCount.put(region, provinceViewCount.getOrDefault(region, 0) + count);
+                }
+
+            }
+        }
+
+        List<Map.Entry<String,Integer>> countryIpCountList = Utils.sortMap(countryIpCount);
+        List<Map.Entry<String,Integer>> countryViewCountList = Utils.sortMap(countryViewCount);
+        List<Map.Entry<String,Integer>> provinceIpCountList = Utils.sortMap(provinceIpCount);
+        List<Map.Entry<String,Integer>> provinceViewCountList = Utils.sortMap(provinceViewCount);
+
+        int ipCount = 0;
+        String content = "";
+        for(Map.Entry<String,Integer> mapping:countryIpCountList){
+            content += mapping.getKey()+":"+mapping.getValue()+"\n";
+            ipCount+=mapping.getValue();
+        }
+        MyFileUtils.writeTxt(getFolder(ipPath)+name+"CountryIpCount.txt",content);
+        System.out.println(ipCount);
+
+        int viewCount = 0;
+        content = "";
+        for(Map.Entry<String,Integer> mapping:countryViewCountList){
+            content += mapping.getKey()+":"+mapping.getValue()+"\n";
+            viewCount+=mapping.getValue();
+        }
+        MyFileUtils.writeTxt(getFolder(ipPath)+name+"CountryViewCount.txt",content);
+        System.out.println(viewCount);
+
+        ipCount = 0;
+        content = "";
+        for(Map.Entry<String,Integer> mapping:provinceIpCountList){
+            content += mapping.getKey()+":"+mapping.getValue()+"\n";
+            ipCount+=mapping.getValue();
+        }
+        MyFileUtils.writeTxt(getFolder(ipPath)+name+"ProvinceIpCount.txt",content);
+        System.out.println(ipCount);
+
+        viewCount = 0;
+        content = "";
+        for(Map.Entry<String,Integer> mapping:provinceViewCountList){
+            content += mapping.getKey()+":"+mapping.getValue()+"\n";
+            viewCount+=mapping.getValue();
+        }
+        MyFileUtils.writeTxt(getFolder(ipPath)+name+"ProvinceViewCount.txt",content);
+        System.out.println(viewCount);
+    }
+
+    public String getFolder(String path){
+        String folderPath = "";
+        String[] paths = path.split("\\\\");
+        for(int i=0;i<paths.length-1;i++){
+            folderPath+=paths[i]+"\\";
+        }
+        return  folderPath;
+    }
+
+    @Test
+    public void generateMap(){
+        Map<String, Integer> totalIpMap = readAsHashmap("C:\\Users\\kai\\Desktop\\visitorOutput\\total_CountryIpCount.txt");
+        ChartUtils.generateMapCustom(totalIpMap,"世界各国访问IP数量","world");
+        Map<String, Integer> totalChinaIpMap = readAsHashmap("C:\\Users\\kai\\Desktop\\visitorOutput\\total_ProvinceIpCount.txt");
+        ChartUtils.generateMapCustom(totalChinaIpMap,"中国各省份访问IP数量","china");
+
+//
+//        viewCountLineChart("Country","世界各国访问次数Top10",10);
+//        viewCountLineChart("Province","中国各省访问次数Top20",20);
+
+    }
+
+    public Map<String, Integer> readAsHashmap(String path){
+        Map<String, Integer> map = new HashMap<>();
+        File f = new File(path);
+        List<String> lines = new ArrayList<>();
+        try {
+            lines = FileUtils.readLines(f, "utf-8");
+        }catch (Exception e){
+
+        }
+
+        for(String line : lines){
+            String[] infos = line.split(":");
+            map.put(infos[0],Integer.parseInt(infos[1]));
+        }
+        return map;
+    }
+
+    public void viewCountLineChart(String type, String title, int size){
+        Map<String, Integer> lastViewMap = readAsHashmap("C:\\Users\\kai\\Desktop\\visitorOutput\\last_"+ type +"ViewCount.txt");
+        Map<String, Integer> thisViewMap = readAsHashmap("C:\\Users\\kai\\Desktop\\visitorOutput\\this_"+ type +"ViewCount.txt");
+        Map<String, Integer> totalViewMap = readAsHashmap("C:\\Users\\kai\\Desktop\\visitorOutput\\total_"+ type +"ViewCount.txt");
+
+        ChartOption chartOption = new ChartOption();
+        chartOption.setTitle(title);
+        List<Map.Entry<String,Integer>> totalViewMapList = Utils.sortMap(totalViewMap);
+
+//        int size = 10;//totalViewMapList.size();
+        String[] valXis = new String[size];
+        int[] totalViewMapCounts = new int[size];
+        int[] lastViewMapCounts = new int[size];
+        int[] thisViewMapCounts = new int[size];
+        for(int i = 0;i<valXis.length;i++){
+            Map.Entry<String,Integer> mapEntry = totalViewMapList.get(i);
+            valXis[i] = mapEntry.getKey();
+            totalViewMapCounts[i] = mapEntry.getValue();
+            lastViewMapCounts[i] = lastViewMap.getOrDefault(valXis[i],0);
+            thisViewMapCounts[i] = thisViewMap.getOrDefault(valXis[i],0);
+        }
+
+        int[][] datas = new int[3][size];
+        datas[0] = totalViewMapCounts;
+        datas[1] = thisViewMapCounts;
+        datas[2] = lastViewMapCounts;
+        String[] types = {"总数","本季度","上季度"};
+        chartOption.setData(datas);
+        chartOption.setValXis(valXis);
+        chartOption.setTypes(types);
+
+        ChartUtils.generateBar(chartOption,1);
+    }
+
+    @Test
+    public void viewCountStats(){
+        //数据清洗
+        String pattern = "^(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[0-9])\\." +
+                "(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[0-9])\\." +
+                "(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[0-9])\\." +
+                "(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[0-9]):\\d+$" ;
+        Pattern pattern1 = Pattern.compile(pattern);
+        Matcher matcher = pattern1.matcher("123.33.32.1:a");
+        System.out.println(matcher.matches());
+        //去爬虫ip
+        List<String> ips = new ArrayList<>();
+        File f = new File("C:\\Users\\kai\\Desktop\\visitorOutput\\thisSessionTotalIps.txt");
+        List<String> lines = new ArrayList<>();
+        try {
+            lines = FileUtils.readLines(f, "utf-8");
+        }catch (Exception e){
+
+        }
+
+        for(String line : lines){
+            if(pattern1.matcher(line.trim()).matches()){
+                ips.add(line.trim());
+            }
+        }
+
+        System.out.println(ips.size());
+
+        List<String> lines_Final = new ArrayList<>();
+        List<Integer> skip_num = new ArrayList<>();
+        List<Integer> skip_pre = new ArrayList<>();
+        for(int i =0;i<ips.size();i++){
+            boolean skip = false;
+            for(int s = 0;s<skip_num.size();s++){
+                if(skip_num.get(s)==i){
+                    skip = true;
+                    break;
+                }
+            }
+            if(skip){
+                continue;
+            }
+            String line = ips.get(i);
+            String[] nums = line.split("\\.");
+            String ipStart = "";
+            ipStart = nums[0]+"."+nums[1]+"."+nums[2];
+
+            int sameCount = 0;
+            skip_pre = new ArrayList<>();
+            for(int j= i+1;j<ips.size();j++) {
+                String line_j = ips.get(j);
+                if(line_j.startsWith(ipStart)){
+                    sameCount ++;
+                    skip_pre.add(j);
+                }
+            }
+
+
+
+            if(sameCount<4){
+                String[] infos = line.split(":");
+                String ip = infos[0];
+                int count = Integer.parseInt(infos[1]);
+//                if(count>=10) {
+//
+//                    int score = judgeIpIfPeople(ip);
+//                    if (score >= 50) {
+//                        lines_Final.add(line);
+//                        System.out.println(line);
+//                    }
+//
+//                }else{
+//                    lines_Final.add(line);
+//                }
+                lines_Final.add(line);
+            }else{
+                for(int k = 0;k<skip_pre.size();k++){
+                    skip_num.add(skip_pre.get(k));
+                }
+            }
+
+            System.out.println(lines_Final.size());
+
+            String outputContent = "";
+            for(int m = 0;m<lines_Final.size();m++){
+                outputContent += lines_Final.get(m) +"\n";
+            }
+            MyFileUtils.writeTxt("C:\\Users\\kai\\Desktop\\visitorOutput\\thisSessionTotalIps_fix_4.txt",outputContent);
+        }
+    }
+
+    public int judgeIpIfPeople(String ip){
+        String body = Utils.sendGet("https://way.jd.com/RTBAsia/nht", "ip=" + ip + "&appkey=ad6b90a205cb724dd15ad2f58ffd31e1");
+        JSONObject jsonObject = JSONObject.parseObject(body);
+        JSONObject result = jsonObject.getJSONObject("result");
+        int score = -1;
+        if (result.containsKey("data")) {
+            score = Integer.parseInt(result.getJSONObject("data").getString("score"));
+        }
+        return score;
+    }
+
+    @Test
+    public void modelItemViewCountStats(){
+        List<ModelItem> modelItemList = modelItemDao.findAll();
+        int lastSessionTotalViewCount = 0;
+        int thisSessionTotalViewCount = 0;
+        int up = 0;
+        int same = 0;
+        int down = 0;
+        for(int i=0;i<modelItemList.size();i++){
+            ModelItem modelItem = modelItemList.get(i);
+            List<DailyViewCount> dailyViewCountList = modelItem.getDailyViewCount();
+            // 计算上个季度访问量
+            Date now = new Date();
+            Calendar c = Calendar.getInstance();
+            c.setTime(now);
+            c.add(Calendar.MONTH,-3);
+            Date before1 = c.getTime();
+            c.add(Calendar.MONTH,-3);
+            Date before2 = c.getTime();
+
+            int lastSessionViewCount = 0;
+            int thisSessionViewCount = 0;
+
+            for(DailyViewCount dailyViewCount:dailyViewCountList){
+                if(dailyViewCount.isFlag()) {
+                    Date date = dailyViewCount.getDate();
+                    int count = dailyViewCount.getCount();
+                    if (date.after(before2) && date.before(before1)) {
+                        lastSessionViewCount += count;
+                        lastSessionTotalViewCount += count;
+                    } else if (date.after(before1) && date.before(now)) {
+                        thisSessionViewCount += count;
+                        thisSessionTotalViewCount += count;
+                    }
+                }
+            }
+
+            if(lastSessionViewCount > thisSessionViewCount){
+                down++;
+            }else if(lastSessionViewCount < thisSessionViewCount){
+                up++;
+            }else{
+                same++;
+            }
+        }
+        System.out.println("last: "+lastSessionTotalViewCount);
+        System.out.println("this: "+thisSessionTotalViewCount);
+        System.out.println("up: "+up);
+        System.out.println("down: "+down);
+        System.out.println("same: "+same);
+    }
+
     @Test
     public void updateConcept() {
 
@@ -1987,11 +2553,11 @@ public class PortalApplicationTests {
                     for (Element Localization : LocalizationList) {
                         String language = Localization.attributeValue("Local");
                         String name = Localization.attributeValue("Name");
-                        if (language.equals("EN_US")) {
-                            unit.setName_EN(name);
-                        } else if (language.equals("ZH_CN")) {
-                            unit.setName_ZH(name);
-                        }
+//                        if (language.equals("EN_US")) {
+//                            unit.setName_EN(name);
+//                        } else if (language.equals("ZH_CN")) {
+//                            unit.setName_ZH(name);
+//                        }
                     }
                     unitDao.save(unit);
                     Utils.count();
@@ -2003,32 +2569,32 @@ public class PortalApplicationTests {
         }
     }
 
-    @Test
-    public void spatialNameAndDes() {
-        List<SpatialReference> list = spatialReferenceDao.findAll();
-        for (SpatialReference spatialReference : list) {
-            if (spatialReference.getXml() != null) {
-                org.dom4j.Document document = null;
-                try {
-                    document = DocumentHelper.parseText(spatialReference.getXml());
-                    Element root = document.getRootElement();
-                    Element Localization = root.element("Localization");
-
-                    String name = Localization.attributeValue("name");
-                    spatialReference.setName_EN(name);
-                    String description = Localization.attributeValue("description");
-                    spatialReference.setDescription_EN(description);
-
-                    spatialReferenceDao.save(spatialReference);
-                    Utils.count();
-                } catch (DocumentException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        }
-
-    }
+//    @Test
+//    public void spatialNameAndDes() {
+//        List<SpatialReference> list = spatialReferenceDao.findAll();
+//        for (SpatialReference spatialReference : list) {
+//            if (spatialReference.getXml() != null) {
+//                org.dom4j.Document document = null;
+//                try {
+//                    document = DocumentHelper.parseText(spatialReference.getXml());
+//                    Element root = document.getRootElement();
+//                    Element Localization = root.element("Localization");
+//
+//                    String name = Localization.attributeValue("name");
+//                    spatialReference.setName_EN(name);
+//                    String description = Localization.attributeValue("description");
+//                    spatialReference.setDescription_EN(description);
+//
+//                    spatialReferenceDao.save(spatialReference);
+//                    Utils.count();
+//                } catch (DocumentException e) {
+//                    e.printStackTrace();
+//                }
+//
+//            }
+//        }
+//
+//    }
 
     @Test
     public void contextLoads() {
@@ -2259,5 +2825,68 @@ public class PortalApplicationTests {
             return false;
         }
     }
+//
+//    @Test
+//    public void changeSpatialIndex(){
+//        List<SpatialReference> spatialReferenceList = spatialReferenceDao.findAll();
+//        for(int i=0;i<spatialReferenceList.size();i++){
+//            SpatialReference spatialReference = spatialReferenceList.get(i);
+//            String name = spatialReference.getName();
+//            String index = name.replace(".",":").replace("IAU2000","IAU");
+//            spatialReference.setIndex(index);
+//            spatialReferenceDao.save(spatialReference);
+//        }
+//    }
+//
+//    @Autowired
+//    UnitClassificationDao unitClassificationDao;
+//
+//    @Test
+//    public void generateUnitClassification(){
+//        String parentId = "9a8680fe-ffd6-4e5a-959b-d0f157506cd3";
+//        List<String> oids = new ArrayList<>();
+//        List<Unit> unitList = unitDao.findAll();
+//        for(int i = 0;i<unitList.size();i++){
+//            Unit unit = unitList.get(i);
+//            String tag = unit.getTag();
+//
+//            Classification cls = unitClassificationDao.findFirstByNameEn(tag);
+//            if(cls==null) {
+//
+//                UnitClassification classification = new UnitClassification();
+//                String oid = UUID.randomUUID().toString();
+//                oids.add(oid);
+//                classification.setOid(oid);
+//                classification.setChildrenId(new ArrayList<>());
+//                classification.setNameCn("");
+//                classification.setNameEn(tag);
+//                classification.setParentId(parentId);
+//                unitClassificationDao.insert(classification);
+//            }
+//        }
+//
+//        UnitClassification all = new UnitClassification();
+//        all.setOid(parentId);
+//        all.setChildrenId(oids);
+//        all.setParentId(null);
+//        all.setNameCn("");
+//        all.setNameEn("Unit & Metric");
+//        unitClassificationDao.insert(all);
+//    }
+//
+//
+//    @Test
+//    public void setUnitCls(){
+//        List<Unit> unitList = unitDao.findAll();
+//        for(int i=0;i<unitList.size();i++){
+//            Unit unit = unitList.get(i);
+//            String tag = unit.getTag();
+//            Classification unitClassification = unitClassificationDao.findFirstByNameEn(tag);
+//            List<String> cls = new ArrayList<>();
+//            cls.add(unitClassification.getOid());
+//            unit.setClassifications(cls);
+//            unitDao.save(unit);
+//        }
+//    }
 
 }

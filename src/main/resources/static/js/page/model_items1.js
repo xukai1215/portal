@@ -361,7 +361,7 @@ new Vue({
                             "id": 17,
                             "label": "Geostatistical analysis",
                             "oid": "1c876281-a032-4575-8eba-f1a8fb4560d8"
-                        }, {"id": 18, "label": "Machine Learning analysis", "oid": "c6fcc899-8ca4-4269-a21e-a39d38c034a6"}],
+                        }, {"id": 18, "label": "Intelligent computation analysis", "oid": "c6fcc899-8ca4-4269-a21e-a39d38c034a6"}],
                         "id": 14,
                         "label": "Data-perspective",
                         "oid": "4785308f-b2ef-4193-a74b-b9fe025cbc5e"
@@ -1125,8 +1125,8 @@ new Vue({
 
         if(document.cookie.indexOf("modelRep=1")==-1){
             this.showDriver();
-            var t=new Date(new Date().getTime()+1000*60*60*24*60);
-            document.cookie="modelRep=1; expires="+t.toGMTString();
+            var t=new Date(new Date().getTime()+1000*60*60*24*60);
+            document.cookie="modelRep=1; expires="+t.toGMTString();
         }
 
     }

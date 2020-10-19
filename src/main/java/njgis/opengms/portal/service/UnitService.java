@@ -42,11 +42,11 @@ public class UnitService {
         Pageable pageable = PageRequest.of(page, pageSize, sort);
 
         Page<UnitResultDTO> units = Page.empty();
-        if(loadUser == null||!loadUser.equals(oid)) {
+//        if(loadUser == null||!loadUser.equals(oid)) {
             units = unitDao.findByAuthorAndStatusIn(userId,itemStatusVisible, pageable);
-        }else{
-            units = unitDao.findByAuthor(userId, pageable);
-        }
+//        }else{
+//            units = unitDao.findByAuthor(userId, pageable);
+//        }
 
         JSONObject UnitObject = new JSONObject();
         UnitObject.put("count", units.getTotalElements());
@@ -69,11 +69,11 @@ public class UnitService {
 
         Page<UnitResultDTO> unitResultDTOPage = Page.empty();
 
-        if(loadUser == null||!loadUser.equals(oid)) {
+//        if(loadUser == null||!loadUser.equals(oid)) {
             unitResultDTOPage = unitDao.findByNameContainsIgnoreCaseAndAuthorAndStatusIn(name, userName,itemStatusVisible, pageable);
-        }else{
-            unitResultDTOPage = unitDao.findByNameContainsIgnoreCaseAndAuthor(name, userName, pageable);
-        }
+//        }else{
+//            unitResultDTOPage = unitDao.findByNameContainsIgnoreCaseAndAuthor(name, userName, pageable);
+//        }
 
         JSONObject result=new JSONObject();
         result.put("list",unitResultDTOPage.getContent());
