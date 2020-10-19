@@ -382,6 +382,12 @@ var userDraftBox = Vue.extend(
 
         methods:{
 
+            formatDateChild(val){
+                let res
+                this.$emit('com-format-date',val,a => { res = a })
+                return res
+            },
+
             changeSort(){
                 if(this.asc==true)
                     this.asc=false

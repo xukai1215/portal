@@ -12,6 +12,7 @@
     <link rel="stylesheet" th:href="@{/static/css/base/universal.css}">
     <link rel="stylesheet" th:href="@{/static/css/base/itemInfo.css}">
     <link rel="stylesheet" th:href="@{/static/css/page/model_item_info.css}">
+    <link rel="stylesheet" th:href="@{/static/css/page/repositoryInfo.css}">
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css" />
     <!--<link rel="stylesheet" th:href="@{/static/css/page/repositoryInfo.css}">-->
@@ -60,17 +61,22 @@
         <div class="left-panel el-col">
             <div class="detail">
                 <div class="detail_title">
-                    <el-tooltip popper-class="fontsize-15" th:content="${info.status}" effect="light" placement="left">
-                        <i th:if="${info.status=='Public'}" class="el-icon-unlock public fontsize-2em pull-right"></i>
-                        <i th:if="${info.status=='Discoverable'}" class="el-icon-unlock discoverable fontsize-2em pull-right"></i>
-                        <i th:if="${info.status=='Private'}" class="el-icon-lock private fontsize-2em pull-right"></i>
-                    </el-tooltip>
+
                     <h2 th:utext="${info.name}" style="display: inline-block;margin-right:15px;"></h2>
-                    <a href="javascript:void(0);" th:if="${info.status=='Public'&&history!=true&&info.lock!=true}" class='fa fa-pencil fa-2x' aria-hidden='true' @click="edit"></a>
-                    <el-tooltip popper-class="fontsize-15" content="There is another version haven't been reviewed, you can edit it later or contact us." effect="light" placement="left">
-                        <li th:if="${info.status=='Public'&&history!=true&&info.lock==true}" class='fa fa-pencil fa-2x' style="color:#cccccc" aria-hidden='true'></li>
-                    </el-tooltip>
-                    <!--<a href="javascript:void(0)" class='fa fa-star-o fa-2x pull-right' aria-hidden='true'></a>-->
+                    <div class="pull-right">
+                        <el-tooltip popper-class="fontsize-15" content="Edit" effect="light" placement="top">
+                            <a href="javascript:void(0);" th:if="${info.status=='Public'&&history!=true&&info.lock!=true}" class='fa fa-pencil fa-2x' aria-hidden='true' @click="edit"></a>
+                        </el-tooltip>
+                        <el-tooltip popper-class="fontsize-15" content="There is another version haven't been reviewed, you can edit it later or contact us." effect="light" placement="top">
+                            <li th:if="${info.status=='Public'&&history!=true&&info.lock==true}" class='fa fa-pencil fa-2x' style="color:#cccccc" aria-hidden='true'></li>
+                        </el-tooltip>
+                        <el-tooltip popper-class="fontsize-15" th:content="${info.status}" effect="light" placement="top">
+                            <i th:if="${info.status=='Public'}" class="el-icon-unlock public fontsize-2em"></i>
+                            <i th:if="${info.status=='Discoverable'}" class="el-icon-unlock discoverable fontsize-2em"></i>
+                            <i th:if="${info.status=='Private'}" class="el-icon-lock private fontsize-2em"></i>
+                        </el-tooltip>
+                        <!--<a href="javascript:void(0)" class='fa fa-star-o fa-2x pull-right' aria-hidden='true'></a>-->
+                    </div>
                 </div>
                 <div class="detail_overview">
 
@@ -153,24 +159,31 @@
                     </div>
                 </div>
                 <div class="block_content">
-                    <div th:if="${info.detail==null}" class="LanguageInfoContainer">
+                    <pre th:if="${info.xml!=null && info.xml!=''}" lang="xml" th:text="${info.xml}"></pre>
+                    <div class="LanguageInfoContainer" th:each="localization:${info.localizationList}" th:id="${localization.localCode}">
+                        <table class="table table-bordered" >
+                            <thead>
+                            <tr>
+                                <th class="thMain" th:text="${localization.localName}"></th>
+                            </tr>
+                            </thead>
+                        </table>
                         <table class="table table-bordered">
                             <colgroup>
                                 <col width="25%">
                                 <col width="75%">
                             </colgroup>
-                            <tr>
+                            <tr th:if="${localization.name!=''}">
                                 <td>Name</td>
-                                <td class="enName" th:text="${info.name}"></td>
+                                <td class="enName" th:text="${localization.name}"></td>
                             </tr>
-                            <tr>
-                                <td>Type</td>
-                                <td class="enDesc" th:text="${info.type}"></td>
+                            <tr th:if="${localization.description!=''}">
+                                <td>Description</td>
+                                <td class="enDesc" th:utext="${localization.description}"></td>
                             </tr>
                         </table>
                     </div>
-                    <div th:if="${info.detail!=null}" th:utext="${info.detail}"></div>
-                    <pre th:if="${info.xml!=null && info.xml!=''}" lang="xml" th:text="${info.xml}"></pre>
+
                 </div>
 
             </div>
@@ -197,6 +210,19 @@
                     </div>
                     <div id="copy" class="btn btn-info">
                         Copy
+                    </div>
+                </div>
+            </div>
+
+            <div id="copyright" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Copyright and Disclaimer</h4>
+                    </div>
+                </div>
+                <div class="block_content">
+                    <div class="copyright_text">
+                        All copyrights of a material (model, data, article, etc.) in the OpenGMS fully belong to its author/developer/designer (or any other wording about the owner). The OpenGMS takes every care to avoid copyright infringement, contributor(s) should carefully employ materials from other sources and give proper citations.
                     </div>
                 </div>
             </div>

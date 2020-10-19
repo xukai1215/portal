@@ -492,7 +492,7 @@ Format.prototype.refresh = function()
 
             addClickHandler(label, div, idx++);
 		}else if(graph.getSelectionModel().cells[0].response == true){
-            mxUtils.write(label, mxResources.get('inputEvent'));
+            mxUtils.write(label, mxResources.get('inputData'));
             label.style.borderLeftWidth = '0px';
             label.style.fontSize = '16px';
 
@@ -501,7 +501,7 @@ Format.prototype.refresh = function()
 
             addClickHandler(label, div, idx++);
 		}else if(graph.getSelectionModel().cells[0].response == false){
-            mxUtils.write(label, mxResources.get('outputEvent'));
+            mxUtils.write(label, mxResources.get('outputData'));
             label.style.borderLeftWidth = '0px';
             label.style.fontSize = '16px';
 
@@ -5645,58 +5645,58 @@ EventPanel.prototype.init = function()
 {
     var graph = this.editorUi.editor.graph;
 
-    var model;
-    var modelId = graph.getSelectionModel().cells[0].mid;
-    var inputEvents = [];
-    var outputEvents = [];
-    var i;
-    for (i=0; i<computableModelList.size; i++){
-        if(modelId == computableModelList.content[i].id){
-        	model = computableModelList.content[i];
-            var states = computableModelList.content[i].mdlJson.mdl.states;
-            for (var j = 0; j<states.length; j++){
-                var state = states[j];
-                for (var k = 0; k<state.event.length; k++){
-                    var event = state.event[k];
-                    event.stateName = state.name;
-                    if (event.eventType == "response"){
-                        inputEvents.push(event);
-                    } else{
-                        outputEvents.push(event);
-                    }
-                }
-            }
-            break;
-        }
-    }
+    var model = graph.getSelectionModel().cells[0];
+    var modelOid = graph.getSelectionModel().cells[0].mid;
+    // var inputData = [];
+    // var outputData = [];
+    // var i;
+    // for (i=0; i<computableModelList.size; i++){
+    //     if(modelOid == computableModelList.content[i].oid){
+    //     	model = computableModelList.content[i];
+    //         var states = computableModelList.content[i].mdlJson.mdl.states;
+    //         for (var j = 0; j<states.length; j++){
+    //             var state = states[j];
+    //             for (var k = 0; k<state.event.length; k++){
+    //                 var event = state.event[k];
+    //                 event.stateName = state.name;
+    //                 if (event.eventType == "response"){
+    //                     inputData.push(event);
+    //                 } else{
+    //                     outputData.push(event);
+    //                 }
+    //             }
+    //         }
+    //         break;
+    //     }
+    // }
+	//
+    // if (i >= computableModelList.size) {
+    //     for (var j=0; j<hasSearchedTermsComputableModel.length; j++){
+    //         if(modelOid == hasSearchedTermsComputableModel[j].modelOid){
+    //             model = hasSearchedTermsComputableModel[j];
+    //             var states = hasSearchedTermsComputableModel[j].mdlJson.mdl.states;
+    //             for (var k = 0; k<states.length; k++){
+    //                 var state = states[k];
+    //                 for (var l = 0; l<state.event.length; l++){
+    //                     var event = state.event[l];
+    //                     event.stateName = state.name;
+    //                     if (event.eventType == "response"){
+    //                         inputData.push(event);
+    //                     } else{
+    //                         outputData.push(event);
+    //                     }
+    //                 }
+    //             }
+    //             break;
+    //         }
+    //     }
+    // }
 
-    if (i >= computableModelList.size) {
-        for (var j=0; j<hasSearchedTermsComputableModel.length; j++){
-            if(modelId == hasSearchedTermsComputableModel[j].id){
-                model = hasSearchedTermsComputableModel[j];
-                var states = hasSearchedTermsComputableModel[j].mdlJson.mdl.states;
-                for (var k = 0; k<states.length; k++){
-                    var state = states[k];
-                    for (var l = 0; l<state.event.length; l++){
-                        var event = state.event[l];
-                        event.stateName = state.name;
-                        if (event.eventType == "response"){
-                            inputEvents.push(event);
-                        } else{
-                            outputEvents.push(event);
-                        }
-                    }
-                }
-                break;
-            }
-        }
-    }
-
-    this.container.appendChild(this.addInputEvents(this.createPanel(),inputEvents,model));
-    this.container.appendChild(this.addOutputEvents(this.createPanel(),outputEvents,model));
+    this.container.appendChild(this.addinputData(this.createPanel(),model.inputData,model));
+    this.container.appendChild(this.addoutputData(this.createPanel(),model.outputData,model));
 };
 
-EventPanel.prototype.addInputEvents = function(div,inputEvents,model){
+EventPanel.prototype.addinputData = function(div,inputData,model){
     var ui = this.editorUi;
 
     var title = this.createTitle("Input Events: ");
@@ -5705,12 +5705,12 @@ EventPanel.prototype.addInputEvents = function(div,inputEvents,model){
     title.style.cursor = "default";
     div.appendChild(title);
 
-    for (var i = 0; i<inputEvents.length; i++){
+    for (var i = 0; i<inputData.length; i++){
         var event = document.createElement("p");
         event.style.margin = '0px';
         div.appendChild(event);
 
-        event = ui.sidebar.createEventVertexTemplate('shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#003366;fillColor=none;', 170, 50, inputEvents[i].eventName, null, null, null,true, model,true,inputEvents[i]);
+        event = ui.sidebar.createEventVertexTemplate('shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#003366;fillColor=none;', 170, 50, inputData[i].eventName, null, null, null,true, model,true,inputData[i]);
 
         div.appendChild(event);
     }
@@ -5720,19 +5720,19 @@ EventPanel.prototype.addInputEvents = function(div,inputEvents,model){
     return div;
 };
 
-EventPanel.prototype.addOutputEvents = function(div,outputEvents,model){
+EventPanel.prototype.addoutputData = function(div,outputData,model){
     var title = this.createTitle("Output Events: ");
     title.style.paddingBottom = '6px';
     title.style.fontSize = "14px";
     title.style.cursor = "default";
     div.appendChild(title);
 
-    for (var i = 0; i<outputEvents.length; i++){
+    for (var i = 0; i<outputData.length; i++){
         var event = document.createElement("p");
         event.style.margin = '0px';
         div.appendChild(event);
 
-        event = ui.sidebar.createEventVertexTemplate('shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#003366;fillColor=none;', 170, 50, outputEvents[i].eventName, null, null, null,true,model,false,outputEvents[i]);
+        event = ui.sidebar.createEventVertexTemplate('shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#449d44;fillColor=none;', 170, 50, outputData[i].eventName, null, null, null,true,model,false,outputData[i]);
 
         div.appendChild(event);
     }
@@ -5759,47 +5759,60 @@ InputEventPanel.prototype.init = function()
     var graph = this.editorUi.editor.graph;
 
     var model;
-    var modelId = graph.getSelectionModel().cells[0].mid;
+    var frontId = graph.getSelectionModel().cells[0].frontId;
     var eventName = graph.getSelectionModel().cells[0].value;
     var event = null;
-    var i;
-    for (i=0; i<computableModelList.size; i++){
-        if(modelId == computableModelList.content[i].id){
-            model = computableModelList.content[i];
-            var states = computableModelList.content[i].mdlJson.mdl.states;
-            for (var j = 0; j<states.length; j++){
-                var state = states[j];
-                for (var k = 0; k<state.event.length; k++){
-                    var eventTmp = state.event[k];
-                    if (eventTmp.eventName == eventName){
-                        event = eventTmp;
-                        break;
-                    }
-                }
-            }
-            break;
-        }
-    }
+    let cells = graph.getModel().cells
+	for (let i in cells) {
+		if (cells[i].frontId === frontId && cells[i].md5 != undefined) {
+			model = cells[i];
+			for (let eleEvent of model.inputData) {
+				if(eleEvent.eventName === eventName){
+					event = eleEvent
+					break;
+				}
+			}
+		}
+	}
+	// var i;
+    // for (i=0; i<computableModelList.size; i++){
+    //     if(modelId == computableModelList.content[i].id){
+    //         model = computableModelList.content[i];
+    //         var states = computableModelList.content[i].mdlJson.mdl.states;
+    //         for (var j = 0; j<states.length; j++){
+    //             var state = states[j];
+    //             for (var k = 0; k<state.event.length; k++){
+    //                 var eventTmp = state.event[k];
+    //                 if (eventTmp.eventName == eventName){
+    //                     event = eventTmp;
+    //                     break;
+    //                 }
+    //             }
+    //         }
+    //         break;
+    //     }
 
-    if (i >= computableModelList.size) {
-        for (var j=0; j<hasSearchedTermsComputableModel.length; j++){
-            if(modelId == hasSearchedTermsComputableModel[j].id){
-                model = hasSearchedTermsComputableModel[j];
-                var states = hasSearchedTermsComputableModel[j].mdlJson.mdl.states;
-                for (var k = 0; k<states.length; k++){
-                    var state = states[k];
-                    for (var l = 0; l<state.event.length; l++){
-                        var eventTmp = state.event[l];
-                        if (eventTmp.eventName == eventName){
-                            event = eventTmp;
-                            break;
-                        }
-                    }
-                }
-                break;
-            }
-        }
-    }
+    // }
+	//
+    // if (i >= computableModelList.size) {
+    //     for (var j=0; j<hasSearchedTermsComputableModel.length; j++){
+    //         if(modelId == hasSearchedTermsComputableModel[j].id){
+    //             model = hasSearchedTermsComputableModel[j];
+    //             var states = hasSearchedTermsComputableModel[j].mdlJson.mdl.states;
+    //             for (var k = 0; k<states.length; k++){
+    //                 var state = states[k];
+    //                 for (var l = 0; l<state.event.length; l++){
+    //                     var eventTmp = state.event[l];
+    //                     if (eventTmp.eventName == eventName){
+    //                         event = eventTmp;
+    //                         break;
+    //                     }
+    //                 }
+    //             }
+    //             break;
+    //         }
+    //     }
+    // }
     this.container.appendChild(this.addInputEventInfo(this.createPanel(),event,model.name));
     // this.container.appendChild(this.addDownload(this.createPanel(),event,url));
 };
@@ -5895,50 +5908,70 @@ mxUtils.extend(OutputEventPanel, BaseFormatPanel);
 
 OutputEventPanel.prototype.init = function()
 {
-    var graph = this.editorUi.editor.graph;
+	var graph = this.editorUi.editor.graph;
 
-    var model;
-    var modelId = graph.getSelectionModel().cells[0].mid;
-    var eventName = graph.getSelectionModel().cells[0].value;
-    var event = null;
-    var i;
-    for (i=0; i<computableModelList.size; i++){
-        if(modelId == computableModelList.content[i].id){
-            model = computableModelList.content[i];
-            var states = computableModelList.content[i].mdlJson.mdl.states;
-            for (var j = 0; j<states.length; j++){
-                var state = states[j];
-                for (var k = 0; k<state.event.length; k++){
-                    var eventTmp = state.event[k];
-                    if (eventTmp.eventName == eventName){
-                        event = eventTmp;
-                        break;
-                    }
-                }
-            }
-            break;
-        }
-    }
+	var model;
+	var frontId = graph.getSelectionModel().cells[0].frontId;
+	var eventName = graph.getSelectionModel().cells[0].value;
+	var event = null;
+	let cells = graph.getModel().cells
+	for (let i in cells) {
+		if (cells[i].frontId === frontId && cells[i].md5 != undefined) {
+			model = cells[i];
+			for (let eleEvent of model.outputData) {
+				if(eleEvent.eventName === eventName){
+					event = eleEvent
+					break;
+				}
+			}
+		}
+	}
 
-    if (i >= computableModelList.size) {
-        for (var j=0; j<hasSearchedTermsComputableModel.length; j++){
-            if(modelId == hasSearchedTermsComputableModel[j].id){
-                model = hasSearchedTermsComputableModel[j];
-                var states = hasSearchedTermsComputableModel[j].mdlJson.mdl.states;
-                for (var k = 0; k<states.length; k++){
-                    var state = states[k];
-                    for (var l = 0; l<state.event.length; l++){
-                        var eventTmp = state.event[l];
-                        if (eventTmp.eventName == eventName){
-                            event = eventTmp;
-                            break;
-                        }
-                    }
-                }
-                break;
-            }
-        }
-    }
+
+    // var graph = this.editorUi.editor.graph;
+	//
+    // var model;
+    // var modelId = graph.getSelectionModel().cells[0].mid;
+    // var eventName = graph.getSelectionModel().cells[0].value;
+    // var event = null;
+    // var i;
+    // for (i=0; i<computableModelList.size; i++){
+    //     if(modelId == computableModelList.content[i].id){
+    //         model = computableModelList.content[i];
+    //         var states = computableModelList.content[i].mdlJson.mdl.states;
+    //         for (var j = 0; j<states.length; j++){
+    //             var state = states[j];
+    //             for (var k = 0; k<state.event.length; k++){
+    //                 var eventTmp = state.event[k];
+    //                 if (eventTmp.eventName == eventName){
+    //                     event = eventTmp;
+    //                     break;
+    //                 }
+    //             }
+    //         }
+    //         break;
+    //     }
+    // }
+	//
+    // if (i >= computableModelList.size) {
+    //     for (var j=0; j<hasSearchedTermsComputableModel.length; j++){
+    //         if(modelId == hasSearchedTermsComputableModel[j].id){
+    //             model = hasSearchedTermsComputableModel[j];
+    //             var states = hasSearchedTermsComputableModel[j].mdlJson.mdl.states;
+    //             for (var k = 0; k<states.length; k++){
+    //                 var state = states[k];
+    //                 for (var l = 0; l<state.event.length; l++){
+    //                     var eventTmp = state.event[l];
+    //                     if (eventTmp.eventName == eventName){
+    //                         event = eventTmp;
+    //                         break;
+    //                     }
+    //                 }
+    //             }
+    //             break;
+    //         }
+    //     }
+    // }
 
     this.container.appendChild(this.addOutputEventInfo(this.createPanel(),event,model.name));
 

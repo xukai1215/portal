@@ -507,7 +507,7 @@ Sidebar.prototype.searchEntries = function (searchTerms, count, page, success, e
         for (var i = 0; i < result.length; i++) {
           var model = result[i];
           var modelName = model.name;
-          this.createVertexTemplateEntry('rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#006600;fillColor=#EEFFEE;', 210, 50, modelName, 'Computable Model', null, null, modelName, model);
+          this.createVertexTemplateEntry('rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#0073e8;fillColor=#d9edf7;', 210, 50, modelName, 'Computable Model', null, null, modelName, model);
         }
 
         //
@@ -3008,6 +3008,7 @@ Sidebar.prototype.addClickHandler = function (elt, ds, cells) {
       sb.itemClicked(cells, ds, evt, elt);
     }
 
+
     var parent = graph.getDefaultParent();
 
     oldMouseUp.apply(ds, arguments);
@@ -3018,13 +3019,15 @@ Sidebar.prototype.addClickHandler = function (elt, ds, cells) {
     sb.currentElt = elt;
 
     if (graph.getSelectionModel().cells.length > 0) {
-      var event = graph.getSelectionModel().cells[0];
-      if (event.response == "1") {
-        graph.insertEdge(parent, null, '', event, state, "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=2;strokeColor=#000066;");
+      var targetCell = graph.getSelectionModel().cells[0];
+      if (targetCell.response == "1") {//判断鼠标加入的cell是一个input还是output
+        graph.insertEdge(parent, null, '', targetCell, state, "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=2;strokeColor=#000066;");
 
-      } else if (event.response == "0") {
-        graph.insertEdge(parent, null, '', state, event, "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=2;strokeColor=#000066;");
+      } else if (targetCell.response == "0") {
+        graph.insertEdge(parent, null, '', state, targetCell, "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=2;strokeColor=#000066;");
 
+      } else if (targetCell.md5 != ''){
+        window.parent.addModeltoList(targetCell)
       }
     }
 
@@ -3061,12 +3064,15 @@ Sidebar.prototype.createStateVertexTemplate = function (style, width, height, va
   var cells = [new mxCell((value != null) ? value : '', new mxGeometry(0, 0, width, height), style)];
   cells[0].vertex = true;
   if (model != undefined){
-    cells[0].mid = model.id;
+    cells[0].mid = model.modelOid;
+    cells[0].frontId = model.id;
     cells[0].md5 = model.md5;
+    cells[0].mdlJson = model.mdlJson;
+    cells[0].name = model.name;
     cells[0].description = model.description;
 
-    var inputEvents = [];
-    var outputEvents = [];
+    var inputData = [];
+    var outputData = [];
     var states = model.mdlJson.mdl.states;
     for (var j = 0; j < states.length; j++) {
       var state = states[j];
@@ -3074,15 +3080,15 @@ Sidebar.prototype.createStateVertexTemplate = function (style, width, height, va
         var event = state.event[k];
         event.stateName = state.name;
         if (event.eventType == "response") {
-          inputEvents.push(event);
+          inputData.push(event);
         } else {
-          outputEvents.push(event);
+          outputData.push(event);
         }
       }
     }
 
-    cells[0].inputEvents = inputEvents;
-    cells[0].outputEvents = outputEvents;
+    cells[0].inputData = inputData;
+    cells[0].outputData = outputData;
   }
 
 
@@ -3092,7 +3098,8 @@ Sidebar.prototype.createStateVertexTemplate = function (style, width, height, va
 Sidebar.prototype.createEventVertexTemplate = function (style, width, height, value, title, showLabel, showTitle, allowCellsInserted, model, eventType, event) {
   var cells = [new mxCell((value != null) ? value : '', new mxGeometry(0, 0, width, height), style)];
   cells[0].vertex = true;
-  cells[0].mid = model.id;
+  cells[0].frontId = model.frontId;
+  cells[0].mid = model.modelOid;
   cells[0].eid = event.eventId;
   cells[0].state = event.stateName;
   cells[0].optional = event.optional;
@@ -3478,11 +3485,11 @@ Sidebar.prototype.addComputabelModel = function (computableModelList, expand) {
   //     this.createVertexTemplateEntry('rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#006600;fillColor=#EEFFEE;', 210, 50, modelName, 'Computable Model', null, null, modelName,model);
   // }
 
-  //绘制指定页码的是个计算模型
+  //绘制指定页码的计算模型
   for (var j = 0; j < computableModelList.size; j++) {
     var model = computableModelList.content[j];
     var modelName = model.name;
-    var a = this.createStateVertexTemplate('rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#006600;fillColor=#EEFFEE;', 210, 50, modelName, 'Computable Model', null, null, modelName, model);
+    var a = this.createStateVertexTemplate('rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#0073e8;fillColor=#d9edf7;', 210, 50, modelName, 'Computable Model', null, null, modelName, model);
     div.appendChild(a);
   }
 
@@ -3545,7 +3552,7 @@ Sidebar.prototype.addComputabelModelPage = function (computableModelList, div) {
   for (var i = 0; i < computableModelList.numberOfElements; i++) {
     var model = computableModelList.content[i];
     var modelName = model.name;
-    var a = this.createStateVertexTemplate('rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#006600;fillColor=#EEFFEE;', 210, 50, modelName, 'Computable Model', null, null, modelName, model);
+    var a = this.createStateVertexTemplate('rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#0073e8;fillColor=#d9edf7;', 210, 50, modelName, 'Computable Model', null, null, modelName, model);
     div.appendChild(a);
   }
 };
@@ -3727,32 +3734,43 @@ Sidebar.prototype.addModelToGraph = function (model) {
   var pt = graph.getFreeInsertPoint();
   var cell = graph.insertVertex(parent, null, model.name, pt.x, pt.y, 210, 50, "rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#0073e8;fillColor=#d9edf7");
 
-  cell.mid = model.id;
+  cell.frontId = model.id;
   cell.md5 = model.md5;
-  cell.frontId = model.frontId;
+  cell.mid = model.modelOid;
   cell.description = model.description;
 
-  // var inputEvents = [];
-  // var outputEvents = [];
-  // var states = model.mdlJson.mdl.states;
-  // for (var j = 0; j < states.length; j++) {
-  //   var state = states[j];
-  //   for (var k = 0; k < state.event.length; k++) {
-  //     var event = state.event[k];
-  //     event.stateName = state.name;
-  //     if (event.eventType == "response") {
-  //       inputEvents.push(event);
-  //     } else {
-  //       outputEvents.push(event);
-  //     }
-  //   }
-  // }
-
-  cell.inputEvents = model.inputEvents;
-  cell.outputEvents = model.outputEvents;
+  cell.inputData = model.inputData;
+  cell.outputData = model.outputData;
   console.log(cell)
 
 
   // ds.drop(graph, evt, null, pt.x, pt.y, true);
 
 }
+
+function unFoldMultiOutput(model,outputData){
+  var cells = graph.getModel().cells;
+  var parent = graph.getDefaultParent();
+  for(let i in cells){
+    if(cells[i].eid === outputData.eventId){
+      let valueStr = outputData.value
+      let values = valueStr.substring(1,valueStr.length-1).split(',')
+
+      for(i=0;i<values.length;i++){
+        var pt = graph.getFreeInsertPoint();
+        var cell = graph.insertVertex(parent, null, model.name, pt.x, pt.y, 170, 50, "rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#449d44;fillColor=#EEFFEE");
+
+        cell.vertex = true;
+        cell.frontId = model.frontId;
+        cell.mid = model.modelOid;
+        cell.eid = outputData.eventId;
+        cell.state = outputData.stateName;
+        cell.optional = outputData.optional;
+        cell.description = outputData.eventDesc;
+        cell.data = outputData.data;
+        cell.url = values[i].substring(1,values[i].length-1);
+      }
+    }
+  }
+}
+

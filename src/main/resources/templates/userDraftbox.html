@@ -34,7 +34,7 @@
                                 <div class="block">
                                     <div class="flexJustStart flexAlignCenter">
                                         Sort by time:
-                                        <el-button size="mini" type="primary" plain v-on:click="changeSort" style=";margin-left: 5px;padding: 5px 6px;">
+                                        <el-button size="mini" type="primary" plain @click="changeSort" style=";margin-left: 5px;padding: 5px 6px;">
                                             <i v-if="!asc" class="fa fa-sort-numeric-desc" style="font-size: 14px"></i>
                                             <i v-else class="fa fa-sort-numeric-asc" style="font-size: 14px"></i>
                                         </el-button>
@@ -71,7 +71,7 @@
                                                     </div>
                                                     <div class="flexRow flexAlignStrench">
                                                         <div style="width: 125px"><p>Last Modify time:</p></div>
-                                                        <div><b>{{draft.lastModifyTime.substring(0,10)+' '+ draft.lastModifyTime.substring(11,16)}}</b></div>
+                                                        <div><b>{{formatDateChild(draft.lastModifyTime)}}</b></div>
                                                     </div>
                                                     <div class="flexAlignCenter dropMask">
                                                         <div class="flexCol flexCenter" style="width: 50%" @click="viewDraftDetail(draft)">
@@ -104,7 +104,7 @@
                                                     </div>
                                                     <div class="flexRow flexAlignStrench">
                                                         <div style="width: 125px"><p>Last Modify time:</p></div>
-                                                        <div><b>{{draft.lastModifyTime.substring(0,10)+' '+ draft.lastModifyTime.substring(11,16)}}</b></div>
+                                                        <div><b>{{formatDateChild(draft.lastModifyTime)}}</b></div>
                                                     </div>
                                                     <div class="flexAlignCenter dropMask">
                                                         <div class="flexCol flexCenter" style="width: 50%" @click="viewDraftDetail(draft)">
@@ -181,7 +181,7 @@
                         <el-button @click="deleteDraftClick(draftShow.oid)"
                                    type="danger">Delete</el-button>
                         <el-button type="primary" style="margin-right: 15px"
-                                   @click="draftDetailDialog=false">Cancel</el-button>
+                                   @click="draftDetailDialog=false">OK</el-button>
             </span>
         </el-dialog>
     </div>

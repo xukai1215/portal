@@ -32,7 +32,7 @@ public class IntegratedTask {
     String userId;
     Boolean integrate;
 
-    int status;
+    int status;//Started: 1, Finished: 2, Inited: 0, Error: -1
 
     Date createTime;
     Date lastModifiedTime;

@@ -152,10 +152,7 @@ public class ComputableModelService {
     }
 
     public List<ComputableModel> getComputableModelsBySearchTerms(String searchTerms){
-        String[] terms = searchTerms.toLowerCase().split(" ");
-        String tmp = terms[0];
-
-        List<ComputableModel> searchTermsComputableModel = computableModelDao.findByNameContainsIgnoreCaseAndContentType(tmp,"Package");
+        List<ComputableModel> searchTermsComputableModel = computableModelDao.findByNameContainsIgnoreCaseAndContentType(searchTerms,"Package");
         for(int i = 0; i<searchTermsComputableModel.size(); i++){
             String mdl = searchTermsComputableModel.get(i).getMdl();
             searchTermsComputableModel.get(i).setMdlJson(convertMdl(mdl));

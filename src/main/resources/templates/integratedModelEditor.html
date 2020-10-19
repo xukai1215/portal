@@ -117,7 +117,7 @@
         // be used if we know that all keys are defined in the language specific file)
         mxResources.loadDefaultBundle = false;
         var bundle = mxResources.getDefaultBundle(RESOURCE_BASE, mxLanguage) ||
-            mxResources.getSpecialBundle(RESOURCE_BASE, mxLanguage);
+                mxResources.getSpecialBundle(RESOURCE_BASE, mxLanguage);
 
         // Fixes possible asynchronous requests
         mxUtils.getAll([bundle, STYLE_PATH + '/default.xml'], function (xhr) {
@@ -243,11 +243,11 @@
         modelTmp.description = cells[i].description;
         modelTmp.md5 = cells[i].md5;
         modelTmp.frontId = cells[i].frontId;
-        // modelTmp.inputEvents = getInputEvents(cells[i], cells);
-        modelTmp.inputEvents = cells[i].inputEvents;
-        // modelTmp.outputEvents = getOutputEvents(cells[i], cells,modelTmp);
+        // modelTmp.inputData = getinputData(cells[i], cells);
+        modelTmp.inputData = cells[i].inputData;
+        // modelTmp.outputData = getoutputData(cells[i], cells,modelTmp);
         setOutput(cells[i])
-        modelTmp.outputEvents =cells[i].outputEvents;
+        modelTmp.outputData =cells[i].outputData;
 
         models.push(modelTmp);
       }
@@ -270,7 +270,7 @@
               break;
             }
           }
-          for(let input of model.inputEvents){//对该模型对应event的值修改
+          for(let input of model.inputData){//对该模型对应event的值修改
             if(input.eventId===toEvent.eid){
               input.type='link'
               input.link=fromEvent.eid//链接的event的id和名字
@@ -283,10 +283,10 @@
       }
       for(let j in cells){
         if(cells[j].md5!=undefined){
-          if(cells[j].inputEvents[0].link!=undefined){//有link值，说明该模型已经配置过，忽略
+          if(cells[j].inputData[0].link!=undefined){//有link值，说明该模型已经配置过，忽略
             continue;
           }
-          for(let input of cells[j].inputEvents){
+          for(let input of cells[j].inputData){
             if(input.link==undefined){
               input.link=''
             }
@@ -297,13 +297,13 @@
   }
 
   function setOutput(model) {//配置output
-    for(let output of model.outputEvents){
+    for(let output of model.outputData){
       output.type='url'
     }
   }
 
-  function getInputEvents(model, cells) {
-    var inputEvents = model.inputEvents;
+  function getinputData(model, cells) {
+    var inputData = model.inputData;
     var event = {};
 
     var modelId = model.id;
@@ -328,17 +328,17 @@
             event.optional = input.optional;
             event.description = input.description;
             event.data = input.data;
-            inputEvents.push(event);
+            inputData.push(event);
           }
         }
       }
     }
 
-    return inputEvents;
+    return inputData;
   }
 
-  function getOutputEvents(model, cells,modelTmp) {//传入modelTmp打上multi标识
-    var outputEvents = [];
+  function getoutputData(model, cells,modelTmp) {//传入modelTmp打上multi标识
+    var outputData = [];
     var event = {};
     var source = model.id;
     for (let i in cells) {
@@ -354,14 +354,14 @@
         if(event.mutiple==true){
           modelTmp.hasMultiOut=true
         }
-        outputEvents.push(event);
+        outputData.push(event);
       }
     }
-    for (var i = 0; i < model.outputEvents.length; i++) {
-      var e = model.outputEvents[i];
+    for (var i = 0; i < model.outputData.length; i++) {
+      var e = model.outputData[i];
       var flag = false;
-      for (var j = 0; j < outputEvents.length; j++) {
-        if (e.eventId == outputEvents[j].dataId) {
+      for (var j = 0; j < outputData.length; j++) {
+        if (e.eventId == outputData[j].dataId) {
           flag = true;
           break;
         }
@@ -380,12 +380,23 @@
       if(event.mutiple==true){
         modelTmp.hasMultiOut=true
       }
-      outputEvents.push(event);
+      outputData.push(event);
 
     }
 
-    return outputEvents;
+    return outputData;
   }
+
+  //调用mxGraphModel.js方法删除cell
+  function removeTargetCell(target){
+    let cells = graph.getModel().cells;
+    for(let i in cells){
+      if(cells[i].frontId!=undefined&&cells[i].frontId==target.id){
+        graph.model.remove(cells[i])
+      }
+    }
+  }
+
 
   //获得模型
   function getModelListByPage(num) {
