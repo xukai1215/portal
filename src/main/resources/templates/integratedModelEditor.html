@@ -391,7 +391,7 @@
   function removeTargetCell(target){
     let cells = graph.getModel().cells;
     for(let i in cells){
-      if(cells[i].frontId!=undefined&&cells[i].frontId==target.frontId){
+      if(cells[i].frontId!=undefined&&cells[i].frontId==target.id){
         graph.model.remove(cells[i])
       }
     }

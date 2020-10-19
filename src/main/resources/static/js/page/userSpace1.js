@@ -262,6 +262,38 @@ var userspace = new Vue(
             }
         },
         methods:{
+            //公共功能
+            formatDate(value,callback) {
+                const date = new Date(value);
+                y = date.getFullYear();
+                M = date.getMonth() + 1;
+                d = date.getDate();
+                H = date.getHours();
+                m = date.getMinutes();
+                s = date.getSeconds();
+                if (M < 10) {
+                    M = '0' + M;
+                }
+                if (d < 10) {
+                    d = '0' + d;
+                }
+                if (H < 10) {
+                    H = '0' + H;
+                }
+                if (m < 10) {
+                    m = '0' + m;
+                }
+                if (s < 10) {
+                    s = '0' + s;
+                }
+
+                const t = y + '-' + M + '-' + d + ' ' + H + ':' + m + ':' + s;
+                if(callback == null||callback == undefined)
+                    return t;
+                else
+                    callback(t);
+            },
+
 
             getUserData(UsersInfo, prop) {
 

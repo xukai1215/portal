@@ -77,7 +77,7 @@
                                 <p style="margin: 0">Saving draft...</p>
                             </div>
                             <div v-if="editType=='create'&&!savingDraft" class="flexJustStart flexAlignCenter" style="margin:15px 15px 0 0;color: rgb(6,91,186)">
-                               <button class="btn btn-noShadow btn-round" @click="loadDraftClick"><p style="margin: 0;color: rgb(6,91,186)">Load draft</p></button>
+                               <button class="btn btn-noShadow btn-round" @click="loadDraftListClick"><p style="margin: 0;color: rgb(6,91,186)">Load draft</p></button>
                             </div>
                         </section>
 
@@ -556,6 +556,7 @@
                                                                     </textarea>
                                                                         </el-card>
                                                                     </div>
+                                                                    <textarea id="modelItemText"></textarea>
                                                                 </div>
                                                             </div>
                                                             <div class="step-footer text-right">
@@ -756,7 +757,7 @@
                                     label="Last modify time"
                             >
                                 <template slot-scope="scope">
-                                    <span>{{ scope.row.lastModifyTime.substring(0,10)+' '+ scope.row.lastModifyTime.substring(11,16)}}</span>
+                                    <span>{{formatDate(scope.row.lastModifyTime)}}</span>
                                 </template>
                             </el-table-column>
                             <el-table-column
@@ -764,7 +765,7 @@
                                     width="180"
                             >
                                 <template slot-scope="scope">
-                                    <el-button size="mini" round type="success" @click="insertDraft(scope.row)">Load</el-button>
+                                    <el-button size="mini" round type="success" @click="loadDraftClick(scope.row)">Load</el-button>
                                 </template>
                             </el-table-column>
                         </el-table>
@@ -795,7 +796,7 @@
                                 label="Last modify time"
                         >
                             <template slot-scope="scope">
-                                <span>{{ scope.row.lastModifyTime.substring(0,10)+' '+ scope.row.lastModifyTime.substring(11,16)}}</span>
+                                <span>{{formatDate(scope.row.lastModifyTime)}}</span>
                             </template>
                         </el-table-column>
                         <el-table-column

@@ -401,6 +401,8 @@ var createModelItem = Vue.extend({
         loading:true,
 
         dragReady:false,
+
+        editTypeLocal:false,
     }
     },
 
@@ -409,6 +411,36 @@ var createModelItem = Vue.extend({
     },
 
     methods: {
+        formatDate(value,callback) {
+            const date = new Date(value);
+            y = date.getFullYear();
+            M = date.getMonth() + 1;
+            d = date.getDate();
+            H = date.getHours();
+            m = date.getMinutes();
+            s = date.getSeconds();
+            if (M < 10) {
+                M = '0' + M;
+            }
+            if (d < 10) {
+                d = '0' + d;
+            }
+            if (H < 10) {
+                H = '0' + H;
+            }
+            if (m < 10) {
+                m = '0' + m;
+            }
+            if (s < 10) {
+                s = '0' + s;
+            }
+
+            const t = y + '-' + M + '-' + d + ' ' + H + ':' + m + ':' + s;
+            if(callback == null||callback == undefined)
+                return t;
+            else
+                callback(t);
+        },
         // handleSelect(index,indexPath){
         //     this.setSession("index",index);
         //     window.location.href="/user/userSpace"
@@ -535,7 +567,7 @@ var createModelItem = Vue.extend({
 
         },
 
-        loadDraftClick(){
+        loadDraftListClick(){
             this.draftListDialog=true;
 
             this.pageOption.currentPage = 1;
@@ -625,6 +657,13 @@ var createModelItem = Vue.extend({
 
 
             })
+        },
+
+        loadDraftClick(draft){
+            this.insertDraft(draft)
+
+            this.draftListDialog=false;
+            this.matchedCreateDraftDialog=false;
         },
 
         insertDraft(draft){
@@ -782,9 +821,7 @@ var createModelItem = Vue.extend({
             $("#modelItemText").val(content.detail);
             initTinymce('textarea#modelItemText')
 
-            this.draftListDialog=false;
 
-            this.matchedCreateDraftDialog=false;
         },
 
         cancelEditClick(){

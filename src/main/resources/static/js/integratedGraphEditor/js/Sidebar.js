@@ -3098,7 +3098,7 @@ Sidebar.prototype.createStateVertexTemplate = function (style, width, height, va
 Sidebar.prototype.createEventVertexTemplate = function (style, width, height, value, title, showLabel, showTitle, allowCellsInserted, model, eventType, event) {
   var cells = [new mxCell((value != null) ? value : '', new mxGeometry(0, 0, width, height), style)];
   cells[0].vertex = true;
-  cells[0].frontId = model.id;
+  cells[0].frontId = model.frontId;
   cells[0].mid = model.modelOid;
   cells[0].eid = event.eventId;
   cells[0].state = event.stateName;
@@ -3485,7 +3485,7 @@ Sidebar.prototype.addComputabelModel = function (computableModelList, expand) {
   //     this.createVertexTemplateEntry('rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#006600;fillColor=#EEFFEE;', 210, 50, modelName, 'Computable Model', null, null, modelName,model);
   // }
 
-  //绘制指定页码的是个计算模型
+  //绘制指定页码的计算模型
   for (var j = 0; j < computableModelList.size; j++) {
     var model = computableModelList.content[j];
     var modelName = model.name;
@@ -3739,22 +3739,6 @@ Sidebar.prototype.addModelToGraph = function (model) {
   cell.mid = model.modelOid;
   cell.description = model.description;
 
-  // var inputEvents = [];
-  // var outputEvents = [];
-  // var states = model.mdlJson.mdl.states;
-  // for (var j = 0; j < states.length; j++) {
-  //   var state = states[j];
-  //   for (var k = 0; k < state.event.length; k++) {
-  //     var event = state.event[k];
-  //     event.stateName = state.name;
-  //     if (event.eventType == "response") {
-  //       inputEvents.push(event);
-  //     } else {
-  //       outputEvents.push(event);
-  //     }
-  //   }
-  // }
-
   cell.inputData = model.inputData;
   cell.outputData = model.outputData;
   console.log(cell)
@@ -3763,3 +3747,30 @@ Sidebar.prototype.addModelToGraph = function (model) {
   // ds.drop(graph, evt, null, pt.x, pt.y, true);
 
 }
+
+function unFoldMultiOutput(model,outputData){
+  var cells = graph.getModel().cells;
+  var parent = graph.getDefaultParent();
+  for(let i in cells){
+    if(cells[i].eid === outputData.eventId){
+      let valueStr = outputData.value
+      let values = valueStr.substring(1,valueStr.length-1).split(',')
+
+      for(i=0;i<values.length;i++){
+        var pt = graph.getFreeInsertPoint();
+        var cell = graph.insertVertex(parent, null, model.name, pt.x, pt.y, 170, 50, "rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#449d44;fillColor=#EEFFEE");
+
+        cell.vertex = true;
+        cell.frontId = model.frontId;
+        cell.mid = model.modelOid;
+        cell.eid = outputData.eventId;
+        cell.state = outputData.stateName;
+        cell.optional = outputData.optional;
+        cell.description = outputData.eventDesc;
+        cell.data = outputData.data;
+        cell.url = values[i].substring(1,values[i].length-1);
+      }
+    }
+  }
+}
+

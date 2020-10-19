@@ -1216,9 +1216,8 @@ public class TaskService {
 
             //更新output
             JSONObject j_modelActionList = taskInfo.getJSONObject("modelActionList");
-            converseOutputModelAction(j_modelActionList.getJSONArray("completed"));
-            List<ModelAction> finishedModelActions = j_modelActionList.getJSONArray("completed").toJavaList(ModelAction.class);
-            List<ModelAction> failedModelActions = j_modelActionList.getJSONArray("failed").toJavaList(ModelAction.class);
+            List<ModelAction> finishedModelActions = converseOutputModelAction(j_modelActionList.getJSONArray("completed"));
+            List<ModelAction> failedModelActions = converseOutputModelAction(j_modelActionList.getJSONArray("failed"));
             updateIntegratedTaskOutput(task,finishedModelActions,failedModelActions);
 
             switch (status){
@@ -1237,24 +1236,29 @@ public class TaskService {
         }
     }
 
-    public void converseOutputModelAction(JSONArray modelActionArray) {
+    public List<ModelAction> converseOutputModelAction(JSONArray modelActionArray) {
         List<ModelAction> modelActionList = new ArrayList<>();
         for (int i = 0; i < modelActionArray.size(); i++) {
             JSONObject fromModelAction = modelActionArray.getJSONObject(i);
             ModelAction modelAction = new ModelAction();
-            modelAction.setDescription(fromModelAction.getString("id"));
+            modelAction.setId(fromModelAction.getString("id"));
             JSONArray output = fromModelAction.getJSONObject("outputData").getJSONArray("outputs");
             List<Map<String,Object>> outputDatas = new ArrayList<>();
             for(int j=0;j<output.size();j++){
                 Map<String,Object> outputData = new HashMap<>();
                 Map<String,Object> dataContent = new HashMap<>();
                 JSONObject j_dataContent = ((JSONObject)output.get(i)).getJSONObject("dataContent");
-                dataContent.put("value",output.get(i));
-                outputData.put("dataContent",dataContent);
-
+                outputData.put("value",j_dataContent.getString("value"));
+                outputData.put("type",j_dataContent.getString("type"));
+                outputData.put("fileName",j_dataContent.getString("fileName"));
+                outputData.put("suffix",j_dataContent.getString("suffix"));
+                outputDatas.add(outputData);
             }
+            modelAction.setOutputData(outputDatas);
+            modelActionList.add(modelAction);
         }
 
+        return modelActionList;
     }
 
     public String updateIntegratedTaskOutput(IntegratedTask integratedTask, List<ModelAction> finishedModelActions,List<ModelAction> failedModelActions ){
@@ -1269,6 +1273,8 @@ public class TaskService {
                     for(Map<String,Object> output:modelAction.getOutputData()){
                         for(Map<String,Object> newOutput:finishedModelAction.getOutputData()){
                             output.put("value",newOutput.get("value"));
+                            output.put("fileName",newOutput.get("fileName"));
+                            output.put("suffix",newOutput.get("suffix"));
                         }
                     }
                 }

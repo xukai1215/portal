@@ -196,8 +196,8 @@
 
         </div>
 
-        <el-dialog title="Input Data Configuration" :visible.sync="configVisible" width="70%">
-            <el-tabs v-model="activeName">
+        <el-dialog title="Input Data Configuration" :visible.sync="configVisible" width="68%">
+            <el-tabs>
                 <div class="el-tabs__header is-top">
                     <div class="el-tabs__nav-wrap is-top">
                         <div class="el-tabs__nav-scroll">
@@ -394,10 +394,10 @@
     </span>
     </el-dialog>
 
-    <el-dialog title="Choose Computable Models" :visible="chooseModelVisible" width="70%">
+    <el-dialog title="Choose Computable Models" :visible.sync="chooseModelVisible" width="70%">
         <computable-models :check-model-list="checkModelList"></computable-models>
         <span slot="footer" class="dialog-footer">
-      <el-button @click="chooseModel">Cancel</el-button>
+      <el-button @click="chooseModelVisible=false">Cancel</el-button>
       <el-button type="primary" @click="chooseModelConfirm">OK</el-button>
     </span>
     </el-dialog>
@@ -486,6 +486,7 @@
 
         <span slot="footer" class="dialog-footer">
             <el-button type="danger" style="margin-right: 10px" @click="deleteIntegrateTask(checkedTask)">Delete</el-button>
+            <el-button type="success" style="margin-right: 10px" @click="UpdateIntegrateTaskClick(checkedTask)">Save/Update</el-button>
             <el-button type="primary" style="margin-right: 10px" @click="loadTask(checkedTask)">Load This Task</el-button>
             <el-button style="margin-right: 10px" @click="taskInfoVisible=false">Cancel</el-button>
         </span>
