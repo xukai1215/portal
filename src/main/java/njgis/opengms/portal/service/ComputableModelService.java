@@ -1449,6 +1449,10 @@ public class ComputableModelService {
         return jsonObject;
     }
 
+    public List<ComputableModel> listDeployedModel(){
+        return computableModelDao.findAllByDeploy(true);
+    }
+
     public JSONObject searchDeployedModel(int asc,int page,int size,String searchText){
         Sort sort = new Sort(asc == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
 

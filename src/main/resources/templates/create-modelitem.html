@@ -76,7 +76,7 @@
                                 <i class="ms-Icon ms-Icon--ProgressLoopOuter rotate_cw_3" style="margin-right: 5px;font-size: 16px"></i>
                                 <p style="margin: 0">Saving draft...</p>
                             </div>
-                            <div v-if="editType=='create'&&!savingDraft" class="flexJustStart flexAlignCenter" style="margin:15px 15px 0 0;color: rgb(6,91,186)">
+                            <div v-if="editTypeLocal=='create'&&!savingDraft" class="flexJustStart flexAlignCenter" style="margin:15px 15px 0 0;color: rgb(6,91,186)">
                                <button class="btn btn-noShadow btn-round" @click="loadDraftListClick"><p style="margin: 0;color: rgb(6,91,186)">Load draft</p></button>
                             </div>
                         </section>
@@ -220,9 +220,11 @@
                                                                                         <div id="imgMask" class="flexCenter" v-if="itemInfo.image!=undefined&&itemInfo.image!=''"
                                                                                              style="position: absolute;width: 100px;height: 100px">
                                                                                             <div class="fa fa-times imgDelete" @click="deleteImg"></div>
-                                                                                            <div class="fa fa-pencil imgEditBlock flexCenter" style="" @click="editImg"></div>
+                                                                                            <div class="fa fa-pencil imgEditBlock flexCenter" style="" @click="imgFile"></div>
                                                                                         </div>
-                                                                                        <div v-if="itemInfo.image==''" class="cursorPointer loadImg" @click="imgUpload()">
+                                                                                        <div v-if="itemInfo.image==''" class="cursorPointer loadImg" @click="imgFile">
+                                                                                            <input type="file" id="imgOne" @change="preImg()"
+                                                                                                   style="display: none" accept="image/*"/>
                                                                                             <i class="fa fa-plus fa-5x"></i>
                                                                                         </div>
 <!--                                                                                        <input id="imgFile" type="file"-->
@@ -810,7 +812,7 @@
                                 width="160"
                         >
                             <template slot-scope="scope">
-                                <el-button size="mini" round type="success" @click="insertDraft(scope.row)">Load</el-button>
+                                <el-button size="mini" round type="success" @click="loadDraftClick(scope.row)">Load</el-button>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -833,42 +835,39 @@
                     </span>
                 </el-dialog>
                 <el-dialog title="Edit Image" :visible.sync="imgClipDialog" @close="closeImgUpload">
-                    <span slot="footer" >
+                    <span slot="footer">
                         <div id="editImageDialog">
-                        <div class="flexJustAround flexAlignCenter editImageContainer" style="">
-                            <div class="containerWithDashed">
-                                <div id="imgChange">
-                                    <i class="fa fa-upload fa-3x"></i>
-                                </div>
-                            </div>
-                            <input id="imgFile" type="file"
-                                   style="display: none"
-                                   accept="image/*"/>
-                            <!--                            <div class="innerBorderCol"></div>-->
-                            <div class="imgOverview" style="width: 40%">
-                                <p style="text-align: center;color: #595959;font-size: 15px">overview</p>
-                                <div class="flexJustAround flexAlignCenter flexCol" style="background-color: inherit;">
-                                    <div class="circlePhotoFrame flexCenter">
-                                        <canvas id="clipCanvas" ref="clipCanvas"></canvas>
-                                    </div>
-                                    <!--                                    <div class="circlePhotoFrameShade">-->
-                                    <!--                                    </div>-->
-                                    <!--                                    <img id="imgShowBig" style="width: 145px;height: 145px"-->
-                                    <!--                                         src="../static/img/icon/default.png">-->
-                                    <div class="dragBar" style="margin-top:15px "
-                                         :style="dragReady?'background-color: #cfe5fa':'background-color: #d9d9d9'">
-                                        <div class="dragBlock"></div>
+                            <div class="flexJustAround flexAlignCenter editImageContainer" style="">
+                                <div class="containerWithDashed">
+                                    <div id="imgChange">
+                                        <i class="fa fa-upload fa-3x"></i>
                                     </div>
                                 </div>
+                                <input id="imgFile" type="file" style="display: none" accept="image/*"/>
+                                <!--                            <div class="innerBorderCol"></div>-->
+                                <div class="imgOverview" style="width: 40%">
+                                    <p style="text-align: center;color: #595959;font-size: 15px">overview</p>
+                                    <div class="flexJustAround flexAlignCenter flexCol" style="background-color: inherit;">
+                                        <div class="circlePhotoFrame flexCenter">
+                                            <canvas id="clipCanvas" ref="clipCanvas"></canvas>
+                                        </div>
+                                        <!--                                    <div class="circlePhotoFrameShade">-->
+                                        <!--                                    </div>-->
+                                        <!--                                    <img id="imgShowBig" style="width: 145px;height: 145px"-->
+                                        <!--                                         src="../static/img/icon/default.png">-->
+                                        <div class="dragBar" style="margin-top:15px "
+                                             :style="dragReady?'background-color: #cfe5fa':'background-color: #d9d9d9'">
+                                            <div class="dragBlock"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="display: flex;justify-content: flex-end;padding:10px 15px 10px">
+                                <el-button id="saveUserImgButton" type="success">Save</el-button>
+                                <el-button id="closeSaveUserImg" style="margin-left: 15px" @click="imgClipDialog=false">Cancel</el-button>
                             </div>
                         </div>
-                        <div style="display: flex;justify-content: flex-end;padding:10px 15px 10px">
-                            <el-button id="saveUserImgButton" type="success">Save</el-button>
-                            <el-button id="closeSaveUserImg" style="margin-left: 15px" @click="imgClipDialog=false">Cancel</el-button>
-                        </div>
-                    </div>
                     </span>
-
 
                 </el-dialog>
 <!--                <el-dialog title="Image Clip" visible.sync="imageClipDialog">-->
@@ -1051,7 +1050,7 @@
 <script src="/static/js/common/jquery-3.3.1.min.js"></script>
 <script src="/static/js/common/bootstrap.min.js"></script>
 <script src="/static/js/common/axios.min.js"></script>
-<script src="/static/js/common/vue.min.js"></script>
+
 <script src="/static/js/common/vue-router.js"></script>
 <script type="text/javascript" src="/static/js/common/jquery.tag-editor.js"></script>
 <script type="text/javascript" src="/static/js/common/bootstrap-treeview.js"></script>

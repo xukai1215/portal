@@ -75,6 +75,8 @@ public interface ComputableModelDao extends MongoRepository<ComputableModel,Stri
 
     List<ComputableModelIngtegratedDTO> findAllByRelateModelItemNotNull();
 
+    List<ComputableModel> findAllByDeploy(boolean deploy);
+
     ComputableModel findFirstByAuthorAndMd5(String author, String md5);
 
     Page<ComputableModel> findAllByContentType(String contentType, Pageable pageable);

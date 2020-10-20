@@ -428,6 +428,11 @@ public class ComputableModelRestController {
         return ResultUtils.success(computableModelService.loadDeployedModel(asc,page,size));
     }
 
+    @RequestMapping(value="/listDeployedModel",method=RequestMethod.GET)
+    public JsonResult listDeployedModel() {
+        return ResultUtils.success(computableModelService.listDeployedModel());
+    }
+
     @RequestMapping(value="/searchDeployedModel",method=RequestMethod.GET)
     public JsonResult searchDeployedModel(@RequestParam(value="asc") int asc,
                                         @RequestParam(value = "page") int page,

@@ -70,6 +70,7 @@
     <script src="/static/js/common/clipboard.min.js"></script>
 
     <script src="/static/js/common/vue.min.js"></script>
+<!--    <script src="/static/js/common/vue.js"></script>-->
     <script src="/static/js/common/vue-router.js"></script>
     <script src="/static/js/common/vue-avatar.min.js"></script>
     <script src="/static/js/common/vue-cropper.min.js"></script>
@@ -158,6 +159,9 @@
         #imgMask:hover .imgDelete,#imgMask:hover .imgEditBlock{
             opacity: 1;
             display: flex;
+        }
+        .top350Dialog .el-dialog{
+            top:350px
         }
     </style>
     <!--<script src="/static/js/page/user_space.js"></script>-->
@@ -286,7 +290,9 @@
 <!--dataSpace通用组件-->
 <template th:replace="modules/userDataSpaceModule :: userDataSpaceModule"></template>
 <script src="/static/js/module/userDataSpaceModule.js"></script>
-
+<!--imgUpload通用组件-->
+<template th:replace="modules/imgUpload :: imgUpload"></template>
+<script src="/static/js/module/imgUpload.js"></script>
 </body>
 
 <!--根组件-->

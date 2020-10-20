@@ -226,10 +226,9 @@
                                          onerror=src="/static/img/icon/default.png"
                                          width="120px"
                                          height="120px"
-                                         style=""
-                                         @click="imgFile()"/>
-                                    <input type="file" name="imgOne" id="imgOne" @change="preImg()"
-                                           style="display: none" accept="image/*"/>
+                                         style=""/>
+                                    <input type="file" name="imgOne" id="imgFile" style="display: none" accept="image/*"/>
+<!--                                    <img id="imgShow" style="display: inline" v-show="itemInfo.image!=undefined&&itemInfo.image!=''" :src="itemInfo.image"/>-->
                                     <div class=" selectImg flexCenter " style="" @click="selectUserImg">
                                         <i class="fa fa-camera hoverIcon"
                                            style=" color: #ebebeb;font-size: 28px"></i>
@@ -513,6 +512,52 @@
                         <el-button @click="dialogTableVisible = false;">Cancel</el-button>
                         <el-button type="primary" @click="submitSubscribedList">Submit</el-button>
                     </div>
+                </el-dialog>
+
+                <el-dialog class="top350Dialog" title="Edit Image" :visible.sync="imgClipDialog"
+                           @close="closeImgUpload" center  width="30%" append-to-body>
+                    <p class="noMargin" style="text-align: center">Drag to change the position and size.</p>
+                    <span slot="footer" class="dialog-footer">
+                        <div id="editImageDialog">
+                            <div class="flexJustAround flexAlignCenter editImageContainer" style="">
+<!--                                <div class="containerWithDashed">-->
+<!--                                    <div id="imgChange">-->
+<!--                                        <i class="fa fa-upload fa-3x"></i>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                                <input id="imgFile" type="file" style="display: none" accept="image/*"/>-->
+                                <!--                            <div class="innerBorderCol"></div>-->
+                                <div class="imgOverview" style="width: 40%">
+                                    <p style="text-align: center;color: #595959;font-size: 15px">overview</p>
+                                    <div class="flexJustAround flexAlignCenter flexCol" style="background-color: inherit;">
+                                        <div class="circlePhotoFrame flexCenter">
+                                            <canvas id="clipCanvas" ref="clipCanvas"></canvas>
+                                        </div>
+                                        <!--                                    <div class="circlePhotoFrameShade">-->
+                                        <!--                                    </div>-->
+                                        <!--                                    <img id="imgShowBig" style="width: 145px;height: 145px"-->
+                                        <!--                                         src="../static/img/icon/default.png">-->
+                                        <div class="flexAlignCenter flexJustAround" style="width: 280px;margin-top: 20px;">
+                                            <div class="fa fa-minus" style="font-size: 10px;color: #737373;"></div>
+                                            <div class="dragBar" style=""
+                                                 :style="dragReady?'background-color: #cfe5fa':'background-color: #d9d9d9'">
+                                                <div class="dragBlock flexAlignCenter flexJustAround" style="left: -7px;width: 23px;">
+                                                    <div class="fa fa-caret-left" style="color: #dcdfe6;font-size: 10px;"></div>
+                                                    <div class="fa fa-caret-right" style="color: #dcdfe6;font-size: 10px;"></div>
+                                                </div>
+                                            </div>
+                                            <div class="fa fa-plus" style="font-size: 10px;color: #666666;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="display: flex;justify-content: center;padding:10px 15px 10px">
+                                <el-button id="saveUserImgButton" size="mini" round type="success">Comfirm</el-button>
+                                <el-button id="closeSaveUserImg" size="mini" round style="margin-left: 15px" @click="imgClipDialog=false"> Cancel </el-button>
+                            </div>
+                        </div>
+                    </span>
+
                 </el-dialog>
             </div>
         </template>

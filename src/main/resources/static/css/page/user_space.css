@@ -3213,7 +3213,7 @@ input[type=file] {
 }
 
 #editImageDialog{
-    height: 351px;
+    /*height: 351px;*/
 }
 
 nav .totalContainer{

@@ -33,7 +33,8 @@ var createModelItem = Vue.extend({
             },
 
             treeData: [
-                {"children": [{
+                {
+                    "children": [{
                         "children": [{
                             "id": 2,
                             "label": "Land regions",
@@ -60,12 +61,21 @@ var createModelItem = Vue.extend({
                             "id": 12,
                             "label": "Economic regions",
                             "oid": "cf9cd106-b873-4a8a-9336-dd72398fc769"
-                        }, {"id": 13, "label": "Integrated perspective", "oid": "65dbe5a9-ada9-4c02-8353-5029a84d7628"}],
+                        }, {
+                            "id": 13,
+                            "label": "Integrated perspective",
+                            "oid": "65dbe5a9-ada9-4c02-8353-5029a84d7628"
+                        }],
                         "id": 9,
                         "label": "Human-perspective",
                         "oid": "77e7482c-1844-4bc3-ae37-cb09b61572da"
-                    }], "id": 24, "label": "Application-focused categories", "oid": "9f7816be-c6e3-44b6-addf-98251e3d2e19"},
-                {"children": [{
+                    }],
+                    "id": 24,
+                    "label": "Application-focused categories",
+                    "oid": "9f7816be-c6e3-44b6-addf-98251e3d2e19"
+                },
+                {
+                    "children": [{
                         "children": [{
                             "id": 15,
                             "label": "Geoinformation analysis",
@@ -78,7 +88,11 @@ var createModelItem = Vue.extend({
                             "id": 17,
                             "label": "Geostatistical analysis",
                             "oid": "1c876281-a032-4575-8eba-f1a8fb4560d8"
-                        }, {"id": 18, "label": "Machine Learning analysis", "oid": "c6fcc899-8ca4-4269-a21e-a39d38c034a6"}],
+                        }, {
+                            "id": 18,
+                            "label": "Machine Learning analysis",
+                            "oid": "c6fcc899-8ca4-4269-a21e-a39d38c034a6"
+                        }],
                         "id": 14,
                         "label": "Data-perspective",
                         "oid": "4785308f-b2ef-4193-a74b-b9fe025cbc5e"
@@ -95,11 +109,16 @@ var createModelItem = Vue.extend({
                             "id": 22,
                             "label": "Biological process calculation",
                             "oid": "6d1efa2c-830d-4546-b759-c66806c4facc"
-                        }, {"id": 23, "label": "Human-activity calculation", "oid": "6952d5b2-cb0f-4ba7-96fd-5761dd566344"}],
+                        }, {
+                            "id": 23,
+                            "label": "Human-activity calculation",
+                            "oid": "6952d5b2-cb0f-4ba7-96fd-5761dd566344"
+                        }],
                         "id": 19,
                         "label": "Process-perspective",
                         "oid": "746887cf-d490-4080-9754-1dc389986cf2"
-                    }], "id": 25, "label": "Method-focused categories", "oid": "5f74872a-196c-4889-a7b8-9c9b04e30718"}],
+                    }], "id": 25, "label": "Method-focused categories", "oid": "5f74872a-196c-4889-a7b8-9c9b04e30718"
+                }],
             defaultProps: {
                 children: 'children',
                 label: 'label'
@@ -108,85 +127,85 @@ var createModelItem = Vue.extend({
             clsStr: '',
             status: 'Public',
 
-        socket:"",
+            socket: "",
 
-        message_num_socket:0,
-        message_num_socket_theme:0,
-        modelitem_oid:"",
+            message_num_socket: 0,
+            message_num_socket_theme: 0,
+            modelitem_oid: "",
 
-        editArticleDialog:false,
+            editArticleDialog: false,
 
-        showUploadArticleDialog:false,
+            showUploadArticleDialog: false,
 
-        showUploadedArticleDialog:false,
+            showUploadedArticleDialog: false,
 
-        articleUploading:{
-            title:'',
-            authors:[],
-            journal:'',
-            pageRange:'',
-            date:2019,
-            doi:'',
-            status:'',
-            link:'',
-        },
+            articleUploading: {
+                title: '',
+                authors: [],
+                journal: '',
+                pageRange: '',
+                date: 2019,
+                doi: '',
+                status: '',
+                link: '',
+            },
 
-        doiLoading:false,
+            doiLoading: false,
 
-        doi:'',
+            doi: '',
 
-        itemName:'',
+            itemName: '',
 
-        editType:'',
+            editType: '',
 
-        draft:{
-            oid:'',
-        },
+            draft: {
+                oid: '',
+            },
 
-        toCreate:1,
+            toCreate: 1,
 
-        timeOut:{},
+            timeOut: {},
 
-        savingDraft:false,
+            savingDraft: false,
 
-        step:1,
+            step: 1,
 
-        draftList:[],
+            draftList: [],
 
-        draftListDialog:false,
+            draftListDialog: false,
 
-        matchedDraft:{},
+            matchedDraft: {},
 
-        matchedCreateDraft:{},
+            matchedCreateDraft: {},
 
-        matchedCreateDraftDialog:false,
+            matchedCreateDraftDialog: false,
 
-        draftLoading:false,
+            draftLoading: false,
 
-        pageOption: {
-            paginationShow:false,
-            progressBar: true,
-            sortAsc: false,
-            currentPage: 1,
-            pageSize: 10,
+            pageOption: {
+                paginationShow: false,
+                progressBar: true,
+                sortAsc: false,
+                currentPage: 1,
+                pageSize: 10,
 
-            total: 11,
-            searchResult: [],
-        },
+                total: 11,
+                searchResult: [],
+            },
 
-        inSearch:0,
+            inSearch: 0,
 
-        imgClipDialog:false,
+            imgClipDialog: false,
 
-        cancelDraftDialog:false,
+            cancelDraftDialog: false,
 
-        loading:true,
+            loading: true,
 
-        dragReady:false,
+            dragReady: false,
 
-        itemInfo:{
-            image:'',
-        },
+            itemInfo: {
+                image: '',
+            },
             editTypeLocal: "",//create,modify
             currentLocalization: {
                 localCode: "",
@@ -451,7 +470,6 @@ var createModelItem = Vue.extend({
             ],
         }
 
-    }
     },
 
     computed(){
@@ -671,12 +689,12 @@ var createModelItem = Vue.extend({
             item=item.substring(6,item.length)
             let obj={
                 content:content,
-                editType:this.editType,
+                editType:this.editTypeLocal,
                 itemType:item,
                 user:this.userId,
                 oid:this.draft.oid,
             }
-            if(this.editType) {
+            if(this.editTypeLocal) {
                 obj.itemOid=this.$route.params.editId?this.$route.params.editId:null
                 obj.itemName= this.itemName;
             }
@@ -1213,7 +1231,7 @@ var createModelItem = Vue.extend({
 
                 context = canvas.getContext('2d');
                 //清除画布
-                context.clearRect(0,0,150,150);
+                context.clearRect(0,0,200,200);
 
                 document.getElementsByClassName('dragBlock')[0].style.left = '-7px'
             })
@@ -1382,7 +1400,30 @@ var createModelItem = Vue.extend({
             })
 
 
-        }
+        },
+
+        imgFile() {
+            $("#imgOne").click();
+        },
+
+        preImg() {
+
+
+            var file = $('#imgOne').get(0).files[0];
+            //创建用来读取此文件的对象
+            var reader = new FileReader();
+            //使用该对象读取file文件
+            reader.readAsDataURL(file);
+            //读取文件成功后执行的方法函数
+            reader.onload =  (e) => {
+                //读取成功后返回的一个参数e，整个的一个进度事件
+                //选择所要显示图片的img，要赋值给img的src就是e中target下result里面
+                //的base64编码格式的地址
+                this.itemInfo.image = e.target.result
+            }
+
+
+        },
 
     },
 
@@ -1483,7 +1524,7 @@ var createModelItem = Vue.extend({
             cache: false,
             async: false,
             success: (data) => {
-                data=JSON.parse(data);
+                // data=JSON.parse(data);
                 console.log(data);
                 if (data.oid == "") {
                     alert("Please login");
@@ -1531,7 +1572,7 @@ var createModelItem = Vue.extend({
             initTinymce('textarea#modelItemText')
 
             this.loadMatchedCreateDraft()
-            if(this.draft.oid!='')
+            if(this.draft.oid!=''&&this.draft.oid!=null&&typeof (this.draft.oid)!="undefined")
                 this.loadDraftByOid()
 
         }
@@ -2272,7 +2313,6 @@ var createModelItem = Vue.extend({
 
                 fileUpload(this,2048,function (file) {
 
-
                     //创建一个图像对象，用于接收读取的文件
                     oImg=new Image();
                     //创建用来读取此文件的对象
@@ -2297,14 +2337,14 @@ var createModelItem = Vue.extend({
                         let originW = oImg.width;//图像初始宽度
                         let originH = oImg.height;
 
-                        maxW=130
-                        maxH=130
+                        maxW=160
+                        maxH=160
                         targetW=originW
                         targetH=originH
 
                         //设置canvas的宽、高
-                        canvas.width=150
-                        canvas.height=150
+                        canvas.width=200
+                        canvas.height=200
 
                         var positionX
                         var positionY
@@ -2313,16 +2353,16 @@ var createModelItem = Vue.extend({
                             if(originH/originW < maxH/maxW) {//图片宽
                                 targetH = maxH;
                                 targetW = Math.round(maxH * (originW / originH));
-                                positionX=75-targetW/2+'px'
-                                positionY='10px'
-                                canvas.style.backgroundSize = "auto 130px "
+                                positionX=100-targetW/2+'px'
+                                positionY='20px'
+                                canvas.style.backgroundSize = "auto 160px "
                             }else {
                                 targetW = maxW;
                                 targetH = Math.round(maxW * (originH / originW));
-                                positionX='10px'
-                                positionY=75-targetH/2+'px'
+                                positionX='20px'
+                                positionY=100-targetH/2+'px'
                                 console.log(positionY)
-                                canvas.style.backgroundSize = "130px auto"
+                                canvas.style.backgroundSize = "160px auto"
 
                             }
                         }
@@ -2331,23 +2371,23 @@ var createModelItem = Vue.extend({
                             if(originH/originW < maxH/maxW) {//图片宽
                                 targetH = maxH;
                                 targetW = Math.round(maxH * (originW / originH));
-                                positionX=75-targetW/2+'px'
+                                positionX=100-targetW/2+'px'
                                 positionY='10px'
-                                canvas.style.backgroundSize = "auto 130px "
+                                canvas.style.backgroundSize = "auto 160px "
                             }else {
                                 targetW = maxW;
                                 targetH = Math.round(maxW * (originH / originW));
                                 positionX='10px'
-                                positionY=75-targetH/2+'px'
+                                positionY=100-targetH/2+'px'
                                 console.log(positionY)
-                                canvas.style.backgroundSize = "130px auto"
+                                canvas.style.backgroundSize = "160px auto"
                             }
                         }
 
                         oldTarW=targetW
                         oldTarH=targetH
                         //清除画布
-                        context.clearRect(0,0,150,150);
+                        context.clearRect(0,0,200,200);
 
                         let img="url("+oImg.src+")";
                         console.log(oImg.src===img)
@@ -2375,9 +2415,9 @@ var createModelItem = Vue.extend({
                         // else
                         //     context.drawImage(oImg,10,0,targetW,targetH);
 
-                        context.fillStyle = 'rgba(204,204,204,0.62)';
+                        context.fillStyle = 'rgba(217,217,217,.55)';
                         context.beginPath()
-                        context.rect(0,0,150,150);
+                        context.rect(0,0,200,200);
                         context.closePath()
                         context.fill()
 
@@ -2385,7 +2425,7 @@ var createModelItem = Vue.extend({
 
                         context.fillStyle='yellow'
                         context.beginPath()
-                        context.rect(10,10,130,130)
+                        context.rect(20,20,160,160)
                         context.closePath()
                         context.fill();
 
@@ -2449,8 +2489,8 @@ var createModelItem = Vue.extend({
                     limitX=targetW-maxW
                     limitY=targetH-maxH
 
-                    let maxMoveXR=10-parseFloat(posX)
-                    let maxMoveXD=10-parseFloat(posY)
+                    let maxMoveXR=20-parseFloat(posX)
+                    let maxMoveXD=20-parseFloat(posY)
 
                     if(e.pageX>lastX) dirR=1  //向左方向值
                     else dirR=-1
@@ -2490,12 +2530,12 @@ var createModelItem = Vue.extend({
                     console.log(moveX, moveY)
 
                     console.log(endX, endY)
-                    if (endX <= 10&&endX>=-limitX+10) {
+                    if (endX <= 20&&endX>=-limitX+20) {
                         endX = endX + 'px'
                         canvas.style.backgroundPositionX = endX
                     }
 
-                    if (endY <= 10&&endY>=-limitY+10) {
+                    if (endY <= 20&&endY>=-limitY+20) {
                         endY = endY + 'px'
                         canvas.style.backgroundPositionY = endY
                     }
@@ -2537,16 +2577,16 @@ var createModelItem = Vue.extend({
                 // context.fillRect(0,10,targetW,targetH);
                 //
                 // context.closePath()
-                context.clearRect(0,0,150,150)
+                context.clearRect(0,0,200,200)
                 canvas.style.backgroundImage = ""
                 if(targetW<targetH){
-                    let nx=0-(10-x)/130*150
-                    let ny=0-(10-y)/130*150
-                    context.drawImage(oImg,nx,ny,targetW/130*150,targetH/130*150);
+                    let nx=0-(20-x)/160*200
+                    let ny=0-(20-y)/160*200
+                    context.drawImage(oImg,nx,ny,targetW/160*200,targetH/160*200);
                 }else{
-                    let nx=0-(10-x)/130*150
-                    let ny=0-(10-y)/130*150
-                    context.drawImage(oImg,nx,ny,targetW/130*150,targetH/130*150);
+                    let nx=0-(20-x)/160*200
+                    let ny=0-(20-y)/160*200
+                    context.drawImage(oImg,nx,ny,targetW/160*200,targetH/160*200);
                 }
                 let url= canvas.toDataURL();
                 saveImage(url)
@@ -2606,16 +2646,16 @@ var createModelItem = Vue.extend({
                         // eY=75-(75-y)/times
                         // console.log(eX,eY)
 
-                        newX=75-(75-x)*timesP
-                        newY=75-(75-y)*timesP
-                        if(newY>10)//防止缩放超出边界
-                            newY=10
-                        else if(newY+newTH<140)
-                            newY=140-newTH
-                        if(newX>10)
-                            newX=10
-                        else if(newX+newTW<140)
-                            newX=140-newTW
+                        newX=100-(100-x)*timesP
+                        newY=100-(100-y)*timesP
+                        if(newY>20)//防止缩放超出边界
+                            newY=20
+                        else if(newY+newTH<180)
+                            newY=180-newTH
+                        if(newX>20)
+                            newX=20
+                        else if(newX+newTW<180)
+                            newX=180-newTW
                         console.log(timesP)
                         console.log("wz"+newX,newY)
 

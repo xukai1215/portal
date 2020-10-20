@@ -25,9 +25,8 @@ public class EditDraft {
     String itemName;//
     String itemType;//是哪一类条目
     String editType;//标识是新建条目还是编辑
-    Boolean self;//标识是自己的还是他人的
-    Boolean template = false;//用户是否设置为填写模板
-    String alia;//用户设置的别名
+//    Boolean self;//标识是自己的还是他人的
+//    Boolean template = false;//用户是否设置为填写模板
 
     Date createTime;
     Date lastModifyTime;

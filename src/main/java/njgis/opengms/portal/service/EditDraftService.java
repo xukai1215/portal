@@ -35,10 +35,10 @@ public class EditDraftService {
         editDraft.setUser(editDraftDTO.getUser());
         editDraft.setItemType(editDraftDTO.getItemType());
         editDraft.setEditType(editDraftDTO.getEditType());
-        if(user.equals(editDraftDTO.getUser()))
-            editDraft.setSelf(true);
-        else
-            editDraft.setSelf(false);
+//        if(user.equals(editDraftDTO.getUser()))
+//            editDraft.setSelf(true);
+//        else
+//            editDraft.setSelf(false);
 
         Date date=new Date();
         editDraft.setCreateTime(date);
@@ -117,11 +117,11 @@ public class EditDraftService {
 
     public EditDraft setTemplate(String oid){//设置为模板，不会自动删除;或者排除模板
         EditDraft editDraft = editDraftDao.findFirstByOid(oid);
-        if(!editDraft.getTemplate())
-            editDraft.setTemplate(true);
-        else{
-            editDraft.setTemplate(false);
-        }
+//        if(!editDraft.getTemplate())
+//            editDraft.setTemplate(true);
+//        else{
+//            editDraft.setTemplate(false);
+//        }
 
         Date date=new Date();
         editDraft.setLastModifyTime(date);
