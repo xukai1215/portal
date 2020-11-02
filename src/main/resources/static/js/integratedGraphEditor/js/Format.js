@@ -479,7 +479,8 @@ Format.prototype.refresh = function()
         /**
          * 张硕
          * 2019.11.27
-         *
+         * wzh
+		 * 2020.10.22
          */
         var idx = 0;
         if ( graph.getSelectionModel().cells[0].md5 != undefined && graph.getSelectionModel().cells[0].response == undefined) {
@@ -488,11 +489,21 @@ Format.prototype.refresh = function()
             label.style.fontSize = '16px';
 
             div.appendChild(label);
-            this.panels.push(new EventPanel(this, ui, div));
+            if(graph.getSelectionModel().cells[0].frontId!=undefined){//如果该模型不存在frontId，则说明这个模型还没有和vue联通，先不生成event  --wzh
+				this.panels.push(new EventPanel(this, ui, div));
+			}else{
+            	let eventPanel = document.getElementsByClassName('geSidebarContainer geFormatContainer')[0]
+				if(eventPanel.children.length<=1){
+					let p = document.createElement('h4')
+					p.innerHTML = ' reclick the cell to get info of events'
+					p.style='text-align:center;'
+					eventPanel.appendChild(p)
+				}
+			}
 
             addClickHandler(label, div, idx++);
 		}else if(graph.getSelectionModel().cells[0].response == true){
-            mxUtils.write(label, mxResources.get('inputData'));
+            mxUtils.write(label, mxResources.get('inputEvent'));
             label.style.borderLeftWidth = '0px';
             label.style.fontSize = '16px';
 
@@ -501,7 +512,7 @@ Format.prototype.refresh = function()
 
             addClickHandler(label, div, idx++);
 		}else if(graph.getSelectionModel().cells[0].response == false){
-            mxUtils.write(label, mxResources.get('outputData'));
+            mxUtils.write(label, mxResources.get('outputEvent'));
             label.style.borderLeftWidth = '0px';
             label.style.fontSize = '16px';
 
@@ -509,6 +520,45 @@ Format.prototype.refresh = function()
             this.panels.push(new OutputEventPanel(this, ui, div));
 
             addClickHandler(label, div, idx++);
+		}else if(graph.getSelectionModel().cells[0].edge == true&&
+			graph.getSelectionModel().cells[0].target != null&&
+			graph.getSelectionModel().cells[0].source != null){
+        	let cell = graph.getSelectionModel().cells[0]
+			mxUtils.write(label, mxResources.get('dataLink'));
+			label.style.borderLeftWidth = '0px';
+			label.style.fontSize = '16px';
+
+			div.appendChild(label);
+			if(cell.target.response==true&&cell.source.response==false)
+			{
+				this.panels.push(new DataLinkPanel(this, ui, div));
+			}else if(cell.source.response==true&&cell.target.response==false){
+				let panel = document.getElementsByClassName('geSidebarContainer geFormatContainer')[0]
+				if(panel.children.length<=1){
+					let p = document.createElement('h4')
+					p.innerHTML = ' Reverse direction '
+					p.style='text-align:center;'
+					panel.appendChild(p)
+				}
+			}else if(cell.source.frontId==cell.target.frontId){
+				let panel = document.getElementsByClassName('geSidebarContainer geFormatContainer')[0]
+				if(panel.children.length<=1){
+					let p = document.createElement('h4')
+					p.innerHTML = ' Internal link'
+					p.style='text-align:center;'
+					panel.appendChild(p)
+				}
+			}else{
+				let panel = document.getElementsByClassName('geSidebarContainer geFormatContainer')[0]
+				if(panel.children.length<=1){
+					let p = document.createElement('h4')
+					// p.innerHTML = ' Internal link'
+					p.style='text-align:center;'
+					panel.appendChild(p)
+				}
+			}
+
+			addClickHandler(label, div, idx++);
 		}
 
 
@@ -5866,10 +5916,26 @@ InputEventPanel.prototype.addInputEventInfo = function(div,event,modelName){
     div.appendChild(descLabel);
     div.appendChild(desc);
 
+    div.appendChild(document.createElement("br"));
+
+    //加入一个配置按钮
+	let cfgButton = document.createElement("button");
+	cfgButton.innerHTML='Config'
+	cfgButton.setAttribute("type", "button");
+	cfgButton.setAttribute("value", 'Config');
+	cfgButton.setAttribute("id", 'dataConfig');
+	cfgButton.setAttribute("onclick", "configData()");
+	div.appendChild(cfgButton);
 
     div.style.borderTop = "1px solid #dadce0";
     return div;
 };
+
+function configData(){
+	console.log('config')
+	var targetCell = graph.getSelectionModel().cells[0];
+	window.parent.dataCellConfig(targetCell);
+}
 
 InputEventPanel.prototype.addDownload = function(div, event, url){
     var ui = this.editorUi;
@@ -6072,3 +6138,104 @@ OutputEventPanel.prototype.addDownload = function(div, event, url){
 
     return div;
 };
+
+DataLinkPanel = function(format,editorUi,container){
+	BaseFormatPanel.call(this, format, editorUi, container);
+	this.init();
+};
+
+mxUtils.extend(DataLinkPanel, BaseFormatPanel);
+
+DataLinkPanel.prototype.init = function(){
+
+	let graph = this.editorUi.editor.graph;
+	let edge = graph.getSelectionModel().cells[0];
+
+	let targetEvent = edge.target
+	let sourceEvent = edge.source
+	let cells = graph.getModel().cells;
+
+	let fromModel,toModel
+
+	for(let i in cells){
+		if(cells[i].frontId==targetEvent.frontId&&cells[i].md5!=undefined){
+			fromModel = cells[i]
+			continue;
+		}
+		if(cells[i].frontId==sourceEvent.frontId&&cells[i].md5!=undefined){
+			toModel = cells[i]
+			continue;
+		}
+	}
+
+	this.container.appendChild(this.addDataLinkInfo(this.createPanel(),edge,fromModel,toModel));
+}
+
+DataLinkPanel.prototype.addDataLinkInfo = function (div,edge,fromModel,toModel){
+
+	let fromEvtName = edge.source.value
+	let toEvtName = edge.target.value
+
+	var title = this.createTitle("Source : ");
+	title.style.paddingBottom = '6px';
+	title.style.fontSize = "14px";
+	title.style.cursor = "default";
+	div.appendChild(title);
+
+	let label = document.createElement("p");
+	let info = document.createElement("input");
+	label.textContent = "Event : ";
+	info.value = fromEvtName;
+	info.disabled = "false";
+	div.appendChild(label);
+	div.appendChild(info);
+
+	label = document.createElement("p");
+	info = document.createElement("input");
+	label.textContent = "Model action : ";
+	info.value = fromModel.value;
+	info.disabled = "false";
+	div.appendChild(label);
+	div.appendChild(info);
+
+	title = this.createTitle("Target : ");
+	title.style.paddingBottom = '6px';
+	title.style.fontSize = "14px";
+	title.style.cursor = "default";
+	div.appendChild(title);
+
+	label = document.createElement("p");
+	info = document.createElement("input");
+	label.textContent = "Event : ";
+	info.value = toEvtName;
+	info.disabled = "false";
+	div.appendChild(label);
+	div.appendChild(info);
+
+	label = document.createElement("p");
+	info = document.createElement("input");
+	label.textContent = "Model action : ";
+	info.value = toModel.value;
+	info.disabled = "false";
+	div.appendChild(label);
+	div.appendChild(info);
+
+	div.appendChild(document.createElement("br"));
+
+	//加入一个配置按钮
+	let cfgButton = document.createElement("button");
+	cfgButton.innerHTML='Config'
+	cfgButton.setAttribute("type", "button");
+	cfgButton.setAttribute("value", 'Config');
+	cfgButton.setAttribute("id", 'dataConfig');
+	cfgButton.setAttribute("onclick", "configDataLink()");
+	div.appendChild(cfgButton);
+
+	return div
+}
+
+function configDataLink(){
+	console.log('config')
+	var targetCell = graph.getSelectionModel().cells[0];
+	window.parent.configDataLink(targetCell);
+}

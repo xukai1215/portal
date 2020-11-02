@@ -557,6 +557,56 @@ h1.h_lite,h2.h_lite,h3.h_lite,h4.h_lite,span.h_lite{
     overflow-y: overlay;
 }
 
+.wzhInput{
+    position: relative;
+    width: 100%;
+    line-height: normal;
+    /*display: inline-table;*/
+}
+
+.wzhInput_primary{
+    -webkit-appearance: none;
+    background-color: #FFF;
+    background: aliceblue;
+    background-image: none;
+    border-radius: 4px;
+    border: 1px solid #DCDFE6;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    color: #606266;
+    display: inline-block;
+    font-size: inherit;
+    height: 40px;
+    line-height: 40px;
+    outline: 0;
+    padding: 0 15px;
+    -webkit-transition: .2s cubic-bezier(.645,.045,.355,1);
+    transition: .2s cubic-bezier(.645,.045,.355,1);
+    width: 100%;
+}
+
+.wzhInput_shadow{
+    border:0;
+}
+
+.wzhInput_primary.wzhInput_shadow{
+    background: aliceblue;
+}
+
+.wzhInput_primary.wzhInput_shadow:hover{
+    box-shadow: 0 0 1px 4px aliceblue;
+    background: inherit;
+}
+
+.wzhInput_primary.wzhInput_shadow:focus{
+    border:1px solid #409EFF;
+    background: inherit;
+}
+
+.wzhInput_primary::placeholder{
+    color: #999999;
+}
+
 .wzhScrollbar{
 
     overflow-y: auto;
@@ -594,6 +644,112 @@ h1.h_lite,h2.h_lite,h3.h_lite,h4.h_lite,span.h_lite{
     transition: .4s;
 }
 
+.wzhButton{
+    display: inline-block;
+    line-height: 1;
+    white-space: nowrap;
+    cursor: pointer;
+    background: #FFF;
+    border: 1px solid #DCDFE6;
+    color: #606266;
+    -webkit-appearance: none;
+    text-align: center;
+    box-sizing: border-box;
+    outline: 0;
+    margin: 0;
+    -webkit-transition: .1s;
+    transition: .1s;
+    font-weight: 500;
+    padding: 12px 20px;
+    font-size: 14px;
+    border-radius: 4px;
+}
+
+.wzhButton_primary{
+    color: #f2f2f2;
+    background-color: #409EFF;
+    border-color: #409EFF;
+}
+
+.wzhButton_primary:hover{
+    background: #66b1ff;
+    border-color: #66b1ff;
+    color: #f2f2f2;
+}
+
+.wzhButton_primary:active{
+    background: #3187e0;
+    border-color: #3187e0;
+    color: #f2f2f2;
+}
+
+.input_icon {
+    position: absolute;
+}
+
+.input_iconContainer{
+    position: absolute;
+    height: 100%;
+    padding: 0 8px;
+    transition: .2s;
+    color: #5e5c5a;
+}
+
+.input_iconContainerPre {
+
+    left:  0;
+    top: 0;
+}
+
+.input_iconContainerPost {
+    right:  1px;
+    top: 0;
+}
+
+.input_iconContainer i {
+    font-size: 16px;
+    /* color: #2b88d8; */
+    font-weight: 600;
+
+}
+
+.dropContainer{
+    height: auto;
+    position: absolute;
+    overflow: hidden;
+    width: 100%;
+    box-shadow: 0 3px 9px 0px #a8a8a880;
+    transition: all 0.16s ease-out;
+    background-color: rgb(255, 255, 255);
+    border-radius: 4px;
+    margin: 5px 0;
+}
+
+.dropDownForm{
+    /*margin: 5px 0;*/
+    height: auto;
+    max-height: 199px;
+    width: 100%;
+    /* position: absolute; */
+    border-radius: 4px;
+    padding: 5px 0;
+    /* border: 1px solid #f2f2f2; */
+    /*background-color: rgba(252,252,252,1);*/
+    overflow-y: auto;
+}
+
+.dropDownFormUnit{
+    padding: 9px 20px;
+    margin-bottom:3px ;
+}
+
+.dropDownFormUnit p{
+    margin: 0;
+}
+
+.dropDownFormUnit:hover{
+    background: #fdf5ea;
+}
 /*!*滚动条上的按钮--垂直滚动条向上按钮*!*/
 /*.wzhScrollbar::-webkit-scrollbar-button:decrement {*/
 /*    height: 10px;*/
@@ -608,6 +764,17 @@ h1.h_lite,h2.h_lite,h3.h_lite,h4.h_lite,span.h_lite{
 /*    border: 1px solid #F1F1F1;*/
 /*}*/
 
+.transform180{
+    -webkit-transform: rotate(180deg);
+    transform: rotate(180deg);
+    transition: .3s;
+}
+
+.transform0{
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+    transition: .3s;
+}
 
 .wzhScrollbar .el-dialog__body{
     overflow-y: overlay;

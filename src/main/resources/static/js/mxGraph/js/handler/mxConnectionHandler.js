@@ -2027,6 +2027,10 @@ mxConnectionHandler.prototype.connect = function(source, target, evt, dropTarget
 				this.fireEvent(new mxEventObject(mxEvent.CONNECT, 'cell', edge, 'terminal', target,
 					'event', evt, 'target', dropTarget, 'terminalInserted', terminalInserted));
 			}
+
+			if(edge.target.eid!=undefined&&edge.source.eid!=undefined){
+				window.parent.insertDataLink(edge)
+			}
 		}
 		catch (e)
 		{

@@ -40,9 +40,6 @@ public class GdalUtilRestController {
             outputRef.ImportFromEPSG(refCode);
         }
 
-        inputRef.ImportFromWkt(transformInfo.get("inputRefWkt"));
-        outputRef.ImportFromWkt(transformInfo.get("outputRefWkt"));
-
         CoordinateTransformation coordinateTransformation = new CoordinateTransformation(inputRef,outputRef);
 
         double[] result = coordinateTransformation.TransformPoint(inputRefX,inputRefY);

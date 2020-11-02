@@ -18,6 +18,8 @@ public class IntegratedTaskAddDto {
 
     List<ModelAction> modelActions;
 
+    List<Map<String,String>> dataLinks;
+
     String xml;
     String mxgraph;
 

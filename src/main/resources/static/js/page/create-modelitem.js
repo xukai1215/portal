@@ -162,6 +162,8 @@ var createModelItem = Vue.extend({
                 oid: '',
             },
 
+            draftOid:'',
+
             toCreate: 1,
 
             timeOut: {},
@@ -468,6 +470,8 @@ var createModelItem = Vue.extend({
                 {value: 'zu', label: 'Zulu'},
                 {value: 'zu-ZA', label: 'Zulu (South Africa)'},
             ],
+
+            dynamicTable:{},
         }
 
     },
@@ -639,24 +643,47 @@ var createModelItem = Vue.extend({
             return parseInt(domID.substring(domID.length-1,domID.length))
         },
 
-        getContent(step) {
-            let content = {
-                classification: this.cls,
-                status: this.status,
-                name: this.itemName
+        getItemContent(trigger,callBack) {//trigger标识是finish触发还是存草稿
+            let modelItemObj = {}
+            modelItemObj.status=this.status;
+            modelItemObj.classifications = this.cls;//[$("#parentNode").attr("pid")];
+            modelItemObj.name = $("#nameInput").val();
+            modelItemObj.alias = $("#aliasInput").val().split(",");
+            if (modelItemObj.alias.length === 1 && modelItemObj.alias[0] === "") {
+                modelItemObj.alias = [];
             }
-            content.overView = $("#descInput").val()
-            content.keywords = $("#tagInput").val().split(",");
-            // content.image = $('#imgShow').get(0).currentSrc;
-            content.image = this.itemInfo.image;
-            let references = new Array();
+            modelItemObj.keywords = $("#tagInput").val().split(",");
+            modelItemObj.description = $("#descInput").val();
+            // modelItemObj.uploadImage = $('#imgShow').get(0).currentSrc;
+            modelItemObj.uploadImage = this.itemInfo.image;
+            modelItemObj.authorship=[];
+            userspace.getUserData($("#providersPanel .user-contents .form-control"), modelItemObj.authorship);
+
+            if(trigger=='finish'&&modelItemObj.name.trim()==""){
+                alert("please enter name");
+                return;
+            }
+            else if(trigger=='finish'&&modelItemObj.classifications.length==0){
+                alert("please select classification");
+                return;
+            }
+
+            modelItemObj.localizationList = [];
+
+            this.currentLocalization.description = tinymce.activeEditor.getContent();
+            this.currentLocalization.localCode = this.languageAdd.local.value;
+            this.currentLocalization.localName = this.languageAdd.local.label;
+
+            modelItemObj.localizationList.push(this.currentLocalization);
+
+            modelItemObj.references = new Array();
             var ref_lines = $("#dynamic-table tr");
-            for (let i = 1; i < ref_lines.length; i++) {
+            for (i = 1; i < ref_lines.length; i++) {
                 var ref_prop = ref_lines.eq(i).children("td");
                 if (ref_prop != 0) {
                     var ref = {};
                     ref.title = ref_prop.eq(0).text();
-                    if (ref.title == "No data available in table")
+                    if (trigger=='finish'&&ref.title == "No data available in table")
                         break;
                     ref.author = ref_prop.eq(1).text().split(",");
                     ref.date = ref_prop.eq(2).text();
@@ -665,24 +692,20 @@ var createModelItem = Vue.extend({
                     ref.pages = ref_prop.eq(5).text();
                     ref.links = ref_prop.eq(6).text();
                     ref.doi = ref_prop.eq(7).text();
-                    references.push(ref);
+                    modelItemObj.references.push(ref);
                 }
             }
-            content.references = references
 
-            content.detail = tinyMCE.activeEditor.getContent().trim();
-
-            content.authorship = []
-            userspace.getUserData($("#providersPanel .user-contents .form-control"), content.authorship);
-
-            return content
+            if(callBack){
+                callBack(modelItemObj)
+            }
+            return modelItemObj
         },
 
         createDraft(){//请求后台创建一个草稿实例,如果存在则更新
-            this.savingDraft=true
 
             var step = this.getStep()
-            let content=this.getContent(step)
+            let content=this.getItemContent(step)
 
             let urls=window.location.href.split('/')
             let item=urls[6]
@@ -699,141 +722,20 @@ var createModelItem = Vue.extend({
                 obj.itemName= this.itemName;
             }
 
-            axios.post('/draft/init',obj
-                ).then(
-                    res=>{
-                        if(res.data.code==0){
-                            this.draft=res.data.data;
-                            setTimeout(()=>{
-                                this.savingDraft=false
-                            },1005)
-                        }
-                    }
-            )
-        },
-
-        handlePageChange(val) {
-            this.pageOption.currentPage = val;
-
-            if(this.inSearch==0)
-                this.loadDraft();
-            else
-                this.searchDraft()
-        },
-
-        searchDraft(){
-
-        },
-
-        loadDraftListClick(){
-            this.draftListDialog=true;
-
-            this.pageOption.currentPage = 1;
-            this.loadDraft()
-        },
-
-        loadDraft(){
-            axios.get('/draft/pageByUser',{
-                params:{
-                    asc:0,
-                    page:this.pageOption.currentPage-1,
-                    size:6,
-                }
-            }).then(res=>{
-                if(res.data.code==0){
-                    let data=res.data.data
-                    this.draftList=data.content
-                    this.pageOption.total = data.total;
-                }else{
-                    this.$alert('Please login first!', 'Error', {
-                        type:"error",
-                        confirmButtonText: 'OK',
-                        callback: action => {
-                            window.location.href = "/user/login";
-                        }
-                    });
-                }
-            })
-        },
-
-        loadDraftByOid(){
-            axios.get('/draft/getByOid',{
-                params:{
-                    oid:this.draft.oid
-                }
-            }).then(res=>{
-                if(res.data.code==0){
-                    this.insertDraft(res.data.data)
-                }
-            })
-        },
-
-        loadMatchedDraft(){//匹配edit对应的
-            this.matchedDraft={}
-            axios.get('/draft/getByItemAndUser',{
-                params:{
-                    itemOid:this.$route.params.editId
-                }
-            }).then(res=>{
-                if(res.data.code==0){
-                    this.matchedDraft=res.data.data;
-                    if(this.matchedDraft!={}&&this.matchedDraft!=null){
-                        this.$confirm('You have a existed draft about this Item, do you want to load it? If not, this draft will be overwrited.', 'Tips', {
-                            confirmButtonText: 'Yes',
-                            cancelButtonText: 'No',
-                            type: 'warning'
-                        }).then(() => {
-                            this.insertDraft(this.matchedDraft)
-                        }).catch(() => {
-                            this.draft.oid=this.matchedDraft.oid
-                        });
-                    }
-                }
-
-
-            })
+           this.$refs.draftBox.createDraft(obj)
         },
 
         loadMatchedCreateDraft(){
-            this.loadCreateDraft()
+            this.$refs.draftBox.loadMatchedCreateDraft()
         },
 
-        loadCreateDraft(){//
-            this.matchedCreateDraft={}
-            axios.get('/draft/getCreateDraftByUserByType',{
-                params:{
-                    itemType:'ModelItem',
-                    editType:'create',
-                }
-            }).then(res=>{
-                if(res.data.code==0){
-                    if(res.data.data.length>1){
-                        this.matchedCreateDraft=res.data.data;
-                        this.matchedCreateDraftDialog=true
-                    }
-                }
-
-
-            })
-        },
-
-        loadDraftClick(draft){
-            this.insertDraft(draft)
-
-            this.draftListDialog=false;
-            this.matchedCreateDraftDialog=false;
-        },
-
-        insertDraft(draft){
-            this.draft=draft;
-            let content = draft.content;
-            this.cls=typeof(content.classification)=="undefined"?[]: content.classification
-            this.status=content.status
+        insertInfo(basicInfo){
+            this.cls = basicInfo.classifications;
+            this.status = basicInfo.status;
             let ids=[];
-            this.clsStr=[]
-            for(let i=0;i<this.cls.length;i++){
-                for(let j=0;j<2;j++){
-                    for(let k=0;k<this.treeData[j].children.length;k++){
+            for(i=0;i<this.cls.length;i++){
+                for(j=0;j<2;j++){
+                    for(k=0;k<this.treeData[j].children.length;k++){
                         let children=this.treeData[j].children[k].children;
                         if(children==null) {
                             if (this.cls[i] == this.treeData[j].children[k].oid) {
@@ -846,7 +748,7 @@ var createModelItem = Vue.extend({
                             }
                         }
                         else{
-                            for(let x=0;x<children.length;x++){
+                            for(x=0;x<children.length;x++){
                                 if (this.cls[i] == children[x].oid) {
                                     ids.push(children[x].id);
                                     this.clsStr += children[x].label;
@@ -869,10 +771,10 @@ var createModelItem = Vue.extend({
 
             $(".providers").children(".panel").remove();
 
-            let authorship = content.authorship;
-            var user_num = 0;
+            let authorship = basicInfo.authorship;
+            let user_num = 0
             if(authorship!=null) {
-                for (let i = 0; i < authorship.length; i++) {
+                for (i = 0; i < authorship.length; i++) {
                     user_num++;
                     var content_box = $(".providers");
                     var str = "<div class='panel panel-primary'> <div class='panel-heading'> <h4 class='panel-title'> <a class='accordion-toggle collapsed' style='color:white' data-toggle='collapse' data-target='#user";
@@ -938,19 +840,19 @@ var createModelItem = Vue.extend({
             }
 
 
-            this.itemName=content.name//填入name input
-            $("#descInput").val(content.overView);
+            $("#nameInput").val(basicInfo.name);
+            $("#descInput").val(basicInfo.description);
+            this.itemName=basicInfo.name
             //image
-            if (content.image != "") {
-                this.itemInfo.image = content.image
-                // $("#imgShow").attr("src", content.image);
-                // $('#imgShow').show();
-            }
+            // if (basicInfo.uploadImage != "") {
+                this.itemInfo.image = basicInfo.uploadImage
+            // }
             //reference
 
-            for (i = 0; i < content.references.length; i++) {
-                var ref = content.references[i];
-                table.row.add([
+            this.dynamicTable.clear().draw();
+            for (i = 0; i < basicInfo.references.length; i++) {
+                var ref = basicInfo.references[i];
+                this.dynamicTable.row.add([
                     ref.title,
                     ref.author,
                     ref.date,
@@ -961,30 +863,45 @@ var createModelItem = Vue.extend({
                     ref.doi,
                     "<center><a href='javascript:;' class='fa fa-times refClose' style='color:red'></a></center>"]).draw();
             }
-            if (content.references.length > 0) {
+            if (basicInfo.references.length > 0) {
                 $("#dynamic-table").css("display", "block")
             }
 
             //tags
             $('#tagInput').tagEditor('destroy');
             $('#tagInput').tagEditor({
-                initialTags: content.keywords,
+                initialTags: basicInfo.keywords,
                 forceLowercase: false,
                 placeholder: 'Enter keywords ...'
             });
 
 
             //detail
-            tinyMCE.remove(tinyMCE.editors[0])
-            $("#modelItemText").html(content.detail);//可能会赋值不成功
-            $("#modelItemText").val(content.detail);
-            initTinymce('textarea#modelItemText')
+            initTinymce('textarea#conceptText')
+            this.localizationList = basicInfo.localizationList;
+            let interval = setInterval(() => {
+                this.changeLocalization(this.localizationList[0])
+                clearInterval(interval);
+            }, 1000);
+
+            //alias
+            $('#aliasInput').tagEditor('destroy');
+            $('#aliasInput').tagEditor({
+                initialTags: basicInfo.alias,
+                forceLowercase: false,
+                // placeholder: 'Enter alias ...'
+            });
+            // //detail
+            // tinyMCE.remove(tinyMCE.editors[0])
+            // $("#modelItemText").html(content.detail);//可能会赋值不成功
+            // $("#modelItemText").val(content.detail);
+            // initTinymce('textarea#modelItemText')
 
         },
 
         cancelEditClick(){
-            if(this.draft.oid!=''){
-                this.cancelDraftDialog=true
+            if(this.draft.oid!=''&&this.draft.oid!=null){
+                this.$refs.draftBox.cancelDraftDialog=true
             }else{
                 setTimeout(() => {
                     window.location.href = "/user/userSpace#/models/modelitem";
@@ -1004,49 +921,17 @@ var createModelItem = Vue.extend({
             // });
         },
 
-        cancelEdit() {
-            this.deleteDraft()
-            setTimeout(() => {
-                window.location.href = "/user/userSpace#/models/modelitem";
-            }, 905)
-        },
-
-        saveDraft(){
-            this.savingDraft=true
-            let content=this.getContent()
-            let obj={
-                content:content,
-                oid:this.draft.oid,
-
-            }
-            axios.post('/draft/update',obj
-            ).then(
-                res=>{
-                    if(res.data.code==0){
-                        this.$message({message: 'Save successfully',type: 'success'})
-                    }
-                    setTimeout(()=>{
-                        this.savingDraft=false
-                    },895)
-                    setTimeout(()=>{
-                        window.location.href = "/user/userSpace#/models/modelitem";
-                    },905)
-                }
-            ).catch(()=>{
-                this.$message({message: 'Something wrong',type: 'warning'})
-                setTimeout(()=>{
-                    this.savingDraft=false
-                },195)
-            })
-        },
-
         deleteDraft(){
-            axios.delete('/draft/deleteByOid?oid='+this.draft.oid)
+            this.$refs.draftBox.deleteDraft(this.draft.oid)
         },
 
         checkItem(item){
             let itemType = item.itemType.substring(0,1).toLowerCase()+item.itemType.substring(1)
             window.location.href='/'+itemType+'/'+item.itemOid
+        },
+
+        initDraft(editType,backUrl,oid){
+              this.$refs.draftBox.initDraft(editType,backUrl,oid)
         },
 
         //reference
@@ -1153,6 +1038,36 @@ var createModelItem = Vue.extend({
                 );
                 return;
             }
+
+            let tags1 = $('#refAuthor').tagEditor('getTags')[0].tags;
+            for (i = 0; i < tags1.length; i++) { $('#refAuthor').tagEditor('removeTag', tags1[i]); }
+            if (tags1.length>0&&$("#refTitle").val()!='') {
+                this.dynamicTable.row.add([
+                    $("#refTitle").val(),
+                    tags1,
+                    $("#refDate").val(),
+                    $("#refJournal").val(),
+                    $("#volumeIssue").val(),
+                    $("#refPages").val(),
+                    $("#refLink").val(),
+                    $("#doiTitle").val(),
+                    "<center><a href='javascript:;' class='fa fa-times refClose' style='color:red'></a></center>"]).draw();
+
+                $("#dynamic-table").css("display", "block")
+                $("#refinfo").modal("hide")
+                $("#refTitle").val("")
+                var tags = $('#refAuthor').tagEditor('getTags')[0].tags;
+                for (i = 0; i < tags.length; i++) {
+                    $('#refAuthor').tagEditor('removeTag', tags[i]);
+                }
+                $("#refDate").val("")
+                $("#volumeIssue").val(""),
+                    $("#refJournal").val("")
+                $("#refPages").val("")
+                $("#doiTitle").val("")
+                $("#refLink").val("")
+            }
+
             this.editArticleDialog = false
            //调用$("#modal_save").click完成
 
@@ -1431,6 +1346,11 @@ var createModelItem = Vue.extend({
         // 销毁监听
         this.socket.onclose = this.close
     },
+
+    created(){
+
+    },
+
     mounted() {
 
         let that = this;
@@ -1572,19 +1492,21 @@ var createModelItem = Vue.extend({
             initTinymce('textarea#modelItemText')
 
             this.loadMatchedCreateDraft()
-            if(this.draft.oid!=''&&this.draft.oid!=null&&typeof (this.draft.oid)!="undefined")
-                this.loadDraftByOid()
+            if(this.draft.oid!=''&&this.draft.oid!=null&&typeof (this.draft.oid)!="undefined"){
+                // this.loadDraftByOid()
+                this.initDraft('create','/user/userSpace#/models/modelitem',this.draft.oid)
+            }
 
         }
         else {
 
             this.editTypeLocal = 'edit'
             if(this.draft.oid==''||this.draft.oid==null||typeof (this.draft.oid)=="undefined")
-                this.loadMatchedDraft()
+                this.initDraft('edit','/user/userSpace#/models/modelitem',this.$route.params.editId)
             // $("#title").text("Modify Model Item")
             $("#subRteTitle").text("/Modify Model Item");
 
-            document.title="Modify Model Item | OpenGMS"
+            // document.title="Modify Model Item | OpenGMS"
             $.ajax({
                 url: "/modelItem/getInfo/" + oid,
                 type: "get",
@@ -1594,171 +1516,13 @@ var createModelItem = Vue.extend({
                     console.log(result);
                     var basicInfo = result.data;
 
-                    //cls
-                    this.cls = basicInfo.classifications;
-                    this.status = basicInfo.status;
-                    let ids=[];
-                    for(i=0;i<this.cls.length;i++){
-                        for(j=0;j<2;j++){
-                            for(k=0;k<this.treeData[j].children.length;k++){
-                                let children=this.treeData[j].children[k].children;
-                                if(children==null) {
-                                    if (this.cls[i] == this.treeData[j].children[k].oid) {
-                                        ids.push(this.treeData[j].children[k].id);
-                                        this.clsStr += this.treeData[j].children[k].label;
-                                        if (i != this.cls.length - 1) {
-                                            this.clsStr += ", ";
-                                        }
-                                        break;
-                                    }
-                                }
-                                else{
-                                    for(x=0;x<children.length;x++){
-                                        if (this.cls[i] == children[x].oid) {
-                                            ids.push(children[x].id);
-                                            this.clsStr += children[x].label;
-                                            if (i != this.cls.length - 1) {
-                                                this.clsStr += ", ";
-                                            }
-                                            break;
-                                        }
-                                    }
-                                }
-
-                            }
-                            if(ids.length-1==i){
-                                break;
-                            }
-                        }
-                    }
-
-                    this.$refs.tree2.setCheckedKeys(ids);
-
-                    $(".providers").children(".panel").remove();
-
-                    let authorship = basicInfo.authorship;
-                    if(authorship!=null) {
-                        for (i = 0; i < authorship.length; i++) {
-                            user_num++;
-                            var content_box = $(".providers");
-                            var str = "<div class='panel panel-primary'> <div class='panel-heading'> <h4 class='panel-title'> <a class='accordion-toggle collapsed' style='color:white' data-toggle='collapse' data-target='#user";
-                            str += user_num;
-                            str += "' href='javascript:;'> NEW </a> </h4><a href='javascript:;' class='fa fa-times author_close' style='float:right;margin-top:8px;color:white'></a></div><div id='user";
-                            str += user_num;
-                            str += "' class='panel-collapse collapse in'><div class='panel-body user-contents'> <div class='user-attr'>\n" +
-                                "                                                                                                    <div>\n" +
-                                "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
-                                "                                                                                                               style='font-weight: bold;'>\n" +
-                                "                                                                                                            Name:\n" +
-                                "                                                                                                        </lable>\n" +
-                                "                                                                                                        <div class='input-group col-sm-10'>\n" +
-                                "                                                                                                            <input type='text'\n" +
-                                "                                                                                                                   name=\"name\"\n" +
-                                "                                                                                                                   class='form-control' value='" +
-                                authorship[i].name +
-                                "'>\n" +
-                                "                                                                                                        </div>\n" +
-                                "                                                                                                    </div>\n" +
-                                "                                                                                                    <div style=\"margin-top:10px\">\n" +
-                                "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
-                                "                                                                                                               style='font-weight: bold;'>\n" +
-                                "                                                                                                            Affiliation:\n" +
-                                "                                                                                                        </lable>\n" +
-                                "                                                                                                        <div class='input-group col-sm-10'>\n" +
-                                "                                                                                                            <input type='text'\n" +
-                                "                                                                                                                   name=\"ins\"\n" +
-                                "                                                                                                                   class='form-control' value='" +
-                                authorship[i].ins +
-                                "'>\n" +
-                                "                                                                                                        </div>\n" +
-                                "                                                                                                    </div>\n" +
-                                "                                                                                                    <div style=\"margin-top:10px\">\n" +
-                                "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
-                                "                                                                                                               style='font-weight: bold;'>\n" +
-                                "                                                                                                            Email:\n" +
-                                "                                                                                                        </lable>\n" +
-                                "                                                                                                        <div class='input-group col-sm-10'>\n" +
-                                "                                                                                                            <input type='text'\n" +
-                                "                                                                                                                   name=\"email\"\n" +
-                                "                                                                                                                   class='form-control' value='" +
-                                authorship[i].email +
-                                "'>\n" +
-                                "                                                                                                        </div>\n" +
-                                "                                                                                                    </div>\n" +
-                                "                                                                                                    <div style=\"margin-top:10px\">\n" +
-                                "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
-                                "                                                                                                               style='font-weight: bold;'>\n" +
-                                "                                                                                                            Homepage:\n" +
-                                "                                                                                                        </lable>\n" +
-                                "                                                                                                        <div class='input-group col-sm-10'>\n" +
-                                "                                                                                                            <input type='text'\n" +
-                                "                                                                                                                   name=\"homepage\"\n" +
-                                "                                                                                                                   class='form-control' value='" +
-                                authorship[i].homepage +
-                                "'>\n" +
-                                "                                                                                                        </div>\n" +
-                                "                                                                                                    </div>\n" +
-                                "                                                                                                </div></div> </div> </div>"
-                            content_box.append(str)
-                        }
-                    }
-
-
-                    $("#nameInput").val(basicInfo.name);
-                    $("#descInput").val(basicInfo.description);
-                    this.itemName=basicInfo.name
-                    //image
-                    if (basicInfo.image != "") {
-                        this.itemInfo.image = basicInfo.image
-                    }
-                    //reference
-
-                    for (i = 0; i < basicInfo.references.length; i++) {
-                        var ref = basicInfo.references[i];
-                        table.row.add([
-                            ref.title,
-                            ref.author,
-                            ref.date,
-                            ref.journal,
-                            ref.volume,
-                            ref.pages,
-                            ref.links,
-                            ref.doi,
-                            "<center><a href='javascript:;' class='fa fa-times refClose' style='color:red'></a></center>"]).draw();
-                    }
-                    if (basicInfo.references.length > 0) {
-                        $("#dynamic-table").css("display", "block")
-                    }
-
-                    //tags
-                    $('#tagInput').tagEditor('destroy');
-                    $('#tagInput').tagEditor({
-                        initialTags: basicInfo.keywords,
-                        forceLowercase: false,
-                        placeholder: 'Enter keywords ...'
-                    });
-
-
-                    //detail
-                    initTinymce('textarea#conceptText')
-                    this.localizationList = basicInfo.localizationList;
-                    let interval = setInterval(() => {
-                        this.changeLocalization(this.localizationList[0])
-                        clearInterval(interval);
-                    }, 1000);
-
-                    //alias
-                    $('#aliasInput').tagEditor({
-                        initialTags: basicInfo.alias,
-                        forceLowercase: false,
-                        // placeholder: 'Enter alias ...'
-                    });
+                    this.insertInfo(basicInfo)
                 }
             })
             // window.sessionStorage.setItem("editModelItem_id", "");
         }
-        if(this.draft.oid!=''&&this.draft.oid!=null&&typeof (this.draft.oid)!="undefined")
-            this.loadDraftByOid()
+        // if(this.draft.oid!=''&&this.draft.oid!=null&&typeof (this.draft.oid)!="undefined")
+        //     this.loadDraftByOid()
 
         $("#step").steps({
             onFinish: function () {
@@ -1830,7 +1594,7 @@ var createModelItem = Vue.extend({
         // });
 
         //table
-        table = $('#dynamic-table').DataTable({
+        this.dynamicTable = $('#dynamic-table').DataTable({
             //"aaSorting": [[ 0, "asc" ]],
             "paging": false,
             // "ordering":false,
@@ -1856,41 +1620,14 @@ var createModelItem = Vue.extend({
             $("#doiTitle").val("")
         })
 
-        $("#modal_save").click(function () {
-            let tags1 = $('#refAuthor').tagEditor('getTags')[0].tags;
-            for (i = 0; i < tags1.length; i++) { $('#refAuthor').tagEditor('removeTag', tags1[i]); }
-            if (tags1.length>0&&$("#refTitle").val()!='') {
-                table.row.add([
-                    $("#refTitle").val(),
-                    tags1,
-                    $("#refDate").val(),
-                    $("#refJournal").val(),
-                    $("#volumeIssue").val(),
-                    $("#refPages").val(),
-                    $("#refLink").val(),
-                    $("#doiTitle").val(),
-                     "<center><a href='javascript:;' class='fa fa-times refClose' style='color:red'></a></center>"]).draw();
-
-                $("#dynamic-table").css("display", "block")
-                $("#refinfo").modal("hide")
-                $("#refTitle").val("")
-                var tags = $('#refAuthor').tagEditor('getTags')[0].tags;
-                for (i = 0; i < tags.length; i++) {
-                    $('#refAuthor').tagEditor('removeTag', tags[i]);
-                }
-                $("#refDate").val("")
-                $("#volumeIssue").val(""),
-                $("#refJournal").val("")
-                $("#refPages").val("")
-                $("#doiTitle").val("")
-                $("#refLink").val("")
-            }
-
-        })
+        // $("#modal_save").click(function () {
+        //
+        //
+        // })
         //table end
 
         $(document).on("click", ".refClose", function () {
-            table.row($(this).parents("tr")).remove().draw();
+            vthis.dynamicTable.row($(this).parents("tr")).remove().draw();
             //$(this).parents("tr").eq(0).remove();
             console.log($("tbody tr"));
             if ($("tbody tr").eq(0)[0].innerText == "No data available in table") {
@@ -1984,56 +1721,8 @@ var createModelItem = Vue.extend({
         // }
 
         $(".finish").click(()=> {
-            modelItemObj.status=this.status;
-            modelItemObj.classifications = this.cls;//[$("#parentNode").attr("pid")];
-            modelItemObj.name = $("#nameInput").val();
-            modelItemObj.alias = $("#aliasInput").val().split(",");
-            if (modelItemObj.alias.length === 1 && modelItemObj.alias[0] === "") {
-                modelItemObj.alias = [];
-            }
-            modelItemObj.keywords = $("#tagInput").val().split(",");
-            modelItemObj.description = $("#descInput").val();
-            // modelItemObj.uploadImage = $('#imgShow').get(0).currentSrc;
-            modelItemObj.uploadImage = this.itemInfo.image;
-            modelItemObj.authorship=[];
-            userspace.getUserData($("#providersPanel .user-contents .form-control"), modelItemObj.authorship);
 
-            if(modelItemObj.name.trim()==""){
-                alert("please enter name");
-                return;
-            }
-            else if(modelItemObj.classifications.length==0){
-                alert("please select classification");
-                return;
-            }
-
-            modelItemObj.localizationList = [];
-
-            this.currentLocalization.description = tinymce.activeEditor.getContent();
-            this.currentLocalization.localCode = this.languageAdd.local.value;
-            this.currentLocalization.localName = this.languageAdd.local.label;
-
-            modelItemObj.localizationList.push(this.currentLocalization);
-
-            modelItemObj.references = new Array();
-            var ref_lines = $("#dynamic-table tr");
-            for (i = 1; i < ref_lines.length; i++) {
-                var ref_prop = ref_lines.eq(i).children("td");
-                if (ref_prop != 0) {
-                    var ref = {};
-                    ref.title = ref_prop.eq(0).text();
-                    if (ref.title == "No data available in table")
-                        break;
-                    ref.author = ref_prop.eq(1).text().split(",");
-                    ref.date = ref_prop.eq(2).text();
-                    ref.journal = ref_prop.eq(3).text();
-                    ref.volume = ref_prop.eq(4).text();
-                    ref.pages = ref_prop.eq(5).text();
-                    ref.links = ref_prop.eq(6).text();
-                    ref.doi = ref_prop.eq(7).text();
-                    modelItemObj.references.push(ref);
-                }
-            }
+            modelItemObj = this.getItemContent('finish')
 
             let formData = new FormData();
 

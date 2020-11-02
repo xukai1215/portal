@@ -220,7 +220,12 @@ Actions.prototype.init = function()
 
 			if(window.parent.deleteModel && typeof(window.parent.deleteModel) == 'function' ){//调用integrateModel页面的方法
 				for(let i = 0;i<cells.length;i++){
-					window.parent.deleteModel(cells[i].frontId,cells[i].md5)
+					if(cells[i].edge==false){
+						window.parent.deleteModel(cells[i].frontId,cells[i].md5)
+					}else{
+						window.parent.deleteDataLink(cells[i])
+					}
+
 				}
 			}
 		}

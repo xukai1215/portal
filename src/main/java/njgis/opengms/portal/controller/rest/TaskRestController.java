@@ -336,10 +336,11 @@ public class TaskRestController {
             String mxgraph = integratedTaskAddDto.getMxgraph();
             List<Map<String,String>> models = integratedTaskAddDto.getModels();
             List<ModelAction> modelActions = integratedTaskAddDto.getModelActions();
+            List<Map<String,String>> dataLinks = integratedTaskAddDto.getDataLinks();
             String description = integratedTaskAddDto.getDescription();
             String taskName = integratedTaskAddDto.getTaskName();
 
-            return ResultUtils.success(taskService.saveIntegratedTask( xml, mxgraph, models, modelActions,userName,taskName,description));
+            return ResultUtils.success(taskService.saveIntegratedTask( xml, mxgraph, models, modelActions,dataLinks,userName,taskName,description));
         }
     }
 
@@ -358,10 +359,11 @@ public class TaskRestController {
             String mxgraph = integratedTaskAddDto.getMxgraph();
             List<Map<String,String>> models = integratedTaskAddDto.getModels();
             List<ModelAction> modelActions = integratedTaskAddDto.getModelActions();
+            List<Map<String,String>> dataLinks = integratedTaskAddDto.getDataLinks();
             String description = integratedTaskAddDto.getDescription();
             String taskName = integratedTaskAddDto.getTaskName();
 
-            return ResultUtils.success(taskService.updateIntegratedTask(taskOid, xml, mxgraph, models, modelActions,userName,taskName,description));
+            return ResultUtils.success(taskService.updateIntegratedTask(taskOid, xml, mxgraph, models, modelActions,dataLinks,userName,taskName,description));
         }
     }
 

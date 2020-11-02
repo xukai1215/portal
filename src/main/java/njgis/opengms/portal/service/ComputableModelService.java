@@ -1441,10 +1441,29 @@ public class ComputableModelService {
         Pageable pageable = PageRequest.of(page, size, sort);
 
         Page<ComputableModel> computableModelPage = computableModelDao.findAllByDeployAndStatusIn(true,itemStatusVisible,pageable);
+        List<ComputableModel> ComputableModelList = computableModelPage.getContent();
+
+        JSONArray j_computableModelArray = new JSONArray();
+
+        for(ComputableModel computableModel:ComputableModelList){
+            String author = computableModel.getAuthor();
+            JSONObject j_computableModel = new JSONObject();
+            j_computableModel.put("oid",computableModel.getOid());
+            j_computableModel.put("name",computableModel.getName());
+            j_computableModel.put("description",computableModel.getDescription());
+            j_computableModel.put("author",userService.findUserByUserName(computableModel.getAuthor()).getName());
+            j_computableModel.put("authorOid",userService.findUserByUserName(computableModel.getAuthor()).getOid());
+            j_computableModel.put("md5",computableModel.getMd5());
+            j_computableModel.put("mdl",computableModel.getMdl());
+            j_computableModel.put("mdlJson",computableModel.getMdlJson());
+            j_computableModel.put("createTime",computableModel.getCreateTime());
+            j_computableModel.put("lastModifyTime",computableModel.getLastModifyTime());
+            j_computableModelArray.add(j_computableModel);
+        }
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("total",computableModelPage.getTotalElements());
-        jsonObject.put("content",computableModelPage.getContent());
+        jsonObject.put("content",j_computableModelArray);
 
         return jsonObject;
     }

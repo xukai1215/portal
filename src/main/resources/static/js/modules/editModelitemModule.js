@@ -809,7 +809,7 @@ Vue.component("edit-modelitem-module",
                 // $("#title").text("Modify Model Item")
                 $("#subRteTitle").text("/Modify Model Item");
 
-                document.title="Modify Model Item | OpenGMS"
+                // document.title="Modify Model Item | OpenGMS"
                 $.ajax({
                     url: "/modelItem/getInfo/" + oid,
                     type: "get",

@@ -1,28 +1,30 @@
-Vue.component("editComputableModelModule",
+Vue.component("editLogicalModelModule",
     {
-        template:'#editComputableModelModule',
+        template:'#editLogicalModelModule',
         props:{
             modelEditOid:'',
         },
         data() {
             return {
-                defaultActive: '2-4',
+                defaultActive: '2-3',
                 curIndex: '2',
 
-                computableModel: {
+                logicalModel: {
                     status:"Public",
                     bindModelItem: "",
                     bindOid: "",
                     name: "",
                     description: "",
-                    contentType: "Package",
-                    url: "",
+                    contentType: "MxGraph",
+                    cXml: "",
+                    svg: "",
                     isAuthor: true,
                     author: {
                         name: "",
                         ins: "",
-                        email: "",
-                    }
+                        email: ""
+                    },
+                    resources: [],
 
                 },
 
@@ -39,8 +41,7 @@ Vue.component("editComputableModelModule",
                 },
 
                 userInfo: {},
-
-                //文件框选择
+                //文件框
                 resources: [],
                 fileSelect: '',
                 fileArray: new Array(),
@@ -60,14 +61,15 @@ Vue.component("editComputableModelModule",
                 path:"ws://localhost:8080/websocket",
                 socket:"",
 
-                computableModel_oid:"",
+                logicalModel_oid:"",
+
             }
         },
         methods: {
             selectModelItem(index,info){
                 console.log(info);
-                this.computableModel.bindModelItem = info.name;
-                this.computableModel.bindOid = info.oid;
+                this.logicalModel.bindModelItem = info.name;
+                this.logicalModel.bindOid = info.oid;
                 this.bindModelItemDialogVisible = false;
             },
             handlePageChange(val) {
@@ -119,24 +121,6 @@ Vue.component("editComputableModelModule",
                 })
             },
 
-            changeRter(index){
-                this.curIndex = index;
-                var urls={
-                    1:'/user/userSpace',
-                    2:'/user/userSpace/model',
-                    3:'/user/userSpace/data',
-                    4:'/user/userSpace/server',
-                    5:'/user/userSpace/task',
-                    6:'/user/userSpace/community',
-                    7:'/user/userSpace/theme',
-                    8:'/user/userSpace/account',
-                    9:'/user/userSpace/feedback',
-                }
-
-                this.setSession('curIndex',index)
-                window.location.href=urls[index]
-
-            },
             handleSelect(index,indexPath){
                 this.setSession("index",index);
                 window.location.href="/user/userSpace"
@@ -187,13 +171,7 @@ Vue.component("editComputableModelModule",
                 }
             },
             addFile(){
-                if(this.computableModel.contentType == "Package"){
-                    $("#file").click();
-                }else{
-                    $("#file_multi").click();
-                }
-
-
+                $("#imgFiles").click();
             },
             removeFile(){
                 if(this.fileSelect!="") {
@@ -211,7 +189,8 @@ Vue.component("editComputableModelModule",
                 }
             },
             replaceFile(){
-                $("#file").click();
+                this.fileArray=new Array();
+                $("#imgFiles").click();
             },
             resClick(e){
 
@@ -226,7 +205,6 @@ Vue.component("editComputableModelModule",
                     }
                 }
             },
-
             sendcurIndexToParent(){
                 this.$emit('com-sendcurindex',this.curIndex)
             },
@@ -268,12 +246,11 @@ Vue.component("editComputableModelModule",
             close: function () {
                 console.log("socket已经关闭")
             },
-
-            getMessageNum(computableModel_oid){
+            getMessageNum(logicalModel_oid){
                 this.message_num_socket = 0;//初始化消息数目
                 let data = {
-                    type: 'computableModel',
-                    oid : computableModel_oid,
+                    type: 'logicalModel',
+                    oid : logicalModel_oid,
                 };
 
                 //根据oid去取该作者的被编辑的条目数量
@@ -287,8 +264,8 @@ Vue.component("editComputableModelModule",
                     }
                 });
                 let data_theme = {
-                    type: 'computableModel',
-                    oid : computableModel_oid,
+                    type: 'logicalModel',
+                    oid : logicalModel_oid,
                 };
                 $.ajax({
                     url:"/theme/getThemeMessageNum",
@@ -348,14 +325,13 @@ Vue.component("editComputableModelModule",
 
         },
         mounted() {
+            //初始化的时候吧curIndex传给父组件，来控制bar的高亮显示
             let that = this;
             that.init();
 
-            //初始化的时候吧curIndex传给父组件，来控制bar的高亮显示
             this.sendcurIndexToParent()
 
             $(() => {
-                //修改页面元素尺寸
                 let height = document.documentElement.clientHeight;
                 this.ScreenMinHeight = (height) + "px";
                 this.ScreenMaxHeight = (height) + "px";
@@ -395,7 +371,6 @@ Vue.component("editComputableModelModule",
                             this.userId = data.oid;
                             this.userName = data.name;
                             console.log(this.userId)
-
                             this.sendUserToParent(this.userId)
                             // this.addAllData()
 
@@ -433,43 +408,12 @@ Vue.component("editComputableModelModule",
             });
 
 
-            $("#file").change(()=> {
-                this.fileArray=[];
-                this.resources=[];
-                let files=$("#file")[0].files;
-                let file=files[0];
+            $("#imgFiles").change(()=> {
 
-
-                let res={};
-                res.name=file.name;
-                res.path="";
-                let names=res.name.split('.');
-                res.suffix=names[names.length-1];
-                res.size=file.size;
-                res.lastModified=file.lastModified;
-                res.type=file.type;
-
-                if(res.suffix!=='zip'){
-                    this.$message({
-                        message: 'Please select a zip file!',
-                        type: 'error',
-                        offset: 70,
-                    });
-                }else{
-                    this.fileArray.push(file);
-                    this.resources.push(res);
-                }
-
-                //清空
-                document.getElementById("file").value='';
-
-            });
-
-            $("#file_multi").change(()=> {
-                let files=$("#file_multi")[0].files;
+                let files=$("#imgFiles")[0].files;
                 for(i=0;i<files.length;i++){
                     let file=files[i];
-
+                    this.fileArray.push(file);
                     let res={};
                     res.name=file.name;
                     res.path="";
@@ -478,63 +422,53 @@ Vue.component("editComputableModelModule",
                     res.size=file.size;
                     res.lastModified=file.lastModified;
                     res.type=file.type;
-                    let exist = false;
-                    for(j=0;j<this.fileArray.length;j++) {
-                        let fileExist = this.fileArray[j];
-                        if(fileExist.name==file.name&&fileExist.lastModified == file.lastModified&&fileExist.size == file.size && fileExist.type == file.type){
-                            exist = true;
-                            break;
-                        }
-                    }
-                    if(!exist){
-                        this.fileArray.push(file);
-                        this.resources.push(res);
-                    }
+                    this.resources.push(res);
                 }
 
 
                 //清空
-                let file=document.getElementById("file_multi");
+                let file=document.getElementById("file");
                 file.value='';
-            });
+            })
 
             $.ajax({
                 type: "GET",
                 url: "/user/load",
-                data: {
-
-                },
+                data: {},
                 cache: false,
                 async: false,
-                xhrFields:{
+                xhrFields: {
                     withCredentials: true
                 },
-                crossDomain:true,
+                crossDomain: true,
                 success: (data) => {
-                    data=JSON.parse(data);
+                    data = JSON.parse(data);
                     if (data.oid == "") {
                         alert("Please login");
                         window.location.href = "/user/login";
                     }
-                    else{
-                        this.userId=data.uid;
-                        this.userName=data.name;
+                    else {
+                        this.userId = data.uid;
+                        this.userName = data.name;
 
-                        var bindOid=this.getSession("bindOid");
-                        this.computableModel.bindOid=bindOid;
+                        var bindOid = this.getSession("bindOid");
+                        this.logicalModel.bindOid = bindOid;
                         $.ajax({
                             type: "Get",
-                            url: "/modelItem/getInfo/"+bindOid,
-                            data: { },
+                            url: "/modelItem/getInfo/" + bindOid,
+                            data: {},
                             cache: false,
                             async: true,
                             success: (json) => {
-                                if(json.data!=null){
-
-                                    this.computableModel.bindModelItem=json.data.name;
+                                if (json.data != null) {
+                                    $("#bind").html("unbind")
+                                    $("#bind").removeClass("btn-success");
+                                    $("#bind").addClass("btn-warning")
+                                    document.getElementById("search-box").readOnly = true;
+                                    this.logicalModel.bindModelItem = json.data.name;
                                     this.clearSession();
                                 }
-                                else{
+                                else {
 
                                 }
                             }
@@ -543,6 +477,7 @@ Vue.component("editComputableModelModule",
                 }
             })
 
+
             var oid = this.modelEditOid;//取得所要edit的id
 
             var user_num = 0;
@@ -550,11 +485,14 @@ Vue.component("editComputableModelModule",
 
             if ((oid === "0") || (oid === "") || (oid === null)|| (oid === undefined)) {
 
-                $("#subRteTitle").text("/Create Computable Model")
+                // $("#title").text("Create Logical Model")
+                $("#subRteTitle").text("/Create Logical Model")
 
-                tinymce.remove('textarea#computableModelText')
+                $("#logicalModelText").html("");
+
+                tinymce.remove('textarea#logicalModelText')
                 tinymce.init({
-                    selector: "textarea#computableModelText",
+                    selector: "textarea#logicalModelText",
                     height: 400,
                     theme: 'silver',
                     plugins: ['link', 'table', 'image', 'media'],
@@ -587,34 +525,48 @@ Vue.component("editComputableModelModule",
                     }
                 });
             }
-            else {
-                $("#subRteTitle").text("/Modify Computable Model")
-                document.title="Modify Computable Model | OpenGMS"
+            else{
+
+                // $("#title").text("Modify Logical Model")
+                $("#subRteTitle").text("/Modify Logical Model")
+                // document.title="Modify Logical Model | OpenGMS"
+
                 $.ajax({
-                    url: "/computableModel/getInfo/" + oid,
+                    url: "/logicalModel/getInfo/" + oid,
                     type: "get",
                     data: {},
 
                     success: (result) => {
-                        window.sessionStorage.setItem("editComputableModel_id", "");
                         console.log(result)
                         var basicInfo = result.data;
-                        if(basicInfo.resourceJson!=null)
-                            this.resources=basicInfo.resourceJson;
 
-                        this.computableModel.bindModelItem=basicInfo.relateModelItemName;
-                        this.computableModel.bindOid=basicInfo.relateModelItem;
-                        this.computableModel.status=basicInfo.status;
+                        this.resources=basicInfo.resourceJson;
+
+                        $("#search-box").val(basicInfo.relateModelItemName)
+                        this.logicalModel.bindModelItem=basicInfo.relateModelItemName;
+                        this.logicalModel.bindOid=basicInfo.relateModelItem;
+                        this.logicalModel.status=basicInfo.status;
+
+
+                        if(basicInfo.contentType=="MxGraph"){
+                            $("input[name='ContentType']").eq(0).iCheck('check');
+                            $("#MxGraph").show();
+                            $("#Image").hide();
+                        }
+                        else{
+                            $("input[name='ContentType']").eq(1).iCheck('check');
+                            $("#MxGraph").hide();
+                            $("#Image").show();
+                        }
 
                         $(".providers").children(".panel").remove();
 
                         //detail
-                        //tinymce.remove("textarea#computableModelText");
-                        $("#computableModelText").html(basicInfo.detail);
-
-                        tinymce.remove('textarea#computableModelText')
+                        //tinymce.remove("textarea#logicalModelText");
+                        $("#logicalModelText").html(basicInfo.detail);
+                        tinymce.remove('textarea#logicalModelText')
                         tinymce.init({
-                            selector: "textarea#computableModelText",
+                            selector: "textarea#logicalModelText",
                             height: 300,
                             theme: 'silver',
                             plugins: ['link', 'table', 'image', 'media'],
@@ -714,11 +666,13 @@ Vue.component("editComputableModelModule",
                             }
                         }
 
-                        this.computableModel.name=basicInfo.name;
-                        this.computableModel.description=basicInfo.description
+                        this.logicalModel.name=basicInfo.name;
+                        this.logicalModel.description=basicInfo.description
 
                         // $("#nameInput").val(basicInfo.name);
                         // $("#descInput").val(basicInfo.description)
+
+
 
 
 
@@ -726,13 +680,15 @@ Vue.component("editComputableModelModule",
                 })
             }
 
+
+
             $("#step").steps({
                 onFinish: function () {
-                    alert('Wizard Completed');
+                    // alert('Wizard Completed');
                 },
                 onChange: (currentIndex, newIndex, stepDirection) => {
                     if (currentIndex === 0 && stepDirection === "forward") {
-                        if (this.computableModel.bindOid == ""||this.computableModel.bindOid == null) {
+                        if (this.logicalModel.bindOid == ""||this.logicalModel.bindOid == null) {
                             new Vue().$message({
                                 message: 'Please bind a model item!',
                                 type: 'warning',
@@ -740,14 +696,14 @@ Vue.component("editComputableModelModule",
                             });
                             return false;
                         }
-                        else if (this.computableModel.name.trim() == "") {
+                        else if (this.logicalModel.name.trim() == "") {
                             new Vue().$message({
                                 message: 'Please enter name!',
                                 type: 'warning',
                                 offset: 70,
                             });
                             return false;
-                        }else if (this.computableModel.description.trim() == "") {
+                        }else if (this.logicalModel.description.trim() == "") {
                             new Vue().$message({
                                 message: 'Please enter overview!',
                                 type: 'warning',
@@ -758,31 +714,7 @@ Vue.component("editComputableModelModule",
                         else {
                             return true;
                         }
-                    }
-                    else if(currentIndex === 1 && stepDirection === "forward"){
-                        if(this.computableModel.contentType=="Package"||this.computableModel.contentType=="Code"||this.computableModel.contentType=="Library"){
-                            if(this.fileArray.length==0&&this.resources.length==0){
-                                new Vue().$message({
-                                    message: 'Please select at least one file!',
-                                    type: 'warning',
-                                    offset: 70,
-                                });
-                                return false;
-                            }
-                        }
-                        if(this.computableModel.contentType=="Service"||this.computableModel.contentType=="Link"){
-                            if(this.computableModel.url==""){
-                                new Vue().$message({
-                                    message: 'Please enter URL!',
-                                    type: 'warning',
-                                    offset: 70,
-                                });
-                                return false;
-                            }
-                        }
-                        return true;
-                    }
-                    else{
+                    }else{
                         return true;
                     }
                 }
@@ -791,17 +723,6 @@ Vue.component("editComputableModelModule",
 
             $(".finish").click(()=>{
                 this.formData=new FormData();
-
-                if(this.computableModel.bindModelItem==""){
-                    alert("Please bind a model item")
-                    return;
-                }
-                if(this.computableModel.name.trim()==""){
-                    alert("Please enter name")
-                    return;
-                }
-
-
                 let loading = this.$loading({
                     lock: true,
                     text: "Uploading...",
@@ -809,47 +730,64 @@ Vue.component("editComputableModelModule",
                     background: "rgba(0, 0, 0, 0.7)"
                 });
 
-                this.computableModel.isAuthor=$("input[name='author_confirm']:checked").val();
-
+                this.logicalModel.contentType=$("input[name='ContentType']:checked").val();
+                this.logicalModel.isAuthor=$("input[name='author_confirm']:checked").val();
                 var detail = tinyMCE.activeEditor.getContent();
-                this.computableModel.detail = detail.trim();
+                this.logicalModel.detail = detail.trim();
 
-                this.computableModel.authorship=[];
-                this.getUserData($("#providersPanel .user-contents .form-control"), this.computableModel.authorship);
+                this.logicalModel.authorship=[];
+                this.getUserData($("#providersPanel .user-contents .form-control"), this.logicalModel.authorship);
 
-                // //重点在这里 如果使用 var data = {}; data.inputfile=... 这样的方式不能正常上传
+                /**
+                 * 张硕
+                 * 2019.11.14
+                 * 经过试验，logicalmodel只需要 cxml 就OK，所以暂时只存cxml，注释掉svg，xml，w，h
+                 * 并不OK，需要存图片，所以不能注释
+                 */
+                let iframeWindow=$("#ModelEditor")[0].contentWindow;
+                // this.logicalModel.cXml=iframeWindow.getCxml();
 
-                // var files=$("#resource")[0].files;
+                let result=iframeWindow.getXml();
+
+                if(this.logicalModel.contentType=="MxGraph") {
+                    this.logicalModel.svg = "<svg width='" + result.w + "px' height='" + result.h + "px' xmlns='http://www.w3.org/2000/svg' xmlns:html='http://www.w3.org/1999/xhtml'>" + iframeWindow.getSvg() + "</svg>";
+                    this.logicalModel.cXml=iframeWindow.getCxml();
+                    this.logicalModel.xml=result.xml;
+                    this.logicalModel.w=result.w;
+                    this.logicalModel.h=result.h;
+                }
+                else{
+                    this.logicalModel.svg="";
+                    this.logicalModel.cXml="";
+                }
+
+
+                //添加图片
+
+                //重点在这里 如果使用 var data = {}; data.inputfile=... 这样的方式不能正常上传
+
                 for(i=0;i<this.fileArray.length;i++){
-                    this.formData.append("resources",this.fileArray[i]);
+                    this.formData.append("imgFiles",this.fileArray[i]);
                 }
 
                 if ((oid === "0") || (oid === "") || (oid == null)) {
-
-                    let file = new File([JSON.stringify(this.computableModel)],'ant.txt',{
+                    let file = new File([JSON.stringify(this.logicalModel)],'ant.txt',{
                         type: 'text/plain',
                     });
-                    this.formData.append("computableModel", file)
-
-
-                    // $("#step").css("display", "none");
-                    // $(".uploading").css("display", "block");
-
+                    this.formData.append("logicalModel", file)
                     $.ajax({
-                        url: '/computableModel/add',
+                        url: '/logicalModel/add',
                         type: 'post',
                         data: this.formData,
                         cache: false,
                         processData: false,
                         contentType: false,
                         async: true
-                    }).done((res) => {
+                    }).done((res)=> {
                         loading.close();
-                        // $("#step").css("display", "block");
-                        // $(".uploading").css("display", "none");
                         switch (res.data.code) {
                             case 1:
-                                this.$alert('<div style=\'font-size: 18px\'>Create computable model successfully!</div>', 'Tip', {
+                                this.$alert('<div style=\'font-size: 18px\'>Create logical model successfully!</div>', 'Tip', {
                                     dangerouslyUseHTMLString: true,
                                     confirmButtonText: 'View',
                                     confirmButtonClass: 'fontsize-15',
@@ -857,7 +795,7 @@ Vue.component("editComputableModelModule",
                                     center: true,
                                     showClose: false,
                                 }).then(() => {
-                                    window.location.href = "/computableModel/" + res.data.id;
+                                    window.location.href = "/logicalModel/" + res.data.id;
                                 }).catch(() => {
                                 });
 
@@ -881,46 +819,46 @@ Vue.component("editComputableModelModule",
                                 });
                                 break;
                         }
-                    }).fail((res) => {
-                        window.location.href = "/user/login";
+                    }).fail(function (res) {
+                        this.$alert('Please login first', 'Error', {
+                            type:"error",
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                window.location.href = "/user/login";
+                            }
+                        });
                     });
                 }
                 else{
-                    this.computableModel.oid=oid;
+                    this.logicalModel.oid=oid;
+                    this.logicalModel.resources=this.resources;
 
-                    // for(i=0;i<this.fileArray.length;i++){
-                    //     this.formData.append("resources",this.fileArray[i]);
-                    // }
-
-                    let file = new File([JSON.stringify(this.computableModel)],'ant.txt',{
+                    let file = new File([JSON.stringify(this.logicalModel)],'ant.txt',{
                         type: 'text/plain',
                     });
-                    this.formData.append("computableModel", file)
 
-                    $("#step").css("display", "none");
-                    $(".uploading").css("display", "block");
-
+                    this.formData.append("logicalModel", file)
                     $.ajax({
-                        url: '/computableModel/update',
+                        url: '/logicalModel/update',
                         type: 'post',
                         data: this.formData,
                         cache: false,
                         processData: false,
                         contentType: false,
                         async: true
-                    }).done((res) => {
+                    }).done((res)=> {
                         loading.close();
-                        // $("#step").css("display", "block");
-                        // $(".uploading").css("display", "none");
+                        console.log(res)
                         if(res.code===0) {
                             switch (res.data.code) {
+
                                 case 0:
                                     let currentUrl = window.location.href;
                                     let index = currentUrl.lastIndexOf("\/");
-                                    that.computableModel_oid = currentUrl.substring(index + 1,currentUrl.length);
-                                    console.log(that.computableModel_oid);
+                                    that.logicalModel_oid = currentUrl.substring(index + 1,currentUrl.length);
+                                    console.log(that.logicalModel_oid);
                                     //当change submitted时，其实数据库中已经更改了，但是对于消息数目来说还没有及时改变，所以在此处获取消息数目，实时更新导航栏消息数目，
-                                    that.getMessageNum(that.computableModel_oid);
+                                    that.getMessageNum(that.logicalModel_oid);
                                     let params = that.message_num_socket;
                                     that.send(params);
                                     this.$alert('Changes have been submitted, please wait for the author to review.', 'Success', {
@@ -930,8 +868,9 @@ Vue.component("editComputableModelModule",
                                             window.location.href = "/user/userSpace";
                                         }
                                     });
+                                    break;
                                 case 1:
-                                    this.$alert('<div style=\'font-size: 18px\'>Update computable model successfully!</div>', 'Tip', {
+                                    this.$alert('<div style=\'font-size: 18px\'>Update logical model successfully!</div>', 'Tip', {
                                         dangerouslyUseHTMLString: true,
                                         confirmButtonText: 'View',
                                         confirmButtonClass: 'fontsize-15',
@@ -940,8 +879,9 @@ Vue.component("editComputableModelModule",
                                         showClose: false,
                                     }).then(() => {
                                         $("#editModal", parent.document).remove();
-                                        window.location.href = "/computableModel/" + res.data.id;
+                                        window.location.href = "/logicalModel/" + res.data.id;
                                     }).catch(() => {
+
                                     });
                                     break;
                                 case -1:
@@ -949,22 +889,18 @@ Vue.component("editComputableModelModule",
                                         type:"error",
                                         confirmButtonText: 'OK',
                                         callback: action => {
-                                            $("#step").css("display", "block");
-                                            $(".uploading").css("display", "none");
+
                                         }
                                     });
-
                                     break;
                                 case -2:
                                     this.$alert('Create failed!', 'Error', {
                                         type:"error",
                                         confirmButtonText: 'OK',
                                         callback: action => {
-                                            $("#step").css("display", "block");
-                                            $(".uploading").css("display", "none");
+
                                         }
                                     });
-
                                     break;
                             }
                         }
@@ -973,13 +909,11 @@ Vue.component("editComputableModelModule",
                                 type:"error",
                                 confirmButtonText: 'OK',
                                 callback: action => {
-                                    $("#step").css("display", "block");
-                                    $(".uploading").css("display", "none");
+
                                 }
                             });
-
                         }
-                    }).fail((res) => {
+                    }).fail(function (res) {
                         this.$alert('Please login first', 'Error', {
                             type:"error",
                             confirmButtonText: 'OK',
@@ -994,10 +928,10 @@ Vue.component("editComputableModelModule",
             // $(".prev").click(()=>{
             //     let currentUrl = window.location.href;
             //     let index = currentUrl.lastIndexOf("\/");
-            //     that.computableModel_oid = currentUrl.substring(index + 1,currentUrl.length);
-            //     console.log(that.computableModel_oid);
+            //     that.logicalModel_oid = currentUrl.substring(index + 1,currentUrl.length);
+            //     console.log(that.logicalModel_oid);
             //     //当change submitted时，其实数据库中已经更改了，但是对于消息数目来说还没有及时改变，所以在此处获取消息数目，实时更新导航栏消息数目，
-            //     that.getMessageNum(that.computableModel_oid);
+            //     that.getMessageNum(that.logicalModel_oid);
             //     let params = that.message_num_socket;
             //     that.send(params);
             // });
@@ -1021,24 +955,13 @@ Vue.component("editComputableModelModule",
 
             $("input:radio[name='ContentType']").on('ifChecked', function(event){
 
-                if($(this).val()=="Package"){
-                    $("#resource").val("");
-                    $("#resource").attr("accept","application/x-zip-compressed");
-                    $("#resource").removeAttr("multiple");
-                    $("#Files").show();
-                    $("#URL").hide();
-                }
-                else if($(this).val()=="Code"||$(this).val()=="Library"){
-                    $("#resource").val("");
-                    $("#resource").removeAttr("accept");
-                    $("#resource").attr("multiple","multiple");
-                    $("#Files").show();
-                    $("#URL").hide();
+                if($(this).val()=="MxGraph"){
+                    $("#MxGraph").show();
+                    $("#Image").hide();
                 }
                 else{
-                    $("#resource").val("");
-                    $("#Files").hide();
-                    $("#URL").show();
+                    $("#MxGraph").hide();
+                    $("#Image").show();
                 }
 
             });
@@ -1117,7 +1040,8 @@ Vue.component("editComputableModelModule",
                 content_box.append(str)
             })
 
-            var mid = window.sessionStorage.getItem("editConceptualModel_id");
+
+
             // if (mid === undefined || mid == null) {
             //     this.editorUrl = "http://127.0.0.1:8081http://127.0.0.1:8081/GeoModelingNew/modelItem/createModelItem.html";
             // } else {
@@ -1127,3 +1051,4 @@ Vue.component("editComputableModelModule",
 
     }
 )
+

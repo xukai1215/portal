@@ -495,7 +495,7 @@ var createConceptualModel = Vue.extend({
             // $("#title").text("Modify Conceptual Model")
             $("#subRteTitle").text("/Modify Conceptual Model")
 
-            document.title="Modify Conceptual Model | OpenGMS"
+            // document.title="Modify Conceptual Model | OpenGMS"
 
             $.ajax({
                 url: "/conceptualModel/getInfo/" + oid,

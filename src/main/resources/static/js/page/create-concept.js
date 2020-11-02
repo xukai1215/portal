@@ -1558,7 +1558,7 @@ var createConcept = Vue.extend({
 
             // $("#title").text("Modify Concept & Semantic")
             $("#subRteTitle").text("/Modify Concept & Semantic")
-            document.title = "Modify Concept & Semantic | OpenGMS"
+            // document.title = "Modify Concept & Semantic | OpenGMS"
 
             $.ajax({
                 url: "/repository/getConceptInfo/" + oid,

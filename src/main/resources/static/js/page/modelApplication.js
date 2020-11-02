@@ -129,6 +129,10 @@ var vue = new Vue({
                 window.open('/task/'+oid)
             },
 
+            viewUser(oid){
+                window.open('/user/'+oid)
+            },
+
             jump() {
                 $.ajax({
                     type: "GET",

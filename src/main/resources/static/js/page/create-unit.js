@@ -629,7 +629,7 @@ var createUnit =Vue.extend({
 
             // $("#title").text("Modify Unit & Metric")
             $("#subRteTitle").text("/Modify Unit & Metric")
-            document.title="Modify Unit & Metric | OpenGMS"
+            // document.title="Modify Unit & Metric | OpenGMS"
 
 
             $.ajax({

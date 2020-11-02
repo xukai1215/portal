@@ -917,7 +917,7 @@ var createTheme = Vue.extend({
         else {
             // $("#title").text("Modify Theme")
             $("#subRteTitle").text("/Modify Theme")
-            document.title="Modify Theme | OpenGMS"
+            // document.title="Modify Theme | OpenGMS"
             $.ajax({
                 url: "/theme/getInfo/" + oid,
                 type: "get",

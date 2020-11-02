@@ -1101,9 +1101,11 @@ new Vue({
         async transFormByGDAL(){
             let refInfo={
                 inputRefName:this.inputCoordinate.name,
+                inputRefWkt:this.inputCoordinate.wkt,
                 inputRefX:this.judgeUnit(this.inputCoordinate)==='metre'?this.inputX:this.inputLong,
                 inputRefY:this.judgeUnit(this.inputCoordinate)==='metre'?this.inputY:this.inputLat,
                 outputRefName:this.outputCoordinate.name,
+                outputRefWkt:this.outputCoordinate.wkt,
             }
 
             let data
@@ -1137,7 +1139,16 @@ new Vue({
                 this.outputLat=''
             }
 
-            this.transformXY();
+            if(this.judgeUnit(this.inputCoordinate)==='metre'){
+                if(this.inputX!=''&&this.inputY!=''&&this.isNum(this.inputX)&&this.isNum(this.inputY)){
+                    this.transformClick();
+                }
+
+            }else{
+                if(this.inputLong!=''&&this.inputLat!=''&&this.isNum(this.inputLong)&&this.isNum(this.inputLat)){
+                    this.transformClick();
+                }
+            }
         },
 
         setSession(name, value) {

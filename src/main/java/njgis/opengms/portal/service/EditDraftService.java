@@ -32,7 +32,11 @@ public class EditDraftService {
         if(editDraftDTO.getItemName()!=null){
             editDraft.setItemName(editDraftDTO.getItemName());
         }
-        editDraft.setUser(editDraftDTO.getUser());
+        if(editDraftDTO.getUser()!=null){
+            editDraft.setUser(editDraftDTO.getUser());
+        }else{
+            editDraft.setUser(user);
+        }
         editDraft.setItemType(editDraftDTO.getItemType());
         editDraft.setEditType(editDraftDTO.getEditType());
 //        if(user.equals(editDraftDTO.getUser()))

@@ -23,8 +23,8 @@ public class IntegratedTask {
     String description;
 
     List<Map<String,String>> models;
-
     List<ModelAction> modelActions;
+    List<Map<String,String>> dataLinks;
 
     String xml;
     String mxGraph;
@@ -36,5 +36,6 @@ public class IntegratedTask {
 
     Date createTime;
     Date lastModifiedTime;
+
     Date lastRunTime;
 }
