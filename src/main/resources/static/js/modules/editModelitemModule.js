@@ -860,7 +860,7 @@ Vue.component("edit-modelitem-module",
                         this.$refs.tree2.setCheckedKeys(ids);
 
                         //cls
-                        this.cls2 = basicInfo.classifications2;
+                        this.cls2 = basicInfo.classifications2==null?[]: basicInfo.classifications2;
                         let ids2=[];
                         for(i=0;i<this.cls2.length;i++){
                             for(j=0;j<2;j++){

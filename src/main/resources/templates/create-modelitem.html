@@ -119,7 +119,8 @@
                                                                             <div slot="header" class="clearfix text-center">
                                                                                 <span style="font-size: 20px;color:#444">Model Classifications</span>
                                                                             </div>
-                                                                            <el-tree style="height: 320px;overflow: auto"
+                                                                            <el-tree style="max-height: 458px;overflow: auto"
+                                                                                     class="wzhScrollbar"
                                                                                      id="tree2"
                                                                                      ref="tree2"
                                                                                      :data="treeData"
@@ -572,10 +573,11 @@
                                                                 </div>
                                                             </div>
                                                             <div class="step-footer text-right">
-                                                                <button class="btn btn-danger prev" @click="cancelEditClick()" style="margin-right: 15px">
+                                                                <button class="btn btn-danger prev" @click="cancelEditClick()" style="">
                                                                     Exit
                                                                 </button>
-                                                                <div class="innerBorderCol"></div>
+                                                                <div class="innerBorderCol btn btn-warning"
+                                                                     style="padding: 0;margin: 0 10px;height: 20px;background-color: #cccccc !important;cursor: auto"></div>
                                                                 <button class="btn btn-warning prev" data-direction="prev">
                                                                     Previous
                                                                 </button>

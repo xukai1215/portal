@@ -546,7 +546,7 @@ public class ModelItemService {
                 BeanUtils.copyProperties(modelItemUpdateDTO, modelItem);
                 //判断是否为新图片
                 String uploadImage = modelItemUpdateDTO.getUploadImage();
-                if (!uploadImage.contains("/modelItem/") && !uploadImage.equals("")) {
+                if (uploadImage != null && !uploadImage.contains("/modelItem/") && !uploadImage.equals("")) {
                     //删除旧图片
                     File file = new File(resourcePath + modelItem.getImage());
                     if (file.exists() && file.isFile())

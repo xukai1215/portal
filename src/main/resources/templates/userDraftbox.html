@@ -178,10 +178,8 @@
                 </div>
             </div>
             <span slot="footer" class="dialog-footer">
-                        <el-button @click="deleteDraftClick(draftShow.oid)"
-                                   type="danger">Delete</el-button>
-                        <el-button type="primary" style="margin-right: 15px"
-                                   @click="draftDetailDialog=false">OK</el-button>
+                <el-button @click="deleteDraftClick(draftShow.oid)" size="medium" type="danger">Delete</el-button>
+                <el-button @click="draftDetailDialog=false" type="primary" style="margin-right: 15px" size="medium">OK</el-button>
             </span>
         </el-dialog>
     </div>

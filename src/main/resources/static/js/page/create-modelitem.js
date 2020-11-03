@@ -729,6 +729,10 @@ var createModelItem = Vue.extend({
             this.$refs.draftBox.loadMatchedCreateDraft()
         },
 
+        insertDraft(){
+
+        },
+
         insertInfo(basicInfo){
             this.cls = basicInfo.classifications;
             this.status = basicInfo.status;
@@ -921,6 +925,10 @@ var createModelItem = Vue.extend({
             // });
         },
 
+        draftJump(){
+            window.location.href = '/user/userSpace#/models/modelitem';
+        },
+
         deleteDraft(){
             this.$refs.draftBox.deleteDraft(this.draft.oid)
         },
@@ -930,8 +938,8 @@ var createModelItem = Vue.extend({
             window.location.href='/'+itemType+'/'+item.itemOid
         },
 
-        initDraft(editType,backUrl,oid){
-              this.$refs.draftBox.initDraft(editType,backUrl,oid)
+        initDraft(editType,backUrl,oidFrom,oid){
+              this.$refs.draftBox.initDraft(editType,backUrl,oidFrom,oid)
         },
 
         //reference
@@ -1494,16 +1502,19 @@ var createModelItem = Vue.extend({
             this.loadMatchedCreateDraft()
             if(this.draft.oid!=''&&this.draft.oid!=null&&typeof (this.draft.oid)!="undefined"){
                 // this.loadDraftByOid()
-                this.initDraft('create','/user/userSpace#/models/modelitem',this.draft.oid)
+                this.initDraft('create','/user/userSpace#/models/modelitem','draft',this.draft.oid)
             }
 
         }
         else {
 
-            this.editTypeLocal = 'edit'
-            if(this.draft.oid==''||this.draft.oid==null||typeof (this.draft.oid)=="undefined")
-                this.initDraft('edit','/user/userSpace#/models/modelitem',this.$route.params.editId)
-            // $("#title").text("Modify Model Item")
+            this.editTypeLocal = 'modify'
+            if(this.draft.oid==''||this.draft.oid==null||typeof (this.draft.oid)=="undefined"){
+                this.initDraft('edit','/user/userSpace#/models/modelitem','item',this.$route.params.editId)
+            }else{
+                this.initDraft('edit','/user/userSpace#/models/modelitem','draft',this.draft.oid)
+            }
+                // $("#title").text("Modify Model Item")
             $("#subRteTitle").text("/Modify Model Item");
 
             // document.title="Modify Model Item | OpenGMS"
