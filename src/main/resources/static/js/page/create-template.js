@@ -654,7 +654,7 @@ var createTemplate = Vue.extend({
 
             // $("#title").text("Modify Data Template")
             $("#subRteTitle").text("/Modify Data Template")
-            document.title="Modify Data Template | OpenGMS"
+            // document.title="Modify Data Template | OpenGMS"
 
 
             $.ajax({

@@ -750,7 +750,7 @@ public class Utils {
 
     public static String saveBase64Image(String content,String oid,String resourcePath,String htmlLoadPath){
         int startIndex = 0, endIndex = 0, index = 0;
-        while (content.indexOf("src=\"data:im", startIndex) != -1) {
+        while (content!=null&&content.indexOf("src=\"data:im", startIndex) != -1) {
             int Start = content.indexOf("src=\"data:im", startIndex) + 5;
             int typeStart = content.indexOf("/", Start) + 1;
             int typeEnd = content.indexOf(";", typeStart);

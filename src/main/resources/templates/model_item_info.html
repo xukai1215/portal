@@ -82,6 +82,9 @@
             margin-bottom: 0;
         }
 
+        .tox.tox-silver-sink.tox-tinymce-aux{
+            z-index: 2077;
+        }
     </style>
 
 </head>
@@ -1264,7 +1267,8 @@
     </el-dialog>
 
     <!-- edit -->
-    <el-dialog title="Edit Model Item" class="responseDialog" :visible.sync="editModelItemDialog" width="65%">
+    <el-dialog title="Edit Model Item" class="responseDialog" :visible.sync="editModelItemDialog"
+               modal="false" append-to-body   width="65%">
         <edit-modelitem-module :model-edit-oid="modelOid"></edit-modelitem-module>
     </el-dialog>
 
@@ -1358,6 +1362,6 @@
 <script src="/static/js/common/bootstrap.min.js"></script>
 <script src="/static/element-ui/umd/locale/en.js"></script>
 <script src="/static/js/common/navbar.js"></script>
-<script src="/static/js/module/editModelitemModule.js"></script>
+<script src="/static/js/modules/editModelitemModule.js"></script>
 
 </html>

@@ -1914,6 +1914,11 @@ public class UserService {
         return userInfo;
     }
 
+    public User findUserByUserName(String userName){
+        User user = userDao.findFirstByUserName(userName);
+        return user;
+    }
+
     public JSONObject getItemUserInfo(String userName) {
         User user = userDao.findFirstByUserName(userName);
         JSONObject userJson = new JSONObject();

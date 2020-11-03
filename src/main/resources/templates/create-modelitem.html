@@ -72,13 +72,17 @@
                                 <h3 style="margin-left: 10px"><a class="itemTitle" href="/user/userSpace#/model">Model </a>
                                     <span id="subRteTitle"></span></h3>
                             </div>
-                            <div v-if="savingDraft" class="flexJustStart flexAlignCenter" style="margin:15px 15px 0 0;color: rgb(6,91,186)">
-                                <i class="ms-Icon ms-Icon--ProgressLoopOuter rotate_cw_3" style="margin-right: 5px;font-size: 16px"></i>
-                                <p style="margin: 0">Saving draft...</p>
-                            </div>
-                            <div v-if="editType=='create'&&!savingDraft" class="flexJustStart flexAlignCenter" style="margin:15px 15px 0 0;color: rgb(6,91,186)">
-                               <button class="btn btn-noShadow btn-round" @click="loadDraftListClick"><p style="margin: 0;color: rgb(6,91,186)">Load draft</p></button>
-                            </div>
+                            <draft-box ref="draftBox"
+                                       @insert-draft="insertInfo"
+                                       @get-content="getItemContent"
+                                       :itemType="'modelItem'"></draft-box>
+<!--                            <div v-if="savingDraft" class="flexJustStart flexAlignCenter" style="margin:15px 15px 0 0;color: rgb(6,91,186)">-->
+<!--                                <i class="ms-Icon ms-Icon&#45;&#45;ProgressLoopOuter rotate_cw_3" style="margin-right: 5px;font-size: 16px"></i>-->
+<!--                                <p style="margin: 0">Saving draft...</p>-->
+<!--                            </div>-->
+<!--                            <div v-if="editTypeLocal=='create'&&!savingDraft" class="flexJustStart flexAlignCenter" style="margin:15px 15px 0 0;color: rgb(6,91,186)">-->
+<!--                               <button class="btn btn-noShadow btn-round" @click="loadDraftListClick"><p style="margin: 0;color: rgb(6,91,186)">Load draft</p></button>-->
+<!--                            </div>-->
                         </section>
 
                         <div class="page-content-wrap container-fluid">
@@ -115,7 +119,8 @@
                                                                             <div slot="header" class="clearfix text-center">
                                                                                 <span style="font-size: 20px;color:#444">Model Classifications</span>
                                                                             </div>
-                                                                            <el-tree style="height: 320px;overflow: auto"
+                                                                            <el-tree style="max-height: 458px;overflow: auto"
+                                                                                     class="wzhScrollbar"
                                                                                      id="tree2"
                                                                                      ref="tree2"
                                                                                      :data="treeData"
@@ -215,10 +220,18 @@
                                                                                     <label
                                                                                            class="col-sm-2 control-label">Image</label>
                                                                                     <div class="col-sm-10">
-                                                                                        <img id="imgShow" src=""/>
-                                                                                        <div class="cursorPointer loadImg" @click="imgUpload()">
+<!--                                                                                        <img id="imgShow" v-show="itemInfo.image"/>-->
+                                                                                        <img id="imgShow" style="display: inline" v-show="itemInfo.image!=undefined&&itemInfo.image!=''" :src="itemInfo.image"/>
+                                                                                        <div id="imgMask" class="flexCenter" v-if="itemInfo.image!=undefined&&itemInfo.image!=''"
+                                                                                             style="position: absolute;width: 100px;height: 100px">
+                                                                                            <div class="fa fa-times imgDelete" @click="deleteImg"></div>
+                                                                                            <div class="fa fa-pencil imgEditBlock flexCenter" style="" @click="imgFile"></div>
+                                                                                        </div>
+                                                                                        <div v-if="itemInfo.image==''||itemInfo.image==undefined" class="cursorPointer loadImg" @click="imgFile">
                                                                                             <i class="fa fa-plus fa-5x"></i>
                                                                                         </div>
+                                                                                        <input type="file" id="imgOne" @change="preImg()"
+                                                                                               style="display: none" accept="image/*"/>
 <!--                                                                                        <input id="imgFile" type="file"-->
 <!--                                                                                               style="display: none"-->
 <!--                                                                                               accept="image/*"/>-->
@@ -560,9 +573,11 @@
                                                                 </div>
                                                             </div>
                                                             <div class="step-footer text-right">
-                                                                <button class="btn btn-danger prev" @click="cancelEditClick()">
-                                                                    Cancel
+                                                                <button class="btn btn-danger prev" @click="cancelEditClick()" style="">
+                                                                    Exit
                                                                 </button>
+                                                                <div class="innerBorderCol btn btn-warning"
+                                                                     style="padding: 0;margin: 0 10px;height: 20px;background-color: #cccccc !important;cursor: auto"></div>
                                                                 <button class="btn btn-warning prev" data-direction="prev">
                                                                     Previous
                                                                 </button>
@@ -679,10 +694,9 @@
 
                     </div>
                     <span slot="footer" class="dialog-footer">
-                                        <el-button type="primary" @click="updateArticleConfirmClick" id="modal_save">Add</el-button>
-                                        <el-button @click="cancelSearch()">Cancel</el-button>
-
-                                </span>
+                        <el-button type="primary" size="small" @click="updateArticleConfirmClick" id="modal_save">Add</el-button>
+                        <el-button size="small" @click="cancelSearch()">Cancel</el-button>
+                    </span>
                 </el-dialog>
                 <el-dialog title="Is this article you want to add?" :visible.sync = "showUploadArticleDialog" width="30%" custom-class="min400w">
                     <h4>{{articleUploading.title}}</h4>
@@ -730,138 +744,136 @@
                     <!--                                <el-button @click="showUploadedArticleDialog = false">Cancel</el-button>-->
                     <!--                            </span>-->
                 </el-dialog>
-                <el-dialog title="Load Draft" :visible.sync="draftListDialog">
-                    <div v-loading="draftLoading">
-<!--                        <div class="flexRow flexJustCenter" style="margin-top: 12px; margin-left: 10px;">-->
-<!--                            <div class="flexRow flexColCenter" style="width: 50%;mini-width:250px">-->
-<!--                                <input placeholder="Search for ..." v-model="searchText" class="noBorderInput miniInput" @keyup.enter="searchDeployedModel(1)">-->
-<!--                            </div>-->
-<!--                            <i class="fa fa-search cursorPointer" style="font-size: 18px;" @click="searchDeployedModel(1)"></i>-->
-<!--                        </div>-->
-                        <el-table style="padding-left:10px "
-                                  :data="draftList">
-                            <el-table-column
-                                    label="Type"
-                                    prop="editType"
-                            >
-                            </el-table-column>
-                            <el-table-column
-                                    label="Item name"
-                            >
-                                <template slot-scope="scope">
-                                    <span v-if="scope.row.editType=='create'">{{ scope.row.content.name}}</span>
-                                    <a v-else class="cursorPointer" @click="checkItem(scope.row)">{{ scope.row.content.name}}</a>
-                                </template>
-                            </el-table-column>
-                            <el-table-column
-                                    label="Last modify time"
-                            >
-                                <template slot-scope="scope">
-                                    <span>{{formatDate(scope.row.lastModifyTime)}}</span>
-                                </template>
-                            </el-table-column>
-                            <el-table-column
-                                    label="Option"
-                                    width="180"
-                            >
-                                <template slot-scope="scope">
-                                    <el-button size="mini" round type="success" @click="loadDraftClick(scope.row)">Load</el-button>
-                                </template>
-                            </el-table-column>
-                        </el-table>
-                        <el-pagination style="text-align: center;margin-top:20px"
-                                       @current-change="handlePageChange"
-                                       :current-page="pageOption.currentPage"
-                                       layout="total, prev, pager, next, jumper"
-                                       :page-size="6"
-                                       :total="pageOption.total">
-                        </el-pagination>
+<!--                <el-dialog title="Load Draft" :visible.sync="draftListDialog">-->
+<!--                    <div v-loading="draftLoading">-->
+<!--&lt;!&ndash;                        <div class="flexRow flexJustCenter" style="margin-top: 12px; margin-left: 10px;">&ndash;&gt;-->
+<!--&lt;!&ndash;                            <div class="flexRow flexColCenter" style="width: 50%;mini-width:250px">&ndash;&gt;-->
+<!--&lt;!&ndash;                                <input placeholder="Search for ..." v-model="searchText" class="noBorderInput miniInput" @keyup.enter="searchDeployedModel(1)">&ndash;&gt;-->
+<!--&lt;!&ndash;                            </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                            <i class="fa fa-search cursorPointer" style="font-size: 18px;" @click="searchDeployedModel(1)"></i>&ndash;&gt;-->
+<!--&lt;!&ndash;                        </div>&ndash;&gt;-->
+<!--                        <el-table style="padding-left:10px "-->
+<!--                                  :data="draftList">-->
+<!--                            <el-table-column-->
+<!--                                    label="Type"-->
+<!--                                    prop="editType"-->
+<!--                            >-->
+<!--                            </el-table-column>-->
+<!--                            <el-table-column-->
+<!--                                    label="Item name"-->
+<!--                            >-->
+<!--                                <template slot-scope="scope">-->
+<!--                                    <span v-if="scope.row.editType=='create'">{{ scope.row.content.name}}</span>-->
+<!--                                    <a v-else class="cursorPointer" @click="checkItem(scope.row)">{{ scope.row.content.name}}</a>-->
+<!--                                </template>-->
+<!--                            </el-table-column>-->
+<!--                            <el-table-column-->
+<!--                                    label="Last modify time"-->
+<!--                            >-->
+<!--                                <template slot-scope="scope">-->
+<!--                                    <span>{{formatDate(scope.row.lastModifyTime)}}</span>-->
+<!--                                </template>-->
+<!--                            </el-table-column>-->
+<!--                            <el-table-column-->
+<!--                                    label="Option"-->
+<!--                                    width="180"-->
+<!--                            >-->
+<!--                                <template slot-scope="scope">-->
+<!--                                    <el-button size="mini" round type="success" @click="loadDraftClick(scope.row)">Load</el-button>-->
+<!--                                </template>-->
+<!--                            </el-table-column>-->
+<!--                        </el-table>-->
+<!--                        <el-pagination style="text-align: center;margin-top:20px"-->
+<!--                                       @current-change="handlePageChange"-->
+<!--                                       :current-page="pageOption.currentPage"-->
+<!--                                       layout="total, prev, pager, next, jumper"-->
+<!--                                       :page-size="6"-->
+<!--                                       :total="pageOption.total">-->
+<!--                        </el-pagination>-->
 
-                    </div>
-                </el-dialog>
-                <el-dialog title="Creating Draft" :visible.sync="matchedCreateDraftDialog" center width="40%">
-                    <p style="text-align: center">You saved creating drafts about this kind of item before, you can select one to continue.</p>
-                    <el-table style="padding-left:10px "
-                              :data="matchedCreateDraft">
-                        <el-table-column
-                                label="Item name"
-                                prop="content.name"
-                        >
+<!--                    </div>-->
+<!--                </el-dialog>-->
+<!--                <el-dialog title="Creating Draft" :visible.sync="matchedCreateDraftDialog" center width="40%">-->
+<!--                    <p style="text-align: center">You saved creating drafts about this kind of item before, you can select one to continue.</p>-->
+<!--                    <el-table style="padding-left:10px "-->
+<!--                              :data="matchedCreateDraft">-->
+<!--                        <el-table-column-->
+<!--                                label="Item name"-->
+<!--                                prop="content.name"-->
+<!--                        >-->
+<!--&lt;!&ndash;                            <template slot-scope="scope">&ndash;&gt;-->
+<!--&lt;!&ndash;                                <span v-if="scope.row.editType=='create'">{{ scope.row.content.name}}</span>&ndash;&gt;-->
+<!--&lt;!&ndash;                                <a v-else class="cursorPointer" @click="checkItem(scope.row)">{{ scope.row.content.name}}</a>&ndash;&gt;-->
+<!--&lt;!&ndash;                            </template>&ndash;&gt;-->
+<!--                        </el-table-column>-->
+<!--                        <el-table-column-->
+<!--                                label="Last modify time"-->
+<!--                        >-->
 <!--                            <template slot-scope="scope">-->
-<!--                                <span v-if="scope.row.editType=='create'">{{ scope.row.content.name}}</span>-->
-<!--                                <a v-else class="cursorPointer" @click="checkItem(scope.row)">{{ scope.row.content.name}}</a>-->
+<!--                                <span>{{formatDate(scope.row.lastModifyTime)}}</span>-->
 <!--                            </template>-->
-                        </el-table-column>
-                        <el-table-column
-                                label="Last modify time"
-                        >
-                            <template slot-scope="scope">
-                                <span>{{formatDate(scope.row.lastModifyTime)}}</span>
-                            </template>
-                        </el-table-column>
-                        <el-table-column
-                                label="Option"
-                                width="160"
-                        >
-                            <template slot-scope="scope">
-                                <el-button size="mini" round type="success" @click="insertDraft(scope.row)">Load</el-button>
-                            </template>
-                        </el-table-column>
-                    </el-table>
+<!--                        </el-table-column>-->
+<!--                        <el-table-column-->
+<!--                                label="Option"-->
+<!--                                width="160"-->
+<!--                        >-->
+<!--                            <template slot-scope="scope">-->
+<!--                                <el-button size="mini" round type="success" @click="loadDraftClick(scope.row)">Load</el-button>-->
+<!--                            </template>-->
+<!--                        </el-table-column>-->
+<!--                    </el-table>-->
 
-                    <span slot="footer" class="dialog-footer">
-                            <el-button style="float: right" size="small" @click="matchedCreateDraftDialog=false">Cancel</el-button>
-                    </span>
-                </el-dialog>
-                <el-dialog title="Tips" :visible.sync = "cancelDraftDialog" width="30%" custom-class="min400w">
-                    <div class="el-message-box__content">
-                        <div class="el-message-box__status el-icon-warning"></div>
-                        <div class="el-message-box__message">
-                            <p>You have a draft about this Item, do you want to save the latest version of it? If not, this draft will be deleted.</p>
-                        </div>
-                    </div>
-                    <span slot="footer" class="dialog-footer">
-                        <el-button size="small" @click="cancelDraftDialog = false" style="float: left">Cancel</el-button>
-                        <el-button size="small" @click="cancelEdit">No</el-button>
-                        <el-button size="small" type="primary" @click="saveDraft">Yes</el-button>
-                    </span>
-                </el-dialog>
+<!--                    <span slot="footer" class="dialog-footer">-->
+<!--                            <el-button style="float: right" size="small" @click="matchedCreateDraftDialog=false">Cancel</el-button>-->
+<!--                    </span>-->
+<!--                </el-dialog>-->
+<!--                <el-dialog title="Tips" :visible.sync = "cancelDraftDialog" width="30%" custom-class="min400w">-->
+<!--                    <div class="el-message-box__content">-->
+<!--                        <div class="el-message-box__status el-icon-warning"></div>-->
+<!--                        <div class="el-message-box__message">-->
+<!--                            <p>You have a draft about this Item, do you want to save the latest version of it? If not, this draft will be deleted.</p>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <span slot="footer" class="dialog-footer">-->
+<!--                        <el-button size="small" @click="cancelDraftDialog = false" style="float: left">Cancel</el-button>-->
+<!--                        <el-button size="small" @click="cancelEdit">No</el-button>-->
+<!--                        <el-button size="small" type="primary" @click="saveDraft">Yes</el-button>-->
+<!--                    </span>-->
+<!--                </el-dialog>-->
                 <el-dialog title="Edit Image" :visible.sync="imgClipDialog" @close="closeImgUpload">
-                    <span slot="footer" >
+                    <span slot="footer">
                         <div id="editImageDialog">
-                        <div class="flexJustAround flexAlignCenter editImageContainer" style="">
-                            <div class="containerWithDashed">
-                                <div id="imgChange" >
-                                    <i class="fa fa-upload fa-3x"></i>
-                                </div>
-                            </div>
-                            <input id="imgFile" type="file"
-                                   style="display: none"
-                                   accept="image/*"/>
-<!--                            <div class="innerBorderCol"></div>-->
-                            <div class="imgOverview" style="width: 40%">
-                                <p style="text-align: center;color: #595959;font-size: 15px">overview</p>
-                                <div class="flexJustAround flexAlignCenter flexCol" style="background-color: inherit;">
-                                    <div class="circlePhotoFrame flexCenter">
-                                        <canvas id="clipCanvas" ref="clipCanvas"></canvas>
-                                    </div>
-                                    <!--                                    <div class="circlePhotoFrameShade">-->
-                                    <!--                                    </div>-->
-                                    <!--                                    <img id="imgShowBig" style="width: 145px;height: 145px"-->
-                                    <!--                                         src="../static/img/icon/default.png">-->
-                                    <div class="dragBar" style="margin-top:15px " :style="dragReady?'background-color: #cfe5fa':'background-color: #d9d9d9'">
-                                        <div class="dragBlock" ></div>
+                            <div class="flexJustAround flexAlignCenter editImageContainer" style="">
+                                <div class="containerWithDashed">
+                                    <div id="imgChange">
+                                        <i class="fa fa-upload fa-3x"></i>
                                     </div>
                                 </div>
+                                <input id="imgFile" type="file" style="display: none" accept="image/*"/>
+                                <!--                            <div class="innerBorderCol"></div>-->
+                                <div class="imgOverview" style="width: 40%">
+                                    <p style="text-align: center;color: #595959;font-size: 15px">overview</p>
+                                    <div class="flexJustAround flexAlignCenter flexCol" style="background-color: inherit;">
+                                        <div class="circlePhotoFrame flexCenter">
+                                            <canvas id="clipCanvas" ref="clipCanvas"></canvas>
+                                        </div>
+                                        <!--                                    <div class="circlePhotoFrameShade">-->
+                                        <!--                                    </div>-->
+                                        <!--                                    <img id="imgShowBig" style="width: 145px;height: 145px"-->
+                                        <!--                                         src="../static/img/icon/default.png">-->
+                                        <div class="dragBar" style="margin-top:15px "
+                                             :style="dragReady?'background-color: #cfe5fa':'background-color: #d9d9d9'">
+                                            <div class="dragBlock"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="display: flex;justify-content: flex-end;padding:10px 15px 10px">
+                                <el-button id="saveUserImgButton" type="success">Save</el-button>
+                                <el-button id="closeSaveUserImg" style="margin-left: 15px" @click="imgClipDialog=false">Cancel</el-button>
                             </div>
                         </div>
-                        <div style="display: flex;justify-content: flex-end;padding:10px 15px 10px">
-                            <el-button id="saveUserImgButton" type="success">Save</el-button>
-                            <el-button id="closeSaveUserImg" style="margin-left: 15px" @click="imgClipDialog=false">Cancel</el-button>
-                        </div>
-                    </div>
                     </span>
-
 
                 </el-dialog>
 <!--                <el-dialog title="Image Clip" visible.sync="imageClipDialog">-->
@@ -1044,7 +1056,7 @@
 <script src="/static/js/common/jquery-3.3.1.min.js"></script>
 <script src="/static/js/common/bootstrap.min.js"></script>
 <script src="/static/js/common/axios.min.js"></script>
-<script src="/static/js/common/vue.min.js"></script>
+
 <script src="/static/js/common/vue-router.js"></script>
 <script type="text/javascript" src="/static/js/common/jquery.tag-editor.js"></script>
 <script type="text/javascript" src="/static/js/common/bootstrap-treeview.js"></script>

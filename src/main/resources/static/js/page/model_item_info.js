@@ -499,6 +499,7 @@ var info=new Vue({
                 label: 'label'
             },
 
+            activeName_dialog:''
         }
     },
     methods: {

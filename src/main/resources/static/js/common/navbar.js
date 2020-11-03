@@ -905,8 +905,7 @@ function watchWidth() {
 (function changeBorder (){
     for(let i=0;i<clickMenu.length;i++){
         clickMenu[i].onclick=function showBlueBorder(){
-            if(i!=9&&i!=8&&i!=3&&i!=4){
-
+            if(i!=1&&i!=2&&i!=3&&i!=4){
                 for(let i=0;i<clickMenu.length;i++ )
                     if(clickMenu[i]===this)
                         clickMenu[i].classList.add('clickBlue');
@@ -918,34 +917,31 @@ function watchWidth() {
         };
     }
 
-    for(let i=0;i<5;i++) {
-        clickSubMenu[i].onclick = function showCommunityBorder() {
-            for (let i = 0; i < clickMenu.length; i++)
-                if (i == 3)
-                    clickMenu[i].classList.add('clickBlue');
-                else
-                    clickMenu[i].classList.remove('clickBlue');
-
-
-        };
-    }
-    for(let i=5;i<8;i++) {
-
-        clickSubMenu[i].onclick = function showHelpBorder() {
-            // console.log('567');
-            for (let i = 0; i < clickMenu.length; i++)
-                if (i == 4)
-                    clickMenu[i].classList.add('clickBlue');
-                else
-                    clickMenu[i].classList.remove('clickBlue');
-
-
-        };
-
-
-
-
-    }
+    // for(let i=0;i<5;i++) {
+    //     clickSubMenu[i].onclick = function showCommunityBorder() {
+    //         for (let i = 0; i < clickMenu.length; i++)
+    //             if (i == 3)
+    //                 clickMenu[i].classList.add('clickBlue');
+    //             else
+    //                 clickMenu[i].classList.remove('clickBlue');
+    //
+    //
+    //     };
+    // }
+    // for(let i=5;i<8;i++) {
+    //
+    //     clickSubMenu[i].onclick = function showHelpBorder() {
+    //         console.log('567');
+    //         for (let i = 0; i < clickMenu.length; i++)
+    //             if (i == 4)
+    //                 clickMenu[i].classList.add('clickBlue');
+    //             else
+    //                 clickMenu[i].classList.remove('clickBlue');
+    //
+    //
+    //     };
+    //
+    // }
 })();
 
 (function(){

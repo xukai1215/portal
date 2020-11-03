@@ -1150,12 +1150,13 @@ public class TaskService {
     }
 
     public String saveIntegratedTask( String xml, String mxgraph, List<Map<String,String>> models,
-                                      List<ModelAction> modelActions,String userName,String taskName,String description){
+                                      List<ModelAction> modelActions,List<Map<String,String>> dataLinks,String userName,String taskName,String description){
         IntegratedTask integratedTask = new IntegratedTask();
 
         integratedTask.setOid(UUID.randomUUID().toString());
         integratedTask.setModels(models);
         integratedTask.setModelActions(modelActions);
+        integratedTask.setDataLinks(dataLinks);
         integratedTask.setXml(xml);
         integratedTask.setMxGraph(mxgraph);
         integratedTask.setStatus(0);
@@ -1181,11 +1182,12 @@ public class TaskService {
 
     //用户更新集成Task的信息
     public IntegratedTask updateIntegratedTask( String taskOid, String xml, String mxgraph, List<Map<String,String>> models,
-                                                List<ModelAction> modelActions,String userName,String taskName,String description){
+                                                List<ModelAction> modelActions,List<Map<String,String>> dataLinks,String userName,String taskName,String description){
         IntegratedTask integratedTask = integratedTaskDao.findByOid(taskOid);
 
         integratedTask.setModels(models);
         integratedTask.setModelActions(modelActions);
+        integratedTask.setDataLinks(dataLinks);
         integratedTask.setXml(xml);
         integratedTask.setMxGraph(mxgraph);
         integratedTask.setTaskName(taskName);

@@ -657,7 +657,7 @@ var createSpatialReference = Vue.extend({
 
             // $("#title").text("Modify Spatial Reference")
             $("#subRteTitle").text("/Modify Spatiotemporal Reference")
-            document.title = "Modify Spatial Reference | OpenGMS"
+            // document.title = "Modify Spatial Reference | OpenGMS"
 
             $.ajax({
                 url: "/repository/getSpatialInfo/" + oid,

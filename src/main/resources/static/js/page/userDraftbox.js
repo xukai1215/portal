@@ -459,8 +459,8 @@ var userDraftBox = Vue.extend(
                 }
                 for (i; i < list.length; i++) {
                     ele = list[i]
-                    switch (ele.itemType) {
-                        case 'ModelItem':
+                    switch (ele.itemType.toLowerCase()) {
+                        case 'modelitem':
                             if (ele.editType == 'create') {
                                 this.modelItemDraftList.create.push(ele)
                             } else {
@@ -468,56 +468,56 @@ var userDraftBox = Vue.extend(
                             }
 
                             break;
-                        case 'ConceptualModel':
+                        case 'conceptualmodel':
                             if (ele.editType == 'create') {
                                 this.conceptualModelDraftList.create.push(ele)
                             } else {
                                 this.conceptualModelDraftList.edit.push(ele)
                             }
                             break;
-                        case 'LogicalModel':
+                        case 'logicalmodel':
                             if (ele.editType == 'create') {
                                 this.logicalModelDraftList.create.push(ele)
                             } else {
                                 this.logicalModelDraftList.edit.push(ele)
                             }
                             break;
-                        case 'ComputableModel':
+                        case 'computablemodel':
                             if (ele.editType == 'create') {
                                 this.computableModelDraftList.create.push(ele)
                             } else {
                                 this.computableModelDraftList.edit.push(ele)
                             }
                             break;
-                        case 'DataItem':
+                        case 'dataitem':
                             if (ele.editType == 'create') {
                                 this.dataItemDraftList.create.push(ele)
                             } else {
                                 this.dataItemDraftList.edit.push(ele)
                             }
                             break;
-                        case 'Concept':
+                        case 'concept':
                             if (ele.editType == 'create') {
                                 this.conceptDraftList.create.push(ele)
                             } else {
                                 this.conceptDraftList.edit.push(ele)
                             }
                             break;
-                        case 'SpatialReference':
+                        case 'spatialreference':
                             if (ele.editType == 'create') {
                                 this.spatialDraftList.create.push(ele)
                             } else {
                                 this.spatialDraftList.edit.push(ele)
                             }
                             break;
-                        case 'Template':
+                        case 'template':
                             if (ele.editType == 'create') {
                                 this.templateDraftList.create.push(ele)
                             } else {
                                 this.templateDraftList.edit.push(ele)
                             }
                             break;
-                        case 'Unit':
+                        case 'unit':
                             if (ele.editType == 'create') {
                                 this.unitDraftList.create.push(ele)
                             } else {

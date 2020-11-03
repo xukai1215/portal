@@ -1787,42 +1787,42 @@ footer .mi-Search {
 .mi-Accept:before {
   content: "\EA01"; }
 
-.fdbtnding: 8px 18px;
-  font-size: 1rem;
-  margin: 0.375rem;
-  border-width: 2px;
-  -webkit-border-radius: 2px;
-  border-radius: 2px;
-  cursor: pointer;
-  text-transform: uppercase;
-  white-space: normal;
-  word-wrap: break-word;
-  font-weight: 400; }
-  .fdbtn
-    -webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-    outline: 0; }
-  .fdbtn
-    /*border: 2px solid #000;*/
-    outline: none;
-    -webkit-box-shadow: none;
-    box-shadow: none; }
-  .fdbtnsabled]):not(.disabled):active, .fdbtnsabled]):not(.disabled).active {
-    -webkit-box-shadow: none;
-    box-shadow: none; }
-  .fdbtn   font-size: .8rem; }
-  .fdbtnpadding: 4px 10px;
-    font-size: 15px; }
-  .fdbtnpadding: 16px 26px;
-    font-size: 15px; }
-  .fdbtn
-    color: #fff;
-    display: inline-block;
-    margin-top: 12px;
-    -webkit-border-radius: 2px;
-    border-radius: 2px;
-    background: #00B7C3;
-    font-weight: 400; }
+/*.fdbtnding: 8px 18px;*/
+/*  font-size: 1rem;*/
+/*  margin: 0.375rem;*/
+/*  border-width: 2px;*/
+/*  -webkit-border-radius: 2px;*/
+/*  border-radius: 2px;*/
+/*  cursor: pointer;*/
+/*  text-transform: uppercase;*/
+/*  white-space: normal;*/
+/*  word-wrap: break-word;*/
+/*  font-weight: 400; }*/
+/*  .fdbtn*/
+/*    -webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);*/
+/*    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);*/
+/*    outline: 0; }*/
+/*  .fdbtn*/
+/*    !*border: 2px solid #000;*!*/
+/*    outline: none;*/
+/*    -webkit-box-shadow: none;*/
+/*    box-shadow: none; }*/
+/*  .fdbtnsabled]):not(.disabled):active, .fdbtnsabled]):not(.disabled).active {*/
+/*    -webkit-box-shadow: none;*/
+/*    box-shadow: none; }*/
+/*  .fdbtn   font-size: .8rem; }*/
+/*  .fdbtnpadding: 4px 10px;*/
+/*    font-size: 15px; }*/
+/*  .fdbtnpadding: 16px 26px;*/
+/*    font-size: 15px; }*/
+/*  .fdbtn*/
+/*    color: #fff;*/
+/*    display: inline-block;*/
+/*    margin-top: 12px;*/
+/*    -webkit-border-radius: 2px;*/
+/*    border-radius: 2px;*/
+/*    background: #00B7C3;*/
+/*    font-weight: 400; }*/
     .fdbtnover {
       color: #fff !important;
       border-color: #fff;

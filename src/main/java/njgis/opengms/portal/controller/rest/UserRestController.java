@@ -180,6 +180,33 @@ public class UserRestController {
         return modelAndView;
     }
 
+    @RequestMapping(value = "/loginTest", method = RequestMethod.GET)
+    public ModelAndView getLoginTest(HttpServletRequest request) {
+        System.out.println("loginTest");
+        HttpSession session = request.getSession();
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("loginTest");
+//        if (session.getAttribute("uid") == null) {
+//            modelAndView.setViewName("login");
+//            modelAndView.addObject("notice", "After login, more functions will be unlocked.");
+//
+//            Object preUrl_obj = session.getAttribute("preUrl");
+//            String preUrl = null;
+//            if (preUrl_obj != null) {
+//                preUrl = preUrl_obj.toString();
+//            }else {
+//                preUrl = request.getHeader("REFERER");
+//            }
+//            modelAndView.addObject("preUrl", preUrl);
+//            session.removeAttribute("preUrl");
+//        } else {
+//            modelAndView.setViewName("redirect:/user/userSpace");
+//
+//        }
+
+        return modelAndView;
+    }
+
     @RequestMapping(value = "/in", method = RequestMethod.POST)
     public String login(@RequestParam(value = "account") String account,
                         @RequestParam(value = "password_md5") String password,

@@ -507,7 +507,7 @@ Sidebar.prototype.searchEntries = function (searchTerms, count, page, success, e
         for (var i = 0; i < result.length; i++) {
           var model = result[i];
           var modelName = model.name;
-          this.createVertexTemplateEntry('rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#0073e8;fillColor=#d9edf7;', 210, 50, modelName, 'Computable Model', null, null, modelName, model);
+          this.createVertexTemplateEntry('rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#0073e8;fillColor=#d9edf7;', 210, 50, modelName, model.description, null, null, modelName, model);
         }
 
         //
@@ -2964,6 +2964,7 @@ Sidebar.prototype.itemClicked = function (cells, ds, evt, elt) {
 Sidebar.prototype.addClickHandler = function (elt, ds, cells) {
   var editor = this.editorUi.editor;
   var graph = this.editorUi.editor.graph;
+  var sideBar = this;
   var oldMouseDown = ds.mouseDown;
   var oldMouseMove = ds.mouseMove;
   var oldMouseUp = ds.mouseUp;
@@ -3026,8 +3027,19 @@ Sidebar.prototype.addClickHandler = function (elt, ds, cells) {
       } else if (targetCell.response == "0") {
         graph.insertEdge(parent, null, '', state, targetCell, "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=2;strokeColor=#000066;");
 
-      } else if (targetCell.md5 != ''){
-        window.parent.addModeltoList(targetCell)
+      } else if (targetCell.md5 != undefined&&targetCell.md5 != ''){
+        let modelAction = window.parent.addModeltoList(targetCell)
+        targetCell.frontId = modelAction.id
+        getModelListByPage(page)
+        // sideBar.addComputabelModel(computableModelList, true);
+      } else if(targetCell.style.indexOf('modelitem')){//说明是个logicalModelitem
+
+      } else if(targetCell.style.indexOf('dataitem')){
+
+      } else if(targetCell.style.indexOf('condition')){
+
+      } else if(targetCell.style.indexOf('operation')){
+
       }
     }
 
@@ -3065,7 +3077,6 @@ Sidebar.prototype.createStateVertexTemplate = function (style, width, height, va
   cells[0].vertex = true;
   if (model != undefined){
     cells[0].mid = model.modelOid;
-    cells[0].frontId = model.id;
     cells[0].md5 = model.md5;
     cells[0].mdlJson = model.mdlJson;
     cells[0].name = model.name;
@@ -3489,7 +3500,7 @@ Sidebar.prototype.addComputabelModel = function (computableModelList, expand) {
   for (var j = 0; j < computableModelList.size; j++) {
     var model = computableModelList.content[j];
     var modelName = model.name;
-    var a = this.createStateVertexTemplate('rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#0073e8;fillColor=#d9edf7;', 210, 50, modelName, 'Computable Model', null, null, modelName, model);
+    var a = this.createStateVertexTemplate('rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#0073e8;fillColor=#d9edf7;', 210, 50, modelName, model.description, null, null, modelName, model);
     div.appendChild(a);
   }
 
@@ -3552,7 +3563,7 @@ Sidebar.prototype.addComputabelModelPage = function (computableModelList, div) {
   for (var i = 0; i < computableModelList.numberOfElements; i++) {
     var model = computableModelList.content[i];
     var modelName = model.name;
-    var a = this.createStateVertexTemplate('rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#0073e8;fillColor=#d9edf7;', 210, 50, modelName, 'Computable Model', null, null, modelName, model);
+    var a = this.createStateVertexTemplate('rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#0073e8;fillColor=#d9edf7;', 210, 50, modelName, model.description, null, null, modelName, model);
     div.appendChild(a);
   }
 };
@@ -3735,6 +3746,7 @@ Sidebar.prototype.addModelToGraph = function (model) {
   var cell = graph.insertVertex(parent, null, model.name, pt.x, pt.y, 210, 50, "rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#0073e8;fillColor=#d9edf7");
 
   cell.frontId = model.id;
+  cell.name = model.name;
   cell.md5 = model.md5;
   cell.mid = model.modelOid;
   cell.description = model.description;

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -144,7 +144,7 @@
                <div v-loading="loading">
                    <div class="flexRow flexJustCenter" style="margin-top: 12px; margin-left: 10px;">
                        <div class="flexRow flexColCenter" style="width: 50%;mini-width:250px">
-                           <input placeholder="Search for ..." v-model="searchText" class="noBorderInput miniInput" @keyup.enter="searchDeployedModel(1)">
+                           <input placeholder="Search for ..." v-model="searchText" class="noBorderInput miniInput" @keyup.enter="">
                        </div>
                        <i class="fa fa-search cursorPointer" style="font-size: 18px;" @click="searchDeployedModel(1)"></i>
                    </div>
@@ -154,6 +154,14 @@
                                label="Name"
                                prop="name"
                        >
+                       </el-table-column>
+                       <el-table-column
+                               label="Contributor"
+                               prop="author"
+                       >
+                           <template slot-scope="scope">
+                               <a class="cursorPointer" @click="viewUser(scope.row.authorOid)">{{scope.row.author}}</a>
+                           </template>
                        </el-table-column>
                        <el-table-column
                                label="Option"

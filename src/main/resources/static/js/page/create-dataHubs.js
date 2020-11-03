@@ -643,7 +643,7 @@ var createDataHubs = Vue.extend({
             // $("#title").text("Modify Model Item")
             $("#subRteTitle").text("/Modify Data Hubs")
 
-            document.title="Modify Data Hubs | OpenGMS"
+            // document.title="Modify Data Hubs | OpenGMS"
             axios.get('/dataItem/getDataHubsByDataId',{params:{
                     dataId:oid,
                 }}).then(res=>{

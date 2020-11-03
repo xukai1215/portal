@@ -70,6 +70,7 @@
     <script src="/static/js/common/clipboard.min.js"></script>
 
     <script src="/static/js/common/vue.min.js"></script>
+<!--    <script src="/static/js/common/vue.js"></script>-->
     <script src="/static/js/common/vue-router.js"></script>
     <script src="/static/js/common/vue-avatar.min.js"></script>
     <script src="/static/js/common/vue-cropper.min.js"></script>
@@ -124,6 +125,43 @@
             color: #409EFF;
             border-color: #c6e2ff;
             background-color: #ecf5ff;
+        }
+        #imgMask{
+            transition: .3s;
+        }
+        .imgDelete{
+            position: absolute;
+            cursor: pointer;
+            top: 3px;
+            right: 3px;
+            font-size: 16px;
+            color: #980000;
+            transition: .3s;
+        }
+        .imgEditBlock{
+            cursor: pointer;
+            width: 50px;
+            height: 50px;
+            font-size: 28px;
+            border: #555555;
+            border-style: dashed;
+            border-radius: 10px;
+            color: #555555;
+            transition: .3s;
+        }
+        .imgDelete,.imgEditBlock{
+            opacity: 0;
+        }
+        #imgMask:hover{
+            backdrop-filter: blur(5px);
+            background: rgba(230,230,230,0.7);
+        }
+        #imgMask:hover .imgDelete,#imgMask:hover .imgEditBlock{
+            opacity: 1;
+            display: flex;
+        }
+        .top350Dialog .el-dialog{
+            top:350px
         }
     </style>
     <!--<script src="/static/js/page/user_space.js"></script>-->
@@ -251,8 +289,10 @@
 <script src="/static/js/page/message_confirm.js"></script>
 <!--dataSpace通用组件-->
 <template th:replace="modules/userDataSpaceModule :: userDataSpaceModule"></template>
-<script src="/static/js/module/userDataSpaceModule.js"></script>
-
+<script src="/static/js/modules/userDataSpaceModule.js"></script>
+<!--draftBox通用组件-->
+<template th:replace="modules/draftBox :: draftBox"></template>
+<script src="/static/js/modules/draftBox.js"></script>
 </body>
 
 <!--根组件-->

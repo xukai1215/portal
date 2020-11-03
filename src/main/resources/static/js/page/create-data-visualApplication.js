@@ -412,7 +412,7 @@ var createDataVisualApplication = Vue.extend({
         }
         else {
             $("#subRteTitle").text("/Modify Data Application")
-            document.title="Modify Data Application | OpenGMS"
+            // document.title="Modify Data Application | OpenGMS"
             $.ajax({
                 url: "/dataApplication/getInfo/" + oid,
                 type: "get",
