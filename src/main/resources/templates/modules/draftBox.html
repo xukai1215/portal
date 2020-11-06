@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/XSL/Transform">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<template id="draftBox" th:fragment="draftBox">
+    <div>
+        <div v-if="savingDraft" class="flexJustStart flexAlignCenter" style="margin:15px 15px 0 0;color: rgb(6,91,186)">
+            <i class="ms-Icon ms-Icon--ProgressLoopOuter rotate_cw_3" style="margin-right: 5px;font-size: 16px"></i>
+            <p style="margin: 0">Saving draft...</p>
+        </div>
+        <div v-if="editType=='create'&&!savingDraft" class="flexJustStart flexAlignCenter" style="margin:15px 15px 0 0;color: rgb(6,91,186)">
+            <button class="btn btn-noShadow btn-round" @click="loadDraftListClick"><p style="margin: 0;color: rgb(6,91,186)">Load draft</p></button>
+        </div>
+        <el-dialog title="Load Draft" :visible.sync="draftListDialog" append-to-body>
+            <div v-loading="draftLoading">
+                <!--                        <div class="flexRow flexJustCenter" style="margin-top: 12px; margin-left: 10px;">-->
+                <!--                            <div class="flexRow flexColCenter" style="width: 50%;mini-width:250px">-->
+                <!--                                <input placeholder="Search for ..." v-model="searchText" class="noBorderInput miniInput" @keyup.enter="searchDeployedModel(1)">-->
+                <!--                            </div>-->
+                <!--                            <i class="fa fa-search cursorPointer" style="font-size: 18px;" @click="searchDeployedModel(1)"></i>-->
+                <!--                        </div>-->
+                <el-table style="padding-left:10px "
+                          :data="draftList">
+                    <el-table-column
+                            label="Type"
+                            prop="editType"
+                    >
+                    </el-table-column>
+                    <el-table-column
+                            label="Item name"
+                    >
+                        <template slot-scope="scope">
+                            <span v-if="scope.row.editType=='create'">{{ scope.row.content.name}}</span>
+                            <a v-else class="cursorPointer" @click="checkItem(scope.row)">{{ scope.row.content.name}}</a>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            label="Last modify time"
+                    >
+                        <template slot-scope="scope">
+                            <span>{{formatDate(scope.row.lastModifyTime)}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            label="Option"
+                            width="180"
+                    >
+                        <template slot-scope="scope">
+                            <el-button size="mini" round type="success" @click="loadDraftClick(scope.row)">Load</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <el-pagination style="text-align: center;margin-top:20px"
+                               @current-change="handlePageChange"
+                               :current-page="pageOption.currentPage"
+                               layout="total, prev, pager, next, jumper"
+                               :page-size="6"
+                               :total="pageOption.total">
+                </el-pagination>
+
+            </div>
+        </el-dialog>
+        <el-dialog title="Creating Draft" :visible.sync="matchedCreateDraftDialog" center append-to-body width="40%">
+            <p style="text-align: center">You saved creating drafts about this kind of item before, you can select one to continue.</p>
+            <div class="wzhScrollbar" style="max-height: 500px;">
+                <el-table style="padding-left:10px "
+                          :data="matchedCreateDraft">
+                    <el-table-column
+                            label="Item name"
+                            prop="content.name"
+                    >
+                        <!--                            <template slot-scope="scope">-->
+                        <!--                                <span v-if="scope.row.editType=='create'">{{ scope.row.content.name}}</span>-->
+                        <!--                                <a v-else class="cursorPointer" @click="checkItem(scope.row)">{{ scope.row.content.name}}</a>-->
+                        <!--                            </template>-->
+                    </el-table-column>
+                    <el-table-column
+                            label="Last modify time"
+                    >
+                        <template slot-scope="scope">
+                            <span>{{formatDate(scope.row.lastModifyTime)}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            label="Option"
+                            width="160"
+                    >
+                        <template slot-scope="scope">
+                            <el-button size="mini" round type="success" @click="loadDraftClick(scope.row)">Load</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+
+            </div>
+
+            <span slot="footer" class="dialog-footer">
+                            <el-button style="float: right" size="small" @click="matchedCreateDraftDialog=false">Cancel</el-button>
+                    </span>
+        </el-dialog>
+        <el-dialog title="Tips" :visible.sync = "cancelDraftDialog" width="30%" append-to-body custom-class="min400w">
+            <div class="el-message-box__content">
+                <div class="el-message-box__status el-icon-warning"></div>
+                <div class="el-message-box__message">
+                    <p style="word-break: break-word;">You have a draft about this Item, do you want to save the latest version of it? If not, this draft will be deleted.</p>
+                </div>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                        <el-button size="small" @click="cancelDraftDialog = false" style="float: left">Cancel</el-button>
+                        <el-button size="small" @click="cancelEdit">No</el-button>
+                        <el-button size="small" type="primary" @click="saveDraft">Yes</el-button>
+                    </span>
+        </el-dialog>
+    </div>
+
+</template>
+
+</body>
+<script src="/static/js/modules/draftBox.js"></script>
+</html>

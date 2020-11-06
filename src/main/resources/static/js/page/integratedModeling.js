@@ -36,6 +36,8 @@ var vue = new Vue({
         modelActions: [],
         modelParams: [],
 
+        dataProcessings:[],
+
         configVisible: false,
         executeVisible: false,
         executeDisabled: true,
@@ -135,6 +137,13 @@ var vue = new Vue({
         uploadLogicalConfigList:[],
         uploadLogicalXmlList:[],
 
+        dataProcessingLoadDialog:false,
+
+        dataProcessingConfig:{
+            frontId:''
+        },
+
+        dataProcessActive:'modelService'
     },
 
     computed:{
@@ -198,7 +207,6 @@ var vue = new Vue({
                 modelEditor.ui.sidebar.addModelToGraph(modelAction)//把这个模型action加入画布
             }
 
-
             clearSelection();//清除子组件中的选择
         },
 
@@ -249,6 +257,11 @@ var vue = new Vue({
 
             modelActionList.push(modelAction)
             return modelAction
+        },
+
+        addDataProcessToList(dataProcess){
+            dataProcess.id = this.generateGUID();
+            return dataProcess
         },
 
         extractEvents(model, modelAction) {
@@ -1805,6 +1818,32 @@ var vue = new Vue({
                 v_this.iframeWindow.setCXml(fileStr);
             }
         },
+
+        configDataProcessing(dataProcessing){
+            this.dataProcessingLoadDialog = true
+            this.dataProcessingConfig = dataProcessing
+        },
+
+        insertDataProcessing(targetCell){
+            let dataProcessing = {
+                id:targetCell.frontId
+            }
+
+            this.dataProcessings.push(dataProcessing)
+        },
+
+        deleteDataProcessing(frontId){
+            for(let i = this.dataProcessings.length-1;i>=0;i--){
+                if (this.dataProcessings[i].id == frontId){
+                    this.dataProcessings.splice(i,1)
+                }
+            }
+
+        },
+
+        loadDataProcessing(){
+
+        },
     },
 
     mounted() {
@@ -1937,8 +1976,10 @@ var vue = new Vue({
         window.deleteModel = this.deleteModel;
         window.addModeltoList = this.addModeltoList;
         window.generateGUID = this.generateGUID;
+        window.addDataProcessToList = this.addDataProcessToList;
         window.dataCellConfig = this.dataCellConfig;
         window.configDataLink = this.configDataLink;
+        window.configDataProcessing = this.configDataProcessing;
         window.deleteDataLink = this.deleteDataLink;
         window.insertDataLink = this.insertDataLink;
     }

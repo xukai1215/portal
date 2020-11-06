@@ -520,7 +520,17 @@ Format.prototype.refresh = function()
             this.panels.push(new OutputEventPanel(this, ui, div));
 
             addClickHandler(label, div, idx++);
-		}else if(graph.getSelectionModel().cells[0].edge == true&&
+		}else if(graph.getSelectionModel().cells[0].style.indexOf('operation')!=-1){
+			mxUtils.write(label, mxResources.get('data processing'));
+			label.style.borderLeftWidth = '0px';
+			label.style.fontSize = '16px';
+
+			div.appendChild(label);
+			this.panels.push(new DataProcessingPanel(this, ui, div));
+
+			addClickHandler(label, div, idx++);
+
+		} else if(graph.getSelectionModel().cells[0].edge == true&&
 			graph.getSelectionModel().cells[0].target != null&&
 			graph.getSelectionModel().cells[0].source != null){
         	let cell = graph.getSelectionModel().cells[0]
@@ -6228,14 +6238,73 @@ DataLinkPanel.prototype.addDataLinkInfo = function (div,edge,fromModel,toModel){
 	cfgButton.setAttribute("type", "button");
 	cfgButton.setAttribute("value", 'Config');
 	cfgButton.setAttribute("id", 'dataConfig');
-	cfgButton.setAttribute("onclick", "configDataLink()");
+	cfgButton.setAttribute("onclick", "configCell('link')");
 	div.appendChild(cfgButton);
 
 	return div
 }
 
-function configDataLink(){
-	console.log('config')
+DataProcessingPanel = function(format,editorUi,container){
+	BaseFormatPanel.call(this, format, editorUi, container);
+	this.init();
+};
+
+mxUtils.extend(DataProcessingPanel, BaseFormatPanel);
+
+DataProcessingPanel.prototype.init = function (){
+	var graph = this.editorUi.editor.graph;
+
+	var model;
+	var dataProcessing = graph.getSelectionModel().cells[0];
+
+	this.container.appendChild(this.addDataProcessingInfo(this.createPanel(),dataProcessing));
+}
+
+DataProcessingPanel.prototype.addDataProcessingInfo = function(div,dataProcessing){
+	let label = document.createElement("p");
+	let info = document.createElement("input");
+	label.textContent = "Name : ";
+	info.value = dataProcessing.name==undefined?'':dataProcessing.name
+	info.disabled = "false";
+	div.appendChild(label);
+	div.appendChild(info);
+
+	label = document.createElement("p");
+	info = document.createElement("input");
+	label.textContent = "Type : ";
+	info.value = dataProcessing.type==undefined?'':dataProcessing.type;
+	info.disabled = "false";
+	div.appendChild(label);
+	div.appendChild(info);
+
+	label = document.createElement("p");
+	info = document.createElement("input");
+	label.textContent = "Description : ";
+	info.value = dataProcessing.description==undefined?'':dataProcessing.description;
+	info.disabled = "false";
+	div.appendChild(label);
+	div.appendChild(info);
+
+	div.appendChild(document.createElement("br"));
+
+	//加入一个配置按钮
+	let cfgButton = document.createElement("button");
+	cfgButton.innerHTML='Config'
+	cfgButton.setAttribute("type", "button");
+	cfgButton.setAttribute("value", 'Config');
+	cfgButton.setAttribute("id", 'dataConfig');
+	cfgButton.setAttribute("onclick", "configCell('processing')");
+	div.appendChild(cfgButton);
+
+	return div
+}
+
+function configCell(index){
 	var targetCell = graph.getSelectionModel().cells[0];
-	window.parent.configDataLink(targetCell);
+
+	if(index=='link'){
+		window.parent.configDataLink(targetCell);
+	}else if(index=='processing'){
+		window.parent.configDataProcessing(targetCell);
+	}
 }

@@ -720,6 +720,20 @@
             <el-button type="primary" size="small" @click="loadLogicalConfig7Xml">OK</el-button>
         </div>
     </el-dialog>
+
+    <el-dialog title="Select Data Processing" :visible.sync="dataProcessingLoadDialog" width="70%">
+        <el-tabs v-model="dataProcessActive">
+            <el-tab-pane label="Model Service" name="modelService">
+                <computable-models :check-model-list="checkModelList"></computable-models>
+            </el-tab-pane>
+            <el-tab-pane label="Data Service" name="dataService">
+                Data Service
+            </el-tab-pane>
+        </el-tabs>
+        <div slot="footer" class="dialog-footer">
+            <el-button type="primary" size="small" @click="loadDataProcessing">OK</el-button>
+        </div>
+    </el-dialog>
     <div th:replace="fragments/footer :: footer"></div>
 </div>
 <template th:replace="modules/userDataSpaceModule :: userDataSpaceModule"></template>

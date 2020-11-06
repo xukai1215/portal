@@ -3037,7 +3037,9 @@ Sidebar.prototype.addClickHandler = function (elt, ds, cells) {
       } else if(targetCell.style.indexOf('dataitem')){
 
       } else if(targetCell.style.indexOf('condition')){
-
+        let dataProcess = window.parent.addDataProcessToList(targetCell)
+        targetCell.frontId = dataProcess.id
+        window.parent.insertDataProcessing(targetCell)
       } else if(targetCell.style.indexOf('operation')){
 
       }
@@ -3117,6 +3119,9 @@ Sidebar.prototype.createEventVertexTemplate = function (style, width, height, va
   cells[0].description = event.eventDesc;
   cells[0].data = event.data;
   cells[0].url = "";
+  if(event.optional==false&&event.eventType=="response"){
+    cells[0].style = 'shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#a4000b;fillColor=none;'
+  }
 
   if (eventType == true) {
     cells[0].response = true;
