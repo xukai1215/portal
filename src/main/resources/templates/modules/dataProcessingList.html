@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.springframework.org/schema/data/mongo">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<template id="dataProcessingList" th:fragment="dataProcessingList">
+    <div class="clearfix" v-cloak>
+        <div >
+            <div class="el-col el-col-18 minScreen_maxWidth" style="width: 100%">
+                <div class="searcherPanel" style="margin: 0">
+                    <div class="searcherInputPanel" @keydown.enter="search()">
+                        <input id="searchBox" type="text" placeholder="Model Item Name..." v-model="searchText">
+                        <button @click="search()"><i class="glyphicon glyphicon-search"></i> Search</button>
+                        <!--<a id="expend" href="javascript:void(0)" class="fa fa-angle-double-down fa-3x"-->
+                        <!--aria-hidden="true"></a>-->
+                    </div>
+                </div>
+                <div id="curClassBar" role="alert" class="alert alert-info" style="background-color: #d9edf7 !important;margin-bottom: 2px;">
+                    <span>
+                        <strong class="minScreen_curClass">
+                            <i class="fa fa-refresh cursorPointer" ref="refreshButton" style="font-size: 18px" @click="refreshDataService(e)"></i>
+                        </strong>
+                        <strong style="float: right;">{{dataProcessings.length}} items</strong>
+                    </span>
+                    <br>
+                    <span></span> <span></span>
+                </div>
+                <div class="modelPanel">
+                    <div class="content-body wzhScrollbar" style="height: 500px;overflow: scroll">
+                        <div class="cardContainer" ref="cardContainer">
+                            <el-row :gutter="10" style="width: 100%;">
+                                <el-col  v-for="(dataProcessing,key) in dataProcessings"  :span="cardSpan">
+                                    <div class="comModelItem"
+                                         @click="select(dataProcessing,event)"
+                                         :style="isSelected(selectedDataProcessings,dataProcessing)?'background: #d9edf7':'background: #fff'"
+                                         style="width: 100%;margin: 3px;display: inline-block;">
+                                        <div class="detail_title" style="font-size: 20px;color: #333;text-align: center;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+                                            {{dataProcessing.name}}&nbsp&nbsp
+                                        </div>
+                                        <div>
+                                            <div class="detail_overview" style="margin-left: 0;min-height: 60px">
+                                                <avatar :username="dataProcessing.name" :size="60" :rounded="false" style="float: left"></avatar>
+                                                <div class="info" style="margin-left: 65px;">
+                                                    <p style="-webkit-line-clamp:3">{{dataProcessing.description}}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <div class="detail_bottom">
+                                            <div style="display:inline-block;float: left;">
+                                                <br>
+                                                <h4>
+                                                    contributed at {{dataProcessing.date.substring(0,10)}}
+                                                </h4>
+                                            </div>
+                                            <br>
+                                        </div>
+
+
+                                    </div>
+                                </el-col>
+
+                            </el-row>
+
+                        </div>
+                        <h4 v-if="dataProcessings.length==0" style="text-align: center;color: #666666;margin-top: 60px">No data processing service is online.</h4>
+                        <a v-if="dataProcessings.length==0" @click="refreshDataService" style="text-align: center">
+                            <h4 class="cursorPointer" style="margin-top: 25px;" >REFRESH</h4>
+                        </a>
+                    </div>
+
+
+
+                    <!--<el-pagination style="text-align: center;margin-top:20px" v-if="pageOption.paginationShow"-->
+                    <!--@current-change="handlePageChange"-->
+                    <!--:current-page="pageOption.currentPage"-->
+                    <!--layout="total, prev, pager, next"-->
+                    <!--:total="pageOption.total">-->
+                    <!--</el-pagination>-->
+                </div>
+            </div>
+
+        </div>
+    </div>
+</template>
+</body>
+<script src="/static/js/common/vue.min.js"></script>
+<script src="/static/js/modules/dataProcessingList.js"></script>
+</html>

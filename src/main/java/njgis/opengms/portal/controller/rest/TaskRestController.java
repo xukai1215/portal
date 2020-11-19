@@ -24,6 +24,7 @@ import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
 import njgis.opengms.portal.utils.Utils;
 import org.apache.commons.io.FilenameUtils;
+import org.dom4j.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
@@ -43,6 +44,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -798,4 +800,16 @@ public class TaskRestController {
 
     }
 
+    @RequestMapping(value = "/getDataProcessingNode",method = RequestMethod.GET)
+    public JsonResult getDataProcessingNode() throws DocumentException, IOException, URISyntaxException {
+       return ResultUtils.success(taskService.getDataProcessingNode());
+
+    }
+
+
+    @RequestMapping(value = "/getDataProcessings",method = RequestMethod.GET)
+    public JsonResult getDataProcessings() throws IOException, URISyntaxException, DocumentException {
+        return ResultUtils.success(taskService.getDataProcessings());
+
+    }
 }

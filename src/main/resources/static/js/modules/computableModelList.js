@@ -1,7 +1,14 @@
 Vue.component("computable-models",
     {
       template: "#computableModel",
-      props:["checkModelList"],
+      props: {
+        checkModelList:[],
+
+        singleSelect:{
+          type:Boolean,
+          default:false
+        }
+      },
       components: {
         'avatar': VueAvatar.Avatar
       },
@@ -454,16 +461,28 @@ Vue.component("computable-models",
           for (let i = 0; i < this.checkModelList.length; i++) {
             if (model.oid == this.checkModelList[i].oid){
               this.checkModelList.splice(i,1)
+              this.removeFromParent(model)
               e.currentTarget.style.background = "#fff"
               flag = true
               break
             }
           }
           if (!flag){
+            if(this.singleSelect){//如果限制单选，则之前的要全部清除
+              this.clearSelection()
+            }
             model=this.getComputableModelByOid(model.oid)
             this.checkModelList.push(model)
+            this.selectToParent(model)
             e.currentTarget.style.background = "#d9edf7"
           }
+        },
+
+        selectToParent(model){
+          this.$emit('select-computable-model',model)
+        },
+        removeFromParent(){
+          this.$emit('remove-computable-model',model)
         },
 
         clearSelection(){

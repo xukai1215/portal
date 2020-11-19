@@ -508,7 +508,11 @@ Format.prototype.refresh = function()
             label.style.fontSize = '16px';
 
             div.appendChild(label);
-            this.panels.push(new InputEventPanel(this, ui, div));
+            if(graph.getSelectionModel().cells[0].origin=='dataService'){
+				this.panels.push(new DataServiceDataPanel(this, ui, div));
+			}else{
+				this.panels.push(new InputEventPanel(this, ui, div));
+			}
 
             addClickHandler(label, div, idx++);
 		}else if(graph.getSelectionModel().cells[0].response == false){
@@ -517,47 +521,69 @@ Format.prototype.refresh = function()
             label.style.fontSize = '16px';
 
             div.appendChild(label);
-            this.panels.push(new OutputEventPanel(this, ui, div));
+			if(graph.getSelectionModel().cells[0].origin=='dataService'){
+				this.panels.push(new DataServiceDataPanel(this, ui, div));
+			}else{
+				this.panels.push(new OutputEventPanel(this, ui, div));
+			}
 
             addClickHandler(label, div, idx++);
 		}else if(graph.getSelectionModel().cells[0].style.indexOf('operation')!=-1){
-			mxUtils.write(label, mxResources.get('data processing'));
+			mxUtils.write(label, mxResources.get('dataProcess'));
 			label.style.borderLeftWidth = '0px';
 			label.style.fontSize = '16px';
 
 			div.appendChild(label);
 			this.panels.push(new DataProcessingPanel(this, ui, div));
+			if(graph.getSelectionModel().cells[0].inputData != undefined){
+				if(graph.getSelectionModel().cells[0].type == 'modelService') {
+					this.panels.push(new EventPanel(this, ui, div));
+				}else if(graph.getSelectionModel().cells[0].type == 'dataService'){
+					this.panels.push(new DataServicePanel(this, ui, div));
+				}
+			}
 
 			addClickHandler(label, div, idx++);
 
-		} else if(graph.getSelectionModel().cells[0].edge == true&&
-			graph.getSelectionModel().cells[0].target != null&&
-			graph.getSelectionModel().cells[0].source != null){
-        	let cell = graph.getSelectionModel().cells[0]
-			mxUtils.write(label, mxResources.get('dataLink'));
+		}else if(graph.getSelectionModel().cells[0].style.indexOf('condition')!=-1){
+			mxUtils.write(label, mxResources.get('condition'));
 			label.style.borderLeftWidth = '0px';
 			label.style.fontSize = '16px';
 
 			div.appendChild(label);
-			if(cell.target.response==true&&cell.source.response==false)
-			{
+			this.panels.push(new ConditionPanel(this, ui, div));
+			addClickHandler(label, div, idx++);
+
+		} else if(graph.getSelectionModel().cells[0].edge == true&&
+			graph.getSelectionModel().cells[0].target != null&&
+			graph.getSelectionModel().cells[0].source != null) {
+			let cell = graph.getSelectionModel().cells[0]
+			label.style.borderLeftWidth = '0px';
+			label.style.fontSize = '16px';
+
+			div.appendChild(label);
+			if (cell.target.response == true && cell.source.response == false) {//如果是两个event，则是一个数据连线
+				mxUtils.write(label, mxResources.get('dataLink'));
 				this.panels.push(new DataLinkPanel(this, ui, div));
-			}else if(cell.source.response==true&&cell.target.response==false){
+			} else if (cell.source.response == true && cell.target.response == false) {
 				let panel = document.getElementsByClassName('geSidebarContainer geFormatContainer')[0]
-				if(panel.children.length<=1){
+				if (panel.children.length <= 1) {
 					let p = document.createElement('h4')
 					p.innerHTML = ' Reverse direction '
-					p.style='text-align:center;'
+					p.style = 'text-align:center;'
 					panel.appendChild(p)
 				}
-			}else if(cell.source.frontId==cell.target.frontId){
+			} else if (cell.source.frontId == cell.target.frontId) {
 				let panel = document.getElementsByClassName('geSidebarContainer geFormatContainer')[0]
-				if(panel.children.length<=1){
+				if (panel.children.length <= 1) {
 					let p = document.createElement('h4')
 					p.innerHTML = ' Internal link'
-					p.style='text-align:center;'
+					p.style = 'text-align:center;'
 					panel.appendChild(p)
 				}
+			}else if(cell.target.md5!=undefined&&cell.source.style.indexOf('condition')!=-1){//条件判断的连线
+				mxUtils.write(label, mxResources.get('conditionLink'));
+				this.panels.push(new ConditionLinkPanel(this, ui, div));
 			}else{
 				let panel = document.getElementsByClassName('geSidebarContainer geFormatContainer')[0]
 				if(panel.children.length<=1){
@@ -5824,7 +5850,7 @@ InputEventPanel.prototype.init = function()
     var event = null;
     let cells = graph.getModel().cells
 	for (let i in cells) {
-		if (cells[i].frontId === frontId && cells[i].md5 != undefined) {
+		if (cells[i].frontId === frontId && (cells[i].md5!=undefined||cells[i].type == 'modelService')) {
 			model = cells[i];
 			for (let eleEvent of model.inputData) {
 				if(eleEvent.eventName === eventName){
@@ -5921,7 +5947,7 @@ InputEventPanel.prototype.addInputEventInfo = function(div,event,modelName){
     var descLabel = document.createElement("p");
     var desc = document.createElement("textarea");
     descLabel.textContent = "Event Description : ";
-    desc.value = event.eventDesc;
+    desc.value = event.description;
     desc.disabled = "false";
     div.appendChild(descLabel);
     div.appendChild(desc);
@@ -5992,7 +6018,7 @@ OutputEventPanel.prototype.init = function()
 	var event = null;
 	let cells = graph.getModel().cells
 	for (let i in cells) {
-		if (cells[i].frontId === frontId && cells[i].md5 != undefined) {
+		if (cells[i].frontId === frontId && (cells[i].md5!=undefined||cells[i].type == 'modelService')) {
 			model = cells[i];
 			for (let eleEvent of model.outputData) {
 				if(eleEvent.eventName === eventName){
@@ -6117,7 +6143,7 @@ OutputEventPanel.prototype.addOutputEventInfo = function(div,event,modelName){
     var desc = document.createElement("textarea");
     descLabel.textContent = "Event Description : ";
 	descLabel.style.marginBottom="5px"
-    desc.value = event.eventDesc;
+    desc.value = event.description;
     desc.disabled = "false";
     div.appendChild(descLabel);
     div.appendChild(desc);
@@ -6149,6 +6175,185 @@ OutputEventPanel.prototype.addDownload = function(div, event, url){
     return div;
 };
 
+
+/**
+ *添加dataService input/output信息
+ */
+
+DataServicePanel = function(format,editorUi,container){
+	BaseFormatPanel.call(this, format, editorUi, container);
+	this.init();
+}
+
+mxUtils.extend(DataServicePanel, BaseFormatPanel);
+
+DataServicePanel.prototype.init = function()
+{
+	var graph = this.editorUi.editor.graph;
+
+	var cell = graph.getSelectionModel().cells[0];
+
+	this.container.appendChild(this.addData(this.createPanel(),cell.inputData,cell,'input'));
+	if(cell.parameter!=undefined){
+		this.container.appendChild(this.addParameter(this.createPanel(),cell.parameter,cell));
+	}
+	this.container.appendChild(this.addData(this.createPanel(),cell.outputData,cell,'output'));
+};
+
+DataServicePanel.prototype.addData = function(div,inputData,cell,type){
+	var ui = this.editorUi;
+	var title
+	if(type=='input'){
+		title = this.createTitle("Inputs: ");
+	}else if(type=='output'){
+		title = this.createTitle("Outputs: ");
+	}
+	title.style.paddingBottom = '6px';
+	title.style.fontSize = "14px";
+	title.style.cursor = "default";
+	div.appendChild(title);
+
+	for (var i = 0; i<inputData.length; i++){
+		var event = document.createElement("p");
+		event.style.margin = '0px';
+		div.appendChild(event);
+
+		event = ui.sidebar.createDataServiceEventVertexTemplate('shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#003366;fillColor=none;', 170, 50, inputData[i].name, null, null, null,true, cell,true,inputData[i]);
+
+		div.appendChild(event);
+	}
+
+
+	div.style.borderTop = "1px solid #dadce0";
+	return div;
+};
+
+DataServicePanel.prototype.addParameter = function(div,parameter,cell){
+	var ui = this.editorUi;
+
+	var title = this.createTitle("Input Events: ");
+	title.style.paddingBottom = '6px';
+	title.style.fontSize = "14px";
+	title.style.cursor = "default";
+	div.appendChild(title);
+
+	for (var i = 0; i<inputData.length; i++){
+		var event = document.createElement("p");
+		event.style.margin = '0px';
+		div.appendChild(event);
+
+		event = ui.sidebar.createDataServiceEventVertexTemplate('shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#003366;fillColor=none;', 170, 50, inputData[i].eventName, null, null, null,true, model,true,inputData[i]);
+
+		div.appendChild(event);
+	}
+
+
+	div.style.borderTop = "1px solid #dadce0";
+	return div;
+};
+
+DataServicePanel.prototype.addoutputData = function(div,outputData,cell){
+	var title = this.createTitle("Output Events: ");
+	title.style.paddingBottom = '6px';
+	title.style.fontSize = "14px";
+	title.style.cursor = "default";
+	div.appendChild(title);
+
+	for (var i = 0; i<outputData.length; i++){
+		var event = document.createElement("p");
+		event.style.margin = '0px';
+		div.appendChild(event);
+
+		event = ui.sidebar.createDataServiceEventVertexTemplate('shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#449d44;fillColor=none;', 170, 50, outputData[i].eventName, null, null, null,true,model,false,outputData[i]);
+
+		div.appendChild(event);
+	}
+
+	return div;
+};
+
+DataServiceDataPanel = function(format,editorUi,container){
+	BaseFormatPanel.call(this, format, editorUi, container);
+	this.init();
+};
+
+mxUtils.extend(DataServiceDataPanel, BaseFormatPanel);
+
+DataServiceDataPanel.prototype.init = function() {
+	var graph = this.editorUi.editor.graph;
+
+	var model;
+	var frontId = graph.getSelectionModel().cells[0].frontId;
+	var inputId = graph.getSelectionModel().cells[0].eid;
+	var input = null;
+	let cells = graph.getModel().cells
+	for (let i in cells) {
+		if (cells[i].frontId === frontId && (cells[i].token!=undefined||cells[i].type == 'dataService')) {
+			model = cells[i];
+			for (let eleEvent of model.inputData) {
+				if(eleEvent.eid === inputId){
+					input = eleEvent
+					break;
+				}
+			}
+		}
+	}
+
+	this.container.appendChild(this.addInputEventInfo(this.createPanel(),input,model.name));
+	// this.container.appendChild(this.addDownload(this.createPanel(),event,url));
+};
+
+DataServiceDataPanel.prototype.addInputEventInfo = function(div,event,modelName,type){
+	var ui = this.editorUi;
+
+	var title = this.createTitle("Input Info : ");
+	title.style.paddingBottom = '6px';
+	title.style.fontSize = "14px";
+	title.style.cursor = "default";
+	div.appendChild(title);
+
+	var nameLabel = document.createElement("p");
+	var name = document.createElement("input");
+	nameLabel.textContent = "Name : ";
+	name.value = event.name;
+	name.disabled = "false";
+	div.appendChild(nameLabel);
+	div.appendChild(name);
+
+	var typeLabel = document.createElement("p");
+	var type = document.createElement("input");
+	typeLabel.textContent = "Type : ";
+	type.value = event.type;
+	type.disabled = "false";
+	div.appendChild(typeLabel);
+	div.appendChild(type);
+
+	var descLabel = document.createElement("p");
+	var desc = document.createElement("textarea");
+	descLabel.textContent = "Description : ";
+	desc.value = event.description;
+	desc.disabled = "false";
+	div.appendChild(descLabel);
+	div.appendChild(desc);
+
+	div.appendChild(document.createElement("br"));
+
+	//加入一个配置按钮
+	if(type=='input'){
+		let cfgButton = document.createElement("button");
+		cfgButton.innerHTML='Config'
+		cfgButton.setAttribute("type", "button");
+		cfgButton.setAttribute("value", 'Config');
+		cfgButton.setAttribute("id", 'dataConfig');
+		cfgButton.setAttribute("onclick", "configData()");
+		div.appendChild(cfgButton);
+
+	}
+
+	div.style.borderTop = "1px solid #dadce0";
+	return div;
+};
+
 DataLinkPanel = function(format,editorUi,container){
 	BaseFormatPanel.call(this, format, editorUi, container);
 	this.init();
@@ -6168,12 +6373,12 @@ DataLinkPanel.prototype.init = function(){
 	let fromModel,toModel
 
 	for(let i in cells){
-		if(cells[i].frontId==targetEvent.frontId&&cells[i].md5!=undefined){
-			fromModel = cells[i]
+		if(cells[i].frontId==targetEvent.frontId&&cells[i].state==undefined){
+			toModel = cells[i]
 			continue;
 		}
-		if(cells[i].frontId==sourceEvent.frontId&&cells[i].md5!=undefined){
-			toModel = cells[i]
+		if(cells[i].frontId==sourceEvent.frontId&&cells[i].state==undefined){
+			fromModel = cells[i]
 			continue;
 		}
 	}
@@ -6299,6 +6504,153 @@ DataProcessingPanel.prototype.addDataProcessingInfo = function(div,dataProcessin
 	return div
 }
 
+ConditionPanel = function(format,editorUi,container){
+	BaseFormatPanel.call(this, format, editorUi, container);
+	this.init();
+};
+
+mxUtils.extend(ConditionPanel, BaseFormatPanel);
+
+ConditionPanel.prototype.init = function (){
+	var graph = this.editorUi.editor.graph;
+
+	var model;
+	var condition = graph.getSelectionModel().cells[0];
+
+	this.container.appendChild(this.addConditionInfo(this.createPanel(),condition));
+}
+
+ConditionPanel.prototype.addConditionInfo = function(div,condition){
+	let label = document.createElement("p");
+	let info = document.createElement("input");
+	label.textContent = "Value : ";
+	info.value = condition.judgeValue==undefined?'':condition.judgeValue
+	info.disabled = "false";
+	div.appendChild(label);
+	div.appendChild(info);
+
+	label = document.createElement("p");
+	info = document.createElement("input");
+	label.textContent = "Format : ";
+	info.value = condition.format==undefined?'':condition.format;
+	info.disabled = "false";
+	div.appendChild(label);
+	div.appendChild(info);
+
+	div.appendChild(document.createElement("br"));
+
+	//加入一个配置按钮
+	let cfgButton = document.createElement("button");
+	cfgButton.innerHTML='Config'
+	cfgButton.setAttribute("type", "button");
+	cfgButton.setAttribute("value", 'Config');
+	cfgButton.setAttribute("id", 'conditionConfig');
+	cfgButton.setAttribute("onclick", "configCell('condition')");
+	div.appendChild(cfgButton);
+
+	return div
+}
+
+ConditionLinkPanel = function(format,editorUi,container){
+	BaseFormatPanel.call(this, format, editorUi, container);
+	this.init();
+};
+
+mxUtils.extend(ConditionLinkPanel, BaseFormatPanel);
+
+ConditionLinkPanel.prototype.init = function(){
+
+	let graph = this.editorUi.editor.graph;
+	let edge = graph.getSelectionModel().cells[0];
+
+	let target = edge.target
+	let source = edge.source
+	let cells = graph.getModel().cells;
+
+	let fromModel,toModel
+
+	for(let i in cells){
+		if(cells[i].frontId==target.frontId&&cells[i].state==undefined){
+			toModel = cells[i]
+			continue;
+		}
+		if(cells[i].frontId==source.frontId&&cells[i].state==undefined){
+			fromModel = cells[i]
+			continue;
+		}
+	}
+
+	this.container.appendChild(this.addConditionLinkInfo(this.createPanel(),edge,fromModel,toModel));
+}
+
+ConditionLinkPanel.prototype.addConditionLinkInfo = function (div,edge,fromModel,toModel){
+
+	let fromEvtName = edge.source.value
+	let toEvtName = edge.target.value
+
+	let label = document.createElement("p");
+	let info = document.createElement("input");
+	label.textContent = "Condition : ";
+	info.value = fromModel.value==undefined?'':fromModel.value;
+	info.disabled = "false";
+	div.appendChild(label);
+	div.appendChild(info);
+
+	label = document.createElement("p");
+	info = document.createElement("input");
+	label.textContent = "Model action : ";
+	info.value = toModel.value;
+	info.disabled = "false";
+	div.appendChild(label);
+	div.appendChild(info);
+
+	label = document.createElement("p");
+	info = document.createElement("input");
+	label.textContent = "Value : ";
+	info.value = edge.value;
+	info.disabled = "false";
+	div.appendChild(label);
+	div.appendChild(info);
+
+	div.appendChild(document.createElement("br"));
+	div.appendChild(document.createElement("br"));
+
+	let trueRadio = document.createElement("input");
+	let trueLabel = document.createElement("label");
+	trueLabel.innerHTML='True'
+	trueRadio.setAttribute("type", "radio");
+	trueRadio.setAttribute("value", 'True');
+	trueRadio.setAttribute("name", 'conditionStatus');
+	trueRadio.setAttribute("checked", 'true');
+
+	let falseRadio = document.createElement("input");
+	let falseLabel = document.createElement("label");
+	falseLabel.innerHTML='False'
+	falseRadio.setAttribute("type", "radio");
+	falseRadio.setAttribute("value", 'False');
+	falseRadio.setAttribute("name", 'conditionStatus');
+
+	div.appendChild(trueLabel);
+	div.appendChild(trueRadio);
+	div.appendChild(falseLabel);
+	div.appendChild(falseRadio);
+
+	div.appendChild(document.createElement("br"));
+
+	//加入一个配置按钮
+	let cfgButton = document.createElement("button");
+	cfgButton.innerHTML='Confirm'
+	cfgButton.setAttribute("type", "button");
+	cfgButton.setAttribute("value", 'Confirm');
+	cfgButton.setAttribute("id", 'conditionLinkConfig');
+	cfgButton.setAttribute("onclick", "getConditionStatus()");
+
+	div.appendChild(cfgButton);
+
+	return div
+}
+
+
 function configCell(index){
 	var targetCell = graph.getSelectionModel().cells[0];
 
@@ -6306,5 +6658,36 @@ function configCell(index){
 		window.parent.configDataLink(targetCell);
 	}else if(index=='processing'){
 		window.parent.configDataProcessing(targetCell);
+	}else if(index=='condition'){
+		window.parent.configCondition(targetCell);
 	}
+}
+
+function getConditionStatus(){
+	let conditionLink = graph.getSelectionModel().cells[0]
+	let condition = conditionLink.source
+	let edges = condition.edges
+	let anotherLinkValue = null
+	for(let edge of edges){
+		if(edge!=conditionLink){
+			anotherLinkValue = edge.value
+		}
+	}
+
+	let radioList = document.getElementsByName("conditionStatus")
+	for(let radio of radioList){
+		if(radio.checked){
+			conditionLink.value = radio.value == 'True'?'Yes':'No';
+
+			if(conditionLink.value==anotherLinkValue){
+			 	alert('One condition can not have two same judge result')
+				return
+			}
+
+			window.parent.refreshConditionLink(conditionLink)
+			graph.refresh(conditionLink)
+			break
+		}
+	}
+
 }
