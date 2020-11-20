@@ -1155,13 +1155,15 @@ public class TaskService {
         return "suc";
     }
 
-    public String saveIntegratedTask( String xml, String mxgraph, List<Map<String,String>> models,
-                                      List<ModelAction> modelActions,List<Map<String,String>> dataLinks,String userName,String taskName,String description){
+    public String saveIntegratedTask( String xml, String mxgraph, List<Map<String,String>> models, List<Map<String,String>> processingTools,
+                                      List<ModelAction> modelActions,List<DataProcessing> dataProcessings,List<Map<String,String>> dataLinks,String userName,String taskName,String description){
         IntegratedTask integratedTask = new IntegratedTask();
 
         integratedTask.setOid(UUID.randomUUID().toString());
         integratedTask.setModels(models);
+        integratedTask.setProcessingTools(processingTools);
         integratedTask.setModelActions(modelActions);
+        integratedTask.setDataProcessings(dataProcessings);
         integratedTask.setDataLinks(dataLinks);
         integratedTask.setXml(xml);
         integratedTask.setMxGraph(mxgraph);
@@ -1188,11 +1190,12 @@ public class TaskService {
 
     //用户更新集成Task的信息
     public IntegratedTask updateIntegratedTask( String taskOid, String xml, String mxgraph, List<Map<String,String>> models,
-                                                List<ModelAction> modelActions,List<Map<String,String>> dataLinks,String userName,String taskName,String description){
+                                                List<ModelAction> modelActions,List<DataProcessing> dataProcessings,List<Map<String,String>> dataLinks,String userName,String taskName,String description){
         IntegratedTask integratedTask = integratedTaskDao.findByOid(taskOid);
 
         integratedTask.setModels(models);
         integratedTask.setModelActions(modelActions);
+        integratedTask.setDataProcessings(dataProcessings);
         integratedTask.setDataLinks(dataLinks);
         integratedTask.setXml(xml);
         integratedTask.setMxGraph(mxgraph);

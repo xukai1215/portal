@@ -236,7 +236,7 @@
     var cells = graph.getModel().cells;
     linkDataFlow(cells)
     for (let i in cells) {
-      if (typeof cells[i].md5 != "undefined") {
+      if (cells[i].md5 != undefined ||cells[i].service != undefined) {
         var modelTmp = {};
         modelTmp.name = cells[i].value;
         modelTmp.pid = cells[i].mid;
