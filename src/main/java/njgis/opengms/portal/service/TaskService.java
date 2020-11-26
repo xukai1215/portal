@@ -3,6 +3,7 @@ package njgis.opengms.portal.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.gson.JsonObject;
 import njgis.opengms.portal.AbstractTask.AsyncTask;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dao.ComputableModelDao;
@@ -24,6 +25,7 @@ import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.MyHttpUtils;
 import njgis.opengms.portal.utils.ResultUtils;
 import njgis.opengms.portal.utils.Utils;
+import njgis.opengms.portal.utils.XmlTool;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -43,9 +45,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.xml.bind.annotation.XmlMimeType;
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.Future;
@@ -847,6 +852,7 @@ public class TaskService {
         }
         return dataUploadList;
     }
+
     public void zipUncompress(String inputFile,String destDirPath) throws Exception {
         File srcFile = new File(inputFile);
         if (!srcFile.exists()){
@@ -1149,13 +1155,15 @@ public class TaskService {
         return "suc";
     }
 
-    public String saveIntegratedTask( String xml, String mxgraph, List<Map<String,String>> models,
-                                      List<ModelAction> modelActions,List<Map<String,String>> dataLinks,String userName,String taskName,String description){
+    public String saveIntegratedTask( String xml, String mxgraph, List<Map<String,String>> models, List<Map<String,String>> processingTools,
+                                      List<ModelAction> modelActions,List<DataProcessing> dataProcessings,List<Map<String,String>> dataLinks,String userName,String taskName,String description){
         IntegratedTask integratedTask = new IntegratedTask();
 
         integratedTask.setOid(UUID.randomUUID().toString());
         integratedTask.setModels(models);
+        integratedTask.setProcessingTools(processingTools);
         integratedTask.setModelActions(modelActions);
+        integratedTask.setDataProcessings(dataProcessings);
         integratedTask.setDataLinks(dataLinks);
         integratedTask.setXml(xml);
         integratedTask.setMxGraph(mxgraph);
@@ -1182,11 +1190,12 @@ public class TaskService {
 
     //用户更新集成Task的信息
     public IntegratedTask updateIntegratedTask( String taskOid, String xml, String mxgraph, List<Map<String,String>> models,
-                                                List<ModelAction> modelActions,List<Map<String,String>> dataLinks,String userName,String taskName,String description){
+                                                List<ModelAction> modelActions,List<DataProcessing> dataProcessings,List<Map<String,String>> dataLinks,String userName,String taskName,String description){
         IntegratedTask integratedTask = integratedTaskDao.findByOid(taskOid);
 
         integratedTask.setModels(models);
         integratedTask.setModelActions(modelActions);
+        integratedTask.setDataProcessings(dataProcessings);
         integratedTask.setDataLinks(dataLinks);
         integratedTask.setXml(xml);
         integratedTask.setMxGraph(mxgraph);
@@ -1249,7 +1258,7 @@ public class TaskService {
             for(int j=0;j<output.size();j++){
                 Map<String,Object> outputData = new HashMap<>();
                 Map<String,Object> dataContent = new HashMap<>();
-                JSONObject j_dataContent = ((JSONObject)output.get(i)).getJSONObject("dataContent");
+                JSONObject j_dataContent = ((JSONObject)output.get(j)).getJSONObject("dataContent");
                 outputData.put("value",j_dataContent.getString("value"));
                 outputData.put("type",j_dataContent.getString("type"));
                 outputData.put("fileName",j_dataContent.getString("fileName"));
@@ -2003,4 +2012,54 @@ public class TaskService {
         return result;
     }
 
+    public JSONObject getDataProcessingNode() throws IOException, URISyntaxException, DocumentException {
+        String url = "http://111.229.14.128:8898/onlineNodes";
+
+        String xml = MyHttpUtils.GET(url,"utf-8",null);
+
+        JSONObject jsonObject = XmlTool.xml2Json(xml);
+
+        return jsonObject;
+    }
+
+    public JSONArray getDataProcessings() throws DocumentException, IOException, URISyntaxException {
+        //因为dataservice不提供直接查询接口，因此只能先找token再遍历
+        String baseUrl = "http://111.229.14.128:8898/onlineNodesAllPcs";
+        JSONArray j_nodes = new JSONArray();
+
+        try { //dataservice返回的是xml,转换json会遇到一个节点还是多个节点的问题，所以要判断一下转成了JSONObject还是JSONArray
+            j_nodes = getDataProcessingNode().getJSONArray("onlineServiceNodes");
+
+        }catch (Exception e){
+            j_nodes.add(getDataProcessingNode().getJSONObject("onlineServiceNodes"));
+        }
+
+        List<Map<String,String>> nodes = JSONArray.parseObject(j_nodes.toString(),List.class);
+
+        JSONArray result = new JSONArray();
+        String url = "";
+        for(Map<String,String> node : nodes){
+            String token = node.get("token");
+            url = baseUrl + "?token=" + URLEncoder.encode(token) + "&type=Processing";
+            String xml = MyHttpUtils.GET(url,"utf-8",null);
+            JSONObject jsonObject = XmlTool.xml2Json(xml);
+            JSONArray j_processings = new JSONArray();
+            try{
+                j_processings = jsonObject.getJSONArray("AvailablePcs");
+                for(int i=0; j_processings!=null&&i<j_processings.size();i++){
+                    JSONObject j_process = j_processings.getJSONObject(i);
+                    j_process.put("token",token);
+                    result.add(j_process);
+                }
+            }catch (Exception e){
+                JSONObject j_processing = jsonObject.getJSONObject("AvailablePcs");
+                j_processing.put("token",token);
+                result.add(j_processing);
+            }
+
+
+        }
+
+        return result;
+    }
 }

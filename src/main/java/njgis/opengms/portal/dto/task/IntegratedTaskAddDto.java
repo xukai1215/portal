@@ -1,6 +1,7 @@
 package njgis.opengms.portal.dto.task;
 
 import lombok.Data;
+import njgis.opengms.portal.entity.DataProcessing;
 import njgis.opengms.portal.entity.ModelAction;
 
 import java.util.List;
@@ -16,7 +17,11 @@ public class IntegratedTaskAddDto {
 
     List<Map<String,String>> models;
 
+    List<Map<String,String>> processingTools;
+
     List<ModelAction> modelActions;
+
+    List<DataProcessing> dataProcessings;
 
     List<Map<String,String>> dataLinks;
 

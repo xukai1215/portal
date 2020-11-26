@@ -23,7 +23,9 @@ public class IntegratedTask {
     String description;
 
     List<Map<String,String>> models;
+    List<Map<String,String>> processingTools;
     List<ModelAction> modelActions;
+    List<DataProcessing> dataProcessings;
     List<Map<String,String>> dataLinks;
 
     String xml;

@@ -507,7 +507,7 @@ Sidebar.prototype.searchEntries = function (searchTerms, count, page, success, e
         for (var i = 0; i < result.length; i++) {
           var model = result[i];
           var modelName = model.name;
-          this.createVertexTemplateEntry('rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#0073e8;fillColor=#d9edf7;', 210, 50, modelName, model.description, null, null, modelName, model);
+          this.createVertexTemplateEntry('rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#0073e8;fillColor=#d9edf7;', 210, 50, modelName, model.description, null, null, modelName, model);
         }
 
         //
@@ -3022,24 +3022,26 @@ Sidebar.prototype.addClickHandler = function (elt, ds, cells) {
     if (graph.getSelectionModel().cells.length > 0) {
       var targetCell = graph.getSelectionModel().cells[0];
       if (targetCell.response == "1") {//判断鼠标加入的cell是一个input还是output
-        graph.insertEdge(parent, null, '', targetCell, state, "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=2;strokeColor=#000066;");
+        graph.insertEdge(parent, null, '', targetCell, state, "edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=2;strokeColor=#000066;");
 
       } else if (targetCell.response == "0") {
-        graph.insertEdge(parent, null, '', state, targetCell, "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=2;strokeColor=#000066;");
+        graph.insertEdge(parent, null, '', state, targetCell, "edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=2;strokeColor=#000066;");
 
       } else if (targetCell.md5 != undefined&&targetCell.md5 != ''){
         let modelAction = window.parent.addModeltoList(targetCell)
         targetCell.frontId = modelAction.id
         getModelListByPage(page)
         // sideBar.addComputabelModel(computableModelList, true);
-      } else if(targetCell.style.indexOf('modelitem')){//说明是个logicalModelitem
+      } else if(targetCell.style.indexOf('modelitem')!=-1){//说明是个logicalModelitem
 
-      } else if(targetCell.style.indexOf('dataitem')){
+      } else if(targetCell.style.indexOf('dataitem')!=-1){
 
-      } else if(targetCell.style.indexOf('condition')){
-
-      } else if(targetCell.style.indexOf('operation')){
-
+      } else if(targetCell.style.indexOf('condition')!=-1){
+        targetCell.frontId = window.parent.generateGUID();
+        window.parent.insertGeneralCell(targetCell,'condition')
+      } else if(targetCell.style.indexOf('operation')!=-1){
+        targetCell.frontId = window.parent.generateGUID();
+        window.parent.insertGeneralCell(targetCell,'operation')
       }
     }
 
@@ -3117,12 +3119,37 @@ Sidebar.prototype.createEventVertexTemplate = function (style, width, height, va
   cells[0].description = event.eventDesc;
   cells[0].data = event.data;
   cells[0].url = "";
+  cells[0].origin = 'modelService';
+  if(event.optional==false&&event.eventType=="response"){
+    cells[0].style = 'shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#a4000b;fillColor=none;'
+  }
 
   if (eventType == true) {
     cells[0].response = true;
   } else {
     cells[0].response = false;
   }
+  return this.createVertexTemplateFromCells(cells, width, height, title, showLabel, showTitle, allowCellsInserted);
+};
+
+Sidebar.prototype.createDataServiceEventVertexTemplate = function (style, width, height, value, title, showLabel, showTitle, allowCellsInserted, cell, eventType, event) {
+  var cells = [new mxCell((value != null) ? value : '', new mxGeometry(0, 0, width, height), style)];
+  cells[0].vertex = true;
+  cells[0].frontId = cell.frontId;
+  cells[0].mid = cell.id;
+  cells[0].eid = event.eventId;
+  cells[0].description = event.description;
+  cells[0].type = event.type;
+  cells[0].url = "";
+  cells[0].response = event.response;
+  cells[0].origin = 'dataService';
+
+  if(event.response==true){
+    cells[0].style = 'shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#a4000b;fillColor=none;'
+  }else{
+    cells[0].style = 'shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#449d44;fillColor=none;'
+  }
+
   return this.createVertexTemplateFromCells(cells, width, height, title, showLabel, showTitle, allowCellsInserted);
 };
 
@@ -3500,7 +3527,7 @@ Sidebar.prototype.addComputabelModel = function (computableModelList, expand) {
   for (var j = 0; j < computableModelList.size; j++) {
     var model = computableModelList.content[j];
     var modelName = model.name;
-    var a = this.createStateVertexTemplate('rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#0073e8;fillColor=#d9edf7;', 210, 50, modelName, model.description, null, null, modelName, model);
+    var a = this.createStateVertexTemplate('rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#0073e8;fillColor=#d9edf7;', 210, 50, modelName, model.description, null, null, modelName, model);
     div.appendChild(a);
   }
 
@@ -3563,7 +3590,7 @@ Sidebar.prototype.addComputabelModelPage = function (computableModelList, div) {
   for (var i = 0; i < computableModelList.numberOfElements; i++) {
     var model = computableModelList.content[i];
     var modelName = model.name;
-    var a = this.createStateVertexTemplate('rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#0073e8;fillColor=#d9edf7;', 210, 50, modelName, model.description, null, null, modelName, model);
+    var a = this.createStateVertexTemplate('rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#0073e8;fillColor=#d9edf7;', 210, 50, modelName, model.description, null, null, modelName, model);
     div.appendChild(a);
   }
 };
@@ -3664,18 +3691,18 @@ Sidebar.prototype.addGeneralPalette2 = function (id, title, stencilFile, style, 
         // console.log(style);
         if(stencilName==="Start"){
           label = stencilName;
-          style = ";whiteSpace=wrap;html=1;fillColor=#0000ff;strokeColor=#000000;strokeWidth=2;fontSize=28;fontFamily=Times New Roman;"
+          style = ";whiteSpace=wrap;html=1;fillColor=#439efc;strokeColor=#000005;strokeWidth=2;fontSize=18;fontFamily=Times New Roman;"
         }else if(stencilName === "End"){
           label = stencilName;
-          style = ";whiteSpace=wrap;html=1;fillColor=#ff0000;strokeColor=#000000;strokeWidth=2;fontSize=28;fontFamily=Times New Roman;"
+          style = ";whiteSpace=wrap;html=1;fillColor=#ec3f3f;strokeColor=#000005;strokeWidth=2;fontSize=18;fontFamily=Times New Roman;"
         }else if(stencilName === "ModelItem"){
-          style = ";whiteSpace=wrap;html=1;fillColor=#ffff33;strokeColor=#000000;strokeWidth=2;fontSize=28;fontFamily=Times New Roman;"
+          style = ";whiteSpace=wrap;html=1;fillColor=#ffd800;strokeColor=#000005;strokeWidth=2;fontSize=18;fontFamily=Times New Roman;"
         }else if(stencilName === "DataItem"){
-          style = ";whiteSpace=wrap;html=1;fillColor=#e6e6e6;strokeColor=#000000;strokeWidth=2;fontSize=28;fontFamily=Times New Roman;"
+          style = ";whiteSpace=wrap;html=1;fillColor=#e6e6e6;strokeColor=#000005;strokeWidth=2;fontSize=18;fontFamily=Times New Roman;"
         }else if(stencilName === "Condition"){
-          style = ";whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#000000;strokeWidth=2;fontSize=28;fontFamily=Times New Roman;"
+          style = ";whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#000005;strokeWidth=2;fontSize=18;fontFamily=Times New Roman;"
         }else if(stencilName === "Operation"){
-          style = ";whiteSpace=wrap;html=1;fillColor=#ffcce6;strokeColor=#000000;strokeWidth=2;fontSize=28;fontFamily=Times New Roman;"
+          style = ";whiteSpace=wrap;html=1;fillColor=#ffcce6;strokeColor=#000005;strokeWidth=2;fontSize=18;fontFamily=Times New Roman;"
         }
 
         fns.push(this.createVertexTemplateEntry('shape=' + packageName + stencilName.toLowerCase() + style,
@@ -3743,7 +3770,7 @@ Sidebar.prototype.addModelToGraph = function (model) {
 
   hasSearchedTermsComputableModel.push(model)
   var pt = graph.getFreeInsertPoint();
-  var cell = graph.insertVertex(parent, null, model.name, pt.x, pt.y, 210, 50, "rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#0073e8;fillColor=#d9edf7");
+  var cell = graph.insertVertex(parent, null, model.name, pt.x, pt.y, 210, 50, "rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#0073e8;fillColor=#d9edf7");
 
   cell.frontId = model.id;
   cell.name = model.name;
@@ -3760,6 +3787,61 @@ Sidebar.prototype.addModelToGraph = function (model) {
 
 }
 
+Sidebar.prototype.addDataProcessCellInfo = function (info) {
+
+  var graph = this.editorUi.editor.graph;
+
+  var parent = graph.getDefaultParent();
+
+  // var a = this.createStateVertexTemplate('rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#006600;fillColor=#EEFFEE;',
+  //     210, 50, modelName, 'Computable Model', null, null, modelName, model);
+
+  let cells = graph.getModel().cells;
+  for(let i in cells){
+    if(cells[i].frontId!=undefined&&cells[i].frontId==info.id){
+      cells[i].value = info.name
+      cells[i].name = info.name
+      cells[i].type = info.type
+      cells[i].description = info.description
+      cells[i].service = info.service
+      cells[i].inputData = info.inputData;
+      cells[i].outputData = info.outputData;
+
+      let format = this.editorUi.format//更新信息板中的信息
+      format.refresh()
+      break
+    }
+  }
+
+  // ds.drop(graph, evt, null, pt.x, pt.y, true);
+}
+
+Sidebar.prototype.addConditionCellInfo = function (condition) {
+
+  var graph = this.editorUi.editor.graph;
+
+  var parent = graph.getDefaultParent();
+
+  // var a = this.createStateVertexTemplate('rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#006600;fillColor=#EEFFEE;',
+  //     210, 50, modelName, 'Computable Model', null, null, modelName, model);
+
+  let cells = graph.getModel().cells;
+  for(let i in cells){
+    if(cells[i].frontId!=undefined&&cells[i].frontId==condition.id){
+      cells[i].value = condition.expression
+      cells[i].judgeValue = condition.value
+      cells[i].format = condition.format
+      cells[i].description = condition.description
+
+      let format = this.editorUi.format//更新信息板中的信息
+      format.refresh()
+      break
+    }
+  }
+
+  // ds.drop(graph, evt, null, pt.x, pt.y, true);
+}
+
 function unFoldMultiOutput(model,outputData){
   var cells = graph.getModel().cells;
   var parent = graph.getDefaultParent();
@@ -3770,7 +3852,7 @@ function unFoldMultiOutput(model,outputData){
 
       for(i=0;i<values.length;i++){
         var pt = graph.getFreeInsertPoint();
-        var cell = graph.insertVertex(parent, null, model.name, pt.x, pt.y, 170, 50, "rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#449d44;fillColor=#EEFFEE");
+        var cell = graph.insertVertex(parent, null, model.name, pt.x, pt.y, 170, 50, "rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#449d44;fillColor=#EEFFEE");
 
         cell.vertex = true;
         cell.frontId = model.frontId;
