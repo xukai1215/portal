@@ -11,6 +11,7 @@ import njgis.opengms.portal.dto.task.ResultDataDTO;
 import njgis.opengms.portal.dto.task.TestDataUploadDTO;
 import njgis.opengms.portal.dto.task.UploadDataDTO;
 import njgis.opengms.portal.entity.ComputableModel;
+import njgis.opengms.portal.entity.DataProcessing;
 import njgis.opengms.portal.entity.ModelAction;
 import njgis.opengms.portal.entity.Task;
 import njgis.opengms.portal.entity.intergrate.Model;
@@ -24,6 +25,7 @@ import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
 import njgis.opengms.portal.utils.Utils;
 import org.apache.commons.io.FilenameUtils;
+import org.dom4j.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
@@ -43,6 +45,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -335,12 +338,14 @@ public class TaskRestController {
             String xml = integratedTaskAddDto.getXml();
             String mxgraph = integratedTaskAddDto.getMxgraph();
             List<Map<String,String>> models = integratedTaskAddDto.getModels();
+            List<Map<String,String>> processingTools = integratedTaskAddDto.getProcessingTools();
             List<ModelAction> modelActions = integratedTaskAddDto.getModelActions();
+            List<DataProcessing> dataProcessings = integratedTaskAddDto.getDataProcessings();
             List<Map<String,String>> dataLinks = integratedTaskAddDto.getDataLinks();
             String description = integratedTaskAddDto.getDescription();
             String taskName = integratedTaskAddDto.getTaskName();
 
-            return ResultUtils.success(taskService.saveIntegratedTask( xml, mxgraph, models, modelActions,dataLinks,userName,taskName,description));
+            return ResultUtils.success(taskService.saveIntegratedTask(xml, mxgraph, models,processingTools, modelActions,dataProcessings,dataLinks,userName,taskName,description));
         }
     }
 
@@ -359,11 +364,12 @@ public class TaskRestController {
             String mxgraph = integratedTaskAddDto.getMxgraph();
             List<Map<String,String>> models = integratedTaskAddDto.getModels();
             List<ModelAction> modelActions = integratedTaskAddDto.getModelActions();
+            List<DataProcessing> dataProcessings = integratedTaskAddDto.getDataProcessings();
             List<Map<String,String>> dataLinks = integratedTaskAddDto.getDataLinks();
             String description = integratedTaskAddDto.getDescription();
             String taskName = integratedTaskAddDto.getTaskName();
 
-            return ResultUtils.success(taskService.updateIntegratedTask(taskOid, xml, mxgraph, models, modelActions,dataLinks,userName,taskName,description));
+            return ResultUtils.success(taskService.updateIntegratedTask(taskOid, xml, mxgraph, models, modelActions,dataProcessings,dataLinks,userName,taskName,description));
         }
     }
 
@@ -798,4 +804,16 @@ public class TaskRestController {
 
     }
 
+    @RequestMapping(value = "/getDataProcessingNode",method = RequestMethod.GET)
+    public JsonResult getDataProcessingNode() throws DocumentException, IOException, URISyntaxException {
+       return ResultUtils.success(taskService.getDataProcessingNode());
+
+    }
+
+
+    @RequestMapping(value = "/getDataProcessings",method = RequestMethod.GET)
+    public JsonResult getDataProcessings() throws IOException, URISyntaxException, DocumentException {
+        return ResultUtils.success(taskService.getDataProcessings());
+
+    }
 }

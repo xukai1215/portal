@@ -672,6 +672,52 @@ public class Utils {
         return result;
     }
 
+    public static JSONObject convertDataServiceXml(String xml){
+        JSONObject j_xml = new JSONObject();
+
+        try{
+            Document ddlDoc = DocumentHelper.parseText(xml);
+            Element rootElement = ddlDoc.getRootElement();
+            j_xml.put("name", rootElement.attributeValue("name"));
+
+            Element descElement = rootElement.element("Description");
+            j_xml.put("desc", descElement.getStringValue());
+
+            Element inputElement = rootElement.element("input");
+            Element inputItemEle = inputElement.element("Item");
+            JSONObject input = new JSONObject();
+            input.put("id",UUID.randomUUID());
+            input.put("name",inputItemEle.attributeValue("name"));
+            input.put("type",inputItemEle.attributeValue("type"));
+            input.put("description",inputItemEle.attributeValue("description"));
+            j_xml.put("input",input);
+
+            Element paramElement = rootElement.element("Parameter");
+            Element paramItemEle = paramElement.element("Item");
+            JSONObject param = new JSONObject();
+            param.put("id",UUID.randomUUID());
+            param.put("name",paramItemEle.attributeValue("name"));
+            param.put("type",paramItemEle.attributeValue("type"));
+            param.put("description",paramItemEle.attributeValue("description"));
+            j_xml.put("output",param);
+
+            Element outputElement = rootElement.element("output");
+            Element outputItemEle = outputElement.element("Item");
+            JSONObject output = new JSONObject();
+            output.put("id",UUID.randomUUID());
+            output.put("name",inputItemEle.attributeValue("name"));
+            output.put("type",inputItemEle.attributeValue("type"));
+            output.put("description",inputItemEle.attributeValue("description"));
+            j_xml.put("output",output);
+
+        }catch (Exception e){
+            System.out.println(xml);
+            e.printStackTrace();
+        }
+
+        return j_xml;
+    }
+
     public static void convertData(List<Element> udxNodes, JSONObject root) {
         if (udxNodes.size() > 0) {
             for (Element udxNode : udxNodes) {

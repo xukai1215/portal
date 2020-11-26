@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<template id="dropForm" th:fragment="dropForm">
+    <div style="position: relative">
+        <div class="wzhInput">
+            <div v-if="$slots.prePendant" class="wzhInput-prep" ref="refPrep">
+                <slot name="prePendant"></slot>
+            </div>
+            <input class="wzhInput_primary wzhInput_shadow cursorPointer"
+                   :placeholder="c_placeHolder"
+                   :value="value"
+                   @input="input"
+                   @click.stop="dropDownInfo"
+                   readonly="readonly"
+            >
+            <div v-if="$slots.innerIconPost" class="input_iconContainer input_iconContainerPost flexAlignCenter"@click.stop="dropDownInfo" ref="refIconPost">
+                <slot name="innerIconPost" class="input_icon"></slot>
+            </div>
+        </div>
+        <transition @before-enter="readyDrop" @enter="droping" @before-leave="folding">
+            <div v-show="isDrop" ref="dropContainer" class="dropContainer">
+                <div class="dropDownForm wzhScrollbar" ref="dropForm">
+                    <div class="dropDownFormUnit cursorPointer" v-for="dropInfo in form" :key="Math.random()"
+                         @click.stop="selectValue(dropInfo)">
+                        <p>{{dropInfo}}</p>
+                    </div>
+
+                </div>
+            </div>
+        </transition>
+
+
+    </div>
+</template>
+</body>
+</html>
