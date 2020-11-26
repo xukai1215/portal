@@ -447,9 +447,9 @@ new Vue({
     mounted(){
         let titleArr=$(".detail_title");
         CompareTxt(titleArr[0],titleArr[1]);
-        let detailArr=$(".detail_overview .info p");
-        CompareTxt(detailArr[0],detailArr[1])
-        CompareTxt($("#detail")[0],$("#detail2")[0]);
+        // let detailArr=$(".detail_overview .info p");
+        // CompareTxt(detailArr[0],detailArr[1])
+        // CompareTxt($("#detail")[0],$("#detail2")[0]);
 
         let currenturl=window.location.href;
         let dataitemid=currenturl.split("/");

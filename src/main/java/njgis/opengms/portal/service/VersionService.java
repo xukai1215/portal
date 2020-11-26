@@ -5,9 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.entity.*;
-import njgis.opengms.portal.entity.support.AuthorInfo;
 import njgis.opengms.portal.exception.MyException;
-import njgis.opengms.portal.utils.ResultUtils;
 import njgis.opengms.portal.utils.deCode;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -21,7 +19,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 
 @Service
 
@@ -29,6 +30,9 @@ public class VersionService {
 
     @Autowired
     ClassificationService classificationService;
+
+    @Autowired
+    Classification2Service classification2Service;
 
     @Autowired
     UserDao userDao;
@@ -85,30 +89,13 @@ public class VersionService {
 
     @Autowired
     ConceptClassificationDao conceptClassificationDao;
-
     @Autowired
     SpatialReferenceClassificationDao spatialReferenceClassificationDao;
-
     @Autowired
     UnitClassificationDao unitClassificationDao;
-
     @Autowired
     TemplateClassificationDao templateClassificationDao;
 
-    @Autowired
-    DataItemVersionDao dataItemVersionDao;
-
-    @Autowired
-    CategoryDao categoryDao;
-
-    @Autowired
-    DataApplicationVersionDao dataApplicationVersionDao;
-
-    @Autowired
-    DataHubsVersionDao dataHubsVersionDao;
-
-    @Autowired
-    DataCategorysDao dataCategorysDao;
 
 
     @Value("${resourcePath}")
@@ -179,6 +166,28 @@ public class VersionService {
 
         }
 
+        JSONArray classResult2 = new JSONArray();
+
+        List<String> classifications2 = modelItemVersion.getClassifications2();
+        for(int i=0;i<classifications2.size();i++){
+
+            JSONArray array=new JSONArray();
+            String classId=classifications2.get(i);
+
+            do{
+                Classification classification=classification2Service.getByOid(classId);
+                array.add(classification.getNameEn());
+                classId=classification.getParentId();
+            }while(classId!=null);
+
+            JSONArray array1=new JSONArray();
+            for(int j=array.size()-1;j>=0;j--){
+                array1.add(array.getString(j));
+            }
+
+            classResult2.add(array1);
+
+        }
 
         //详情页面
         String detailResult;
@@ -285,6 +294,8 @@ public class VersionService {
             }
         }
 
+
+
         //图片路径
         String image=modelInfo.getImage();
         if(!image.equals("")){
@@ -309,6 +320,7 @@ public class VersionService {
 
         modelAndView.addObject("modelInfo2",modelItemVersion);
         modelAndView.addObject("classifications2",classResult1);
+        modelAndView.addObject("classifications22",classResult2);
         modelAndView.addObject("detail2",detailResult1);
 //        modelAndView.addObject("conceptualModels2",conceptualArray1);
 //        modelAndView.addObject("logicalModels2",logicalArray1);
@@ -940,290 +952,6 @@ public class VersionService {
 
         return modelAndView;
 
-    }
-
-    public ModelAndView getDataItemHistoryPage(String id){
-        ModelAndView modelAndView = new ModelAndView();
-        DataItemVersion dataItemVersion = new DataItemVersion();
-        try {
-            dataItemVersion = dataItemVersionDao.findFirstByOid(id);
-        }catch (MyException e){
-            modelAndView.setViewName("error/404");
-            return modelAndView;
-        }
-
-        //authorship
-        String authorshipString="";
-        List<AuthorInfo> authorshipList=dataItemVersion.getAuthorship();
-        if(authorshipList!=null){
-            for (AuthorInfo author:authorshipList
-            ) {
-                if(authorshipString.equals("")){
-                    authorshipString+=author.getName();
-                }
-                else{
-                    authorshipString+=", "+author.getName();
-                }
-            }
-        }
-
-        //related models
-        JSONArray modelItemArray=new JSONArray();
-        List<String> relatedModels=dataItemVersion.getRelatedModels();
-        if(relatedModels!=null) {
-            for (String mid : relatedModels) {
-                try {
-                    ModelItem modelItem = modelItemDao.findFirstByOid(mid);
-                    JSONObject modelItemJson = new JSONObject();
-                    modelItemJson.put("name", modelItem.getName());
-                    modelItemJson.put("oid", modelItem.getOid());
-                    modelItemJson.put("description", modelItem.getDescription());
-                    modelItemJson.put("image", modelItem.getImage().equals("") ? null : htmlLoadPath + modelItem.getImage());
-                    modelItemArray.add(modelItemJson);
-                }
-                catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        //classification
-        List<String> classifications=new ArrayList<>();
-        List<String> categories = dataItemVersion.getClassifications();
-        for (String category : categories) {
-            Categorys categorys = categoryDao.findFirstById(category);
-            String name = categorys.getCategory();
-            if (name.equals("...All")) {
-                Categorys categorysParent = categoryDao.findFirstById(categorys.getParentCategory());
-                classifications.add(categorysParent.getCategory());
-            } else {
-                classifications.add(name);
-            }
-        }
-
-        //fileName
-        ArrayList<String> fileName = new ArrayList<>();
-        if (dataItemVersion.getDataType().equals("DistributedNode")){
-            fileName.add(dataItemVersion.getName());
-        }
-
-        if (dataItemVersion.getRelatedProcessings()!=null){
-            modelAndView.addObject("relatedProcessing",dataItemVersion.getRelatedProcessings());
-        }
-        if (dataItemVersion.getRelatedVisualizations()!=null){
-            modelAndView.addObject("relatedVisualization",dataItemVersion.getRelatedVisualizations());
-        }
-
-        //时间
-        Date date = dataItemVersion.getModifyTime();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String dateResult = simpleDateFormat.format(date);
-
-        //用户信息
-        User user = userDao.findFirstByOid(dataItemVersion.getModifier());
-        String userName = user.getUserName();
-        JSONObject userJson = userService.getItemUserInfo(userName);
-
-
-        modelAndView.setViewName("data_item_info");
-        modelAndView.addObject("datainfo", ResultUtils.success(dataItemVersion));
-        modelAndView.addObject("user",userJson);
-        modelAndView.addObject("classifications",classifications);
-        modelAndView.addObject("relatedModels",modelItemArray);
-        modelAndView.addObject("authorship",authorshipString);
-        modelAndView.addObject("fileName",fileName);//后期应该是放该name下的所有数据
-
-        modelAndView.addObject("history",true);
-        return modelAndView;
-    }
-
-    public ModelAndView getDataApplicationHistoryPage(String id){
-        //条目信息
-        try{
-            DataApplicationVersion dataApplicationVersion = dataApplicationVersionDao.findFirstByOid(id);
-
-            //时间
-            Date date = dataApplicationVersion.getModifyTime();
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(date);
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            String dateResult = simpleDateFormat.format(date);
-
-            //用户信息
-            User user = userDao.findFirstByOid(dataApplicationVersion.getModifier());
-            String userName = user.getUserName();
-            JSONObject userJson = userService.getItemUserInfo(userName);
-            //资源信息
-            JSONArray resourceArray = new JSONArray();
-            List<String> resources = dataApplicationVersion.getResources();
-
-            if (resources != null) {
-                for (int i = 0; i < resources.size(); i++) {
-
-                    String path = resources.get(i);
-
-                    String[] arr = path.split("\\.");
-                    String suffix = arr[arr.length - 1];
-
-                    arr = path.split("/");
-                    String name = arr[arr.length - 1].substring(14);
-
-                    JSONObject jsonObject = new JSONObject();
-                    jsonObject.put("id", i);
-                    jsonObject.put("name", name);
-                    jsonObject.put("suffix", suffix);
-                    jsonObject.put("path",resources.get(i));
-                    resourceArray.add(jsonObject);
-
-                }
-
-            }
-
-            List<String> classifications = dataApplicationVersion.getClassifications();
-            List<String> categories = classifications;
-            List<String> classificationName = new ArrayList<>();
-
-            for (String category: categories){
-                Categorys categorys = categoryDao.findFirstById(category);
-                String name = categorys.getCategory();
-                if (name.equals("...All")) {
-                    Categorys categorysParent = categoryDao.findFirstById(categorys.getParentCategory());
-                    classificationName.add(categorysParent.getCategory());
-                } else {
-                    classificationName.add(name);
-                }
-            }
-
-            String authorshipString="";
-            List<AuthorInfo> authorshipList=dataApplicationVersion.getAuthorship();
-            if(authorshipList!=null){
-                for (AuthorInfo author:authorshipList) {
-                    if(authorshipString.equals("")){
-                        authorshipString+=author.getName();
-                    }
-                    else{
-                        authorshipString+=", "+author.getName();
-                    }
-
-                }
-            }
-            String lastModifyTime = simpleDateFormat.format(dataApplicationVersion.getLastModifyTime());
-
-
-            ModelAndView modelAndView = new ModelAndView();
-            modelAndView.setViewName("data_application_info");
-            modelAndView.addObject("dataApplicationInfo", dataApplicationVersion);
-            modelAndView.addObject("classifications", classificationName);
-            modelAndView.addObject("date", dateResult);
-            modelAndView.addObject("year", calendar.get(Calendar.YEAR));
-            modelAndView.addObject("user", userJson);
-            modelAndView.addObject("authorship", authorshipString);
-            modelAndView.addObject("resources", resourceArray);
-            modelAndView.addObject("lastModifyTime", lastModifyTime);
-
-            modelAndView.addObject("loadPath",htmlLoadPath);
-
-            modelAndView.addObject("history",true);
-
-            return modelAndView;
-
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-            throw new MyException(e.getMessage());
-        }
-    }
-
-    public ModelAndView getDataHubsHistoryPage(String id){
-        ModelAndView modelAndView = new ModelAndView();
-        DataHubsVersion dataHubsVersion = new DataHubsVersion();
-        try {
-            dataHubsVersion = dataHubsVersionDao.findFirstByOid(id);
-        }catch (MyException e){
-            modelAndView.setViewName("error/404");
-            return modelAndView;
-        }
-
-        //authorship
-        String authorshipString="";
-        List<AuthorInfo> authorshipList=dataHubsVersion.getAuthorship();
-        if(authorshipList!=null){
-            for (AuthorInfo author:authorshipList) {
-                if(authorshipString.equals("")){
-                    authorshipString+=author.getName();
-                }
-                else{
-                    authorshipString+=", "+author.getName();
-                }
-            }
-        }
-
-        //related models
-        JSONArray modelItemArray=new JSONArray();
-        List<String> relatedModels=dataHubsVersion.getRelatedModels();
-        if(relatedModels!=null) {
-            for (String mid : relatedModels) {
-                try {
-                    ModelItem modelItem = modelItemDao.findFirstByOid(mid);
-                    JSONObject modelItemJson = new JSONObject();
-                    modelItemJson.put("name", modelItem.getName());
-                    modelItemJson.put("oid", modelItem.getOid());
-                    modelItemJson.put("description", modelItem.getDescription());
-                    modelItemJson.put("image", modelItem.getImage().equals("") ? null : htmlLoadPath + modelItem.getImage());
-                    modelItemArray.add(modelItemJson);
-                }
-                catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        //classification
-        List<String> classifications=new ArrayList<>();
-        List<String> categories = dataHubsVersion.getClassifications();
-        for (String category : categories) {
-            DataCategorys dataCategorys = dataCategorysDao.findFirstById(category);
-            String name = dataCategorys.getCategory();
-            classifications.add(name);
-        }
-
-        //fileName
-        ArrayList<String> fileName = new ArrayList<>();
-        if (dataHubsVersion.getDataType()!=null&&dataHubsVersion.getDataType().equals("DistributedNode")){
-            fileName.add(dataHubsVersion.getName());
-        }
-
-        if (dataHubsVersion.getRelatedProcessings()!=null){
-            modelAndView.addObject("relatedProcessing",dataHubsVersion.getRelatedProcessings());
-        }
-        if (dataHubsVersion.getRelatedVisualizations()!=null){
-            modelAndView.addObject("relatedVisualization",dataHubsVersion.getRelatedVisualizations());
-        }
-
-        //时间
-        Date date = dataHubsVersion.getModifyTime();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String dateResult = simpleDateFormat.format(date);
-
-        //用户信息
-        User user = userDao.findFirstByOid(dataHubsVersion.getModifier());
-        String userName = user.getUserName();
-        JSONObject userJson = userService.getItemUserInfo(userName);
-
-
-        modelAndView.setViewName("data_item_info");
-        modelAndView.addObject("datainfo", ResultUtils.success(dataHubsVersion));
-        modelAndView.addObject("user",userJson);
-        modelAndView.addObject("classifications",classifications);
-        modelAndView.addObject("relatedModels",modelItemArray);
-        modelAndView.addObject("authorship",authorshipString);
-        modelAndView.addObject("fileName",fileName);//后期应该是放该name下的所有数据
-
-        modelAndView.addObject("history",true);
-        return modelAndView;
     }
 
 }

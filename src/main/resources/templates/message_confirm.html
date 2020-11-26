@@ -74,109 +74,109 @@
                                                 community：concept、spatialReference	、unit、template-->
                                                     <!--model-->
                                                     <div v-if="item1.status== 'unchecked'&&(item1.type=='modelItem'||item1.type=='conceptualModel'||item1.type=='logicalModel'||item1.type=='computableModel')">
-                                                        <h4><i class="ms-Icon ms-Icon--EditContact" style="margin-right: 10px"></i><a :href="'/user/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a> edited {{item1.ex_type}}'s <a :href="'/'+item1.type+'/'+item1.originOid" target="_blank">{{item1.name}}</a></h4>
-                                                        <!--<p><a :href="'/user/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a> e-->
+                                                        <h4><i class="ms-Icon ms-Icon--EditContact" style="margin-right: 10px"></i><a :href="'/profile/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a> edited {{item1.ex_type}}'s <a :href="'/'+item1.type+'/'+item1.originOid" target="_blank">{{item1.name}}</a></h4>
+                                                        <!--<p><a :href="'/profile/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a> e-->
                                                             <p>Edited at {{item1.modifyTime}}</p>
                                                     </div>
                                                     <!--community-->
                                                     <div v-else-if="item1.status== 'unchecked'&&(item1.type=='concept'||item1.type=='spatialReference'||item1.type=='unit'||item1.type=='template')">
-                                                        <h4><i class="ms-Icon ms-Icon--EditContact" style="margin-right: 10px"></i><a :href="'/user/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a> edited {{item1.ex_type}}'s <a :href="'/repository/'+item1.type+'/'+item1.originOid" target="_blank">{{item1.name}}</a></h4>
-                                                        <!--<p><a :href="'/user/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a> e-->
+                                                        <h4><i class="ms-Icon ms-Icon--EditContact" style="margin-right: 10px"></i><a :href="'/profile/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a> edited {{item1.ex_type}}'s <a :href="'/repository/'+item1.type+'/'+item1.originOid" target="_blank">{{item1.name}}</a></h4>
+                                                        <!--<p><a :href="'/profile/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a> e-->
                                                         <p>Edited at {{item1.modifyTime}}</p>
                                                     </div>
                                                     <!--theme-->
                                                     <div v-else-if="item1.status== 'unchecked'&&(item1.type=='theme')">
-                                                        <h4><i class="ms-Icon ms-Icon--EditContact" style="margin-right: 10px"></i><a :href="'/user/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a> edited {{item1.ex_type}}'s <a :href="'/repository/'+item1.type+'/'+item1.themeOid" target="_blank">{{item1.name}}</a></h4>
-                                                        <!--<p><a :href="'/user/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a> e-->
+                                                        <h4><i class="ms-Icon ms-Icon--EditContact" style="margin-right: 10px"></i><a :href="'/profile/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a> edited {{item1.ex_type}}'s <a :href="'/repository/'+item1.type+'/'+item1.themeOid" target="_blank">{{item1.name}}</a></h4>
+                                                        <!--<p><a :href="'/profile/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a> e-->
                                                         <p>Edited at {{item1.modifyTime}}</p>
                                                     </div>
                                                     <!--dataItem-->
                                                     <div v-else-if="item1.status== 'unchecked'&&(item1.type=='dataItem')">
-                                                        <h4><i class="ms-Icon ms-Icon--EditContact" style="margin-right: 10px"></i><a :href="'/user/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a> edited {{item1.ex_type}}'s <a :href="'/'+item1.type+'/'+item1.originId" target="_blank">{{item1.name}}</a></h4>
-                                                        <!--<p><a :href="'/user/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a> e-->
+                                                        <h4><i class="ms-Icon ms-Icon--EditContact" style="margin-right: 10px"></i><a :href="'/profile/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a> edited {{item1.ex_type}}'s <a :href="'/'+item1.type+'/'+item1.originId" target="_blank">{{item1.name}}</a></h4>
+                                                        <!--<p><a :href="'/profile/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a> e-->
                                                         <p>Edited at {{item1.modifyTime}}</p>
                                                     </div>
                                                     <!--dataHubs-->
                                                     <div v-else-if="item1.status== 'unchecked'&&(item1.type=='dataHubs')">
-                                                        <h4><i class="ms-Icon ms-Icon--EditContact" style="margin-right: 10px"></i><a :href="'/user/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a> edited {{item1.ex_type}}'s <a :href="'/dataItem/hub/'+item1.originId" target="_blank">{{item1.name}}</a></h4>
-                                                        <!--<p><a :href="'/user/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a> e-->
+                                                        <h4><i class="ms-Icon ms-Icon--EditContact" style="margin-right: 10px"></i><a :href="'/profile/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a> edited {{item1.ex_type}}'s <a :href="'/dataItem/hub/'+item1.originId" target="_blank">{{item1.name}}</a></h4>
+                                                        <!--<p><a :href="'/profile/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a> e-->
                                                         <p>Edited at {{item1.modifyTime}}</p>
                                                     </div>
                                                     <!--dataApplication-->
                                                     <div v-else-if="item1.status== 'unchecked'&&(item1.type=='dataApplication')">
-                                                        <h4><i class="ms-Icon ms-Icon--EditContact" style="margin-right: 10px"></i><a :href="'/user/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a> edited {{item1.ex_type}}'s <a :href="'/'+item1.type+'/'+item1.originId" target="_blank">{{item1.name}}</a></h4>
-                                                        <!--<p><a :href="'/user/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a> e-->
+                                                        <h4><i class="ms-Icon ms-Icon--EditContact" style="margin-right: 10px"></i><a :href="'/profile/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a> edited {{item1.ex_type}}'s <a :href="'/'+item1.type+'/'+item1.originId" target="_blank">{{item1.name}}</a></h4>
+                                                        <!--<p><a :href="'/profile/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a> e-->
                                                         <p>Edited at {{item1.modifyTime}}</p>
                                                     </div>
                                                     <!--confirmed  model：modelitem、conceptualModel、logicalModel、computableModel
                                                     community：concept、spatialReference	、unit、template-->
                                                     <!--model-->
                                                     <div v-else-if = "item1.status== 'confirmed'&&(item1.type=='modelItem'||item1.type=='conceptualModel'||item1.type=='logicalModel'||item1.type=='computableModel')">
-                                                        <h4><i class="ms-Icon ms-Icon--Accept" style="margin-right: 10px"></i>You confirmed <a :href="'/user/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a>'s edit of {{item1.ex_type}}'s <a :href="'/'+item1.type+'/'+item1.originOid" target="_blank">{{item1.name}}</a></h4>
+                                                        <h4><i class="ms-Icon ms-Icon--Accept" style="margin-right: 10px"></i>You confirmed <a :href="'/profile/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a>'s edit of {{item1.ex_type}}'s <a :href="'/'+item1.type+'/'+item1.originOid" target="_blank">{{item1.name}}</a></h4>
                                                         <p>Confirmed at {{item1.modifyTime}}</p>
                                                     </div>
                                                     <!--community-->
                                                     <div v-else-if = "item1.status== 'confirmed'&&(item1.type=='concept'||item1.type=='spatialReference'||item1.type=='unit'||item1.type=='template')">
-                                                        <h4><i class="ms-Icon ms-Icon--Accept" style="margin-right: 10px"></i>You confirmed <a :href="'/user/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a>'s edit of {{item1.ex_type}}'s <a :href="'/repository/'+item1.type+'/'+item1.originOid" target="_blank">{{item1.name}}</a></h4>
+                                                        <h4><i class="ms-Icon ms-Icon--Accept" style="margin-right: 10px"></i>You confirmed <a :href="'/profile/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a>'s edit of {{item1.ex_type}}'s <a :href="'/repository/'+item1.type+'/'+item1.originOid" target="_blank">{{item1.name}}</a></h4>
                                                         <p>Confirmed at {{item1.modifyTime}}</p>
                                                     </div>
                                                     <!--theme-->
                                                     <div v-else-if = "item1.status== 'confirmed'&&(item1.type=='theme')">
-                                                        <h4><i class="ms-Icon ms-Icon--Accept" style="margin-right: 10px"></i>You confirmed <a :href="'/user/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a>'s edit of {{item1.ex_type}}'s <a :href="'/repository/'+item1.type+'/'+item1.themeOid" target="_blank">{{item1.name}}</a></h4>
+                                                        <h4><i class="ms-Icon ms-Icon--Accept" style="margin-right: 10px"></i>You confirmed <a :href="'/profile/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a>'s edit of {{item1.ex_type}}'s <a :href="'/repository/'+item1.type+'/'+item1.themeOid" target="_blank">{{item1.name}}</a></h4>
                                                         <p>Confirmed at {{item1.modifyTime}}</p>
                                                     </div>
                                                     <!--dataItem-->
                                                     <div v-else-if = "item1.status== 'confirmed'&&(item1.type=='dataItem')">
-                                                        <h4><i class="ms-Icon ms-Icon--Accept" style="margin-right: 10px"></i>You confirmed <a :href="'/user/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a>'s edit of {{item1.ex_type}}'s <a :href="'/'+item1.type+'/'+item1.originId" target="_blank">{{item1.name}}</a></h4>
+                                                        <h4><i class="ms-Icon ms-Icon--Accept" style="margin-right: 10px"></i>You confirmed <a :href="'/profile/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a>'s edit of {{item1.ex_type}}'s <a :href="'/'+item1.type+'/'+item1.originId" target="_blank">{{item1.name}}</a></h4>
                                                         <p>Confirmed at {{item1.modifyTime}}</p>
                                                     </div>
                                                     <!--dataHubs-->
                                                     <div v-else-if = "item1.status== 'confirmed'&&(item1.type=='dataHubs')">
-                                                        <h4><i class="ms-Icon ms-Icon--Accept" style="margin-right: 10px"></i>You confirmed <a :href="'/user/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a>'s edit of {{item1.ex_type}}'s <a :href="'/dataItem/hub/'+item1.originId" target="_blank">{{item1.name}}</a></h4>
+                                                        <h4><i class="ms-Icon ms-Icon--Accept" style="margin-right: 10px"></i>You confirmed <a :href="'/profile/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a>'s edit of {{item1.ex_type}}'s <a :href="'/dataItem/hub/'+item1.originId" target="_blank">{{item1.name}}</a></h4>
                                                         <p>Confirmed at {{item1.modifyTime}}</p>
                                                     </div>
                                                     <!--dataApplication-->
                                                     <div v-else-if = "item1.status== 'confirmed'&&(item1.type=='dataApplication')">
-                                                        <h4><i class="ms-Icon ms-Icon--Accept" style="margin-right: 10px"></i>You confirmed <a :href="'/user/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a>'s edit of {{item1.ex_type}}'s <a :href="'/'+item1.type+'/'+item1.originId" target="_blank">{{item1.name}}</a></h4>
+                                                        <h4><i class="ms-Icon ms-Icon--Accept" style="margin-right: 10px"></i>You confirmed <a :href="'/profile/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a>'s edit of {{item1.ex_type}}'s <a :href="'/'+item1.type+'/'+item1.originId" target="_blank">{{item1.name}}</a></h4>
                                                         <p>Confirmed at {{item1.modifyTime}}</p>
                                                     </div>
                                                     <!--reject  model：modelitem、conceptualModel、logicalModel、computableModel
                                                     community：concept、spatialReference	、unit、template-->
                                                     <!--model-->
                                                     <div v-else-if ="item1.status== 'reject'&&(item1.type=='modelItem'||item1.type=='conceptualModel'||item1.type=='logicalModel'||item1.type=='computableModel')">
-                                                        <h4><i class="ms-Icon ms-Icon--CalculatorMultiply" style="margin-right: 10px"></i>You rejected <a :href="'/user/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a>'s edit of {{item1.ex_type}}'s <a :href="'/'+item1.type+'/'+item1.originOid" target="_blank">{{item1.name}}</a></h4>
+                                                        <h4><i class="ms-Icon ms-Icon--CalculatorMultiply" style="margin-right: 10px"></i>You rejected <a :href="'/profile/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a>'s edit of {{item1.ex_type}}'s <a :href="'/'+item1.type+'/'+item1.originOid" target="_blank">{{item1.name}}</a></h4>
                                                         <p>Rejected at {{item1.modifyTime}}</p>
                                                     </div>
                                                     <!--community-->
                                                     <div v-else-if ="item1.status== 'reject'&&(item1.type=='concept'||item1.type=='spatialReference'||item1.type=='unit'||item1.type=='template')">
-                                                        <h4><i class="ms-Icon ms-Icon--CalculatorMultiply" style="margin-right: 10px"></i>You rejected <a :href="'/user/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a>'s edit of {{item1.ex_type}}'s <a :href="'/repository/'+item1.type+'/'+item1.originOid" target="_blank">{{item1.name}}</a></h4>
+                                                        <h4><i class="ms-Icon ms-Icon--CalculatorMultiply" style="margin-right: 10px"></i>You rejected <a :href="'/profile/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a>'s edit of {{item1.ex_type}}'s <a :href="'/repository/'+item1.type+'/'+item1.originOid" target="_blank">{{item1.name}}</a></h4>
                                                         <p>Rejected at {{item1.modifyTime}}</p>
                                                     </div>
                                                     <!--theme-->
                                                     <div v-else-if ="item1.status== 'reject'&&(item1.type=='theme')">
-                                                        <h4><i class="ms-Icon ms-Icon--CalculatorMultiply" style="margin-right: 10px"></i>You rejected <a :href="'/user/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a>'s edit of {{item1.ex_type}}'s <a :href="'/repository/'+item1.type+'/'+item1.themeOid" target="_blank">{{item1.name}}</a></h4>
+                                                        <h4><i class="ms-Icon ms-Icon--CalculatorMultiply" style="margin-right: 10px"></i>You rejected <a :href="'/profile/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a>'s edit of {{item1.ex_type}}'s <a :href="'/repository/'+item1.type+'/'+item1.themeOid" target="_blank">{{item1.name}}</a></h4>
                                                         <p>Rejected at {{item1.modifyTime}}</p>
                                                     </div>
                                                     <!--dataItem-->
                                                     <div v-else-if ="item1.status== 'reject'&&(item1.type=='dataItem')">
-                                                        <h4><i class="ms-Icon ms-Icon--CalculatorMultiply" style="margin-right: 10px"></i>You rejected <a :href="'/user/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a>'s edit of {{item1.ex_type}}'s <a :href="'/'+item1.type+'/'+item1.originId" target="_blank">{{item1.name}}</a></h4>
+                                                        <h4><i class="ms-Icon ms-Icon--CalculatorMultiply" style="margin-right: 10px"></i>You rejected <a :href="'/profile/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a>'s edit of {{item1.ex_type}}'s <a :href="'/'+item1.type+'/'+item1.originId" target="_blank">{{item1.name}}</a></h4>
                                                         <p>Rejected at {{item1.modifyTime}}</p>
                                                     </div>
                                                     <!--dataHubs-->
                                                     <div v-else-if ="item1.status== 'reject'&&(item1.type=='dataHubs')">
-                                                        <h4><i class="ms-Icon ms-Icon--CalculatorMultiply" style="margin-right: 10px"></i>You rejected <a :href="'/user/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a>'s edit of {{item1.ex_type}}'s <a :href="'/dataItem/hub/'+item1.originId" target="_blank">{{item1.name}}</a></h4>
+                                                        <h4><i class="ms-Icon ms-Icon--CalculatorMultiply" style="margin-right: 10px"></i>You rejected <a :href="'/profile/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a>'s edit of {{item1.ex_type}}'s <a :href="'/dataItem/hub/'+item1.originId" target="_blank">{{item1.name}}</a></h4>
                                                         <p>Rejected at {{item1.modifyTime}}</p>
                                                     </div>
                                                     <!--dataApplication-->
                                                     <div v-else-if ="item1.status== 'reject'&&(item1.type=='dataApplication')">
-                                                        <h4><i class="ms-Icon ms-Icon--CalculatorMultiply" style="margin-right: 10px"></i>You rejected <a :href="'/user/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a>'s edit of {{item1.ex_type}}'s <a :href="'/'+item1.type+'/'+item1.originId" target="_blank">{{item1.name}}</a></h4>
+                                                        <h4><i class="ms-Icon ms-Icon--CalculatorMultiply" style="margin-right: 10px"></i>You rejected <a :href="'/profile/'+item1.modifier.modifier_oid" target="_blank">{{item1.modifier.modifier_name}}</a>'s edit of {{item1.ex_type}}'s <a :href="'/'+item1.type+'/'+item1.originId" target="_blank">{{item1.name}}</a></h4>
                                                         <p>Rejected at {{item1.modifyTime}}</p>
                                                     </div>
                                                     <!--comment-->
                                                     <!--model与community模型链接不同，故要进行判断-->
                                                     <!--model-->
                                                     <div v-else-if = "item1.content!=null&&item1.replier!=null&&(item1.itemInfo.type=='modelItem'||item1.itemInfo.type=='conceptualModel'||item1.itemInfo.type=='logicalModel'||item1.itemInfo.type=='computableModel')">
-                                                        <h4><i class="ms-Icon ms-Icon--CommentPrevious" style="margin-right: 10px"></i><a :href="'/user/'+item1.author.oid" target="_blank">{{item1.author.name}}</a> replied to you "{{item1.content}}" in <a :href="'/'+item1.itemInfo.type+'/'+item1.itemInfo.oid+'#comments'" target="_blank">{{item1.itemInfo.name}}</a></h4>
+                                                        <h4><i class="ms-Icon ms-Icon--CommentPrevious" style="margin-right: 10px"></i><a :href="'/profile/'+item1.author.oid" target="_blank">{{item1.author.name}}</a> replied to you "{{item1.content}}" in <a :href="'/'+item1.itemInfo.type+'/'+item1.itemInfo.oid+'#comments'" target="_blank">{{item1.itemInfo.name}}</a></h4>
                                                         <p>Replied at {{item1.date}}</p>
                                                     </div>
                                                     <div v-else-if = "item1.content!=null&&item1.replier==null&&(item1.itemInfo.type=='modelItem'||item1.itemInfo.type=='conceptualModel'||item1.itemInfo.type=='logicalModel'||item1.itemInfo.type=='computableModel')">
@@ -185,7 +185,7 @@
                                                     </div>
                                                     <!--community-->
                                                     <div v-else-if = "item1.content!=null&&item1.replier!=null&&(item1.itemInfo.type=='concept'||item1.itemInfo.type=='spatialReference'||item1.itemInfo.type=='unit'||item1.itemInfo.type=='template')">
-                                                        <h4><i class="ms-Icon ms-Icon--CommentPrevious" style="margin-right: 10px"></i><a :href="'/user/'+item1.replier.oid" target="_blank">{{item1.author.name}}</a> replied to you "{{item1.content}}" in <a :href="'/repository/'+item1.itemInfo.type+'/'+item1.itemInfo.oid+'#comments'" target="_blank">{{item1.itemInfo.name}}</a></h4>
+                                                        <h4><i class="ms-Icon ms-Icon--CommentPrevious" style="margin-right: 10px"></i><a :href="'/profile/'+item1.replier.oid" target="_blank">{{item1.author.name}}</a> replied to you "{{item1.content}}" in <a :href="'/repository/'+item1.itemInfo.type+'/'+item1.itemInfo.oid+'#comments'" target="_blank">{{item1.itemInfo.name}}</a></h4>
                                                         <p>Replied  at {{item1.date}}</p>
                                                     </div>
                                                     <div v-else-if = "item1.content!=null&&item1.replier==null&&(item1.itemInfo.type=='concept'||item1.itemInfo.type=='spatialReference'||item1.itemInfo.type=='unit'||item1.itemInfo.type=='template')">
@@ -826,7 +826,7 @@
                                                                             label="Modifier"
                                                                             width="100">
                                                                         <template slot-scope ="scope">
-                                                                            <a :href="'/user/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
+                                                                            <a :href="'/profile/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
                                                                         </template>
                                                                     </el-table-column>
 
@@ -881,7 +881,7 @@
                                                                             label="Modifier"
                                                                             width="200">
                                                                         <template slot-scope ="scope">
-                                                                            <a :href="'/user/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
+                                                                            <a :href="'/profile/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
                                                                         </template>
                                                                     </el-table-column>
 
@@ -932,7 +932,7 @@
                                                                             label="Modifier"
                                                                             width="200">
                                                                         <template slot-scope ="scope">
-                                                                            <a :href="'/user/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
+                                                                            <a :href="'/profile/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
                                                                         </template>
                                                                     </el-table-column>
 
@@ -995,7 +995,7 @@
                                                                             label="Modifier"
                                                                             width="100">
                                                                         <template slot-scope ="scope">
-                                                                            <a :href="'/user/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
+                                                                            <a :href="'/profile/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
                                                                         </template>
                                                                     </el-table-column>
 
@@ -1050,7 +1050,7 @@
                                                                             label="Modifier"
                                                                             width="200">
                                                                         <template slot-scope ="scope">
-                                                                            <a :href="'/user/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
+                                                                            <a :href="'/profile/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
                                                                         </template>
                                                                     </el-table-column>
 
@@ -1101,7 +1101,7 @@
                                                                             label="Modifier"
                                                                             width="200">
                                                                         <template slot-scope ="scope">
-                                                                            <a :href="'/user/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
+                                                                            <a :href="'/profile/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
                                                                         </template>
                                                                     </el-table-column>
 
@@ -1164,7 +1164,7 @@
                                                                             label="Modifier"
                                                                             width="100">
                                                                         <template slot-scope ="scope">
-                                                                            <a :href="'/user/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
+                                                                            <a :href="'/profile/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
                                                                         </template>
                                                                     </el-table-column>
 
@@ -1218,7 +1218,7 @@
                                                                             label="Modifier"
                                                                             width="200">
                                                                         <template slot-scope ="scope">
-                                                                            <a :href="'/user/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
+                                                                            <a :href="'/profile/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
                                                                         </template>
                                                                     </el-table-column>
 
@@ -1268,7 +1268,7 @@
                                                                             label="Modifier"
                                                                             width="200">
                                                                         <template slot-scope ="scope">
-                                                                            <a :href="'/user/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
+                                                                            <a :href="'/profile/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
                                                                         </template>
                                                                     </el-table-column>
 
@@ -1331,7 +1331,7 @@
                                                                             label="Modifier"
                                                                             width="100">
                                                                         <template slot-scope ="scope">
-                                                                            <a :href="'/user/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
+                                                                            <a :href="'/profile/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
                                                                         </template>
                                                                     </el-table-column>
                                                                     <!--<el-table-column-->
@@ -1383,7 +1383,7 @@
                                                                             label="Modifier"
                                                                             width="200">
                                                                         <template slot-scope ="scope">
-                                                                            <a :href="'/user/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
+                                                                            <a :href="'/profile/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
                                                                         </template>
                                                                     </el-table-column>
 
@@ -1434,7 +1434,7 @@
                                                                             label="Modifier"
                                                                             width="200">
                                                                         <template slot-scope ="scope">
-                                                                            <a :href="'/user/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
+                                                                            <a :href="'/profile/'+scope.row.modifier.modifier_oid">{{scope.row.modifier.modifier_name}}</a>
                                                                         </template>
                                                                     </el-table-column>
 
@@ -1606,7 +1606,7 @@
                                                         <div v-if="comment.itemInfo">
                                                                 <div class="com-author-name" style="font-weight: bold ">
                                                                     <span>
-                                                                        <a :href="'/user/'+comment.author.oid" target="_blank" style="font-size: 18px;">{{comment.author.name}}</a>
+                                                                        <a :href="'/profile/'+comment.author.oid" target="_blank" style="font-size: 18px;">{{comment.author.name}}</a>
                                                                     </span>
                                                                     <span v-if="comment.replier!=null" style="font-size: 18px;margin:0 5px;">reply you</span>
                                                                 </div>

@@ -453,7 +453,7 @@
                             </el-table-column>
                             <el-table-column label="Contributor">
                                 <template slot-scope="props">
-                                    <a :href="'/user/'+props.row.author_oid" target="_blank">{{props.row.author_name}}</a>
+                                    <a :href="'/profile/'+props.row.author_oid" target="_blank">{{props.row.author_name}}</a>
                                 </template>
                             </el-table-column>
                             <el-table-column fixed="right" label="Operation" width="100">

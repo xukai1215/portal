@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping(value = "/user")
+@RequestMapping({"/user","/profile"})
 public class UserRestController {
 
     @Autowired
@@ -334,7 +334,7 @@ public class UserRestController {
         ModelAndView modelAndView = new ModelAndView();
         HttpSession session = req.getSession();
 
-        User user = userService.getByOid(id);
+        User user = userService.getByUserId(id);
 //            Object object = ResultUtils.success(userService.getByOid(id)).getData();
         JSONObject userInfo = (JSONObject) JSONObject.toJSON(user);
         Object oid_obj = session.getAttribute("oid");

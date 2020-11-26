@@ -32,93 +32,133 @@ var createModelItem = Vue.extend({
                 insName: ""
             },
 
-            treeData: [
+            treeData_part1: [
                 {
                     "children": [{
                         "children": [{
                             "id": 2,
                             "label": "Land regions",
-                            "oid": "a24cba2b-9ce1-44de-ac68-8ec36a535d0e"
-                        }, {"id": 3, "label": "Ocean regions", "oid": "75aee2b7-b39a-4cd0-9223-3b7ce755e457"}, {
+                            "oid": "a24cba2b-9ce1-44de-ac68-8ec36a535d0e",
+                            "desc": "Models that mainly related to land regions, includes hydrology, hydrodynamics, soil, landform, terrestrial ecosystem etc.",
+                        }, {"id": 3, "label": "Ocean regions", "oid": "75aee2b7-b39a-4cd0-9223-3b7ce755e457",
+                            "desc": "Models that mainly related to ocean regions, includes coastal, seawater, sea-ice, marine ecosystem etc.",
+                        }, {
                             "id": 4,
                             "label": "Frozen regions",
-                            "oid": "1bf4f381-6bd8-4716-91ab-5a56e51bd2f9"
-                        }, {"id": 5, "label": "Atmospheric regions", "oid": "8f4d4fca-4d09-49b4-b6f7-5021bc57d0e5"}, {
+                            "oid": "1bf4f381-6bd8-4716-91ab-5a56e51bd2f9",
+                            "desc": "Models that mainly related to frozen regions, includes galicer, permafrost, snow etc.",
+                        }, {"id": 5, "label": "Atmospheric regions", "oid": "8f4d4fca-4d09-49b4-b6f7-5021bc57d0e5",
+                            "desc": "Models that mainly related to atmospheric regions, includes climate, weather, air etc.",
+                        }, {
                             "id": 6,
-                            "label": "Space earth",
-                            "oid": "d33a1ebe-b2f5-4ed3-9c76-78cfb61c23ee"
-                        }, {"id": 7, "label": "Soid earth", "oid": "d3ba6e0b-78ec-4fe8-9985-4d5708f28e3e"}, {
-                            "id": 8,
-                            "label": "Integrated perspective",
-                            "oid": "eb1d8ddc-6be1-41ef-bab6-a8d940d46499"
-                        }], "id": 1, "label": "Natural-perspective", "oid": "6b2c8632-964a-4a65-a6c5-c360b2b515f0"
+                            "label": "Space-earth regions",
+                            "oid": "d33a1ebe-b2f5-4ed3-9c76-78cfb61c23ee",
+                            "desc": "Models that mainly related to space-earth regions, includes sun-earth, planets etc.",
+
+                        }, {"id": 7, "label": "Solid-earth regions", "oid": "d3ba6e0b-78ec-4fe8-9985-4d5708f28e3e",
+                            "desc": "Models that mainly related to solid-earth regions, includes lithosphere, mantle, earthquack etc.",
+                        }
+                        ], "id": 1, "label": "Natural-perspective", "oid": "6b2c8632-964a-4a65-a6c5-c360b2b515f0",
+                        "desc": "Models that mainly related to physical geography.",
+
                     }, {
                         "children": [{
                             "id": 10,
-                            "label": "Administrative regions",
-                            "oid": "808e74a4-41c6-4558-a850-4daec1f199df"
-                        }, {"id": 11, "label": "Social regions", "oid": "40534cf8-039a-4a0a-8db9-7c9bff484190"}, {
+                            "label": "Development activities",
+                            "oid": "808e74a4-41c6-4558-a850-4daec1f199df",
+                            "desc": "Models that mainly related to development activities, includes continents, countries, cities, administrative zones etc.",
+                        }, {"id": 11, "label": "Social activities", "oid": "40534cf8-039a-4a0a-8db9-7c9bff484190",
+                            "desc": "Models that mainly related to social activities, includes urban, rural, cultural area, travel area, built-up area, indoor area etc.",}, {
                             "id": 12,
-                            "label": "Economic regions",
-                            "oid": "cf9cd106-b873-4a8a-9336-dd72398fc769"
-                        }, {
-                            "id": 13,
-                            "label": "Integrated perspective",
-                            "oid": "65dbe5a9-ada9-4c02-8353-5029a84d7628"
+                            "label": "Economic activities",
+                            "oid": "cf9cd106-b873-4a8a-9336-dd72398fc769",
+                            "desc": "Models that mainly related to economic activities, includes agriculture, industry, tourism, trasport, energy, markets etc.",
                         }],
                         "id": 9,
                         "label": "Human-perspective",
-                        "oid": "77e7482c-1844-4bc3-ae37-cb09b61572da"
+                        "oid": "77e7482c-1844-4bc3-ae37-cb09b61572da",
+                        "desc": "Models that mainly related to human geography.",
+                    }, {
+                        "id": 30,
+                        "label": "Integrated-perspective",
+                        "oid": "396cc739-ef33-4332-8d5d-9a67c89567c7",
+                        "desc": "Models that integrate many different models.",
+                        "children": [{
+                            "id": 31,
+                            "label": "Global scale",
+                            "oid": "14130969-fda6-41ea-aa32-0af43104840b",
+                            "desc": "Integrated models that apply in global scale.",
+                        }, {
+                            "id": 32,
+                            "label": "Regional scale",
+                            "oid": "e56c1254-70b8-4ff4-b461-b8fa3039944e",
+                            "desc": "Integrated models that apply in regional scale.",
+
+                        }]
                     }],
                     "id": 24,
                     "label": "Application-focused categories",
-                    "oid": "9f7816be-c6e3-44b6-addf-98251e3d2e19"
+                    "oid": "9f7816be-c6e3-44b6-addf-98251e3d2e19",
+                    "desc": "Models that apply in one or more field.",
                 },
-                {
-                    "children": [{
+            ],
+            treeData_part2: [
+                {"children": [{
                         "children": [{
                             "id": 15,
                             "label": "Geoinformation analysis",
-                            "oid": "afa99af9-4224-4fac-a81f-47a7fb663dba"
+                            "oid": "afa99af9-4224-4fac-a81f-47a7fb663dba",
+                            "desc": "Models that mainly related to geoinformation analysis, includes vector analysis, raster analysis, network analysis, topology analysis etc.",
                         }, {
                             "id": 16,
                             "label": "Remote sensing analysis",
-                            "oid": "f20411a5-2f55-4ee9-9590-c2ec826b8bd5"
+                            "oid": "f20411a5-2f55-4ee9-9590-c2ec826b8bd5",
+                            "desc": "Models that mainly related to remote sensing analysis, includes imagery analysis, spectrum analysis etc.",
                         }, {
                             "id": 17,
                             "label": "Geostatistical analysis",
-                            "oid": "1c876281-a032-4575-8eba-f1a8fb4560d8"
+                            "oid": "1c876281-a032-4575-8eba-f1a8fb4560d8",
+                            "desc": "Models that mainly related to geostatistical analysis, includes pattern detection, relation detection, clustering, interpolation etc.",
                         }, {
                             "id": 18,
-                            "label": "Machine Learning analysis",
-                            "oid": "c6fcc899-8ca4-4269-a21e-a39d38c034a6"
+                            "label": "Intelligent computation analysis",
+                            "oid": "c6fcc899-8ca4-4269-a21e-a39d38c034a6",
+                            "desc": "Models that mainly related to intelligent computation analysis, includes machine learning, deep learning etc.",
                         }],
                         "id": 14,
                         "label": "Data-perspective",
-                        "oid": "4785308f-b2ef-4193-a74b-b9fe025cbc5e"
+                        "oid": "4785308f-b2ef-4193-a74b-b9fe025cbc5e",
+                        "desc": "Models that mainly related to data process.",
                     }, {
                         "children": [{
                             "id": 20,
                             "label": "Physical process calculation",
-                            "oid": "1d564d0f-51c6-40ca-bd75-3f9489ccf1d6"
+                            "oid": "1d564d0f-51c6-40ca-bd75-3f9489ccf1d6",
+                            "desc": "Models that mainly related to physical process calculation, includes CFD, acoustic simulation, light simulation etc.",
                         }, {
                             "id": 21,
                             "label": "Chemical process calculation",
-                            "oid": "63266a14-d7f9-44cb-8204-c877eaddcaa1"
+                            "oid": "63266a14-d7f9-44cb-8204-c877eaddcaa1",
+                            "desc": "Models that mainly related to chemical process calculation, includes insecticide, photosynthesis, combustion etc.",
                         }, {
                             "id": 22,
                             "label": "Biological process calculation",
-                            "oid": "6d1efa2c-830d-4546-b759-c66806c4facc"
+                            "oid": "6d1efa2c-830d-4546-b759-c66806c4facc",
+                            "desc": "Models that mainly related to biological process calculation, includes genome, metabolic, cellular simulation etc.",
                         }, {
                             "id": 23,
                             "label": "Human-activity calculation",
-                            "oid": "6952d5b2-cb0f-4ba7-96fd-5761dd566344"
+                            "oid": "6952d5b2-cb0f-4ba7-96fd-5761dd566344",
+                            "desc": "Models that mainly related to human-activity calculation, includes monte carlo, CA, agent-based, travel, crime, disease, migration, health etc.",
                         }],
                         "id": 19,
                         "label": "Process-perspective",
-                        "oid": "746887cf-d490-4080-9754-1dc389986cf2"
-                    }], "id": 25, "label": "Method-focused categories", "oid": "5f74872a-196c-4889-a7b8-9c9b04e30718"
+                        "oid": "746887cf-d490-4080-9754-1dc389986cf2",
+                        "desc": "Models that mainly related to process.",
+                    }], "id": 25, "label": "Method-focused categories", "oid": "5f74872a-196c-4889-a7b8-9c9b04e30718",
+                    "desc": "Models that mainly related to method.",
                 }],
+            treeData_select:[],
             defaultProps: {
                 children: 'children',
                 label: 'label'
@@ -126,84 +166,85 @@ var createModelItem = Vue.extend({
             cls: [],
             clsStr: '',
             status: 'Public',
+            curClassDesc: "Move your mouse to a classification to learn more.",
+            nodekeys: [],
+        socket:"",
 
-            socket: "",
+        message_num_socket:0,
+        message_num_socket_theme:0,
+        modelitem_oid:"",
 
-            message_num_socket: 0,
-            message_num_socket_theme: 0,
-            modelitem_oid: "",
+        editArticleDialog:false,
 
-            editArticleDialog: false,
+        showUploadArticleDialog:false,
 
-            showUploadArticleDialog: false,
+        showUploadedArticleDialog:false,
 
-            showUploadedArticleDialog: false,
+        articleUploading:{
+            title:'',
+            authors:[],
+            journal:'',
+            pageRange:'',
+            date:2019,
+            doi:'',
+            status:'',
+            link:'',
+        },
 
-            articleUploading: {
-                title: '',
-                authors: [],
-                journal: '',
-                pageRange: '',
-                date: 2019,
-                doi: '',
-                status: '',
-                link: '',
-            },
+        doiLoading:false,
 
-            doiLoading: false,
+        doi:'',
 
-            doi: '',
+        itemName:'',
 
-            itemName: '',
+        editType:'',
 
-            editType: '',
+        draft:{
+            oid:'',
+        },
 
-            draft: {
-                oid: '',
-            },
+        draftOid:'',
 
-            draftOid:'',
+        toCreate: 1,
 
-            toCreate: 1,
+        timeOut:{},
 
-            timeOut: {},
+        savingDraft:false,
 
-            savingDraft: false,
+        step:1,
 
-            step: 1,
+        draftList:[],
 
-            draftList: [],
+        draftListDialog:false,
 
-            draftListDialog: false,
+        matchedDraft:{},
 
-            matchedDraft: {},
+        matchedCreateDraft:{},
 
-            matchedCreateDraft: {},
+        matchedCreateDraftDialog:false,
 
-            matchedCreateDraftDialog: false,
+        draftLoading:false,
 
-            draftLoading: false,
+        pageOption: {
+            paginationShow:false,
+            progressBar: true,
+            sortAsc: false,
+            currentPage: 1,
+            pageSize: 10,
 
-            pageOption: {
-                paginationShow: false,
-                progressBar: true,
-                sortAsc: false,
-                currentPage: 1,
-                pageSize: 10,
+            total: 11,
+            searchResult: [],
+        },
 
-                total: 11,
-                searchResult: [],
-            },
+        inSearch:0,
 
-            inSearch: 0,
+        imgClipDialog:false,
 
-            imgClipDialog: false,
+        cancelDraftDialog:false,
 
-            cancelDraftDialog: false,
+        loading:true,
 
-            loading: true,
-
-            dragReady: false,
+            dragReady:false,
 
             itemInfo: {
                 image: '',
@@ -564,6 +605,7 @@ var createModelItem = Vue.extend({
                     if (this.currentLocalization.localName == this.localizationList[i].localName) {
                         this.localizationList[i].name = this.currentLocalization.name;
                         this.localizationList[i].description = tinymce.activeEditor.getContent();
+                        break;
                     }
                 }
                 this.$set(row, "selected", true);
@@ -606,24 +648,58 @@ var createModelItem = Vue.extend({
         //     this.setSession("index",index);
         //     window.location.href="/user/userSpace"
         // },
-        handleCheckChange(data, checked, indeterminate) {
-            let checkedNodes = this.$refs.tree2.getCheckedNodes()
-            let classes = [];
-            let str='';
-            for (let i = 0; i < checkedNodes.length; i++) {
-                // console.log(checkedNodes[i].children)
-                if(checkedNodes[i].children!=undefined){
-                    continue;
+        // handleCheckChange(data, checked, indeterminate) {
+        //     let checkedNodes = this.$refs.tree2.getCheckedNodes()
+        //     let classes = [];
+        //     let str='';
+        //     for (let i = 0; i < checkedNodes.length; i++) {
+        //         // console.log(checkedNodes[i].children)
+        //         if(checkedNodes[i].children!=undefined){
+        //             continue;
+        //         }
+        //
+        //         classes.push(checkedNodes[i].oid);
+        //         str+=checkedNodes[i].label;
+        //         if(i!=checkedNodes.length-1){
+        //             str+=", ";
+        //         }
+        //     }
+        //     this.cls=classes;
+        //     this.clsStr=str;
+        //
+        // },
+
+        //共三个参数，依次为：传递给 data 属性的数组中该节点所对应的对象、节点本身是否被选中、节点的子树中是否有被选中的节点
+        handleCheckChange(data, checked, indeterminante){
+            // console.log(data, checked, indeterminante)
+            if(data.children == null) {
+                let checkedNodes1 = this.$refs.tree2.getCheckedNodes(false, true);
+                let checkedNodes2 = this.$refs.tree3.getCheckedNodes(false, true);
+
+                this.treeData_select = [];
+                for (i = 0; i < checkedNodes1.length; i++) {
+                    let node = checkedNodes1[i];
+                    if (node.children == undefined) {
+                        this.treeData_select.push(node);
+                    }
                 }
 
-                classes.push(checkedNodes[i].oid);
-                str+=checkedNodes[i].label;
-                if(i!=checkedNodes.length-1){
-                    str+=", ";
+                for (i = 0; i < checkedNodes2.length; i++) {
+                    let node = checkedNodes2[i];
+                    if (node.children == undefined) {
+                        this.treeData_select.push(node);
+                    }
                 }
+
+                console.log($("#tree_select .el-tree-node"))
+                $("#tree_select").on("mouseenter",".el-tree-node",(event)=>{
+                    console.log(event)
+                    let name = event.currentTarget.innerText
+                    let desc = this.getClassificationDesc(name)
+                    console.log(desc);
+                    this.curClassDesc = desc;
+                })
             }
-            this.cls=classes;
-            this.clsStr=str;
 
         },
 
@@ -646,7 +722,11 @@ var createModelItem = Vue.extend({
         getItemContent(trigger,callBack) {//trigger标识是finish触发还是存草稿
             let modelItemObj = {}
             modelItemObj.status=this.status;
-            modelItemObj.classifications = this.cls;//[$("#parentNode").attr("pid")];
+            this.cls = [];
+            for(i=0;i<this.treeData_select.length;i++){
+                this.cls.push(this.treeData_select[i].oid);
+            }
+            modelItemObj.classifications2 = this.cls;//[$("#parentNode").attr("pid")];
             modelItemObj.name = $("#nameInput").val();
             modelItemObj.alias = $("#aliasInput").val().split(",");
             if (modelItemObj.alias.length === 1 && modelItemObj.alias[0] === "") {
@@ -659,23 +739,27 @@ var createModelItem = Vue.extend({
             modelItemObj.authorship=[];
             userspace.getUserData($("#providersPanel .user-contents .form-control"), modelItemObj.authorship);
 
-            if(trigger=='finish'&&modelItemObj.name.trim()==""){
-                alert("please enter name");
-                return;
+
+            if(this.editTypeLocal == 'modify') {
+
+                for (i = 0; i < this.localizationList.length; i++) {
+                    if (this.currentLocalization.localName == this.localizationList[i].localName) {
+                        this.localizationList[i].name = this.currentLocalization.name;
+                        this.localizationList[i].description = tinymce.activeEditor.getContent();
+                        break;
+                    }
+                }
+                modelItemObj.localizationList = this.localizationList;
+
+            }else {
+                modelItemObj.localizationList = [];
+
+                this.currentLocalization.description = tinymce.activeEditor.getContent();
+                this.currentLocalization.localCode = this.languageAdd.local.value;
+                this.currentLocalization.localName = this.languageAdd.local.label;
+
+                modelItemObj.localizationList.push(this.currentLocalization);
             }
-            else if(trigger=='finish'&&modelItemObj.classifications.length==0){
-                alert("please select classification");
-                return;
-            }
-
-            modelItemObj.localizationList = [];
-
-            this.currentLocalization.description = tinymce.activeEditor.getContent();
-            this.currentLocalization.localCode = this.languageAdd.local.value;
-            this.currentLocalization.localName = this.languageAdd.local.label;
-
-            modelItemObj.localizationList.push(this.currentLocalization);
-
             modelItemObj.references = new Array();
             var ref_lines = $("#dynamic-table tr");
             for (i = 1; i < ref_lines.length; i++) {
@@ -733,45 +817,37 @@ var createModelItem = Vue.extend({
 
         },
 
-        insertInfo(basicInfo){
-            this.cls = basicInfo.classifications;
-            this.status = basicInfo.status;
-            let ids=[];
-            for(i=0;i<this.cls.length;i++){
-                for(j=0;j<2;j++){
-                    for(k=0;k<this.treeData[j].children.length;k++){
-                        let children=this.treeData[j].children[k].children;
-                        if(children==null) {
-                            if (this.cls[i] == this.treeData[j].children[k].oid) {
-                                ids.push(this.treeData[j].children[k].id);
-                                this.clsStr += this.treeData[j].children[k].label;
-                                if (i != this.cls.length - 1) {
-                                    this.clsStr += ", ";
-                                }
-                                break;
-                            }
-                        }
-                        else{
-                            for(x=0;x<children.length;x++){
-                                if (this.cls[i] == children[x].oid) {
-                                    ids.push(children[x].id);
-                                    this.clsStr += children[x].label;
-                                    if (i != this.cls.length - 1) {
-                                        this.clsStr += ", ";
-                                    }
-                                    break;
-                                }
-                            }
-                        }
+        getMatchedNode(oids){
+            this.getMatchedNode_DIGUI(this.treeData_part1,oids);
+            this.getMatchedNode_DIGUI(this.treeData_part2,oids);
 
-                    }
-                    if(ids.length-1==i){
-                        break;
+        },
+        getMatchedNode_DIGUI(children, oids){
+            let i = 0;
+            let j = 0;
+            for(;i<children.length;i++){
+                let child = children[i];
+                if(child.children!=null){
+                    this.getMatchedNode_DIGUI(child.children, oids);
+                }else {
+                    for (j = 0; j < oids.length; j++) {
+                        if (child.oid == oids[j]) {
+                            this.treeData_select.push(child);
+                            this.nodekeys.push(child.id);
+                            break;
+                        }
                     }
                 }
             }
+        },
 
-            this.$refs.tree2.setCheckedKeys(ids);
+        insertInfo(basicInfo){
+            this.cls = basicInfo.classifications2;
+            this.status = basicInfo.status;
+
+            this.getMatchedNode(this.cls);
+            this.$refs.tree2.setCheckedKeys(this.nodekeys);
+            this.$refs.tree3.setCheckedKeys(this.nodekeys);
 
             $(".providers").children(".panel").remove();
 
@@ -1348,6 +1424,34 @@ var createModelItem = Vue.extend({
 
         },
 
+        getClassificationDesc(name){
+            let children = this.treeData_part1;
+            let desc = this.getChildrenDesc(children,name);
+            if(desc == null){
+                children = this.treeData_part2;
+                desc = this.getChildrenDesc(children,name);
+            }
+            return desc;
+        },
+        getChildrenDesc(children, name){
+            let i = 0;
+            for(;i<children.length;i++){
+                let child = children[i];
+                if(child.label==name){
+                    return child.label+": "+child.desc;
+                }else{
+                    if(child.children!=undefined){
+                        let result = this.getChildrenDesc(child.children, name);
+                        if(result != null){
+                            return result;
+                        }
+                    }
+                }
+            }
+            return null;
+
+        }
+
     },
 
     destroyed () {
@@ -1439,6 +1543,13 @@ var createModelItem = Vue.extend({
                 }
             })
 
+            $(".el-tree-node__content").on("mouseenter",(event)=>{
+                let name = event.currentTarget.children[2].innerText
+                let desc = this.getClassificationDesc(name)
+                this.curClassDesc = desc;
+            })
+
+
 
             //this.getModels();
         });
@@ -1474,15 +1585,15 @@ var createModelItem = Vue.extend({
 
         var oid = this.$route.params.editId;
 
-        this.draft.oid=window.localStorage.getItem('draft')
-        window.localStorage.removeItem('draft')
+        this.draft.oid=window.localStorage.getItem('draft');
+        window.localStorage.removeItem('draft');
         var user_num = 0;
 
         if ((oid === "0") || (oid === "") || (oid === null)|| (oid === undefined)) {
 
-            this.editTypeLocal = 'create'
+            this.editTypeLocal = 'create';
             // $("#title").text("Create Model Item")
-            $("#subRteTitle").text("/Create Model Item")
+            $("#subRteTitle").text("/Create Model Item");
 
             $('#aliasInput').tagEditor({
                 forceLowercase: false
@@ -1491,15 +1602,15 @@ var createModelItem = Vue.extend({
             this.editTypeLocal = "create";
 
             let interval = setInterval(function () {
-                initTinymce('textarea#singleDescription')
+                initTinymce('textarea#singleDescription');
                 clearInterval(interval);
             }, 500);
 
             this.$set(this.languageAdd.local, "value", "en-US");
             this.$set(this.languageAdd.local, "label", "English (United States)");
-            initTinymce('textarea#modelItemText')
+            initTinymce('textarea#modelItemText');
 
-            this.loadMatchedCreateDraft()
+            this.loadMatchedCreateDraft();
             if(this.draft.oid!=''&&this.draft.oid!=null&&typeof (this.draft.oid)!="undefined"){
                 // this.loadDraftByOid()
                 this.initDraft('create','/user/userSpace#/models/modelitem','draft',this.draft.oid)
@@ -1508,7 +1619,7 @@ var createModelItem = Vue.extend({
         }
         else {
 
-            this.editTypeLocal = 'modify'
+            this.editTypeLocal = 'modify';
             if(this.draft.oid==''||this.draft.oid==null||typeof (this.draft.oid)=="undefined"){
                 this.initDraft('edit','/user/userSpace#/models/modelitem','item',this.$route.params.editId)
             }else{
@@ -1541,14 +1652,18 @@ var createModelItem = Vue.extend({
             },
             onChange: (currentIndex, newIndex, stepDirection) => {
                 if (currentIndex === 0 && stepDirection === "forward") {
-                    if (this.cls.length == 0) {
+                    if (this.treeData_select.length == 0) {
                         new Vue().$message({
                             message: 'Please select at least one classification!',
                             type: 'warning',
                             offset: 70,
                         });
                         return false;
-                    } else if ($("#nameInput").val().trim() == "") {
+                    }
+                    return true;
+                }
+                else if (currentIndex === 1 && stepDirection === "forward") {
+                    if ($("#nameInput").val().trim() == "") {
                         new Vue().$message({
                             message: 'Please enter name!',
                             type: 'warning',

@@ -34,8 +34,11 @@ public class ConceptService {
     private List<String> itemStatusVisible;
 
     public void updateDescription(Concept concept){
+        //排序
         Collections.sort(concept.getLocalizationList());
+
         String description = "";
+        //先找中英文描述
         for(Localization localization:concept.getLocalizationList()){
             String local = localization.getLocalCode();
             if(local.equals("en")||local.equals("zh")||local.contains("en-")||local.contains("zh-")){
@@ -46,6 +49,7 @@ public class ConceptService {
                 }
             }
         }
+        //如果没有中英文，则使用其他语言描述
         if(description.equals("")){
             for(Localization localization:concept.getLocalizationList()){
                 String localDesc = localization.getDescription();

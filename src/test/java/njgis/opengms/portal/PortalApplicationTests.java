@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.ip2location.IP2Location;
 import com.ip2location.IPResult;
 import njgis.opengms.portal.dao.*;
+import njgis.opengms.portal.dto.modelItem.ModelItemResultDTO;
 import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.entity.support.*;
 import njgis.opengms.portal.enums.ItemTypeEnum;
@@ -26,6 +27,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.DigestUtils;
@@ -105,6 +109,55 @@ public class PortalApplicationTests {
 
     @Value("${managerServerIpAndPort}")
     private String managerServerIpAndPort;
+
+    @Test
+    public void removeUserId(){
+        List<User> userList = userDao.findAll();
+        for(User user:userList){
+            user.setUserId("");
+            userDao.save(user);
+        }
+    }
+
+    @Autowired
+    Classification2Dao classification2Dao;
+
+    @Autowired
+    ModelItemVersionDao modelItemVersionDao;
+
+    @Test
+    public void classificationNumStats(){
+        List<Classification2> classification2List = classification2Dao.findAll();
+        for(Classification2 classification2 : classification2List){
+            List<String> classes = new ArrayList<>();
+            classes.add(classification2.getOid());
+            List<String> status = new ArrayList<>();
+            status.add("Public");
+            Sort sort = new Sort(Sort.Direction.ASC, "name");
+            org.springframework.data.domain.Pageable pageable = PageRequest.of(0, 9999, sort);
+            Page<ModelItemResultDTO> modelItems = modelItemDao.findByClassifications2InAndStatusIn(classes, status, pageable);
+            long count = modelItems.getTotalElements();
+
+            List<ModelItemVersion> modelItemVersionList = modelItemVersionDao.findAllByVerStatusAndClassifications2In(0, classification2.getOid());
+            count += modelItemVersionList.size();
+            System.out.println(classification2.getNameEn()+" "+count);
+
+        }
+    }
+
+    @Test
+    public void setUserId(){
+        removeUserId();
+        List<User> userList = userDao.findAll();
+        for(User user : userList){
+            String name = user.getName().trim();
+            name = name.replaceAll(" ","_");
+            System.out.println(name);
+            user.setUserId(userService.generateUserId(name));
+            userDao.save(user);
+            Utils.count();
+        }
+    }
 
     @Test
     public void hideCSDMS(){

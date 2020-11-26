@@ -155,11 +155,11 @@
                                 <hr>
                                 <div class="detail_bottom">
                                     <div style="display:inline-block;float: left;">
-                                        <a :href="'/user/'+users[index].oid">
+                                        <a :href="'/profile/'+users[index].oid">
                                             <img :src="users[index].image==''?'/static/img/icon/default.png':users[index].image" class="round_icon"
                                                  style="margin-top:-5px;width:30px;height: 30px;display: inline-block;">
                                         </a>
-                                        <a :href="'/user/'+users[index].oid" style="display: inline-block;margin-left: 5px;"><h4>{{users[index].name}}</h4></a>
+                                        <a :href="'/profile/'+users[index].oid" style="display: inline-block;margin-left: 5px;"><h4>{{users[index].name}}</h4></a>
                                         <h4 class="screen_view">contributed at {{formatDate(item.createTime).substring(0,10)}}</h4>
                                         <h4 class="mobile_view">{{formatDate(item.createTime).substring(0,10)}}</h4>
                                     </div>

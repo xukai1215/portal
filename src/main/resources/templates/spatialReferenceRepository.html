@@ -118,11 +118,11 @@
                             <div class="detail_bottom">
                                 <div style="display:inline-block;float: left;">
                                     <!--<img :src="pageOption.users[key].image==''?'/static/img/icon/default.png':pageOption.users[key].image" class="round_icon" style="margin-top:-5px;width:30px;height: 30px;display: inline-block;">-->
-                                    <!--<a :href="'/user/'+ pageOption.users[key].oid" target="_blank" style="display: inline-block;margin-left: 5px;"><h4>{{pageOption.users[key].name}}</h4></a>-->
-                                    <a :href="'/user/'+ pageOption.users[key].oid">
+                                    <!--<a :href="'/profile/'+ pageOption.users[key].oid" target="_blank" style="display: inline-block;margin-left: 5px;"><h4>{{pageOption.users[key].name}}</h4></a>-->
+                                    <a :href="'/profile/'+ pageOption.users[key].oid">
                                         <img :src="pageOption.users[key].image==''?'/static/img/icon/default.png':'/static'+pageOption.users[key].image" class="round_icon" style="margin-top: -5px; width: 30px; height: 30px; display: inline-block;">
                                     </a>
-                                    <a :href="'/user/'+ pageOption.users[key].oid" target="_blank" style="display: inline-block; margin-left: 5px;"><h4>{{pageOption.users[key].name}}</h4></a>
+                                    <a :href="'/profile/'+ pageOption.users[key].oid" target="_blank" style="display: inline-block; margin-left: 5px;"><h4>{{pageOption.users[key].name}}</h4></a>
                                     <h4 class="screen_view">contributed at {{spatialReference.createTime.substring(0,10)}} </h4>
                                     <h4 class="mobile_view">{{spatialReference.createTime.substring(0,10)}} </h4>
                                 </div>

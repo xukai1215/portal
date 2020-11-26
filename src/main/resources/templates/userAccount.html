@@ -62,7 +62,7 @@
                                 <div class="profile-pic text-center">
                                     <img :src="userInfo.image==''?'/static/img/icon/default.png':userInfo.image">
                                 </div>
-                                <h4>Welcome, <a :href="'/user/'+userInfo.oid">{{userInfo.name}}</a></h4>
+                                <h4>Welcome, <a :href="'/profile/'+userInfo.oid">{{userInfo.name}}</a></h4>
                             </section>
                             <section class="flexRowContainer flexWrap contentSection">
                                 <div class="contentCard flexCol flexColCenter" style="height: 450px">
