@@ -507,7 +507,7 @@ Sidebar.prototype.searchEntries = function (searchTerms, count, page, success, e
         for (var i = 0; i < result.length; i++) {
           var model = result[i];
           var modelName = model.name;
-          this.createVertexTemplateEntry('rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#0073e8;fillColor=#d9edf7;', 210, 50, modelName, model.description, null, null, modelName, model);
+          this.createVertexTemplateEntry('rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#0073e8;fillColor=#d9edf7;', 210, 50, modelName, model.description, null, null, modelName, model);
         }
 
         //
@@ -3022,10 +3022,10 @@ Sidebar.prototype.addClickHandler = function (elt, ds, cells) {
     if (graph.getSelectionModel().cells.length > 0) {
       var targetCell = graph.getSelectionModel().cells[0];
       if (targetCell.response == "1") {//判断鼠标加入的cell是一个input还是output
-        graph.insertEdge(parent, null, '', targetCell, state, "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=2;strokeColor=#000066;");
+        graph.insertEdge(parent, null, '', targetCell, state, "edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=2;strokeColor=#000066;");
 
       } else if (targetCell.response == "0") {
-        graph.insertEdge(parent, null, '', state, targetCell, "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=2;strokeColor=#000066;");
+        graph.insertEdge(parent, null, '', state, targetCell, "edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=2;strokeColor=#000066;");
 
       } else if (targetCell.md5 != undefined&&targetCell.md5 != ''){
         let modelAction = window.parent.addModeltoList(targetCell)
@@ -3527,7 +3527,7 @@ Sidebar.prototype.addComputabelModel = function (computableModelList, expand) {
   for (var j = 0; j < computableModelList.size; j++) {
     var model = computableModelList.content[j];
     var modelName = model.name;
-    var a = this.createStateVertexTemplate('rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#0073e8;fillColor=#d9edf7;', 210, 50, modelName, model.description, null, null, modelName, model);
+    var a = this.createStateVertexTemplate('rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#0073e8;fillColor=#d9edf7;', 210, 50, modelName, model.description, null, null, modelName, model);
     div.appendChild(a);
   }
 
@@ -3590,7 +3590,7 @@ Sidebar.prototype.addComputabelModelPage = function (computableModelList, div) {
   for (var i = 0; i < computableModelList.numberOfElements; i++) {
     var model = computableModelList.content[i];
     var modelName = model.name;
-    var a = this.createStateVertexTemplate('rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#0073e8;fillColor=#d9edf7;', 210, 50, modelName, model.description, null, null, modelName, model);
+    var a = this.createStateVertexTemplate('rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#0073e8;fillColor=#d9edf7;', 210, 50, modelName, model.description, null, null, modelName, model);
     div.appendChild(a);
   }
 };
@@ -3770,7 +3770,7 @@ Sidebar.prototype.addModelToGraph = function (model) {
 
   hasSearchedTermsComputableModel.push(model)
   var pt = graph.getFreeInsertPoint();
-  var cell = graph.insertVertex(parent, null, model.name, pt.x, pt.y, 210, 50, "rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#0073e8;fillColor=#d9edf7");
+  var cell = graph.insertVertex(parent, null, model.name, pt.x, pt.y, 210, 50, "rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#0073e8;fillColor=#d9edf7");
 
   cell.frontId = model.id;
   cell.name = model.name;
@@ -3852,7 +3852,7 @@ function unFoldMultiOutput(model,outputData){
 
       for(i=0;i<values.length;i++){
         var pt = graph.getFreeInsertPoint();
-        var cell = graph.insertVertex(parent, null, model.name, pt.x, pt.y, 170, 50, "rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#449d44;fillColor=#EEFFEE");
+        var cell = graph.insertVertex(parent, null, model.name, pt.x, pt.y, 170, 50, "rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#449d44;fillColor=#EEFFEE");
 
         cell.vertex = true;
         cell.frontId = model.frontId;

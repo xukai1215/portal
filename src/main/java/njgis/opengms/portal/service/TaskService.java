@@ -1258,7 +1258,7 @@ public class TaskService {
             for(int j=0;j<output.size();j++){
                 Map<String,Object> outputData = new HashMap<>();
                 Map<String,Object> dataContent = new HashMap<>();
-                JSONObject j_dataContent = ((JSONObject)output.get(i)).getJSONObject("dataContent");
+                JSONObject j_dataContent = ((JSONObject)output.get(j)).getJSONObject("dataContent");
                 outputData.put("value",j_dataContent.getString("value"));
                 outputData.put("type",j_dataContent.getString("type"));
                 outputData.put("fileName",j_dataContent.getString("fileName"));

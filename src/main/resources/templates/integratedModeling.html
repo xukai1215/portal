@@ -254,19 +254,24 @@
                         label="File"
                         width="200">
                     <template slot-scope="scope">
-
                         <el-input class="model-input"
                                   :key="scope.row.dataId"
-                                  v-if="scope.row.children==undefined&&scope.row.child!=true"
                                   :value="scope.row.fileName==undefined ?'':(scope.row.fileName+'.'+scope.row.suffix) "
                                   :id="'datainput'+scope.row.dataId"
                                   disabled="false">
                         </el-input>
-                        <el-input class="model-input"
-                                  v-if="scope.row.children==undefined&&scope.row.child==true"
-                                  v-model="scope.row.val"
-                                  :id="'datainput'+scope.row.dataId">
-                        </el-input>
+<!--                        <el-input class="model-input"-->
+<!--                                  :key="scope.row.dataId"-->
+<!--                                  v-if="scope.row.children==undefined&&scope.row.child!=true"-->
+<!--                                  :value="scope.row.fileName==undefined ?'':(scope.row.fileName+'.'+scope.row.suffix) "-->
+<!--                                  :id="'datainput'+scope.row.dataId"-->
+<!--                                  disabled="false">-->
+<!--                        </el-input>-->
+<!--                        <el-input class="model-input"-->
+<!--                                  v-if="scope.row.children==undefined&&scope.row.child==true"-->
+<!--                                  v-model="scope.row.val"-->
+<!--                                  :id="'datainput'+scope.row.dataId">-->
+<!--                        </el-input>-->
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -287,8 +292,8 @@
                         label="Operation"
                         width="120">
                     <template slot-scope="scope">
-                        <div class="_btn-group" v-if="scope.row.children==undefined">
-
+                        <div class="_btn-group" >
+<!--                            v-if="scope.row.children==undefined"-->
                             <el-button
                                     v-if="(scope.row.link == undefined||scope.row.link == '' )||configModelAction.step>1"
                                     plain round type="primary" size="small"
@@ -741,7 +746,7 @@
         <h4>Condition Info:</h4>
         <div class="flexJustStart flexAlignCenter wzhInfoContainer" style="height: 32px">
             <h5 style="min-width: 80px;">Value:       </h5>
-            <el-input size="small" v-model="conditionConfig.value" style="max-width: 192px;"></el-input>
+            <el-input size="small" v-model="conditionConfig.value" disabled style="max-width: 192px;"></el-input>
         </div>
         <div class="flexJustStart flexAlignCenter wzhInfoContainer" style="height: 32px">
             <h5 style="min-width: 80px;">Format:</h5>

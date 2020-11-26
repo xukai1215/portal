@@ -844,7 +844,7 @@ var vue = new Vue({
                         }
                         xml += " type='" + this.modelActions[i].inputData[j].type + "'/>\n";
                         xml += "\t\t\t\t</DataConfiguration>\n"
-                    } else if(type === 'execute'){
+                    } else if(this.modelActions[i].inputData[j].optional==false&&type === 'execute'){
                         this.$alert('Please check input of the model action '+this.modelActions[i].name)
                         return;
                     }
@@ -862,72 +862,75 @@ var vue = new Vue({
             xml += "\t</ModelActions>\n";
 
             //dataProcessing标签
-            xml += "\t<DataProcessings>\n";
-            for (let i = 0; i < this.dataProcessings.length; i++) {
-                if(1){
-                    xml += "\t\t<DataProcessing id='" + this.dataProcessings[i].id + "' name='" + this.dataProcessings[i].name + "' type='" + this.dataProcessings[i].type + "' service='" + this.dataProcessings[i].service + "' description='" + this.dataProcessings[i].description
-                        + `${this.dataProcessings[i].token==undefined?'': `' token='${this.dataProcessings[i].token}`}` + "'>\n" +
-                        "\t\t\t<Inputs>\n";
-                    for (let j = 0; j < this.dataProcessings[i].inputData.length; j++) {
-                        if ((this.dataProcessings[i].inputData[j].value != "" && this.dataProcessings[i].inputData[j].value != undefined)
-                            || (this.dataProcessings[i].inputData[j].link != "" && this.dataProcessings[i].inputData[j].link != undefined)) {
-                            xml += "\t\t\t\t<DataConfiguration id='" +`${this.dataProcessings[i].type=='modelService'?`${this.dataProcessings[i].inputData[j].eventId}`:`${this.dataProcessings[i].inputData[j].id}`}`
-                            if(this.dataProcessings[i].type==='modelService'){
-                                xml += "' state='" + this.dataProcessings[i].inputData[j].stateName + "' event='" + this.dataProcessings[i].inputData[j].eventName
-                            }
-                            xml += "'>\n"
-
-                            xml += "\t\t\t\t\t<Data"
-                            if (this.dataProcessings[i].inputData[j].value != undefined && this.dataProcessings[i].inputData[j].value != '') {
-                                xml += " value='" + this.dataProcessings[i].inputData[j].value + "'"
-                                this.dataProcessings[i].inputData[j].type = 'url'
-                            }
-                            if (this.dataProcessings[i].inputData[j].link != undefined && this.dataProcessings[i].inputData[j].link != '') {
-                                xml += " link='" + this.dataProcessings[i].inputData[j].link + "'"
-                                if(this.dataProcessings[i].inputData[j].type == ''){
-                                    this.dataProcessings[i].inputData[j].type = 'link'
-                                }else if(this.dataProcessings[i].inputData[j].type == 'url'){
-                                    this.dataProcessings[i].inputData[j].type = 'mixed'
+            if(this.dataProcessings.length>0){
+                xml += "\t<DataProcessings>\n";
+                for (let i = 0; i < this.dataProcessings.length; i++) {
+                    if(1){
+                        xml += "\t\t<DataProcessing id='" + this.dataProcessings[i].id + "' name='" + this.dataProcessings[i].name + "' type='" + this.dataProcessings[i].type + "' service='" + this.dataProcessings[i].service + "' description='" + this.dataProcessings[i].description
+                            + `${this.dataProcessings[i].token==undefined?'': `' token='${this.dataProcessings[i].token}`}` + "'>\n" +
+                            "\t\t\t<Inputs>\n";
+                        for (let j = 0; j < this.dataProcessings[i].inputData.length; j++) {
+                            if ((this.dataProcessings[i].inputData[j].value != "" && this.dataProcessings[i].inputData[j].value != undefined)
+                                || (this.dataProcessings[i].inputData[j].link != "" && this.dataProcessings[i].inputData[j].link != undefined)) {
+                                xml += "\t\t\t\t<DataConfiguration id='" +`${this.dataProcessings[i].type=='modelService'?`${this.dataProcessings[i].inputData[j].eventId}`:`${this.dataProcessings[i].inputData[j].id}`}`
+                                if(this.dataProcessings[i].type==='modelService'){
+                                    xml += "' state='" + this.dataProcessings[i].inputData[j].stateName + "' event='" + this.dataProcessings[i].inputData[j].eventName
                                 }
+                                xml += "'>\n"
 
-                                // let fromAction = this.findTargetByOutputId(this.dataProcessings,this.dataProcessings[i].inputData[j].link)
-                                // let dataLink = {
-                                //     inputEvent: this.dataProcessings[i].inputData[j].eventId,
-                                //     outputEvent: this.dataProcessings[i].inputData[j].link
-                                // }  //to
-                                // dataLinks.push(dataLink)
+                                xml += "\t\t\t\t\t<Data"
+                                if (this.dataProcessings[i].inputData[j].value != undefined && this.dataProcessings[i].inputData[j].value != '') {
+                                    xml += " value='" + this.dataProcessings[i].inputData[j].value + "'"
+                                    this.dataProcessings[i].inputData[j].type = 'url'
+                                }
+                                if (this.dataProcessings[i].inputData[j].link != undefined && this.dataProcessings[i].inputData[j].link != '') {
+                                    xml += " link='" + this.dataProcessings[i].inputData[j].link + "'"
+                                    if(this.dataProcessings[i].inputData[j].type == ''){
+                                        this.dataProcessings[i].inputData[j].type = 'link'
+                                    }else if(this.dataProcessings[i].inputData[j].type == 'url'){
+                                        this.dataProcessings[i].inputData[j].type = 'mixed'
+                                    }
+
+                                    // let fromAction = this.findTargetByOutputId(this.dataProcessings,this.dataProcessings[i].inputData[j].link)
+                                    // let dataLink = {
+                                    //     inputEvent: this.dataProcessings[i].inputData[j].eventId,
+                                    //     outputEvent: this.dataProcessings[i].inputData[j].link
+                                    // }  //to
+                                    // dataLinks.push(dataLink)
+                                }
+                                xml += " type='" + this.dataProcessings[i].inputData[j].type + "'/>\n";
+                                xml += "\t\t\t\t</DataConfiguration>\n"
+                            } else if(this.dataProcessings[i].inputData[j].optional==false&&type === 'execute'){
+                                this.$alert('Please check input of the dataProcessing '+this.dataProcessings[i].name)
+                                return null;
                             }
-                            xml += " type='" + this.dataProcessings[i].inputData[j].type + "'/>\n";
-                            xml += "\t\t\t\t</DataConfiguration>\n"
-                        } else if(type === 'execute'){
-                            this.$alert('Please check input of the dataProcessing '+this.dataProcessings[i].name)
-                            return null;
                         }
-                    }
-                    xml += "\t\t\t</Inputs>\n" +
-                        "\t\t\t<Outputs>\n";
-                    for (var k = 0; k < this.dataProcessings[i].outputData.length; k++) {
-                        this.dataProcessings[i].outputData[k].url=''
-                        xml += "\t\t\t\t<DataConfiguration id='" +`${this.dataProcessings[i].type=='modelService'?`${this.dataProcessings[i].outputData[k].eventId}`:`${this.dataProcessings[i].outputData[k].id}`}`
-                        if(this.dataProcessings[i].type==='modelService'){
-                            xml += "' state='" + this.dataProcessings[i].outputData[k].stateName + "' event='" + this.dataProcessings[i].outputData[k].eventName
+                        xml += "\t\t\t</Inputs>\n" +
+                            "\t\t\t<Outputs>\n";
+                        for (var k = 0; k < this.dataProcessings[i].outputData.length; k++) {
+                            this.dataProcessings[i].outputData[k].url=''
+                            xml += "\t\t\t\t<DataConfiguration id='" +`${this.dataProcessings[i].type=='modelService'?`${this.dataProcessings[i].outputData[k].eventId}`:`${this.dataProcessings[i].outputData[k].id}`}`
+                            if(this.dataProcessings[i].type==='modelService'){
+                                xml += "' state='" + this.dataProcessings[i].outputData[k].stateName + "' event='" + this.dataProcessings[i].outputData[k].eventName
+                            }
+                            xml += "'/>\n";
                         }
-                        xml += "'/>\n";
+                        xml += "\t\t\t</Outputs>\n" +
+                            "\t\t</DataProcessing>\n";
+                    }else{
+
                     }
-                    xml += "\t\t\t</Outputs>\n" +
-                        "\t\t</DataProcessing>\n";
-                }else{
 
                 }
-
+                xml += "\t</DataProcessings>\n";
             }
-            xml += "\t</DataProcessings>\n";
+
 
             //condition标签
             if (this.checkConditionStatus()&&this.conditions.length > 0) {
                 xml += "\t<Conditions>\n";
                 for (let ele of this.conditions) {
-                    xml += "\t\t<Condition id='" + ele.id + "' format='" + ele.format + "' true='" + ele.true + "' false='" + ele.false
+                    xml += "\t\t<Condition id='" + ele.id + "' value='" + ele.value + "' link='" + ele.link + "' format='" + ele.format + "' true='" + ele.true + "' false='" + ele.false
                     for(let conditionCase of this.conditions.cases){
                         xml += `\t\t\t<Case operator='${conditionCase.operator}' standard='${conditionCase.standard}' relation='${conditionCase.relation}'/>`
                     }
@@ -1027,9 +1030,9 @@ var vue = new Vue({
                             var taskId = result.data;
                             this.updateTaskId(this.currentTaskOid,taskId)
 
-                            // let interval = setInterval(() => {
-                            //     this.checkIntegratedTask(taskId,interval)
-                            // }, 3000)
+                            let interval = setInterval(() => {
+                                this.checkIntegratedTask(taskId,interval)
+                            }, 3000)
 
                         }
                     })
@@ -1050,63 +1053,61 @@ var vue = new Vue({
             }
 
 
-
-
         },
 
-        // checkIntegratedTask(taskId,interval){
-        //     $.ajax({
-        //         url: "/task/checkIntegratedTask/" + taskId,
-        //         data: {},
-        //         type: "GET",
-        //         success: (obj) => {
-        //             let status = obj.data.status;
-        //             let taskInfo = obj.data.taskInfo
-        //
-        //             this.updateMxgraphNode(taskInfo.modelActionList)
-        //             this.updateTaskoutput(taskInfo)
-        //             if (status == 0) {
-        //                 console.log(status);
-        //             } else if (status == -1) {
-        //                 console.log(status);
-        //                 clearInterval(interval);
-        //                 clearInterval(this.flashInterval);
-        //                 this.$alert('Integrated model run failed!', 'Error', {
-        //                     confirmButtonText: 'OK',
-        //                     callback: action => {
-        //                         this.$message({
-        //                             type: 'danger',
-        //                             message: `action: ${action}`
-        //                         });
-        //                     }
-        //                 });
-        //             } else {
-        //                 console.log(status);
-        //                 clearInterval(interval);
-        //                 clearInterval(this.flashInterval);
-        //                 this.$alert('Integrated model run Success', 'Success', {
-        //                     confirmButtonText: 'OK',
-        //                     callback: action => {
-        //                         this.$message({
-        //                             type: 'success',
-        //                             message: `action: ${action}`
-        //                         });
-        //                     }
-        //                 });
-        //
-        //
-        //                 var cxml = this.iframeWindow.getCXml();
-        //                 var doc = this.string2XML(cxml);
-        //
-        //                 this.updateTaskoutput(taskInfo,doc)
-        //
-        //                 // this.iframeWindow.setCXml(xml);
-        //
-        //             }
-        //
-        //         }
-        //     })
-        // },
+        checkIntegratedTask(taskId,interval){
+            $.ajax({
+                url: "/task/checkIntegratedTask/" + taskId,
+                data: {},
+                type: "GET",
+                success: (obj) => {
+                    let status = obj.data.status;
+                    let taskInfo = obj.data.taskInfo
+
+                    this.updateMxgraphNode(taskInfo.modelActionList)
+                    this.updateTaskoutput(taskInfo)
+                    if (status == 0) {
+                        console.log(status);
+                    } else if (status == -1) {
+                        console.log(status);
+                        clearInterval(interval);
+                        clearInterval(this.flashInterval);
+                        this.$alert('Integrated model failed to run!', 'Error', {
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                this.$message({
+                                    type: 'danger',
+                                    message: `action: ${action}`
+                                });
+                            }
+                        });
+                    } else {
+                        console.log(status);
+                        clearInterval(interval);
+                        clearInterval(this.flashInterval);
+                        setTimeout(()=>{ this.$alert('Integrated model succeeded to run!', 'Success', {
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                this.$message({
+                                    type: 'success',
+                                    message: `action: ${action}`
+                                });
+                            }
+                        });},300)
+
+
+                        var cxml = this.iframeWindow.getCXml();
+                        var doc = this.string2XML(cxml);
+
+                        this.updateTaskoutput(taskInfo,doc)
+
+                        // this.iframeWindow.setCXml(xml);
+
+                    }
+
+                }
+            })
+        },
 
         updateTaskoutput(taskInfo,doc){
             let updateModels = taskInfo.modelActionList.completed;
@@ -1127,7 +1128,7 @@ var vue = new Vue({
                                     o1.fileName = dataContent.fileName
                                     o1.suffix = dataContent.suffix
                                     if(o1.fileName.indexOf(',')){
-                                        this.unFoldMultiOutput(m1,o1);
+                                        // this.unFoldMultiOutput(m1,o1);
                                     }
                                     break
                                 }
@@ -2263,20 +2264,26 @@ var vue = new Vue({
         loadConditionCaseInfo(){
             let expression = ''
             let value = this.conditionConfig.value
-            for(let i = 0;i<this.conditionConfig.cases.length;i++){
-                let conditionCase = this.conditionConfig.cases[i]
-                expression += `${value} ${conditionCase.operator} ${conditionCase.standard}`
-                if(i<this.conditionConfig.cases.length-1){
-                   expression += `${conditionCase.relation=='and'?'&&':'||'}`
-                }
-            }
-            this.conditionConfig.expression = expression
+
+            this.conditionConfig.expression = this.generateConditionExpression(this.conditionConfig)
 
             var modelEditor = $("#ModelEditor")[0].contentWindow;
 
             modelEditor.ui.sidebar.addConditionCellInfo(this.conditionConfig)
 
             this.conditionConfigDialog = false
+        },
+
+        generateConditionExpression(condition){
+            let expression = ''
+            for(let i = 0;i<this.conditionConfig.cases.length;i++){
+                let conditionCase = this.conditionConfig.cases[i]
+                expression += `${condition.value} ${conditionCase.operator} ${conditionCase.standard}`
+                if(i<this.conditionConfig.cases.length-1){
+                    expression += `${conditionCase.relation=='and'?'&&':'||'}`
+                }
+            }
+            return expression
         },
 
         addConditionCase(){
@@ -2363,6 +2370,21 @@ var vue = new Vue({
                             condition.false = target.frontId
                         }
                         break;
+                    }
+                }
+            }
+        },
+
+        refreshConditionInfo(conditionCell){
+            for(let ele of this.conditions){
+                if(ele.id === conditionCell.frontId){
+                    ele.value = conditionCell.judgeValue
+                    ele.link = conditionCell.link
+                    if(ele.expression!=''&&ele.expression!=undefined){
+                        ele.expression = this.generateConditionExpression(ele)
+                        var modelEditor = $("#ModelEditor")[0].contentWindow;
+                        modelEditor.ui.sidebar.addConditionCellInfo(ele)
+
                     }
                 }
             }
@@ -2572,6 +2594,7 @@ var vue = new Vue({
         window.deleteGeneralList = this.deleteGeneralList;
 
         window.refreshConditionLink = this.refreshConditionLink;
+        window.refreshConditionInfo = this.refreshConditionInfo;
         //aaa
     }
 

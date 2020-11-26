@@ -197,10 +197,18 @@
 
   function setNodeStyle(frontId,status) {
     let style={
-      'waiting':'rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#0073e8;fillColor=#d9edf7;',
-      'running':'rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#449d44;fillColor=#ffd058;',
-      'completed':'rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#449d44;fillColor=#EEFFEE;',
-      'failed':'rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#a94442;fillColor=#ede2e2;',
+      'waiting':'rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#0073e8;fillColor=#d9edf7;',
+      'waitingInput':'rounded=0;shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#a4000b;fillColor=none;',
+      'waitingOutput':'rounded=0;shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#449d44;fillColor=none;',
+      'running':'rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#449d44;fillColor=#f8d478;',
+      'runningInput':'rounded=0;shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#a4000b;fillColor=#f8d478;',
+      'runningOutput':'rounded=0;shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#449d44;fillColor=#f8d478;',
+      'completed':'rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#449d44;fillColor=#EEFFEE;',
+      'completedInput':'rounded=0;shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#449d44;fillColor=#EEFFEE;',
+      'completedOutput':'rounded=0;shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#449d44;fillColor=#EEFFEE;',
+      'failed':'rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#a94442;fillColor=#ede2e2;',
+      'failedInput':'rounded=0;shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#a4000b;fillColor=#ffd058;',
+      'failedOutput':'rounded=0;shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#449d44;fillColor=#ffd058;',
     }
     var cells = graph.getModel().cells;
     var models = graph.getModel();
@@ -208,7 +216,15 @@
       if(cells[i].frontId===frontId){
         // let style = cells[i].getStyle()
         // console.log(style)
-        cells[i].setStyle(style[status])
+        if(cells[i].md5!=undefined){
+          cells[i].setStyle(style[status])
+
+        }else if(cells[i].response==0){
+          cells[i].setStyle(style[status+'Output'])
+        }else if(cells[i].response==1){
+          cells[i].setStyle(style[status+'Input'])
+        }
+
         if(status==='completed'){
           setLinkStyle(cells[i],cells,'shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#449d44;fillColor=none;')
         }
@@ -224,7 +240,7 @@
           cells[j].target.setStyle(style)
           graph.refresh(cells[j].target)
         }
-        setLinkStyle(cells[j].target,cells,style)
+        // setLinkStyle(cells[j].target,cells,style)
       }
     }
   }
@@ -262,34 +278,41 @@
       if(cell.edge){//如果是一条线，则去两端寻找
         if(cell.value==null){//说明是手动连接的两个event,则此处有dataFlow
           let fromEvent = cell.source
-          let toEvent = cell.target//这是某一个模型的input
+          let target = cell.target
           let model
-          for(let edge of toEvent.edges){//找到该模型
-            if(edge.value===''){
-              model = edge.target
-              break;
+
+          if(target.style.indexOf('condition')!=-1){//如果向下連的是一個條件判斷
+            target.link = fromEvent.frontId
+          }else if(target.eid != undefined){//向下连接的是一个输入
+            for(let edge of target.edges){//找到该模型
+              if(edge.value===''){
+                model = edge.target
+                break;
+              }
+            }
+            for(let input of model.inputData){//对该模型对应event的值修改
+              if(input.eventId===target.eid){
+                input.type='link'
+                input.link=fromEvent.eid//链接的event的id和名字
+                input.linkEvent=fromEvent.value
+              }else{
+                // input.link=''
+              }
             }
           }
-          for(let input of model.inputData){//对该模型对应event的值修改
-            if(input.eventId===toEvent.eid){
-              input.type='link'
-              input.link=fromEvent.eid//链接的event的id和名字
-              input.linkEvent=fromEvent.value
-            }else{
-              input.link=''
-            }
-          }
+
         }
       }
-      for(let j in cells){
-        if(cells[j].md5!=undefined){
-          if(cells[j].inputData[0].link!=undefined){//有link值，说明该模型已经配置过，忽略
-            continue;
-          }
-          for(let input of cells[j].inputData){
-            if(input.link==undefined){
-              input.link=''
-            }
+
+    }
+    for(let j in cells){
+      if(cells[j].md5!=undefined){
+        if(cells[j].inputData[0].link!=undefined){//有link值，说明该模型已经配置过，忽略
+          continue;
+        }
+        for(let input of cells[j].inputData){
+          if(input.link==undefined){
+            input.link=''
           }
         }
       }
