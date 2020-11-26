@@ -177,11 +177,7 @@
             <version>1.2.2</version>
         </dependency>
 
-        <dependency>
-            <groupId>abc</groupId>
-            <artifactId>abc</artifactId>
-            <version>1.0</version>
-        </dependency>
+
 
 
         <!-- svg 转 png  -->

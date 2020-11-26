@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.ip2location.IP2Location;
 import com.ip2location.IPResult;
+import njgis.opengms.portal.entity.support.Article;
 import njgis.opengms.portal.entity.support.GeoInfoMeta;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
