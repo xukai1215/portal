@@ -95,6 +95,18 @@ var notice = Vue.extend({
             theme_tableData2_self:[],
             theme_tableData3_self:[],
             theme_tableData1_length_self:0,
+
+            dataItem_tableData1:[],
+            dataItem_tableData2:[],
+            dataItem_tableData3:[],
+            dataItem_tableData1_length:0,
+            dataItem_tableData2_length:0,
+            dataItem_tableData3_length:0,
+
+            dataItem_tableData1_self:[],
+            dataItem_tableData2_self:[],
+            dataItem_tableData3_self:[],
+            dataItem_tableData1_length_self:0,
             // theme_tableData2_length_self:0,
             // theme_tableData3_length_self:0,
 
@@ -105,6 +117,8 @@ var notice = Vue.extend({
             model_self:0,
             community_self:0,
             theme_self:0,
+            dataItem_self:0,
+
             sum_tableData:[],//为了解决时间线多个v-for无法将多个表格数据时间正序排列的问题，将所有表格数据放到一个表格中
             //存放Info临时点击数据
             info_past_dialog:"",
@@ -146,6 +160,8 @@ var notice = Vue.extend({
             community_reject_unread:0,
             theme_accept_unread:0,
             theme_reject_unread:0,
+            dataItem_accept_unread:0,
+            dataItem_reject_unread:0,
 
             loading: true,
 
@@ -168,93 +184,101 @@ var notice = Vue.extend({
     },
     methods:{
         getComments(){
-            $.get("/comment/getCommentsByUser",{},(result)=>{
-                let code = result.code;
-                if(code == -1){
-                    alert("please login");
-                    window.location.href="/user/login";
-                }
-                this.comments = result.data;
-                this.userOid = this.comments.pop();
-                let num=0;
-                for (let i=0;i<this.comments.length;i++){
-                    if (this.comments[i].replier==null||this.comments[i].author.oid == this.userOid){
-                        this.comments1.push(this.comments[i]);
-                    } else {
-                        if (this.comments[i].readStatus==0) {
-                            this.comments[i].color = '#f5f5dc';
-                            num++;
-                        }else {
-                            this.comments[i].color = '#ffffff';
+            this.await = true;
+            $.ajax({
+                    type: "GET",
+                    url: "/comment/getCommentsByUser",
+                    data: {},
+                    async: true,
+                    success: (result) => {
+                        // $.get("/comment/getCommentsByUser",{},(result)=>{
+                        let code = result.code;
+                        if (code == -1) {
+                            alert("please login");
+                            window.location.href = "/user/login";
                         }
-                        this.comments2.push(this.comments[i]);
-                    }
-                }
-                this.unread = num;
-                // this.comments2Length = this.comments2.length;
+                        this.comments = result.data;
+                        this.userOid = this.comments.pop();
+                        let num = 0;
+                        for (let i = 0; i < this.comments.length; i++) {
+                            if (this.comments[i].replier == null || this.comments[i].author.oid == this.userOid) {
+                                this.comments1.push(this.comments[i]);
+                            } else {
+                                if (this.comments[i].readStatus == 0) {
+                                    this.comments[i].color = '#f5f5dc';
+                                    num++;
+                                } else {
+                                    this.comments[i].color = '#ffffff';
+                                }
+                                this.comments2.push(this.comments[i]);
+                            }
+                        }
+                        this.unread = num;
+                        // this.comments2Length = this.comments2.length;
 
-                //将comment内容纳入以时间为主键的sumComment中
-                let k=0;
-                for (let i=0;i<this.comments1.length;i++){
-                    if (i==0){
-                        this.sumComment1[k].date = this.comments1[i].modifyTimeDay;
-                        this.sumComment1[k].comment.push(this.comments1[i]);
-                        if (this.sumComment1[k].comment[0].content == null){
-                            this.sumComment1[k].comment.shift();
+                        //将comment内容纳入以时间为主键的sumComment中
+                        let k = 0;
+                        for (let i = 0; i < this.comments1.length; i++) {
+                            if (i == 0) {
+                                this.sumComment1[k].date = this.comments1[i].modifyTimeDay;
+                                this.sumComment1[k].comment.push(this.comments1[i]);
+                                if (this.sumComment1[k].comment[0].content == null) {
+                                    this.sumComment1[k].comment.shift();
+                                }
+                            } else if (this.comments1[i].modifyTimeDay == this.comments1[i - 1].modifyTimeDay) {
+                                this.sumComment1[k].comment.push(this.comments1[i]);
+                                if (this.sumComment1[k].comment[0].content == null) {
+                                    this.sumComment1[k].comment.shift();
+                                }
+                            } else {
+                                k++;
+                                this.sumComment1.push({
+                                    date: "",
+                                    comment: [{}]
+                                })
+                                this.sumComment1[k].date = this.comments1[i].modifyTimeDay;
+                                this.sumComment1[k].comment.push(this.comments1[i]);
+                                if (this.sumComment1[k].comment[0].content == null) {
+                                    this.sumComment1[k].comment.shift();
+                                }
+                            }
                         }
-                    } else if (this.comments1[i].modifyTimeDay == this.comments1[i-1].modifyTimeDay){
-                        this.sumComment1[k].comment.push(this.comments1[i]);
-                        if (this.sumComment1[k].comment[0].content == null) {
-                            this.sumComment1[k].comment.shift();
+                        let k1 = 0;
+                        for (let i = 0; i < this.comments2.length; i++) {
+                            if (i == 0) {
+                                this.sumComment2[k1].date = this.comments2[i].modifyTimeDay;
+                                this.sumComment2[k1].color = this.comments2[i].color;
+                                this.sumComment2[k1].comment.push(this.comments2[i]);
+                                if (this.sumComment2[k1].comment[0].content == null) {
+                                    this.sumComment2[k1].comment.shift();
+                                }
+                            } else if (this.comments2[i].modifyTimeDay == this.comments2[i - 1].modifyTimeDay) {
+                                this.sumComment2[k1].comment.push(this.comments2[i]);
+                                this.sumComment2[k1].color = this.comments2[i].color;//更新为最新评论所代表的color
+                                if (this.sumComment2[k1].comment[0].content == null) {
+                                    this.sumComment2[k1].comment.shift();
+                                }
+                            } else {
+                                k1++;
+                                this.sumComment2.push({
+                                    date: "",
+                                    comment: [{}]
+                                })
+                                this.sumComment2[k1].date = this.comments2[i].modifyTimeDay;
+                                this.sumComment2[k1].color = this.comments2[i].color;
+                                this.sumComment2[k1].comment.push(this.comments2[i]);
+                                if (this.sumComment2[k1].comment[0].content == null) {
+                                    this.sumComment2[k1].comment.shift();
+                                }
+                            }
                         }
-                    } else {
-                        k++;
-                        this.sumComment1.push({
-                            date:"",
-                            comment:[{}]
-                        })
-                        this.sumComment1[k].date = this.comments1[i].modifyTimeDay;
-                        this.sumComment1[k].comment.push(this.comments1[i]);
-                        if (this.sumComment1[k].comment[0].content == null) {
-                            this.sumComment1[k].comment.shift();
+                        if (this.sumComment1[0].date == "") {
+                            this.sumComment1.shift();
+                        }
+                        if (this.sumComment2[0].date == "") {
+                            this.sumComment2.shift();
                         }
                     }
-                }
-                let k1=0;
-                for (let i=0;i<this.comments2.length;i++){
-                    if (i==0){
-                        this.sumComment2[k1].date = this.comments2[i].modifyTimeDay;
-                        this.sumComment2[k1].color = this.comments2[i].color;
-                        this.sumComment2[k1].comment.push(this.comments2[i]);
-                        if (this.sumComment2[k1].comment[0].content == null){
-                            this.sumComment2[k1].comment.shift();
-                        }
-                    } else if (this.comments2[i].modifyTimeDay == this.comments2[i-1].modifyTimeDay){
-                        this.sumComment2[k1].comment.push(this.comments2[i]);
-                        this.sumComment2[k1].color = this.comments2[i].color;//更新为最新评论所代表的color
-                        if (this.sumComment2[k1].comment[0].content == null) {
-                            this.sumComment2[k1].comment.shift();
-                        }
-                    } else {
-                        k1++;
-                        this.sumComment2.push({
-                            date:"",
-                            comment:[{}]
-                        })
-                        this.sumComment2[k1].date = this.comments2[i].modifyTimeDay;
-                        this.sumComment2[k1].color = this.comments2[i].color;
-                        this.sumComment2[k1].comment.push(this.comments2[i]);
-                        if (this.sumComment2[k1].comment[0].content == null) {
-                            this.sumComment2[k1].comment.shift();
-                        }
-                    }
-                }
-                if (this.sumComment1[0].date == "") {
-                    this.sumComment1.shift();
-                }
-                if (this.sumComment2[0].date == "") {
-                    this.sumComment2.shift();
-                }
 
                 // if (this.sumComment1.length == 0){
                 //     $(".commentOverView").show();
@@ -287,7 +311,7 @@ var notice = Vue.extend({
                 type: "GET",
                 url: "/theme/getMessageData",
                 data: {},
-                async: true,
+                // async: true,
                 success: (json) => {
                     //下面将type分到model、community中
                     //model：modelItem、conceptualModel、logicalModel、computableModel
@@ -303,6 +327,9 @@ var notice = Vue.extend({
                         }else if (json.data.accept[i].type == "theme") {
                             this.theme_tableData2.push(json.data.accept[i]);
                             this.sum_tableData.push(json.data.accept[i]);
+                        } else if (json.data.accept[i].type == "dataItem"||json.data.accept[i].type == "dataApplication"||json.data.accept[i].type=="dataHubs"){
+                            this.dataItem_tableData2.push(json.data.accept[i]);
+                            this.sum_tableData.push(json.data.accept[i]);
                         }
                     }
                     for (let i=0;i<json.data.reject.length;i++){
@@ -314,6 +341,9 @@ var notice = Vue.extend({
                             this.sum_tableData.push(json.data.reject[i]);
                         }else if (json.data.reject[i].type == "theme") {
                             this.theme_tableData3.push(json.data.reject[i]);
+                            this.sum_tableData.push(json.data.reject[i]);
+                        }else if (json.data.reject[i].type == "dataItem"||json.data.reject[i].type == "dataApplication"||json.data.reject[i].type=="dataHubs"){
+                            this.dataItem_tableData3.push(json.data.reject[i]);
                             this.sum_tableData.push(json.data.reject[i]);
                         }
                     }
@@ -330,6 +360,8 @@ var notice = Vue.extend({
                             this.theme_tableData1.push(json.data.uncheck[i]);
                             // this.sum_tableData.push(json.data.uncheck[i]);
                             // this.message_num++;
+                        }else if (json.data.uncheck[i].type == "dataItem" || json.data.uncheck[i].type == "dataApplication"||json.data.uncheck[i].type=="dataHubs"){
+                            this.dataItem_tableData1.push(json.data.uncheck[i]);
                         }
                     }
 
@@ -337,6 +369,7 @@ var notice = Vue.extend({
                     let model_accept_num = 0;
                     let community_accept_num = 0;
                     let theme_accept_num = 0;
+                    let dataItem_accept_num = 0;
                     for (let i=0;i<json.data.accept_self.length;i++){
                         if (json.data.accept_self[i].type == "modelItem" || json.data.accept_self[i].type == "conceptualModel"||json.data.accept_self[i].type == "logicalModel"||json.data.accept_self[i].type == "computableModel"){
                             //涂色
@@ -357,16 +390,23 @@ var notice = Vue.extend({
                                 theme_accept_num ++;
                             }
                             //this.sum_tableData.push(json.data.accept[i]);
+                        }else if (json.data.accept_self[i].type == "dataItem"||json.data.accept_self[i].type == "dataApplication"||json.data.accept_self[i].type=="dataHubs"){
+                            this.dataItem_tableData2_self.push(json.data.accept_self[i]);
+                            if (json.data.accept_self[i].readStatus == 0){
+                                dataItem_accept_num ++;
+                            }
                         }
                     }
                     this.model_accept_unread = model_accept_num;
                     this.community_accept_unread = community_accept_num;
                     this.theme_accept_unread = theme_accept_num;
+                    this.dataItem_accept_unread = dataItem_accept_num;
 
 
                     let model_reject_num = 0;
                     let community_reject_num = 0;
                     let theme_reject_num = 0;
+                    let dataItem_reject_num = 0;
                     for (let i=0;i<json.data.reject_self.length;i++){
                         if (json.data.reject_self[i].type == "modelItem" || json.data.reject_self[i].type == "conceptualModel"||json.data.reject_self[i].type == "logicalModel"||json.data.reject_self[i].type == "computableModel"){
                             this.model_tableData3_self.push(json.data.reject_self[i]);
@@ -386,18 +426,26 @@ var notice = Vue.extend({
                                 theme_reject_num++;
                             }
                             //this.sum_tableData.push(json.data.reject[i]);
+                        }else if (json.data.reject_self[i].type == "dataItem"||json.data.reject_self[i].type == "dataApplication"||json.data.reject_self[i].type=="dataHubs") {
+                            this.dataItem_tableData3_self.push(json.data.reject_self[i]);
+                            if (json.data.reject_self[i].readStatus == 0) {
+                                dataItem_reject_num ++;
+                            }
                         }
                     }
                     this.model_reject_unread = model_reject_num;
                     this.community_reject_unread = community_reject_num;
                     this.theme_reject_unread = theme_reject_num;
+                    this.dataItem_reject_unread = dataItem_reject_num;
 
                     for (let i=0;i<json.data.uncheck_self.length;i++){
-                        if (json.data.uncheck_self[i].type == "modelItem" || json.data.uncheck_self[i].type == "conceptualModel"||json.data.uncheck_self[i].type == "logicalModel"||json.data.uncheck_self[i].type == "computableModel"){
+                        if (json.data.uncheck_self[i].type == "modelItem" || json.data.uncheck_self[i].type == "conceptualModel"||json.data.uncheck_self[i].type == "logicalModel"
+                            ||json.data.uncheck_self[i].type == "computableModel"){
                             this.model_tableData1_self.push(json.data.uncheck_self[i]);
                             //this.sum_tableData.push(json.data.uncheck[i]);
                            // this.message_num++;
-                        }else if (json.data.uncheck_self[i].type == "concept" || json.data.uncheck_self[i].type == "spatialReference"||json.data.uncheck_self[i].type == "unit"||json.data.uncheck_self[i].type == "template"){
+                        }else if (json.data.uncheck_self[i].type == "concept" || json.data.uncheck_self[i].type == "spatialReference"||json.data.uncheck_self[i].type == "unit"
+                            ||json.data.uncheck_self[i].type == "template"){
                             this.community_tableData1_self.push(json.data.uncheck_self[i]);
                             // this.sum_tableData.push(json.data.uncheck[i]);
                             //this.message_num++;
@@ -405,11 +453,16 @@ var notice = Vue.extend({
                             this.theme_tableData1_self.push(json.data.uncheck_self[i]);
                             // this.sum_tableData.push(json.data.uncheck[i]);
                             //this.message_num++;
+                        }else if (json.data.uncheck_self[i].type == "dataItem"||json.data.uncheck_self[i].type == "dataApplication"||json.data.uncheck_self[i].type=="dataHubs") {
+                            this.dataItem_tableData1_self.push(json.data.uncheck_self[i]);
+                            // this.sum_tableData.push(json.data.uncheck[i]);
+                            //this.message_num++;
                         }
                     }
 
                     for (let i=0;i<json.data.edit.length;i++){
-                        if (json.data.edit[i].type == "modelItem" || json.data.edit[i].type == "conceptualModel"||json.data.edit[i].type == "logicalModel"||json.data.edit[i].type == "computableModel"){
+                        if (json.data.edit[i].type == "modelItem" || json.data.edit[i].type == "conceptualModel"||json.data.edit[i].type == "logicalModel"
+                            ||json.data.edit[i].type == "computableModel"){
                             json.data.edit[i].status = "unchecked";
                             this.edit_model_tableData.push(json.data.edit[i]);
                             this.sum_tableData.push(json.data.edit[i]);
@@ -440,6 +493,9 @@ var notice = Vue.extend({
                     this.bubbleSort(this.theme_tableData1);
                     this.bubbleSort(this.theme_tableData2);
                     this.bubbleSort(this.theme_tableData3);
+                    this.bubbleSort(this.dataItem_tableData1);
+                    this.bubbleSort(this.dataItem_tableData2);
+                    this.bubbleSort(this.dataItem_tableData3);
 
                     this.bubbleSort(this.model_tableData1_self);
                     this.bubbleSort(this.model_tableData2_self);
@@ -450,6 +506,9 @@ var notice = Vue.extend({
                     this.bubbleSort(this.theme_tableData1_self);
                     this.bubbleSort(this.theme_tableData2_self);
                     this.bubbleSort(this.theme_tableData3_self);
+                    this.bubbleSort(this.dataItem_tableData1_self);
+                    this.bubbleSort(this.dataItem_tableData2_self);
+                    this.bubbleSort(this.dataItem_tableData3_self);
 
                     this.model_tableData1.reverse();
                     this.model_tableData2.reverse();
@@ -460,6 +519,9 @@ var notice = Vue.extend({
                     this.theme_tableData1.reverse();
                     this.theme_tableData2.reverse();
                     this.theme_tableData3.reverse();
+                    this.dataItem_tableData1.reverse();
+                    this.dataItem_tableData2.reverse();
+                    this.dataItem_tableData3.reverse();
 
                     this.model_tableData1_self.reverse();
                     this.model_tableData2_self.reverse();
@@ -470,6 +532,9 @@ var notice = Vue.extend({
                     this.theme_tableData1_self.reverse();
                     this.theme_tableData2_self.reverse();
                     this.theme_tableData3_self.reverse();
+                    this.dataItem_tableData1_self.reverse();
+                    this.dataItem_tableData2_self.reverse();
+                    this.dataItem_tableData3_self.reverse();
 
 
                     this.sum_tableData = this.sum_tableData.concat(this.comments);
@@ -903,6 +968,9 @@ var notice = Vue.extend({
                     this.theme_tableData1_length = this.theme_tableData1.length;
                     this.theme_tableData2_length = this.theme_tableData2.length;
                     this.theme_tableData3_length = this.theme_tableData3.length;
+                    this.dataItem_tableData1_length = this.dataItem_tableData1.length;
+                    this.dataItem_tableData2_length = this.dataItem_tableData2.length;
+                    this.dataItem_tableData3_length = this.dataItem_tableData3.length;
 
                     this.model_tableData1_length_self = this.model_tableData1_self.length;
                     // this.model_tableData2_length_self = this.model_tableData2_self.length;
@@ -913,13 +981,15 @@ var notice = Vue.extend({
                     this.theme_tableData1_length_self = this.theme_tableData1_self.length;
                     // this.theme_tableData2_length_self = this.theme_tableData2_self.length;
                     // this.theme_tableData3_length_self = this.theme_tableData3_self.length;
+                    this.dataItem_tableData1_length_self = this.dataItem_tableData1_self.length;
 
-
-                    this.table_length_sum = (this.model_tableData1_length+this.community_tableData1_length+this.theme_tableData1_length);
-                    this.table_length_sum_self = (this.model_accept_unread+this.model_reject_unread+this.community_accept_unread+this.community_reject_unread+this.theme_accept_unread+this.theme_reject_unread);
+                    this.table_length_sum = (this.model_tableData1_length+this.community_tableData1_length+this.theme_tableData1_length+this.dataItem_tableData1_length);
+                    this.table_length_sum_self = (this.model_accept_unread+this.model_reject_unread+this.community_accept_unread+this.community_reject_unread+
+                        this.theme_accept_unread+this.theme_reject_unread+this.dataItem_accept_unread + this.dataItem_reject_unread);
                     this.model_self = (this.model_accept_unread+this.model_reject_unread);
                     this.community_self = (this.community_accept_unread+this.community_reject_unread);
                     this.theme_self = (this.theme_accept_unread+this.theme_reject_unread);
+                    this.dataItem_self = (this.dataItem_accept_unread+this.dataItem_reject_unread);
                     this.version_sum = this.table_length_sum + this.table_length_sum_self;
 
 
@@ -986,6 +1056,15 @@ var notice = Vue.extend({
             }
             //console.log(event.currentTarget);
         },
+        view_data_self(event){
+            let refLink=$(".viewBtn_data_self");
+            for(i=0;i<refLink.length;i++){
+                if(event.currentTarget===refLink[i]){
+                    window.open("/version/"+this.dataItem_tableData1_self[i].type+"/"+this.dataItem_tableData1_self[i].oid);
+                }
+            }
+            //console.log(event.currentTarget);
+        },
         view1(event){
             let refLink=$(".viewBtn1");
             for(i=0;i<refLink.length;i++){
@@ -1013,6 +1092,15 @@ var notice = Vue.extend({
             }
             //console.log(event.currentTarget);
         },
+        view_data(event){
+            let refLink=$(".viewBtn_data");
+            for(i=0;i<refLink.length;i++){
+                if(event.currentTarget===refLink[i]){
+                   window.open("/version/"+ this.dataItem_tableData1[i].type + "/" + this.dataItem_tableData1[i].oid);
+                }
+            }
+            //console.log(event.currentTarget);
+        },
         view_theme_self(event){
             let refLink=$(".viewBtn_theme_self");
             for(i=0;i<refLink.length;i++){
@@ -1031,11 +1119,29 @@ var notice = Vue.extend({
             }
             //console.log(event.currentTarget);
         },
+        viewAccept_data(event){
+            let refLink=$(".viewAcceptBtn_data");
+            for(i=0;i<refLink.length;i++){
+                if(event.currentTarget===refLink[i]){
+                    window.open("/version/history/"+this.dataItem_tableData2[i].type+"/"+this.dataItem_tableData2[i].oid);
+                }
+            }
+            //console.log(event.currentTarget);
+        },
         viewAccept_self(event){
             let refLink=$(".viewAcceptBtn_self");
             for(i=0;i<refLink.length;i++){
                 if(event.currentTarget===refLink[i]){
                     window.open("/version/history/"+this.model_tableData2_self[i].type+"/"+this.model_tableData2_self[i].oid);
+                }
+            }
+            //console.log(event.currentTarget);
+        },
+        viewAccept_data_self(event){
+            let refLink=$(".viewAcceptBtn_data_self");
+            for(i=0;i<refLink.length;i++){
+                if(event.currentTarget===refLink[i]){
+                    window.open("/version/history/"+this.dataItem_tableData2_self[i].type+"/"+this.dataItem_tableData2_self[i].oid);
                 }
             }
             //console.log(event.currentTarget);
@@ -1076,6 +1182,7 @@ var notice = Vue.extend({
             }
             //console.log(event.currentTarget);
         },
+        //modelItem
         viewReject(event){
             let refLink=$(".viewRejectBtn");
             for(i=0;i<refLink.length;i++){
@@ -1094,6 +1201,26 @@ var notice = Vue.extend({
             }
             //console.log(event.currentTarget);
         },
+        viewReject_data_self(event){
+            let refLink=$(".viewRejectBtn_data_self");
+            for(i=0;i<refLink.length;i++){
+                if(event.currentTarget===refLink[i]){
+                    window.open("/version/history/"+this.dataItem_tableData3_self[i].type+"/"+this.dataItem_tableData3_self[i].oid);
+                }
+            }
+            //console.log(event.currentTarget);
+        },
+        //dataItem
+        viewReject_data(event){
+            let refLink=$(".viewRejectBtn_data");
+            for(i=0;i<refLink.length;i++){
+                if(event.currentTarget===refLink[i]){
+                    window.open("/version/history/"+this.dataItem_tableData3[i].type+"/"+this.dataItem_tableData3[i].oid);
+                }
+            }
+            //console.log(event.currentTarget);
+        },
+        //community
         viewReject1(event){
             let refLink=$(".viewRejectBtn1");
             for(i=0;i<refLink.length;i++){
@@ -1112,6 +1239,7 @@ var notice = Vue.extend({
             }
             //console.log(event.currentTarget);
         },
+        //theme
         view_theme_reject(event){
             let refLink=$(".viewRejectBtn_theme");
             for(i=0;i<refLink.length;i++){
@@ -1141,6 +1269,31 @@ var notice = Vue.extend({
                         type:tableItem.type,
                         oid:tableItem.oid,
                         originOid:tableItem.originOid
+                    };
+                    $.ajax({
+                        type:"POST",
+                        url:"/version/accept",
+                        contentType: "application/json",
+                        data: JSON.stringify(data),
+                        async: true,
+                        success:(json)=>{
+                            window.location.reload();
+                        }
+                    })
+                }
+            }
+        },
+        accept_data(event){
+            let accepts=$(".accept_data");
+
+            for(i=0;i<accepts.length;i++){
+                if(event.currentTarget===accepts[i]){
+                    let tableItem=this.dataItem_tableData1[i];
+                    let data={
+                        modifier:tableItem.modifier.modifier,
+                        type:tableItem.type,
+                        oid:tableItem.oid,
+                        originOid:tableItem.originId
                     };
                     $.ajax({
                         type:"POST",
@@ -1216,6 +1369,31 @@ var notice = Vue.extend({
                         type:tableItem.type,
                         oid:tableItem.oid,
                         originOid:tableItem.originOid
+                    }
+                    $.ajax({
+                        type:"POST",
+                        url:"/version/reject",
+                        contentType: "application/json",
+                        data:JSON.stringify(data),
+                        async: true,
+                        success:(json)=>{
+                            window.location.reload();
+                        }
+                    })
+                }
+            }
+        },
+        reject_data(event){
+            let rejects=$(".reject_data");
+
+            for(i=0;i<rejects.length;i++){
+                if(event.currentTarget===rejects[i]){
+                    let tableItem=this.dataItem_tableData1[i];
+                    let data={
+                        modifier:tableItem.modifier.modifier,
+                        type:tableItem.type,
+                        oid:tableItem.oid,
+                        originOid:tableItem.originId,
                     }
                     $.ajax({
                         type:"POST",
@@ -1344,7 +1522,8 @@ var notice = Vue.extend({
                             if (json=="ok"){
                                 this.model_accept_unread = 0;
                                 this.model_self = (this.model_accept_unread+this.model_reject_unread);
-                                this.table_length_sum_self = (this.model_accept_unread+this.model_reject_unread+this.community_accept_unread+this.community_reject_unread+this.theme_accept_unread+this.theme_reject_unread);
+                                this.table_length_sum_self = (this.model_accept_unread+this.model_reject_unread+this.community_accept_unread+this.community_reject_unread
+                                    +this.theme_accept_unread+this.theme_reject_unread+this.dataItem_accept_unread+this.dataItem_reject_unread);
                                 this.version_sum = this.table_length_sum + this.table_length_sum_self;
                                 this.message_num = this.version_sum + this.unread;
                                 $("#headBar .el-badge__content").text(this.message_num);
@@ -1381,7 +1560,88 @@ var notice = Vue.extend({
                             if (json=="ok"){
                                 this.model_reject_unread = 0;
                                 this.model_self = (this.model_accept_unread+this.model_reject_unread);
-                                this.table_length_sum_self = (this.model_accept_unread+this.model_reject_unread+this.community_accept_unread+this.community_reject_unread+this.theme_accept_unread+this.theme_reject_unread);
+                                this.table_length_sum_self = (this.model_accept_unread+this.model_reject_unread+this.community_accept_unread+this.community_reject_unread
+                                    +this.theme_accept_unread+this.theme_reject_unread+this.dataItem_accept_unread+this.dataItem_reject_unread);
+                                this.version_sum = this.table_length_sum + this.table_length_sum_self;
+                                this.message_num = this.version_sum + this.unread;
+                                $("#headBar .el-badge__content").text(this.message_num);
+                                console.log("success");
+                            }
+                        }
+                    })
+                }
+            }
+        },
+        MyEditionDataReaded(tab, event){
+            if (tab.label == "Accepted version") {
+                //首先将该table中的oid组取出
+                var oids =[{}];
+                for (let i=0;i<this.dataItem_tableData2_self.length;i++){
+                    if (this.dataItem_tableData2_self[i].readStatus == 0) {
+                        var object={};
+                        object.oid = this.dataItem_tableData2_self[i].oid;
+                        object.type = this.dataItem_tableData2_self[i].type;
+                        oids.push(object);
+                    }
+                }
+                oids.shift();
+                //首先判断Accept version的消息数目，如果为0就不需要进行下面的操作了，如果不为0则进行各种后台操作
+                if (this.dataItem_accept_unread != 0){
+                    $.ajax({
+                        url:"/version/MyEditionReaded",
+                        type:"POST",
+                        // dataType: "json",
+                        contentType:"application/json",
+                        data:JSON.stringify({
+                            // type:"accept",
+                            my_edition_num:this.dataItem_accept_unread,
+                            oids:oids,
+                        }),
+                        // dataType: "json",
+                        success: (json) => {
+                            if (json=="ok"){
+                                this.dataItem_accept_unread = 0;
+                                this.dataItem_self = (this.dataItem_accept_unread+this.dataItem_reject_unread);
+                                this.table_length_sum_self = (this.model_accept_unread+this.model_reject_unread+this.community_accept_unread+this.community_reject_unread+
+                                    this.theme_accept_unread+this.theme_reject_unread+this.dataItem_accept_unread+this.dataItem_reject_unread);
+                                this.version_sum = this.table_length_sum + this.table_length_sum_self;
+                                this.message_num = this.version_sum + this.unread;
+                                $("#headBar .el-badge__content").text(this.message_num);
+                                console.log("success");
+                            }
+                        }
+                    })
+                }
+            }else if (tab.label == "Rejected version"){
+                //首先将该table中的oid组取出
+                var oids =[{}];
+                for (let i=0;i<this.dataItem_tableData3_self.length;i++){
+                    if (this.dataItem_tableData3_self[i].readStatus == 0) {
+                        var object={};
+                        object.oid = this.dataItem_tableData3_self[i].oid;
+                        object.type = this.dataItem_tableData3_self[i].type;
+                        oids.push(object);
+                    }
+                }
+                oids.shift();
+                //首先判断Accept version的消息数目，如果为0就不需要进行下面的操作了，如果不为0则进行各种后台操作
+                if (this.dataItem_reject_unread != 0){
+                    $.ajax({
+                        url:"/version/MyEditionReaded",
+                        type:"POST",
+                        // dataType: "json",
+                        contentType:"application/json",
+                        data:JSON.stringify({
+                            my_edition_num:this.dataItem_reject_unread,
+                            oids:oids,
+                        }),
+                        // dataType: "json",
+                        success: (json) => {
+                            if (json=="ok"){
+                                this.dataItem_reject_unread = 0;
+                                this.dataItem_self = (this.dataItem_accept_unread+this.dataItem_reject_unread);
+                                this.table_length_sum_self = (this.model_accept_unread+this.model_reject_unread+this.community_accept_unread+this.community_reject_unread
+                                    +this.theme_accept_unread+this.theme_reject_unread+this.dataItem_accept_unread+this.dataItem_reject_unread);
                                 this.version_sum = this.table_length_sum + this.table_length_sum_self;
                                 this.message_num = this.version_sum + this.unread;
                                 $("#headBar .el-badge__content").text(this.message_num);
@@ -1422,7 +1682,8 @@ var notice = Vue.extend({
                             if (json=="ok"){
                                 this.community_accept_unread = 0;
                                 this.community_self = (this.community_accept_unread+this.community_reject_unread);
-                                this.table_length_sum_self = (this.model_accept_unread+this.model_reject_unread+this.community_accept_unread+this.community_reject_unread+this.theme_accept_unread+this.theme_reject_unread);
+                                this.table_length_sum_self = (this.model_accept_unread+this.model_reject_unread+this.community_accept_unread+this.community_reject_unread
+                                    +this.theme_accept_unread+this.theme_reject_unread+this.dataItem_accept_unread+this.dataItem_reject_unread);
                                 this.version_sum = this.table_length_sum + this.table_length_sum_self;
                                 this.message_num = this.version_sum + this.unread;
                                 $("#headBar .el-badge__content").text(this.message_num);
@@ -1459,7 +1720,8 @@ var notice = Vue.extend({
                             if (json=="ok"){
                                 this.community_reject_unread = 0;
                                 this.community_self = (this.community_accept_unread+this.community_reject_unread);
-                                this.table_length_sum_self = (this.model_accept_unread+this.model_reject_unread+this.community_accept_unread+this.community_reject_unread+this.theme_accept_unread+this.theme_reject_unread);
+                                this.table_length_sum_self = (this.model_accept_unread+this.model_reject_unread+this.community_accept_unread+this.community_reject_unread
+                                    +this.theme_accept_unread+this.theme_reject_unread+this.dataItem_accept_unread+this.dataItem_reject_unread);
                                 this.version_sum = this.table_length_sum + this.table_length_sum_self;
                                 this.message_num = this.version_sum + this.unread;
                                 $("#headBar .el-badge__content").text(this.message_num);
@@ -1500,7 +1762,8 @@ var notice = Vue.extend({
                             if (json=="ok"){
                                 this.theme_accept_unread = 0;
                                 this.theme_self = (this.theme_accept_unread+this.theme_reject_unread);
-                                this.table_length_sum_self = (this.model_accept_unread+this.model_reject_unread+this.community_accept_unread+this.community_reject_unread+this.theme_accept_unread+this.theme_reject_unread);
+                                this.table_length_sum_self = (this.model_accept_unread+this.model_reject_unread+this.community_accept_unread+this.community_reject_unread
+                                    +this.theme_accept_unread+this.theme_reject_unread+this.dataItem_accept_unread+this.dataItem_reject_unread);
                                 this.version_sum = this.table_length_sum + this.table_length_sum_self;
                                 this.message_num = this.version_sum + this.unread;
                                 $("#headBar .el-badge__content").text(this.message_num);
@@ -1537,7 +1800,8 @@ var notice = Vue.extend({
                             if (json == "ok"){
                                 this.theme_reject_unread = 0;
                                 this.theme_self = (this.theme_accept_unread+this.theme_reject_unread);
-                                this.table_length_sum_self = (this.model_accept_unread+this.model_reject_unread+this.community_accept_unread+this.community_reject_unread+this.theme_accept_unread+this.theme_reject_unread);
+                                this.table_length_sum_self = (this.model_accept_unread+this.model_reject_unread+this.community_accept_unread+this.community_reject_unread
+                                    +this.theme_accept_unread+this.theme_reject_unread+this.dataItem_accept_unread+this.dataItem_reject_unread);
                                 this.version_sum = this.table_length_sum + this.table_length_sum_self;
                                 this.message_num = this.version_sum + this.unread;
                                 $("#headBar .el-badge__content").text(this.message_num);

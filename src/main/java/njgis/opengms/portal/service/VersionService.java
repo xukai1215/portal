@@ -32,6 +32,9 @@ public class VersionService {
     ClassificationService classificationService;
 
     @Autowired
+    Classification2Service classification2Service;
+
+    @Autowired
     UserDao userDao;
 
     @Autowired
@@ -92,6 +95,7 @@ public class VersionService {
     UnitClassificationDao unitClassificationDao;
     @Autowired
     TemplateClassificationDao templateClassificationDao;
+
 
 
     @Value("${resourcePath}")
@@ -162,6 +166,28 @@ public class VersionService {
 
         }
 
+        JSONArray classResult2 = new JSONArray();
+
+        List<String> classifications2 = modelItemVersion.getClassifications2();
+        for(int i=0;i<classifications2.size();i++){
+
+            JSONArray array=new JSONArray();
+            String classId=classifications2.get(i);
+
+            do{
+                Classification classification=classification2Service.getByOid(classId);
+                array.add(classification.getNameEn());
+                classId=classification.getParentId();
+            }while(classId!=null);
+
+            JSONArray array1=new JSONArray();
+            for(int j=array.size()-1;j>=0;j--){
+                array1.add(array.getString(j));
+            }
+
+            classResult2.add(array1);
+
+        }
 
         //详情页面
         String detailResult;
@@ -268,6 +294,8 @@ public class VersionService {
             }
         }
 
+
+
         //图片路径
         String image=modelInfo.getImage();
         if(!image.equals("")){
@@ -292,6 +320,7 @@ public class VersionService {
 
         modelAndView.addObject("modelInfo2",modelItemVersion);
         modelAndView.addObject("classifications2",classResult1);
+        modelAndView.addObject("classifications22",classResult2);
         modelAndView.addObject("detail2",detailResult1);
 //        modelAndView.addObject("conceptualModels2",conceptualArray1);
 //        modelAndView.addObject("logicalModels2",logicalArray1);

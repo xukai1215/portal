@@ -83,7 +83,7 @@
                 <div th:if="${logged}" class="loged" >
                     <li id="userLoged" style="float: right">
                         <a class="" style="cursor:default;display: flex; align-items: center; margin-left: 12px;">
-                            <img class="userIcon round_icon" th:src="${( userNavBar.image == null ||#strings.isEmpty(userNavBar.image)) ? '/static/img/icon/default.png' : '/static'+userNavBar.image}" style="width:30px;height: 30px;display: inline-block;margin-right:10px;margin-top: -3px">
+                            <img class="userIcon round_icon" th:src="${(userNavBar.image == null ||#strings.isEmpty(userNavBar.image)) ? '/static/img/icon/default.png' : '/static'+userNavBar.image}" style="width:30px;height: 30px;display: inline-block;margin-right:10px;margin-top: -3px">
                             <div class="el-badge item" style="flex: 0.5;">
                                 <div id="userName" class="textLineLimit" th:text="${userNavBar.name}" style="display: inline-block;max-width: 100px">Hello!!!!!!!!!</div>
                                 <sup th:if="${userNavBar.messageNum}" class="el-badge__content is-fixed is-dot message_user" style="width: 8px;top: 0px !important;
@@ -155,13 +155,13 @@
                 <li><a href="/user/register">Sign Up</a></li>
             </ul>
         </div>
-        <!--        <div class="sub zmax" id="subData" style="left: 453px">-->
-        <!--            <ul>-->
-        <!--                <li><a href="/repository/concept" class="clickSubMenu">Data Center</a></li>-->
-        <!--                <li><a href="/repository/spatialReference" class="clickSubMenu">Data Resource</a></li>-->
-        <!--                <li><a href="/repository/template" class="clickSubMenu">Distributed Node Data</a></li>-->
-        <!--            </ul>-->
-        <!--        </div>-->
+<!--        <div class="sub zmax" id="subData" style="left: 453px">-->
+<!--            <ul>-->
+<!--                <li><a href="/repository/concept" class="clickSubMenu">Data Center</a></li>-->
+<!--                <li><a href="/repository/spatialReference" class="clickSubMenu">Data Resource</a></li>-->
+<!--                <li><a href="/repository/template" class="clickSubMenu">Distributed Node Data</a></li>-->
+<!--            </ul>-->
+<!--        </div>-->
 
 
         <!--        用户登录后的下拉-->
@@ -169,7 +169,7 @@
         <div th:if="${logged}" class="subLog zmax" id="logedSub" style="right: 0px">
             <ul>
                 <li><a id="userSpaceDir" href="/user/userSpace">My Space</a></li>
-                <li><a id="userPageDir" th:href="${'/user/' + userNavBar.oid}">My Page</a></li>
+                <li><a id="userPageDir" th:href="${'/profile/' + userNavBar.userId}">My Page</a></li>
                 <li>
                     <!--<el-badge :value="2" class="item">-->
                     <!--<a id="userNoticeDir" href="/user/userSpace#/notice">Notice</a>-->
@@ -190,7 +190,7 @@
                 <li style="padding-top: 16px;background-color: rgb(8,10,14)"><p style="text-align: center;font-size: 15.2px;color: white">
                     Hello ! &nbsp;&nbsp;<span id="userAloha" style="font-size: 15.5px;" th:text="${userNavBar.name}"></span></p></li>
                 <li><a href="/user/userSpace">My Space</a></li>
-                <li><a id="phoneUserPageDir" th:href="${'/user/' + userNavBar.oid}">My Page</a></li>
+                <li><a id="phoneUserPageDir" th:href="${'/profile/' + userNavBar.userId}">My Page</a></li>
                 <li class="el-badge item">
                     <a id="userNoticeDir2" href="/user/userSpace#/notice">Notice</a>
                     <sup th:if="${userNavBar.messageNum}" class="el-badge__content is-fixed notice_num" th:text="${userNavBar.messageNum}" style="right: 45%!important;"></sup>

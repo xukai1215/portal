@@ -6,28 +6,28 @@
     <meta name="viewport"
           content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 
-    <link rel="icon" type="image/x-icon" th:href="@{../../static/img/logo/favicon.ico}">
-    <link rel="stylesheet" th:href="@{../static/element-ui/theme-chalk/index.css}">
+    <link rel="icon" type="image/x-icon" th:href="@{/../static/img/logo/favicon.ico}">
+    <link rel="stylesheet" th:href="@{/static/element-ui/theme-chalk/index.css}">
 
     <link rel="stylesheet" href="../static/css/base/bootstrap.min.css"
-          th:href="@{../../static/css/base/bootstrap.min.css}">
+          th:href="@{/../static/css/base/bootstrap.min.css}">
     <link rel="stylesheet" href="../static/css/font-awesome/css/font-awesome.min.css"
-          th:href="@{../../static/css/font-awesome/css/font-awesome.min.css}">
+          th:href="@{/../static/css/font-awesome/css/font-awesome.min.css}">
     <link rel="stylesheet" href="../static/css/font-awesome/fonts/fontawesome-webfont.woff"
-          th:href="@{../../static/css/font-awesome/fonts/fontawesome-webfont.woff}">
+          th:href="@{/../static/css/font-awesome/fonts/fontawesome-webfont.woff}">
 
     <link rel="stylesheet" href="/static/css/base/relate_item.css">
 
-    <link rel="stylesheet" href="../static/css/base/style.css" th:href="@{../../static/css/base/style.css}">
-    <link rel="stylesheet" href="../static/css/base/universal.css" th:href="@{../../static/css/base/universal.css}">
+    <link rel="stylesheet" href="../static/css/base/style.css" th:href="@{/../static/css/base/style.css}">
+    <link rel="stylesheet" href="../static/css/base/universal.css" th:href="@{/../static/css/base/universal.css}">
     <link rel="stylesheet" href="/static/css/base/itemInfo.css">
     <link rel="stylesheet" href="../static/css/page/data_item_info.css"
-          th:href="@{../../static/css/page/data_item_info.css}">
+          th:href="@{/../static/css/page/data_item_info.css}">
     <link rel="stylesheet" href="../static/css/components/file-manager.css"
-          th:href="@{../../static/css/components/file-manager.css}">
+          th:href="@{/../static/css/components/file-manager.css}">
 
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/common/footerResponse.css"/>
-    <link rel="stylesheet" type="text/css" media="screen" href="../static/css/common/navbar.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css"/>
 
     <style type="text/css" th:inline="css">
         .col-md-5 {
@@ -77,12 +77,13 @@
                 </div>
 
                 <div class="detail_overview">
-
-                    <div class="img" th:object="${datainfo}">
-                        <!--<img th:if="${datainfo.data.type == 'option1'}" th:src="@{/static/img/model/model.png}">-->
-                        <avatar th:username="${datainfo.data.name}" :size="90" :rounded="false"></avatar>
-
-                        <!--<img th:unless="${datainfo.data.image!=Null}" th:src="${datainfo.data.image}">-->
+                    <div class="img" th:object="${datainfo}" v-if="">
+                        <div th:if="${#strings.isEmpty(datainfo.data.image)}">
+                            <avatar th:username="${datainfo.data.name}" :size="90" :rounded="false"></avatar>
+                        </div>
+                        <div th:unless="${#strings.isEmpty(datainfo.data.image)}">
+                            <img th:src="'/static'+${datainfo.data.image}" class="image">
+                        </div>
                     </div>
 
                     <div class="info" th:object="${datainfo}">
@@ -90,8 +91,6 @@
                         <div class="tags">
                             <span class="badge badge-info" th:each="key,iter : ${datainfo.data.keywords}"
                                   th:text="${iter.current}">itercurrent</span>
-
-
                         </div>
                     </div>
 
@@ -125,7 +124,7 @@
 
                         <div class="el-col">
                             <div class="pull-left" style="display: block;margin-left: 15px;">
-                                <a th:href="'/user/'+${user.oid}"><h4 th:text="${user.name}" style="padding: 0;">Tom Marvolo Riddle</h4></a>
+                                <a th:href="'/profile/'+${user.userId}"><h4 th:text="${user.name}" style="padding: 0;">Tom Marvolo Riddle</h4></a>
                             </div>
                         </div>
                     </div>
@@ -182,12 +181,8 @@
                     </div>
                 </div>
                 <div class="block_content" style="margin-bottom:10px;">
-
-                    <!--<el-tag type="success"  v-for="iter in dataCategory" @click="clickDataItemInfo(iter.id)" style="margin-left: 10px;font-weight: bold;color: #3396ef"> {{iter.cateContent}}</el-tag>-->
-
                     <el-tag type="success" th:each="classS:${classifications}" th:text="${classS}"
                             style="margin: 0 10px 10px 0;font-weight: bold;color: #3396ef"></el-tag>
-
                 </div>
             </div>
 
@@ -217,7 +212,7 @@
                     <div class="head_text">
                         <h4>Data Resource</h4>
                     </div>
-                </div>
+                </div>&nbsp;&nbsp;
                 <el-card>
                 <div class="el-card dataitemisol is-never-shadow"
                      th:each="data,key:${userDataList}"
@@ -248,7 +243,7 @@
                     </a>
                 </div>
                 </el-card>
-            </div>
+            </div>&nbsp;&nbsp;
 
             <!--Distributed Node Data-->
             <div  v-loading="loading" th:if="${#arrays.length(fileName)}" id="distributedNodeData" class="detail_block">
@@ -256,7 +251,7 @@
                     <div class="head_text">
                         <h4>Distributed Node Data</h4>
                     </div>
-                </div>
+                </div>&nbsp;&nbsp;
                 <div>
                     <el-card>
                         <div class="el-card dataitemisol is-never-shadow"
@@ -289,12 +284,13 @@
                         </div>
                     </el-card>
 
-                </div>
+                </div>&nbsp;&nbsp;
                 <div>
                     <p style="display: inline-block">You can apply to download this data:</p>
-                    <button class="value"  style="display: inline-block">DownLoad</button>
+                    <el-button class="value" type="success" round style="display: inline-block" @click="downLoadDistributedNodeData">DownLoad</el-button>
+                    <!--<p class="connect" style="display: none;color: mediumblue;font-size: larger;font-weight: 600;">Connecting Distributed Node...</p>-->
                 </div>
-            </div>
+            </div>&nbsp;&nbsp;
 
             <!--description-->
             <div th:if="${datainfo.data.detail!=''&&datainfo.data.detail!=null}" id="description" class="detail_block">
@@ -794,6 +790,9 @@
             <div id="Owner" class="detail_block">
 
                 <div class="block_head">
+<!--                    <div class="head_text" style="padding-left: 10px;">-->
+<!--                        <h4 th:if="${history!=true}">Contributor</h4>-->
+<!--                        <h4 th:if="${history==true}">Modifier</h4>-->
                     <div class="head_text" style="padding-left: 10px;padding-right: 15px;display: inline-flex">
                         <h4>Contributor</h4>
                         <el-tooltip popper-class="fontsize-15" effect="light" content="Contributor is the person who contributes the item to OpenGMS, may not be the author of the item." placement="top">
@@ -802,6 +801,7 @@
                     </div>
 
                 </div>
+
                 <div class="block_content">
                     <div class="el-row" style="margin-bottom: 3px;height: 40px;display: flex;justify-content: center;align-items: center;">
                         <div class="el-col">
@@ -811,7 +811,7 @@
 
                         <div class="el-col">
                             <div class="pull-left" style="display: block;margin-left: 15px;">
-                                <a th:href="'/user/'+${user.oid}"><h4 th:text="${user.name}" style="padding: 0;">Tom Marvolo Riddle</h4></a>
+                                <a th:href="'/profile/'+${user.userId}"><h4 th:text="${user.name}" style="padding: 0;">Tom Marvolo Riddle</h4></a>
                             </div>
                         </div>
                     </div>
@@ -876,6 +876,8 @@
             </div>
 
         </div>
+        <div th:if="${history==true}"
+             style="pointer-events:none;position: absolute;top:62px;bottom: 0;left: 0;right: 0;background-image: url('/static/img/historyBackground.png')"></div>
 
         <!--Relation 弹出框-->
         <el-dialog style="float:left" :visible.sync="dialogTableVisible" title="Add Related Model Item"
@@ -1010,19 +1012,19 @@
 
 </body>
 
-<script th:src="@{../static/js/common/vue.min.js}"></script>
-<script th:src="@{../static/element-ui/index.js}"></script>
-<script th:src="@{../static/js/common/jquery-3.3.1.min.js}"></script>
-<script th:src="@{../static/js/common/jquery.rotate.min.js}"></script>
+<script th:src="@{/static/js/common/vue.min.js}"></script>
+<script th:src="@{/static/element-ui/index.js}"></script>
+<script th:src="@{/static/js/common/jquery-3.3.1.min.js}"></script>
+<script th:src="@{/static/js/common/jquery.rotate.min.js}"></script>
 <script src="/static/js/common/bootstrap.min.js"></script>
 
 <script src="/static/js/common/vue-avatar.min.js"></script>
 
-<script th:src="@{../static/js/common/axios.min.js}"></script>
+<script src="/static/js/common/axios.min.js"></script>
 
 <script src="/static/js/common/qrcode.min.js"></script>
 
-<script src="/static/js/page/data_item_info.js" th:src="@{../static/js/page/data_item_info.js}"></script>
+<script src="/static/js/page/data_item_info.js" th:src="@{/static/js/page/data_item_info.js}"></script>
 <script src="/static/js/common/loadUser.js"></script>
 <script src="/static/js/common/copy.js"></script>
 <script src="/static/element-ui/umd/locale/en.js"></script>

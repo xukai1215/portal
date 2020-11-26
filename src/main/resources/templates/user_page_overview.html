@@ -334,7 +334,7 @@
                                                      style="margin: 0 5px 5px;font-size: 16px" :style="index==0?'margin-left:0':''">
                                                     {{researchInterest}}
                                                 </div>
-                                                <a class="cursorPointer" style="color: #10adff;margin: 2px 0 0 8px;font-size: 18px;" v-if="userPersonalInfo.researchInterests.length>3" @click="menu_Click(4)">...</a>
+                                                <a class="cursorPointer" style="color: #10adff;margin: 2px 0 0 8px;font-size: 18px;" v-if="userPersonalInfo.researchInterests!=null&&userPersonalInfo.researchInterests.length>3" @click="menu_Click(4)">...</a>
                                             </div>
 <!--                                            <button th:if="${userInfo.oid==userInfo.loginId}" id="editResearchInterestButton" v-if="userPersonalInfo.researchInterests!=''" class="addEditButton" @click="editResearchInterestClick()">-->
 <!--                                                Edit-->
@@ -356,14 +356,14 @@
                                 </div>
                                 <div class="contentColContainer" style="width: 100%;flex: 1 ;margin: 0;box-shadow: none;padding: 0 30px">
                                     <div  class="contentContainer" style="flex-direction: column;padding: 10px 0;height: 87px">
-                                        <div th:if="${userInfo.oid==userInfo.loginId}" v-if="userPersonalInfo.externalLinks.length==0" style="width: 100%">
+                                        <div th:if="${userInfo.oid==userInfo.loginId}" v-if="userPersonalInfo.researchInterests!=null&&userPersonalInfo.externalLinks.length==0" style="width: 100%">
                                             <el-button round type="primary" style="margin-left: calc(50% - 96px);margin-top: 10px" @click="editExLink">
                                                 <p>Add My External links</p>
                                             </el-button>
                                         </div>
                                         <a class="cursorPointer" v-for="(link,index) in userPersonalInfo.externalLinks"
                                            v-if="index<2" @click="window.open(link)" style="" >{{link}}</a>
-                                        <a class="cursorPointer" style="color: #10adff" v-if="userPersonalInfo.externalLinks.length>2" @click="menu_Click(4)">View more...</a>
+                                        <a class="cursorPointer" style="color: #10adff" v-if="userPersonalInfo.researchInterests!=null&&userPersonalInfo.externalLinks.length>2" @click="menu_Click(4)">View more...</a>
                                     </div>
 
                                 </div>
@@ -1578,8 +1578,8 @@
                                     <div class="cardUpper">
                                         <div class="subTitle resourceTitle" >
                                             <div style="display: flex">
-                                                <a :href="'/modelItem/'+ modelItem.oid" target="_blank">
-                                                    <h4 class="maxW80 ellipText" style="margin-top: 10px;margin-left: 5px;color: #383838;">{{modelItem.name}}</h4>
+                                                <a class="maxW80 " :href="'/modelItem/'+ modelItem.oid" target="_blank">
+                                                    <h4 class="ellipText" style="margin-top: 10px;margin-left: 5px;color: #383838;">{{modelItem.name}}</h4>
 
                                                 </a>
                                                 <div :class="modelItem.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
@@ -1686,7 +1686,7 @@
                                                 <a class="img" :href="'/modelItem/'+ modelItem.oid" target="_blank">
 <!--                                                    <avatar v-if="dataItem.image==''||dataItem.image==null"  :username="dataItem.name" :size="120"-->
 <!--                                                            :rounded="false"></avatar>-->
-                                                    <img v-if="dataItem.image!=''&&dataItem.image!=null" :src="'/static/'+dataItem.image" onerror=src="/static/img/model/myData.png"
+                                                    <img v-if="dataItem.image!=''&&dataItem.image!=null" :src="'/static/'+dataItem.image" onerror=src="../static/img/model/myData.png"
                                                          style="width:120px;height: 120px;">
                                                     <img v-else src="../static/img/model/myData.png"
                                                          style="width:120px;height: 120px;">
@@ -1778,7 +1778,7 @@
 <!--                                                    <avatar v-if="conceptualModel.image==''||conceptualModel.image==null" :username="conceptualModel.name" :size="120"-->
 <!--                                                            :rounded="false"></avatar>-->
 
-                                                    <img v-if="conceptualModel.image!=''&&conceptualModel.image!=null" :src="'/static/'+conceptualModel.image" onerror=src="/static/img/model/conceptual.png"
+                                                    <img v-if="conceptualModel.image!=''&&conceptualModel.image!=null" :src="'/static/'+conceptualModel.image" onerror=src="../static/img/model/conceptual.png"
                                                          style="width:120px;height: 120px;">
                                                     <img v-else src="../static/img/model/conceptual.png"
                                                          style="width:120px;height: 120px;">
@@ -1871,7 +1871,7 @@
 <!--                                                    <avatar v-if="logicalModel.image==''||logicalModel.image==null" :username="logicalModel.name" :size="120"-->
 <!--                                                            :rounded="false"></avatar>-->
 
-                                                    <img v-if="logicalModel.image!=''&&logicalModel.image!=null" :src="'/static/'+logicalModel.image" onerror=src="/static/img/model/logical.png"
+                                                    <img v-if="logicalModel.image!=''&&logicalModel.image!=null" :src="'/static/'+logicalModel.image" onerror=src="../static/img/model/logical.png"
                                                          style="width:120px;height: 120px;">
                                                     <img v-else src="../static/img/model/logical.png"
                                                          style="width:120px;height: 120px;">

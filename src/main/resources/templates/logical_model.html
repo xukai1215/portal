@@ -57,9 +57,9 @@
 
             <div class="detail">
                 <div class="detail_title">
-                    <a th:if="${history!=true}"
-                       th:href="${modelInfo.relateModelItem}==null?'/modelItem/repository':'/modelItem/'+${modelInfo.relateModelItem}"
-                       class="el-icon-arrow-left" style="font-size: 20px"></a>
+                    <!--<a th:if="${history!=true}"-->
+                       <!--th:href="${modelInfo.relateModelItem}==null?'/modelItem/repository':'/modelItem/'+${modelInfo.relateModelItem}"-->
+                       <!--class="el-icon-arrow-left" style="font-size: 20px"></a>-->
 
                     <h2 th:utext="${modelInfo.name}"
                         style="display: inline-block;margin:0px 10px;word-wrap:break-word; word-break:break-all;"></h2>
@@ -126,7 +126,7 @@
                         </div>
                         <div class="el-col">
                             <div class="pull-left" style="display: block;margin-left: 15px;">
-                                <a th:href="'/user/'+${user.oid}"><h4 th:text="${user.name}" style="padding: 0;">Tom
+                                <a th:href="'/profile/'+${user.userId}"><h4 th:text="${user.name}" style="padding: 0;">Tom
                                     Marvolo Riddle</h4></a>
                             </div>
                         </div>
@@ -236,6 +236,37 @@
                 </div>
             </div>
 
+            <div id="related_models" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Relate Model Item</h4>
+                    </div>
+                </div>
+                <div class="block_content flex">
+
+                    <div class="list_panel clearfix">
+                        <a th:href="'/modelItem/'+${relateModelItem.oid}" class="img">
+                            <div th:switch="${relateModelItem.img}">
+                                <img th:case="null" src="/static/img/model/model.png">
+                                <img th:case="*" th:src="${relateModelItem.img}">
+                            </div>
+
+                        </a>
+
+                        <div class="info" style="margin-top:0px;">
+                            <a th:href="'/modelItem/'+${relateModelItem.oid}"
+                               th:text="${relateModelItem.name}">Ground Water Flow System</a>
+
+                            <p style="margin-top: 0px" th:text="${relateModelItem.description}">ANN-CA uses the artificial
+                                neural network method to extract
+                                land use change rules in the study area, and then applies the rules to
+                                subsequent
+                                simulations and predictions.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div id="cite" class="detail_block">
                 <div class="block_head">
                     <div class="head_text">
@@ -289,7 +320,7 @@
                         <div class="panel-body" style="padding-left: 0px; padding-top: 7px; padding-right: 0px;">
                             <dl>
                                 <dt>Last modifier :&nbsp</dt>
-                                <dd><a th:text="${lastModifier.name}" th:href="${'/user/'+lastModifier.oid}"
+                                <dd><a th:text="${lastModifier.name}" th:href="${'/profile/'+lastModifier.userId}"
                                        target="_blank"></a></dd>
                                 <dt>Last modify time :&nbsp</dt>
                                 <dd th:text="${lastModifyTime}"></dd>
@@ -342,7 +373,7 @@
                         </div>
                         <div class="el-col">
                             <div class="pull-left" style="display: block;margin-left: 15px;">
-                                <a th:href="'/user/'+${user.oid}"><h4 th:text="${user.name}" style="padding: 0;">Tom
+                                <a th:href="'/profile/'+${user.userId}"><h4 th:text="${user.name}" style="padding: 0;">Tom
                                     Marvolo Riddle</h4></a>
                             </div>
                         </div>
@@ -405,7 +436,7 @@
                         <div class="panel-body" style="padding-left: 0px; padding-top: 7px; padding-right: 0px;">
                             <dl>
                                 <dt>Last modifier :&nbsp</dt>
-                                <dd><a th:text="${lastModifier.name}" th:href="${'/user/'+lastModifier.oid}"
+                                <dd><a th:text="${lastModifier.name}" th:href="${'/profile/'+lastModifier.userId}"
                                        target="_blank"></a></dd>
                                 <dt>Last modify time :&nbsp</dt>
                                 <dd th:text="${lastModifyTime}"></dd>
@@ -585,6 +616,6 @@
 <script src="/static/js/common/bootstrap.min.js"></script>
 <script src="/static/element-ui/umd/locale/en.js"></script>
 <script src="/static/js/common/navbar.js"></script>
-<script src="/static/js/module/editLogicalModelModule.js"></script>
+<script src="/static/js/modules/editLogicalModelModule.js"></script>
 
 </html>

@@ -82,13 +82,13 @@ public class Classification2Service {
 //        if(index==0){
 //            modelRepositoryTreeObj.put("open",true);
 //        }else{
-            modelRepositoryTreeObj.put("open",false);
+        modelRepositoryTreeObj.put("open",false);
 //        }
         List<String> children = classification.getChildrenId();
 //        if(children.size()!=0){
 //            modelRepositoryTreeObj.put("selectable",false);
 //        }else{
-            modelRepositoryTreeObj.put("selectable",true);
+        modelRepositoryTreeObj.put("selectable",true);
 //        }
         if(children.size()>0){
             JSONArray childrenArray = new JSONArray();

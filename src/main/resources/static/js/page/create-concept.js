@@ -1,4 +1,3 @@
-
 var createConcept = Vue.extend({
     template: "#createConcept",
     components: {
@@ -311,8 +310,6 @@ var createConcept = Vue.extend({
                 { value: 'zu', label: 'Zulu' },
                 { value: 'zu-ZA', label: 'Zulu (South Africa)' },
             ],
-
-
 
             treeData: [
                 {
@@ -1094,11 +1091,10 @@ var createConcept = Vue.extend({
             socket: "",
 
             concept_oid: "",
-
-
         }
     },
     methods: {
+
         getLanguageList(){
             // $.get("/static/languageList.json",{},(content)=>{
             //     this.languageList = content;
@@ -1200,6 +1196,7 @@ var createConcept = Vue.extend({
                 // tinymce.undoManager.clear();
             }
         },
+
         handleSelect(index, indexPath) {
             this.setSession("index", index);
             window.location.href = "/user/userSpace"
@@ -1538,7 +1535,6 @@ var createConcept = Vue.extend({
 
         if ((oid === "0") || (oid === "") || (oid === null) || (oid === undefined)) {
 
-
             // $("#title").text("Create Concept & Semantic")
             $("#subRteTitle").text("/Create Concept & Semantic")
 
@@ -1556,13 +1552,13 @@ var createConcept = Vue.extend({
             this.$set(this.languageAdd.local,"value","en-US");
             this.$set(this.languageAdd.local,"label","English (United States)");
 
-
         } else {
+
             this.editType = "modify";
 
             // $("#title").text("Modify Concept & Semantic")
             $("#subRteTitle").text("/Modify Concept & Semantic")
-            document.title = "Modify Concept & Semantic | OpenGMS"
+            // document.title = "Modify Concept & Semantic | OpenGMS"
 
             $.ajax({
                 url: "/repository/getConceptInfo/" + oid,
@@ -1604,8 +1600,6 @@ var createConcept = Vue.extend({
                     $("#nameInput").val(basicInfo.name);
                     $("#descInput").val(basicInfo.description);
 
-
-
                     //image
                     if (basicInfo.image != "") {
                         $("#imgShow").attr("src", basicInfo.image);
@@ -1625,11 +1619,10 @@ var createConcept = Vue.extend({
                         placeholder: 'Enter keywords ...'
                     });
 
-                    // //detail
+                    //detail
                     // if (basicInfo.detail != null) {
-                    //     $("#conceptText").html(basicInfo.detail);
+                    //     $("#comceptText").html(basicInfo.detail);
                     // }
-
 
                     initTinymce('textarea#conceptText')
                     this.localizationList = basicInfo.localizationList;
@@ -1644,10 +1637,8 @@ var createConcept = Vue.extend({
                         forceLowercase: false,
                         // placeholder: 'Enter alias ...'
                     });
-
-
                 }
-            });
+            })
             window.sessionStorage.setItem("editConcept_id", "");
         }
 
@@ -1679,14 +1670,12 @@ var createConcept = Vue.extend({
                             offset: 70,
                         });
                         return false;
-                    }else {
+                    } else {
                         return true;
                     }
-                }else {
+                } else {
                     return true;
                 }
-
-
             }
 
         });
@@ -1718,9 +1707,7 @@ var createConcept = Vue.extend({
                     this.sendUserToParent(this.userId)
                 }
             }
-        });
-
-
+        })
 
         let height = document.documentElement.clientHeight;
         this.ScreenMaxHeight = (height) + "px";
@@ -1771,7 +1758,6 @@ var createConcept = Vue.extend({
 
             let formData = new FormData();
             if ((oid === "0") || (oid === "") || (oid == null)) {
-
                 conceptObj.localizationList = [];
 
                 this.currentLocalization.description = tinymce.activeEditor.getContent();
@@ -1914,5 +1900,6 @@ var createConcept = Vue.extend({
         });
 
         this.getLanguageList();
+
     }
 })

@@ -577,17 +577,17 @@ public class UserService {
 
         return ipList;
     }
-//,"yue@lreis.ac.cn"
+    //,"yue@lreis.ac.cn"
     public void sendEmailToUser(String uid, String email) {
 //        String[] emails = {"bohuang@cuhk.edu.hk"};
         String[] emails = { "zhangdong@njnu.edu.cn","guofei@njnu.edu.cn","liujunzhi@njnu.edu.cn","caomin@njnu.edu.cn",
                 "qd_gis@163.com","jliu@njnu.edu.cn","yss123yss@126.com","bohuang@cuhk.edu.hk","wangchuanhai@vip.sina.com","wangjf@Lreis.ac.cn",
-        "jszhang@nhri.cn","qzhang@niglas.ac.cn","yuanwpcn@126.com","lixia@geo.ecnu.edu.cn","xli@geo.ecnu.edu.cn",
-        "wubf@radi.ac.cn","yangdw@tsinghua.edu.cn","wufeng@igsnrr.ac.cn","ghuang@cau.edu.cn","lihongyi@lzb.ac.cn","zhoujian@lzb.ac.cn",
-        "jiali@radi.ac.cn","huangn@lzu.edu.cn","crs2008@lzb.ac.cn","Wtian@lzu.edu.cn","maoxiaomin@cau.edu.cn","xinli@itpcas.ac.cn",
-        "wxsh@cugb.edu.cn","zhangyanl02@163.com","zhengy@sustech.edu.cn","xzh@tea.ac.cn","zxie@lasg.iap.ac.cn","lizq@lzb.ac.cn",
-        "zxxu@bnu.edu.cn","Stewart.Fotheringham@asu.edu","barry.croke@anu.edu.au","c1chen@umassd.edu","dan.ames@byu.edu",
-        "anselin@uchicago.edu","paul.whitehead@ouce.ox.ac.uk","xinyue.ye@njit.edu","Xun.Shi@Dartmouth.edu","yue@lreis.ac.cn"};
+                "jszhang@nhri.cn","qzhang@niglas.ac.cn","yuanwpcn@126.com","lixia@geo.ecnu.edu.cn","xli@geo.ecnu.edu.cn",
+                "wubf@radi.ac.cn","yangdw@tsinghua.edu.cn","wufeng@igsnrr.ac.cn","ghuang@cau.edu.cn","lihongyi@lzb.ac.cn","zhoujian@lzb.ac.cn",
+                "jiali@radi.ac.cn","huangn@lzu.edu.cn","crs2008@lzb.ac.cn","Wtian@lzu.edu.cn","maoxiaomin@cau.edu.cn","xinli@itpcas.ac.cn",
+                "wxsh@cugb.edu.cn","zhangyanl02@163.com","zhengy@sustech.edu.cn","xzh@tea.ac.cn","zxie@lasg.iap.ac.cn","lizq@lzb.ac.cn",
+                "zxxu@bnu.edu.cn","Stewart.Fotheringham@asu.edu","barry.croke@anu.edu.au","c1chen@umassd.edu","dan.ames@byu.edu",
+                "anselin@uchicago.edu","paul.whitehead@ouce.ox.ac.uk","xinyue.ye@njit.edu","Xun.Shi@Dartmouth.edu","yue@lreis.ac.cn"};
         List<User> userList = new ArrayList<>();
         for(String emailStr : emails){
             User user = userDao.findFirstByEmail(emailStr);
@@ -598,9 +598,9 @@ public class UserService {
             User user = userList.get(u);
 //            User user = userDao.findFirstByOid(uid);
             String userEmail = user.getEmail();
-    //            if(!user.getSubscribe()){
-    //                continue;
-    //            }
+            //            if(!user.getSubscribe()){
+            //                continue;
+            //            }
             String[] contributeUser={"yue@lreis.ac.cn","xinyue.ye@njit.edu","yuanwpcn@126.com","guofei@njnu.edu.cn"};
             boolean isOwnModel = true;
             for(int i=0;i<contributeUser.length;i++){
@@ -652,21 +652,21 @@ public class UserService {
                         "        </div>\n";
 
                 message += "<div style='width:600px; margin:auto'>";
-    //                message += "<div style=\"background-color: #ecf5ff;\n" +
-    //                        "    padding: 15px;\n" +
-    //                        "    margin: 30px 0 25px 0;\n" +
-    //                        "    line-height: 25px;\n" +
-    //                        "    font-size: 16px;\n" +
-    //                        "    color: #409eff;\n" +
-    //                        "    border: 1px solid #d9ecff;\n" +
-    //                        "    border-radius: 4px;\n" +
-    //                        "    box-sizing: border-box;\n" +
-    //                        "   \">\n" +
-    //                        "            <b>Open Geographic Modeling and Simulation Platform (OpenGMS)</b> supports sharing geographic resources and provides a community for collaboration works among researchers in various disciplines.\n" +
-    //                        "            There are more than 3500 geographic models in our platform.\n" +
-    //                        "            We are the founder of Open Modeling Alliance, and have been added to the Trusted Digital Repositories for Software of CoMSES Net.\n" +
-    //                        "\n" +
-    //                        "        </div>";
+                //                message += "<div style=\"background-color: #ecf5ff;\n" +
+                //                        "    padding: 15px;\n" +
+                //                        "    margin: 30px 0 25px 0;\n" +
+                //                        "    line-height: 25px;\n" +
+                //                        "    font-size: 16px;\n" +
+                //                        "    color: #409eff;\n" +
+                //                        "    border: 1px solid #d9ecff;\n" +
+                //                        "    border-radius: 4px;\n" +
+                //                        "    box-sizing: border-box;\n" +
+                //                        "   \">\n" +
+                //                        "            <b>Open Geographic Modeling and Simulation Platform (OpenGMS)</b> supports sharing geographic resources and provides a community for collaboration works among researchers in various disciplines.\n" +
+                //                        "            There are more than 3500 geographic models in our platform.\n" +
+                //                        "            We are the founder of Open Modeling Alliance, and have been added to the Trusted Digital Repositories for Software of CoMSES Net.\n" +
+                //                        "\n" +
+                //                        "        </div>";
                 message += "<p style='margin-top:50px'>Dear Dr. ";
                 message += user.getName() + ":<br/><br/>";
                 Date now = new Date();
@@ -674,7 +674,7 @@ public class UserService {
                 int rangeDay = (int) Math.ceil((now.getTime() - registerTime.getTime()) / (1000 * 3600 * 24));
                 int total = 0;
                 JSONArray imageList = new JSONArray();
-    //                message += "It has been " + rangeDay + " days since you registered as a user of OpenGMS. ";
+                //                message += "It has been " + rangeDay + " days since you registered as a user of OpenGMS. ";
 
                 message += "Thanks for your contribution to OpenGMS! With your help, ";
                 List<String> stringList = new ArrayList<>();
@@ -752,22 +752,22 @@ public class UserService {
                     total += items.getJSONObject(items.size() - 1 - i).getInteger("view count");
                 }
 
-    //                    //饼图
-    //                    ChartOption pieOption = new ChartOption();
-    //                    String[] pieTypes = new String[countList.size()];
-    //                    int[][] ints = new int[1][countList.size()];
-    //                    for (int i = 0; i < countList.size(); i++) {
-    //                        pieTypes[i] = nameList.get(i);
-    //                        ints[0][i] = countList.get(i);
-    //                    }
-    //                    pieOption.setTitle("Resource Type Statistics");
-    //                    pieOption.setSubTitle("");
-    //                    pieOption.setData(ints);
-    //                    pieOption.setTypes(pieTypes);
-    //                    pieOption.setValXis(pieTypes);
-    //                    pieOption.setTitlePosition("center");
-    //
-    //                    String piePath = ChartUtils.generatePie(pieOption,"55%","50%","50%","top");
+                //                    //饼图
+                //                    ChartOption pieOption = new ChartOption();
+                //                    String[] pieTypes = new String[countList.size()];
+                //                    int[][] ints = new int[1][countList.size()];
+                //                    for (int i = 0; i < countList.size(); i++) {
+                //                        pieTypes[i] = nameList.get(i);
+                //                        ints[0][i] = countList.get(i);
+                //                    }
+                //                    pieOption.setTitle("Resource Type Statistics");
+                //                    pieOption.setSubTitle("");
+                //                    pieOption.setData(ints);
+                //                    pieOption.setTypes(pieTypes);
+                //                    pieOption.setValXis(pieTypes);
+                //                    pieOption.setTitlePosition("center");
+                //
+                //                    String piePath = ChartUtils.generatePie(pieOption,"55%","50%","50%","top");
 
 
                 message += "<h3 style='margin-top:2em'>Total view times in the latest quarter: " + total + "</h3><hr/>";
@@ -873,10 +873,10 @@ public class UserService {
                 //invoke
 
 
-    //                    int invokeTotal = 0;
-    //                    for(int i=0;i<computableModelList.size();i++){
-    //                        invokeTotal+=computableModelList.get(i).getInvokeCount();
-    //                    }
+                //                    int invokeTotal = 0;
+                //                    for(int i=0;i<computableModelList.size();i++){
+                //                        invokeTotal+=computableModelList.get(i).getInvokeCount();
+                //                    }
                 if (computableModelList.size() > 0) {
                     List<String> computableOids = new ArrayList<>();
                     for (int i = 0; i < computableModelList.size(); i++) {
@@ -1002,85 +1002,85 @@ public class UserService {
                 }
 
 
-    //                    //折线图
-    //                    ChartOption lineChart = new ChartOption();
-    //                    lineChart.setTitle("Daily view times in the last 7 days (UTC +08:00)");
-    //                    lineChart.setSubTitle("");
-    //                    lineChart.setTitlePosition("center");
-    //                    String[] dates = new String[7];
-    //                    int[][] viewCounts = new int[1][7];
-    //
-    //                    Boolean lineChartHidden = true;
-    //                    for (int i = 0; i < sevenDayViewCountList.size(); i++) {
-    //                        DailyViewCount dailyViewCount = sevenDayViewCountList.get(i);
-    //                        if (dailyViewCount.getCount() > 0) {
-    //                            lineChartHidden = false;
-    //                        }
-    //                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-    //                        dates[i] = sdf.format(dailyViewCount.getDate());
-    //                        viewCounts[0][i] = dailyViewCount.getCount();
-    //                    }
-    //
-    //                    lineChart.setTypes(new String[]{"Daily view times"});
-    //                    lineChart.setData(viewCounts);
-    //                    lineChart.setValXis(dates);
-    //                    String lineChartPath = ChartUtils.generateLine(lineChart);
+                //                    //折线图
+                //                    ChartOption lineChart = new ChartOption();
+                //                    lineChart.setTitle("Daily view times in the last 7 days (UTC +08:00)");
+                //                    lineChart.setSubTitle("");
+                //                    lineChart.setTitlePosition("center");
+                //                    String[] dates = new String[7];
+                //                    int[][] viewCounts = new int[1][7];
+                //
+                //                    Boolean lineChartHidden = true;
+                //                    for (int i = 0; i < sevenDayViewCountList.size(); i++) {
+                //                        DailyViewCount dailyViewCount = sevenDayViewCountList.get(i);
+                //                        if (dailyViewCount.getCount() > 0) {
+                //                            lineChartHidden = false;
+                //                        }
+                //                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                //                        dates[i] = sdf.format(dailyViewCount.getDate());
+                //                        viewCounts[0][i] = dailyViewCount.getCount();
+                //                    }
+                //
+                //                    lineChart.setTypes(new String[]{"Daily view times"});
+                //                    lineChart.setData(viewCounts);
+                //                    lineChart.setValXis(dates);
+                //                    String lineChartPath = ChartUtils.generateLine(lineChart);
 
 
-    //                    if (nameList.size() > 1) {
-    //                        JSONObject pieChartInfo = new JSONObject();
-    //                        pieChartInfo.put("name", "pieChart");
-    //                        pieChartInfo.put("path", piePath);
-    //                        imageList.add(pieChartInfo);
-    //                        message += "<center><img style='height:360px' src=\"cid:pieChart\" ></center><br/>";
-    //                    }
-    //                    message += "Many people have noticed what you shared in OpenGMS, your contributions have been viewed and invoked " + total + " times. " +
-    //                            "The most influential item that you contributed is " + items.getJSONObject(0).getString("name") + ", it has been viewed " + items.getJSONObject(0).getInteger("view count") + " times. " +
-    //                            "The view times of your contributions are shown in the figure below:<br/><br/>";
+                //                    if (nameList.size() > 1) {
+                //                        JSONObject pieChartInfo = new JSONObject();
+                //                        pieChartInfo.put("name", "pieChart");
+                //                        pieChartInfo.put("path", piePath);
+                //                        imageList.add(pieChartInfo);
+                //                        message += "<center><img style='height:360px' src=\"cid:pieChart\" ></center><br/>";
+                //                    }
+                //                    message += "Many people have noticed what you shared in OpenGMS, your contributions have been viewed and invoked " + total + " times. " +
+                //                            "The most influential item that you contributed is " + items.getJSONObject(0).getString("name") + ", it has been viewed " + items.getJSONObject(0).getInteger("view count") + " times. " +
+                //                            "The view times of your contributions are shown in the figure below:<br/><br/>";
 
 
-    //                    if (!lineChartHidden) {
-    //                        JSONObject lineChartInfo = new JSONObject();
-    //                        lineChartInfo.put("name", "lineChart");
-    //                        lineChartInfo.put("path", lineChartPath);
-    //                        imageList.add(lineChartInfo);
-    //                        message += "<center><img style='height:360px' src=\"cid:lineChart\" ></center><br/>";
-    //                    }
+                //                    if (!lineChartHidden) {
+                //                        JSONObject lineChartInfo = new JSONObject();
+                //                        lineChartInfo.put("name", "lineChart");
+                //                        lineChartInfo.put("path", lineChartPath);
+                //                        imageList.add(lineChartInfo);
+                //                        message += "<center><img style='height:360px' src=\"cid:lineChart\" ></center><br/>";
+                //                    }
 
 
-    //                message += "If you want to know more about geographic modeling and simulation, welcome to OpenGMS (Open Geomodling Modeling and Simulation) which supports finding resources in geographic modeling and simulation and provides a community for collaboration works among researchers in various disciplines. Through the sharing and collaboration works, this platform contributes to building resource libraries, leaving them for the next generation, and ultimately advance in knowledge.<br/><br/>";
-    //
-    //                Sort sort = new Sort(Sort.Direction.DESC, "viewCount");
-    //                Pageable pageable = PageRequest.of(0, 999, sort);
-    //                Page<ComputableModelSimpleDTO> computableModelPage = computableModelDao.findAllByAuthorAndContentType(user.getUserName(), "Package", pageable);
-    //
-    //                List<ComputableModelSimpleDTO> computableModelList = new ArrayList<>();
-    //                for (ComputableModelSimpleDTO computableModel : computableModelPage) {
-    //                    if (computableModel.getDailyViewCount() != null && computableModel.getDailyViewCount().size() > 0) {
-    //                        computableModelList.add(computableModel);
-    //                        if (computableModelList.size() == 5) break;
-    //                    }
-    //                }
+                //                message += "If you want to know more about geographic modeling and simulation, welcome to OpenGMS (Open Geomodling Modeling and Simulation) which supports finding resources in geographic modeling and simulation and provides a community for collaboration works among researchers in various disciplines. Through the sharing and collaboration works, this platform contributes to building resource libraries, leaving them for the next generation, and ultimately advance in knowledge.<br/><br/>";
+                //
+                //                Sort sort = new Sort(Sort.Direction.DESC, "viewCount");
+                //                Pageable pageable = PageRequest.of(0, 999, sort);
+                //                Page<ComputableModelSimpleDTO> computableModelPage = computableModelDao.findAllByAuthorAndContentType(user.getUserName(), "Package", pageable);
+                //
+                //                List<ComputableModelSimpleDTO> computableModelList = new ArrayList<>();
+                //                for (ComputableModelSimpleDTO computableModel : computableModelPage) {
+                //                    if (computableModel.getDailyViewCount() != null && computableModel.getDailyViewCount().size() > 0) {
+                //                        computableModelList.add(computableModel);
+                //                        if (computableModelList.size() == 5) break;
+                //                    }
+                //                }
 
-    //                if (computableModelList.size() > 0) {
-    //                    message += "        <div style=\"background-color: #f4f4f5;\n" +
-    //                            "    padding: 15px;\n" +
-    //                            "    margin-bottom: 20px;\n" +
-    //                            "    line-height: 25px;\n" +
-    //                            "    font-size: 14px;\n" +
-    //                            "    color: #909399;\n" +
-    //                            "    border: 1px solid #e9e9eb;\n" +
-    //                            "    border-radius: 4px;\n" +
-    //                            "    box-sizing: border-box;\n" +
-    //                            "   \">\n" +
-    //                            "           <h3 style=\"margin-top:10px;margin:auto\">More Computable Model Statistics</h3>\n" +
-    //                            "            <ul>\n";
-    //                    for (ComputableModelSimpleDTO computableModel : computableModelList) {
-    //                        message += "<li><a href=\"https://geomodeling.njnu.edu.cn/statistics/computableModel/" + computableModel.getOid() + "\">" + computableModel.getName() + "</a></li>\n";
-    //                    }
-    //                    message += "            </ul>\n" +
-    //                            "        </div>";
-    //                }
+                //                if (computableModelList.size() > 0) {
+                //                    message += "        <div style=\"background-color: #f4f4f5;\n" +
+                //                            "    padding: 15px;\n" +
+                //                            "    margin-bottom: 20px;\n" +
+                //                            "    line-height: 25px;\n" +
+                //                            "    font-size: 14px;\n" +
+                //                            "    color: #909399;\n" +
+                //                            "    border: 1px solid #e9e9eb;\n" +
+                //                            "    border-radius: 4px;\n" +
+                //                            "    box-sizing: border-box;\n" +
+                //                            "   \">\n" +
+                //                            "           <h3 style=\"margin-top:10px;margin:auto\">More Computable Model Statistics</h3>\n" +
+                //                            "            <ul>\n";
+                //                    for (ComputableModelSimpleDTO computableModel : computableModelList) {
+                //                        message += "<li><a href=\"https://geomodeling.njnu.edu.cn/statistics/computableModel/" + computableModel.getOid() + "\">" + computableModel.getName() + "</a></li>\n";
+                //                    }
+                //                    message += "            </ul>\n" +
+                //                            "        </div>";
+                //                }
 
                 message += "<br/>Please visit your <a href=\"https://geomodeling.njnu.edu.cn/user/changeSubscribedModelList?id=" + user.getId() + "\">User Space</a> to view more models' statistics information or custom subscribed model list.<br/><br/>";
 
@@ -1710,6 +1710,15 @@ public class UserService {
         }
     }
 
+    public User getByUserId(String id) {
+        try {
+            return userDao.findFirstByUserId(id);
+        } catch (Exception e) {
+            System.out.println("有人乱查数据库！！该OID不存在User对象");
+            throw new MyException(ResultEnum.NO_OBJECT);
+        }
+    }
+
     public int addUser(UserAddDTO user) {
 
         User u = userDao.findFirstByUserName(user.getUserName());
@@ -1733,8 +1742,46 @@ public class UserService {
             user1.setWiki("");
             Affiliation affiliation = new Affiliation();
             user1.setAffiliation(affiliation);
+            user1.setUserId(generateUserId(user1.getName().trim()));
             userDao.insert(user1);
             return 1;
+        }
+    }
+
+    public String generateUserId(String name){
+        name = name.trim().replaceAll(" ","_");
+        //查询userid重名的用户
+        List<User> list = userDao.findAllByUserIdContains(name);
+        //若没有重名，则直接使用
+        if(list.size()==0) {
+            return name;
+        }else { //有重名则判断是否是真正重名，并计算排序序号
+            List<Integer> orders = new ArrayList<>();
+            for (User u : list) {
+                //userid前部是否一致
+                if (u.getUserId().startsWith(name)) {
+                    String left = u.getUserId().replace(name, "");
+                    if (left.equals("")) {
+                        orders.add(1);
+                    }else{
+                        String[] leftNameSplit = left.split("_");
+                        if(leftNameSplit.length==2 && leftNameSplit[0].equals("")){
+                            try {
+                                int num = Integer.parseInt(leftNameSplit[1]);
+                                orders.add(num);
+                            }catch (Exception e){
+                                continue;
+                            }
+                        }
+                    }
+                }
+            }
+            if(orders.size()==0) { // 不是真正重名
+                return name;
+            }else {
+                orders.sort(Comparator.comparingInt(Integer::intValue).reversed());
+                return name + "_" + orders.get(0)+1;
+            }
         }
     }
 
@@ -1867,6 +1914,7 @@ public class UserService {
         userInfo.put("uid", user.getUserName());
         userInfo.put("name", user.getName());
         userInfo.put("image", getImage(user.getOid()));
+        userInfo.put("userId", user.getUserId());
 
         countInfo.put("modelItems",user.getModelItems());
         countInfo.put("dataItems",user.getDataItems());
@@ -1914,11 +1962,17 @@ public class UserService {
         return userInfo;
     }
 
+    public User findUserByUserName(String userName){
+        User user = userDao.findFirstByUserName(userName);
+        return user;
+    }
+
     public JSONObject getItemUserInfo(String userName) {
         User user = userDao.findFirstByUserName(userName);
         JSONObject userJson = new JSONObject();
         userJson.put("name", user.getName());
         userJson.put("oid", user.getOid());
+        userJson.put("userId", user.getUserId());
         userJson.put("image", user.getImage().equals("") ? "" : htmlLoadPath + user.getImage());
         return userJson;
     }

@@ -3,22 +3,29 @@ package njgis.opengms.portal.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.gson.JsonObject;
 import njgis.opengms.portal.AbstractTask.AsyncTask;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dao.ComputableModelDao;
+import njgis.opengms.portal.dao.DataItemDao;
+import njgis.opengms.portal.dao.IntegratedTaskDao;
 import njgis.opengms.portal.dao.TaskDao;
 import njgis.opengms.portal.dao.UserDao;
 import njgis.opengms.portal.dto.task.ResultDataDTO;
 import njgis.opengms.portal.dto.task.TestDataUploadDTO;
 import njgis.opengms.portal.dto.task.UploadDataDTO;
 import njgis.opengms.portal.entity.ComputableModel;
+import njgis.opengms.portal.entity.DataItem;
 import njgis.opengms.portal.entity.Task;
 import njgis.opengms.portal.entity.User;
+import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.entity.intergrate.Model;
 import njgis.opengms.portal.entity.support.*;
+import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.MyHttpUtils;
 import njgis.opengms.portal.utils.ResultUtils;
 import njgis.opengms.portal.utils.Utils;
+import njgis.opengms.portal.utils.XmlTool;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -30,15 +37,25 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.xml.bind.annotation.XmlMimeType;
 import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.Future;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import static njgis.opengms.portal.utils.Utils.*;
 
@@ -59,6 +76,12 @@ public class TaskService {
 
     @Autowired
     TaskDao taskDao;
+
+    @Autowired
+    DataItemDao dataItemDao;
+
+    @Autowired
+    IntegratedTaskDao integratedTaskDao;
 
     @Value("${managerServerIpAndPort}")
     private String managerServer;
@@ -696,6 +719,190 @@ public class TaskService {
     }
 
 
+    public List<UploadDataDTO> getTestDataUploadArrayDataItem(TestDataUploadDTO testDataUploadDTO, JSONObject mdlJson) throws Exception {
+        JSONArray states = mdlJson.getJSONObject("mdl").getJSONArray("states");
+        //根据dataItemId获取数据下载链接,并获取数据流
+        DataItem dataItem = dataItemDao.findFirstById(testDataUploadDTO.getDataItemId());
+        InputStream inputStream = null;
+        FileOutputStream fileOutputStream = null;
+        if (dataItem.getDataUrl()!=null){
+            URL url = new URL(dataItem.getDataUrl());
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setConnectTimeout(5000);
+            conn.setReadTimeout(60000);
+            inputStream = conn.getInputStream();
+        }
+        String testPath = resourcePath + "/" + testDataUploadDTO.getOid();
+        File localFile = new File(testPath);
+        if (!localFile.exists()) {
+            localFile.mkdirs();
+        }
+        String path = testPath + "/" + "downLoad.zip";
+        localFile = new File(path);
+        try {
+            //将数据下载至resourcePath下
+            if (localFile.exists()) {
+                //如果文件存在删除文件
+                boolean delete = localFile.delete();
+                if (delete == false) {
+//                    log.error("Delete exist file \"{}\" failed!!!", path, new Exception("Delete exist file \"" + path + "\" failed!!!"));
+                }
+            }
+            //创建文件
+            if (!localFile.exists()) {
+                //如果文件不存在，则创建新的文件
+                localFile.createNewFile();
+//                log.info("Create file successfully,the file is {}", path);
+            }
+
+            fileOutputStream = new FileOutputStream(localFile);
+            byte[] bytes = new byte[1024];
+            int len = -1;
+            while ((len = inputStream.read(bytes)) != -1) {
+                fileOutputStream.write(bytes, 0, len);
+            }
+            fileOutputStream.close();
+            inputStream.close();
+
+        } catch (FileNotFoundException e){
+            e.printStackTrace();
+        }catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (fileOutputStream != null) {
+                    fileOutputStream.close();
+                }
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+            }catch (IOException e) {
+                e.printStackTrace();
+//                logger.error("InputStream or OutputStream close error : {}", e);
+            }
+        }
+
+        //将写入的zip文件进行解压
+        //需要进行判断
+        String destDirPath = resourcePath + "/" + testDataUploadDTO.getOid();
+        zipUncompress(path,destDirPath);
+        //解压后删除zip包，此时测试数据路径就变为testPath
+        deleteFile(path);
+
+        //下面为复用getTestDataUploadArray()代码
+        String oid = testDataUploadDTO.getOid();
+        String parentDirectory = testPath;
+        String configPath = parentDirectory + "/" + "config.xml";
+        JSONArray configInfoArray = getConfigInfo(configPath, parentDirectory, oid);
+        if (configInfoArray == null) {
+            return null;
+        }
+        //进行遍历
+        List<UploadDataDTO> dataUploadList = new ArrayList<>();
+        for (int i = 0; i < configInfoArray.size(); i++) {
+            JSONObject temp = configInfoArray.getJSONObject(i);
+            UploadDataDTO uploadDataDTO = new UploadDataDTO();
+            uploadDataDTO.setEvent(temp.getString("event"));
+            uploadDataDTO.setState(temp.getString("state"));
+            uploadDataDTO.setFilePath(temp.getString("file"));
+            uploadDataDTO.setChildren(temp.getJSONArray("children").toJavaList(ParamInfo.class));
+
+            for(int j=0;j<states.size();j++){
+                JSONObject state = states.getJSONObject(j);
+                if(state.getString("Id").equals(uploadDataDTO.getState())){
+                    JSONArray events=state.getJSONArray("event");
+                    for(int k=0;k<events.size();k++){
+                        JSONObject event=events.getJSONObject(k);
+                        if(event.getString("eventName").equals(uploadDataDTO.getEvent())){
+                            JSONObject data=event.getJSONArray("data").getJSONObject(0);
+                            if(data.getString("dataType").equals("external")){
+                                uploadDataDTO.setType("id");
+                                uploadDataDTO.setTemplate(data.getString("externalId").toLowerCase());
+                                for(String id:visualTemplateIds){
+                                    if(uploadDataDTO.getTemplate().equals(id)){
+                                        uploadDataDTO.setVisual(true);
+                                        break;
+                                    }
+                                }
+                            }else{
+                                if(data.getString("schema")!=null) {
+                                    uploadDataDTO.setType("schema");
+                                    uploadDataDTO.setTemplate(data.getString("schema"));
+                                    uploadDataDTO.setVisual(false);
+                                }else{
+                                    uploadDataDTO.setType("none");
+                                    uploadDataDTO.setTemplate("");
+                                    uploadDataDTO.setVisual(false);
+                                }
+                            }
+
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+            if(uploadDataDTO.getType()==null){
+                uploadDataDTO.setType("none");
+                uploadDataDTO.setTemplate("");
+                uploadDataDTO.setVisual(false);
+            }
+
+            dataUploadList.add(uploadDataDTO);
+        }
+        return dataUploadList;
+    }
+
+    public void zipUncompress(String inputFile,String destDirPath) throws Exception {
+        File srcFile = new File(inputFile);
+        if (!srcFile.exists()){
+            throw new Exception(srcFile.getPath() + "所指文件不存在");
+        }
+        ZipFile zipFile = new ZipFile(srcFile);
+        Enumeration<?> entries = zipFile.entries();
+        while (entries.hasMoreElements()) {
+            ZipEntry entry = (ZipEntry) entries.nextElement();
+            // 如果是文件夹，就创建个文件夹
+            if (entry.isDirectory()) {
+                String dirPath = destDirPath + "/" + entry.getName();
+                srcFile.mkdirs();
+            } else {
+                // 如果是文件，就先创建一个文件，然后用io流把内容copy过去
+                File targetFile = new File(destDirPath + "/" + entry.getName());
+                // 保证这个文件的父文件夹必须要存在
+                if (!targetFile.getParentFile().exists()) {
+                    targetFile.getParentFile().mkdirs();
+                }
+                targetFile.createNewFile();
+                // 将压缩文件内容写入到这个文件中
+                InputStream is = zipFile.getInputStream(entry);
+                FileOutputStream fos = new FileOutputStream(targetFile);
+                int len;
+                byte[] buf = new byte[1024];
+                while ((len = is.read(buf)) != -1) {
+                    fos.write(buf, 0, len);
+                }
+                // 关流顺序，先打开的后关闭
+
+                fos.close();
+                is.close();
+            }
+        }
+        zipFile.close();
+    }
+    public boolean deleteFile(String sPath) {
+        boolean delLog;
+        delLog = false;
+        File file = new File(sPath);
+        // 路径为文件且不为空则进行删除
+        if (file.isFile() && file.exists()) {
+            file.delete();
+            delLog = true;
+        }
+        return delLog;
+    }
+
+
 //    public UploadDataDTO getPublishedTask(String taskId){
 //
 //    }
@@ -946,6 +1153,213 @@ public class TaskService {
 
         taskDao.save(task);
         return "suc";
+    }
+
+    public String saveIntegratedTask( String xml, String mxgraph, List<Map<String,String>> models, List<Map<String,String>> processingTools,
+                                      List<ModelAction> modelActions,List<DataProcessing> dataProcessings,List<Map<String,String>> dataLinks,String userName,String taskName,String description){
+        IntegratedTask integratedTask = new IntegratedTask();
+
+        integratedTask.setOid(UUID.randomUUID().toString());
+        integratedTask.setModels(models);
+        integratedTask.setProcessingTools(processingTools);
+        integratedTask.setModelActions(modelActions);
+        integratedTask.setDataProcessings(dataProcessings);
+        integratedTask.setDataLinks(dataLinks);
+        integratedTask.setXml(xml);
+        integratedTask.setMxGraph(mxgraph);
+        integratedTask.setStatus(0);
+        integratedTask.setIntegrate(true);
+        integratedTask.setUserId(userName);
+        integratedTask.setTaskName(taskName);
+        integratedTask.setDescription(description);
+        Date now = new Date();
+        if(integratedTask.getCreateTime()==null){
+            integratedTask.setCreateTime(now);
+        }
+        integratedTask.setLastModifiedTime(now);
+
+        return integratedTaskDao.save(integratedTask).getOid();
+
+    }
+
+    public IntegratedTask getIntegratedTaskByOid(String taskOid){
+        IntegratedTask integratedTask = integratedTaskDao.findByOid(taskOid);
+
+        return integratedTask;
+    }
+
+    //用户更新集成Task的信息
+    public IntegratedTask updateIntegratedTask( String taskOid, String xml, String mxgraph, List<Map<String,String>> models,
+                                                List<ModelAction> modelActions,List<DataProcessing> dataProcessings,List<Map<String,String>> dataLinks,String userName,String taskName,String description){
+        IntegratedTask integratedTask = integratedTaskDao.findByOid(taskOid);
+
+        integratedTask.setModels(models);
+        integratedTask.setModelActions(modelActions);
+        integratedTask.setDataProcessings(dataProcessings);
+        integratedTask.setDataLinks(dataLinks);
+        integratedTask.setXml(xml);
+        integratedTask.setMxGraph(mxgraph);
+        integratedTask.setTaskName(taskName);
+        integratedTask.setDescription(description);
+
+        Date now = new Date();
+        integratedTask.setLastModifiedTime(now);
+
+        return integratedTaskDao.save(integratedTask);
+
+    }
+
+    //从managerserver获取task的最新状态
+    public JSONObject checkIntegratedTask(String taskId){
+        RestTemplate restTemplate=new RestTemplate();
+        String url="http://" + managerServerIpAndPort + "/GeoModeling/task/checkTaskStatus?taskId={taskId}";//远程接口
+        Map<String, String> params = new HashMap<>();
+        params.put("taskId", taskId);
+        ResponseEntity<JSONObject> responseEntity=restTemplate.getForEntity(url,JSONObject.class,params);
+        if (responseEntity.getStatusCode()!= HttpStatus.OK){
+            throw new MyException("远程服务出错");
+        }
+        else {
+            IntegratedTask task=integratedTaskDao.findByTaskId(taskId);
+            JSONObject data = responseEntity.getBody().getJSONObject("data");
+            int status = data.getInteger("status");
+            JSONObject taskInfo = data.getJSONObject("taskInfo");
+
+            //更新output
+            JSONObject j_modelActionList = taskInfo.getJSONObject("modelActionList");
+            List<ModelAction> finishedModelActions = converseOutputModelAction(j_modelActionList.getJSONArray("completed"));
+            List<ModelAction> failedModelActions = converseOutputModelAction(j_modelActionList.getJSONArray("failed"));
+            updateIntegratedTaskOutput(task,finishedModelActions,failedModelActions);
+
+            switch (status){
+                case 0:
+                    break;
+                case -1:
+                    task.setStatus(-1);
+                    integratedTaskDao.save(task);
+                    break;
+                case 1:
+                    task.setStatus(2);
+                    integratedTaskDao.save(task);
+                    break;
+            }
+            return data;
+        }
+    }
+
+    public List<ModelAction> converseOutputModelAction(JSONArray modelActionArray) {
+        List<ModelAction> modelActionList = new ArrayList<>();
+        for (int i = 0; i < modelActionArray.size(); i++) {
+            JSONObject fromModelAction = modelActionArray.getJSONObject(i);
+            ModelAction modelAction = new ModelAction();
+            modelAction.setId(fromModelAction.getString("id"));
+            JSONArray output = fromModelAction.getJSONObject("outputData").getJSONArray("outputs");
+            List<Map<String,Object>> outputDatas = new ArrayList<>();
+            for(int j=0;j<output.size();j++){
+                Map<String,Object> outputData = new HashMap<>();
+                Map<String,Object> dataContent = new HashMap<>();
+                JSONObject j_dataContent = ((JSONObject)output.get(j)).getJSONObject("dataContent");
+                outputData.put("value",j_dataContent.getString("value"));
+                outputData.put("type",j_dataContent.getString("type"));
+                outputData.put("fileName",j_dataContent.getString("fileName"));
+                outputData.put("suffix",j_dataContent.getString("suffix"));
+                outputDatas.add(outputData);
+            }
+            modelAction.setOutputData(outputDatas);
+            modelActionList.add(modelAction);
+        }
+
+        return modelActionList;
+    }
+
+    public String updateIntegratedTaskOutput(IntegratedTask integratedTask, List<ModelAction> finishedModelActions,List<ModelAction> failedModelActions ){
+        List<ModelAction> modelActions = integratedTask.getModelActions();
+
+        for(ModelAction modelAction:modelActions){
+            for(ModelAction finishedModelAction:finishedModelActions){
+                if(modelAction.getId().equals(finishedModelAction.getId())){
+                    modelAction.setStatus(finishedModelAction.getStatus());
+                    modelAction.setPort(finishedModelAction.getPort());
+                    modelAction.setTaskIp(finishedModelAction.getTaskIp());
+                    for(Map<String,Object> output:modelAction.getOutputData()){
+                        for(Map<String,Object> newOutput:finishedModelAction.getOutputData()){
+                            output.put("value",newOutput.get("value"));
+                            output.put("fileName",newOutput.get("fileName"));
+                            output.put("suffix",newOutput.get("suffix"));
+                        }
+                    }
+                }
+            }
+            for(ModelAction failedModelAction:failedModelActions){
+                if(modelAction.getId().equals(failedModelAction.getId())){
+                    modelAction.setStatus(-1);
+                }
+            }
+        }
+
+        Date now = new Date();
+        integratedTask.setLastModifiedTime(now);
+
+        return integratedTaskDao.save(integratedTask).getOid();
+    }
+
+    public String updateIntegrateTaskId(String taskOid, String taskId){
+        IntegratedTask integratedTask = integratedTaskDao.findByOid(taskOid);
+
+        integratedTask.setTaskId(taskId);
+        Date now = new Date();
+        integratedTask.setLastModifiedTime(now);
+
+        integratedTaskDao.save(integratedTask);
+        return taskId;
+    }
+
+    public List<IntegratedTask> getIntegrateTaskByUser(String userName){
+        return integratedTaskDao.findByUserIdAndIntegrate(userName, true);
+    }
+
+    public String updateIntegrateTaskName(String taskOid,String taskName) {
+        IntegratedTask integratedTask = integratedTaskDao.findByOid(taskOid);
+
+        integratedTask.setTaskName(taskName);
+        Date now = new Date();
+        integratedTask.setLastModifiedTime(now);
+
+        integratedTaskDao.save(integratedTask);
+        return taskName;
+    }
+
+    public String updateIntegrateTaskDescription(String taskOid,String taskDescription) {
+        IntegratedTask integratedTask = integratedTaskDao.findByOid(taskOid);
+
+        integratedTask.setDescription(taskDescription);
+        Date now = new Date();
+        integratedTask.setLastModifiedTime(now);
+
+        integratedTaskDao.save(integratedTask);
+        return taskDescription;
+    }
+
+    public JSONObject PageIntegrateTaskByUser(String userName, int pageNum, int pageSize, int asc, String sortElement){
+        Sort sort = new Sort(asc==1? Sort.Direction.ASC:Sort.Direction.DESC,sortElement);
+        Pageable pageable = PageRequest.of(pageNum,pageSize,sort);
+        Page<IntegratedTask> integratedTaskPage = integratedTaskDao.findByUserIdAndIntegrate(userName,true,pageable);
+
+        JSONObject result = new JSONObject();
+        result.put("total",integratedTaskPage.getTotalElements());
+        result.put("content",integratedTaskPage.getContent());
+
+        return result;
+    }
+
+    public int deleteIntegratedTask(String oid){
+        IntegratedTask integratedTask = integratedTaskDao.findByOid(oid);
+        if (integratedTask != null) {
+            integratedTaskDao.delete(integratedTask);
+            return 1;
+        } else {
+            return -1;
+        }
     }
 
     public int delete(String oid, String userName) {
@@ -1598,4 +2012,54 @@ public class TaskService {
         return result;
     }
 
+    public JSONObject getDataProcessingNode() throws IOException, URISyntaxException, DocumentException {
+        String url = "http://111.229.14.128:8898/onlineNodes";
+
+        String xml = MyHttpUtils.GET(url,"utf-8",null);
+
+        JSONObject jsonObject = XmlTool.xml2Json(xml);
+
+        return jsonObject;
+    }
+
+    public JSONArray getDataProcessings() throws DocumentException, IOException, URISyntaxException {
+        //因为dataservice不提供直接查询接口，因此只能先找token再遍历
+        String baseUrl = "http://111.229.14.128:8898/onlineNodesAllPcs";
+        JSONArray j_nodes = new JSONArray();
+
+        try { //dataservice返回的是xml,转换json会遇到一个节点还是多个节点的问题，所以要判断一下转成了JSONObject还是JSONArray
+            j_nodes = getDataProcessingNode().getJSONArray("onlineServiceNodes");
+
+        }catch (Exception e){
+            j_nodes.add(getDataProcessingNode().getJSONObject("onlineServiceNodes"));
+        }
+
+        List<Map<String,String>> nodes = JSONArray.parseObject(j_nodes.toString(),List.class);
+
+        JSONArray result = new JSONArray();
+        String url = "";
+        for(Map<String,String> node : nodes){
+            String token = node.get("token");
+            url = baseUrl + "?token=" + URLEncoder.encode(token) + "&type=Processing";
+            String xml = MyHttpUtils.GET(url,"utf-8",null);
+            JSONObject jsonObject = XmlTool.xml2Json(xml);
+            JSONArray j_processings = new JSONArray();
+            try{
+                j_processings = jsonObject.getJSONArray("AvailablePcs");
+                for(int i=0; j_processings!=null&&i<j_processings.size();i++){
+                    JSONObject j_process = j_processings.getJSONObject(i);
+                    j_process.put("token",token);
+                    result.add(j_process);
+                }
+            }catch (Exception e){
+                JSONObject j_processing = jsonObject.getJSONObject("AvailablePcs");
+                j_processing.put("token",token);
+                result.add(j_processing);
+            }
+
+
+        }
+
+        return result;
+    }
 }

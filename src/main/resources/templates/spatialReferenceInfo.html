@@ -58,6 +58,9 @@
         .leaflet-container{
             background: #eee!important;
         }
+        .is-disabled input{
+            color: #6f7276!important;
+        }
     </style>
 </head>
 <body>
@@ -127,7 +130,7 @@
                         </div>
                         <div class="el-col">
                             <div class="pull-left" style="display: block;margin-left: 15px;">
-                                <a th:href="'/user/'+${user.oid}"><h4 th:text="${user.name}" style="padding: 0;">Tom Marvolo Riddle</h4></a>
+                                <a th:href="'/profile/'+${user.userId}"><h4 th:text="${user.name}" style="padding: 0;">Tom Marvolo Riddle</h4></a>
                             </div>
                         </div>
                     </div>
@@ -203,7 +206,7 @@
                         </div>
                     </div>
                     <div class="flexCol flexAlignCenter">
-                        <el-button type="primary" size="medium" style="margin: 0 20px" @click="transformXY">
+                        <el-button type="primary" size="medium" style="margin: 0 20px" @click="transformClick">
                             transform
                         </el-button>
                         <i class="el-icon-sort cursorPointer exchangeButton" @click="exchangeIO" style="color: #0069ba;font-size: 18px;margin-top: 5px"></i>
@@ -216,20 +219,20 @@
                         </div>
                         <div v-if="judgeUnit(outputCoordinate)=='metre'" class="flexJustBetween flexAlignCenter inputForm">
                             <p>X: </p>
-                            <el-input size="mini" type="primary" v-model="outputX" plain ></el-input>
+                            <el-input size="mini" type="primary" v-model="outputX" plain disabled></el-input>
                         </div>
                         <div v-if="judgeUnit(outputCoordinate)=='metre'" class="flexJustBetween flexAlignCenter inputForm">
                             <p>Y: </p>
-                            <el-input size="mini" type="primary" v-model="outputY" plain ></el-input>
+                            <el-input size="mini" type="primary" v-model="outputY" plain disabled></el-input>
                         </div>
                         <div v-if="judgeUnit(outputCoordinate)!='metre'" class="flexJustBetween flexAlignCenter inputForm">
                             <p>Longtitude: </p>
-                            <el-input size="mini" type="primary" v-model="outputLong" plain></el-input>
+                            <el-input size="mini" type="primary" v-model="outputLong" plain disabled></el-input>
                             <p>&deg</p>
                         </div>
                         <div v-if="judgeUnit(outputCoordinate)!='metre'" class="flexJustBetween flexAlignCenter inputForm">
                             <p>Latitude: </p>
-                            <el-input size="mini" type="primary" v-model="outputLat" plain style="margin-left: 20.5px;"></el-input>
+                            <el-input size="mini" type="primary" v-model="outputLat" plain style="margin-left: 20.5px;" disabled></el-input>
                             <p>&deg</p>
                         </div>
                     </div>
@@ -271,7 +274,7 @@
             </div>
 
             <!--<div th:if="${info.detail==null}"  class="text-center" >-->
-                <!--<a id="addLocalization" style="cursor:pointer;font-size:16px;" data-toggle="modal" data-target="#myModal">Add Localization<i class="fa fa-plus" style="margin-left: 10px;color:#339fff;font-weight: bold" aria-hidden="true"></i></a>-->
+            <!--<a id="addLocalization" style="cursor:pointer;font-size:16px;" data-toggle="modal" data-target="#myModal">Add Localization<i class="fa fa-plus" style="margin-left: 10px;color:#339fff;font-weight: bold" aria-hidden="true"></i></a>-->
             <!--</div>-->
 
 
@@ -325,7 +328,7 @@
                         <div class="panel-body" style="padding-left: 0px; padding-top: 7px; padding-right: 0px;">
                             <dl>
                                 <dt>Last modifier :&nbsp</dt>
-                                <dd><a th:text="${lastModifier.name}" th:href="${'/user/'+lastModifier.oid}"
+                                <dd><a th:text="${lastModifier.name}" th:href="${'/profile/'+lastModifier.userId}"
                                        target="_blank"></a></dd>
                                 <dt>Last modify time :&nbsp</dt>
                                 <dd th:text="${lastModifyTime}"></dd>
@@ -376,7 +379,7 @@
                         </div>
                         <div class="el-col">
                             <div class="pull-left" style="display: block;margin-left: 15px;">
-                                <a th:href="'/user/'+${user.oid}"><h4 th:text="${user.name}" style="padding: 0;">Tom Marvolo Riddle</h4></a>
+                                <a th:href="'/profile/'+${user.userId}"><h4 th:text="${user.name}" style="padding: 0;">Tom Marvolo Riddle</h4></a>
                             </div>
                         </div>
                     </div>
@@ -415,7 +418,7 @@
                         <div class="panel-body" style="padding-left: 0px; padding-top: 7px; padding-right: 0px;">
                             <dl>
                                 <dt>Last modifier :&nbsp</dt>
-                                <dd><a th:text="${lastModifier.name}" th:href="${'/user/'+lastModifier.oid}"
+                                <dd><a th:text="${lastModifier.name}" th:href="${'/profile/'+lastModifier.userId}"
                                        target="_blank"></a></dd>
                                 <dt>Last modify time :&nbsp</dt>
                                 <dd th:text="${lastModifyTime}"></dd>

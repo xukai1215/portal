@@ -60,5 +60,7 @@ public interface TaskDao extends MongoRepository<Task,String> {
 
     List<Task> findAllByComputableIdAndFlag(String oid, boolean flag);
 
+    List<Task> findAllByComputableIdAndFlagAndRunTimeAfter(String oid, boolean flag, Date date);
+
 
 }

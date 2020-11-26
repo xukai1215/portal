@@ -11,4 +11,6 @@ public interface CategoryDao extends MongoRepository<Categorys,String> {
 
      Categorys findFirstById(String id);
 
+     Categorys findFirstByCategory(String category);
+
 }

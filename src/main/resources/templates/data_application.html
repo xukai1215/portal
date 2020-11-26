@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Data Item Repository | OpenGMS</title>
+    <title>Data Application | OpenGMS</title>
     <script src="/static/js/common/vue.min.js"></script>
     <script src="/static/js/common/vue-avatar.min.js"></script>
     <script src="/static/element-ui/index.js"></script>
@@ -29,11 +29,14 @@
         .bootstrap-tagsinput input{
             min-height:26px;
         }
+        .el-collapse-item__content{
+            padding-bottom: 0px;
+        }
     </style>
 
 </head>
 <body>
-<div id="data_items" v-cloak>
+<div id="data_application" v-cloak>
     <div th:replace="fragments/navbar :: unlog"></div>
     <div class="clearfix" style="margin-bottom: 40px;">
         <div class="mainContent">
@@ -46,198 +49,79 @@
                 </div>
                 <hr>
             </div>
-            <div class="el-col el-col-6 minScreen_maxWidth" style="margin-top:29px;">
-                <el-card class="box-card categoryList">
-                    <div slot="header" class="clearfix text-center">
-                        <span style="font-size: 20px;color:#444">Data Categories</span>
-                    </div>
-                    <el-collapse v-model="activeNames" @change="handleChange">
-                        <!--静态树-->
-                        <el-tabs v-model="activeName" type="card"  stretch="stretch" @tab-click="handleClick">
-                            <el-tab-pane label="Processing" name="first">
-                                <el-collapse-item title="Earth System" name="1">
-                                    <el-button type="text" id="5cb83fd0ea3cba3224b6e24e"  @click="chooseCate('5cb83fd0ea3cba3224b6e24e')">Hydrosphere</el-button>
-                                    <el-button type="text" id="5cc04b987a419164e8212316"  @click="chooseCate('5cc04b987a419164e8212316')">Lithosphere</el-button>
-                                    <el-button type="text" id="5cc04bd27a419164e8212317" @click="chooseCate('5cc04bd27a419164e8212317')">Atmosphere</el-button>
-                                    <el-button type="text" id="5cc04c2c7a419164e821231a" @click="chooseCate('5cc04c2c7a419164e821231a')">Biosphere</el-button>
-                                    <el-button type="text" id="5cd01463710f141698c1697d" @click="chooseCate('5cd01463710f141698c1697d')">Anthroposphere</el-button>
-                                    <el-button type="text" id="5cc04be67a419164e8212319" @click="chooseCate('5cc04be67a419164e8212319')">Global</el-button>
-                                    <el-button type="text" id="5f080d08caaf7552b4a7b361"  @click="chooseCate('5f080d08caaf7552b4a7b361')">Solar-terrestrial Physics</el-button>
-                                    <el-button type="text" id="5f080d29caaf7552b4a7b366"  @click="chooseCate('5f080d29caaf7552b4a7b366')">Solid Earth Geophysics</el-button>
-                                    <el-button type="text" id="5cc04e857a419164e821231b" @click="chooseCate('5cc04e857a419164e821231b')">...All</el-button>
-                                </el-collapse-item>
-                                <el-collapse-item title="Physical Geography" name="2">
-                                    <hr>
-                                    <el-button type="text" id="5cc054ac7a419164e8212322" @click="chooseCate('5cc054ac7a419164e8212322')">Hydrology</el-button>
-                                    <el-button type="text" id="5cc054bd7a419164e8212323" @click="chooseCate('5cc054bd7a419164e8212323')">Geomorphology</el-button>
-                                    <el-button type="text" id="5cc054c47a419164e8212324" @click="chooseCate('5cc054c47a419164e8212324')">Glaciology</el-button>
-                                    <el-button type="text" id="5cc054cb7a419164e8212325"  @click="chooseCate('5cc054cb7a419164e8212325')">Biogeography</el-button>
-                                    <el-button type="text" id="5cc054d07a419164e8212326"  @click="chooseCate('5cc054d07a419164e8212326')">Meteorology</el-button>
-                                    <el-button type="text" id="5cc054d67a419164e8212327"  @click="chooseCate('5cc054d67a419164e8212327')">Climatology</el-button>
-                                    <el-button type="text" id="5cc054dc7a419164e8212328"  @click="chooseCate('5cc054dc7a419164e8212328')">Pedology</el-button>
-                                    <el-button type="text" id="5cc054e37a419164e8212329"  @click="chooseCate('5cc054e37a419164e8212329')">Oceanography</el-button>
-                                    <el-button type="text" id="5cc054e97a419164e821232a"  @click="chooseCate('5cc054e97a419164e821232a')">Coastal Geography</el-button>
-                                    <el-button type="text" id="5cc054f17a419164e821232b"  @click="chooseCate('5cc054f17a419164e821232b')">Landscape Ecology</el-button>
-                                    <el-button type="text" id="5cc054f77a419164e821232c"  @click="chooseCate('5cc054f77a419164e821232c')">Ecosystem</el-button>
-                                    <el-button type="text" id="5cc054fd7a419164e821232d"  @click="chooseCate('5cc054fd7a419164e821232d')">Paleogeography</el-button>
-                                    <el-button type="text" id="5cc055037a419164e821232e"  @click="chooseCate('5cc055037a419164e821232e')">Quaternary Science</el-button>
-
-                                    <el-button type="text" id="5cc055117a419164e8212330"  @click="chooseCate('5cc055117a419164e8212330')">Synthetic Dataset</el-button>
-                                    <el-button type="text" id="5cc0550b7a419164e821232f"  @click="chooseCate('5cc0550b7a419164e821232f')">Environmental Management</el-button>
-
-                                    <el-button type="text" id="5cc055177a419164e8212331"  @click="chooseCate('5cc055177a419164e8212331')">Others</el-button>
-                                    <el-button type="text" id="5cc055237a419164e8212332"  @click="chooseCate('5cc055237a419164e8212332')">...All</el-button>
-
-                                </el-collapse-item>
-                                <el-collapse-item title="Human Geography" name="3">
-                                    <hr>
-                                    <el-button type="text" id="5cc057dc7a419164e8212333"  @click="chooseCate('5cc057dc7a419164e8212333')">Agriculture Geography</el-button>
-                                    <el-button type="text" id="5cd6c5b635f77e4c68e47bb5"  @click="chooseCate('5cd6c5b635f77e4c68e47bb5')">Population Geography</el-button>
-                                    <el-button type="text" id="5cc057e97a419164e8212334"  @click="chooseCate('5cc057e97a419164e8212334')">Urban Geography</el-button>
-                                    <el-button type="text" id="5cc2758ea05cc4a45c1e0934"  @click="chooseCate('5cc2758ea05cc4a45c1e0934')">Traffic Geography</el-button>
-                                    <el-button type="text" id="5cc057fa7a419164e8212337"  @click="chooseCate('5cc057fa7a419164e8212337')">Tourism Geography</el-button>
-                                    <el-button type="text" id="5cc057ff7a419164e8212338"  @click="chooseCate('5cc057ff7a419164e8212338')">Regional Geography</el-button>
-                                    <el-button type="text" id="5cc058147a419164e8212339"  @click="chooseCate('5cc058147a419164e8212339')">Historical Geography</el-button>
-
-                                    <el-button type="text" id="5cc0581b7a419164e821233a"  @click="chooseCate('5cc0581b7a419164e821233a')">Cultural Geography</el-button>
-                                    <el-button type="text" id="5cc058217a419164e821233b"  @click="chooseCate('5cc058217a419164e821233b')">Social Geography</el-button>
-                                    <el-button type="text" id="5cc0588f7a419164e821233c"  @click="chooseCate('5cc0588f7a419164e821233c')">Economic Geography</el-button>
-                                    <el-button type="text" id="5cc058967a419164e821233d"  @click="chooseCate('5cc058967a419164e821233d')">Political Geography</el-button>
-                                    <el-button type="text" id="5cc0589c7a419164e821233e"  @click="chooseCate('5cc0589c7a419164e821233e')">Health</el-button>
-                                    <el-button type="text" id="5cc058a27a419164e821233f"  @click="chooseCate('5cc058a27a419164e821233f')">Development Geography</el-button>
-                                    <el-button type="text" id="5cc058a77a419164e8212340"  @click="chooseCate('5cc058a77a419164e8212340')">Behavioral Geography</el-button>
-                                    <el-button type="text" id="5cc058ad7a419164e8212341"  @click="chooseCate('5cc058ad7a419164e8212341')">SyntheticDataset</el-button>
-                                    <el-button type="text" id="5cd6befe35f77e4c68e47bb3"  @click="chooseCate('5cd6befe35f77e4c68e47bb3')">Conservation</el-button>
-                                    <el-button type="text" id="5cc058b47a419164e8212342"  @click="chooseCate('5cc058b47a419164e8212342')">Others</el-button>
-                                    <el-button type="text" id="5cc058c37a419164e8212343"  @click="chooseCate('5cc058c37a419164e8212343')">...All</el-button>
-
-                                </el-collapse-item>
-                                <el-collapse-item title="Geographic Information" name="4">
-                                    <hr>
-                                    <el-button type="text" id="5cc05aa97a419164e8212344"  @click="chooseCate('5cc05aa97a419164e8212344')">Land Cover</el-button>
-                                    <el-button type="text" id="5cc05ab27a419164e8212345"  @click="chooseCate('5cc05ab27a419164e8212345')">Elevation</el-button>
-                                    <el-button type="text" id="5cc05ab97a419164e8212346"  @click="chooseCate('5cc05ab97a419164e8212346')">Terrain/Landform</el-button>
-
-                                    <el-button type="text" id="5cc05ac47a419164e8212347"  @click="chooseCate('5cc05ac47a419164e8212347')">Administrative Boundaries</el-button>
-                                    <el-button type="text" id="5cc05ace7a419164e8212348"  @click="chooseCate('5cc05ace7a419164e8212348')">Buildings Roads and POI</el-button>
-                                    <el-button type="text" id="5cc05ad97a419164e8212349"  @click="chooseCate('5cc05ad97a419164e8212349')">Land and Ocean Boundaries</el-button>
-
-                                    <el-button type="text" id="5cc05ae37a419164e821234a"  @click="chooseCate('5cc05ae37a419164e821234a')">SyntheticDataset</el-button>
-                                    <el-button type="text" id="5cd6c32435f77e4c68e47bb4"  @click="chooseCate('5cd6c32435f77e4c68e47bb4')">Remote Sensing</el-button>
-                                    <el-button type="text" id="5cc05aec7a419164e821234b"  @click="chooseCate('5cc05aec7a419164e821234b')">Others</el-button>
-                                    <el-button type="text" id="5cc05b067a419164e821234c"  @click="chooseCate('5cc05b067a419164e821234c')">...All</el-button>
-                                </el-collapse-item>
-                                <el-collapse-item title="Natural Resources" name="5">
-                                    <hr>
-                                    <el-button type="text" id="5cc05c167a419164e821234d"  @click="chooseCate('5cc05c167a419164e821234d')">Land Resources</el-button>
-                                    <el-button type="text" id="5cc05c217a419164e821234e"  @click="chooseCate('5cc05c217a419164e821234e')">Agricultural Resources</el-button>
-                                    <el-button type="text" id="5cc05c2f7a419164e821234f"  @click="chooseCate('5cc05c2f7a419164e821234f')">Climatic Resources</el-button>
-                                    <el-button type="text" id="5cd6c74435f77e4c68e47bb6"  @click="chooseCate('5cd6c74435f77e4c68e47bb6')">Biological Resources</el-button>
-                                    <el-button type="text" id="5cc05c3b7a419164e8212350"  @click="chooseCate('5cc05c3b7a419164e8212350')">Water Resources</el-button>
-                                    <el-button type="text" id="5cd6d12a35f77e4c68e47bb7"  @click="chooseCate('5cd6d12a35f77e4c68e47bb7')">Energy Resources</el-button>
-                                    <el-button type="text" id="5cc05c467a419164e8212351"  @click="chooseCate('5cc05c467a419164e8212351')">Mineral/Oil and Gas</el-button>
-                                    <el-button type="text" id="5cc05c517a419164e8212352"  @click="chooseCate('5cc05c517a419164e8212352')">Disaster</el-button>
-
-                                    <el-button type="text" id="5cc05c5c7a419164e8212353"  @click="chooseCate('5cc05c5c7a419164e8212353')">Others</el-button>
-                                    <el-button type="text" id="5cc05c637a419164e8212354"  @click="chooseCate('5cc05c637a419164e8212354')">...All</el-button>
-                                </el-collapse-item>
-                            </el-tab-pane>
-                            <el-tab-pane label="Visualization" name="second">
-                                <el-collapse-item title="Earth System" name="11">
-                                    <el-button type="text" id="5cb83fd0ea3cba3224b6e24e"  @click="chooseCate('5cb83fd0ea3cba3224b6e24e')">Hydrosphere</el-button>
-                                    <el-button type="text" id="5cc04b987a419164e8212316"  @click="chooseCate('5cc04b987a419164e8212316')">Lithosphere</el-button>
-                                    <el-button type="text" id="5cc04bd27a419164e8212317" @click="chooseCate('5cc04bd27a419164e8212317')">Atmosphere</el-button>
-                                    <el-button type="text" id="5cc04c2c7a419164e821231a" @click="chooseCate('5cc04c2c7a419164e821231a')">Biosphere</el-button>
-                                    <el-button type="text" id="5cd01463710f141698c1697d" @click="chooseCate('5cd01463710f141698c1697d')">Anthroposphere</el-button>
-                                    <el-button type="text" id="5cc04be67a419164e8212319" @click="chooseCate('5cc04be67a419164e8212319')">Global</el-button>
-                                    <el-button type="text" id="5f080d08caaf7552b4a7b361"  @click="chooseCate('5f080d08caaf7552b4a7b361')">Solar-terrestrial Physics</el-button>
-                                    <el-button type="text" id="5f080d29caaf7552b4a7b366"  @click="chooseCate('5f080d29caaf7552b4a7b366')">Solid Earth Geophysics</el-button>
-                                    <el-button type="text" id="5cc04e857a419164e821231b" @click="chooseCate('5cc04e857a419164e821231b')">...All</el-button>
-                                </el-collapse-item>
-                                <el-collapse-item title="Physical Geography" name="22">
-                                    <hr>
-                                    <el-button type="text" id="5cc054ac7a419164e8212322" @click="chooseCate('5cc054ac7a419164e8212322')">Hydrology</el-button>
-                                    <el-button type="text" id="5cc054bd7a419164e8212323" @click="chooseCate('5cc054bd7a419164e8212323')">Geomorphology</el-button>
-                                    <el-button type="text" id="5cc054c47a419164e8212324" @click="chooseCate('5cc054c47a419164e8212324')">Glaciology</el-button>
-                                    <el-button type="text" id="5cc054cb7a419164e8212325"  @click="chooseCate('5cc054cb7a419164e8212325')">Biogeography</el-button>
-                                    <el-button type="text" id="5cc054d07a419164e8212326"  @click="chooseCate('5cc054d07a419164e8212326')">Meteorology</el-button>
-                                    <el-button type="text" id="5cc054d67a419164e8212327"  @click="chooseCate('5cc054d67a419164e8212327')">Climatology</el-button>
-                                    <el-button type="text" id="5cc054dc7a419164e8212328"  @click="chooseCate('5cc054dc7a419164e8212328')">Pedology</el-button>
-                                    <el-button type="text" id="5cc054e37a419164e8212329"  @click="chooseCate('5cc054e37a419164e8212329')">Oceanography</el-button>
-                                    <el-button type="text" id="5cc054e97a419164e821232a"  @click="chooseCate('5cc054e97a419164e821232a')">Coastal Geography</el-button>
-                                    <el-button type="text" id="5cc054f17a419164e821232b"  @click="chooseCate('5cc054f17a419164e821232b')">Landscape Ecology</el-button>
-                                    <el-button type="text" id="5cc054f77a419164e821232c"  @click="chooseCate('5cc054f77a419164e821232c')">Ecosystem</el-button>
-                                    <el-button type="text" id="5cc054fd7a419164e821232d"  @click="chooseCate('5cc054fd7a419164e821232d')">Paleogeography</el-button>
-                                    <el-button type="text" id="5cc055037a419164e821232e"  @click="chooseCate('5cc055037a419164e821232e')">Quaternary Science</el-button>
-
-                                    <el-button type="text" id="5cc055117a419164e8212330"  @click="chooseCate('5cc055117a419164e8212330')">Synthetic Dataset</el-button>
-                                    <el-button type="text" id="5cc0550b7a419164e821232f"  @click="chooseCate('5cc0550b7a419164e821232f')">Environmental Management</el-button>
-
-                                    <el-button type="text" id="5cc055177a419164e8212331"  @click="chooseCate('5cc055177a419164e8212331')">Others</el-button>
-                                    <el-button type="text" id="5cc055237a419164e8212332"  @click="chooseCate('5cc055237a419164e8212332')">...All</el-button>
-
-                                </el-collapse-item>
-                                <el-collapse-item title="Human Geography" name="33">
-                                    <hr>
-                                    <el-button type="text" id="5cc057dc7a419164e8212333"  @click="chooseCate('5cc057dc7a419164e8212333')">Agriculture Geography</el-button>
-                                    <el-button type="text" id="5cd6c5b635f77e4c68e47bb5"  @click="chooseCate('5cd6c5b635f77e4c68e47bb5')">Population Geography</el-button>
-                                    <el-button type="text" id="5cc057e97a419164e8212334"  @click="chooseCate('5cc057e97a419164e8212334')">Urban Geography</el-button>
-                                    <el-button type="text" id="5cc2758ea05cc4a45c1e0934"  @click="chooseCate('5cc2758ea05cc4a45c1e0934')">Traffic Geography</el-button>
-                                    <el-button type="text" id="5cc057fa7a419164e8212337"  @click="chooseCate('5cc057fa7a419164e8212337')">Tourism Geography</el-button>
-                                    <el-button type="text" id="5cc057ff7a419164e8212338"  @click="chooseCate('5cc057ff7a419164e8212338')">Regional Geography</el-button>
-                                    <el-button type="text" id="5cc058147a419164e8212339"  @click="chooseCate('5cc058147a419164e8212339')">Historical Geography</el-button>
-
-                                    <el-button type="text" id="5cc0581b7a419164e821233a"  @click="chooseCate('5cc0581b7a419164e821233a')">Cultural Geography</el-button>
-                                    <el-button type="text" id="5cc058217a419164e821233b"  @click="chooseCate('5cc058217a419164e821233b')">Social Geography</el-button>
-                                    <el-button type="text" id="5cc0588f7a419164e821233c"  @click="chooseCate('5cc0588f7a419164e821233c')">Economic Geography</el-button>
-                                    <el-button type="text" id="5cc058967a419164e821233d"  @click="chooseCate('5cc058967a419164e821233d')">Political Geography</el-button>
-                                    <el-button type="text" id="5cc0589c7a419164e821233e"  @click="chooseCate('5cc0589c7a419164e821233e')">Health</el-button>
-                                    <el-button type="text" id="5cc058a27a419164e821233f"  @click="chooseCate('5cc058a27a419164e821233f')">Development Geography</el-button>
-                                    <el-button type="text" id="5cc058a77a419164e8212340"  @click="chooseCate('5cc058a77a419164e8212340')">Behavioral Geography</el-button>
-                                    <el-button type="text" id="5cc058ad7a419164e8212341"  @click="chooseCate('5cc058ad7a419164e8212341')">SyntheticDataset</el-button>
-                                    <el-button type="text" id="5cd6befe35f77e4c68e47bb3"  @click="chooseCate('5cd6befe35f77e4c68e47bb3')">Conservation</el-button>
-                                    <el-button type="text" id="5cc058b47a419164e8212342"  @click="chooseCate('5cc058b47a419164e8212342')">Others</el-button>
-                                    <el-button type="text" id="5cc058c37a419164e8212343"  @click="chooseCate('5cc058c37a419164e8212343')">...All</el-button>
-
-                                </el-collapse-item>
-                                <el-collapse-item title="Geographic Information" name="44">
-                                    <hr>
-                                    <el-button type="text" id="5cc05aa97a419164e8212344"  @click="chooseCate('5cc05aa97a419164e8212344')">Land Cover</el-button>
-                                    <el-button type="text" id="5cc05ab27a419164e8212345"  @click="chooseCate('5cc05ab27a419164e8212345')">Elevation</el-button>
-                                    <el-button type="text" id="5cc05ab97a419164e8212346"  @click="chooseCate('5cc05ab97a419164e8212346')">Terrain/Landform</el-button>
-
-                                    <el-button type="text" id="5cc05ac47a419164e8212347"  @click="chooseCate('5cc05ac47a419164e8212347')">Administrative Boundaries</el-button>
-                                    <el-button type="text" id="5cc05ace7a419164e8212348"  @click="chooseCate('5cc05ace7a419164e8212348')">Buildings Roads and POI</el-button>
-                                    <el-button type="text" id="5cc05ad97a419164e8212349"  @click="chooseCate('5cc05ad97a419164e8212349')">Land and Ocean Boundaries</el-button>
-
-                                    <el-button type="text" id="5cc05ae37a419164e821234a"  @click="chooseCate('5cc05ae37a419164e821234a')">SyntheticDataset</el-button>
-                                    <el-button type="text" id="5cd6c32435f77e4c68e47bb4"  @click="chooseCate('5cd6c32435f77e4c68e47bb4')">Remote Sensing</el-button>
-                                    <el-button type="text" id="5cc05aec7a419164e821234b"  @click="chooseCate('5cc05aec7a419164e821234b')">Others</el-button>
-                                    <el-button type="text" id="5cc05b067a419164e821234c"  @click="chooseCate('5cc05b067a419164e821234c')">...All</el-button>
-                                </el-collapse-item>
-                                <el-collapse-item title="Natural Resources" name="55">
-                                    <hr>
-                                    <el-button type="text" id="5cc05c167a419164e821234d"  @click="chooseCate('5cc05c167a419164e821234d')">Land Resources</el-button>
-                                    <el-button type="text" id="5cc05c217a419164e821234e"  @click="chooseCate('5cc05c217a419164e821234e')">Agricultural Resources</el-button>
-                                    <el-button type="text" id="5cc05c2f7a419164e821234f"  @click="chooseCate('5cc05c2f7a419164e821234f')">Climatic Resources</el-button>
-                                    <el-button type="text" id="5cd6c74435f77e4c68e47bb6"  @click="chooseCate('5cd6c74435f77e4c68e47bb6')">Biological Resources</el-button>
-                                    <el-button type="text" id="5cc05c3b7a419164e8212350"  @click="chooseCate('5cc05c3b7a419164e8212350')">Water Resources</el-button>
-                                    <el-button type="text" id="5cd6d12a35f77e4c68e47bb7"  @click="chooseCate('5cd6d12a35f77e4c68e47bb7')">Energy Resources</el-button>
-                                    <el-button type="text" id="5cc05c467a419164e8212351"  @click="chooseCate('5cc05c467a419164e8212351')">Mineral/Oil and Gas</el-button>
-                                    <el-button type="text" id="5cc05c517a419164e8212352"  @click="chooseCate('5cc05c517a419164e8212352')">Disaster</el-button>
-
-                                    <el-button type="text" id="5cc05c5c7a419164e8212353"  @click="chooseCate('5cc05c5c7a419164e8212353')">Others</el-button>
-                                    <el-button type="text" id="5cc05c637a419164e8212354"  @click="chooseCate('5cc05c637a419164e8212354')">...All</el-button>
-                                </el-collapse-item>
-                            </el-tab-pane>
-                        </el-tabs>
-                    </el-collapse>
-                </el-card>
-            </div>
-
+            <template>
+                <el-tabs v-model="activeName" type="card" @tab-click="handleClick" stretch="true">
+                    <el-tab-pane label="UDX Data Manipulation " name="first">
+                        <button type="button" class="el-button el-button--primary" style="height: 100px; width: 70%; display: flex;flex-direction: column;
+                         margin: auto; font-size: xx-large; background: rgb(106, 138, 190);" @click="dialogVisible = true">
+                            <span style="margin: auto;"><i class="el-icon-magic-stick"  style="margin-right: 10px"></i>Mapping</span>
+                            <div style="margin: auto"><p style="font-size: large;">Map your data to a fixed format UDX</p></div>
+                        </button>
+                        <button type="button" class="el-button el-button--success" style="height: 100px; width: 70%; display: flex;flex-direction: column;
+                        margin: auto; font-size: xx-large; background: rgb(90, 182, 223); border-color: rgb(90, 182, 223);">
+                            <span style=" margin: auto;"><i class="el-icon-thumb" style="margin-right: 10px"></i>Refactor</span>
+                            <div style="margin: auto"><p style="font-size: large;">UDX to refactor your data</p></div>
+                        </button>
+                        <button type="button" class="el-button el-button--warning" style="height: 100px; width: 70%; display: flex;flex-direction: column;
+                         margin: auto; font-size: xx-large;"><!----><!----><span style=" margin: auto;">
+                            <i class="el-icon-video-play" style="margin-right: 10px"></i>Visualization</span>
+                            <div style="margin: auto"><p style="font-size: large;">Visualize your data through UDX</p></div>
+                        </button>
+                    </el-tab-pane>
+                    <el-tab-pane label="UDX Data Sharing" name="second">
+                        <el-button type="primary" style="height: 100px;width: 50%;display: flex;margin: auto;font-size: xx-large;
+                        background: #6a8abe;">Mapping</el-button>
+                        <el-button type="success" style="height: 100px;width: 50%;display: flex;margin: auto;font-size: xx-large;
+                        background: #5ab6df;border-color: #5ab6df;">Refactor</el-button>
+                        <el-button type="warning" style="height: 100px;width: 50%;display: flex;margin: auto;font-size: xx-large"
+                        >Visualization</el-button>
+                    </el-tab-pane>
+                    <el-tab-pane label="Others" name="third">
+                        <el-button type="primary" style="height: 100px;width: 50%;display: flex;margin: auto;font-size: xx-large;
+                        background: #6a8abe;">Mapping</el-button>
+                        <el-button type="success" style="height: 100px;width: 50%;display: flex;margin: auto;font-size: xx-large;
+                        background: #5ab6df;border-color: #5ab6df;">Refactor</el-button>
+                        <el-button type="warning" style="height: 100px;width: 50%;display: flex;margin: auto;font-size: xx-large
+                        ">Visualization</el-button>
+                    </el-tab-pane>
+                </el-tabs>
+            </template>
 
         </div>
     </div>
+    <el-dialog
+            title="Mapping"
+            :visible.sync="dialogVisible"
+            width="70%"
+            :before-close="handleClose">
+        <div style="height: 80%;">
+            <el-steps :active="mappingActive" finish-status="success" align-center>
+                <el-step class="mappingStep" title="Template"></el-step>
+                <el-step class="mappingStep" title="Data&Method"></el-step>
+                <el-step class="mappingStep" title="Invoke"></el-step>
+            </el-steps>
+            <el-card :style="{display:(mappingActive==0?'block':'none')}" shadow="never">
+
+            </el-card>
+            <el-card :style="{display:(mappingActive==1?'block':'none')}" shadow="never">
+
+            </el-card>
+            <el-card :style="{display:(mappingActive==2?'block':'none')}" shadow="never">
+
+            </el-card>
+            <!--<el-button style="margin-top: 12px;" @click="next">Next</el-button>-->
+            <el-button circle icon="el-icon-arrow-left"
+                       :style="{visibility:(mappingActive>0?'visible':'hidden')}" class="el-button--primary"
+                       style="margin-top: 12px;position: absolute;left:4%;top:55px;"
+                       @click="editThemePre"></el-button>
+            <el-button circle icon="el-icon-arrow-right" v-if="mappingActive<3" class="el-button--primary"
+                       style="margin-top: 12px;position: absolute;right:4%;top:55px;"
+                       @click="editThemeNext"></el-button>
+            <el-button circle icon="el-icon-check" v-if="mappingActive>=3" class="el-button--success"
+                       style="margin-top: 12px;position: absolute;right:4%;top:55px;"
+                       @click="editThemeFinish"></el-button>
+        </div>
+    </el-dialog>
     <div th:replace="fragments/footer :: footer"></div>
 </div>
 </body>
@@ -246,7 +130,7 @@
 <script src="/static/js/common/bootstrap.js"></script>
 <script src="/static/js/common/bootstrap-select.js"></script>
 <script src="/static/js/common/bootstrap-tagsinput.js"></script>
-<script src="/static/js/page/data_items.js"></script>
+<script src="/static/js/page/data_application.js"></script>
 <script  async src="/static/js/common/loadUser.js" ></script>
 <script src="/static/element-ui/umd/locale/en.js"></script>
 <script src="/static/js/common/navbar.js"></script>

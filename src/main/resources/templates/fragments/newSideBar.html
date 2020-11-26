@@ -33,7 +33,7 @@
                             <div class="flexCenter cursorPointer" style="padding: 5px; font-size: 18px; margin-right: 25px;">
                                 <i class="fa fa-bell"></i>
                             </div>
-                            <!--<sup th:if="${userNavBar.messageNum}" th:text="${userNavBar.messageNum}" class="el-badge__content el-badge__content&#45;&#45;undefined is-fixed"></sup>-->
+<!--                            <sup th:if="${userNavBar.messageNum}" th:text="${userNavBar.messageNum}" class="el-badge__content el-badge__content&#45;&#45;undefined is-fixed"></sup>-->
                         </div>
                     <!--</div>-->
                     <div class="innerBorderCol"></div>
@@ -48,7 +48,7 @@
 
                 <div id="submenu" class="sub zmax flexCenter" style="right:0px;width: 180px;margin-top: -10px">
                     <ul id="leftUl" class="flexCol " style="width: 160px">
-                        <li><a id="userPageDir" :href="'/user/'+userInfo.oid">My Page</a></li>
+                        <li><a id="userPageDir" :href="'/profile/'+userInfo.oid">My Page</a></li>
                         <li><a href="/user/out">Log Out</a></li>
                     </ul>
                 </div>

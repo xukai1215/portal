@@ -417,7 +417,6 @@ public class ComputableModelRestController {
 
     @RequestMapping(value = "/getRelatedDataByPage",method = RequestMethod.GET)
     public JsonResult getRelatedDataByPage(ComputableModelFindDTO computableModelFindDTO, @RequestParam(value = "oid") String oid){
-
         return ResultUtils.success(computableModelService.getRelatedDataByPage(computableModelFindDTO,oid));
     }
 
@@ -427,6 +426,11 @@ public class ComputableModelRestController {
                                         @RequestParam(value = "size") int size
     ) {
         return ResultUtils.success(computableModelService.loadDeployedModel(asc,page,size));
+    }
+
+    @RequestMapping(value="/listDeployedModel",method=RequestMethod.GET)
+    public JsonResult listDeployedModel() {
+        return ResultUtils.success(computableModelService.listDeployedModel());
     }
 
     @RequestMapping(value="/searchDeployedModel",method=RequestMethod.GET)

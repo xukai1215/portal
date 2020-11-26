@@ -1323,6 +1323,72 @@ var vue = new Vue({
             this.loadDataVisible = false
         },
 
+        async addDataItemData(event){
+            const loading = this.$loading({
+                lock: true,
+                text: "Loading",
+                spinner: "el-icon-loading",
+                background: "rgba(0, 0, 0, 0.7)"
+            });
+            let dataItemId = event.currentTarget.id;
+            let body = {
+                dataItemId :dataItemId,
+                oid: this.oid,
+                host: this.info.dxInfo.dxIP,
+                port: this.info.dxInfo.dxPort,
+                type: this.info.dxInfo.dxType,
+                userName: this.info.userInfo.userName
+            };
+            let {data, code, msg} = await (await fetch("/task/loadDataItemData/",{
+                method:"post",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify(body)
+                })).json();
+            if (code != 0 || code == null || code == undefined) {
+                loading.close();
+                this.$message.error(msg);
+                return;
+            }
+            console.log(data)
+            data.forEach(el => {
+                let stateId = el.stateId;
+                let eventName = el.event;
+                let state = this.info.modelInfo.states.find(state => {
+                    return state.Id == stateId;
+                });
+                if (state == undefined) return;
+                let event = state.event.find(event => {
+                    return event.eventName == eventName;
+                });
+                if (event == undefined) return;
+                this.$set(event, "tag", el.tag);
+                this.$set(event, "suffix", el.suffix);
+                this.$set(event, "url", el.url);
+                this.$set(event, "visual", el.visual);
+                if (el.children.length > 0) {
+                    if (el.children.length == 1) {
+                        event.children[0].value = el.children[0].value;
+                    }
+                    else {
+                        for (i = 0; i < el.children.length; i++) {
+                            let name = el.children[i].eventName
+                            let eventChild = event.children.find(child => {
+                                return child.eventName == name;
+                            })
+                            if (eventChild != null) {
+                                eventChild.value = el.children[i].value;
+                            }
+                        }
+                    }
+                }
+            });
+            loading.close();
+            this.loadDataVisible = false;
+        },
+
+
         goPersonCenter(oid) {
             window.open("/user/" + oid);
         },

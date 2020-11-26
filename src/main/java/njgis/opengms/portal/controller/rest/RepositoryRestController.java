@@ -118,8 +118,6 @@ public class RepositoryRestController {
         return modelAndView;
     }
 
-
-
     //concept
     @RequestMapping(value="/getConceptTree",method = RequestMethod.GET)
     public JsonResult getConceptTree(){

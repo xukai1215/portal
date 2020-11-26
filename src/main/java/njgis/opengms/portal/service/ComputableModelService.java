@@ -152,10 +152,7 @@ public class ComputableModelService {
     }
 
     public List<ComputableModel> getComputableModelsBySearchTerms(String searchTerms){
-        String[] terms = searchTerms.toLowerCase().split(" ");
-        String tmp = terms[0];
-
-        List<ComputableModel> searchTermsComputableModel = computableModelDao.findByNameContainsIgnoreCaseAndContentType(tmp,"Package");
+        List<ComputableModel> searchTermsComputableModel = computableModelDao.findByNameContainsIgnoreCaseAndContentType(searchTerms,"Package");
         for(int i = 0; i<searchTermsComputableModel.size(); i++){
             String mdl = searchTermsComputableModel.get(i).getMdl();
             searchTermsComputableModel.get(i).setMdlJson(convertMdl(mdl));
@@ -250,8 +247,7 @@ public class ComputableModelService {
         } else if (searchText.equals("") && !classes.get(0).equals("all")) {
             computableModelPage = computableModelDao.findByClassificationsInAndStatusNotLike(classes,statusNotLike, pageable);
         } else {
-            computableModelPage = computableModelDao.findByNameContainsIgnoreCaseAndClassificationsInAndStatusNotLike(searchText, classes,statusNotLike, pageable);
-
+            computableModelPage = computableModelDao.findByNameContainsIgnoreCaseAndClassificationsInAndStatusNotLike(searchText, classes, statusNotLike, pageable);
         }
 
 
@@ -355,6 +351,15 @@ public class ComputableModelService {
                 }
             }
 
+            //modelItem
+            ModelItem modelItem = modelItemDao.findFirstByOid(modelInfo.getRelateModelItem());
+            JSONObject modelItemInfo = new JSONObject();
+            modelItemInfo.put("oid",modelItem.getOid());
+            modelItemInfo.put("name",modelItem.getName());
+            modelItemInfo.put("description", modelItem.getDescription());
+            modelItemInfo.put("img",modelItem.getImage().equals("") ? null : htmlLoadPath + modelItem.getImage());
+
+
 
             ModelAndView modelAndView = new ModelAndView();
 
@@ -379,6 +384,7 @@ public class ComputableModelService {
             modelAndView.addObject("loadPath", htmlLoadPath);
             modelAndView.addObject("lastModifier", modifierJson);
             modelAndView.addObject("lastModifyTime", lastModifyTime);
+            modelAndView.addObject("relateModelItem", modelItemInfo);
 
 
             return modelAndView;
@@ -1158,6 +1164,7 @@ public class ComputableModelService {
             computableModelPage = computableModelDao.findByClassificationsInAndStatusNotLike(classes,statusNotLike, pageable);
         } else {
             computableModelPage = computableModelDao.findByNameContainsIgnoreCaseAndClassificationsInAndStatusNotLike(searchText, classes,statusNotLike, pageable);
+
         }
 
 
@@ -1444,12 +1451,35 @@ public class ComputableModelService {
         Pageable pageable = PageRequest.of(page, size, sort);
 
         Page<ComputableModel> computableModelPage = computableModelDao.findAllByDeployAndStatusIn(true,itemStatusVisible,pageable);
+        List<ComputableModel> ComputableModelList = computableModelPage.getContent();
+
+        JSONArray j_computableModelArray = new JSONArray();
+
+        for(ComputableModel computableModel:ComputableModelList){
+            String author = computableModel.getAuthor();
+            JSONObject j_computableModel = new JSONObject();
+            j_computableModel.put("oid",computableModel.getOid());
+            j_computableModel.put("name",computableModel.getName());
+            j_computableModel.put("description",computableModel.getDescription());
+            j_computableModel.put("author",userService.findUserByUserName(computableModel.getAuthor()).getName());
+            j_computableModel.put("authorOid",userService.findUserByUserName(computableModel.getAuthor()).getOid());
+            j_computableModel.put("md5",computableModel.getMd5());
+            j_computableModel.put("mdl",computableModel.getMdl());
+            j_computableModel.put("mdlJson",computableModel.getMdlJson());
+            j_computableModel.put("createTime",computableModel.getCreateTime());
+            j_computableModel.put("lastModifyTime",computableModel.getLastModifyTime());
+            j_computableModelArray.add(j_computableModel);
+        }
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("total",computableModelPage.getTotalElements());
-        jsonObject.put("content",computableModelPage.getContent());
+        jsonObject.put("content",j_computableModelArray);
 
         return jsonObject;
+    }
+
+    public List<ComputableModel> listDeployedModel(){
+        return computableModelDao.findAllByDeploy(true);
     }
 
     public JSONObject searchDeployedModel(int asc,int page,int size,String searchText){

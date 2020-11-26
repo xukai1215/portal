@@ -32,6 +32,10 @@ var info=new Vue({
                 relation:"Connected with",
             }],
 
+            //详情描述语言
+            currentDetailLanguage:"",
+            detailLanguageList:[],
+            detail:"",
 
 
             pageOption: {
@@ -61,7 +65,7 @@ var info=new Vue({
             activeName: 'Computable Model',
             activeName1: 'Model Item',
             activeName2: 'Concept & Semantic',
-            activeName_dialog: 'my',
+            activeName_dialog :"",
             activeRelatedDataName: 'Add Data Items',
             refTableData: [{
                 title: 'Anisotropic magnetotransport and exotic longitudinal linear magnetoresistance in WT e2 crystals',
@@ -499,9 +503,31 @@ var info=new Vue({
                 label: 'label'
             },
 
+            activeName_dialog:''
         }
     },
     methods: {
+
+        getOid(){
+            let url = window.location.href;
+            let urls = url.split("/");
+            for(i=0;i<urls.length;i++){
+                if(urls[i].length>=36){
+                    return urls[i].substring(0,36);
+                }
+            }
+        },
+
+        changeDetailLanguage(command){
+            this.currentDetailLanguage = command;
+            let data = {
+                "oid":this.getOid(),
+                "language":this.currentDetailLanguage
+            };
+            $.get("/modelItem/getDetailByLanguage",data,(result)=>{
+                this.detail = result.data;
+            })
+        },
 
         handleCheckChange(data, checked, indeterminate) {
             let checkedNodes = this.$refs.tree2.getCheckedNodes()
@@ -1242,7 +1268,7 @@ var info=new Vue({
                     classifications: ["all"],
                 }
             }else {
-                 data = {
+                data = {
                     asc: this.pageOption.sortAsc,
                     page: this.pageOption.currentPage-1,
                     pageSize: this.pageOption.pageSize,
@@ -1645,6 +1671,7 @@ var info=new Vue({
             })
 
         this.getComments();
+
 
         $(document).on('mouseover mouseout','.block_head',function(e){
             let editBtn=$(e.currentTarget).children(".blockEdit");

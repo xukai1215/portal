@@ -393,9 +393,6 @@
 
                 <el-dialog :visible.sync="bindModelItemDialogVisible" title="Bind Model Item"  width="50%"
                            top="40px">
-
-
-
                         <el-input placeholder="Model item name..." v-model="pageOption.searchText" class="input-with-select"  @keyup.enter.native="searchModelItem()">
                             <el-button slot="append" icon="el-icon-search" @click="searchModelItem()"></el-button>
                         </el-input>
@@ -421,7 +418,7 @@
                             </el-table-column>
                             <el-table-column label="Contributor">
                                 <template slot-scope="props">
-                                    <a :href="'/user/'+props.row.author_oid" target="_blank">{{props.row.author_name}}</a>
+                                    <a :href="'/profile/'+props.row.author_oid" target="_blank">{{props.row.author_name}}</a>
                                 </template>
                             </el-table-column>
                             <el-table-column fixed="right" label="Operation" width="100">

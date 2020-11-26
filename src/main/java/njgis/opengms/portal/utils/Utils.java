@@ -22,14 +22,13 @@ import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.security.MessageDigest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -76,11 +75,39 @@ public class Utils {
                             countryName="Taiwan, China";
                             break;
                         case "Congo (Democratic Republic of the)":
-                            countryName="Congo";
+                            countryName="Dem. Rep. Congo";
                             break;
                         case "Russian Federation":
-                            countryName="Russian";
+                            countryName="Russia";
                             break;
+                        case "Korea (Republic of)":
+                            countryName="Korea";
+                            break;
+                        case "Iran (Islamic Republic of)":
+                            countryName="Iran";
+                            break;
+                        case "Bolivia (Plurinational State of)":
+                            countryName="Bolivia";
+                            break;
+                        case "Micronesia (Federated States of)":
+                            countryName="Micronesia";
+                            break;
+                        case "Venezuela (Bolivarian Republic of)":
+                            countryName="Venezuela";
+                            break;
+                        case "Moldova (Republic of)":
+                            countryName="Moldova";
+                            break;
+                        case "Dominican Republic":
+                            countryName="Dominican Rep.";
+                            break;
+                        case "Palestine, State of":
+                            countryName="Palestine, State of";
+                            break;
+                        case "Tanzania, United Republic of":
+                            countryName="Tanzania";
+                            break;
+
                         default:
                             break;
                     }
@@ -186,6 +213,66 @@ public class Utils {
             e.printStackTrace();
         }
         return l.intValue();
+    }
+
+    public static List<Map.Entry<String,Integer>> sortMap(Map<String, Integer> map){
+        List<Map.Entry<String,Integer>> list = new ArrayList<Map.Entry<String,Integer>>(map.entrySet());
+        Collections.sort(list,new Comparator<Map.Entry<String,Integer>>() {
+            //升序排序
+            public int compare(Map.Entry<String, Integer> o1,
+                               Map.Entry<String, Integer> o2) {
+                return -o1.getValue().compareTo(o2.getValue());
+            }
+
+        });
+
+        return list;
+    }
+
+
+    public static String sendGet(String url, String param) {
+        String result = "";
+        BufferedReader in = null;
+        try {
+            String urlNameString = url + "?" + param;
+            URL realUrl = new URL(urlNameString);
+            // 打开和URL之间的连接
+            URLConnection connection = realUrl.openConnection();
+            // 设置通用的请求属性
+            connection.setRequestProperty("accept", "*/*");
+            connection.setRequestProperty("connection", "Keep-Alive");
+            connection.setRequestProperty("user-agent",
+                    "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
+            // 建立实际的连接
+            connection.connect();
+            // 获取所有响应头字段
+            Map<String, List<String>> map = connection.getHeaderFields();
+            // 遍历所有的响应头字段
+            for (String key : map.keySet()) {
+                System.out.println(key + "--->" + map.get(key));
+            }
+            // 定义 BufferedReader输入流来读取URL的响应
+            in = new BufferedReader(new InputStreamReader(
+                    connection.getInputStream()));
+            String line;
+            while ((line = in.readLine()) != null) {
+                result += line;
+            }
+        } catch (Exception e) {
+            System.out.println("发送GET请求出现异常！" + e);
+            e.printStackTrace();
+        }
+        // 使用finally块来关闭输入流
+        finally {
+            try {
+                if (in != null) {
+                    in.close();
+                }
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+        }
+        return result;
     }
 
 
@@ -586,6 +673,52 @@ public class Utils {
         return result;
     }
 
+    public static JSONObject convertDataServiceXml(String xml){
+        JSONObject j_xml = new JSONObject();
+
+        try{
+            Document ddlDoc = DocumentHelper.parseText(xml);
+            Element rootElement = ddlDoc.getRootElement();
+            j_xml.put("name", rootElement.attributeValue("name"));
+
+            Element descElement = rootElement.element("Description");
+            j_xml.put("desc", descElement.getStringValue());
+
+            Element inputElement = rootElement.element("input");
+            Element inputItemEle = inputElement.element("Item");
+            JSONObject input = new JSONObject();
+            input.put("id",UUID.randomUUID());
+            input.put("name",inputItemEle.attributeValue("name"));
+            input.put("type",inputItemEle.attributeValue("type"));
+            input.put("description",inputItemEle.attributeValue("description"));
+            j_xml.put("input",input);
+
+            Element paramElement = rootElement.element("Parameter");
+            Element paramItemEle = paramElement.element("Item");
+            JSONObject param = new JSONObject();
+            param.put("id",UUID.randomUUID());
+            param.put("name",paramItemEle.attributeValue("name"));
+            param.put("type",paramItemEle.attributeValue("type"));
+            param.put("description",paramItemEle.attributeValue("description"));
+            j_xml.put("output",param);
+
+            Element outputElement = rootElement.element("output");
+            Element outputItemEle = outputElement.element("Item");
+            JSONObject output = new JSONObject();
+            output.put("id",UUID.randomUUID());
+            output.put("name",inputItemEle.attributeValue("name"));
+            output.put("type",inputItemEle.attributeValue("type"));
+            output.put("description",inputItemEle.attributeValue("description"));
+            j_xml.put("output",output);
+
+        }catch (Exception e){
+            System.out.println(xml);
+            e.printStackTrace();
+        }
+
+        return j_xml;
+    }
+
     public static void convertData(List<Element> udxNodes, JSONObject root) {
         if (udxNodes.size() > 0) {
             for (Element udxNode : udxNodes) {
@@ -663,8 +796,11 @@ public class Utils {
     }
 
     public static String saveBase64Image(String content,String oid,String resourcePath,String htmlLoadPath){
+        if(content==null){
+            return null;
+        }
         int startIndex = 0, endIndex = 0, index = 0;
-        while (content.indexOf("src=\"data:im", startIndex) != -1) {
+        while (content!=null&&content.indexOf("src=\"data:im", startIndex) != -1) {
             int Start = content.indexOf("src=\"data:im", startIndex) + 5;
             int typeStart = content.indexOf("/", Start) + 1;
             int typeEnd = content.indexOf(";", typeStart);

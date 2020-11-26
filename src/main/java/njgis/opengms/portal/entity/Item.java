@@ -42,7 +42,7 @@ public class Item implements Serializable {
     List<Localization> localizationList = new ArrayList<>();
 
     //authorship
-    List<AuthorInfo> authorship = new ArrayList<>();
+    List<AuthorInfo> authorship;
 
     //version
     String lastModifier;

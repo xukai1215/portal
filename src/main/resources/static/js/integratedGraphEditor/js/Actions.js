@@ -219,8 +219,17 @@ Actions.prototype.init = function()
 			}
 
 			if(window.parent.deleteModel && typeof(window.parent.deleteModel) == 'function' ){//调用integrateModel页面的方法
-				for(let i = 0;i<cells.length;i++){
-					window.parent.deleteModel(cells[i].frontId,cells[i].md5)
+				for(let i = 0;i<cells.length;i++) {
+					if (cells[i].edge == false && cells[i].md5 != undefined) {
+						window.parent.deleteModel(cells[i].frontId, cells[i].md5)
+					} else if (cells[i].style.indexOf('operator')) {
+						window.parent.deleteGeneralList(cells[i].frontId, 'operator')
+					} else if(cells[i].style.indexOf('condition')){
+						window.parent.deleteGeneralList(cells[i].frontId, 'condition')
+					} else if(cells[i].edge==true){
+						window.parent.deleteDataLink(cells[i])
+					}
+
 				}
 			}
 		}

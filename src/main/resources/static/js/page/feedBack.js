@@ -54,7 +54,6 @@ var feedback = Vue.extend(
                                 that.content = '';
                             }
                         });
-
                     }
                     }
                 )

@@ -28,7 +28,7 @@ public class ConceptualModel extends Item {
     String contentType;
 
     List<String> classifications;
-//    List<String> modelItems
+//    List<String> modelItems;
     List<String> image;
 
 }

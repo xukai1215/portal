@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -72,7 +72,7 @@
             </div>
             <section class="wzhSection darkSide">
                 <div class="wzhSectionContainer" style="background-color: #9387e0">
-                    <div class="imgContainerW50 right0" style="background-image:url(../../static/img/model/modelExcution.png);background-position-y: -18px"></div>
+                    <div class="imgContainerW50 right0" style="background-image:url(../../static/img/work.png);background-size:contain"></div>
                     <div class="leftPart flexCol flexJustBetween flexAlignStart">
                         <div class="imgContainerW100" style="background-image:url(../../static/img/model/modelExcution.png);height: 225px"></div>
                         <div class="textContainer">
@@ -111,7 +111,7 @@
                             </div>
 
                         </div>
-                        <button class="wzhBtn nutBtn plainBtn hoverJblue">
+                        <button class="wzhBtn nutBtn plainBtn hoverJblue" @click="window.location.href='/computableModel/integrating'">
                             <p style="font-size: 2.0rem;font-weight: 600;font-family: Aktiv Grotesk">Try it</p>
                         </button>
                     </div>
@@ -144,7 +144,7 @@
                <div v-loading="loading">
                    <div class="flexRow flexJustCenter" style="margin-top: 12px; margin-left: 10px;">
                        <div class="flexRow flexColCenter" style="width: 50%;mini-width:250px">
-                           <input placeholder="Search for ..." v-model="searchText" class="noBorderInput miniInput" @keyup.enter="searchDeployedModel(1)">
+                           <input placeholder="Search for ..." v-model="searchText" class="noBorderInput miniInput" @keyup.enter="">
                        </div>
                        <i class="fa fa-search cursorPointer" style="font-size: 18px;" @click="searchDeployedModel(1)"></i>
                    </div>
@@ -154,6 +154,14 @@
                                label="Name"
                                prop="name"
                        >
+                       </el-table-column>
+                       <el-table-column
+                               label="Contributor"
+                               prop="author"
+                       >
+                           <template slot-scope="scope">
+                               <a class="cursorPointer" @click="viewUser(scope.row.authorOid)">{{scope.row.author}}</a>
+                           </template>
                        </el-table-column>
                        <el-table-column
                                label="Option"

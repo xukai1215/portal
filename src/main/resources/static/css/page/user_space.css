@@ -1960,7 +1960,7 @@ body {
     width: 100px;
     height: 100px;
     text-align: center;
-    display: none;
+    /*display: none;*/
     float: left;
     margin-right: 10px;
 }
@@ -3213,7 +3213,7 @@ input[type=file] {
 }
 
 #editImageDialog{
-    height: 351px;
+    /*height: 351px;*/
 }
 
 nav .totalContainer{

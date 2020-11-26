@@ -19,5 +19,4 @@ public class Version implements Serializable {
     String status;
 
     List<Localization> localizationList = new ArrayList<>();
-
 }

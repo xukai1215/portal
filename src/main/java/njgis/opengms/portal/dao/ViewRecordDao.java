@@ -22,4 +22,6 @@ public interface ViewRecordDao extends MongoRepository<ViewRecord,String> {
 
     List<ViewRecord> findAllByItemOidAndFlag(String oid, boolean flag);
 
+    List<ViewRecord> findAllByItemOidAndFlagAndDateAfter(String oid, boolean flag, Date date);
+
 }

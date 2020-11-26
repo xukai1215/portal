@@ -62,12 +62,17 @@
         }
 
         .integratedContained {
-            height: 760px;
+            height: 780px;
             background: #f5f5f5;
             border-radius: 3px;
             box-shadow: 0 3.2px 7.2px 0 rgba(0, 0, 0, .132), 0 0.6px 1.8px 0 rgba(0, 0, 0, .108);
             overflow: hidden;
             margin-bottom: 15px;
+        }
+
+        .sideTabs .el-tabs__content{
+            height: calc(100% - 50px);
+            padding: 5px;
         }
     </style>
 </head>
@@ -78,25 +83,27 @@
 
     <div>
         <div>
+
             <h2 style="text-align: center; color: #4a4a4a;padding: 10px;font-weight: 700;font-family: sans-serif">
                 Integrated Modeling
             </h2>
             <div class="flexCenter flexWrap">
-                <el-button style="margin:5px;font-weight: 700;color: #009900;" @click="chooseModelVisible=true">Select
-                    computable model
+                <el-button style="margin:5px;font-weight: 700;color: #009900;" @click="loadLogicalModelClick()">Load Logical Model</el-button>
+                <el-button style="margin:5px;font-weight: 700;color: #009900;" @click="chooseModelVisible=true">
+                    Select computable model
                 </el-button>
-                <!--                <el-button style="margin: 5px;font-weight: 700;color: #009900;" @click="configuration">-->
-                <!--                    Input Data Configuration-->
-                <!--                </el-button>-->
-                <!--                <el-button style="margin: 5px;font-weight: 700;color: #009900;" @click="updateMxgraphNode ">-->
-                <!--                    Iteration-->
-                <!--                </el-button>-->
+                <!--        <el-button style="margin: 5px;font-weight: 700;color: #009900;" @click="configuration">-->
+                <!--            Input Data Configuration-->
+                <!--        </el-button>-->
+                <!--        <el-button style="margin: 5px;font-weight: 700;color: #009900;" @click="updateMxgraphNode ">-->
+                <!--            Iteration-->
+                <!--        </el-button>-->
                 <!--        <el-button :disabled="executeDisabled" type="success" style="margin:5px;font-weight: 700;"-->
                 <!--                   @click="executeVisible=true">Execution-->
                 <!--        </el-button>-->
-                <el-button type="success" style="margin:5px;font-weight: 700;"
-                           @click="executeVisible=true">Execution
-                </el-button>
+                <el-button type="primary" style="margin:5px;font-weight: 700;" @click="buildNewTask">Build New Task</el-button>
+                <el-button type="success" style="margin:5px;font-weight: 700;" @click="generateXml()">XML</el-button>
+                <el-button type="success" style="margin:5px;font-weight: 700;" @click="taskConfigure(2)">Execute Task</el-button>
             </div>
 
         </div>
@@ -108,278 +115,710 @@
             </div>
             <div role="selectedModelContainer" class="integratedContained"
                  style="width:22%;min-width: 200px;max-width: 400px; margin-left: 10px">
-                <div class="flexCenter" style="height: 34px;border-bottom: 1px solid #dadce0;background: white;">
-                    <h4 class="noMargin" style="font-weight: 600">Selected Model</h4>
-                </div>
-                <div class="flexCol flexJustStart flexAlignCenter wzhScrollbar"
-                     style="padding: 5px;height: calc(100% - 34px);">
-                    <div v-if="modelActions.length==0" style="margin-top: 25px">
-                        <p style="font-style: italic">You haven't selected models yet.</p>
-                    </div>
-                    <div class="wzhCard_w100" v-for="(model,frontId) in modelActions" :key="frontId">
-                        <div class="flexJustStart" style="min-height: 40px;max-height: 60px">
-                            <div class="flexColCenter w100" style="padding: 5px">
-                                <a class="w100 cursorPointer" @click="seeDetailPage(model.oid)">
-                                    <p style="color: inherit;word-break: break-all;font-size: 16px"
-                                       class="itemTitle noMargin">{{model.name}}</p></a>
+                <el-tabs v-model="activeTask" type="border-card" class="sideTabs" style="height: 100%;">
+                    <el-tab-pane label="Current Model Action" name="currentTask">
+                        <div class="flexCol flexJustStart flexAlignCenter wzhScrollbar"
+                             style="padding: 5px;height: calc(100% - 34px);">
+                            <div v-if="modelActions.length==0" style="margin-top: 25px">
+                                <p style="font-style: italic">You haven't selected models yet.</p>
                             </div>
+                            <div class="flexAlignCenter" v-if="currentTask!={}&&modelActions.length!=0" style="margin-top: 5px;width: 100%">
+                                <p class="noMargin">Current Editing Task: </p>
+                                <a class="cursorPointer" @click="checkTaskInfo(currentTask)">&nbsp{{currentTask.taskName}}</a>
+                            </div>
+                            <div class="wzhCard_w100" v-for="(modelAction,frontId) in modelActions" :key="frontId">
+                                <div class="flexJustStart" style="min-height: 40px;max-height: 60px">
+                                    <div class="flexColCenter w100" style="padding: 5px">
+                                        <a class="w100 cursorPointer" @click="seeDetailPage(modelAction.modelOid)">
+                                            <p style="color: inherit;word-break: break-all;font-size: 16px"
+                                               class="itemTitle noMargin">{{modelAction.name}}</p>
+                                        </a>
+                                        <i class="fa fa-trash-o cursorPointer" style="font-size: 16px;color: #ec0817" @click="deleteModelClick(modelAction)"></i>
+                                    </div>
+                                </div>
+                                <div class="flexAlignCenter flexJustEnd flexWrap"
+                                     style="min-height: 60px;max-height: 85px;">
+                                    <el-button type="primary" size="mini" round style="margin-right: 10px"
+                                               @click="modelConfiguration(modelAction)">Configuration
+                                    </el-button>
+                                    <el-button type="primary" size="mini" round style="margin-right: 10px"
+                                               @click="dataConfiguration(modelAction)">Load/Check Data
+                                    </el-button>
+                                </div>
+                            </div>
+                            <el-button v-if="modelActions.length!=0" type="success" style="margin-top:10px;font-weight: 700;" size="small"
+                                       @click="taskConfigure(1)">Save Task
+                            </el-button>
                         </div>
-                        <div class="flexAlignCenter flexJustEnd flexWrap"
-                             style="min-height: 60px;max-height: 85px;background-image: linear-gradient(to right, rgb(253, 249, 244) 0%, rgb(235, 246, 248) 100%);">
-                            <el-button type="primary" size="mini" round style="margin-right: 10px"
-                                       @click="modelConfiguration(model)">Configuration
-                            </el-button>
-                            <el-button type="primary" size="mini" round style="margin-right: 10px"
-                                       @click="dataConfiguration(model)">Load/Check Data
-                            </el-button>
+                    </el-tab-pane>
+                    <el-tab-pane label="My Integrated Task" name="allTask" style="height: 100%">
+                        <div class="flexCol flexJustStart flexAlignCenter wzhScrollbar"
+                             style="padding: 5px;height: calc(100% - 34px);">
+                            <div v-if="integratedTaskList==='login'" style="margin-top: 25px">
+                                <p style="font-style: italic">View your integrate tasks, <a style="font-style: normal" href="/user/login">log in</a> first.</p>
+                            </div>
+                            <div v-if="integratedTaskList.length==0" style="margin-top: 25px">
+                                <p style="font-style: italic">You have no integrate task.</p>
+                            </div>
+                            <div class="wzhCard_w100" v-if="integratedTaskList!='login'" v-for="(task,frontId) in integratedTaskList" :key="frontId">
+                                <div class="flexJustStart" style="min-height: 40px;max-height: 60px">
+                                    <div class="flexColCenter w100" style="padding: 5px">
+                                        <a class="w100">
+                                            <p style="color: inherit;word-break: break-all;font-size: 16px"
+                                               class="noMargin">{{task.taskName}}</p></a>
+                                    </div>
+                                </div>
+                                <div class="flexAlignCenter flexJustEnd flexWrap"
+                                     style="min-height: 60px;max-height: 85px;background-image: linear-gradient(to right, rgb(253, 249, 244) 0%, rgb(235, 246, 248) 100%);">
+                                    <el-button type="primary" size="mini" round style="margin-right: 10px" @click="checkTaskInfo(task)">
+                                        Check Task Info
+                                    </el-button>
+                                    <!--                            <el-button type="primary" size="mini" round style="margin-right: 10px"-->
+                                    <!--                                       @click="modelConfiguration(model)">Configuration-->
+                                    <!--                            </el-button>-->
+                                    <!--                            <el-button type="primary" size="mini" round style="margin-right: 10px"-->
+                                    <!--                                       @click="dataConfiguration(model)">Load/Check Data-->
+                                    <!--                            </el-button>-->
+                                </div>
+                            </div>
+
+                        </div>
+                        <el-pagination style="text-align: center;margin-top:5px"
+                                       v-if="integratedTaskList!='login'&&integratedTaskList.length!=0"
+                                       @current-change="handlePageChange"
+                                       :current-page="pageOption.currentPage"
+                                       layout="total, prev, pager, next, jumper"
+                                       :page-size="6"
+                                       :total="pageOption.total">
+                        </el-pagination>
+                    </el-tab-pane>
+                </el-tabs>
+
+            </div>
+
+        </div>
+
+        <input id="uploadInputData" type="file" style="display:none"/>
+
+    </div>
+
+    <el-dialog title="Input Data Configuration" :visible.sync="configVisible" width="65%">
+        <el-tabs>
+            <div class="el-tabs__header is-top">
+                <div class="el-tabs__nav-wrap is-top">
+                    <div class="el-tabs__nav-scroll">
+                        <div role="tablist" class="el-tabs__nav is-top" style="transform: translateX(0px);">
+                            <div class="el-tabs__active-bar is-top"
+                                 style="width: 134px; transform: translateX(0px);">
+
+                            </div>
+                            <div id="tab-SWATModelAllInOne" aria-controls="pane-SWATModelAllInOne" role="tab"
+                                 aria-selected="true" tabindex="0" class="el-tabs__item is-top is-active">
+                                {{configModelAction.name}}
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-        </div>
+            <el-table :data="configModelAction.inputData" style="width: 100%"
+                      :key="Math.random()"
+                      row-key="dataId"
+                      border
+                      default-expand-all>
 
-        <el-dialog title="Input Data Configuration" :visible.sync="configVisible" width="70%">
-            <el-tabs v-model="activeName">
-                <div class="el-tabs__header is-top">
-                    <div class="el-tabs__nav-wrap is-top">
-                        <div class="el-tabs__nav-scroll">
-                            <div role="tablist" class="el-tabs__nav is-top" style="transform: translateX(0px);">
-                                <div class="el-tabs__active-bar is-top"
-                                     style="width: 134px; transform: translateX(0px);">
-
-                                </div>
-                                <div id="tab-SWATModelAllInOne" aria-controls="pane-SWATModelAllInOne" role="tab"
-                                     aria-selected="true" tabindex="0" class="el-tabs__item is-top is-active">
-                                    {{configModelAction.name}}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <el-table :data="configModelAction.inputEvents" style="width: 100%"
-                          :key="Math.random()"
-                          row-key="dataId"
-                          border
-                          default-expand-all>
-
-                    <el-table-column
-                            label="Event Name"
-                            width="220">
-                        <template slot-scope="scope">
+                <el-table-column
+                        label="Event Name"
+                        width="220">
+                    <template slot-scope="scope">
                                 <span v-if="scope.row.externalId==undefined" :title="scope.row.event">
                                     <span v-if="!scope.row.optional&&!scope.row.child"
                                           style="color:red">*</span>
                                         {{scope.row.eventName}}
                                 </span>
 
-                            <span v-if="scope.row.externalId!=undefined" :title="scope.row.event">
+                        <span v-if="scope.row.externalId!=undefined" :title="scope.row.event">
                                     <span v-if="!scope.row.optional"
                                           style="color:red">*</span>
                                     <a style="text-decoration: underline;"
                                        :href="'/repository/template/'+scope.row.externalId.toLowerCase()"
                                        target="_blank">{{scope.row.eventName}}</a>
                                 </span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column
-                            prop="eventDesc"
-                            label="Description">
-                    </el-table-column>
-                    <el-table-column
-                            label="File"
-                            width="200">
-                        <template slot-scope="scope">
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        prop="eventDesc"
+                        label="Description">
+                </el-table-column>
+                <el-table-column
+                        label="File"
+                        width="200">
+                    <template slot-scope="scope">
+                        <el-input class="model-input"
+                                  :key="scope.row.dataId"
+                                  :value="scope.row.fileName==undefined ?'':(scope.row.fileName+'.'+scope.row.suffix) "
+                                  :id="'datainput'+scope.row.dataId"
+                                  disabled="false">
+                        </el-input>
+<!--                        <el-input class="model-input"-->
+<!--                                  :key="scope.row.dataId"-->
+<!--                                  v-if="scope.row.children==undefined&&scope.row.child!=true"-->
+<!--                                  :value="scope.row.fileName==undefined ?'':(scope.row.fileName+'.'+scope.row.suffix) "-->
+<!--                                  :id="'datainput'+scope.row.dataId"-->
+<!--                                  disabled="false">-->
+<!--                        </el-input>-->
+<!--                        <el-input class="model-input"-->
+<!--                                  v-if="scope.row.children==undefined&&scope.row.child==true"-->
+<!--                                  v-model="scope.row.val"-->
+<!--                                  :id="'datainput'+scope.row.dataId">-->
+<!--                        </el-input>-->
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        label="Link From"
+                        width="200">
+                    <template slot-scope="scope">
+                        <el-input class="model-input"
+                                  :key="scope.row.dataId"
+                                  v-if="scope.row.linkEvent!=undefined"
+                                  :value="scope.row.linkEvent"
+                                  :id="'datainput'+scope.row.eventId"
+                                  disabled="false">
+                        </el-input>
 
-                            <el-input class="model-input"
-                                      :key="scope.row.dataId"
-                                      v-if="scope.row.children==undefined&&scope.row.child!=true"
-                                      :value="scope.row.fileName==undefined ?'':(scope.row.fileName+'.'+scope.row.suffix) "
-                                      :id="'datainput'+scope.row.dataId"
-                                      disabled="false">
-                            </el-input>
-                            <el-input class="model-input"
-                                      v-if="scope.row.children==undefined&&scope.row.child==true"
-                                      v-model="scope.row.val"
-                                      :id="'datainput'+scope.row.dataId">
-                            </el-input>
-                        </template>
-                    </el-table-column>
-                    <el-table-column
-                            label="Link From"
-                            width="200">
-                        <template slot-scope="scope">
-                            <el-input class="model-input"
-                                      :key="scope.row.dataId"
-                                      v-if="scope.row.linkEvent!=undefined"
-                                      :value="scope.row.linkEvent"
-                                      :id="'datainput'+scope.row.eventId"
-                                      disabled="false">
-                            </el-input>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        label="Operation"
+                        width="120">
+                    <template slot-scope="scope">
+                        <div class="_btn-group" >
+<!--                            v-if="scope.row.children==undefined"-->
+                            <el-button
+                                    v-if="(scope.row.link == undefined||scope.row.link == '' )||configModelAction.step>1"
+                                    plain round type="primary" size="small"
+                                    @click="openUserDataSpace(scope.row)">
+                                <i class="fa fa-folder-open"></i>
+                            </el-button>
 
-                        </template>
-                    </el-table-column>
-                    <el-table-column
-                            label="Operation"
-                            width="120">
-                        <template slot-scope="scope">
-                            <div class="_btn-group" v-if="scope.row.children==undefined">
+                            <el-button plain round type="warning" size="small" id="'download'+ scope.row.dataId"
+                                       v-if="scope.row.fileName!=''&&scope.row.fileName!=null"
+                                       @click="download(scope.row)" style="margin-left: 0px;">
+                                <i class="fa fa-download"></i>
+                            </el-button>
+                        </div>
+                    </template>
+                </el-table-column>
+            </el-table>
 
-                                <el-button
-                                        v-if="(scope.row.link == undefined||scope.row.link == '' )||configModelAction.step>1"
-                                        plain round type="primary" size="small"
-                                        @click="openUserDataSpace(scope.row)">
-                                    <i class="fa fa-folder-open"></i>
-                                </el-button>
+            <el-table :data="configModelAction.outputData" style="width: 100%"
+                      :key="Math.random()"
+                      row-key="dataId"
+                      border
+                      default-expand-all>
 
-                                <el-button plain round type="warning" size="small" id="'download'+ scope.row.dataId"
-                                           v-if="scope.row.fileName!=''&&scope.row.fileName!=null"
-                                           @click="download(scope.row)" style="margin-left: 0px;">
-                                    <i class="fa fa-download"></i>
-                                </el-button>
-                            </div>
-                        </template>
-                    </el-table-column>
-                </el-table>
-
-                <el-table :data="configModelAction.outputEvents" style="width: 100%"
-                          :key="Math.random()"
-                          row-key="dataId"
-                          border
-                          default-expand-all>
-
-                    <el-table-column
-                            label="Event Name"
-                            width="220">
-                        <template slot-scope="scope">
+                <el-table-column
+                        label="Event Name"
+                        width="220">
+                    <template slot-scope="scope">
                             <span v-if="scope.row.externalId==undefined" :title="scope.row.event">
                                 <span v-if="!scope.row.optional&&!scope.row.child" style="color:red">*</span>
                                 {{scope.row.eventName}}
                             </span>
-                            <span v-if="scope.row.externalId!=undefined" :title="scope.row.event">
+                        <span v-if="scope.row.externalId!=undefined" :title="scope.row.event">
                                 <span v-if="!scope.row.optional" style="color:red">*</span>
                                 <a style="text-decoration: underline;" :href="'/repository/template/'+scope.row.externalId.toLowerCase()" target="_blank">{{scope.row.eventName}}</a>
                             </span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column
-                            prop="eventDesc"
-                            label="Description">
-                    </el-table-column>
-                    <el-table-column
-                            label="File"
-                            width="200">
-                        <template slot-scope="scope">
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        prop="eventDesc"
+                        label="Description">
+                </el-table-column>
+                <el-table-column
+                        label="File"
+                        width="200">
+                    <template slot-scope="scope">
 
-                            <el-input class="model-input"
-                                      :key="scope.row.dataId"
-                                      v-if="scope.row.children==undefined&&scope.row.child!=true"
-                                      :value="scope.row.fileName==undefined ?'':(scope.row.fileName+'.'+scope.row.suffix) "
-                                      :id="'datainput'+scope.row.dataId"
-                                      disabled="false">
-                            </el-input>
+                        <el-input class="model-input"
+                                  :key="scope.row.dataId"
+                                  v-if="scope.row.children==undefined&&scope.row.child!=true"
+                                  :value="scope.row.fileName==undefined ?'':(scope.row.fileName+'.'+scope.row.suffix) "
+                                  :id="'datainput'+scope.row.dataId"
+                                  disabled="false">
+                        </el-input>
 
-                        </template>
-                    </el-table-column>
-                    <el-table-column
-                            label="Operation"
-                            width="120">
-                        <template slot-scope="scope">
-                            <div class="_btn-group" v-if="scope.row.children==undefined">
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        label="Operation"
+                        width="120">
+                    <template slot-scope="scope">
+                        <div class="_btn-group" v-if="scope.row.children==undefined">
 
-                                <el-button plain round type="warning" size="small" id="'download'+ scope.row.dataId"
-                                           v-if="scope.row.value!=''"
-                                           @click="download(scope.row)" style="margin-left: 0px;">
-                                    <i class="fa fa-download"></i>
-                                </el-button>
-                            </div>
-                        </template>
-                    </el-table-column>
-                </el-table>
+                            <el-button plain round type="warning" size="small" id="'download'+ scope.row.dataId"
+                                       v-if="scope.row.value!=''"
+                                       @click="download(scope.row)" style="margin-left: 0px;">
+                                <i class="fa fa-download"></i>
+                            </el-button>
+                        </div>
+                    </template>
+                </el-table-column>
+            </el-table>
 
-                </el-tab-pane>
-            </el-tabs>
-            <div slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="checkData">OK</el-button>
-            </div>
-        </el-dialog>
+            </el-tab-pane>
+        </el-tabs>
+        <div slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="checkData">OK</el-button>
+        </div>
+    </el-dialog>
 
-        <el-dialog title="Integrated Models Execution Configuration" :visible.sync="executeVisible" width="30%">
-            <div style="font-size: 18px">
-                Task Name :
-                <el-input v-model="taskName" placeholder="Please name this task!" style="width: 80%;"></el-input>
-            </div>
+    <el-dialog title="Integrated Models Configuration" :visible.sync="executeVisible" width="30%">
+        <p v-if="taskConfigStatus==2" style="font-style: italic ">Every integrated task will be saved automaticly if it is executed.</p>
+        <div style="font-size: 18px">
+            Task Name :
+            <el-input v-model="taskName" placeholder="Please name this task!" style="width: 95%;"></el-input>
+        </div>
+        <div style="font-size: 18px">
+            Description :
+            <el-input v-model="taskDescription" placeholder="You can input task description here." maxlength="60" show-word-limit style="width: 95%;"></el-input>
+        </div>
+        <div slot="footer" class="dialog-footer">
+            <el-button v-if="taskConfigStatus==1" type="primary" @click="saveIntegratedTaskClick">Save</el-button>
+            <el-button v-else type="primary" @click="executeNew">Execute</el-button>
+        </div>
+    </el-dialog>
 
-            <div slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="executeNew">Execute & Save</el-button>
-            </div>
-        </el-dialog>
-
-        <el-dialog title="Model Configuration" :visible.sync="modelConfigurationVisible" width="35%">
-            <h4 style="word-break: break-word">If you want to run a model iteratively, you should choose 'iterative',
-                then set times of the iteration.</h4>
-            <div class="flexAlignCenter" style="font-size: 16px;margin-top: 10px;word-break: break-word">
-                <p>Model Running Type :</p>
-                <el-radio-group v-model="modelRunType" style="margin-left: 10px">
-                    <el-radio :label="'common'">common</el-radio>
-                    <el-radio :label="'iterative'">iterative</el-radio>
-                </el-radio-group>
-            </div>
-            <div class="flexJustBetween flexAlignCenter" v-if="modelRunType==='iterative'"
-                 style="font-size: 16px;word-break: break-word">
-                <p class="noMargin" style="width: 133px">Run times:</p>
-                <el-input v-model="modelRunTimes"></el-input>
-            </div>
-            <div slot="footer" class="dialog-footer">
-                <el-button type="primary" size="small" @click="modelConfigurationConfirm()">OK</el-button>
-            </div>
-        </el-dialog>
-
-        <input id="uploadInputData" type="file" style="display:none"/>
-
-    </div>
     <el-dialog title="Select Data From My Data Space" append-to-body :visible.sync="userDataSpaceVisible" width="68%"
                class="noScroll">
         <user-data
                 @com-selectfile="selectDataspaceFile"
                 @com-removefile="removeDataspaceFile"
                 single-choice
-                ref="userDataSpace" style="height: 505px;"></user-data>
+                ref="userDataSpace" style="height: 505px;">
+        </user-data>
         <span slot="footer" class="dialog-footer">
        <el-button @click="userDataSpaceVisible = false">Cancel</el-button>
       <el-button type="primary" @click="selectFromDataSpace">Confirm</el-button>
     </span>
     </el-dialog>
 
+    <el-dialog title="Input Data Config" :visible.sync="eventConfigDialog" width="60%">
+        <el-table :data="configEvent" style="width: 100%"
+                  :key="Math.random()"
+                  row-key="dataId"
+                  border
+                  default-expand-all>
+
+            <el-table-column
+                    label="Event Name"
+                    width="220">
+                <template slot-scope="scope">
+                                <span v-if="scope.row.externalId==undefined" :title="scope.row.event">
+                                    <span v-if="!scope.row.optional&&!scope.row.child"
+                                          style="color:red">*</span>
+                                        {{scope.row.eventName}}
+                                </span>
+
+                    <span v-if="scope.row.externalId!=undefined" :title="scope.row.event">
+                                    <span v-if="!scope.row.optional"
+                                          style="color:red">*</span>
+                                    <a style="text-decoration: underline;"
+                                       :href="'/repository/template/'+scope.row.externalId.toLowerCase()"
+                                       target="_blank">{{scope.row.eventName}}</a>
+                                </span>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    prop="eventDesc"
+                    label="Description">
+            </el-table-column>
+            <el-table-column
+                    label="File"
+                    width="200">
+                <template slot-scope="scope">
+
+                    <el-input class="model-input"
+                              :key="scope.row.dataId"
+                              v-if="scope.row.children==undefined&&scope.row.child!=true"
+                              :value="scope.row.fileName==undefined ?'':(scope.row.fileName+'.'+scope.row.suffix) "
+                              :id="'datainput'+scope.row.dataId"
+                              disabled="false">
+                    </el-input>
+                    <el-input class="model-input"
+                              v-if="scope.row.children==undefined&&scope.row.child==true"
+                              v-model="scope.row.val"
+                              :id="'datainput'+scope.row.dataId">
+                    </el-input>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    label="Link From"
+                    width="200">
+                <template slot-scope="scope">
+                    <el-input class="model-input"
+                              :key="scope.row.dataId"
+                              v-if="scope.row.linkEvent!=undefined"
+                              :value="scope.row.linkEvent"
+                              :id="'datainput'+scope.row.eventId"
+                              disabled="false">
+                    </el-input>
+
+                </template>
+            </el-table-column>
+            <el-table-column
+                    label="Operation"
+                    width="120">
+                <template slot-scope="scope">
+                    <div class="_btn-group" v-if="scope.row.children==undefined">
+
+                        <el-button
+                                v-if="(scope.row.link == undefined||scope.row.link == '' )||configModelAction.step>1"
+                                plain round type="primary" size="small"
+                                @click="openUserDataSpace(scope.row)">
+                            <i class="fa fa-folder-open"></i>
+                        </el-button>
+
+                        <el-button plain round type="warning" size="small" id="'download'+ scope.row.dataId"
+                                   v-if="scope.row.fileName!=''&&scope.row.fileName!=null"
+                                   @click="download(scope.row)" style="margin-left: 0px;">
+                            <i class="fa fa-download"></i>
+                        </el-button>
+                    </div>
+                </template>
+            </el-table-column>
+        </el-table>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="eventConfigDialog=false">OK</el-button>
+        </span>
+    </el-dialog>
+
     <el-dialog title="Choose Computable Models" :visible.sync="chooseModelVisible" width="70%">
         <computable-models :check-model-list="checkModelList"></computable-models>
         <span slot="footer" class="dialog-footer">
-      <el-button @click="chooseModel">Cancel</el-button>
+      <el-button @click="chooseModelVisible=false">Cancel</el-button>
       <el-button type="primary" @click="chooseModelConfirm">OK</el-button>
     </span>
+    </el-dialog>
+
+    <el-dialog title="Integrate Task Info" :visible.sync="taskInfoVisible" width="70%">
+        <div class="flexJustStart flexAlignCenter wzhInfoContainer" style="height: 32px">
+            <h4 style="">Name:       </h4>
+            <h4 v-if="!taskNameEditing" style="font-weight: 600;margin-left: 50px">{{checkedTask.taskName}}</h4>
+            <i v-if="!taskNameEditing" class="el-icon-edit cursorPointer"
+               @click="editTaskNameClick()"
+               style="margin-left: 5px; font-size: 18px;font-weight: 500;color: #4c91cd;"></i>
+            <el-input v-else size="small" v-model="taskName" style="font-weight: 600;margin-left: 50px;max-width: 300px"></el-input>
+            <i v-if="taskNameEditing" class="el-icon-success cursorPointer"
+               @click="editTaskNameComfirm()"
+               style="margin-left: 5px; font-size: 22px;font-weight: 500;color: #4c91cd;"></i>
+            <i v-if="taskNameEditing" class="el-icon-remove cursorPointer"
+               @click="taskNameEditing=false"
+               style="margin-left: 5px; font-size: 22px;font-weight: 500;color: #cdae43;"></i>
+        </div>
+        <div class="flexJustStart flexAlignCenter wzhInfoContainer" style="height: 32px">
+            <h4>Description:</h4>
+            <h4 v-if="!taskDescriptionEditing" style="font-weight: 600;margin-left: 5px">{{checkedTask.description}}</h4>
+            <i v-if="!taskDescriptionEditing" class="el-icon-edit cursorPointer"
+               @click="editTaskDescriptionClick()"
+               style="margin-left: 5px; font-size: 18px;font-weight: 500;color: #4c91cd;"></i>
+            <el-input v-else size="small" v-model="taskDescription" style="font-weight: 600;margin-left: 5px;max-width: 300px"></el-input>
+            <i v-if="taskDescriptionEditing" class="el-icon-success cursorPointer"
+               @click="editTaskDescriptionComfirm()"
+               style="margin-left: 5px; font-size: 22px;font-weight: 500;color: #4c91cd;"></i>
+            <i v-if="taskDescriptionEditing" class="el-icon-remove cursorPointer"
+               @click="taskDescriptionEditing=false"
+               style="margin-left: 5px; font-size: 22px;font-weight: 500;color: #cdae43;"></i>
+        </div>
+        <div class="flexJustStart flexAlignCenter wzhInfoContainer" style="height: 32px">
+            <h4>Status:</h4>
+            <h4 style="font-weight: 600;margin-left: 50px">{{checkTaskStatus}}</h4>
+        </div>
+        <h4>Models:</h4>
+        <el-row :gutter="20">
+            <el-col :span="6" v-for="model in checkedTask.models" style="margin-bottom: 20px">
+                <div class="wzhCard w100" style="height: 148px">
+                    <el-tooltip class="item" effect="dark" :content="model.name" placement="bottom-start">
+                        <a class="cursorPointer" @click="openModelPage(model.oid)">
+                            <p class="itemTitle noMargin textEllipsis" style="margin-left:3px; font-size: 16px;">
+                                {{model.name}}</p>
+                        </a>
+
+                    </el-tooltip>
+                    <p class="noMargin textRow_3" style="margin-left:3px; font-size: 14px;height: 60px">
+                        {{model.description}}</p>
+                    <br>
+                    <div class="flexAlignCenter">
+                        <img src="/static/img/icon/default.png" class="round_icon"
+                             style="margin-top: -5px; width: 22px; height: 22px; display: inline-block;">
+                        <a class="cursorPointer" style="display: inline-block; margin: 5px 0 0 5px;" @click="openModelContributer(model.oid)">
+                            <p style="margin-left:3px; font-size: 14px;">{{model.author}}</p>
+                        </a>
+                    </div>
+                </div>
+            </el-col>
+        </el-row>
+        <h4>ModelActions:</h4>
+        <el-row :gutter="20">
+            <el-col :span="12" v-for="modelAction in checkedTask.modelActions" style="margin-bottom: 20px">
+                <div class="wzhCard w100">
+                    <div class="flexJustStart wzhInfoContainer">
+                        <p class="noMargin" style="margin-left:3px ;font-size: 16px">ModelAction:</p>
+                        <p class="noMargin" style="margin-left:3px ;font-weight: 600;font-size: 16px">{{modelAction.name}}</p>
+                    </div>
+                    <div class="flexJustStart wzhInfoContainer">
+                        <p class="noMargin" style="margin-left:3px ;font-size: 16px">Description:</p>
+                        <p class="noMargin" style="margin-left:3px ;font-size: 16px;font-weight: 600">{{modelAction.description}}</p>
+                    </div>
+                    <div class="flexAlignCenter flexJustEnd flexWrap">
+                        <el-button type="primary" size="mini" round style="margin-right: 10px"
+                                   @click="modelConfiguration(modelAction)">Configuration
+                        </el-button>
+                        <el-button type="primary" size="mini" round style="margin-right: 10px"
+                                   @click="dataConfiguration(modelAction)">Load/Check Data
+                        </el-button>
+                    </div>
+                </div>
+            </el-col>
+        </el-row>
+        <h3></h3>
+
+        <span slot="footer" class="dialog-footer">
+            <el-button type="danger" style="margin-right: 10px" @click="deleteIntegrateTask(checkedTask)">Delete</el-button>
+            <el-button type="success" style="margin-right: 10px" @click="UpdateIntegrateTaskClick(checkedTask)">Save/Update</el-button>
+            <el-button type="primary" style="margin-right: 10px" @click="loadTask(checkedTask)">Load This Task</el-button>
+            <el-button style="margin-right: 10px" @click="taskInfoVisible=false">Cancel</el-button>
+        </span>
+    </el-dialog>
+
+    <el-dialog title="Configuration" :visible.sync="modelConfigurationVisible" width="35%">
+        <div class="flexJustBetween flexAlignCenter"
+             style="font-size: 16px;word-break: break-word">
+            <p class="noMargin" style="width: 133px">Description:</p>
+            <el-input v-model="modelActionDescriprion" size="small"
+                      placeholder="You can input description of this action here." maxlength="60" show-word-limit></el-input>
+        </div>
+        <h4 style="word-break: break-word">If you want to run a model iteratively, you should choose 'iterative',
+            then set times of the iteration.</h4>
+        <div class="flexAlignCenter" style="font-size: 16px;margin-top: 10px;word-break: break-word">
+            <p>Model Running Type :</p>
+            <el-radio-group v-model="modelRunType" style="margin-left: 10px">
+                <el-radio :label="'common'">common</el-radio>
+                <el-radio :label="'iterative'">iterative</el-radio>
+            </el-radio-group>
+        </div>
+        <div class="flexJustBetween flexAlignCenter" v-if="modelRunType==='iterative'"
+             style="font-size: 16px;word-break: break-word">
+            <p class="noMargin" style="width: 133px">Iteration times:</p>
+            <el-input v-model="modelRunTimes" size="small"></el-input>
+        </div>
+
+        <div slot="footer" class="dialog-footer">
+            <el-button type="primary" size="small" @click="modelConfigurationConfirm()">OK</el-button>
+            <el-button size="small" @click="modelConfigurationCancel()">Cancel</el-button>
+        </div>
+    </el-dialog>
+
+    <el-dialog title="DataLink Configuration" :visible.sync="dataLinkConfigDialog" width="35%">
+        <div class="flexJustStart flexAlignCenter wzhInfoContainer" style="height: 32px">
+            <h4 style="">Target:       </h4>
+            <h4 style="font-weight: 600;margin-left: 50px">{{dataLinkConfig.targetName}}</h4>
+        </div>
+        <div class="flexJustStart flexAlignCenter wzhInfoContainer" style="height: 32px">
+            <h4 style="">Target Model Action:</h4>
+            <h4 style="font-weight: 600;margin-left: 50px">{{dataLinkConfig.targetModelName}}</h4>
+        </div>
+        <div class="flexJustStart flexAlignCenter wzhInfoContainer" style="height: 32px">
+            <h4 style="">Source:       </h4>
+            <h4 style="font-weight: 600;margin-left: 50px">{{dataLinkConfig.sourceName}}</h4>
+        </div>
+        <div class="flexJustStart flexAlignCenter wzhInfoContainer" style="height: 32px">
+            <h4 style="">Source Model Action:</h4>
+            <h4 style="font-weight: 600;margin-left: 50px">{{dataLinkConfig.sourceModelName}}</h4>
+        </div>
+        <div class="flexJustStart flexAlignCenter wzhInfoContainer" style="height: 32px">
+            <h4 style="">Convertion Tool:       </h4>
+            <el-button size="small" @click="convertToolsVisible=true">Select</el-button>
+        </div>
+
+        <div slot="footer" class="dialog-footer">
+            <el-button type="primary" size="small" @click="dataLinkConfigDialog=false">OK</el-button>
+        </div>
+    </el-dialog>
+
+    <el-dialog title="Convertion Tools" :visible.sync="convertToolsVisible">
+        <div v-loading="loading">
+            <div class="flexRow flexJustCenter" style="margin-top: 12px; margin-left: 10px;">
+                <div class="flexRow flexColCenter" style="width: 50%;mini-width:250px">
+                    <input placeholder="Search for ..." class="noBorderInput miniInput">
+                </div>
+                <i class="fa fa-search cursorPointer" style="font-size: 18px;"></i>
+            </div>
+            <el-table style="padding-left:10px "
+                      :data="convertTools">
+                <el-table-column
+                        label="Name"
+                        prop="name"
+                >
+                </el-table-column>
+                <el-table-column
+                        label="Option"
+                        width="180"
+                >
+                    <template slot-scope="scope">
+                        <el-button size="mini" round type="success" @click="loadConvertTool(scope.row.oid)">Load</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+<!--            <el-pagination style="text-align: center;margin-top:20px"-->
+<!--                           @current-change="handlePageChange"-->
+<!--                           :current-page="pageOption.currentPage"-->
+<!--                           layout="total, prev, pager, next, jumper"-->
+<!--                           :page-size="6"-->
+<!--                           :total="pageOption.total">-->
+<!--            </el-pagination>-->
+
+        </div>
+        <div slot="footer" class="dialog-footer">
+            <!--                   <el-button @click="">Cancel</el-button>-->
+            <el-button type="primary" @click="convertToolsVisible = false;">OK</el-button>
+        </div>
+    </el-dialog>
+
+    <el-dialog title="Load Logical Model" :visible.sync="logicalModelLoadDialog" width="35%">
+        <div class="flexJustStart flexAlignCenter wzhInfoContainer" style="height: 32px">
+            <h4 style="">Logical Model Configuration:       </h4>
+            <el-button size="small" @click="uploadLogicalConfigFile">Select</el-button>
+            <el-upload
+                    class="upload-demo wzhScrollbar customUpload"
+                    multiple="true"
+                    ref="upload"
+                    :on-change="uploadChange1"
+                    :on-remove="uploadRemove1"
+                    :file-list="uploadLogicalConfigList"
+                    limit=1
+                    :auto-upload="false" style="min-height: 35px;max-height: 99px;margin-top: 15px">
+                <el-button id="uploadConfig" style="display:none" slot="trigger" size="small"
+                           type="primary">选取文件
+                </el-button>
+
+            </el-upload>
+        </div>
+        <div class="flexJustStart flexAlignCenter wzhInfoContainer" style="height: 32px">
+            <h4 style="">Logical Model Mxgraph:       </h4>
+            <el-button size="small" @click="uploadLogicalXmlFile">Select</el-button>
+            <el-upload
+                    class="upload-demo wzhScrollbar customUpload"
+                    multiple="true"
+                    ref="upload"
+                    :on-change="uploadChange2"
+                    :on-remove="uploadRemove2"
+                    limit=1
+                    :file-list="uploadLogicalXmlList"
+                    :auto-upload="false" style="min-height: 35px;max-height: 99px;margin-top: 15px">
+                <el-button id="uploadXml" style="display:none" slot="trigger" size="small"
+                           type="primary">选取文件
+                </el-button>
+
+            </el-upload>
+        </div>
+
+        <div slot="footer" class="dialog-footer">
+            <el-button type="primary" size="small" @click="loadLogicalConfig7Xml">OK</el-button>
+        </div>
+    </el-dialog>
+
+    <el-dialog title="Select Data Processing" :visible.sync="dataProcessingLoadDialog" width="70%">
+        <el-tabs v-model="dataProcessActive" style="min-height: 500px">
+            <el-tab-pane label="Model Service" name="modelService">
+                <computable-models ref="dataP_ModelService" :check-model-list="dataPModelServices" @select-computable-model="selectModelService" @remove-computable-model="removeModelService" single-select></computable-models>
+            </el-tab-pane>
+            <el-tab-pane label="Data Service" name="dataService">
+                <data-processing-list ref="dataP_dataService" @select-data-processing="selectDataProcessing" @remove-data-processing="removeDataProcessing" single-select></data-processing-list>
+            </el-tab-pane>
+        </el-tabs>
+        <div slot="footer" class="dialog-footer">
+            <el-button type="primary" size="small" @click="loadDataProcessing">OK</el-button>
+        </div>
+    </el-dialog>
+
+    <el-dialog title="Condition Configuration" :visible.sync="conditionConfigDialog" width="40%">
+        <h4>Condition Info:</h4>
+        <div class="flexJustStart flexAlignCenter wzhInfoContainer" style="height: 32px">
+            <h5 style="min-width: 80px;">Value:       </h5>
+            <el-input size="small" v-model="conditionConfig.value" disabled style="max-width: 192px;"></el-input>
+        </div>
+        <div class="flexJustStart flexAlignCenter wzhInfoContainer" style="height: 32px">
+            <h5 style="min-width: 80px;">Format:</h5>
+            <el-radio-group v-model="conditionConfig.format" style="margin-left: 10px">
+                <el-radio class="noMargin" :label="'number'" style="margin-right: 15px">number</el-radio>
+                <el-radio class="noMargin" :label="'string'">string</el-radio>
+            </el-radio-group>
+        </div>
+        <div class="flexJustStart flexAlignCenter">
+            <h4 style="margin-right: 185px;">Cases: </h4>
+            <el-button size="mini" type="primary" round @click="addConditionCase(conditionConfig)">
+                <i class="el-icon-plus"></i>
+            </el-button>
+        </div>
+        <div class="flexJustStart flexAlignCenter" v-for="(conditionCase,index) in conditionConfig.cases" :key="index">
+            <h5 style="margin-right: 20px">operator: <span style="font-weight: 600">{{conditionCase.operator}}</span></h5>
+            <h5 style="margin-right: 20px">standard: <span style="font-weight: 600">{{conditionCase.standard}}</span></h5>
+            <h5 style="margin-right: 10px">relation: <span style="font-weight: 600">{{conditionCase.relation}}</span></h5>
+            <i class="el-icon-edit cursorPointer" style="font-size: 16px" @click="editCondition(conditionCase)"></i>
+            <i class="el-icon-close cursorPointer" style="color: #c40606;margin-left: 5px;font-size: 16px" @click="deleteCondition(conditionCase)"></i>
+        </div>
+        <div slot="footer" class="dialog-footer">
+            <el-button type="primary" size="small" @click="loadConditionCaseInfo()">OK</el-button>
+        </div>
+    </el-dialog>
+
+    <el-dialog title="Condition Case" :visible.sync="conditionCaseDialog" width="30%">
+        <h5>Operator:</h5>
+        <el-radio-group v-model="caseConfig.operator" style="margin-left: 10px">
+            <el-radio :label="'>'"> > </el-radio>
+            <el-radio :label="'<'"> < </el-radio>
+            <el-radio :label="'>='"> >= </el-radio>
+            <el-radio :label="'<='"> <= </el-radio>
+            <el-radio :label="'=='"> == </el-radio>
+            <el-radio :label="'!='"> != </el-radio>
+        </el-radio-group>
+        <h5>Standard:</h5>
+        <el-input v-model="caseConfig.standard" size="mini"></el-input>
+        <h5>Relation:</h5>
+        <el-radio-group v-model="caseConfig.relation" style="margin-left: 10px">
+            <el-radio :label="'and'"> and </el-radio>
+            <el-radio :label="'or'"> or </el-radio>
+        </el-radio-group>
+        <div slot="footer" class="dialog-footer">
+            <el-button type="primary" size="small" v-if="editCase==-1 " @click="addConditionCaseConfirm(caseConfig)">Add</el-button>
+            <el-button type="primary" size="small" v-else @click="editConditionConfirm(caseConfig)">Edit</el-button>
+        </div>
     </el-dialog>
 
     <div th:replace="fragments/footer :: footer"></div>
 </div>
 <template th:replace="modules/userDataSpaceModule :: userDataSpaceModule"></template>
+<script src="/static/js/modules/userDataSpaceModule.js"></script>
 <template th:replace="modules/computableModelList :: computableModel"></template>
-<script src="/static/js/module/computableModelList.js"></script>
+<script src="/static/js/modules/computableModelList.js"></script>
+<template th:replace="modules/dataProcessingList :: dataProcessingList"></template>
+<script src="/static/js/modules/dataProcessingList.js"></script>
 
 </body>
 
 
-<script src="/static/element-ui/index.js"></script>
 <script src="/static/js/common/jquery-3.3.1.min.js"></script>
-
 <script src="/static/js/page/integratedModeling.js"></script>
-<script src="/static/element-ui/umd/locale/en.js"></script>
-<script src="/static/js/common/navbar.js"></script>
+<!--<script src="static/KnowledgeGraph/js/echarts/extension/dataTool.js"></script>-->
 <script src="/static/js/common/loadUser.js"></script>
 <script src="/static/element-ui/index.js"></script>
 
-<script src="/static/js/module/userDataSpaceModule.js"></script>
 <script src="/static/element-ui/umd/locale/en.js"></script>
+<script src="/static/js/common/navbar.js"></script>
+<!--imgUpload通用组件-->
+<template th:replace="modules/imgUpload :: imgUpload"></template>
+<script src="/static/js/modules/imgUpload.js"></script>
 <!--<script src="/static/js/common/navbarJquery.js/"></script>-->
 <script>
 

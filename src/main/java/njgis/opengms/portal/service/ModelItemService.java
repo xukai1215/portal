@@ -8,11 +8,13 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import njgis.opengms.portal.dao.*;
-import njgis.opengms.portal.dto.modelItem.*;
+import njgis.opengms.portal.dto.modelItem.ModelItemAddDTO;
+import njgis.opengms.portal.dto.modelItem.ModelItemFindDTO;
+import njgis.opengms.portal.dto.modelItem.ModelItemResultDTO;
+import njgis.opengms.portal.dto.modelItem.ModelItemUpdateDTO;
 import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.entity.support.*;
 import njgis.opengms.portal.enums.RelationTypeEnum;
-import njgis.opengms.portal.entity.support.Reference;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.Utils;
@@ -109,14 +111,14 @@ public class ModelItemService {
     @Value(value = "Public,Discoverable")
     private List<String> itemStatusVisible;
 
-    //getpage函数通过id获取需要的页面
-    public ModelAndView getPage(String id, HttpServletRequest request) {
+        //getpage函数通过id获取需要的页面
+    public ModelAndView getPage(String id, HttpServletRequest request){
         //条目信息
-        ModelItem modelInfo = new ModelItem();
-        ModelAndView modelAndView = new ModelAndView();
+        ModelItem modelInfo=new ModelItem();
+        ModelAndView modelAndView=new ModelAndView();
         try {
             modelInfo = getByOid(id);
-        } catch (MyException e) {
+        }catch (MyException e){
             modelAndView.setViewName("error/404");
             return modelAndView;
         }
@@ -134,43 +136,79 @@ public class ModelItemService {
             }
         }
 
-        modelInfo = (ModelItem) itemService.recordViewCount(modelInfo);
+        modelInfo=(ModelItem)itemService.recordViewCount(modelInfo);
 
         modelItemDao.save(modelInfo);
         //类
-        JSONArray classResult = commonService.getClassifications(modelInfo.getClassifications());
+        JSONArray classResult=commonService.getClassifications(modelInfo.getClassifications());
         JSONArray class2Result = new JSONArray();
         if(modelInfo.getClassifications2()!=null) {
             class2Result = commonService.getClassifications2(modelInfo.getClassifications2());
         }
 
         //详情页面
-        String detailResult;
-        String model_detailDesc = modelInfo.getDetail();
-        detailResult = commonService.getDetail(model_detailDesc);
+//        String detailResult;
+//        String model_detailDesc=modelInfo.getDetail();
+//        detailResult = commonService.getDetail(model_detailDesc);
+
+        //排序
+        List<Localization> locals = modelInfo.getLocalizationList();
+        Collections.sort(locals);
+
+        String detailResult = "";
+        String detailLanguage = "";
+        //先找中英文描述
+        for(Localization localization:locals){
+            String local = localization.getLocalCode();
+            if(local.equals("en")||local.equals("zh")||local.contains("en-")||local.contains("zh-")){
+                String localDesc = localization.getDescription();
+                if(localDesc!=null&&!localDesc.equals("")) {
+                    detailLanguage = localization.getLocalName();
+                    detailResult = localization.getDescription();
+                    break;
+                }
+            }
+        }
+        //如果没有中英文，则使用其他语言描述
+        if(detailResult.equals("")){
+            for(Localization localization:locals){
+                String localDesc = localization.getDescription();
+                if(localDesc!=null&&!localDesc.equals("")) {
+                    detailLanguage = localization.getLocalName();
+                    detailResult = localization.getDescription();
+                    break;
+                }
+            }
+        }
+
+        //语言列表
+        List<String> languageList = new ArrayList<>();
+        for(Localization local:locals){
+            languageList.add(local.getLocalName());
+        }
 
 
         //时间
-        Date date = modelInfo.getCreateTime();
-        Calendar calendar = Calendar.getInstance();
+        Date date=modelInfo.getCreateTime();
+        Calendar calendar=Calendar.getInstance();
         calendar.setTime(date);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String dateResult = simpleDateFormat.format(date);
+        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd");
+        String dateResult=simpleDateFormat.format(date);
 
 
         //relate
-        ModelItemRelate modelItemRelate = modelInfo.getRelate();
+        ModelItemRelate modelItemRelate=modelInfo.getRelate();
         List<ModelRelation> modelItems = modelInfo.getModelRelationList();
-        List<String> conceptual = modelItemRelate.getConceptualModels();
-        List<String> computable = modelItemRelate.getComputableModels();
-        List<String> logical = modelItemRelate.getLogicalModels();
-        List<String> concepts = modelItemRelate.getConcepts();
-        List<String> spatialReferences = modelItemRelate.getSpatialReferences();
-        List<String> templates = modelItemRelate.getTemplates();
-        List<String> units = modelItemRelate.getUnits();
+        List<String> conceptual=modelItemRelate.getConceptualModels();
+        List<String> computable=modelItemRelate.getComputableModels();
+        List<String> logical=modelItemRelate.getLogicalModels();
+        List<String> concepts=modelItemRelate.getConcepts();
+        List<String> spatialReferences=modelItemRelate.getSpatialReferences();
+        List<String> templates=modelItemRelate.getTemplates();
+        List<String> units=modelItemRelate.getUnits();
 
-        JSONArray modelItemArray = new JSONArray();
-        if (modelItems != null) {
+        JSONArray modelItemArray=new JSONArray();
+        if(modelItems!=null) {
             for (int i = 0; i < modelItems.size(); i++) {
                 String oidNew = modelItems.get(i).getOid();
                 ModelItem modelItemNew = modelItemDao.findFirstByOid(oidNew);
@@ -186,57 +224,57 @@ public class ModelItemService {
                 modelItemArray.add(modelItemJson);
             }
         }
-        JSONArray conceptualArray = new JSONArray();
-        for (int i = 0; i < conceptual.size(); i++) {
-            String oid = conceptual.get(i);
-            ConceptualModel conceptualModel = conceptualModelDao.findFirstByOid(oid);
-            if (conceptualModel.getStatus().equals("Private")) {
+        JSONArray conceptualArray=new JSONArray();
+        for(int i=0;i<conceptual.size();i++){
+            String oid=conceptual.get(i);
+            ConceptualModel conceptualModel=conceptualModelDao.findFirstByOid(oid);
+            if(conceptualModel.getStatus().equals("Private")){
                 continue;
             }
             JSONObject conceptualJson = new JSONObject();
-            conceptualJson.put("name", conceptualModel.getName());
-            conceptualJson.put("oid", conceptualModel.getOid());
-            conceptualJson.put("description", conceptualModel.getDescription());
+            conceptualJson.put("name",conceptualModel.getName());
+            conceptualJson.put("oid",conceptualModel.getOid());
+            conceptualJson.put("description",conceptualModel.getDescription());
             conceptualJson.put("image", conceptualModel.getImage().size() == 0 ? null : htmlLoadPath + conceptualModel.getImage().get(0));
             conceptualArray.add(conceptualJson);
         }
 
-        JSONArray logicalArray = new JSONArray();
-        for (int i = 0; i < logical.size(); i++) {
-            String oid = logical.get(i);
-            LogicalModel logicalModel = logicalModelDao.findFirstByOid(oid);
-            if (logicalModel.getStatus().equals("Private")) {
+        JSONArray logicalArray=new JSONArray();
+        for(int i=0;i<logical.size();i++){
+            String oid=logical.get(i);
+            LogicalModel logicalModel=logicalModelDao.findFirstByOid(oid);
+            if(logicalModel.getStatus().equals("Private")){
                 continue;
             }
             JSONObject logicalJson = new JSONObject();
-            logicalJson.put("name", logicalModel.getName());
-            logicalJson.put("oid", logicalModel.getOid());
-            logicalJson.put("description", logicalModel.getDescription());
+            logicalJson.put("name",logicalModel.getName());
+            logicalJson.put("oid",logicalModel.getOid());
+            logicalJson.put("description",logicalModel.getDescription());
             logicalJson.put("image", logicalModel.getImage().size() == 0 ? null : htmlLoadPath + logicalModel.getImage().get(0));
             logicalArray.add(logicalJson);
         }
 
-        JSONArray computableArray = new JSONArray();
-        for (int i = 0; i < computable.size(); i++) {
-            String oid = computable.get(i);
-            ComputableModel computableModel = computableModelDao.findFirstByOid(oid);
-            if (computableModel.getStatus().equals("Private")) {
+        JSONArray computableArray=new JSONArray();
+        for(int i=0;i<computable.size();i++){
+            String oid=computable.get(i);
+            ComputableModel computableModel=computableModelDao.findFirstByOid(oid);
+            if(computableModel.getStatus().equals("Private")){
                 continue;
             }
             JSONObject computableJson = new JSONObject();
-            computableJson.put("name", computableModel.getName());
-            computableJson.put("oid", computableModel.getOid());
-            computableJson.put("description", computableModel.getDescription());
-            computableJson.put("contentType", computableModel.getContentType());
+            computableJson.put("name",computableModel.getName());
+            computableJson.put("oid",computableModel.getOid());
+            computableJson.put("description",computableModel.getDescription());
+            computableJson.put("contentType",computableModel.getContentType());
             computableArray.add(computableJson);
         }
 
-        JSONArray conceptArray = new JSONArray();
-        if (concepts != null) {
+        JSONArray conceptArray=new JSONArray();
+        if(concepts!=null) {
             for (int i = 0; i < concepts.size(); i++) {
                 String oid = concepts.get(i);
                 Concept concept = conceptDao.findFirstByOid(oid);
-                if (concept.getStatus().equals("Private")) {
+                if(concept.getStatus().equals("Private")){
                     continue;
                 }
                 JSONObject jsonObj = new JSONObject();
@@ -245,9 +283,9 @@ public class ModelItemService {
 //                jsonObj.put("alias", concept.getAlias());
                 String desc = "";
                 List<Localization> localizationList = concept.getLocalizationList();
-                for (int j = 0; j < localizationList.size(); j++) {
+                for(int j=0;j<localizationList.size();j++){
                     String description = localizationList.get(j).getDescription();
-                    if (description != null && !description.equals("")) {
+                    if(description!=null&&!description.equals("")){
                         desc = description;
                         break;
                     }
@@ -259,12 +297,12 @@ public class ModelItemService {
             }
         }
 
-        JSONArray spatialReferenceArray = new JSONArray();
-        if (spatialReferences != null) {
+        JSONArray spatialReferenceArray=new JSONArray();
+        if(spatialReferences!=null) {
             for (int i = 0; i < spatialReferences.size(); i++) {
                 String oid = spatialReferences.get(i);
                 SpatialReference spatialReference = spatialReferenceDao.findByOid(oid);
-                if (spatialReference.getStatus().equals("Private")) {
+                if(spatialReference.getStatus().equals("Private")){
                     continue;
                 }
                 JSONObject jsonObj = new JSONObject();
@@ -276,12 +314,12 @@ public class ModelItemService {
             }
         }
 
-        JSONArray templateArray = new JSONArray();
-        if (templates != null) {
+        JSONArray templateArray=new JSONArray();
+        if(templates!=null) {
             for (int i = 0; i < templates.size(); i++) {
                 String oid = templates.get(i);
                 Template template = templateDao.findByOid(oid);
-                if (template.getStatus().equals("Private")) {
+                if(template.getStatus().equals("Private")){
                     continue;
                 }
                 JSONObject jsonObj = new JSONObject();
@@ -293,12 +331,12 @@ public class ModelItemService {
             }
         }
 
-        JSONArray unitArray = new JSONArray();
-        if (units != null) {
+        JSONArray unitArray=new JSONArray();
+        if(units!=null) {
             for (int i = 0; i < units.size(); i++) {
                 String oid = units.get(i);
                 Unit unit = unitDao.findByOid(oid);
-                if (unit.getStatus().equals("Private")) {
+                if(unit.getStatus().equals("Private")){
                     continue;
                 }
                 JSONObject jsonObj = new JSONObject();
@@ -311,18 +349,18 @@ public class ModelItemService {
             }
         }
 
-        JSONArray dataItemArray = new JSONArray();
-        List<String> dataItems = modelInfo.getRelatedData();
-        if (dataItems != null) {
-            for (String dataId : dataItems) {
-                DataItem dataItem = dataItemDao.findFirstById(dataId);
-                if (dataItem.getStatus().equals("Private")) {
+        JSONArray dataItemArray=new JSONArray();
+        List<String> dataItems=modelInfo.getRelatedData();
+        if(dataItems!=null){
+            for(String dataId:dataItems){
+                DataItem dataItem=dataItemDao.findFirstById(dataId);
+                if(dataItem.getStatus().equals("Private")){
                     continue;
                 }
-                JSONObject dataJson = new JSONObject();
-                dataJson.put("name", dataItem.getName());
-                dataJson.put("id", dataItem.getId());
-                dataJson.put("description", dataItem.getDescription());
+                JSONObject dataJson=new JSONObject();
+                dataJson.put("name",dataItem.getName());
+                dataJson.put("id",dataItem.getId());
+                dataJson.put("description",dataItem.getDescription());
                 dataItemArray.add(dataJson);
             }
         }
@@ -332,61 +370,66 @@ public class ModelItemService {
         JSONObject userJson = userService.getItemUserInfo(modelInfo.getAuthor());
 
         //修改者信息
-        String lastModifier = modelInfo.getLastModifier();
-        JSONObject modifierJson = null;
-        if (lastModifier != null) {
-            modifierJson = userService.getItemUserInfo(lastModifier);
+        String lastModifier=modelInfo.getLastModifier();
+        JSONObject modifierJson=null;
+        if(lastModifier!=null){
+             modifierJson = userService.getItemUserInfo(lastModifier);
         }
 
-        String lastModifyTime = simpleDateFormat.format(modelInfo.getLastModifyTime());
+        String lastModifyTime=simpleDateFormat.format(modelInfo.getLastModifyTime());
 
 
         //图片路径
-        String image = modelInfo.getImage();
-        if (!image.equals("")) {
-            modelInfo.setImage(htmlLoadPath + image);
+        String image=modelInfo.getImage();
+        if(!image.equals("")){
+            modelInfo.setImage(htmlLoadPath+image);
         }
 
         //meta keywords
-        List<String> keywords = modelInfo.getKeywords();
-        String meta_keywords = "";
-        if (keywords.size() != 0) {
+        List<String> keywords=modelInfo.getKeywords();
+        String meta_keywords="";
+        if(keywords.size()!=0) {
             meta_keywords = keywords.toString().replace("[", ", ").replace("]", "");
         }
 
         //authorship
-        String authorshipString = "";
-        List<AuthorInfo> authorshipList = modelInfo.getAuthorship();
-        if (authorshipList != null) {
-            for (AuthorInfo author : authorshipList
-                    ) {
-                if (authorshipString.equals("")) {
-                    authorshipString += author.getName();
-                } else {
-                    authorshipString += ", " + author.getName();
+        String authorshipString="";
+        List<AuthorInfo> authorshipList=modelInfo.getAuthorship();
+        if(authorshipList!=null){
+            for (AuthorInfo author:authorshipList
+                 ) {
+                if(authorshipString.equals("")){
+                    authorshipString+=author.getName();
+                }
+                else{
+                    authorshipString+=", "+author.getName();
                 }
 
             }
         }
 
 
+
+
         modelAndView.setViewName("model_item_info");
-        modelAndView.addObject("modelInfo", modelInfo);
-        modelAndView.addObject("metaKeywords", meta_keywords);
-        modelAndView.addObject("classifications", classResult);
+        modelAndView.addObject("modelInfo",modelInfo);
+        modelAndView.addObject("metaKeywords",meta_keywords);
+        modelAndView.addObject("classifications",classResult);
         modelAndView.addObject("classifications2", class2Result);
-        modelAndView.addObject("detail", detailResult);
-        modelAndView.addObject("date", dateResult);
-        modelAndView.addObject("year", calendar.get(Calendar.YEAR));
-        modelAndView.addObject("modelItems", modelItemArray);
-        modelAndView.addObject("conceptualModels", conceptualArray);
-        modelAndView.addObject("logicalModels", logicalArray);
-        modelAndView.addObject("computableModels", computableArray);
-        modelAndView.addObject("concepts", conceptArray);
-        modelAndView.addObject("spatialReferences", spatialReferenceArray);
-        modelAndView.addObject("templates", templateArray);
-        modelAndView.addObject("units", unitArray);
-        modelAndView.addObject("dataItems", dataItemArray);
+        modelAndView.addObject("detailLanguage",detailLanguage);
+        modelAndView.addObject("languageList", languageList);
+        modelAndView.addObject("detail",detailResult);
+        modelAndView.addObject("date",dateResult);
+        modelAndView.addObject("year",calendar.get(Calendar.YEAR));
+        modelAndView.addObject("modelItems",modelItemArray);
+        modelAndView.addObject("conceptualModels",conceptualArray);
+        modelAndView.addObject("logicalModels",logicalArray);
+        modelAndView.addObject("computableModels",computableArray);
+        modelAndView.addObject("concepts",conceptArray);
+        modelAndView.addObject("spatialReferences",spatialReferenceArray);
+        modelAndView.addObject("templates",templateArray);
+        modelAndView.addObject("units",unitArray);
+        modelAndView.addObject("dataItems",dataItemArray);
         modelAndView.addObject("user", userJson);
         modelAndView.addObject("authorship", authorshipString);
         modelAndView.addObject("lastModifier", modifierJson);
@@ -399,71 +442,72 @@ public class ModelItemService {
 
     public ModelItem getByOid(String id) {
         try {
-            ModelItem modelItem = modelItemDao.findFirstByOid(id);
+            ModelItem modelItem=modelItemDao.findFirstByOid(id);
 
             //详情页面
-            String detailResult;
-            String model_detailDesc = modelItem.getDetail();
-            int num = model_detailDesc.indexOf("/upload/document/");
-            if (num == -1 || num > 20) {
-                detailResult = model_detailDesc;
-            } else {
-                if (model_detailDesc.indexOf("/") == 0) {
-                    model_detailDesc.substring(1);
-                }
-                //model_detailDesc = model_detailDesc.length() > 0 ? model_detailDesc.substring(1) : model_detailDesc;
-                String filePath = resourcePath.substring(0, resourcePath.length() - 7) + "/" + model_detailDesc;
-                try {
-                    filePath = java.net.URLDecoder.decode(filePath, "utf-8");
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-                if (model_detailDesc.length() > 0) {
-                    File file = new File(filePath);
-                    if (file.exists()) {
-                        StringBuilder detail = new StringBuilder();
-                        try {
-                            FileInputStream fileInputStream = new FileInputStream(file);
-                            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, "UTF-8");
-                            BufferedReader br = new BufferedReader(inputStreamReader);
-                            String line;
-                            while ((line = br.readLine()) != null) {
-                                line = line.replaceAll("<h1", "<h1 style='font-size:16px;margin-top:0'");
-                                line = line.replaceAll("<h2", "<h2 style='font-size:16px;margin-top:0'");
-                                line = line.replaceAll("<h3", "<h3 style='font-size:16px;margin-top:0'");
-                                line = line.replaceAll("<p", "<p style='font-size:14px;text-indent:2em'");
-                                detail.append(line);
-                            }
-                            br.close();
-                            inputStreamReader.close();
-                            fileInputStream.close();
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                        } catch (UnsupportedEncodingException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        detailResult = detail.toString();
-
-                    } else {
-                        detailResult = model_detailDesc;
-                    }
-                } else {
-                    detailResult = model_detailDesc;
-                }
-            }
-
-            int index;
-            if((index = detailResult.indexOf("</head>"))!=-1){
-                detailResult = detailResult.substring(index+7);
-            }
-
-            detailResult = Utils.saveBase64Image(detailResult,modelItem.getOid(),resourcePath, htmlLoadPath);
-
-            modelItem.setDetail(detailResult);
-
-            modelItem.setImage(modelItem.getImage());
+//            String detailResult;
+//            String model_detailDesc=modelItem.getDetail();
+//            int num=model_detailDesc.indexOf("/upload/document/");
+//            if(num==-1||num>20){
+//                detailResult=model_detailDesc;
+//            }
+//            else {
+//                if(model_detailDesc.indexOf("/")==0){
+//                    model_detailDesc.substring(1);
+//                }
+//                //model_detailDesc = model_detailDesc.length() > 0 ? model_detailDesc.substring(1) : model_detailDesc;
+//                String filePath = resourcePath.substring(0,resourcePath.length()-7) +"/" + model_detailDesc;
+//                try {
+//                    filePath = java.net.URLDecoder.decode(filePath, "utf-8");
+//                } catch (UnsupportedEncodingException e) {
+//                    e.printStackTrace();
+//                }
+//                if (model_detailDesc.length() > 0) {
+//                    File file = new File(filePath);
+//                    if (file.exists()) {
+//                        StringBuilder detail = new StringBuilder();
+//                        try {
+//                            FileInputStream fileInputStream = new FileInputStream(file);
+//                            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, "UTF-8");
+//                            BufferedReader br = new BufferedReader(inputStreamReader);
+//                            String line;
+//                            while ((line = br.readLine()) != null) {
+//                                line = line.replaceAll("<h1", "<h1 style='font-size:16px;margin-top:0'");
+//                                line = line.replaceAll("<h2", "<h2 style='font-size:16px;margin-top:0'");
+//                                line = line.replaceAll("<h3", "<h3 style='font-size:16px;margin-top:0'");
+//                                line = line.replaceAll("<p", "<p style='font-size:14px;text-indent:2em'");
+//                                detail.append(line);
+//                            }
+//                            br.close();
+//                            inputStreamReader.close();
+//                            fileInputStream.close();
+//                        } catch (FileNotFoundException e) {
+//                            e.printStackTrace();
+//                        } catch (UnsupportedEncodingException e) {
+//                            e.printStackTrace();
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
+//                        detailResult = detail.toString();
+//                    } else {
+//                        detailResult = model_detailDesc;
+//                    }
+//                } else {
+//                    detailResult = model_detailDesc;
+//                }
+//            }
+//
+//            int index;
+//            if((index = detailResult.indexOf("</head>"))!=-1){
+//                detailResult = detailResult.substring(index+7);
+//            }
+//
+//            detailResult = Utils.saveBase64Image(detailResult,modelItem.getOid(),resourcePath, htmlLoadPath);
+//
+//
+//            modelItem.setDetail(detailResult);
+//
+//            modelItem.setImage(modelItem.getImage());
             return modelItem;
         } catch (Exception e) {
             System.out.println("有人乱查数据库！！该ID不存在Model Item对象");
@@ -471,51 +515,54 @@ public class ModelItemService {
         }
     }
 
-    public ModelItem insert(ModelItemAddDTO modelItemAddDTO, String author) {
+    public ModelItem insert(ModelItemAddDTO modelItemAddDTO,String author) {
 
         ModelItem modelItem = new ModelItem();
         BeanUtils.copyProperties(modelItemAddDTO, modelItem);
         Date now = new Date();
         modelItem.setCreateTime(now);
         modelItem.setLastModifyTime(now);
+        modelItem.setStatus(modelItemAddDTO.getStatus());
         modelItem.setAuthor(author);
         modelItem.setOid(UUID.randomUUID().toString());
         modelItem.setDetail("");
-//        modelItem.setDetail(Utils.saveBase64Image(modelItemAddDTO.getDetail(), modelItem.getOid(), resourcePath, htmlLoadPath));
+        //TODO: localization图片本地化存储
+//        modelItem.setDetail(Utils.saveBase64Image(modelItemAddDTO.getDetail(),modelItem.getOid(),resourcePath,htmlLoadPath));
 
-        String path = "/modelItem/" + UUID.randomUUID().toString() + ".jpg";
-        String[] strs = modelItemAddDTO.getUploadImage().split(",");
-        if (strs.length > 1) {
+        String path="/modelItem/" + UUID.randomUUID().toString() + ".jpg";
+        String[] strs=modelItemAddDTO.getUploadImage().split(",");
+        if(strs.length>1) {
             String imgStr = modelItemAddDTO.getUploadImage().split(",")[1];
             Utils.base64StrToImage(imgStr, resourcePath + path);
             modelItem.setImage(path);
-        } else {
+        }
+        else {
             modelItem.setImage("");
         }
 
-        ModelItemRelate modelItemRelate = new ModelItemRelate();
+        ModelItemRelate modelItemRelate=new ModelItemRelate();
 
         modelItem.setRelate(new ModelItemRelate());
         return modelItemDao.insert(modelItem);
     }
 
-    public int delete(String oid, String userName) {
-        ModelItem modelItem = modelItemDao.findFirstByOid(oid);
-        if (!modelItem.getAuthor().equals(userName))
+    public int delete(String oid,String userName){
+        ModelItem modelItem=modelItemDao.findFirstByOid(oid);
+        if(!modelItem.getAuthor().equals(userName))
             return 2;
-        else if (modelItem != null) {
+        else if(modelItem!=null){
             //删除图片
-            String image = modelItem.getImage();
-            if (image.contains("/modelItem/")) {
+            String image=modelItem.getImage();
+            if(image.contains("/modelItem/")) {
                 //删除旧图片
-                File file = new File(resourcePath + modelItem.getImage());
-                if (file.exists() && file.isFile())
+                File file=new File(resourcePath+modelItem.getImage());
+                if(file.exists()&&file.isFile())
                     file.delete();
             }
 
-            List<String> relatedData = new ArrayList<>();
-            for (int i = 0; i < relatedData.size(); i++) {
-                DataItem dataItem = dataItemDao.findFirstById(relatedData.get(i));
+            List<String> relatedData=new ArrayList<>();
+            for(int i=0;i<relatedData.size();i++){
+                DataItem dataItem=dataItemDao.findFirstById(relatedData.get(i));
                 dataItem.getRelatedModels().remove(oid);
                 dataItemDao.save(dataItem);
             }
@@ -523,22 +570,23 @@ public class ModelItemService {
             modelItemDao.delete(modelItem);
             userService.modelItemMinusMinus(userName);
             return 1;
-        } else {
+        }
+        else{
             return -1;
         }
     }
 
 
-    public JSONObject update(ModelItemUpdateDTO modelItemUpdateDTO, String uid) {
-        ModelItem modelItem = modelItemDao.findFirstByOid(modelItemUpdateDTO.getOid());
-        String author = modelItem.getAuthor();
+    public JSONObject update(ModelItemUpdateDTO modelItemUpdateDTO, String uid){
+        ModelItem modelItem=modelItemDao.findFirstByOid(modelItemUpdateDTO.getOid());
+        String author=modelItem.getAuthor();
         String authorUserName = author;
-        if (!modelItem.isLock()) {
+        if(!modelItem.isLock()) {
             if (author.equals(uid)) {
                 BeanUtils.copyProperties(modelItemUpdateDTO, modelItem);
                 //判断是否为新图片
                 String uploadImage = modelItemUpdateDTO.getUploadImage();
-                if (!uploadImage.contains("/modelItem/") && !uploadImage.equals("")) {
+                if (uploadImage != null && !uploadImage.contains("/modelItem/") && !uploadImage.equals("")) {
                     //删除旧图片
                     File file = new File(resourcePath + modelItem.getImage());
                     if (file.exists() && file.isFile())
@@ -550,7 +598,7 @@ public class ModelItemService {
                     modelItem.setImage(path);
                 }
                 modelItem.setLastModifyTime(new Date());
-                modelItem.setDetail(Utils.saveBase64Image(modelItemUpdateDTO.getDetail(), modelItem.getOid(), resourcePath, htmlLoadPath));
+                modelItem.setDetail(Utils.saveBase64Image(modelItemUpdateDTO.getDetail(),modelItem.getOid(),resourcePath,htmlLoadPath));
                 modelItemDao.save(modelItem);
 
                 JSONObject result = new JSONObject();
@@ -564,16 +612,18 @@ public class ModelItemService {
                 BeanUtils.copyProperties(modelItemUpdateDTO, modelItemVersion, "id");
 
                 String uploadImage = modelItemUpdateDTO.getUploadImage();
-                if (uploadImage.equals("")) {
+                if(uploadImage.equals("")){
                     modelItemVersion.setImage("");
-                } else if (!uploadImage.contains("/modelItem/") && !uploadImage.equals("")) {
+                }
+                else if (!uploadImage.contains("/modelItem/") && !uploadImage.equals("")) {
                     String path = "/modelItem/" + UUID.randomUUID().toString() + ".jpg";
                     String imgStr = uploadImage.split(",")[1];
                     Utils.base64StrToImage(imgStr, resourcePath + path);
                     modelItemVersion.setImage(path);
-                } else {
-                    String[] names = uploadImage.split("modelItem");
-                    modelItemVersion.setImage("/modelItem/" + names[1]);
+                }
+                else{
+                    String[] names=uploadImage.split("modelItem");
+                    modelItemVersion.setImage("/modelItem/"+names[1]);
                 }
 
                 modelItemVersion.setOriginOid(modelItem.getOid());
@@ -584,7 +634,7 @@ public class ModelItemService {
                 modelItemVersion.setVerNumber(curDate.getTime());
                 modelItemVersion.setVerStatus(0);
                 userService.messageNumPlusPlus(authorUserName);
-                modelItemVersion.setDetail(Utils.saveBase64Image(modelItemUpdateDTO.getDetail(), modelItem.getOid(), resourcePath, htmlLoadPath));
+                modelItemVersion.setDetail(Utils.saveBase64Image(modelItemUpdateDTO.getDetail(),modelItem.getOid(),resourcePath,htmlLoadPath));
                 modelItemVersion.setCreator(author);
                 modelItemVersionDao.insert(modelItemVersion);
 
@@ -597,33 +647,34 @@ public class ModelItemService {
 
                 return result;
             }
-        } else {
+        }
+        else{
 
             return null;
         }
     }
 
-    public JSONArray getRelation(String oid, String type) {
+    public JSONArray getRelation(String oid,String type){
 
-        JSONArray result = new JSONArray();
-        ModelItem modelItem = modelItemDao.findFirstByOid(oid);
-        ModelItemRelate relation = modelItem.getRelate();
-        List<String> list = new ArrayList<>();
+        JSONArray result=new JSONArray();
+        ModelItem modelItem=modelItemDao.findFirstByOid(oid);
+        ModelItemRelate relation=modelItem.getRelate();
+        List<String> list=new ArrayList<>();
 
-        switch (type) {
+        switch (type){
             case "dataItem":
-                list = modelItem.getRelatedData();
-                if (list != null) {
-                    for (String id : list) {
-                        DataItem dataItem = dataItemDao.findFirstById(id);
-                        if (dataItem.getStatus().equals("Private")) {
+                list=modelItem.getRelatedData();
+                if(list!=null){
+                    for(String id:list){
+                        DataItem dataItem=dataItemDao.findFirstById(id);
+                        if(dataItem.getStatus().equals("Private")){
                             continue;
                         }
-                        JSONObject item = new JSONObject();
-                        item.put("oid", dataItem.getId());
-                        item.put("name", dataItem.getName());
-                        User user = userService.getByOid(dataItem.getAuthor());
-                        item.put("author", user.getName());
+                        JSONObject item=new JSONObject();
+                        item.put("oid",dataItem.getId());
+                        item.put("name",dataItem.getName());
+                        User user=userService.getByOid(dataItem.getAuthor());
+                        item.put("author",user.getName());
                         item.put("author_uid", user.getUserName());
                         result.add(item);
                     }
@@ -641,7 +692,6 @@ public class ModelItemService {
                         JSONObject item = new JSONObject();
                         item.put("oid", modelItem1.getOid());
                         item.put("name", modelItem1.getName());
-//                        item.put("relation", modelRelation.getRelation().getNumber());
                         item.put("relation", modelRelation.getRelation().getText());
                         item.put("author", userService.getByUid(modelItem1.getAuthor()).getName());
                         item.put("author_uid", modelItem1.getAuthor());
@@ -650,11 +700,11 @@ public class ModelItemService {
                 }
                 break;
             case "conceptualModel":
-                list = relation.getConceptualModels();
-                if (list != null) {
+                list=relation.getConceptualModels();
+                if(list!=null) {
                     for (String id : list) {
                         ConceptualModel conceptualModel = conceptualModelDao.findFirstByOid(id);
-                        if (conceptualModel.getStatus().equals("Private")) {
+                        if(conceptualModel.getStatus().equals("Private")){
                             continue;
                         }
                         JSONObject item = new JSONObject();
@@ -667,11 +717,11 @@ public class ModelItemService {
                 }
                 break;
             case "logicalModel":
-                list = relation.getLogicalModels();
-                if (list != null) {
+                list=relation.getLogicalModels();
+                if(list!=null) {
                     for (String id : list) {
                         LogicalModel logicalModel = logicalModelDao.findFirstByOid(id);
-                        if (logicalModel.getStatus().equals("Private")) {
+                        if(logicalModel.getStatus().equals("Private")){
                             continue;
                         }
                         JSONObject item = new JSONObject();
@@ -684,11 +734,11 @@ public class ModelItemService {
                 }
                 break;
             case "computableModel":
-                list = relation.getComputableModels();
-                if (list != null) {
+                list=relation.getComputableModels();
+                if(list!=null) {
                     for (String id : list) {
                         ComputableModel computableModel = computableModelDao.findFirstByOid(id);
-                        if (computableModel.getStatus().equals("Private")) {
+                        if(computableModel.getStatus().equals("Private")){
                             continue;
                         }
                         JSONObject item = new JSONObject();
@@ -701,11 +751,11 @@ public class ModelItemService {
                 }
                 break;
             case "concept":
-                list = relation.getConcepts();
-                if (list != null) {
+                list=relation.getConcepts();
+                if(list!=null) {
                     for (String id : list) {
                         Concept concept = conceptDao.findByOid(id);
-                        if (concept.getStatus().equals("Private")) {
+                        if(concept.getStatus().equals("Private")){
                             continue;
                         }
                         JSONObject item = new JSONObject();
@@ -718,11 +768,11 @@ public class ModelItemService {
                 }
                 break;
             case "spatialReference":
-                list = relation.getSpatialReferences();
-                if (list != null) {
+                list=relation.getSpatialReferences();
+                if(list!=null) {
                     for (String id : list) {
                         SpatialReference spatialReference = spatialReferenceDao.findByOid(id);
-                        if (spatialReference.getStatus().equals("Private")) {
+                        if(spatialReference.getStatus().equals("Private")){
                             continue;
                         }
                         JSONObject item = new JSONObject();
@@ -735,11 +785,11 @@ public class ModelItemService {
                 }
                 break;
             case "template":
-                list = relation.getTemplates();
-                if (list != null) {
+                list=relation.getTemplates();
+                if(list!=null) {
                     for (String id : list) {
                         Template template = templateDao.findByOid(id);
-                        if (template.getStatus().equals("Private")) {
+                        if(template.getStatus().equals("Private")){
                             continue;
                         }
                         JSONObject item = new JSONObject();
@@ -752,11 +802,11 @@ public class ModelItemService {
                 }
                 break;
             case "unit":
-                list = relation.getUnits();
-                if (list != null) {
+                list=relation.getUnits();
+                if(list!=null) {
                     for (String id : list) {
                         Unit unit = unitDao.findByOid(id);
-                        if (unit.getStatus().equals("Private")) {
+                        if(unit.getStatus().equals("Private")){
                             continue;
                         }
                         JSONObject item = new JSONObject();
@@ -773,7 +823,6 @@ public class ModelItemService {
 
         return result;
     }
-
 
     public JSONArray setModelRelation(String oid, List<ModelRelation> modelRelationListNew) {
         ModelItem modelItem = modelItemDao.findFirstByOid(oid);
@@ -880,59 +929,60 @@ public class ModelItemService {
 //        }
     }
 
-    public String setRelation(String oid, String type, List<String> relations) {
+    public String setRelation(String oid,String type,List<String> relations){
 
-        ModelItem modelItem = modelItemDao.findFirstByOid(oid);
-        ModelItemRelate relate = modelItem.getRelate();
+        ModelItem modelItem=modelItemDao.findFirstByOid(oid);
+        ModelItemRelate relate=modelItem.getRelate();
 
-        List<String> relationDelete = new ArrayList<>();//要被删除的关系
-        List<String> relationAdd = new ArrayList<>();//要添加的关系
+        List<String> relationDelete=new ArrayList<>();//要被删除的关系
+        List<String> relationAdd=new ArrayList<>();//要添加的关系
 
-        switch (type) {
+        switch (type){
             case "dataItem":
 
-                for (int i = 0; i < modelItem.getRelatedData().size(); i++) {
+                for(int i=0;i<modelItem.getRelatedData().size();i++){
                     relationDelete.add(modelItem.getRelatedData().get(i));
                 }
 
-                for (int i = 0; i < relations.size(); i++) {
+                for(int i=0;i<relations.size();i++){
                     relationAdd.add(relations.get(i));
                 }
 
                 //筛选出要删除和要添加的条目
-                for (int i = 0; i < relationDelete.size(); i++) {
-                    for (int j = 0; j < relationAdd.size(); j++) {
-                        if (relationDelete.get(i).equals(relationAdd.get(j))) {
-                            relationDelete.set(i, "");
-                            relationAdd.set(j, "");
+                for(int i=0;i<relationDelete.size();i++){
+                    for(int j=0;j<relationAdd.size();j++){
+                        if(relationDelete.get(i).equals(relationAdd.get(j))){
+                            relationDelete.set(i,"");
+                            relationAdd.set(j,"");
                             break;
                         }
                     }
                 }
                 //找到对应条目，删除关联
-                for (int i = 0; i < relationDelete.size(); i++) {
-                    String id = relationDelete.get(i);
-                    if (!id.equals("")) {
+                for(int i=0;i<relationDelete.size();i++){
+                    String id=relationDelete.get(i);
+                    if(!id.equals("")) {
                         DataItem dataItem = dataItemDao.findFirstById(id);
                         if(dataItem.getStatus().equals("Private")){
                             relations.add(dataItem.getId());
                             continue;
                         }
-                        if (dataItem.getRelatedModels() != null) {
+                        if(dataItem.getRelatedModels()!=null) {
                             dataItem.getRelatedModels().remove(oid);
                             dataItemDao.save(dataItem);
                         }
                     }
                 }
                 //找到对应条目，添加关联
-                for (int i = 0; i < relationAdd.size(); i++) {
-                    String id = relationAdd.get(i);
-                    if (!id.equals("")) {
+                for(int i=0;i<relationAdd.size();i++){
+                    String id=relationAdd.get(i);
+                    if(!id.equals("")) {
                         DataItem dataItem = dataItemDao.findFirstById(id);
-                        if (dataItem.getRelatedModels() != null) {
+                        if(dataItem.getRelatedModels()!=null) {
                             dataItem.getRelatedModels().add(oid);
-                        } else {
-                            List<String> relatedModels = new ArrayList<>();
+                        }
+                        else{
+                            List<String> relatedModels=new ArrayList<>();
                             relatedModels.add(oid);
                             dataItem.setRelatedModels(relatedModels);
                         }
@@ -944,43 +994,44 @@ public class ModelItemService {
                 break;
             case "modelItem":
 
-                for (int i = 0; i < modelItem.getRelatedData().size(); i++) {
+                for(int i=0;i<modelItem.getRelatedData().size();i++){
                     relationDelete.add(modelItem.getRelate().getModelItems().get(i));
                 }
 
-                for (int i = 0; i < relations.size(); i++) {
+                for(int i=0;i<relations.size();i++){
                     relationAdd.add(relations.get(i));
                 }
 
-                for (int i = 0; i < relationDelete.size(); i++) {
-                    for (int j = 0; j < relationAdd.size(); j++) {
-                        if (relationDelete.get(i).equals(relationAdd.get(j))) {
-                            relationDelete.set(i, "");
-                            relationAdd.set(j, "");
+                for(int i=0;i<relationDelete.size();i++){
+                    for(int j=0;j<relationAdd.size();j++){
+                        if(relationDelete.get(i).equals(relationAdd.get(j))){
+                            relationDelete.set(i,"");
+                            relationAdd.set(j,"");
                             break;
                         }
                     }
                 }
 
-                for (int i = 0; i < relationDelete.size(); i++) {
-                    String id = relationDelete.get(i);
-                    if (!id.equals("")) {
+                for(int i=0;i<relationDelete.size();i++){
+                    String id=relationDelete.get(i);
+                    if(!id.equals("")) {
                         ModelItem modelItem1 = modelItemDao.findFirstByOid(id);
-                        if (modelItem1.getRelate().getModelItems() != null) {
+                        if(modelItem1.getRelate().getModelItems()!=null) {
                             modelItem1.getRelate().getModelItems().remove(oid);
                             modelItemDao.save(modelItem1);
                         }
                     }
                 }
 
-                for (int i = 0; i < relationAdd.size(); i++) {
-                    String id = relationAdd.get(i);
-                    if (!id.equals("")) {
+                for(int i=0;i<relationAdd.size();i++){
+                    String id=relationAdd.get(i);
+                    if(!id.equals("")) {
                         ModelItem modelItem1 = modelItemDao.findFirstByOid(id);
-                        if (modelItem1.getRelate().getModelItems() != null) {
+                        if(modelItem1.getRelate().getModelItems()!=null) {
                             modelItem1.getRelate().getModelItems().add(oid);
-                        } else {
-                            List<String> relatedModels = new ArrayList<>();
+                        }
+                        else{
+                            List<String> relatedModels=new ArrayList<>();
                             relatedModels.add(oid);
                             modelItem1.getRelate().setModelItems(relatedModels);
                         }
@@ -1019,89 +1070,92 @@ public class ModelItemService {
         return "suc";
     }
 
-    public JSONObject bindModel(int type, String name, String oid) {
+    public JSONObject bindModel(int type, String name, String oid){
 
-        JSONObject result = new JSONObject();
-        ModelItem modelItem = modelItemDao.findFirstByName(name);
-        if (modelItem == null) {
-            result.put("code", -1);
-        } else {
-            ModelItemRelate modelItemRelate = modelItem.getRelate();
-            switch (type) {
+        JSONObject result=new JSONObject();
+        ModelItem modelItem=modelItemDao.findFirstByName(name);
+        if(modelItem==null){
+            result.put("code",-1);
+        }
+        else{
+            ModelItemRelate modelItemRelate=modelItem.getRelate();
+            switch (type){
                 case 1:
-                    ConceptualModel conceptualModel = conceptualModelDao.findFirstByOid(oid);
-                    ConceptualModel newConceptualModel = new ConceptualModel();
-                    BeanUtils.copyProperties(conceptualModel, newConceptualModel);
+                    ConceptualModel conceptualModel=conceptualModelDao.findFirstByOid(oid);
+                    ConceptualModel newConceptualModel=new ConceptualModel();
+                    BeanUtils.copyProperties(conceptualModel,newConceptualModel);
                     newConceptualModel.setId(null);
                     newConceptualModel.setOid(UUID.randomUUID().toString());
                     newConceptualModel.setRelateModelItem(modelItem.getOid());
                     conceptualModelDao.insert(newConceptualModel);
-                    List<String> conceptualList = modelItemRelate.getConceptualModels();
+                    List<String> conceptualList=modelItemRelate.getConceptualModels();
                     conceptualList.add(newConceptualModel.getOid());
                     modelItemRelate.setConceptualModels(conceptualList);
-                    result.put("oid", newConceptualModel.getOid());
+                    result.put("oid",newConceptualModel.getOid());
                     break;
                 case 2:
-                    LogicalModel logicalModel = logicalModelDao.findFirstByOid(oid);
-                    LogicalModel newLogicalModel = new LogicalModel();
-                    BeanUtils.copyProperties(logicalModel, newLogicalModel);
+                    LogicalModel logicalModel=logicalModelDao.findFirstByOid(oid);
+                    LogicalModel newLogicalModel=new LogicalModel();
+                    BeanUtils.copyProperties(logicalModel,newLogicalModel);
                     newLogicalModel.setId(null);
                     newLogicalModel.setOid(UUID.randomUUID().toString());
                     newLogicalModel.setRelateModelItem(modelItem.getOid());
                     logicalModelDao.insert(newLogicalModel);
-                    List<String> LogicalList = modelItemRelate.getLogicalModels();
+                    List<String> LogicalList=modelItemRelate.getLogicalModels();
                     LogicalList.add(newLogicalModel.getOid());
                     modelItemRelate.setLogicalModels(LogicalList);
-                    result.put("oid", newLogicalModel.getOid());
+                    result.put("oid",newLogicalModel.getOid());
                     break;
                 case 3:
-                    ComputableModel computableModel = computableModelDao.findFirstByOid(oid);
-                    ComputableModel newComputableModel = new ComputableModel();
-                    BeanUtils.copyProperties(computableModel, newComputableModel);
+                    ComputableModel computableModel=computableModelDao.findFirstByOid(oid);
+                    ComputableModel newComputableModel=new ComputableModel();
+                    BeanUtils.copyProperties(computableModel,newComputableModel);
                     newComputableModel.setId(null);
                     newComputableModel.setOid(UUID.randomUUID().toString());
                     newComputableModel.setRelateModelItem(modelItem.getOid());
                     computableModelDao.insert(newComputableModel);
-                    List<String> ComputableList = modelItemRelate.getComputableModels();
+                    List<String> ComputableList=modelItemRelate.getComputableModels();
                     ComputableList.add(newComputableModel.getOid());
                     modelItemRelate.setComputableModels(ComputableList);
-                    result.put("oid", newComputableModel.getOid());
+                    result.put("oid",newComputableModel.getOid());
                     break;
             }
             modelItem.setRelate(modelItemRelate);
             modelItemDao.save(modelItem);
-            result.put("code", 1);
+            result.put("code",1);
         }
         return result;
     }
 
-    public JSONObject listByUserOid(ModelItemFindDTO modelItemFindDTO, String oid, String loadUser) {
+    public JSONObject listByUserOid(ModelItemFindDTO modelItemFindDTO,String oid,String loadUser){
 
         int page = modelItemFindDTO.getPage();
         int pageSize = modelItemFindDTO.getPageSize();
-        String sortElement = modelItemFindDTO.getSortElement();
+        String sortElement=modelItemFindDTO.getSortElement();
         Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, sortElement);
         Pageable pageable = PageRequest.of(page, pageSize, sort);
-        User user = userDao.findFirstByOid(oid);
+        User user=userDao.findFirstByOid(oid);
         Page<ModelItemResultDTO> modelItemPage = Page.empty();
 
-//        if (loadUser == null || !loadUser.equals(oid)) {
-            modelItemPage = modelItemDao.findByAuthorAndStatusIn(user.getUserName(), itemStatusVisible, pageable);
-//        } else {
-//            modelItemPage = modelItemDao.findByAuthor(user.getUserName(), pageable);
+//        if(loadUser == null||!loadUser.equals(oid)){
+            modelItemPage=modelItemDao.findByAuthorAndStatusIn(user.getUserName(),itemStatusVisible,pageable);
+//        }
+//
+//        else {
+//            modelItemPage=modelItemDao.findByAuthor(user.getUserName(),pageable);
 //        }
 
 
-        JSONObject result = new JSONObject();
+        JSONObject result=new JSONObject();
 
-        result.put("list", modelItemPage.getContent());
+        result.put("list",modelItemPage.getContent());
         result.put("total", modelItemPage.getTotalElements());
 
 //        System.out.println(result);
         return result;
     }
 
-    public JSONObject list(ModelItemFindDTO modelItemFindDTO, String userName, List<String> classes) {
+    public JSONObject list(ModelItemFindDTO modelItemFindDTO, String userName,List<String> classes) {
 
         JSONObject obj = new JSONObject();
         //TODO Sort是可以设置排序字段的
@@ -1110,20 +1164,20 @@ public class ModelItemService {
         String searchText = modelItemFindDTO.getSearchText();
         //List<String> classifications=modelItemFindDTO.getClassifications();
         //默认以viewCount排序
-        Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
+        Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, modelItemFindDTO.getSortField());
         Pageable pageable = PageRequest.of(page, pageSize, sort);
 
-        Classification classification = classificationService.getByOid(classes.get(0));
-        if (classification != null) {
+        Classification classification=classificationService.getByOid(classes.get(0));
+        if(classification!=null) {
             List<String> children = classification.getChildrenId();
             if (children.size() > 0) {
                 for (String child : children
                         ) {
                     classes.add(child);
-                    Classification classification1 = classificationService.getByOid(child);
-                    List<String> children1 = classification1.getChildrenId();
-                    if (children1.size() > 0) {
-                        for (String child1 : children1) {
+                    Classification classification1=classificationService.getByOid(child);
+                    List<String> children1=classification1.getChildrenId();
+                    if(children1.size()>0){
+                        for(String child1:children1){
                             classes.add(child1);
                         }
                     }
@@ -1132,12 +1186,12 @@ public class ModelItemService {
         }
 
         Page<ModelItemResultDTO> modelItemPage = null;
-        if (userName == null) {
-            if (searchText.equals("") && classes.get(0).equals("all")) {
-                modelItemPage = modelItemDao.findAllByNameContainsAndStatusIn("", itemStatusVisible, pageable);
-            } else if (!searchText.equals("") && classes.get(0).equals("all")) {
+        if(userName==null){
+            if (searchText.equals("")&&classes.get(0).equals("all")) {
+                modelItemPage = modelItemDao.findAllByNameContainsAndStatusIn("",itemStatusVisible,pageable);
+            } else if(!searchText.equals("")&&classes.get(0).equals("all")) {
                 modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndStatusIn(searchText, itemStatusVisible, pageable);
-            } else if (searchText.equals("") && !classes.get(0).equals("all")) {
+            } else if(searchText.equals("")&&!classes.get(0).equals("all")){
                 modelItemPage = modelItemDao.findByClassificationsInAndStatusIn(classes, itemStatusVisible, pageable);
             }else{
                 modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndClassificationsInAndStatusIn(searchText,classes,itemStatusVisible, pageable);
@@ -1166,7 +1220,7 @@ public class ModelItemService {
 
             JSONObject userObj = new JSONObject();
             User user = userDao.findFirstByUserName(modelItems.get(i).getAuthor());
-            userObj.put("oid", user.getOid());
+            userObj.put("userId", user.getUserId());
             userObj.put("image", user.getImage().equals("") ? "" : htmlLoadPath + user.getImage());
             userObj.put("name", user.getName());
 
@@ -1195,7 +1249,7 @@ public class ModelItemService {
         String searchText = modelItemFindDTO.getSearchText();
         //List<String> classifications=modelItemFindDTO.getClassifications();
         //默认以viewCount排序
-        Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
+        Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, modelItemFindDTO.getSortField());
         Pageable pageable = PageRequest.of(page, pageSize, sort);
 
         Classification classification = classification2Service.getByOid(classes.get(0));
@@ -1240,20 +1294,20 @@ public class ModelItemService {
         }
 
 
-        List<ModelItemResultDTO> modelItems = modelItemPage.getContent();
-        JSONArray users = new JSONArray();
-        for (int i = 0; i < modelItems.size(); i++) {
-            ModelItemResultDTO modelItem = modelItems.get(i);
-            String image = modelItem.getImage();
-            if (!image.equals("")) {
+        List<ModelItemResultDTO> modelItems=modelItemPage.getContent();
+        JSONArray users=new JSONArray();
+        for(int i=0;i<modelItems.size();i++){
+            ModelItemResultDTO modelItem=modelItems.get(i);
+            String image=modelItem.getImage();
+            if(!image.equals("")) {
                 modelItem.setImage(htmlLoadPath + image);
             }
 
-            JSONObject userObj = new JSONObject();
-            User user = userDao.findFirstByUserName(modelItems.get(i).getAuthor());
-            userObj.put("oid", user.getOid());
-            userObj.put("image", user.getImage().equals("") ? "" : htmlLoadPath + user.getImage());
-            userObj.put("name", user.getName());
+            JSONObject userObj=new JSONObject();
+            User user=userDao.findFirstByUserName(modelItems.get(i).getAuthor());
+            userObj.put("userId",user.getUserId());
+            userObj.put("image",user.getImage().equals("")?"":htmlLoadPath+user.getImage());
+            userObj.put("name",user.getName());
 
             users.add(userObj);
 
@@ -1266,21 +1320,21 @@ public class ModelItemService {
         obj.put("list", modelItems);
         obj.put("total", modelItemPage.getTotalElements());
         obj.put("pages", modelItemPage.getTotalPages());
-        obj.put("users", users);
+        obj.put("users",users);
 
         return obj;
     }
 
-    public ModelItem findByName(String name) {
+    public ModelItem findByName(String name){
 
         return modelItemDao.findFirstByName(name);
     }
 
-    public List<String> findNamesByName(String name) {
-        Pageable pageable = PageRequest.of(0, 15, new Sort(Sort.Direction.ASC, "viewCount"));
-        Page<ModelItemResultDTO> modelItems = modelItemDao.findByNameContainsIgnoreCase(name, pageable);
-        List<String> resultList = new ArrayList<>();
-        for (int i = 0; i < modelItems.getContent().size(); i++) {
+    public List<String> findNamesByName(String name){
+        Pageable pageable = PageRequest.of(0, 15, new Sort(Sort.Direction.ASC,"viewCount"));
+        Page<ModelItemResultDTO> modelItems=modelItemDao.findByNameContainsIgnoreCase(name,pageable);
+        List<String> resultList=new ArrayList<>();
+        for(int i=0;i<modelItems.getContent().size();i++){
             resultList.add(modelItems.getContent().get(i).getName());
         }
         return resultList;
@@ -1373,15 +1427,15 @@ public class ModelItemService {
 
     }
 
-    public JSONObject query(ModelItemFindDTO modelItemFindDTO, List<String> connects, List<String> props, List<String> values, List<String> nodeID) throws ParseException {
+    public JSONObject query(ModelItemFindDTO modelItemFindDTO,List<String> connects, List<String> props, List<String> values, List<String> nodeID) throws ParseException {
 
-        ModelDao modelDao = new ModelDao();
+        ModelDao modelDao=new ModelDao();
 
         BasicDBObject query = new BasicDBObject();
 
         //prop
         for (int i = 0; i < values.size(); i += 2) {
-            if (values.get(i).trim().equals("") && values.get(i + 1).trim().equals("")) {
+            if(values.get(i).trim().equals("")&&values.get(i+1).trim().equals("")){
 
                 continue;
             }
@@ -1397,9 +1451,9 @@ public class ModelItemService {
                     //BasicDBObject condition2=new BasicDBObject("$regex",values.get(i+1));
                     BasicDBObject obj2 = new BasicDBObject(field, pattern1);
                     condition = new BasicDBObject(conn, Arrays.asList(obj1, obj2));
-                    if (i != 0 && connects.get(i - 1).equals("NOT")) {
-                        obj1 = new BasicDBObject("$not", obj1);
-                        obj2 = new BasicDBObject("$not", obj2);
+                    if(i!=0&&connects.get(i-1).equals("NOT")){
+                        obj1=new BasicDBObject("$not",obj1);
+                        obj2=new BasicDBObject("$not",obj2);
                         condition = new BasicDBObject("$or", Arrays.asList(obj1, obj2));
                     }
 
@@ -1410,12 +1464,12 @@ public class ModelItemService {
                     condition = new BasicDBObject(field, pattern);
 
 
-                    if (i != 0 && connects.get(i - 1).equals("NOT")) {
+                    if(i!=0&&connects.get(i-1).equals("NOT")){
                         pattern = Pattern.compile("^.*" + values.get(i).trim() + ".*$", Pattern.CASE_INSENSITIVE);
-                        BasicDBObject condition1 = new BasicDBObject("$not", pattern);
+                        BasicDBObject condition1=new BasicDBObject("$not",pattern);
                         obj1 = new BasicDBObject(field, pattern);
                         pattern1 = Pattern.compile("^.*" + values.get(i + 1).trim() + ".*$", Pattern.CASE_INSENSITIVE);
-                        BasicDBObject condition2 = new BasicDBObject("$not", pattern1);
+                        BasicDBObject condition2=new BasicDBObject("$not",pattern1);
                         obj2 = new BasicDBObject(field, pattern1);
 //                        obj1=new BasicDBObject("$not",obj1);
 //                        obj2=new BasicDBObject("$not",obj2);
@@ -1429,16 +1483,16 @@ public class ModelItemService {
                     obj1 = new BasicDBObject(field, pattern);
                     //pattern1 = Pattern.compile("^((?!" + values.get(i + 1).trim() + ").)+$", Pattern.CASE_INSENSITIVE);
                     pattern1 = Pattern.compile("^.*" + values.get(i + 1).trim() + ".*$", Pattern.CASE_INSENSITIVE);
-                    BasicDBObject condition2 = new BasicDBObject("$not", pattern1);
+                    BasicDBObject condition2=new BasicDBObject("$not",pattern1);
                     obj2 = new BasicDBObject(field, condition2);
                     //obj2=new BasicDBObject("$not",obj2);
 
-                    if (i != 0 && connects.get(i - 1).equals("NOT")) {
-                        pattern = Pattern.compile("^.*" + values.get(i + 1).trim() + ".*$", Pattern.CASE_INSENSITIVE);
+                    if(i!=0&&connects.get(i-1).equals("NOT")){
+                        pattern = Pattern.compile("^.*" + values.get(i+1).trim() + ".*$", Pattern.CASE_INSENSITIVE);
                         //BasicDBObject condition1=new BasicDBObject("$regex",values.get(i));
                         obj1 = new BasicDBObject(field, pattern);
                         pattern1 = Pattern.compile("^.*" + values.get(i).trim() + ".*$", Pattern.CASE_INSENSITIVE);
-                        condition2 = new BasicDBObject("$not", pattern1);
+                        condition2=new BasicDBObject("$not",pattern1);
                         obj2 = new BasicDBObject(field, condition2);
                     }
 
@@ -1455,8 +1509,8 @@ public class ModelItemService {
         }
 
         //parents
-        BasicDBObject query_parents = new BasicDBObject();
-        if (!nodeID.get(0).equals("all")) {
+        BasicDBObject query_parents=new BasicDBObject();
+        if(!nodeID.get(0).equals("all")) {
             for (int i = 0; i < nodeID.size(); i++) {
                 BasicDBObject query1 = new BasicDBObject("classifications.", nodeID.get(i));
                 if (i == 0) {
@@ -1472,9 +1526,9 @@ public class ModelItemService {
 
         MongoCollection<Document> Col = modelDao.GetCollection("Portal", "modelItem");
 
-        long total = 0;
-        if (query.size() == 0) {
-            total = modelItemDao.count();
+        long total=0;
+        if(query.size()==0){
+            total=modelItemDao.count();
         }
 //        String jsonStr=JSONObject.toJSONString(query);
 //        Document countDoc=Document.parse(jsonStr);
@@ -1483,11 +1537,11 @@ public class ModelItemService {
 //        long total=mongoTemplate.getCollection("modelItem").count(countDoc);
         FindIterable<Document> findIterable = modelDao.RetrieveDocs(Col, query, modelDao.getSort("viewCount", modelItemFindDTO.getAsc()));
 
-        MongoCursor<Document> findCursor = findIterable.iterator();
+        MongoCursor<Document> findCursor=findIterable.iterator();
 
-        long time1 = System.currentTimeMillis();
-        System.out.println("findCursor Define:" + (time1 - start));
-        if (total == 0) {
+        long time1=System.currentTimeMillis();
+        System.out.println("findCursor Define:"+(time1-start));
+        if(total==0) {
             //查询结果为全部对象时，不遍历
             while (findCursor.hasNext()) {
                 Document document = findCursor.next();
@@ -1496,11 +1550,11 @@ public class ModelItemService {
         }
 
         findCursor.close();
-        long time2 = System.currentTimeMillis();
-        System.out.println("count Time:" + (time2 - time1));
+        long time2=System.currentTimeMillis();
+        System.out.println("count Time:"+(time2-time1));
 
-        MongoCursor<Document> cursor = findIterable.limit(10).skip(modelItemFindDTO.getPage() * 10).iterator();
-        JSONObject output = new JSONObject();
+        MongoCursor<Document> cursor=findIterable.limit(10).skip(modelItemFindDTO.getPage()*10).iterator();
+        JSONObject output=new JSONObject();
         JSONArray list = new JSONArray();
         while (cursor.hasNext()) {
 
@@ -1508,100 +1562,102 @@ public class ModelItemService {
             Document doc = cursor.next();
             Date CreateTime = doc.getDate("createTime");
             String sDate = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(CreateTime);
-            doc.put("createTime", sDate);
+            doc.put("createTime",sDate);
 
             list.add(JSONObject.parse(doc.toJson()));
 
         }
         cursor.close();
 
-        long time3 = System.currentTimeMillis();
-        System.out.println("read for result Time:" + (time3 - time2));
+        long time3=System.currentTimeMillis();
+        System.out.println("read for result Time:"+(time3-time2));
 
         //users
-        JSONArray users = new JSONArray();
-        for (int i = 0; i < list.size(); i++) {
-            JSONObject userObj = new JSONObject();
-            User user = userDao.findFirstByUserName(list.getJSONObject(i).getString("author"));
-            userObj.put("oid", user.getOid());
-            userObj.put("image", user.getImage());
-            userObj.put("name", user.getName());
+        JSONArray users=new JSONArray();
+        for(int i=0;i<list.size();i++){
+            JSONObject userObj=new JSONObject();
+            User user=userDao.findFirstByUserName(list.getJSONObject(i).getString("author"));
+            userObj.put("oid",user.getOid());
+            userObj.put("image",user.getImage());
+            userObj.put("name",user.getName());
             users.add(userObj);
         }
 
-        long time4 = System.currentTimeMillis();
-        System.out.println("user Time:" + (time4 - time3));
+        long time4=System.currentTimeMillis();
+        System.out.println("user Time:"+(time4-time3));
 
-        output.put("total", total);
-        output.put("pages", Math.ceil(total));
-        output.put("list", list);
-        output.put("users", users);
+        output.put("total",total);
+        output.put("pages",Math.ceil(total));
+        output.put("list",list);
+        output.put("users",users);
+
 
 
         return output;
     }
 
-    public JSONObject getModelItemsByUserId(String userId, int page, String sortType, int asc) {
+    public JSONObject getModelItemsByUserId(String userId, int page, String sortType, int asc){
 
-        Sort sort = new Sort(asc == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
+        Sort sort = new Sort(asc==1 ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
 
         Pageable pageable = PageRequest.of(page, 10, sort);
 
-        Page<ModelItemResultDTO> modelItems = modelItemDao.findByAuthor(userId, pageable);
+        Page<ModelItemResultDTO> modelItems = modelItemDao.findByAuthor(userId,pageable);
 
         JSONObject modelItemObject = new JSONObject();
-        modelItemObject.put("count", modelItems.getTotalElements());
-        modelItemObject.put("modelItems", modelItems.getContent());
+        modelItemObject.put("count",modelItems.getTotalElements());
+        modelItemObject.put("modelItems",modelItems.getContent());
 
         return modelItemObject;
 
     }
 
-    public JSONObject searchModelItemsByUserId(String searchText, String userId, int page, String sortType, int asc) {
+    public JSONObject searchModelItemsByUserId(String searchText,String userId, int page, String sortType, int asc){
 
-        Sort sort = new Sort(asc == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
+        Sort sort = new Sort(asc==1 ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
 
         Pageable pageable = PageRequest.of(page, 10, sort);
 
-        Page<ModelItemResultDTO> modelItems = modelItemDao.findByNameContainsIgnoreCaseAndAuthor(searchText, userId, pageable);
+        Page<ModelItemResultDTO> modelItems = modelItemDao.findByNameContainsIgnoreCaseAndAuthor(searchText,userId,pageable);
 
         JSONObject modelItemObject = new JSONObject();
-        modelItemObject.put("count", modelItems.getTotalElements());
-        modelItemObject.put("modelItems", modelItems.getContent());
+        modelItemObject.put("count",modelItems.getTotalElements());
+        modelItemObject.put("modelItems",modelItems.getContent());
 
         return modelItemObject;
 
     }
 
-    public JSONObject searchByTitleByOid(ModelItemFindDTO modelItemFindDTO, String oid, String loadUser) {
-        String userName = userDao.findFirstByOid(oid).getUserName();
-        int page = modelItemFindDTO.getPage();
+    public JSONObject searchByTitleByOid(ModelItemFindDTO modelItemFindDTO, String oid ,String loadUser){
+        String userName=userDao.findFirstByOid(oid).getUserName();
+        int page=modelItemFindDTO.getPage();
         int pageSize = modelItemFindDTO.getPageSize();
-        String sortElement = modelItemFindDTO.getSortElement();
+        String sortElement=modelItemFindDTO.getSortElement();
         Boolean asc = modelItemFindDTO.getAsc();
-        String name = modelItemFindDTO.getSearchText();
+        String name= modelItemFindDTO.getSearchText();
 
-        Sort sort = new Sort(asc ? Sort.Direction.ASC : Sort.Direction.DESC, sortElement);
-        Pageable pageable = PageRequest.of(page, pageSize, sort);
+        Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.DESC,sortElement);
+        Pageable pageable=PageRequest.of(page,pageSize,sort);
         Page<ModelItemResultDTO> modelItemResultDTOPage = Page.empty();
 
-//        if (loadUser == null || !loadUser.equals(oid)) {
-            modelItemResultDTOPage = modelItemDao.findByNameContainsIgnoreCaseAndAuthorAndStatusIn(name, userName, itemStatusVisible, pageable);
-//        } else {
-//            modelItemResultDTOPage = modelItemDao.findByNameContainsIgnoreCaseAndAuthor(name, userName, pageable);
-//        }
+        if(loadUser == null||!loadUser.equals(oid)){
+            modelItemResultDTOPage=modelItemDao.findByNameContainsIgnoreCaseAndAuthorAndStatusIn(name,userName,itemStatusVisible,pageable);
+        }else{
+            modelItemResultDTOPage=modelItemDao.findByNameContainsIgnoreCaseAndAuthor(name,userName,pageable);
+        }
 
 
-        JSONObject result = new JSONObject();
-        result.put("list", modelItemResultDTOPage.getContent());
-        result.put("total", modelItemResultDTOPage.getTotalElements());
+
+        JSONObject result=new JSONObject();
+        result.put("list",modelItemResultDTOPage.getContent());
+        result.put("total",modelItemResultDTOPage.getTotalElements());
 //        System.out.println(result);
         return result;
 
     }
 
     public String searchByElsevierDOI(String doi) throws IOException {
-        String str = "https://api.elsevier.com/content/article/doi/" + doi + "?apiKey=e59f63ca86ba019181c8d3a53f495532";
+        String str = "https://api.elsevier.com/content/article/doi/"+doi+"?apiKey=e59f63ca86ba019181c8d3a53f495532";
         URL url = new URL(str);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
@@ -1616,7 +1672,7 @@ public class ModelItemService {
             int length = connection.getContentLength();
             while ((line = reader.readLine()) != null) {
                 if (!line.equals("")) {
-                    articleXml += line + "\n";
+                    articleXml+=line+"\n";
                 }
             }
             reader.close();
@@ -1640,22 +1696,23 @@ public class ModelItemService {
         return false;
     }
 
-    public JSONObject getArticleByDOI(String Doi, String modelOid, String contributor) throws IOException, DocumentException {
-        String[] eles = Doi.split("/");
+    public JSONObject getArticleByDOI(String Doi,String modelOid,String contributor) throws IOException, DocumentException {
+        String[] eles= Doi.split("/");
 
-        String doi = eles[eles.length - 2] + "/" + eles[eles.length - 1];
+        String doi = eles[eles.length-2]+"/"+eles[eles.length-1];
 
-        String xml = searchByElsevierDOI(doi);
+        String xml =  searchByElsevierDOI(doi);
 
         JSONObject result = new JSONObject();
 
-        if (xml == null) {
-            result.put("find", 0);
+        if(xml == null){
+            result.put("find",0);
             return result;
-        } else if (xml.equals("Connection timed out: connect")) {
-            result.put("find", -1);
+        }
+        else  if (xml.equals("Connection timed out: connect") ) {
+            result.put("find",-1);
             return result;
-        } else {
+        }  else{
             //dom4j解析xml
             org.dom4j.Document doc = null;
             doc = DocumentHelper.parseText(xml);
@@ -1669,7 +1726,7 @@ public class ModelItemService {
             String coverDate = coredata.elementTextTrim("coverDate");
             String volume = coredata.elementTextTrim("volume");
             List links = coredata.elements("link");
-            String link = ((Element) links.get(1)).attribute("href").getValue();
+            String link = ((Element)links.get(1)).attribute("href").getValue();
 
             Iterator authorIte = coredata.elementIterator("creator");
             List<String> authors = new ArrayList<>();
@@ -1688,12 +1745,12 @@ public class ModelItemService {
             article.setAuthors(authors);
             article.setLink(link);
             article.setDoi(doi);
-            if (findReferExisted(modelOid, doi)) {//同一模型条目下有重复上传
-                result.put("find", 2);
-                result.put("article", article);
-            } else {
-                result.put("find", 1);
-                result.put("article", article);
+            if(findReferExisted(modelOid,doi)) {//同一模型条目下有重复上传
+                result.put("find",2);
+                result.put("article",article);
+            }else{
+                result.put("find",1);
+                result.put("article",article);
             }
             doc = null;
             System.gc();

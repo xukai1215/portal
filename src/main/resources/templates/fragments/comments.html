@@ -13,7 +13,7 @@
         </div>
         <div class="block_content">
             <div class="comment-box flex" style="flex-grow: 1">
-                <a :href="useroid==''?'/user/login':'/user/'+useroid" class="round_icon">
+                <a :href="useroid==''?'/user/login':'/profile/'+useroid" class="round_icon">
                     <img :src="userImg!=''?userImg:'/static/img/icon/default.png'" class="round_icon pull-left" style="border: 1px solid #eee">
                 </a>
                 <div class="flex"
@@ -43,14 +43,14 @@
             <el-divider></el-divider>
             <div class="comment-list">
                 <div class="comment flex" style="margin-top:15px" v-for="(comment,i) in commentList">
-                    <a :href="'/user/'+comment.author.oid" target="_blank" class="round_icon">
+                    <a :href="'/profile/'+comment.author.oid" target="_blank" class="round_icon">
                         <img :src="comment.author.img!=''?comment.author.img:'/static/img/icon/default.png'" class="round_icon"
                         />
                     </a>
 
                     <div class="comment-content" style="margin-left: 15px;flex-grow: 1;padding-bottom: 16px;border-bottom: 1px solid #eee;">
                         <div class="com-author-name">
-                            <a :href="'/user/'+comment.author.oid" target="_blank" style="font-size: 18px;">{{comment.author.name}}</a>
+                            <a :href="'/profile/'+comment.author.oid" target="_blank" style="font-size: 18px;">{{comment.author.name}}</a>
                         </div>
                         <div class="com-time">
                             {{comment.date}}
@@ -76,15 +76,15 @@
                         <div class="com-sub-list">
                             <div class="com-sub" v-for="(subComm,j) in comment.subCommentList" style="border-top: 1px solid #eee;margin-top:15px;padding-top: 15px;">
                                 <div class="com-sub-author flex">
-                                    <a :href="'/user/'+subComm.author.oid" target="_blank" class="com-sub-icon">
+                                    <a :href="'/profile/'+subComm.author.oid" target="_blank" class="com-sub-icon">
                                         <img :src="subComm.author.img!=''?subComm.author.img:'/static/img/icon/default.png'" class="round_icon">
                                     </a>
                                     <div class="com-sub-name-time" style="margin-left:15px">
                                         <div class="com-author-name">
-                                            <a :href="'/user/'+subComm.author.oid" target="_blank" style="font-size: 18px;">{{subComm.author.name}}</a>
+                                            <a :href="'/profile/'+subComm.author.oid" target="_blank" style="font-size: 18px;">{{subComm.author.name}}</a>
                                             <span v-if="subComm.replyTo!=null" style="margin:0 5px;font-weight: bold">Reply</span>
                                             <span v-if="subComm.replyTo!=null">
-                                                <a :href="'/user/'+subComm.replyTo.oid" target="_blank" style="font-size: 18px;font-weight: normal">{{subComm.replyTo.name}}</a>
+                                                <a :href="'/profile/'+subComm.replyTo.oid" target="_blank" style="font-size: 18px;font-weight: normal">{{subComm.replyTo.name}}</a>
                                             </span>
                                         </div>
                                         <div class="com-time">

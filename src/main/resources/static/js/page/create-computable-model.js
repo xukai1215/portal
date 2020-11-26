@@ -537,7 +537,7 @@ var createComputableModel = Vue.extend({
         }
         else {
             $("#subRteTitle").text("/Modify Computable Model")
-            document.title="Modify Computable Model | OpenGMS"
+            // document.title="Modify Computable Model | OpenGMS"
             $.ajax({
                 url: "/computableModel/getInfo/" + oid,
                 type: "get",
@@ -553,6 +553,8 @@ var createComputableModel = Vue.extend({
                     this.computableModel.bindModelItem=basicInfo.relateModelItemName;
                     this.computableModel.bindOid=basicInfo.relateModelItem;
                     this.computableModel.status=basicInfo.status;
+
+                    this.computableModel.contentType = basicInfo.contentType;
 
                     $(".providers").children(".panel").remove();
 

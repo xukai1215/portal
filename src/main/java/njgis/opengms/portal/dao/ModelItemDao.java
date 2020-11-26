@@ -56,6 +56,7 @@ public interface ModelItemDao extends MongoRepository<ModelItem,String> {
 
     Page<ModelItemResultDTO> findByNameContainsIgnoreCaseAndClassifications2IsNotNull(String name,Pageable pageable);
 
+
     Page<ModelItemResultDTO> findByClassificationsInAndStatusIn(List<String> classes,List<String> status,Pageable pageable);
 
     Page<ModelItemResultDTO> findByClassifications2InAndStatusIn(List<String> classes,List<String> status,Pageable pageable);

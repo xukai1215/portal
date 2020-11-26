@@ -53,8 +53,8 @@ public enum RelationTypeEnum {
             case 8:
                 return RelationTypeEnum.getRelationTypeByNum(8);
 
-                default:
-                    return RelationTypeEnum.getRelationTypeByNum(0);
+            default:
+                return RelationTypeEnum.getRelationTypeByNum(0);
         }
     }
 

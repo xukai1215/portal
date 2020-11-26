@@ -327,27 +327,36 @@ new Vue({
                             "oid": "1bf4f381-6bd8-4716-91ab-5a56e51bd2f9"
                         }, {"id": 5, "label": "Atmospheric regions", "oid": "8f4d4fca-4d09-49b4-b6f7-5021bc57d0e5"}, {
                             "id": 6,
-                            "label": "Space earth",
+                            "label": "Space-earth regions",
                             "oid": "d33a1ebe-b2f5-4ed3-9c76-78cfb61c23ee"
-                        }, {"id": 7, "label": "Solid earth", "oid": "d3ba6e0b-78ec-4fe8-9985-4d5708f28e3e"}, {
-                            "id": 8,
-                            "label": "Integrated perspective",
-                            "oid": "eb1d8ddc-6be1-41ef-bab6-a8d940d46499"
-                        }], "id": 1, "label": "Natural-perspective", "oid": "6b2c8632-964a-4a65-a6c5-c360b2b515f0"
+                        }, {"id": 7, "label": "Solid-earth regions", "oid": "d3ba6e0b-78ec-4fe8-9985-4d5708f28e3e"}
+                        ], "id": 1, "label": "Natural-perspective", "oid": "6b2c8632-964a-4a65-a6c5-c360b2b515f0"
                     }, {
                         "children": [{
                             "id": 10,
-                            "label": "Administrative regions",
+                            "label": "Development activities",
                             "oid": "808e74a4-41c6-4558-a850-4daec1f199df"
-                        }, {"id": 11, "label": "Social regions", "oid": "40534cf8-039a-4a0a-8db9-7c9bff484190"}, {
+                        }, {"id": 11, "label": "Social activities", "oid": "40534cf8-039a-4a0a-8db9-7c9bff484190"}, {
                             "id": 12,
-                            "label": "Economic regions",
+                            "label": "Economic activities",
                             "oid": "cf9cd106-b873-4a8a-9336-dd72398fc769"
-                        }, {"id": 13, "label": "Integrated perspective", "oid": "65dbe5a9-ada9-4c02-8353-5029a84d7628"}],
+                        }],
                         "id": 9,
                         "label": "Human-perspective",
                         "oid": "77e7482c-1844-4bc3-ae37-cb09b61572da"
-                    }], "id": 24, "label": "Application-focused categories", "oid": "9f7816be-c6e3-44b6-addf-98251e3d2e19"},
+                    },{"id":30,
+                        "label":"Integrated-perspective",
+                        "oid":"396cc739-ef33-4332-8d5d-9a67c89567c7",
+                        "children":[{
+                            "id": 31,
+                            "label": "Global scale",
+                            "oid": "14130969-fda6-41ea-aa32-0af43104840b"
+                        }, {
+                            "id": 32,
+                            "label": "Regional scale",
+                            "oid": "e56c1254-70b8-4ff4-b461-b8fa3039944e"
+                        }]}], "id": 24, "label": "Application-focused categories", "oid": "9f7816be-c6e3-44b6-addf-98251e3d2e19"},
+
                 {"children": [{
                         "children": [{
                             "id": 15,
@@ -361,7 +370,7 @@ new Vue({
                             "id": 17,
                             "label": "Geostatistical analysis",
                             "oid": "1c876281-a032-4575-8eba-f1a8fb4560d8"
-                        }, {"id": 18, "label": "Machine Learning analysis", "oid": "c6fcc899-8ca4-4269-a21e-a39d38c034a6"}],
+                        }, {"id": 18, "label": "Intelligent computation analysis", "oid": "c6fcc899-8ca4-4269-a21e-a39d38c034a6"}],
                         "id": 14,
                         "label": "Data-perspective",
                         "oid": "4785308f-b2ef-4193-a74b-b9fe025cbc5e"
@@ -396,11 +405,28 @@ new Vue({
             clsStr:"",
             cls2:[],
             clsStr2:"",
-            classType:null,
+            classType:2,
+
+            sortTypeName:"View Count",
+            sortFieldName:"viewCount",
+            sortOrder:"desc.",
         }
     },
     methods: {
+        changeSortField(ele){
+            this.sortTypeName = ele;
+            let field = ele.replace(" ","").replace(ele[0],ele[0].toLowerCase());
+            this.sortFieldName = field;
+            this.getModels(this.classType);
+        },
 
+        changeSortOrder(ele){
+            this.sortOrder=ele;
+
+            this.pageOption.sortAsc = ele==="asc.";
+
+            this.getModels(this.classType);
+        },
 
         handleCheckChange12(data, checked, indeterminate) {
             let checkedNodes = this.$refs.tree12.getCheckedNodes()
@@ -774,6 +800,7 @@ new Vue({
         getModels(classType) {
             this.pageOption.progressBar = true;
             var data = {
+                sortField:this.sortFieldName,
                 asc: this.pageOption.sortAsc,
                 page: this.pageOption.currentPage - 1,
                 pageSize: this.pageOption.pageSize,
@@ -783,7 +810,7 @@ new Vue({
                 case "normal":
                     data.searchText = this.searchText.trim();
                     if(classType==2) {
-                        data.classifications = this.classifications3.length == 0 ? ["all"] : this.classifications3
+                        data.classifications = this.classifications3.length == 0 ? ["all"] : this.classifications3;
                         data.classType=classType;
                     }else{
                         data.classifications = this.classifications1.length == 0 ? ["all"] : this.classifications1;
@@ -821,6 +848,7 @@ new Vue({
             console.log(data)
             this.Query(data, this.queryType);
         },
+
         Query(data, type) {
             console.log(data)
             let sendDate = (new Date()).getTime();
@@ -1128,8 +1156,8 @@ new Vue({
 
         if(document.cookie.indexOf("modelRep=1")==-1){
             this.showDriver();
-            var t=new Date(new Date().getTime()+1000*60*60*24*60);
-            document.cookie="modelRep=1; expires="+t.toGMTString();
+            var t=new Date(new Date().getTime()+1000*60*60*24*60);
+            document.cookie="modelRep=1; expires="+t.toGMTString();
         }
 
     }

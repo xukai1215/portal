@@ -424,6 +424,7 @@ var createLogicalModel = Vue.extend({
                         async: true,
                         success: (json) => {
                             if (json.data != null) {
+
                                 this.logicalModel.bindModelItem = json.data.name;
                                 this.clearSession();
                             }

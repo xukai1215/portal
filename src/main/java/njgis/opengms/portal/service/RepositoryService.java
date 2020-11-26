@@ -46,7 +46,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 
-
 @Service
 public class RepositoryService {
     @Autowired
@@ -387,8 +386,8 @@ public class RepositoryService {
 
         modelAndView.addObject("image", htmlLoadPath+theme.getImage());
         modelAndView.addObject("detail",theme_detailDesc);
+        modelAndView.addObject("year", Calendar.getInstance().getWeekYear());
         modelAndView.addObject("year", theme.getCreateTime().getYear()+1900);
-        modelAndView.addObject("date", sdf.format(theme.getCreateTime()));
         modelAndView.addObject("references",JSONArray.parseArray(JSON.toJSONString(theme.getReferences())));
         modelAndView.addObject("modelClassInfos",classInfos_result);
         modelAndView.addObject("dataClassInfos",dataClassInfos_result);
@@ -1689,4 +1688,6 @@ public class RepositoryService {
             modelRepositoryTreeArray.add(modelRepositoryTreeObj);
         }
     }
+
+
 }

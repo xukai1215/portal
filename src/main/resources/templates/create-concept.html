@@ -8,6 +8,7 @@
     <title>Create Concept & Semantic | OpenGMS</title>
 
 
+
     <link rel="stylesheet" type="text/css" media="screen"
           href="/static/css/font-awesome/css/font-awesome.min.css"
     />
@@ -28,7 +29,6 @@
     <link rel="stylesheet" th:href="@{/static/css/page/model_item_info.css}">
     <link rel="stylesheet" type="text/css" href="/static/css/page/user_space.css">
     <link rel="stylesheet" href="/static/css/common/newSideBar.css">
-
 
     <style>
         .btn-block {
@@ -264,13 +264,13 @@
                                                                                                     label="Discoverable"></el-radio-button>
                                                                                         </el-tooltip>
                                                                                         <el-tooltip
-                                                                                                popper-class="fontsize-15"
-                                                                                                class="item"
-                                                                                                effect="light"
-                                                                                                content="Can NOT be retrieved and shared, can ONLY be edited by creator."
-                                                                                                placement="top">
-                                                                                            <el-radio-button
-                                                                                                    label="Private"></el-radio-button>
+                                                                                            popper-class="fontsize-15"
+                                                                                            class="item"
+                                                                                            effect="light"
+                                                                                            content="Can NOT be retrieved and shared, can ONLY be edited by creator."
+                                                                                            placement="top">
+                                                                                        <el-radio-button
+                                                                                                label="Private"></el-radio-button>
                                                                                         </el-tooltip>
 
                                                                                     </el-radio-group>
@@ -526,27 +526,27 @@
                                                                         </el-collapse-transition>
                                                                         <div class="clearfix" style="height:400px;overflow: auto;">
                                                                             <el-table
-                                                                                :data="localizationList"
-                                                                                :show-header="false"
+                                                                                    :data="localizationList"
+                                                                                    :show-header="false"
                                                                             >
-                                                                            <el-table-column>
-                                                                                <template slot-scope="props">
-                                                                                    <el-tooltip class="item" effect="light" :content="props.row.localCode" placement="top">
-                                                                                        <el-button
-                                                                                                :class="{localizationSelected:props.row.selected}"
-                                                                                                style="width:90%;float:left;"
-                                                                                                @click="changeLocalization(props.row)">
-                                                                                            {{props.row.localName}}
-                                                                                        </el-button>
-                                                                                    </el-tooltip>
+                                                                                <el-table-column>
+                                                                                    <template slot-scope="props">
+                                                                                        <el-tooltip class="item" effect="light" :content="props.row.localCode" placement="top">
+                                                                                            <el-button
+                                                                                                    :class="{localizationSelected:props.row.selected}"
+                                                                                                    style="width:90%;float:left;"
+                                                                                                    @click="changeLocalization(props.row)">
+                                                                                                {{props.row.localName}}
+                                                                                            </el-button>
+                                                                                        </el-tooltip>
 
                                                                                         <el-button style="width:10%;" @click="deleteLocalization(props.row)"><i
                                                                                                 class="el-icon-close"></i>
                                                                                         </el-button>
 
-                                                                                </template>
-                                                                            </el-table-column>
-                                                                        </el-table>
+                                                                                    </template>
+                                                                                </el-table-column>
+                                                                            </el-table>
                                                                         </div>
                                                                     </el-card>
                                                                     <el-card style="width: 70%;">
@@ -592,6 +592,7 @@
         </template>
 
     </div>
+</div>
 </body>
 
 <script src="/static/js/common/jquery-3.3.1.min.js"></script>

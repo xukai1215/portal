@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/XSL/Transform">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>
+    <template id="imgUpload" th:fragment="imgUpload">
+        <div>
+            <div class="flexJustAround flexAlignCenter editImageContainer" style="">
+                <div class="containerWithDashed">
+                    <div id="imgChange" @click="imgChangeClick">
+                        <i class="fa fa-upload fa-3x"></i>
+                    </div>
+                </div>
+                <input id="imgFile" type="file"
+                       style="display: none"
+                       accept="image/*"/>
+                <!--                            <div class="innerBorderCol"></div>-->
+                <div class="imgOverview" style="width: 40%">
+                    <p style="text-align: center;color: #595959;font-size: 15px">overview</p>
+                    <div class="flexJustAround flexAlignCenter flexCol" style="background-color: inherit;">
+                        <div class="circlePhotoFrame flexCenter">
+                            <canvas id="clipCanvas" ref="clipCanvas"></canvas>
+                        </div>
+                        <!--                                    <div class="circlePhotoFrameShade">-->
+                        <!--                                    </div>-->
+                        <!--                                    <img id="imgShowBig" style="width: 145px;height: 145px"-->
+                        <!--                                         src="../static/img/icon/default.png">-->
+                        <div class="dragBar" style="margin-top:15px "
+                             :style="dragReady?'background-color: #cfe5fa':'background-color: #d9d9d9'">
+                            <div class="dragBlock"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+</div>
+</body>
+</html>

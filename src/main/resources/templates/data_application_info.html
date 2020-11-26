@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${dataApplicationInfo.name}+' | Data Application | OpenGMS'">Data Application | OpenGMS</title>
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+
+    <link rel="stylesheet" th:href="@{/static/element-ui/theme-chalk/index.css}">
+    <link rel="stylesheet" th:href="@{/static/css/base/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/static/css/font-awesome/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{/static/css/base/style.css}">
+    <link rel="stylesheet" th:href="@{/static/css/base/universal.css}">
+    <link rel="stylesheet" th:href="@{/static/css/base/itemInfo.css}">
+    <link rel="stylesheet" th:href="@{/static/css/components/file-manager.css}">
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/jquery-steps.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/jquery.tag-editor.css"/>
+    <link rel="stylesheet" th:href="@{/static/css/page/model_item_info.css}">
+    <link rel="stylesheet" type="text/css" href="/static/js/mxGraph/css/common.css">
+    <link rel="stylesheet" href="/static/css/common/userModule.css">
+    <link rel="stylesheet" href="/static/css/common/wzhStyle.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css"/>
+
+    <style>
+        .img img {
+            width: 90px;
+            height: 90px;
+        }
+
+        .el-dialog__header {
+            /*padding: 0px;*/
+        }
+
+        .mxWindowPane {
+            /*overflow-x: hidden !important;*/
+            overflow: unset !important;
+        }
+
+    </style>
+</head>
+<body>
+<div id="app">
+    <div th:replace="fragments/navbar :: unlog"></div>
+
+    <div class="clearfix" style="margin:40px 0px;height: auto;">
+
+        <div class="left-panel el-col">
+            <div class="detail">
+                <div class="detail_title">
+                    <i th:if="${dataApplicationInfo.status=='Public'}" class="el-icon-unlock public fontsize-2em pull-right"></i>
+                    <i th:if="${dataApplicationInfo.status=='Discoverable'}" class="el-icon-unlock discoverable fontsize-2em pull-right"></i>
+                    <i th:if="${dataApplicationInfo.status=='Private'}" class="el-icon-lock private fontsize-2em pull-right"></i>
+                    <!--</el-tooltip>-->
+                    <h2 th:utext="${dataApplicationInfo.name}"
+                        style="display: inline-block;margin:0px 10px;word-wrap:break-word; word-break:break-all;"></h2>
+
+                    <a href="javascript:void(0);" th:if="${dataApplicationInfo.status=='Public'&&history!=true}" class='fa fa-pencil fa-2x' aria-hidden='true'
+                       @click="edit"></a>
+                    <!--<el-tooltip popper-class="fontsize-15" content="There is another version haven't been reviewed, you can edit it later or contact us." effect="light" placement="left">-->
+                        <!--<li th:if="${dataApplicationInfo.status=='Public'&&history!=true}" class='fa fa-pencil fa-2x' style="color:#cccccc" aria-hidden='true'></li>-->
+                    <!--</el-tooltip>-->
+
+                    <!--<a href="javascript:void(0)" class='fa fa-star-o fa-2x pull-right' aria-hidden='true'></a>-->
+                </div>
+                <div class="detail_overview">
+                    <div  class="img">
+                        <!--<img th:case="''" src="/static/img/model/calcModel.png">-->
+                        <!--<img src="/static/img/model/logical.png">-->
+                        <!--<img th:case="*" th:src="'/static/img'+${dataApplicationInfo.image}">-->
+                        <div th:unless="${dataApplicationInfo.image}">
+                            <avatar th:username="${dataApplicationInfo.name}" :size="90" :rounded="false"></avatar>
+                        </div>
+                        <div th:if="${dataApplicationInfo.image}">
+                            <img th:src="'/static'+${dataApplicationInfo.image}" class="image">
+                        </div>
+                    </div>
+                    <div class="info" style="padding-top:0px">
+                        <p th:text="${dataApplicationInfo.description}"></p>
+                        <div class="tags">
+                            <span class="label label-warning">
+                                Data Application
+                            </span>
+                            <span th:if="${dataApplicationInfo.contentType=='Code'}" class="label label-info"
+                                  style="margin-left: 10px">Source Code</span>
+                            <span th:if="${dataApplicationInfo.contentType=='Library'}" class="label label-info"
+                                  style="margin-left: 10px">Library</span>
+                            <span th:if="${dataApplicationInfo.contentType=='Service URL'}" class="label label-info"
+                                  style="margin-left: 10px">Service</span>
+                            <span th:if="${dataApplicationInfo.contentType=='Link'}" class="label label-info"
+                                  style="margin-left: 10px">dataApplicationInfo</span>
+                        </div>
+                    </div>
+
+                    <!--<div th:if="${history!=true}" class="detail_option">-->
+                        <!--&lt;!&ndash;<a href="javascript:void(0)" class="fa fa-share-square-o" aria-hidden="true"></a>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<div th:utext="'&nbsp&nbsp'+${modelInfo.shareCount}">&nbsp&nbsp37</div>&ndash;&gt;-->
+                        <!--<span th:if="${dataApplicationInfo.contentType=='Package'}">-->
+                            <!--<button th:unless="${modelInfo.deploy==true}" class="btn btn-lg btn-info" type="button"-->
+                                    <!--@click="dialogVisible = true">Deploy-->
+                            <!--</button>-->
+                            <!--<button th:if="${modelInfo.deploy==true}" class="btn btn-lg btn-success" type="button"-->
+                                    <!--@click="invoke()">-->
+                                <!--Invoke-->
+                            <!--</button>-->
+                        <!--</span>-->
+
+                        <!--<a href="javascript:void(0)" class="fa fa-eye " aria-hidden="true"></a>-->
+                        <!--<div th:utext="'&nbsp&nbsp'+${modelInfo.viewCount}">&nbsp&nbsp341</div>-->
+                    <!--</div>-->
+
+                </div>
+
+            </div>
+
+            <div id="Contributor0" class="detail_block minScreen">
+                <div class="block_head">
+                    <div class="head_text" style="padding-left: 10px;">
+                        <h4 th:if="${history!=true}">Contributor</h4>
+                        <h4 th:if="${history==true}">Modifier</h4>
+                    </div>
+                </div>
+                <div class="block_content">
+                    <div class="el-row"
+                         style="margin-bottom: 3px;height: 40px; display: flex; justify-content: center; align-items: center;">
+                        <div class="el-col">
+                            <img th:src="${user.image}==''?'/static/img/icon/default.png':${user.image}"
+                                 class="round_icon" style="width:40px;height: 40px;float:left;">
+                        </div>
+                        <div class="el-col">
+                            <div class="pull-left" style="display: block;margin-left: 15px;">
+                                <a th:href="'/profile/'+${user.userId}"><h4 th:text="${user.name}" style="padding: 0;">Tom
+                                    Marvolo Riddle</h4></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="el-row">
+                        <div class="text-center">
+                            <h5 th:if="${history!=true}" th:text="'contributed at '+${date}">contributed at 2018-7-13
+                                14:32:18 </h5>
+                            <h5 th:if="${history==true}" th:text="'modified at '+${date}">modified at 2018-7-13
+                                14:32:18 </h5>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div id="Authorship0" class="detail_block minScreen"
+                 th:if="${dataApplicationInfo.authorship!=null&&#lists.size(dataApplicationInfo.authorship)!=0}">
+                <div class="block_head">
+                    <div class="head_text" style="padding-left: 10px;">
+                        <h4>Authorship</h4>
+                    </div>
+                </div>
+                <div class="block_content text-center" style="padding-left:10px">
+
+                    <div style="text-align: left;" th:each="author,key:${dataApplicationInfo.authorship}">
+                        <span role="button" tabindex="0" th:class="${key.index==0?'ab':'ab transform180'}" style="float: right;"><a
+                                data-toggle="collapse" th:href="'#authorshipPhone'+${key.index}" class="detail-toggle"
+                                aria-expanded="true"><i class="fa fa-caret-up" style="font-size: 21px"></i></a></span>
+                        <li class="NavHead" style="font-size: 16px;" th:text="${author.name}">NNU_Group</li>
+                        <div th:id="'authorshipPhone'+${key.index}" class="panel-collapse"
+                             th:class="${key.index==0?'in':'collapse'}" aria-expanded="true"
+                             style="">
+                            <div class="panel-body" style="padding-left: 20px; padding-top: 7px; padding-right: 0px;">
+                                <dl>
+                                    <dt th:if="${author.ins!=''}">Affiliation: &nbsp</dt>
+                                    <dd th:if="${author.ins!=''}" th:text="${author.ins}"></dd>
+                                    <dt th:if="${author.email!=''}">Email: &nbsp</dt>
+                                    <dd th:if="${author.email!=''}" th:text="${author.email}">njgis@163.com</dd>
+                                    <dt th:if="${author.homepage!=''}">Homepage: &nbsp</dt>
+                                    <dd th:if="${author.homepage!=''}"><a th:href="${author.homepage}" target="_blank">View</a>
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="Resource" class="detail_block" style="padding: 10px 20px 0 0;"
+                 th:if="${(dataApplicationInfo.contentType=='Code'||dataApplicationInfo.contentType=='Library')&&(dataApplicationInfo.resources!=null&&#lists.size(dataApplicationInfo.resources)>0)}">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Resource</h4>
+                    </div>
+                </div>
+                <div class="block_content" style="margin-right: 0;">
+
+                    <!--<div class="el-card is-always-shadow">&lt;!&ndash;&ndash;&gt;-->
+                    <!--<div class="el-card__body" style="padding: 9px;"><span><i class="el-icon-document"></i>&nbsp;&nbsp; contents</span>-->
+                    <!--</div>-->
+                    <!--</div>-->
+
+                    <div class="el-card filecontent is-always-shadow" id="browsercont"
+                         style=" overflow-y: auto;">
+
+                        <!--</el-row>-->
+                        <div class="el-card dataitemisol is-never-shadow"
+                             th:each="data,key:${resources}"
+                             th:title="${data.name}" shadow="never" th:id="${key.index}"
+                             th:key="${key.index}" @click.native="getid(id)"
+                             style="width: 150px;"><!---->
+                            <a target="_blank"
+                               th:href="${loadPath}+'/computableModel/'+${dataApplicationInfo.contentType}+${data.path}"
+                               style="color:black">
+                                <div class="el-card__body">
+                                    <div class="el-row">
+                                        <div class="el-col el-col-6">&nbsp;</div>
+                                        <div class="el-col el-col-12">
+                                            <img
+                                                    th:src="'/static/img/filebrowser/'+${data.suffix}+'.svg'"
+                                                    onerror="this.onerror='';src='/static/img/filebrowser/unknow.svg'"
+                                                    style="width: 100%;">
+                                        </div>
+                                        <div class="el-col el-col-6">&nbsp;</div>
+                                    </div>
+                                    <div class="el-row" style="height: 45px;">
+                                        <div class="el-col el-col-2">&nbsp;</div>
+                                        <div class="el-col el-col-20"><p th:text="${data.name}"
+                                                                         style="overflow: hidden;overflow-wrap: break-word; word-break: break-all; text-align: center;display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;line-height: 1.5">
+                                        </p></div>
+                                        <div class="el-col el-col-2">&nbsp;</div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+
+                    </div>
+
+
+                    <el-card class="browsermenu">
+                        <el-button id="dbtn" icon="el-icon-download" @click="downloaddata()" type="text">download
+                        </el-button>
+                        <br>
+                        <el-button id="sbtn" icon="el-icon-share" @click="share" type="text">share</el-button>
+                    </el-card>
+                    <!--refresh 白板刷新和全选功能，待进一步完善-->
+
+                    <!--<el-card class="browser">-->
+                    <!--<el-button icon="el-icon-refresh" type="text">refresh</el-button><br>-->
+                    <!--<el-button icon="el-icon-check" type="text">selectAll</el-button>-->
+                    <!--</el-card>-->
+
+
+                </div>
+            </div>
+
+            <div id="link" class="detail_block"
+                 th:if="${dataApplicationInfo.contentType=='Link'||(dataApplicationInfo.contentType=='Service')}">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Link</h4>
+                    </div>
+                </div>
+                <div class="block_content flex">
+                    <div id="link-text" class="width:100%">
+                        <a th:href="${dataApplicationInfo.url}" th:text="${dataApplicationInfo.url}" target="_blank">
+                            https://geomodeling.njnu.edu.cn/conceptualmodel/4e028983-c8c0-4d98-86cd-85fc16a00d21
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!--<div id="MDL" class="detail_block" th:if="${mdlJson}!=null">-->
+                <!--<div class="block_head">-->
+                    <!--<div class="head_text">-->
+                        <!--<h4>MDL</h4>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<el-tabs class="block_content" v-model="activeName" type="border-card" stretch="true">-->
+                    <!--<el-tab-pane label="AttributeSet" name="AttributeSet">-->
+                        <!--<table class="table table-bordered text-center">-->
+                            <!--<colgroup>-->
+                                <!--<col class="col1" style="width: 30%">-->
+                                <!--<col class="col2">-->
+                            <!--</colgroup>-->
+                            <!--<tbody>-->
+                            <!--<tr>-->
+                                <!--<td style="font-weight: bold;">Style</td>-->
+                                <!--<td th:text="${dataApplicationInfo.mdlJson.ModelClass[0].style}"></td>-->
+                            <!--</tr>-->
+                            <!--<tr th:each="category,key:${modelInfo.mdlJson.ModelClass[0].AttributeSet[0].Categories[0].Category}">-->
+                                <!--<td style="font-weight: bold;" th:if="${key.index}==0"-->
+                                    <!--th:attr="rowspan=${#lists.size(modelInfo.mdlJson.ModelClass[0].AttributeSet[0].Categories[0].Category)}">-->
+                                    <!--Categories-->
+                                <!--</td>-->
+                                <!--<td th:text="${category.principle}+' / '+${category.path}"></td>-->
+                            <!--</tr>-->
+                            <!--</tbody>-->
+                        <!--</table>-->
+
+                        <!--<table class="table table-bordered text-center"-->
+                               <!--th:each="local,key:${modelInfo.mdlJson.ModelClass[0].AttributeSet[0].LocalAttributes[0].LocalAttribute}">-->
+                            <!--<colgroup>-->
+                                <!--<col class="col1" style="width: 30%">-->
+                                <!--<col class="col2">-->
+                                <!--<col class="col3">-->
+                            <!--</colgroup>-->
+                            <!--<tbody>-->
+                            <!--<tr th:if="${local.local!=''}">-->
+                                <!--<td style="font-weight: bold;">Language</td>-->
+                                <!--<td colspan="2" th:text="${local.local}"></td>-->
+                            <!--</tr>-->
+                            <!--<tr th:if="${local.localName!=''}">-->
+                                <!--<td style="font-weight: bold;">Name</td>-->
+                                <!--<td colspan="2" th:text="${local.localName}"></td>-->
+                            <!--</tr>-->
+                            <!--<tr th:if="${local.Keywords!=''}">-->
+                                <!--<td style="font-weight: bold;">Keywords</td>-->
+                                <!--<td colspan="2" th:text="${local.Keywords}"></td>-->
+                            <!--</tr>-->
+                            <!--<tr th:if="${local.Abstract!=''}">-->
+                                <!--<td style="font-weight: bold;">Abstract</td>-->
+                                <!--<td colspan="2" th:text="${local.Abstract}"></td>-->
+                            <!--</tr>-->
+                            <!--<tr th:if="${local.wiki!=''}">-->
+                                <!--<td style="font-weight: bold;">Wiki</td>-->
+                                <!--<td colspan="2" th:text="${local.wiki}"></td>-->
+                            <!--</tr>-->
+                            <!--&lt;!&ndash;<div th:if="${modelInfo.mdlJson.ModelClass[0].AttributeSet[0].LocalAttributes[0].LocalAttribute[key.index].Mechanism}!=null">&ndash;&gt;-->
+                            <!--&lt;!&ndash;<tr th:each="mechanism,key:${local.Mechanism}">&ndash;&gt;-->
+                            <!--&lt;!&ndash;<td th:if="${key.index}==0" th:attr="rowspan=${#lists.size(local.Mechanism)}">Mechanism</td>&ndash;&gt;-->
+                            <!--&lt;!&ndash;<td th:text="${mechanism.name}"></td>&ndash;&gt;-->
+                            <!--&lt;!&ndash;<td th:text="${mechanism.value}"></td>&ndash;&gt;-->
+                            <!--&lt;!&ndash;</tr>&ndash;&gt;-->
+                            <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                            <!--</tbody>-->
+                        <!--</table>-->
+                    <!--</el-tab-pane>-->
+                    <!--<el-tab-pane label="Behavior" name="Behavior">-->
+                        <!--<el-button style="position: absolute; z-index: 900" @click="showMxGraph()"> Show Detail-->
+                        <!--</el-button>-->
+                        <!--<div id="mxGraphContainer"></div>-->
+                    <!--</el-tab-pane>-->
+                    <!--<el-tab-pane label="Runtime" name="Runtime">-->
+                        <!--<table id="runtime_table" class="table table-bordered text-center">-->
+                            <!--<thead>-->
+                            <!--<tr>-->
+                                <!--<th class="text-center">Type</th>-->
+                                <!--<th class="text-center">Property</th>-->
+                                <!--<th class="text-center">Value</th>-->
+                            <!--</tr>-->
+                            <!--</thead>-->
+                            <!--<tbody>-->
+                            <!--<div th:if="${modelInfo.mdlJson.ModelClass[0].Runtime[0].HardwareConfigures}!=''">-->
+                                <!--<tr th:each="hardware,key:${modelInfo.mdlJson.ModelClass[0].Runtime[0].HardwareConfigures[0].Add}">-->
+                                    <!--<td th:if="${key.index}==0" th:attr="rowspan=${key.size}">HardwareConfigures</td>-->
+                                    <!--<td th:text="${hardware.key}"></td>-->
+                                    <!--<td th:text="${hardware.value}"></td>-->
+                                <!--</tr>-->
+                            <!--</div>-->
+                            <!--<div th:if="${modelInfo.mdlJson.ModelClass[0].Runtime[0].SoftwareConfigures}!=''">-->
+                                <!--<tr th:each="software,key:${modelInfo.mdlJson.ModelClass[0].Runtime[0].SoftwareConfigures[0].Add}">-->
+                                    <!--<td th:if="${key.index}==0" th:attr="rowspan=${key.size}">SoftwareConfigures</td>-->
+                                    <!--<td th:text="${software.key}"></td>-->
+                                    <!--<td th:text="${software.value}"></td>-->
+                                <!--</tr>-->
+                            <!--</div>-->
+                            <!--<div th:if="${modelInfo.mdlJson.ModelClass[0].Runtime[0].Assemblies}!=''">-->
+                                <!--<tr th:each="assembly,key:${modelInfo.mdlJson.ModelClass[0].Runtime[0].Assemblies[0].Assembly}">-->
+                                    <!--<td th:if="${key.index}==0" th:attr="rowspan=${key.size}">Assemblies</td>-->
+                                    <!--<td th:text="${assembly.name}"></td>-->
+                                    <!--<td th:text="${assembly.path}"></td>-->
+                                <!--</tr>-->
+                            <!--</div>-->
+                            <!--<div th:if="${modelInfo.mdlJson.ModelClass[0].Runtime[0].SupportiveResources}!=''">-->
+                                <!--<tr th:each="support,key:${modelInfo.mdlJson.ModelClass[0].Runtime[0].SupportiveResources[0].Add}">-->
+                                    <!--<td th:if="${key.index}==0" th:attr="rowspan=${key.size}">SupportiveResources</td>-->
+                                    <!--<td th:text="${support.type}"></td>-->
+                                    <!--<td th:text="${support.name}"></td>-->
+                                <!--</tr>-->
+                            <!--</div>-->
+
+
+                            <!--</tbody>-->
+                        <!--</table>-->
+                    <!--</el-tab-pane>-->
+                <!--</el-tabs>-->
+            <!--</div>-->
+
+            <div id="description" class="detail_block" th:if="${dataApplicationInfo.detail!=null&&dataApplicationInfo.detail!=''}">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Detailed Description</h4>
+                    </div>
+                </div>
+                <div class="block_content">
+                    <div th:utext="${dataApplicationInfo.detail}" id="detail" class="detailIntroducePanel">
+                    </div>
+                </div>
+                <div class="fullPaper text-center hide">
+                    <a id="fullPaper" style="cursor:pointer;font-size:16px;">View Full Content<i
+                            class="fa fa-angle-down"
+                            style="margin-left: 10px;color:red;font-weight: bold"
+                            aria-hidden="true"></i></a>
+                </div>
+            </div>
+
+            <div id="cite" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>How to cite</h4>
+                    </div>
+                </div>
+                <div class="block_content">
+                    <div id="cite-text" class="width:100%">
+                        <span th:if="${authorship!=''}"
+                              th:text="${authorship}+' ('+${year}+'). '+${dataApplicationInfo.name}+', Computable Model, OpenGMS, '"></span>
+                        <span th:if="${authorship==''}"
+                              th:text="${user.name}+' ('+${year}+'). '+${dataApplicationInfo.name}+', Computable Model, OpenGMS, '">
+                            Tom Marvolo Riddle.(2018).Integrated stand growth model data,
+                            </span>
+                        <a style="word-break:break-all;"
+                           th:href="'https://geomodeling.njnu.edu.cn/computableModel/'+${dataApplicationInfo.oid}"
+                           th:text="'https://geomodeling.njnu.edu.cn/computableModel/'+${dataApplicationInfo.oid}">
+                            https://geomodeling.njnu.edu.cn/computableModel/4e028983-c8c0-4d98-86cd-85fc16a00d21
+                        </a>
+                    </div>
+                    <div id="copy" class="btn btn-info">
+                        Copy
+                    </div>
+                </div>
+            </div>
+
+            <div id="Modifier0" class="detail_block minScreen"
+                 th:if="${history!=true}">
+                <div class="block_head">
+                    <div class="head_text" style="padding-left: 10px;">
+                        <h4>History</h4>
+                    </div>
+                </div>
+                <div class="block_content text-center" style="padding-left:10px">
+
+                    <div style="text-align: left;">
+
+                        <div class="panel-body" style="padding-left: 0px; padding-top: 7px; padding-right: 0px;">
+                            <dl>
+                                <dt>Last modify time :&nbsp</dt>
+                                <dd th:text="${lastModifyTime}"></dd>
+                            </dl>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div id="QR0" class="detail_block minScreen">
+                <div class="block_head">
+                    <div class="head_text" style="padding-left: 10px;">
+                        <h4>QR Code</h4>
+                    </div>
+                </div>
+                <div class="block_content">
+
+                    <div class="qrcode" style="width:200px;height:200px;margin:0 auto"></div>
+
+                </div>
+            </div>
+
+            <div id="comments" class="detail_block">
+                <template th:replace="fragments/comments :: comments"></template>
+            </div>
+        </div>
+        <div class="right-panel el-col" style="border-left: #d2d2d2 solid 1px;margin-left:-1px">
+            <div id="classification0" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Category Tags</h4>
+                    </div>
+                </div>
+                <div class="block_content" style="margin-bottom:10px;">
+
+                    <!--<el-tag type="success"  v-for="iter in dataCategory" @click="clickDataItemInfo(iter.id)" style="margin-left: 10px;font-weight: bold;color: #3396ef"> {{iter.cateContent}}</el-tag>-->
+
+                    <el-tag type="success" th:each="classS:${classifications}" th:text="${classS}"
+                            style="margin: 0 10px 10px 0;font-weight: bold;color: #3396ef"></el-tag>
+
+                </div>
+            </div>
+
+            <div id="Contributor" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text" style="padding-left: 10px;">
+                        <h4 th:if="${history!=true}">Contributor</h4>
+                        <h4 th:if="${history==true}">Modifier</h4>
+                    </div>
+                </div>
+                <div class="block_content">
+                    <div class="el-row"
+                         style="margin-bottom: 3px;height: 40px; display: flex; justify-content: center; align-items: center;">
+                        <div class="el-col">
+                            <img th:src="${user.image}==''?'/static/img/icon/default.png':${user.image}"
+                                 class="round_icon" style="width:40px;height: 40px;float:left;">
+                        </div>
+                        <div class="el-col">
+                            <div class="pull-left" style="display: block;margin-left: 15px;">
+                                <a th:href="'/profile/'+${user.userId}"><h4 th:text="${user.name}" style="padding: 0;">Tom
+                                    Marvolo Riddle</h4></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="el-row">
+                        <div class="text-center">
+                            <h5 th:if="${history!=true}" th:text="'contributed at '+${date}">contributed at 2018-7-13
+                                14:32:18 </h5>
+                            <h5 th:if="${history==true}" th:text="'modified at '+${date}">modified at 2018-7-13
+                                14:32:18 </h5>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div id="Authorship" class="detail_block"
+                 th:if="${dataApplicationInfo.authorship!=null&&#lists.size(dataApplicationInfo.authorship)!=0}">
+                <div class="block_head">
+                    <div class="head_text" style="padding-left: 10px;">
+                        <h4>Authorship</h4>
+                    </div>
+                </div>
+                <div class="block_content text-center" style="padding-left:10px">
+
+                    <div style="text-align: left;" th:each="author,key:${dataApplicationInfo.authorship}">
+                        <span role="button" tabindex="0" th:class="${key.index==0?'ab':'ab transform180'}" style="float: right;"><a
+                                data-toggle="collapse" th:href="'#authorship'+${key.index}" class="detail-toggle"
+                                aria-expanded="true"><i class="fa fa-caret-up" style="font-size: 21px"></i></a></span>
+                        <li class="NavHead" style="font-size: 16px;" th:text="${author.name}">NNU_Group</li>
+                        <div th:id="'authorship'+${key.index}" class="panel-collapse"
+                             th:class="${key.index==0?'in':'collapse'}" aria-expanded="true"
+                             style="">
+                            <div class="panel-body" style="padding-left: 20px; padding-top: 7px; padding-right: 0px;">
+                                <dl>
+                                    <dt th:if="${author.ins!=''}">Affiliation: &nbsp</dt>
+                                    <dd th:if="${author.ins!=''}" th:text="${author.ins}"></dd>
+                                    <dt th:if="${author.email!=''}">Email: &nbsp</dt>
+                                    <dd th:if="${author.email!=''}" th:text="${author.email}">njgis@163.com</dd>
+                                    <dt th:if="${author.homepage!=''}">Homepage: &nbsp</dt>
+                                    <dd th:if="${author.homepage!=''}"><a th:href="${author.homepage}" target="_blank">View</a>
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="Modifier" class="detail_block"
+                 th:if="${history!=true}">
+                <div class="block_head">
+                    <div class="head_text" style="padding-left: 10px;">
+                        <h4>History</h4>
+                    </div>
+                </div>
+                <div class="block_content text-center" style="padding-left:10px">
+
+                    <div style="text-align: left;">
+
+                        <div class="panel-body" style="padding-left: 0px; padding-top: 7px; padding-right: 0px;">
+                            <dl>
+                                <!--<dt>Last modifier :&nbsp</dt>-->
+                                <!--<dd><a th:text="${lastModifier.name}" th:href="${'/profile/'+lastModifier.userId}"-->
+                                       <!--target="_blank"></a></dd>-->
+                                <dt>Last modify time :&nbsp</dt>
+                                <dd th:text="${lastModifyTime}"></dd>
+                                <!--<dt>Modify times :&nbsp</dt>-->
+                                <!--<dd><span th:text="${#lists.size(dataApplicationInfo.versions)+'&nbsp'}"></span><a-->
+                                        <!--th:href="'/version/historyList/computableModel/'+${dataApplicationInfo.oid}"-->
+                                        <!--target="_blank">View-->
+                                    <!--History</a></dd>-->
+                            </dl>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div id="QR" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text" style="padding-left: 10px;">
+                        <h4>QR Code</h4>
+                    </div>
+                </div>
+                <div class="block_content">
+
+                    <div class="qrcode" style="width:200px;height:200px;margin:0 auto"></div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div th:if="${history==true}"
+             style="pointer-events:none;position: absolute;top:62px;bottom: 0;left: 0;right: 0;background-image: url('/static/img/historyBackground.png')"></div>
+
+    </div>
+
+    <!-- edit -->
+    <!--<el-dialog title="Edit Computable Model" class="responseDialog" :visible.sync="editComputableModelDialog" width="65%">-->
+        <!--<edit-computable-model-module :model-edit-oid="modelOid"></edit-computable-model-module>-->
+    <!--</el-dialog>-->
+
+    <div th:replace="fragments/footer :: footer"></div>
+
+</div>
+<!--<template th:replace="fragments/editComputableModelModule :: editComputableModelModule"></template>-->
+
+</body>
+
+<script th:inline="javascript">
+    var Behavior = [[${behavior}]];
+    console.log([[${mdlJson}]])
+</script>
+
+<script src="/static/js/common/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="/static/js/common/jquery.tag-editor.js"></script>
+<script type="text/javascript" src="/static/js/common/jquery-steps.js"></script>
+<script type="text/javascript" src="/static/iCheck/jquery.icheck.min.js"></script>
+<script src="/static/js/common/md5.js"></script>
+<script src="/static/js/tinymce_5.3.2/tinymce/js/tinymce/tinymce.min.js"></script>
+<script src="/static/js/common/vue.min.js"></script>
+<script src="/static/js/common/axios.min.js"></script>
+<script src="/static/element-ui/index.js"></script>
+<script src="/static/js/common/qrcode.min.js"></script>
+
+<script src="/static/js/modules/editComputableModelModule.js"></script>
+<script src="/static/js/common/loadUser.js"></script>
+<script src="/static/js/common/copy.js"></script>
+<script src="/static/js/common/bootstrap.min.js"></script>
+<script src="/static/element-ui/umd/locale/en.js"></script>
+<script src="/static/js/common/navbar.js"></script>
+<script src="/static/js/common/vue-avatar.min.js"></script>
+
+<script>
+    mxBasePath = "/static/js/mxGraph";
+</script>
+
+<script type="text/javascript" src="/static/js/mxGraph/js/mxClient.js"></script>
+<script type="text/javascript" src="/static/js/mxGraph/js/ogmsDiagram.js"></script>
+
+<script src="/static/js/page/data_application_info.js"></script>
+<script src="../static/js/common/navbar.js"></script>
+
+</html>

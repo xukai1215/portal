@@ -16,7 +16,7 @@ public class Theme extends Item {
     String creator_name;
     String creator_oid;
     String themename;
-    String image;
+    String image;//存储图片路径，dto中uploadImage存储的是base64数据
     String tabledata;
     //修改confirm字段
     String Info_edit;

@@ -279,6 +279,25 @@
             </div>
 
 
+            <div id="classification22" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Classification(s)2</h4>
+                    </div>
+                </div>
+                <div class="block_content" style="margin-top:20px;">
+                    <div th:each="classS:${classifications22}">
+                        <span style="font-size:24px;margin-right: 8px">●</span>
+                        <el-breadcrumb separator-class="el-icon-arrow-right">
+                            <el-breadcrumb-item th:each="class:${classS}" th:text="${class}" :to="{ path: '/' }">Earth
+                                System Classification
+                            </el-breadcrumb-item>
+                        </el-breadcrumb>
+                    </div>
+
+                </div>
+            </div>
+
             <div id="description2" th:if="${detail2!=''}" class="detail_block">
                 <div class="block_head">
                     <div class="head_text">

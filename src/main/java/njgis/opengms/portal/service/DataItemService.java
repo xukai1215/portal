@@ -3,6 +3,7 @@ package njgis.opengms.portal.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import njgis.opengms.portal.PortalApplication;
 import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.dto.categorys.CategoryAddDTO;
@@ -15,20 +16,34 @@ import njgis.opengms.portal.entity.support.DataMeta;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.ResultUtils;
+import njgis.opengms.portal.utils.Utils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
+import sun.misc.BASE64Encoder;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.SocketAddress;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @ClassName DataItemService
@@ -38,6 +53,8 @@ import java.util.*;
  * @Version 1.0.0
  */
 @Service
+@Slf4j
+@Component
 public class DataItemService {
     @Autowired
     DataItemDao dataItemDao;
@@ -54,8 +71,32 @@ public class DataItemService {
     @Autowired
     UserDao userDao;
 
+    @Autowired
+    DataItemVersionDao dataItemVersionDao;
+
+    @Autowired
+    DistributedNodeDao distributedNodeDao;
+
+    @Autowired
+    DataCategorysDao dataCategorysDao;
+
+    @Autowired
+    DataItemNewDao dataItemNewDao;
+
+    @Autowired
+    DataHubsDao dataHubsDao;
+
+    @Autowired
+    DataHubsVersionDao dataHubsVersionDao;
+
+    @Autowired
+    UserService userService;
+
     @Value("${htmlLoadPath}")
     private String htmlLoadPath;
+
+    @Value("${resourcePath}")
+    private String resourcePath;
 
     @Value(value = "Public,Discoverable")
     private List<String> itemStatusVisible;
@@ -73,6 +114,187 @@ public class DataItemService {
         dataItemDao.save(dataItem);
     }
 
+    public JSONObject updateDataItem(DataItemUpdateDTO dataItemUpdateDTO, String oid){
+        JSONObject result = new JSONObject();
+        DataItem dataItem = dataItemDao.findFirstById(dataItemUpdateDTO.getDataItemId());
+
+        String author = dataItem.getAuthor();
+        Date now = new Date();
+        if (!dataItem.isLock()){
+            if (author.equals(oid)){
+                //更新数据类下的数据条目
+                List<String> classifications = dataItem.getClassifications();
+                //删除类与dataItem的绑定
+                for (String classification : classifications){
+                    DataCategorys dataCategorys = new DataCategorys();
+                    dataCategorys = dataCategorysDao.findFirstById(classification);
+                    for (String dataItem1 : dataCategorys.getDataRepository()){
+                        if (dataItem1.equals(dataItem.getId())){
+                            dataCategorys.getDataRepository().remove(dataItem1);
+                            dataCategorysDao.save(dataCategorys);
+                            break;
+                        }
+                    }
+                }
+
+                //重新绑定类即可
+                List<String> classification1 = dataItemUpdateDTO.getClassifications();
+                for (String classification : classification1){
+                    DataCategorys dataCategorys = new DataCategorys();
+                    dataCategorys = dataCategorysDao.findFirstById(classification);
+                    dataCategorys.getDataRepository().add(dataItem.getId());
+                    dataCategorysDao.save(dataCategorys);
+                }
+
+                BeanUtils.copyProperties(dataItemUpdateDTO,dataItem);
+                String uploadImage = dataItemUpdateDTO.getUploadImage();
+                if (!uploadImage.contains("/dataItem/") && !uploadImage.equals("")){
+                    //删除旧图片
+                    File file = new File(resourcePath + dataItem.getImage());
+                    if (file.exists()&&file.isFile())
+                        file.delete();
+                    //添加新图片
+                    String path = "/dataItem/" + UUID.randomUUID().toString() + ".jpg";
+                    String imgStr = uploadImage.split(",")[1];
+                    Utils.base64StrToImage(imgStr, resourcePath + path);
+                    dataItem.setImage(path);
+                }
+                dataItem.setLastModifyTime(now);
+                dataItemDao.save(dataItem);
+                result.put("method", "update");
+                result.put("oid",dataItem.getId());
+                return result;
+            }else {
+                DataItemVersion dataItemVersion = new DataItemVersion();
+                BeanUtils.copyProperties(dataItemUpdateDTO,dataItemVersion,"id");
+
+                String uploadImage = dataItemUpdateDTO.getUploadImage();
+                if (uploadImage.equals("")){
+                    dataItemVersion.setImage("");
+                }else if (!uploadImage.contains("/dataItem/")&&!uploadImage.equals("")){
+                    String path = "/dataItem/" + UUID.randomUUID().toString() + ".jpg";
+                    String imgStr = uploadImage.split(",")[1];
+                    Utils.base64StrToImage(imgStr, resourcePath + path);
+                    dataItemVersion.setImage(path);
+                }else {
+                    String[] names = uploadImage.split("dataItem");
+                    dataItemVersion.setImage("/dataItem/"+names[1]);
+                }
+
+                dataItemVersion.setModifier(oid);
+                dataItemVersion.setVerStatus(0);
+
+                //todo  messageNum
+                User user = userDao.findFirstByOid(dataItem.getAuthor());
+                userService.messageNumPlusPlus(user.getUserName());
+
+                dataItemVersion.setModifyTime(new Date());
+                dataItemVersion.setCreator(author);
+                dataItemVersion.setOriginId(dataItem.getId());
+                dataItemVersion.setOid(UUID.randomUUID().toString());
+                dataItemVersionDao.insert(dataItemVersion);
+
+                dataItem.setLock(true);
+                dataItemDao.save(dataItem);
+                result.put("method", "version");
+                result.put("oid", dataItemVersion.getId());
+                return result;
+            }
+        } else {
+            return null;
+        }
+    }
+    public JSONObject updateDataHubs(DataItemUpdateDTO dataItemUpdateDTO, String oid){
+        JSONObject result = new JSONObject();
+        DataHubs dataHubs = dataHubsDao.findFirstById(dataItemUpdateDTO.getDataItemId());
+
+        String author = dataHubs.getAuthor();
+        Date now = new Date();
+        if (!dataHubs.isLock()){
+            if (author.equals(oid)){
+                //更新数据类下的数据条目
+                List<String> classifications = dataHubs.getClassifications();
+                //删除类与dataHubs的绑定
+                for (String classification : classifications){
+                    DataCategorys dataCategorys = new DataCategorys();
+                    dataCategorys = dataCategorysDao.findFirstById(classification);
+                    for (String dataHubs1 : dataCategorys.getDataHubs()){
+                        if (dataHubs1.equals(dataHubs.getId())){
+                            dataCategorys.getDataHubs().remove(dataHubs1);
+                            dataCategorysDao.save(dataCategorys);
+                            break;
+                        }
+                    }
+                }
+
+                //重新绑定类即可
+                List<String> classification1 = dataItemUpdateDTO.getClassifications();
+                for (String classification : classification1){
+                    DataCategorys dataCategorys = new DataCategorys();
+                    dataCategorys = dataCategorysDao.findFirstById(classification);
+                    dataCategorys.getDataHubs().add(dataHubs.getId());
+                    dataCategorysDao.save(dataCategorys);
+                }
+
+                BeanUtils.copyProperties(dataItemUpdateDTO,dataHubs);
+                String uploadImage = dataItemUpdateDTO.getUploadImage();
+                if (!uploadImage.contains("/dataItem/") && !uploadImage.equals("")){
+                    //删除旧图片
+                    File file = new File(resourcePath + dataHubs.getImage());
+                    if (file.exists()&&file.isFile())
+                        file.delete();
+                    //添加新图片
+                    String path = "/dataItem/" + UUID.randomUUID().toString() + ".jpg";
+                    String imgStr = uploadImage.split(",")[1];
+                    Utils.base64StrToImage(imgStr, resourcePath + path);
+                    dataHubs.setImage(path);
+                }
+                dataHubs.setLastModifyTime(now);
+                dataHubsDao.save(dataHubs);
+                result.put("method", "update");
+                result.put("oid",dataHubs.getId());
+                return result;
+            }else {
+                DataHubsVersion dataHubsVersion = new DataHubsVersion();
+                BeanUtils.copyProperties(dataItemUpdateDTO,dataHubsVersion,"id");
+
+                String uploadImage = dataItemUpdateDTO.getUploadImage();
+                if (uploadImage.equals("")){
+                    dataHubsVersion.setImage("");
+                }else if (!uploadImage.contains("/dataItem/")&&!uploadImage.equals("")){
+                    String path = "/dataItem/" + UUID.randomUUID().toString() + ".jpg";
+                    String imgStr = uploadImage.split(",")[1];
+                    Utils.base64StrToImage(imgStr, resourcePath + path);
+                    dataHubsVersion.setImage(path);
+                }else {
+                    String[] names = uploadImage.split("dataItem");
+                    dataHubsVersion.setImage("/dataItem/"+names[1]);
+                }
+
+                dataHubsVersion.setModifier(oid);
+                dataHubsVersion.setVerStatus(0);
+
+                //todo  messageNum
+                User user = userDao.findFirstByOid(dataHubs.getAuthor());
+                userService.messageNumPlusPlus(user.getUserName());
+
+                dataHubsVersion.setModifyTime(new Date());
+                dataHubsVersion.setCreator(author);
+                dataHubsVersion.setOriginId(dataHubs.getId());
+                dataHubsVersion.setOid(UUID.randomUUID().toString());
+                dataHubsVersionDao.insert(dataHubsVersion);
+
+                dataHubs.setLock(true);
+                dataHubsDao.save(dataHubs);
+                result.put("method", "version");
+                result.put("oid", dataHubsVersion.getId());
+                return result;
+            }
+        } else {
+            return null;
+        }
+    }
+
     public int delete(String id,String userOid) {
         //需要在catagory中删除此data item记录,以及在data item集合中删除本身
         DataItem data = new DataItem();
@@ -86,37 +308,16 @@ public class DataItemService {
         List<String> ids = new ArrayList<>();
         List<String> newids = new ArrayList<>();
 
-        String parid;
-
-        List<Categorys> p;
-
-        List<String> allDataItem;
+//        String parid;
+//
+//        List<DataCategorys> p;
+//
+//        List<String> allDataItem;
 
         cate = data.getClassifications();//获得该data item所在分类
-        //catagory中有两处要删，一处是所属的小类，一处是该小类所在大类中的“...all”中的记录
-        //先删除...all中记录
         for (int i = 0; i < cate.size(); i++) {
-            Categorys categorys = getCategoryById(cate.get(i));//data item所属类
-
-            parid = categorys.getParentCategory();//data item所属父类（大类）id
-            p = new ArrayList<>();
-            p = categoryDao.findAllByCategory("...All");//找到所有all的类
-
-            for (int k = 0; k < p.size(); k++) {//通过父类匹配到存在该data item的all，删除记录
-                if (p.get(k).getParentCategory().equals(parid)) {
-                    allDataItem = new ArrayList<>();
-                    allDataItem = delOneOfArrayList(p.get(k).getDataItem(), id);//返回删除后的data item集合
-
-                    p.get(k).setDataItem(allDataItem);//重新赋值
-
-                    categoryDao.save(p.get(k));
-
-                    break;
-                }
-            }
-
-            ids = categorys.getDataItem();
-
+            DataCategorys dataCategorys = getDataCategoryById(cate.get(i));//data item所属类
+            ids = dataCategorys.getDataRepository();
             //删除所属小类中的记录
             if (ids.size() > 0&&ids != null)
                 for (int j = 0; j < ids.size(); j++) {
@@ -126,11 +327,8 @@ public class DataItemService {
                     }
                 }
             //用户中心删除数控条目时，category库里同时删除
-            categorys.setDataItem(newids);
-            categoryDao.save(categorys);
-
-
-
+            dataCategorys.setDataRepository(newids);
+            dataCategorysDao.save(dataCategorys);
         }
 
         List<String> relatedModels = data.getRelatedModels();
@@ -141,8 +339,68 @@ public class DataItemService {
                 modelItemDao.save(modelItem);
             }
 
-
         dataItemDao.deleteById(id);
+        return 1;
+    }
+    public int deleteHubs(String id,String userOid) {
+        //需要在DataCategorys中删除此data hubs记录,以及在data hubs集合中删除本身
+        DataHubs data = new DataHubs();
+        data = getHubsById(id);
+
+        if(!data.getAuthor().equals(userOid))
+            return 2;
+
+        List<String> cate = new ArrayList<>();
+
+        List<String> ids = new ArrayList<>();
+        List<String> newids = new ArrayList<>();
+
+        String parid;
+
+        List<DataCategorys> p;
+
+        List<String> allDataItem;
+
+        cate = data.getClassifications();//获得该data item所在分类
+        for (int i = 0; i < cate.size(); i++) {
+            DataCategorys dataCategorys = getDataCategoryById(cate.get(i));//data item所属类
+
+//            parid = dataCategorys.getParentCategory();//data item所属父类（大类）id
+//            p = new ArrayList<>();
+////            p = dataCategorysDao.findAllByCategory("...All");//找到所有all的类
+//
+//            for (int k = 0; k < p.size(); k++) {//通过父类匹配到存在该data item的all，删除记录
+//                if (p.get(k).getParentCategory().equals(parid)) {
+//                    allDataItem = new ArrayList<>();
+//                    allDataItem = delOneOfArrayList(p.get(k).getDataItem(), id);//返回删除后的data item集合
+//                    p.get(k).setDataItem(allDataItem);//重新赋值
+////                    dataCategorysDao.save(p.get(k));
+//                    break;
+//                }
+//            }
+            ids = dataCategorys.getDataHubs();
+            //删除所属小类中的记录
+            if (ids.size() > 0&&ids != null)
+                for (int j = 0; j < ids.size(); j++) {
+                    if (ids.get(j).equals(id)) {
+                        newids = delOneOfArrayList(ids, id);
+                        break;
+                    }
+                }
+            //用户中心删除数控条目时，category库里同时删除
+            dataCategorys.setDataHubs(newids);
+            dataCategorysDao.save(dataCategorys);
+        }
+
+        List<String> relatedModels = data.getRelatedModels();
+        if (relatedModels!=null)
+            for (int i = 0; i < relatedModels.size(); i++) {
+                ModelItem modelItem = modelItemDao.findFirstByOid(relatedModels.get(i));
+                modelItem.getRelatedData().remove(id);
+                modelItemDao.save(modelItem);
+            }
+
+        dataHubsDao.deleteById(id);
         return 1;
     }
 
@@ -158,7 +416,6 @@ public class DataItemService {
         return st;
     }
 
-
     public DataItem getById(String id) {
 
 
@@ -172,7 +429,20 @@ public class DataItemService {
 
 
     }
+    //增加一个对dataHubs的查询
+    public DataHubs getHubsById(String id) {
 
+
+        return dataHubsDao.findById(id).orElseGet(() -> {
+
+            System.out.println("有人乱查数据库！！该ID不存在对象:" + id);
+
+            throw new MyException(ResultEnum.NO_OBJECT);
+
+        });
+
+
+    }
 
     public Categorys getCateId(String id) {
         return categoryDao.findById(id).orElseGet(() -> {
@@ -186,7 +456,6 @@ public class DataItemService {
 
     public ModelItem getModelById(String id) {
 
-
         return modelItemDao.findById(id).orElseGet(() -> {
 
             System.out.println("有人乱查数据库！！该ID不存在对象:" + id);
@@ -198,14 +467,11 @@ public class DataItemService {
 
     }
 
-
     long dataCount() {
         return dataItemDao.count();
     }
 
-
     public List<DataItem> generatehtmls(int page) {
-
 
 //        PageRequest pageRequest=new PageRequest(0,10);
         PageRequest pageRequest = new PageRequest(page, 10);
@@ -216,7 +482,6 @@ public class DataItemService {
         return alldata.getContent();
 
     }
-
 
     //用户拿到上传的所有条目
     public Page<DataItem> getUsersUploadData(String author, Integer page, Integer pagesize, Integer asc) {
@@ -231,6 +496,20 @@ public class DataItemService {
         Sort sort = new Sort(as ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
         Pageable pageable = PageRequest.of(page, pagesize, sort);
         return dataItemDao.findByAuthor(pageable, author);
+
+    }
+    public Page<DataHubs> getUsersUploadDataHubs(String author, Integer page, Integer pagesize, Integer asc) {
+
+        boolean as = false;
+        if (asc == 1) {
+            as = true;
+        } else {
+            as = false;
+        }
+
+        Sort sort = new Sort(as ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
+        Pageable pageable = PageRequest.of(page, pagesize, sort);
+        return dataHubsDao.findByAuthor(pageable, author);
 
     }
 
@@ -295,15 +574,53 @@ public class DataItemService {
 
 
     public DataItem insert(DataItemAddDTO dataItemAddDTO) {
+        //todo insert
         DataItem dataItem = new DataItem();
         BeanUtils.copyProperties(dataItemAddDTO, dataItem);
         Date now = new Date();
+        dataItem.setOid(UUID.randomUUID().toString());
         dataItem.setCreateTime(now);
+
+        //设置dataItem的图片path以及存储图片
+        String path = "/repository/dataItem/" + UUID.randomUUID().toString() + ".jpg";
+        String[] strs = dataItemAddDTO.getUploadImage().split(",");
+        if(strs.length > 1){
+            String imgStr = dataItemAddDTO.getUploadImage().split(",")[1];
+            Utils.base64StrToImage(imgStr, resourcePath + path);
+            dataItem.setImage(path);
+        } else {
+            dataItem.setImage("");
+        }
 
 //        dataItem.getComments().setCommentDate(now);
 
         dataItem.setLastModifyTime(now);
         return dataItemDao.insert(dataItem);
+    }
+    public DataItem insertHubs(DataItemAddDTO dataItemAddDTO) {
+        //todo insert
+        DataHubs dataHubs = new DataHubs();
+        BeanUtils.copyProperties(dataItemAddDTO, dataHubs);
+        Date now = new Date();
+        dataHubs.setOid(UUID.randomUUID().toString());
+        dataHubs.setCreateTime(now);
+        dataHubs.setTabType("hub");
+
+        //设置dataItem的图片path以及存储图片
+        String path = "/repository/dataItem/" + UUID.randomUUID().toString() + ".jpg";
+        String[] strs = dataItemAddDTO.getUploadImage().split(",");
+        if(strs.length > 1){
+            String imgStr = dataItemAddDTO.getUploadImage().split(",")[1];
+            Utils.base64StrToImage(imgStr, resourcePath + path);
+            dataHubs.setImage(path);
+        } else {
+            dataHubs.setImage("");
+        }
+
+//        dataItem.getComments().setCommentDate(now);
+
+        dataHubs.setLastModifyTime(now);
+        return dataHubsDao.insert(dataHubs);
     }
 
     public DataItem insertDistributeData(String id,String oid,String name,String date,String type,Boolean authority,String token,JSONObject meta){
@@ -472,22 +789,65 @@ public class DataItemService {
     }
 
     public JSONObject searchByName(DataItemFindDTO dataItemFindDTO,String userOid) {
-
         int page = dataItemFindDTO.getPage() - 1;
         int pageSize = dataItemFindDTO.getPageSize();
         String searchText = dataItemFindDTO.getSearchText();
+        String tabType= dataItemFindDTO.getTabType();
+        String pattern1 = "hub";
+        Pattern p1 = Pattern.compile(pattern1);
+        Matcher m1 = p1.matcher(tabType);
+
+        String pattern2 = "repository";
+        Pattern p2 = Pattern.compile(pattern2);
+        Matcher m2 = p2.matcher(tabType);
+        //正则匹配tabType
+        boolean isMatch1 = m1.find();
+        boolean isMatch2 = m2.find();
+        if (isMatch1){
+            tabType = "hub";
+        }
+        if (isMatch2){
+            tabType = "repository";
+        }
 
         Sort sort = new Sort(dataItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
         Pageable pageable = PageRequest.of(page, pageSize, sort);
-        Page<DataItemResultDTO> dataItemPage;
+        Page<DataItemResultDTO> dataItemPages;
         if(userOid==null){
-            dataItemPage = dataItemDao.findByNameLikeIgnoreCaseAndStatusNotLike(pageable, searchText,"Private");
+            if (tabType.equals("hub")){
+                dataItemPages = dataHubsDao.findByNameLikeIgnoreCase(pageable, searchText);
+            }else {
+                dataItemPages = dataItemDao.findByNameLikeIgnoreCaseAndStatusNotLike(pageable, searchText,"Private");
+            }
         }else{
-            dataItemPage = dataItemDao.findByNameLikeAndAuthorIgnoreCaseAndStatusNotLike(pageable, searchText,userOid,"Private");
+            tabType = "all";
+            if (tabType.equals("hub")){
+                dataItemPages = dataHubsDao.findByNameLikeAndAuthorIgnoreCase(pageable, searchText,userOid);
+            }else {
+                dataItemPages = dataItemDao.findByNameLikeAndAuthorIgnoreCaseAndStatusNotLike(pageable, searchText,userOid,"Private");
+            }
+        }
+
+        Page<DataItemResultDTO> dataItemPage;
+        //匹配hubs的类别
+        dataItemPage = dataItemPages;
+        long count = 0;
+        List<DataItemResultDTO> dataItemss = dataItemPage.getContent();
+        List<DataItemResultDTO> dataItems = new ArrayList<>();
+        //如果dataType为all，则全部的dataItem都取到
+        if (tabType!=null&&tabType.equals("all")){
+            dataItems = dataItemss;
+            count = dataItemPage.getTotalElements();
+        }else {
+            for (DataItemResultDTO dataItemResultDTO : dataItemss) {
+                if (dataItemResultDTO.getTabType().equals(tabType)) {
+                    dataItems.add(dataItemResultDTO);
+                    count++;
+                }
+            }
         }
 
 
-        List<DataItemResultDTO> dataItems = dataItemPage.getContent();
         JSONArray users = new JSONArray();
 
         for (int i = 0; i < dataItems.size(); i++) {
@@ -502,17 +862,15 @@ public class DataItemService {
 
             dataItems.get(i).setAuthor(user.getName());
             dataItems.get(i).setOid(dataItem.getId());
-
         }
 
         JSONObject result = new JSONObject();
         result.put("list", dataItems);
-        result.put("total", dataItemPage.getTotalElements());
+        result.put("total", count);
         result.put("pages", dataItemPage.getTotalPages());
         result.put("users", users);
 
         return result;
-
     }
 
 
@@ -576,9 +934,9 @@ public class DataItemService {
     public JSONObject findByCateg(String categorysId, Integer page, boolean asc, Integer pageSize,String loadUser,String dataType) {
 
 
-        List<String> category = new ArrayList<>();
+        List<String> category;
         //从category拿到dataItemid
-        category = findByCa(categorysId,dataType);
+        category = findByDaCa(categorysId,dataType);
 
 
         List<Map<String, Object>> resultList = new ArrayList<>();
@@ -586,7 +944,8 @@ public class DataItemService {
 
         List<Map<String, Object>> flist = new ArrayList<>();
 
-        DataItem it = new DataItem();
+//        DataItem it;
+        DataItem it;
 
         Map<String, Object> everyData;
 
@@ -687,56 +1046,86 @@ public class DataItemService {
     }
 
 
+    //todo 准备注释
     public List<String> findByCa(String categorysId,String dataType) {
-        if (dataType.equals("hubs")){
-            dataType = "Url";
-        }else if (dataType.equals("repository")){
-            dataType = "File";
-        }else if (dataType.equals("network")){
-            dataType = "DistributedNode";
-        }
-
         Categorys resultList = new Categorys();
         resultList = getCategoryById(categorysId);
+
         List<String> resultListType = new LinkedList<>();
-        //判断dataType获取不同的type对应得dataItems
-        List<String> dataItemIds = resultList.getDataItem();
-        for (int i=0;i<dataItemIds.size();i++){
-            DataItem dataItem = dataItemDao.findFirstById(dataItemIds.get(i));
-            if (dataItem!=null&&dataItem.getDataType()!=null&&dataItem.getDataType().equals(dataType)){
-                resultListType.add(dataItem.getId());
-            }
+        if (dataType.equals("hubs")&&resultList.getDataItem()!=null){
+            resultListType = resultList.getDataItem();
+        }else if (dataType.equals("repository")&&resultList.getDataRepository()!=null){
+            resultListType = resultList.getDataRepository();
+        }else if (dataType.equals("network")&&resultList.getDataNetwork()!=null){
+            resultListType = resultList.getDataNetwork();
         }
         return resultListType;
-//        return resultList.getDataItem();
+    }
+    public List<String> findByDaCa(String categorysId,String dataType) {
+        DataCategorys resultList;
+        resultList = getDataCategoryById(categorysId);
+
+        List<String> resultListType = new LinkedList<>();
+        if (dataType.equals("hubs")&&resultList.getDataItemNew()!=null){
+            resultListType = resultList.getDataItemNew();
+        }else if (dataType.equals("repository")&&resultList.getDataRepository()!=null){
+            resultListType = resultList.getDataRepository();
+        }else if (dataType.equals("network")&&resultList.getDataNetwork()!=null){
+            resultListType = resultList.getDataNetwork();
+        }
+        return resultListType;
     }
 
 
     //用户创建分类数据条目id入到分类库
+    //todo *******
     public Integer addCateId(CategoryAddDTO categoryAddDTO) {
 
         String id = categoryAddDTO.getId();
         List<String> cate = categoryAddDTO.getCate();
+        String dataType = categoryAddDTO.getDataType();
+        String tabType = categoryAddDTO.getTabType();
 
-        Categorys ca;
+        DataCategorys ca;
         List<String> cateData;
 
         for (int i = 0; i < cate.size(); i++) {
-            ca = new Categorys();
+            ca = new DataCategorys();
 
-            addAll(id, cate.get(i));
+//            addAll(id, cate.get(i));
 
-            ca = getCategoryById(cate.get(i));
+            ca = getDataCategoryById(cate.get(i));
 
             cateData = new ArrayList<String>();
-            cateData = ca.getDataItem();
-
-            cateData.add(id);
-
-            ca.setDataItem(cateData);
-
-            categoryDao.save(ca);
-
+            if(null!=tabType&&tabType.equals("hubs")){
+                if (ca.getDataHubs()!=null){
+                    cateData = ca.getDataHubs();
+                    cateData.add(id);
+                    ca.setDataHubs(cateData);
+                }else {
+                    cateData.add(id);
+                    ca.setDataHubs(cateData);
+                }
+            }else if (dataType.equals("File")||dataType.equals("Url")){
+                if (ca.getDataRepository()!=null) {
+                    cateData = ca.getDataRepository();
+                    cateData.add(id);
+                    ca.setDataRepository(cateData);
+                }else {
+                    cateData.add(id);
+                    ca.setDataRepository(cateData);
+                }
+            }else if (dataType.equals("DistributedNode")){
+                if (ca.getDataNetwork()!=null) {
+                    cateData = ca.getDataNetwork();
+                    cateData.add(id);
+                    ca.setDataNetwork(cateData);
+                }else {
+                    cateData.add(id);
+                    ca.setDataNetwork(cateData);
+                }
+            }
+            dataCategorysDao.save(ca);
         }
 
         return 1;
@@ -788,7 +1177,7 @@ public class DataItemService {
     //动态构建树
     public Map<String, List<Map<String, String>>> createTree() {
 
-        List<Categorys> allTree = new ArrayList<>();
+        List<DataCategorys> allTree = new ArrayList<>();
         Categorys parentCate;
 
         List<Map<String, String>> sonCate;
@@ -798,7 +1187,7 @@ public class DataItemService {
         String parentCaId, category;
         Categorys itor;
 
-        allTree = categoryDao.findAll();
+        allTree = dataCategorysDao.findAll();
 
 
         Map<String, List<Map<String, String>>> reslut = new HashMap<>();
@@ -815,7 +1204,7 @@ public class DataItemService {
             if (!p.equals("null")) {
 
                 parentCate = new Categorys();
-                parentCate = getCategoryById(itor.getParentCategory());
+                parentCate = getDataCategoryById(itor.getParentCategory());
 
                 //如果Map中有父类key
                 if (mapHasKey(reslut, parentCate.getCategory())) {
@@ -856,6 +1245,34 @@ public class DataItemService {
         return reslut;
     }
 
+    //todo createTreeNew
+    public JSONArray createTreeNew(){
+        JSONArray result = new JSONArray();
+        List<DataCategorys> grandpas = dataCategorysDao.findAllByParentCategory("null");
+        for (DataCategorys grandpa:grandpas){
+            JSONObject oneLevel = new JSONObject();
+            //找出当前grandpa的所有子集
+            List<DataCategorys> fathers = dataCategorysDao.findAllByParentCategory(grandpa.getId());
+            JSONArray fathersArray = new JSONArray();//用于存储父类的所有的键值对
+            for (DataCategorys father:fathers){
+                JSONObject twoLevel = new JSONObject();
+                List<DataCategorys> sons = dataCategorysDao.findAllByParentCategory(father.getId());
+                JSONArray sonsArray = new JSONArray();
+                for (DataCategorys son:sons){
+                    JSONObject threeLevel = new JSONObject();
+                    threeLevel.put(son.getCategory(), son.getId());
+                    sonsArray.add(threeLevel);
+                }
+                twoLevel.put(father.getCategory(), sonsArray);
+                fathersArray.add(twoLevel);
+            }
+            oneLevel.put(grandpa.getCategory(),fathersArray);
+            result.add(oneLevel);
+        }
+
+        return result;
+    }
+
 
     public boolean mapHasKey(Map<String, List<Map<String, String>>> map, String key) {
         Iterator<String> it = map.keySet().iterator();
@@ -870,9 +1287,19 @@ public class DataItemService {
     }
 
 
-    public Categorys getCategoryById(String id) {
+    public Categorys getCategoryById(String id) {//准备注释掉
 
         return categoryDao.findById(id).orElseGet(() -> {
+            System.out.println("有人乱查数据库！！该ID不存在对象");
+            throw new MyException(ResultEnum.NO_OBJECT);
+        });
+
+
+    }
+    //仿写，上面方面可注释
+    public DataCategorys getDataCategoryById(String id) {
+
+        return dataCategorysDao.findById(id).orElseGet(() -> {
             System.out.println("有人乱查数据库！！该ID不存在对象");
             throw new MyException(ResultEnum.NO_OBJECT);
         });
@@ -975,11 +1402,37 @@ public class DataItemService {
             cates = dataItem.getClassifications();
             List<String> categorys = new ArrayList<>();
             for(String cate : cates){
-                Categorys category = getCategoryById(cate);
-                categorys.add(category.getCategory());
+                DataCategorys dataCategorys = getDataCategoryById(cate);
+                categorys.add(dataCategorys.getCategory());
             }
 
             JSONObject obj =(JSONObject) JSON.toJSON(dataItem);
+            obj.put("categories",categorys);
+            jsonObject.put("result",obj);
+        }
+
+        return jsonObject;
+
+
+    }
+
+    public JSONObject getDataHubsByDataId(String dataId){
+
+        DataHubs dataHubs =  dataHubsDao.findFirstById(dataId);
+
+        JSONObject jsonObject = new JSONObject();
+        if(dataHubs == null)
+            jsonObject.put("noResult",1);
+        else{
+            List<String> cates = new ArrayList<>();
+            cates = dataHubs.getClassifications();
+            List<String> categorys = new ArrayList<>();
+            for(String cate : cates){
+                DataCategorys dataCategorys = getDataCategoryById(cate);
+                categorys.add(dataCategorys.getCategory());
+            }
+
+            JSONObject obj =(JSONObject) JSON.toJSON(dataHubs);
             obj.put("categories",categorys);
             jsonObject.put("result",obj);
         }
@@ -1327,4 +1780,175 @@ public class DataItemService {
 
     }
 
+    /**
+     * 分布式节点数据方法
+     */
+    public DataItemNew insertDistributeData(String id,String oid,String name,String date,String type,Boolean authority,String token,JSONObject meta, String ip){
+        DataItemNew dataItemNew = new DataItemNew();
+        Date now = new Date();
+        //将dto中的数据转换到dataItem里
+        dataItemNew.setDistributedNodeDataId(id);
+        dataItemNew.setAuthor(oid);
+        dataItemNew.setDate(date);
+        dataItemNew.setName(name);
+        dataItemNew.setType(type);
+        dataItemNew.setAuthority(authority);
+        dataItemNew.setToken(token);
+        dataItemNew.setCreateTime(now);
+        dataItemNew.setWorkSpace(meta.getString("workSpace"));
+        dataItemNew.setDescription(meta.getString("description"));
+        dataItemNew.setDetail(meta.getString("detail"));
+        dataItemNew.setDataPath(meta.getString("dataPath"));
+        dataItemNew.setDataType("DistributedNode");
+        dataItemNew.setIp(ip);
+//        dataItem.setOnlineStatus(onlineStatus);
+        JSONArray tags = new JSONArray();
+        tags = meta.getJSONArray("tags");
+        List<String> list = new ArrayList<>();
+        for (int i=0;i<tags.size();i++){
+            list.add(tags.getString(i));
+        }
+        dataItemNew.setClassifications(list);
+
+        return dataItemNewDao.insert(dataItemNew);
+    }
+
+    //分布式节点注册至门户
+    public void insertDistributeNode(String ip,String dataItemId, String oid){
+        DistributedNode distributedNode = distributedNodeDao.findFirstByIp(ip);
+        boolean isExist = false;
+        List<String> dataItems = new ArrayList<>();
+
+        if (distributedNode==null){
+            distributedNode = new DistributedNode();
+        }else {
+            isExist = true;
+            dataItems = distributedNode.getDataItems();
+        }
+        Date now = new Date();
+        distributedNode.setIp(ip);
+        distributedNode.setLastTime(now);
+        distributedNode.setOid(UUID.randomUUID().toString());
+        distributedNode.setUserId(oid);
+        dataItems.add(dataItemId);
+        distributedNode.setDataItems(dataItems);
+
+        if (isExist) {
+            distributedNodeDao.save(distributedNode);
+        }else {
+            distributedNodeDao.insert(distributedNode);
+        }
+    }
+
+    //轮询本用户分布式节点ip，查看是否在线，根据在线情况更新onlineStatus字段
+    @Scheduled(cron="30 * * * * ?")
+    private void pollingIp() throws Exception {
+        String uid = "42";
+        boolean pingLog = false;
+
+        List<DistributedNode> distributedNodes = distributedNodeDao.findFirstByUserId(uid);
+        for (DistributedNode distributedNode:distributedNodes){
+            String ip = distributedNode.getIp();
+            int place = ip.indexOf(":");
+            if (place == -1){
+                pingLog = ping(ip);
+            }else {
+                String str1 = ip.substring(0,ip.indexOf(":"));
+                String str2 = ip.substring(str1.length()+1,ip.length());
+                int port = Integer.parseInt(str2);
+//                String port = ip.split(":");
+                pingLog = validePort(str1, port);
+            }
+//            log.info("Status: " + pingLog);
+            if (pingLog){
+                distributedNode.setOnlineStatus(true);
+                distributedNodeDao.save(distributedNode);
+            }else {
+                distributedNode.setOnlineStatus(false);
+                distributedNodeDao.save(distributedNode);
+            }
+        }
+    }
+
+    //222.22.22.2:8080格式
+    private static boolean validePort(String location, int port) {
+        Socket s = new Socket();
+        try {
+            SocketAddress add = new InetSocketAddress(location, port);
+            s.connect(add, 2000);
+            return true;
+        } catch (IOException e) {
+            return false;
+        }finally{
+            try {
+                s.close();
+            } catch (IOException e1) {
+            }
+        }
+    }
+
+    //222.22.22.2格式
+    private static boolean ping(String ipAddress) throws Exception {
+        int timeOut = 3000; // 超时应该在3钞以上
+        boolean status = InetAddress.getByName(ipAddress).isReachable(timeOut);
+        return status;
+    }
+
+    public String tran(String str){
+        log.info(str);
+        //将首字母大写
+        String[] split = str.split(" ");
+        String s1 = "";
+        for (int i=0;i< split.length;i++){
+            String s2 = split[i].substring(0,1).toUpperCase()+split[i].substring(1);
+            s1 += s2;
+            s1+=" ";
+        }
+        s1=s1.substring(0,s1.length()-1);
+        log.info(s1);
+        DataCategorys dataCategorys = dataCategorysDao.findFirstByCategory(s1);
+        if (dataCategorys!=null) {
+            String id = dataCategorys.getId();
+            return id;
+        }else {
+            return "";
+        }
+    }
+
+
+
+//    public File inputstreamtofile(InputStream ins) throws IOException {
+//        File file = new File("");
+//        OutputStream os = new FileOutputStream(file);
+//        int bytesRead = 0;
+//        byte[] buffer = new byte[8192];
+//        while ((bytesRead = ins.read(buffer, 0, 8192)) != -1) {
+//            os.write(buffer, 0, bytesRead);
+//        }
+//        os.close();
+//        ins.close();
+//        return file;
+//    }
+
+    /**
+     * 将图片转换成base64格式进行存储
+     * @param imagePath
+     * @return
+     */
+    public String encodeToString(String imagePath) throws IOException {
+        String type = StringUtils.substring(imagePath, imagePath.lastIndexOf(".") + 1);
+        BufferedImage image = ImageIO.read(new File(imagePath));
+        String imageString = null;
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        try {
+            ImageIO.write(image, type, bos);
+            byte[] imageBytes = bos.toByteArray();
+            BASE64Encoder encoder = new BASE64Encoder();
+            imageString = encoder.encode(imageBytes);
+            bos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return imageString;
+    }
 }

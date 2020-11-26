@@ -29,7 +29,6 @@ public class TemplateAddDTO {
     String xml;
 
     String uploadImage;
-
     List<Localization> localizationList;
 
 }

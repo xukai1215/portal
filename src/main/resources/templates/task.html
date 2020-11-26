@@ -188,26 +188,31 @@
                                         </el-form-item>
                                     </el-form>
 
-                                </div>
-                            </template>
-                        </el-table-column>
-                        <el-table-column
-                                label="Name">
-                            <template slot-scope="props">
-                                <a :href="'/dataItem/'+props.row.id"
-                                   target="_blank">{{props.row.name}}</a>
-                            </template>
-                        </el-table-column>
-                        <el-table-column label="Contributor">
-                            <template slot-scope="scope">
-                                <a :href="'/user/'+scope.row.author.oid" target="_blank">{{scope.row.author.name}}</a>
-                            </template>
-                        </el-table-column>
-                        <el-table-column label="Create Time" width="120px">
-                            <template slot-scope="scope">
-                                {{scope.row.createTime}}
-                            </template>
-                        </el-table-column>
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column
+                    label="Name">
+              <template slot-scope="props">
+                <a :href="'/dataItem/'+props.row.id"
+                   target="_blank">{{props.row.name}}</a>
+              </template>
+            </el-table-column>
+            <el-table-column label="Contributor">
+              <template slot-scope="scope">
+                <a :href="'/profile/'+scope.row.author.oid" target="_blank">{{scope.row.author.name}}</a>
+              </template>
+            </el-table-column>
+            <el-table-column label="Create Time" width="120px">
+              <template slot-scope="scope">
+                {{scope.row.createTime}}
+              </template>
+            </el-table-column>
+              <el-table-column label="Operation" width="120px">
+              <template slot-scope="props">
+                <el-button type="primary" @click="addDataItemData($event)" :id="props.row.id">Add</el-button>
+              </template>
+            </el-table-column>
 
                     </el-table>
                     <el-pagination style="text-align: center;margin-top:20px"
@@ -1189,7 +1194,7 @@
                                                     label="Contributor"
                                             >
                                                 <template slot-scope="scope">
-                                                    <a :href="'/user/'+scope.row.author.oid" target="_blank">{{scope.row.author.name}}</a>
+                                                    <a :href="'/profile/'+scope.row.author.oid" target="_blank">{{scope.row.author.name}}</a>
                                                 </template>
                                             </el-table-column>
                                             <el-table-column label="Create Time" width="120px">
@@ -1266,7 +1271,7 @@
                                         </el-table-column>
                                         <el-table-column label="Contributor">
                                             <template slot-scope="scope">
-                                                <a :href="'/user/'+scope.row.author.oid" target="_blank">{{scope.row.author.name}}</a>
+                                                <a :href="'/profile/'+scope.row.author.oid" target="_blank">{{scope.row.author.name}}</a>
                                             </template>
                                         </el-table-column>
                                         <el-table-column label="Create Time" width="120px">
@@ -1333,7 +1338,7 @@
 <script type="text/javascript" src="/static/js/common/jquery.tag-editor.js"></script>
 <script src="/static/js/common/bootstrap-tagsinput.js"></script>
 <!--<script src="https://unpkg.com/element-ui/lib/index.js"></script>-->
-<script src="/static/js/module/userDataSpaceModule.js"></script>
+<script src="/static/js/modules/userDataSpaceModule.js"></script>
 <script src="/static/js/page/task.js"></script>
 <script src="/static/element-ui/umd/locale/en.js"></script>
 <script src="/static/js/common/navbar.js"></script>

@@ -6,13 +6,15 @@ import io.swagger.annotations.ApiOperation;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.bean.LoginRequired;
 import njgis.opengms.portal.dao.ComputableModelDao;
+import njgis.opengms.portal.dto.task.IntegratedTaskAddDto;
 import njgis.opengms.portal.dto.task.ResultDataDTO;
 import njgis.opengms.portal.dto.task.TestDataUploadDTO;
 import njgis.opengms.portal.dto.task.UploadDataDTO;
 import njgis.opengms.portal.entity.ComputableModel;
+import njgis.opengms.portal.entity.DataProcessing;
+import njgis.opengms.portal.entity.ModelAction;
 import njgis.opengms.portal.entity.Task;
 import njgis.opengms.portal.entity.intergrate.Model;
-import njgis.opengms.portal.entity.intergrate.ModelParam;
 import njgis.opengms.portal.entity.support.DailyViewCount;
 import njgis.opengms.portal.entity.support.TaskData;
 import njgis.opengms.portal.entity.support.UserTaskInfo;
@@ -23,6 +25,7 @@ import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
 import njgis.opengms.portal.utils.Utils;
 import org.apache.commons.io.FilenameUtils;
+import org.dom4j.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
@@ -37,10 +40,12 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.rmi.CORBA.Util;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -307,43 +312,135 @@ public class TaskRestController {
     @RequestMapping(value="/checkIntegratedTask/{taskId}", method = RequestMethod.GET)
     JsonResult checkIntegratedTask(@PathVariable("taskId") String taskId,HttpServletRequest request){
 
-        RestTemplate restTemplate=new RestTemplate();
-        String url="http://" + managerServerIpAndPort + "/GeoModeling/task/checkTaskStatus?taskId={taskId}";//远程接口
-        Map<String, String> params = new HashMap<>();
-        params.put("taskId", taskId);
-        ResponseEntity<JSONObject> responseEntity=restTemplate.getForEntity(url,JSONObject.class,params);
-        if (responseEntity.getStatusCode()!=HttpStatus.OK){
-            throw new MyException("远程服务出错");
-        }
-        else {
-            Task task=taskService.findByTaskId(taskId);
-            JSONObject data = responseEntity.getBody().getJSONObject("data");
-            int status = data.getInteger("status");
-            JSONObject taskInfo = data.getJSONObject("taskInfo");
-            switch (status){
-                case 0:
-                    break;
-                case -1:
-                    task.setStatus(-1);
-                    taskService.save(task);
-                    break;
-                case 1:
-                    task.setStatus(2);
-                    task.setModels(taskInfo.getJSONArray("models").toJavaList(Model.class));
-                    taskService.save(task);
-                    break;
-            }
-            return ResultUtils.success(data);
-        }
+        return ResultUtils.success(taskService.checkIntegratedTask(taskId));
+    }
+
+    @RequestMapping(value = "/updateIntegrateTaskId", method = RequestMethod.POST)//把managerserver返回的taskid更新到门户数据库
+    JsonResult updateIntegrateTaskId(@RequestParam("taskOid") String taskOid,
+                                     @RequestParam("taskId") String taskId){
+        return ResultUtils.success(taskService.updateIntegrateTaskId(taskOid,taskId));
+    }
+
+    @RequestMapping(value = "/getIntegrateTaskByOid", method = RequestMethod.GET)
+    JsonResult getIntegrateTaskByOid(@RequestParam("taskOid") String taskOid){
+        return ResultUtils.success(taskService.getIntegratedTaskByOid(taskOid));
     }
 
     @RequestMapping(value = "/saveIntegratedTask", method = RequestMethod.POST)
-    JsonResult saveIntegratedTask(@RequestParam("taskId") String taskId, @RequestParam("graphXml") String graphXml, @RequestParam("modelParams") List<ModelParam> modelParams){
-        Task task = taskService.findByTaskId(taskId);
-        task.setGraphXml(graphXml);
-        task.setModelParams(modelParams);
-        taskService.save(task);
-        return ResultUtils.success(task);
+    JsonResult saveIntegratedTask(@RequestBody IntegratedTaskAddDto integratedTaskAddDto,
+                                  HttpServletRequest request
+                                  ){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid") == null){
+            return ResultUtils.error(-1, "no login");
+        }else {
+            String userName = session.getAttribute("uid").toString();
+            String xml = integratedTaskAddDto.getXml();
+            String mxgraph = integratedTaskAddDto.getMxgraph();
+            List<Map<String,String>> models = integratedTaskAddDto.getModels();
+            List<Map<String,String>> processingTools = integratedTaskAddDto.getProcessingTools();
+            List<ModelAction> modelActions = integratedTaskAddDto.getModelActions();
+            List<DataProcessing> dataProcessings = integratedTaskAddDto.getDataProcessings();
+            List<Map<String,String>> dataLinks = integratedTaskAddDto.getDataLinks();
+            String description = integratedTaskAddDto.getDescription();
+            String taskName = integratedTaskAddDto.getTaskName();
+
+            return ResultUtils.success(taskService.saveIntegratedTask(xml, mxgraph, models,processingTools, modelActions,dataProcessings,dataLinks,userName,taskName,description));
+        }
+    }
+
+
+    @RequestMapping(value = "/updateIntegratedTaskInfo", method = RequestMethod.POST)
+    JsonResult updateIntegratedTaskInfo(@RequestBody IntegratedTaskAddDto integratedTaskAddDto,
+                                    HttpServletRequest request
+    ){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid") == null){
+            return ResultUtils.error(-1, "no login");
+        }else {
+            String userName = session.getAttribute("uid").toString();
+            String taskOid = integratedTaskAddDto.getTaskOid();
+            String xml = integratedTaskAddDto.getXml();
+            String mxgraph = integratedTaskAddDto.getMxgraph();
+            List<Map<String,String>> models = integratedTaskAddDto.getModels();
+            List<ModelAction> modelActions = integratedTaskAddDto.getModelActions();
+            List<DataProcessing> dataProcessings = integratedTaskAddDto.getDataProcessings();
+            List<Map<String,String>> dataLinks = integratedTaskAddDto.getDataLinks();
+            String description = integratedTaskAddDto.getDescription();
+            String taskName = integratedTaskAddDto.getTaskName();
+
+            return ResultUtils.success(taskService.updateIntegratedTask(taskOid, xml, mxgraph, models, modelActions,dataProcessings,dataLinks,userName,taskName,description));
+        }
+    }
+
+
+    @RequestMapping(value = "/deleteIntegratedTask", method = RequestMethod.DELETE)
+    JsonResult saveIntegratedTask(@RequestParam(value = "taskOid") String oid,
+                                  HttpServletRequest request
+    ){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid") == null){
+            return ResultUtils.error(-1, "no login");
+        }else {
+
+            return ResultUtils.success(taskService.deleteIntegratedTask(oid));
+        }
+    }
+
+    @RequestMapping(value = "/getIntegrateTaskByUser",method = RequestMethod.GET)
+    JsonResult getIntegrateTaskByUser(HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid") == null){
+            return ResultUtils.error(-1, "no login");
+        }else {
+            String userName = session.getAttribute("uid").toString();
+            return ResultUtils.success(taskService.getIntegrateTaskByUser(userName));
+        }
+
+    }
+
+    @RequestMapping(value = "/updateIntegrateTaskName",method = RequestMethod.POST)
+    JsonResult updateIntegrateTaskName(@RequestParam(value = "taskOid")String taskOid,
+                                       @RequestParam(value = "taskName")String taskName,
+                                       HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid") == null){
+            return ResultUtils.error(-1, "no login");
+        }else {
+            String userName = session.getAttribute("uid").toString();
+            return ResultUtils.success(taskService.updateIntegrateTaskName(taskOid,taskName));
+        }
+
+    }
+
+    @RequestMapping(value = "/updateIntegrateTaskDescription",method = RequestMethod.POST)
+    JsonResult updateIntegrateTaskDescription(@RequestParam(value = "taskOid")String taskOid,
+                                       @RequestParam(value = "taskDescription")String taskDescription,
+                                       HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid") == null){
+            return ResultUtils.error(-1, "no login");
+        }else {
+            String userName = session.getAttribute("uid").toString();
+            return ResultUtils.success(taskService.updateIntegrateTaskDescription(taskOid,taskDescription));
+        }
+
+    }
+
+    @RequestMapping(value = "/pageIntegrateTaskByUser",method = RequestMethod.GET)
+    JsonResult pageIntegrateTaskByUser(@RequestParam(value = "pageNum") int pageNum,
+                                       @RequestParam(value = "pageSize") int pageSize,
+                                       @RequestParam(value = "asc") int asc,
+                                       @RequestParam(value = "sortElement") String sortElement,
+                                       HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid") == null){
+            return ResultUtils.error(-1, "no login");
+        }else {
+            String userName = session.getAttribute("uid").toString();
+            return ResultUtils.success(taskService.PageIntegrateTaskByUser(userName,pageNum,pageSize,asc,sortElement));
+        }
+
     }
 
     /**/
@@ -601,8 +698,49 @@ public class TaskRestController {
             });
             return ResultUtils.success(resultDataDTOs);
         }
+    }
 
+    @RequestMapping(value = "/loadDataItemData", method = RequestMethod.POST)
+    public JsonResult loadDataItemData(@RequestBody TestDataUploadDTO testDataUploadDTO,HttpServletRequest request) throws Exception {
+        JsonResult jsonResult = new JsonResult();
+        String oid = testDataUploadDTO.getOid();
+        ComputableModel computableModel= computableModelDao.findFirstByOid(oid);
+        JSONObject mdlJSON = Utils.convertMdl(computableModel.getMdl());
 
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid")==null){
+            return ResultUtils.error(-2,"no login");
+        }else {
+            String userName = session.getAttribute("uid").toString();
+            String[] dataIpAndPort = dataContainerIpAndPort.split(":");
+            testDataUploadDTO.setHost(dataIpAndPort[0]);
+            testDataUploadDTO.setPort(Integer.parseInt(dataIpAndPort[1]));
+
+            List<UploadDataDTO> uploadDataDTOs = taskService.getTestDataUploadArrayDataItem(testDataUploadDTO, mdlJSON);
+            if (uploadDataDTOs == null) {
+                return ResultUtils.error(-1, "No Test Data");
+            }
+            List<Future<ResultDataDTO>> futures = new ArrayList<>();
+            //开启异步任务
+            uploadDataDTOs.forEach((UploadDataDTO obj) -> {
+                Future<ResultDataDTO> future = taskService.uploadDataToServer(obj, testDataUploadDTO, userName);
+                futures.add(future);
+            });
+            List<ResultDataDTO> resultDataDTOs = new ArrayList<>();
+
+            futures.forEach((future) -> {
+                try {
+                    ResultDataDTO resultDatadto = (ResultDataDTO) future.get();
+                    resultDataDTOs.add(resultDatadto);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+
+            });
+            return ResultUtils.success(resultDataDTOs);
+        }
     }
 
     @RequestMapping(value ="/loadPublishedData", method = RequestMethod.POST)
@@ -666,4 +804,16 @@ public class TaskRestController {
 
     }
 
+    @RequestMapping(value = "/getDataProcessingNode",method = RequestMethod.GET)
+    public JsonResult getDataProcessingNode() throws DocumentException, IOException, URISyntaxException {
+       return ResultUtils.success(taskService.getDataProcessingNode());
+
+    }
+
+
+    @RequestMapping(value = "/getDataProcessings",method = RequestMethod.GET)
+    public JsonResult getDataProcessings() throws IOException, URISyntaxException, DocumentException {
+        return ResultUtils.success(taskService.getDataProcessings());
+
+    }
 }

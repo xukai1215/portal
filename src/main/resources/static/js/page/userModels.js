@@ -194,7 +194,6 @@ var userModels = Vue.extend(
         // router:modelRouter,
 
         methods:{
-
             //公共功能
             formatDate(value,callback) {
                 const date = new Date(value);

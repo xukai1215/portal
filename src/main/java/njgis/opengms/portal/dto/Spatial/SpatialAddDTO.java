@@ -28,7 +28,6 @@ public class SpatialAddDTO {
     List<String> classifications;
 
     String uploadImage;
-
     List<Localization> localizationList;
 
     String wkname;

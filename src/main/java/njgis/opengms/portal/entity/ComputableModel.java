@@ -44,6 +44,8 @@ public class ComputableModel extends Item {
     List<String> deployedService;
     List<String> containerId;
 
+//    List<String> modelItems;
+
 //    ComputableModelRelate relate;
 
     String mdl;

@@ -82,6 +82,9 @@
             margin-bottom: 0;
         }
 
+        .tox.tox-silver-sink. tox-tinymce-aux{
+            z-index: 2077;
+        }
     </style>
 
 </head>
@@ -90,7 +93,7 @@
     <div th:replace="fragments/navbar :: unlog"></div>
 
     <div class="clearfix" style="margin:40px 0px;height: auto;">
-        <div class="left-panel el-col">
+        <div class="left-panel el-col" >
             <div class="detail">
                 <div class="detail_title">
                     <h2 th:utext="${modelInfo.name}"
@@ -182,7 +185,7 @@
                         </div>
                         <div class="el-col">
                             <div class="pull-left" style="display: block;margin-left: 15px;">
-                                <a th:href="'/user/'+${user.oid}"><h4 th:text="${user.name}" style="padding: 0;">Tom
+                                <a th:href="'/profile/'+${user.userId}"><h4 th:text="${user.name}" style="padding: 0;">Tom
                                     Marvolo Riddle</h4></a>
                             </div>
                         </div>
@@ -196,13 +199,13 @@
             </div>
 
             <div id="Authorship0" class="detail_block minScreen"
-            >
+                 >
                 <div class="block_head">
                     <div class="head_text" style="padding-left: 10px;">
                         <h4>Authorship</h4>
                     </div>
                 </div>
-                <div class="block_content text-center" style="padding-left:10px">
+                <div class="block_content text-center" style="padding-left:10px" >
 
                     <div th:if="${modelInfo.authorship!=null&&#lists.size(modelInfo.authorship)!=0}"
                          style="text-align: left;" th:each="author,key:${modelInfo.authorship}">
@@ -294,12 +297,32 @@
                     <div class="head_text">
                         <h4>Detailed Description</h4>
                     </div>
+
+                    <el-dropdown style="float:right;padding:0 10px;background-color: white;cursor:pointer;" trigger="click" @command="changeDetailLanguage" >
+
+                        <span v-if="currentDetailLanguage==''" class="el-dropdown-link" >
+                            <span th:text="${detailLanguage}"></span><i class="el-icon-arrow-down el-icon--right"></i>
+                        </span>
+                        <span v-else class="el-dropdown-link" >
+                            {{currentDetailLanguage}}<i class="el-icon-arrow-down el-icon--right"></i>
+                        </span>
+
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item th:each="language:${languageList}" th:text="${language}" th:attr="command=${language}">View Count</el-dropdown-item>
+                            <!--<el-dropdown-item command="Name">Name</el-dropdown-item>-->
+                            <!--<el-dropdown-item command="Create Time">Create Time</el-dropdown-item>-->
+
+                        </el-dropdown-menu>
+                    </el-dropdown>
+                    <span class="fa fa-language" style="background-color:white;padding-left:10px;float:right;font-size:23px;"></span>
                     <!--<span class="blockEdit">-->
-                        <!--<el-button type="primary" icon="el-icon-edit" @click="getClassifications" circle></el-button>-->
+                    <!--<el-button type="primary" icon="el-icon-edit" @click="getClassifications" circle></el-button>-->
                     <!--</span>-->
                 </div>
                 <div class="block_content">
-                    <div th:utext="${detail}" id="detail" class="detailIntroducePanel">
+                    <div v-if="detail==''" th:utext="${detail}" id="detail" class="detailIntroducePanel">
+                    </div>
+                    <div v-else v-html="detail" id="detail" class="detailIntroducePanel">
                     </div>
                 </div>
                 <div class="fullPaper text-center hide">
@@ -843,7 +866,7 @@
                         <div class="panel-body" style="padding-left: 0px; padding-top: 7px; padding-right: 0px;">
                             <dl>
                                 <dt>Last modifier :&nbsp</dt>
-                                <dd><a th:text="${lastModifier.name}" th:href="${'/user/'+lastModifier.oid}"
+                                <dd><a th:text="${lastModifier.name}" th:href="${'/profile/'+lastModifier.userId}"
                                        target="_blank"></a></dd>
                                 <dt>Last modify time :&nbsp</dt>
                                 <dd th:text="${lastModifyTime}"></dd>
@@ -866,7 +889,7 @@
                 </div>
                 <div class="block_content">
 
-                    <div class="qrcode" style="width:200px;height:200px;margin:0 auto"></div>
+                    <div class="qrcode"  style="width:200px;height:200px;margin:0 auto"></div>
 
 
                 </div>
@@ -898,7 +921,7 @@
                         </div>
                         <div class="el-col">
                             <div class="pull-left" style="display: block;margin-left: 15px;">
-                                <a th:href="'/user/'+${user.oid}"><h4 th:text="${user.name}" style="padding: 0;">Tom
+                                <a th:href="'/profile/'+${user.userId}"><h4 th:text="${user.name}" style="padding: 0;">Tom
                                     Marvolo Riddle</h4></a>
                             </div>
                         </div>
@@ -912,7 +935,7 @@
             </div>
 
             <div id="Authorship" class="detail_block"
-            >
+                 >
                 <div class="block_head">
                     <div class="head_text" style="padding-left: 10px;">
                         <h4>Authorship</h4>
@@ -985,7 +1008,7 @@
                         <div class="panel-body" style="padding-left: 0px; padding-top: 7px; padding-right: 0px;">
                             <dl>
                                 <dt>Last modifier :&nbsp</dt>
-                                <dd><a th:text="${lastModifier.name}" th:href="${'/user/'+lastModifier.oid}"
+                                <dd><a th:text="${lastModifier.name}" th:href="${'/profile/'+lastModifier.userId}"
                                        target="_blank"></a></dd>
                                 <dt>Last modify time :&nbsp</dt>
                                 <dd th:text="${lastModifyTime}"></dd>
@@ -1020,7 +1043,7 @@
 
 
     <!--Relation 弹出框-->
-    <el-dialog :visible.sync="dialogTableVisible" :title="relateTitle" width="70%"
+    <el-dialog :visible.sync="dialogTableVisible" :title="relateTitle"  width="70%"
                top="40px">
 
         <div style="padding: 8px 16px;
@@ -1031,7 +1054,7 @@
             <p style="font-size: 14px;color: #5e6d82;line-height: 1.5em;margin:0;">
                 You can link related <code style="background-color: #f9fafc;color: #5e6d82;">{{typeName}}</code> from
                 repository to this model item, or you can <a style="cursor:pointer;text-decoration: underline"
-                                                                      @click="jump">create</a> a new <span>{{typeName.toLowerCase()}}</span>.
+                                                             @click="jump">create</a> a new <span>{{typeName.toLowerCase()}}</span>.
             </p>
         </div>
 
@@ -1045,14 +1068,14 @@
                     ref="leftTable"
                     :max-height="tableMaxHeight">
                 <!--<el-table-column type="expand">-->
-                <!--<template slot-scope="props">-->
-                <!--<el-form label-position="left" inline class="demo-table-expand">-->
-                <!--<el-form-item label="Contributor">-->
-                <!--<span>{{ props.row.author }}</span>-->
-                <!--</el-form-item>-->
+                    <!--<template slot-scope="props">-->
+                        <!--<el-form label-position="left" inline class="demo-table-expand">-->
+                            <!--<el-form-item label="Contributor">-->
+                                <!--<span>{{ props.row.author }}</span>-->
+                            <!--</el-form-item>-->
 
-                <!--</el-form>-->
-                <!--</template>-->
+                        <!--</el-form>-->
+                    <!--</template>-->
                 <!--</el-table-column>-->
                 <el-table-column
                         label="Name">
@@ -1082,17 +1105,17 @@
                 <el-table-column fixed="right" label="Operation" width="100">
                     <template slot-scope="scope">
                         <!--<el-button-->
-                                <!--v-if="relateType=='concept'||relateType=='spatialReference'||relateType=='template'||relateType=='unit'"-->
-                                <!--size="mini"-->
-                                <!--type="danger"-->
-                                <!--@click="handleDelete(scope.$index, scope.row)">Remove-->
+                        <!--v-if="relateType=='concept'||relateType=='spatialReference'||relateType=='template'||relateType=='unit'"-->
+                        <!--size="mini"-->
+                        <!--type="danger"-->
+                        <!--@click="handleDelete(scope.$index, scope.row)">Remove-->
                         <!--</el-button>-->
                         <!--<el-button-->
-                                <!--v-else-->
-                                <!--:disabled="scope.row.author_uid!=userUid&&scope.row.author!=userUid&&scope.row.userName!=userUid"-->
-                                <!--size="mini"-->
-                                <!--type="danger"-->
-                                <!--@click="handleDelete(scope.$index, scope.row)">Remove-->
+                        <!--v-else-->
+                        <!--:disabled="scope.row.author_uid!=userUid&&scope.row.author!=userUid&&scope.row.userName!=userUid"-->
+                        <!--size="mini"-->
+                        <!--type="danger"-->
+                        <!--@click="handleDelete(scope.$index, scope.row)">Remove-->
                         <!--</el-button>-->
 
                         <el-button
@@ -1224,7 +1247,7 @@
         </el-tabs>
 
         <div slot="footer" class="dialog-footer">
-
+            <span style="float:left;font-size: 16px">Or you can click <a style="cursor:pointer" @click="jump">here</a> to create a new one.</span>
             <el-button @click="dialogTableVisible = false;">Cancel</el-button>
             <el-button type="primary" @click="confirm()">OK</el-button>
         </div>
@@ -1264,7 +1287,8 @@
     </el-dialog>
 
     <!-- edit -->
-    <el-dialog title="Edit Model Item" class="responseDialog" :visible.sync="editModelItemDialog" width="65%">
+    <el-dialog title="Edit Model Item" class="responseDialog" :visible.sync="editModelItemDialog"
+               modal="false" append-to-body   width="65%">
         <edit-modelitem-module :model-edit-oid="modelOid"></edit-modelitem-module>
     </el-dialog>
 
@@ -1358,6 +1382,6 @@
 <script src="/static/js/common/bootstrap.min.js"></script>
 <script src="/static/element-ui/umd/locale/en.js"></script>
 <script src="/static/js/common/navbar.js"></script>
-<script src="/static/js/module/editModelitemModule.js"></script>
+<script src="/static/js/modules/editModelitemModule.js"></script>
 
 </html>

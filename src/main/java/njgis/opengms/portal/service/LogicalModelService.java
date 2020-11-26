@@ -153,6 +153,15 @@ public class LogicalModelService {
             }
         }
 
+        //modelItem
+        ModelItem modelItem = modelItemDao.findFirstByOid(modelInfo.getRelateModelItem());
+        JSONObject modelItemInfo = new JSONObject();
+        modelItemInfo.put("oid",modelItem.getOid());
+        modelItemInfo.put("name",modelItem.getName());
+        modelItemInfo.put("description", modelItem.getDescription());
+        modelItemInfo.put("img",modelItem.getImage().equals("") ? null : htmlLoadPath + modelItem.getImage());
+
+
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("logical_model");
         modelAndView.addObject("modelInfo", modelInfo);
@@ -166,6 +175,7 @@ public class LogicalModelService {
         modelAndView.addObject("loadPath", htmlLoadPath);
         modelAndView.addObject("lastModifier", modifierJson);
         modelAndView.addObject("lastModifyTime", lastModifyTime);
+        modelAndView.addObject("relateModelItem", modelItemInfo);
 
         return modelAndView;
     }
@@ -502,8 +512,7 @@ public class LogicalModelService {
         } else if (searchText.equals("") && !classes.get(0).equals("all")) {
             logicalModelPage = logicalModelDao.findByClassificationsInAndAuthorAndStatusNotLike(classes, userName,statusNotLike, pageable);
         } else {
-            logicalModelPage = logicalModelDao.findByNameContainsIgnoreCaseAndClassificationsInAndAuthorAndStatusNotLike(searchText, classes, userName,statusNotLike, pageable);
-        }
+            logicalModelPage = logicalModelDao.findByNameContainsIgnoreCaseAndClassificationsInAndAuthorAndStatusNotLike(searchText, classes, userName,statusNotLike, pageable);        }
 
 
         obj.put("list", logicalModelPage.getContent());

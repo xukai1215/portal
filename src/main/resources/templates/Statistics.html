@@ -99,52 +99,10 @@
                             withCredentials: true
                         },
                         async: true,
-                        success: (resu) => {
-                            console.log(resu);
+                        success: (res) => {
+                            console.log(res);
 
-                            let data=[{geoJson:{   hostName: "LAPTOP-0PNLCFNL",
-                                    city: "Nanjing",
-                                    countryCode: "CN",
-                                    countryName: "China",
-                                    latitude: "32.0617 ",
-                                    longitude: "118.7778",
-                                }},{geoJson:{   hostName: "launch-advisor-20191209",
-                                    city:"Ottawa",
-                                    latitude: "45.3155 ",
-                                    longitude: "-75.837",
-                                }},{ geoJson:{   hostName: "iZrj9fpaid84lev5yy85m1Z",
-                                    city:"Ottawa",
-                                    latitude: "45.3155 ",
-                                    longitude: "-75.837",
-                                }},{ geoJson:{   hostName: "iZm5e81qbhfk423he1vxovZ",
-                                    city: "Beijing",
-                                    countryCode: "CN",
-                                    countryName: "China",
-                                    latitude: "39.9289 ",
-                                    longitude: "116.3883",
-                                }},{ geoJson:{   hostName: "LAPTOP-0PNLCFNL",
-                                    city: "Nanjing",
-                                    countryCode: "CN",
-                                    countryName: "China",
-                                    latitude: "32.0617  ",
-                                    longitude: "118.7778",
-                                }},{geoJson:{   hostName: "ming",
-                                    city:"Ottawa",
-                                    latitude: "45.3155  ",
-                                    longitude: "-75.837",
-                                }},{geoJson:{   hostName: "ming",
-                                    city:"Ottawa",
-                                    latitude: "45.3155  ",
-                                    longitude: "-75.837",
-                                }},{ geoJson: {   hostName: "Sirius",
-                                    city:"Ottawa",
-                                    latitude: "45.3155  ",
-                                    longitude: "-75.837",
-                                }},
-
-
-                            ];
-                            var chartInfo = this.createChartInfo(data);
+                            var chartInfo = this.createChartInfo(res.data);
                             // this.computerNodesInfos = chartInfo.cityCount;
                             this.createChartMap(chartInfo);
                         }
@@ -164,10 +122,7 @@
                         success: (res) => {
                             console.log(res);
 
-
-                            var chartInfo = this.createChartInfo(data);
-                            // this.computerNodesInfos = chartInfo.cityCount;
-                            this.createUserMap(chartInfo);
+                            this.createUserMap();
                         }
                     })
 
@@ -461,7 +416,7 @@
 
             },
 
-            createUserMap(chartInfo){
+            createUserMap(){
 
                 var myChart = echarts.init(document.getElementById('userMap'));
 

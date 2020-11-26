@@ -20,6 +20,7 @@ public class DataItemFindDTO {
     String categoryId;
     List<String> searchContent;
     String searchText;
+    String tabType;
 
     String userId;
 
@@ -30,5 +31,7 @@ public class DataItemFindDTO {
 
     //用做多条件查询
     //private List<String> properties;
+
+    String dataType;
 
 }

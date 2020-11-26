@@ -2027,6 +2027,17 @@ mxConnectionHandler.prototype.connect = function(source, target, evt, dropTarget
 				this.fireEvent(new mxEventObject(mxEvent.CONNECT, 'cell', edge, 'terminal', target,
 					'event', evt, 'target', dropTarget, 'terminalInserted', terminalInserted));
 			}
+
+			if(edge.target.eid!=undefined&&edge.source.eid!=undefined){
+				window.parent.insertDataLink(edge)
+			}
+			if(edge.target.style.indexOf('condition')!=-1) {//如果向下連的是一個條件判斷
+				edge.target.judgeValue = edge.source.value
+				edge.target.link = edge.source.frontId
+				window.parent.refreshConditionInfo(edge.target)
+				this.graph.refresh()
+				ui.format.refresh()
+			}
 		}
 		catch (e)
 		{

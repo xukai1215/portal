@@ -70,6 +70,7 @@
     <script src="/static/js/common/clipboard.min.js"></script>
 
     <script src="/static/js/common/vue.min.js"></script>
+<!--    <script src="/static/js/common/vue.js"></script>-->
     <script src="/static/js/common/vue-router.js"></script>
     <script src="/static/js/common/vue-avatar.min.js"></script>
     <script src="/static/js/common/vue-cropper.min.js"></script>
@@ -89,12 +90,9 @@
             background: #f5f5dc;
         }
 
-
-    </style>
-    <style>
         .localization .el-table td{
-            padding: 0;
-        }
+              padding: 0;
+          }
         .localization .el-table .cell{
             padding: 0;
         }
@@ -128,6 +126,43 @@
             border-color: #c6e2ff;
             background-color: #ecf5ff;
         }
+        #imgMask{
+            transition: .3s;
+        }
+        .imgDelete{
+            position: absolute;
+            cursor: pointer;
+            top: 3px;
+            right: 3px;
+            font-size: 16px;
+            color: #980000;
+            transition: .3s;
+        }
+        .imgEditBlock{
+            cursor: pointer;
+            width: 50px;
+            height: 50px;
+            font-size: 28px;
+            border: #555555;
+            border-style: dashed;
+            border-radius: 10px;
+            color: #555555;
+            transition: .3s;
+        }
+        .imgDelete,.imgEditBlock{
+            opacity: 0;
+        }
+        #imgMask:hover{
+            backdrop-filter: blur(5px);
+            background: rgba(230,230,230,0.7);
+        }
+        #imgMask:hover .imgDelete,#imgMask:hover .imgEditBlock{
+            opacity: 1;
+            display: flex;
+        }
+        .top350Dialog .el-dialog{
+            top:350px
+        }
     </style>
     <!--<script src="/static/js/page/user_space.js"></script>-->
 </head>
@@ -145,7 +180,11 @@
 
     <div class="page-container" style="height: 2000px;" v-cloak>
         <head-side-bar :user-infoin-parent="userInfo" :curindex-parent="curIndex"></head-side-bar>
-        <router-view @com-sendcurindex="changecurIndex" @com-senditemindex="changeitemIndex" @com-senduserinfo="updateUserInfo" ></router-view>
+        <router-view @com-sendcurindex="changecurIndex"
+                     @com-senditemindex="changeitemIndex"
+                     @com-senduserinfo="updateUserInfo"
+                     @com-format-date="formatDate"
+        ></router-view>
 
     </div>
 
@@ -182,12 +221,29 @@
 <!--userDataItems展示组件-->
 <template th:replace="userDataItems :: userDataItems"></template>
 <script src="/static/js/page/userDataItems.js"></script>
+<template th:replace="userDataHubs :: userDataHubs"></template>
+<script src="/static/js/page/userDataHubs.js"></script>
+<template th:replace="userDataApplication :: userDataApplication"></template>
+<script src="/static/js/page/userDataApplication.js"></script>
+<template th:replace="userDataVisualApplication :: userDataVisualApplication"></template>
+<script src="/static/js/page/userDataVisualApplication.js"></script>
+
 <!--userData create/edit组件-->
 <template th:replace="create-dataItem :: createDataItem"></template>
 <script src="/static/js/page/create-dataItem.js"></script>
+<template th:replace="create-dataHubs :: createDataHubs"></template>
+<script src="/static/js/page/create-dataHubs.js"></script>
+<!--userData create/edit组件-->
+<template th:replace="create-data-application :: createDataApplication"></template>
+<script src="/static/js/page/create-data-application.js"></script>
+<template th:replace="create-data-visualApplication :: createDataVisualApplication"></template>
+<script src="/static/js/page/create-data-visualApplication.js"></script>
 <!--userDataSpace展示组件-->
 <template th:replace="userDataSpace :: userDataSpace"></template>
 <script src="/static/js/page/userDataSpace.js"></script>
+<!--distributed node mange 组件-->
+<template th:replace="distributed_node_mange :: distributedNode"></template>
+<script src="/static/js/page/distributed_node_mange.js"></script>
 <!--userServer组件-->
 <template th:replace="userServer :: userServer"></template>
 <script src="/static/js/page/userServer.js"></script>
@@ -233,11 +289,12 @@
 <script src="/static/js/page/message_confirm.js"></script>
 <!--dataSpace通用组件-->
 <template th:replace="modules/userDataSpaceModule :: userDataSpaceModule"></template>
-<script src="/static/js/module/userDataSpaceModule.js"></script>
-
+<script src="/static/js/modules/userDataSpaceModule.js"></script>
+<!--draftBox通用组件-->
+<template th:replace="modules/draftBox :: draftBox"></template>
+<script src="/static/js/modules/draftBox.js"></script>
 </body>
 
 <!--根组件-->
 <script src="/static/js/page/userSpace1.js"></script>
-
 </html>

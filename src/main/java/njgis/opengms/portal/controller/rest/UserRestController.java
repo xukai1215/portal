@@ -19,7 +19,6 @@ import njgis.opengms.portal.utils.ResultUtils;
 import njgis.opengms.portal.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
@@ -30,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping(value = "/user")
+@RequestMapping({"/user","/profile"})
 public class UserRestController {
 
     @Autowired
@@ -52,10 +51,10 @@ public class UserRestController {
     @Value("${dataContainerIpAndPort}")
     String dataContainerIpAndPort;
 
-    @Scheduled(cron = "0 0 9 ? MON *")  // 表示 在指定时间执行
-    private void sendEmail() {
-
-    }
+//    @Scheduled(cron = "0 0 9 ? MON *")  // 表示 在指定时间执行
+//    private void sendEmail() {
+//
+//    }
 
     @RequestMapping(value = "/sendEmailTest", method = RequestMethod.POST)
     public void sendEmailTest(@RequestParam("uid") String uid,@RequestParam("email") String email){
@@ -177,6 +176,33 @@ public class UserRestController {
             modelAndView.setViewName("redirect:/user/userSpace");
 
         }
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/loginTest", method = RequestMethod.GET)
+    public ModelAndView getLoginTest(HttpServletRequest request) {
+        System.out.println("loginTest");
+        HttpSession session = request.getSession();
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("loginTest");
+//        if (session.getAttribute("uid") == null) {
+//            modelAndView.setViewName("login");
+//            modelAndView.addObject("notice", "After login, more functions will be unlocked.");
+//
+//            Object preUrl_obj = session.getAttribute("preUrl");
+//            String preUrl = null;
+//            if (preUrl_obj != null) {
+//                preUrl = preUrl_obj.toString();
+//            }else {
+//                preUrl = request.getHeader("REFERER");
+//            }
+//            modelAndView.addObject("preUrl", preUrl);
+//            session.removeAttribute("preUrl");
+//        } else {
+//            modelAndView.setViewName("redirect:/user/userSpace");
+//
+//        }
 
         return modelAndView;
     }
@@ -308,7 +334,7 @@ public class UserRestController {
         ModelAndView modelAndView = new ModelAndView();
         HttpSession session = req.getSession();
 
-        User user = userService.getByOid(id);
+        User user = userService.getByUserId(id);
 //            Object object = ResultUtils.success(userService.getByOid(id)).getData();
         JSONObject userInfo = (JSONObject) JSONObject.toJSON(user);
         Object oid_obj = session.getAttribute("oid");
@@ -490,6 +516,18 @@ public class UserRestController {
     ) {
         return ResultUtils.success(dataItemService.getUsersUploadData(userOid, page - 1, pagesize, asc));
     }
+
+    //get data hubs table
+    @RequestMapping(value = "/getDataHubs", method = RequestMethod.GET)
+    JsonResult getUserUploadDataHubs(@RequestParam(value = "userOid", required = false) String userOid,
+                                 @RequestParam(value = "page", required = false) Integer page,
+                                 @RequestParam(value = "pagesize", required = false) Integer pagesize,
+                                 @RequestParam(value = "asc", required = false) Integer asc
+    ) {
+        return ResultUtils.success(dataItemService.getUsersUploadDataHubs(userOid, page - 1, pagesize, asc));
+    }
+
+
     //get oid
 
     @RequestMapping(value = "/updateUserIntro", method = RequestMethod.POST)

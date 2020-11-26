@@ -393,7 +393,6 @@ var vue = new Vue({
                 this.themeObj.application.splice(num, 1);
             }
         },
-
         handleClose(done) {
             this.$confirm('Are you sure to close？')
                 .then(_ => {
@@ -402,7 +401,6 @@ var vue = new Vue({
                 .catch(_ => {
                 });
         },
-
         handlePageChange1(val) {
             // val--;
             this.pageOption1.currentPage = val;
@@ -467,6 +465,7 @@ var vue = new Vue({
                 searchText: this.relateSearch,
                 sortType: "default",
                 classifications: ["all"],
+                dataType:"all",
             };
             let url, contentType;
             switch (this.relateType) {
@@ -478,7 +477,8 @@ var vue = new Vue({
                         asc: true,
                         classifications: [],
                         category: '',
-                        searchText: this.relateSearch
+                        searchText: this.relateSearch,
+                        dataType:"all",
                     }
                     data = JSON.stringify(data);
                     contentType = "application/json";
@@ -733,7 +733,6 @@ var vue = new Vue({
         changeOpen(n) {
             this.activeIndex = n;
         },
-
         modelClass_add() {
             this.mcnum++;
             this.tableflag1++;
@@ -763,7 +762,6 @@ var vue = new Vue({
             this.pageOption2.currentPage = val;
             this.search2();
         },
-
         edit_theme() {
                 this.dialogVisible3 = true;
                 this.log_theme++;
@@ -856,39 +854,41 @@ var vue = new Vue({
                                 }
                                 //显示detail
                                 $("#themeText").html(basicInfo.detail);
-                                tinymce.init({
-                                    selector: "textarea#themeText",
-                                    height: 300,
-                                    theme: 'silver',
-                                    plugins: ['link', 'table', 'image', 'media'],
-                                    image_title: true,
-                                    // enable automatic uploads of images represented by blob or data URIs
-                                    automatic_uploads: true,
-                                    // URL of our upload handler (for more details check: https://www.tinymce.com/docs/configure/file-image-upload/#images_upload_url)
-                                    // images_upload_url: 'postAcceptor.php',
-                                    // here we add custom filepicker only to Image dialog
-                                    file_picker_types: 'image',
+                                initTinymce('textarea#themeText')
 
-                                    file_picker_callback: function (cb, value, meta) {
-                                        var input = document.createElement('input');
-                                        input.setAttribute('type', 'file');
-                                        input.setAttribute('accept', 'image/*');
-                                        input.onchange = function () {
-                                            var file = input.files[0];
-
-                                            var reader = new FileReader();
-                                            reader.readAsDataURL(file);
-                                            reader.onload = function () {
-                                                var img = reader.result.toString();
-                                                cb(img, {title: file.name});
-                                            }
-                                        };
-                                        input.click();
-                                    },
-                                    images_dataimg_filter: function (img) {
-                                        return img.hasAttribute('internal-blob');
-                                    }
-                                });
+                                // tinymce.init({
+                                //     selector: "textarea#themeText",
+                                //     height: 300,
+                                //     theme: 'silver',
+                                //     plugins: ['link', 'table', 'image', 'media'],
+                                //     image_title: true,
+                                //     // enable automatic uploads of images represented by blob or data URIs
+                                //     automatic_uploads: true,
+                                //     // URL of our upload handler (for more details check: https://www.tinymce.com/docs/configure/file-image-upload/#images_upload_url)
+                                //     // images_upload_url: 'postAcceptor.php',
+                                //     // here we add custom filepicker only to Image dialog
+                                //     file_picker_types: 'image',
+                                //
+                                //     file_picker_callback: function (cb, value, meta) {
+                                //         var input = document.createElement('input');
+                                //         input.setAttribute('type', 'file');
+                                //         input.setAttribute('accept', 'image/*');
+                                //         input.onchange = function () {
+                                //             var file = input.files[0];
+                                //
+                                //             var reader = new FileReader();
+                                //             reader.readAsDataURL(file);
+                                //             reader.onload = function () {
+                                //                 var img = reader.result.toString();
+                                //                 cb(img, {title: file.name});
+                                //             }
+                                //         };
+                                //         input.click();
+                                //     },
+                                //     images_dataimg_filter: function (img) {
+                                //         return img.hasAttribute('internal-blob');
+                                //     }
+                                // });
 
 
                                 //显示themename
@@ -1087,7 +1087,6 @@ var vue = new Vue({
                     }
                 })
         },
-
         uploadImg(){
 
             $("#imgFile").click();
@@ -1110,7 +1109,6 @@ var vue = new Vue({
                 }
             });
         },
-
         uploadApplicationImg(log){
             let that = this;
             $('#imgFileApplication'+log).click();
@@ -1251,5 +1249,40 @@ function show(id, container) {
 
     $(".infoPanel").hide();
     $("#" + container).show();
+}
+
+function initTinymce(idStr){
+    tinymce.remove(idStr)
+    tinymce.init({
+        selector: idStr,
+        height: 350,
+        plugins: [
+            "advcode advlist autolink codesample image imagetools ",
+            " lists link media noneditable powerpaste preview",
+            " searchreplace table visualblocks wordcount"
+        ],
+        toolbar:
+            "undo redo | fontselect | fontsizeselect | bold italic underline | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist | link image",
+        file_picker_types: 'image',
+        file_picker_callback: function (cb, value, meta) {
+            var input = document.createElement('input');
+            input.setAttribute('type', 'file');
+            input.setAttribute('accept', 'image/*');
+            input.onchange = function () {
+                var file = input.files[0];
+
+                var reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = function () {
+                    var img = reader.result.toString();
+                    cb(img, {title: file.name});
+                }
+            };
+            input.click();
+        },
+        images_dataimg_filter: function (img) {
+            return img.hasAttribute('internal-blob');
+        }
+    });
 }
 

@@ -32,74 +32,133 @@ var createModelItem = Vue.extend({
                 insName: ""
             },
 
-            treeData: [
+            treeData_part1: [
+                {
+                    "children": [{
+                        "children": [{
+                            "id": 2,
+                            "label": "Land regions",
+                            "oid": "a24cba2b-9ce1-44de-ac68-8ec36a535d0e",
+                            "desc": "Models that mainly related to land regions, includes hydrology, hydrodynamics, soil, landform, terrestrial ecosystem etc.",
+                        }, {"id": 3, "label": "Ocean regions", "oid": "75aee2b7-b39a-4cd0-9223-3b7ce755e457",
+                            "desc": "Models that mainly related to ocean regions, includes coastal, seawater, sea-ice, marine ecosystem etc.",
+                        }, {
+                            "id": 4,
+                            "label": "Frozen regions",
+                            "oid": "1bf4f381-6bd8-4716-91ab-5a56e51bd2f9",
+                            "desc": "Models that mainly related to frozen regions, includes galicer, permafrost, snow etc.",
+                        }, {"id": 5, "label": "Atmospheric regions", "oid": "8f4d4fca-4d09-49b4-b6f7-5021bc57d0e5",
+                            "desc": "Models that mainly related to atmospheric regions, includes climate, weather, air etc.",
+                        }, {
+                            "id": 6,
+                            "label": "Space-earth regions",
+                            "oid": "d33a1ebe-b2f5-4ed3-9c76-78cfb61c23ee",
+                            "desc": "Models that mainly related to space-earth regions, includes sun-earth, planets etc.",
+
+                        }, {"id": 7, "label": "Solid-earth regions", "oid": "d3ba6e0b-78ec-4fe8-9985-4d5708f28e3e",
+                            "desc": "Models that mainly related to solid-earth regions, includes lithosphere, mantle, earthquack etc.",
+                        }
+                        ], "id": 1, "label": "Natural-perspective", "oid": "6b2c8632-964a-4a65-a6c5-c360b2b515f0",
+                        "desc": "Models that mainly related to physical geography.",
+
+                    }, {
+                        "children": [{
+                            "id": 10,
+                            "label": "Development activities",
+                            "oid": "808e74a4-41c6-4558-a850-4daec1f199df",
+                            "desc": "Models that mainly related to development activities, includes continents, countries, cities, administrative zones etc.",
+                        }, {"id": 11, "label": "Social activities", "oid": "40534cf8-039a-4a0a-8db9-7c9bff484190",
+                            "desc": "Models that mainly related to social activities, includes urban, rural, cultural area, travel area, built-up area, indoor area etc.",}, {
+                            "id": 12,
+                            "label": "Economic activities",
+                            "oid": "cf9cd106-b873-4a8a-9336-dd72398fc769",
+                            "desc": "Models that mainly related to economic activities, includes agriculture, industry, tourism, trasport, energy, markets etc.",
+                        }],
+                        "id": 9,
+                        "label": "Human-perspective",
+                        "oid": "77e7482c-1844-4bc3-ae37-cb09b61572da",
+                        "desc": "Models that mainly related to human geography.",
+                    }, {
+                        "id": 30,
+                        "label": "Integrated-perspective",
+                        "oid": "396cc739-ef33-4332-8d5d-9a67c89567c7",
+                        "desc": "Models that integrate many different models.",
+                        "children": [{
+                            "id": 31,
+                            "label": "Global scale",
+                            "oid": "14130969-fda6-41ea-aa32-0af43104840b",
+                            "desc": "Integrated models that apply in global scale.",
+                        }, {
+                            "id": 32,
+                            "label": "Regional scale",
+                            "oid": "e56c1254-70b8-4ff4-b461-b8fa3039944e",
+                            "desc": "Integrated models that apply in regional scale.",
+
+                        }]
+                    }],
+                    "id": 24,
+                    "label": "Application-focused categories",
+                    "oid": "9f7816be-c6e3-44b6-addf-98251e3d2e19",
+                    "desc": "Models that apply in one or more field.",
+                },
+            ],
+            treeData_part2: [
                 {"children": [{
-                "children": [{
-                    "id": 2,
-                    "label": "Land regions",
-                    "oid": "a24cba2b-9ce1-44de-ac68-8ec36a535d0e"
-                }, {"id": 3, "label": "Ocean regions", "oid": "75aee2b7-b39a-4cd0-9223-3b7ce755e457"}, {
-                    "id": 4,
-                    "label": "Frozen regions",
-                    "oid": "1bf4f381-6bd8-4716-91ab-5a56e51bd2f9"
-                }, {"id": 5, "label": "Atmospheric regions", "oid": "8f4d4fca-4d09-49b4-b6f7-5021bc57d0e5"}, {
-                    "id": 6,
-                    "label": "Space earth",
-                    "oid": "d33a1ebe-b2f5-4ed3-9c76-78cfb61c23ee"
-                }, {"id": 7, "label": "Soid earth", "oid": "d3ba6e0b-78ec-4fe8-9985-4d5708f28e3e"}, {
-                    "id": 8,
-                    "label": "Integrated perspective",
-                    "oid": "eb1d8ddc-6be1-41ef-bab6-a8d940d46499"
-                }], "id": 1, "label": "Natural-perspective", "oid": "6b2c8632-964a-4a65-a6c5-c360b2b515f0"
-            }, {
-                "children": [{
-                    "id": 10,
-                    "label": "Administrative regions",
-                    "oid": "808e74a4-41c6-4558-a850-4daec1f199df"
-                }, {"id": 11, "label": "Social regions", "oid": "40534cf8-039a-4a0a-8db9-7c9bff484190"}, {
-                    "id": 12,
-                    "label": "Economic regions",
-                    "oid": "cf9cd106-b873-4a8a-9336-dd72398fc769"
-                }, {"id": 13, "label": "Integrated perspective", "oid": "65dbe5a9-ada9-4c02-8353-5029a84d7628"}],
-                "id": 9,
-                "label": "Human-perspective",
-                "oid": "77e7482c-1844-4bc3-ae37-cb09b61572da"
-            }], "id": 24, "label": "Application-focused categories", "oid": "9f7816be-c6e3-44b6-addf-98251e3d2e19"},
-                {"children": [{
-                "children": [{
-                    "id": 15,
-                    "label": "Geoinformation analysis",
-                    "oid": "afa99af9-4224-4fac-a81f-47a7fb663dba"
-                }, {
-                    "id": 16,
-                    "label": "Remote sensing analysis",
-                    "oid": "f20411a5-2f55-4ee9-9590-c2ec826b8bd5"
-                }, {
-                    "id": 17,
-                    "label": "Geostatistical analysis",
-                    "oid": "1c876281-a032-4575-8eba-f1a8fb4560d8"
-                }, {"id": 18, "label": "Machine Learning analysis", "oid": "c6fcc899-8ca4-4269-a21e-a39d38c034a6"}],
-                "id": 14,
-                "label": "Data-perspective",
-                "oid": "4785308f-b2ef-4193-a74b-b9fe025cbc5e"
-            }, {
-                "children": [{
-                    "id": 20,
-                    "label": "Physical process calculation",
-                    "oid": "1d564d0f-51c6-40ca-bd75-3f9489ccf1d6"
-                }, {
-                    "id": 21,
-                    "label": "Chemical process calculation",
-                    "oid": "63266a14-d7f9-44cb-8204-c877eaddcaa1"
-                }, {
-                    "id": 22,
-                    "label": "Biological process calculation",
-                    "oid": "6d1efa2c-830d-4546-b759-c66806c4facc"
-                }, {"id": 23, "label": "Human-activity calculation", "oid": "6952d5b2-cb0f-4ba7-96fd-5761dd566344"}],
-                "id": 19,
-                "label": "Process-perspective",
-                "oid": "746887cf-d490-4080-9754-1dc389986cf2"
-            }], "id": 25, "label": "Method-focused categories", "oid": "5f74872a-196c-4889-a7b8-9c9b04e30718"}],
+                        "children": [{
+                            "id": 15,
+                            "label": "Geoinformation analysis",
+                            "oid": "afa99af9-4224-4fac-a81f-47a7fb663dba",
+                            "desc": "Models that mainly related to geoinformation analysis, includes vector analysis, raster analysis, network analysis, topology analysis etc.",
+                        }, {
+                            "id": 16,
+                            "label": "Remote sensing analysis",
+                            "oid": "f20411a5-2f55-4ee9-9590-c2ec826b8bd5",
+                            "desc": "Models that mainly related to remote sensing analysis, includes imagery analysis, spectrum analysis etc.",
+                        }, {
+                            "id": 17,
+                            "label": "Geostatistical analysis",
+                            "oid": "1c876281-a032-4575-8eba-f1a8fb4560d8",
+                            "desc": "Models that mainly related to geostatistical analysis, includes pattern detection, relation detection, clustering, interpolation etc.",
+                        }, {
+                            "id": 18,
+                            "label": "Intelligent computation analysis",
+                            "oid": "c6fcc899-8ca4-4269-a21e-a39d38c034a6",
+                            "desc": "Models that mainly related to intelligent computation analysis, includes machine learning, deep learning etc.",
+                        }],
+                        "id": 14,
+                        "label": "Data-perspective",
+                        "oid": "4785308f-b2ef-4193-a74b-b9fe025cbc5e",
+                        "desc": "Models that mainly related to data process.",
+                    }, {
+                        "children": [{
+                            "id": 20,
+                            "label": "Physical process calculation",
+                            "oid": "1d564d0f-51c6-40ca-bd75-3f9489ccf1d6",
+                            "desc": "Models that mainly related to physical process calculation, includes CFD, acoustic simulation, light simulation etc.",
+                        }, {
+                            "id": 21,
+                            "label": "Chemical process calculation",
+                            "oid": "63266a14-d7f9-44cb-8204-c877eaddcaa1",
+                            "desc": "Models that mainly related to chemical process calculation, includes insecticide, photosynthesis, combustion etc.",
+                        }, {
+                            "id": 22,
+                            "label": "Biological process calculation",
+                            "oid": "6d1efa2c-830d-4546-b759-c66806c4facc",
+                            "desc": "Models that mainly related to biological process calculation, includes genome, metabolic, cellular simulation etc.",
+                        }, {
+                            "id": 23,
+                            "label": "Human-activity calculation",
+                            "oid": "6952d5b2-cb0f-4ba7-96fd-5761dd566344",
+                            "desc": "Models that mainly related to human-activity calculation, includes monte carlo, CA, agent-based, travel, crime, disease, migration, health etc.",
+                        }],
+                        "id": 19,
+                        "label": "Process-perspective",
+                        "oid": "746887cf-d490-4080-9754-1dc389986cf2",
+                        "desc": "Models that mainly related to process.",
+                    }], "id": 25, "label": "Method-focused categories", "oid": "5f74872a-196c-4889-a7b8-9c9b04e30718",
+                    "desc": "Models that mainly related to method.",
+                }],
+            treeData_select:[],
             defaultProps: {
                 children: 'children',
                 label: 'label'
@@ -107,83 +166,89 @@ var createModelItem = Vue.extend({
             cls: [],
             clsStr: '',
             status: 'Public',
+            curClassDesc: "Move your mouse to a classification to learn more.",
+            nodekeys: [],
+        socket:"",
 
-            socket: "",
+        message_num_socket:0,
+        message_num_socket_theme:0,
+        modelitem_oid:"",
 
-            message_num_socket: 0,
-            message_num_socket_theme: 0,
-            modelitem_oid: "",
+        editArticleDialog:false,
 
-            editArticleDialog: false,
+        showUploadArticleDialog:false,
 
-            showUploadArticleDialog: false,
+        showUploadedArticleDialog:false,
 
-            showUploadedArticleDialog: false,
-
-            articleUploading: {
-                title: '',
-                authors: [],
-                journal: '',
-                pageRange: '',
-                date: 2019,
-                doi: '',
-                status: '',
-                link: '',
-            },
-
-            doiLoading: false,
-
+        articleUploading:{
+            title:'',
+            authors:[],
+            journal:'',
+            pageRange:'',
+            date:2019,
             doi:'',
+            status:'',
+            link:'',
+        },
 
-            itemName:'',
+        doiLoading:false,
 
-            editType:'',
+        doi:'',
 
-            draft:{
-                oid:'',
-            },
+        itemName:'',
 
-            toCreate:1,
+        editType:'',
 
-            timeOut:{},
+        draft:{
+            oid:'',
+        },
 
-            savingDraft:false,
+        draftOid:'',
 
-            step:1,
+        toCreate: 1,
 
-            draftList:[],
+        timeOut:{},
 
-            draftListDialog:false,
+        savingDraft:false,
 
-            matchedDraft:{},
+        step:1,
 
-            matchedCreateDraft:{},
+        draftList:[],
 
-            matchedCreateDraftDialog:false,
+        draftListDialog:false,
 
-            draftLoading:false,
+        matchedDraft:{},
 
-            pageOption: {
-                paginationShow:false,
-                progressBar: true,
-                sortAsc: false,
-                currentPage: 1,
-                pageSize: 10,
+        matchedCreateDraft:{},
 
-                total: 11,
-                searchResult: [],
-            },
+        matchedCreateDraftDialog:false,
 
-            inSearch:0,
+        draftLoading:false,
 
-            imgClipDialog:false,
+        pageOption: {
+            paginationShow:false,
+            progressBar: true,
+            sortAsc: false,
+            currentPage: 1,
+            pageSize: 10,
 
-            cancelDraftDialog:false,
+            total: 11,
+            searchResult: [],
+        },
 
-            loading:true,
+        inSearch:0,
+
+        imgClipDialog:false,
+
+        cancelDraftDialog:false,
+
+        loading:true,
 
             dragReady:false,
 
+            itemInfo: {
+                image: '',
+            },
             editTypeLocal: "",//create,modify
             currentLocalization: {
                 localCode: "",
@@ -446,6 +511,8 @@ var createModelItem = Vue.extend({
                 {value: 'zu', label: 'Zulu'},
                 {value: 'zu-ZA', label: 'Zulu (South Africa)'},
             ],
+
+            dynamicTable:{},
         }
 
     },
@@ -538,6 +605,7 @@ var createModelItem = Vue.extend({
                     if (this.currentLocalization.localName == this.localizationList[i].localName) {
                         this.localizationList[i].name = this.currentLocalization.name;
                         this.localizationList[i].description = tinymce.activeEditor.getContent();
+                        break;
                     }
                 }
                 this.$set(row, "selected", true);
@@ -546,28 +614,92 @@ var createModelItem = Vue.extend({
                 // tinymce.undoManager.clear();
             }
         },
+        formatDate(value,callback) {
+            const date = new Date(value);
+            y = date.getFullYear();
+            M = date.getMonth() + 1;
+            d = date.getDate();
+            H = date.getHours();
+            m = date.getMinutes();
+            s = date.getSeconds();
+            if (M < 10) {
+                M = '0' + M;
+            }
+            if (d < 10) {
+                d = '0' + d;
+            }
+            if (H < 10) {
+                H = '0' + H;
+            }
+            if (m < 10) {
+                m = '0' + m;
+            }
+            if (s < 10) {
+                s = '0' + s;
+            }
+
+            const t = y + '-' + M + '-' + d + ' ' + H + ':' + m + ':' + s;
+            if(callback == null||callback == undefined)
+                return t;
+            else
+                callback(t);
+        },
         // handleSelect(index,indexPath){
         //     this.setSession("index",index);
         //     window.location.href="/user/userSpace"
         // },
-        handleCheckChange(data, checked, indeterminate) {
-            let checkedNodes = this.$refs.tree2.getCheckedNodes()
-            let classes = [];
-            let str='';
-            for (let i = 0; i < checkedNodes.length; i++) {
-                // console.log(checkedNodes[i].children)
-                if(checkedNodes[i].children!=undefined){
-                    continue;
+        // handleCheckChange(data, checked, indeterminate) {
+        //     let checkedNodes = this.$refs.tree2.getCheckedNodes()
+        //     let classes = [];
+        //     let str='';
+        //     for (let i = 0; i < checkedNodes.length; i++) {
+        //         // console.log(checkedNodes[i].children)
+        //         if(checkedNodes[i].children!=undefined){
+        //             continue;
+        //         }
+        //
+        //         classes.push(checkedNodes[i].oid);
+        //         str+=checkedNodes[i].label;
+        //         if(i!=checkedNodes.length-1){
+        //             str+=", ";
+        //         }
+        //     }
+        //     this.cls=classes;
+        //     this.clsStr=str;
+        //
+        // },
+
+        //共三个参数，依次为：传递给 data 属性的数组中该节点所对应的对象、节点本身是否被选中、节点的子树中是否有被选中的节点
+        handleCheckChange(data, checked, indeterminante){
+            // console.log(data, checked, indeterminante)
+            if(data.children == null) {
+                let checkedNodes1 = this.$refs.tree2.getCheckedNodes(false, true);
+                let checkedNodes2 = this.$refs.tree3.getCheckedNodes(false, true);
+
+                this.treeData_select = [];
+                for (i = 0; i < checkedNodes1.length; i++) {
+                    let node = checkedNodes1[i];
+                    if (node.children == undefined) {
+                        this.treeData_select.push(node);
+                    }
                 }
 
-                classes.push(checkedNodes[i].oid);
-                str+=checkedNodes[i].label;
-                if(i!=checkedNodes.length-1){
-                    str+=", ";
+                for (i = 0; i < checkedNodes2.length; i++) {
+                    let node = checkedNodes2[i];
+                    if (node.children == undefined) {
+                        this.treeData_select.push(node);
+                    }
                 }
+
+                console.log($("#tree_select .el-tree-node"))
+                $("#tree_select").on("mouseenter",".el-tree-node",(event)=>{
+                    console.log(event)
+                    let name = event.currentTarget.innerText
+                    let desc = this.getClassificationDesc(name)
+                    console.log(desc);
+                    this.curClassDesc = desc;
+                })
             }
-            this.cls=classes;
-            this.clsStr=str;
 
         },
 
@@ -587,23 +719,55 @@ var createModelItem = Vue.extend({
             return parseInt(domID.substring(domID.length-1,domID.length))
         },
 
-        getContent(step) {
-            let content = {
-                classification: this.cls,
-                status: this.status,
-                name: this.itemName
+        getItemContent(trigger,callBack) {//trigger标识是finish触发还是存草稿
+            let modelItemObj = {}
+            modelItemObj.status=this.status;
+            this.cls = [];
+            for(i=0;i<this.treeData_select.length;i++){
+                this.cls.push(this.treeData_select[i].oid);
             }
-            content.overView = $("#descInput").val()
-            content.keywords = $("#tagInput").val().split(",");
-            content.image = $('#imgShow').get(0).currentSrc;
-            let references = new Array();
+            modelItemObj.classifications2 = this.cls;//[$("#parentNode").attr("pid")];
+            modelItemObj.name = $("#nameInput").val();
+            modelItemObj.alias = $("#aliasInput").val().split(",");
+            if (modelItemObj.alias.length === 1 && modelItemObj.alias[0] === "") {
+                modelItemObj.alias = [];
+            }
+            modelItemObj.keywords = $("#tagInput").val().split(",");
+            modelItemObj.description = $("#descInput").val();
+            // modelItemObj.uploadImage = $('#imgShow').get(0).currentSrc;
+            modelItemObj.uploadImage = this.itemInfo.image;
+            modelItemObj.authorship=[];
+            userspace.getUserData($("#providersPanel .user-contents .form-control"), modelItemObj.authorship);
+
+
+            if(this.editTypeLocal == 'modify') {
+
+                for (i = 0; i < this.localizationList.length; i++) {
+                    if (this.currentLocalization.localName == this.localizationList[i].localName) {
+                        this.localizationList[i].name = this.currentLocalization.name;
+                        this.localizationList[i].description = tinymce.activeEditor.getContent();
+                        break;
+                    }
+                }
+                modelItemObj.localizationList = this.localizationList;
+
+            }else {
+                modelItemObj.localizationList = [];
+
+                this.currentLocalization.description = tinymce.activeEditor.getContent();
+                this.currentLocalization.localCode = this.languageAdd.local.value;
+                this.currentLocalization.localName = this.languageAdd.local.label;
+
+                modelItemObj.localizationList.push(this.currentLocalization);
+            }
+            modelItemObj.references = new Array();
             var ref_lines = $("#dynamic-table tr");
-            for (let i = 1; i < ref_lines.length; i++) {
+            for (i = 1; i < ref_lines.length; i++) {
                 var ref_prop = ref_lines.eq(i).children("td");
                 if (ref_prop != 0) {
                     var ref = {};
                     ref.title = ref_prop.eq(0).text();
-                    if (ref.title == "No data available in table")
+                    if (trigger=='finish'&&ref.title == "No data available in table")
                         break;
                     ref.author = ref_prop.eq(1).text().split(",");
                     ref.date = ref_prop.eq(2).text();
@@ -612,207 +776,85 @@ var createModelItem = Vue.extend({
                     ref.pages = ref_prop.eq(5).text();
                     ref.links = ref_prop.eq(6).text();
                     ref.doi = ref_prop.eq(7).text();
-                    references.push(ref);
+                    modelItemObj.references.push(ref);
                 }
             }
-            content.references = references
 
-            content.detail = tinyMCE.activeEditor.getContent().trim();
-
-            content.authorship = []
-            userspace.getUserData($("#providersPanel .user-contents .form-control"), content.authorship);
-
-            return content;
+            if(callBack){
+                callBack(modelItemObj)
+            }
+            return modelItemObj
         },
 
         createDraft(){//请求后台创建一个草稿实例,如果存在则更新
-            this.savingDraft=true
 
             var step = this.getStep()
-            let content=this.getContent(step)
+            let content=this.getItemContent(step)
 
             let urls=window.location.href.split('/')
             let item=urls[6]
             item=item.substring(6,item.length)
             let obj={
                 content:content,
-                editType:this.editType,
+                editType:this.editTypeLocal,
                 itemType:item,
                 user:this.userId,
                 oid:this.draft.oid,
             }
-            if(this.editType) {
+            if(this.editTypeLocal) {
                 obj.itemOid=this.$route.params.editId?this.$route.params.editId:null
                 obj.itemName= this.itemName;
             }
 
-            axios.post('/draft/init',obj
-                ).then(
-                    res=>{
-                        if(res.data.code==0){
-                            this.draft=res.data.data;
-                            setTimeout(()=>{
-                                this.savingDraft=false
-                            },1005)
-                        }
-                    }
-            )
-        },
-
-        handlePageChange(val) {
-            this.pageOption.currentPage = val;
-
-            if(this.inSearch==0)
-                this.loadDraft();
-            else
-                this.searchDraft()
-        },
-
-        searchDraft(){
-
-        },
-
-        loadDraftClick(){
-            this.draftListDialog=true;
-
-            this.pageOption.currentPage = 1;
-            this.loadDraft()
-        },
-
-        loadDraft(){
-            axios.get('/draft/pageByUser',{
-                params:{
-                    asc:0,
-                    page:this.pageOption.currentPage-1,
-                    size:6,
-                }
-            }).then(res=>{
-                    if(res.data.code==0){
-                        let data=res.data.data
-                        this.draftList=data.content
-                        this.pageOption.total = data.total;
-                    }else{
-                        this.$alert('Please login first!', 'Error', {
-                            type:"error",
-                            confirmButtonText: 'OK',
-                            callback: action => {
-                                window.location.href = "/user/login";
-                            }
-                        });
-                    }
-                })
-        },
-
-        loadDraftByOid(){
-            axios.get('/draft/getByOid',{
-                params:{
-                    oid:this.draft.oid
-                }
-            }).then(res=>{
-                if(res.data.code==0){
-                    this.insertDraft(res.data.data)
-                }
-            })
-        },
-
-        loadMatchedDraft(){//匹配edit对应的
-            this.matchedDraft={}
-            axios.get('/draft/getByItemAndUser',{
-                params:{
-                    itemOid:this.$route.params.editId
-                }
-            }).then(res=>{
-                if(res.data.code==0){
-                    this.matchedDraft=res.data.data;
-                    if(this.matchedDraft!={}&&this.matchedDraft!=null){
-                        this.$confirm('You have a existed draft about this Item, do you want to load it? If not, this draft will be overwrited.', 'Tips', {
-                            confirmButtonText: 'Yes',
-                            cancelButtonText: 'No',
-                            type: 'warning'
-                        }).then(() => {
-                            this.insertDraft(this.matchedDraft)
-                        }).catch(() => {
-                            this.draft.oid=this.matchedDraft.oid
-                        });
-                    }
-                }
-
-
-            })
+           this.$refs.draftBox.createDraft(obj)
         },
 
         loadMatchedCreateDraft(){
-            this.loadCreateDraft()
+            this.$refs.draftBox.loadMatchedCreateDraft()
         },
 
-        loadCreateDraft(){//
-            this.matchedCreateDraft={}
-            axios.get('/draft/getCreateDraftByUserByType',{
-                params:{
-                    itemType:'ModelItem',
-                    editType:'create',
-                }
-            }).then(res=>{
-                if(res.data.code==0){
-                    if(res.data.data.length>1){
-                        this.matchedCreateDraft=res.data.data;
-                        this.matchedCreateDraftDialog=true
-                    }
-                }
+        insertDraft(){
 
-
-            })
         },
 
-        insertDraft(draft){
-            this.draft=draft;
-            let content = draft.content;
-            this.cls=typeof(content.classification)=="undefined"?[]: content.classification
-            this.status=content.status
-            let ids=[];
-            this.clsStr=[]
-            for(let i=0;i<this.cls.length;i++){
-                for(let j=0;j<2;j++){
-                    for(let k=0;k<this.treeData[j].children.length;k++){
-                        let children=this.treeData[j].children[k].children;
-                        if(children==null) {
-                            if (this.cls[i] == this.treeData[j].children[k].oid) {
-                                ids.push(this.treeData[j].children[k].id);
-                                this.clsStr += this.treeData[j].children[k].label;
-                                if (i != this.cls.length - 1) {
-                                    this.clsStr += ", ";
-                                }
-                                break;
-                            }
-                        }
-                        else{
-                            for(let x=0;x<children.length;x++){
-                                if (this.cls[i] == children[x].oid) {
-                                    ids.push(children[x].id);
-                                    this.clsStr += children[x].label;
-                                    if (i != this.cls.length - 1) {
-                                        this.clsStr += ", ";
-                                    }
-                                    break;
-                                }
-                            }
-                        }
+        getMatchedNode(oids){
+            this.getMatchedNode_DIGUI(this.treeData_part1,oids);
+            this.getMatchedNode_DIGUI(this.treeData_part2,oids);
 
-                    }
-                    if(ids.length-1==i){
-                        break;
+        },
+        getMatchedNode_DIGUI(children, oids){
+            let i = 0;
+            let j = 0;
+            for(;i<children.length;i++){
+                let child = children[i];
+                if(child.children!=null){
+                    this.getMatchedNode_DIGUI(child.children, oids);
+                }else {
+                    for (j = 0; j < oids.length; j++) {
+                        if (child.oid == oids[j]) {
+                            this.treeData_select.push(child);
+                            this.nodekeys.push(child.id);
+                            break;
+                        }
                     }
                 }
             }
+        },
 
-            this.$refs.tree2.setCheckedKeys(ids);
+        insertInfo(basicInfo){
+            this.cls = basicInfo.classifications2;
+            this.status = basicInfo.status;
+
+            this.getMatchedNode(this.cls);
+            this.$refs.tree2.setCheckedKeys(this.nodekeys);
+            this.$refs.tree3.setCheckedKeys(this.nodekeys);
 
             $(".providers").children(".panel").remove();
 
-            let authorship = content.authorship;
-            var user_num = 0;
+            let authorship = basicInfo.authorship;
+            let user_num = 0
             if(authorship!=null) {
-                for (let i = 0; i < authorship.length; i++) {
+                for (i = 0; i < authorship.length; i++) {
                     user_num++;
                     var content_box = $(".providers");
                     var str = "<div class='panel panel-primary'> <div class='panel-heading'> <h4 class='panel-title'> <a class='accordion-toggle collapsed' style='color:white' data-toggle='collapse' data-target='#user";
@@ -878,18 +920,19 @@ var createModelItem = Vue.extend({
             }
 
 
-            this.itemName=content.name//填入name input
-            $("#descInput").val(content.overView);
+            $("#nameInput").val(basicInfo.name);
+            $("#descInput").val(basicInfo.description);
+            this.itemName=basicInfo.name
             //image
-            if (content.image != "") {
-                $("#imgShow").attr("src", content.image);
-                $('#imgShow').show();
-            }
+            // if (basicInfo.uploadImage != "") {
+                this.itemInfo.image = basicInfo.uploadImage
+            // }
             //reference
 
-            for (i = 0; i < content.references.length; i++) {
-                var ref = content.references[i];
-                table.row.add([
+            this.dynamicTable.clear().draw();
+            for (i = 0; i < basicInfo.references.length; i++) {
+                var ref = basicInfo.references[i];
+                this.dynamicTable.row.add([
                     ref.title,
                     ref.author,
                     ref.date,
@@ -900,33 +943,45 @@ var createModelItem = Vue.extend({
                     ref.doi,
                     "<center><a href='javascript:;' class='fa fa-times refClose' style='color:red'></a></center>"]).draw();
             }
-            if (content.references.length > 0) {
+            if (basicInfo.references.length > 0) {
                 $("#dynamic-table").css("display", "block")
             }
 
             //tags
             $('#tagInput').tagEditor('destroy');
             $('#tagInput').tagEditor({
-                initialTags: content.keywords,
+                initialTags: basicInfo.keywords,
                 forceLowercase: false,
                 placeholder: 'Enter keywords ...'
             });
 
 
             //detail
-            tinyMCE.remove(tinyMCE.editors[0])
-            $("#modelItemText").html(content.detail);//可能会赋值不成功
-            $("#modelItemText").val(content.detail);
-            initTinymce('textarea#modelItemText')
+            initTinymce('textarea#conceptText')
+            this.localizationList = basicInfo.localizationList;
+            let interval = setInterval(() => {
+                this.changeLocalization(this.localizationList[0])
+                clearInterval(interval);
+            }, 1000);
 
-            this.draftListDialog=false;
+            //alias
+            $('#aliasInput').tagEditor('destroy');
+            $('#aliasInput').tagEditor({
+                initialTags: basicInfo.alias,
+                forceLowercase: false,
+                // placeholder: 'Enter alias ...'
+            });
+            // //detail
+            // tinyMCE.remove(tinyMCE.editors[0])
+            // $("#modelItemText").html(content.detail);//可能会赋值不成功
+            // $("#modelItemText").val(content.detail);
+            // initTinymce('textarea#modelItemText')
 
-            this.matchedCreateDraftDialog=false;
         },
 
         cancelEditClick(){
-            if(this.draft.oid!=''){
-                this.cancelDraftDialog=true
+            if(this.draft.oid!=''&&this.draft.oid!=null){
+                this.$refs.draftBox.cancelDraftDialog=true
             }else{
                 setTimeout(() => {
                     window.location.href = "/user/userSpace#/models/modelitem";
@@ -946,44 +1001,12 @@ var createModelItem = Vue.extend({
             // });
         },
 
-        cancelEdit() {
-            this.deleteDraft()
-            setTimeout(() => {
-                window.location.href = "/user/userSpace#/models/modelitem";
-            }, 905)
-        },
-
-        saveDraft(){
-            this.savingDraft=true
-            let content=this.getContent()
-            let obj={
-                content:content,
-                oid:this.draft.oid,
-
-            }
-            axios.post('/draft/update',obj
-            ).then(
-                res=>{
-                    if(res.data.code==0){
-                       this.$message({message: 'Save successfully',type: 'success'})
-                    }
-                    setTimeout(()=>{
-                        this.savingDraft=false
-                    },895)
-                    setTimeout(()=>{
-                        window.location.href = "/user/userSpace#/models/modelitem";
-                    },905)
-                }
-            ).catch(()=>{
-                this.$message({message: 'Something wrong',type: 'warning'})
-                setTimeout(()=>{
-                    this.savingDraft=false
-                },195)
-            })
+        draftJump(){
+            window.location.href = '/user/userSpace#/models/modelitem';
         },
 
         deleteDraft(){
-            axios.delete('/draft/deleteByOid?oid='+this.draft.oid)
+            this.$refs.draftBox.deleteDraft(this.draft.oid)
         },
 
         checkItem(item){
@@ -991,13 +1014,17 @@ var createModelItem = Vue.extend({
             window.location.href='/'+itemType+'/'+item.itemOid
         },
 
+        initDraft(editType,backUrl,oidFrom,oid){
+              this.$refs.draftBox.initDraft(editType,backUrl,oidFrom,oid)
+        },
+
         //reference
         searchDoi(){
             if(this.doi == ''){
                 this.$alert('Please input the DOI', 'Tip', {
-                        type: "warning",
+                        type:"warning",
                         confirmButtonText: 'OK',
-                        callback: () => {
+                        callback: ()=>{
                             return
                         }
                     }
@@ -1034,18 +1061,18 @@ var createModelItem = Vue.extend({
                         this.doiLoading = false;
                         if (data.find == -1) {
                             this.$alert('Failed to connect, please try again!', 'Tip', {
-                                    type: "warning",
+                                    type:"warning",
                                     confirmButtonText: 'OK',
-                                    callback: () => {
+                                    callback: ()=>{
                                         return
                                     }
                                 }
                             );
                         }else if(data.find==0){
                             this.$alert('Find no result, check the DOI you have input or fill information manually.', 'Tip', {
-                                    type: "warning",
+                                    type:"warning",
                                     confirmButtonText: 'OK',
-                                    callback: () => {
+                                    callback: ()=>{
                                         return
                                     }
                                 }
@@ -1066,9 +1093,9 @@ var createModelItem = Vue.extend({
                         this.doiLoading = false;
                         $("#doi_searchBox").removeClass("spinner")
                         this.$alert('Failed to connect, please try again!', 'Tip', {
-                                type: "warning",
+                                type:"warning",
                                 confirmButtonText: 'OK',
-                                callback: () => {
+                                callback: ()=>{
                                     return
                                 }
                             }
@@ -1086,14 +1113,45 @@ var createModelItem = Vue.extend({
             for (i = 0; i < tags.length; i++) { $('#articleAuthor').tagEditor('removeTag', tags[i]); }
             if(tags.length<1||$("#refTitle").val()==''){
                 this.$alert('Please enter the Title and at least one Author.', 'Tip', {
-                        type: "warning",
+                        type:"warning",
                         confirmButtonText: 'OK',
-                        callback: () => {
+                        callback: ()=>{
+                            return
                         }
                     }
                 );
                 return;
             }
+
+            let tags1 = $('#refAuthor').tagEditor('getTags')[0].tags;
+            for (i = 0; i < tags1.length; i++) { $('#refAuthor').tagEditor('removeTag', tags1[i]); }
+            if (tags1.length>0&&$("#refTitle").val()!='') {
+                this.dynamicTable.row.add([
+                    $("#refTitle").val(),
+                    tags1,
+                    $("#refDate").val(),
+                    $("#refJournal").val(),
+                    $("#volumeIssue").val(),
+                    $("#refPages").val(),
+                    $("#refLink").val(),
+                    $("#doiTitle").val(),
+                    "<center><a href='javascript:;' class='fa fa-times refClose' style='color:red'></a></center>"]).draw();
+
+                $("#dynamic-table").css("display", "block")
+                $("#refinfo").modal("hide")
+                $("#refTitle").val("")
+                var tags = $('#refAuthor').tagEditor('getTags')[0].tags;
+                for (i = 0; i < tags.length; i++) {
+                    $('#refAuthor').tagEditor('removeTag', tags[i]);
+                }
+                $("#refDate").val("")
+                $("#volumeIssue").val(""),
+                    $("#refJournal").val("")
+                $("#refPages").val("")
+                $("#doiTitle").val("")
+                $("#refLink").val("")
+            }
+
             this.editArticleDialog = false
            //调用$("#modal_save").click完成
 
@@ -1172,7 +1230,7 @@ var createModelItem = Vue.extend({
 
                 context = canvas.getContext('2d');
                 //清除画布
-                context.clearRect(0,0,150,150);
+                context.clearRect(0,0,200,200);
 
                 document.getElementsByClassName('dragBlock')[0].style.left = '-7px'
             })
@@ -1181,6 +1239,26 @@ var createModelItem = Vue.extend({
 
         closeImgUpload(){
             this.dragReady = false
+        },
+
+
+        deleteImg(){
+            this.$set(this.itemInfo,'image' , '')
+            console.log(this.itemInfo.image)
+        },
+
+        editImg(){
+            this.imgClipDialog = true
+            this.$nextTick(()=>{
+                let canvas = document.getElementsByTagName('canvas')[0]
+                // canvas.style.backgroundImage = this.itemInfo.image
+
+                context = canvas.getContext('2d');
+                //清除画布
+                // context.clearRect(0,0,150,150);
+
+                document.getElementsByClassName('dragBlock')[0].style.left = '-7px'
+            })
         },
 
         changeOpen(n) {
@@ -1321,6 +1399,57 @@ var createModelItem = Vue.extend({
             })
 
 
+        },
+
+        imgFile() {
+            $("#imgOne").click();
+        },
+
+        preImg() {
+
+
+            var file = $('#imgOne').get(0).files[0];
+            //创建用来读取此文件的对象
+            var reader = new FileReader();
+            //使用该对象读取file文件
+            reader.readAsDataURL(file);
+            //读取文件成功后执行的方法函数
+            reader.onload =  (e) => {
+                //读取成功后返回的一个参数e，整个的一个进度事件
+                //选择所要显示图片的img，要赋值给img的src就是e中target下result里面
+                //的base64编码格式的地址
+                this.itemInfo.image = e.target.result
+            }
+
+
+        },
+
+        getClassificationDesc(name){
+            let children = this.treeData_part1;
+            let desc = this.getChildrenDesc(children,name);
+            if(desc == null){
+                children = this.treeData_part2;
+                desc = this.getChildrenDesc(children,name);
+            }
+            return desc;
+        },
+        getChildrenDesc(children, name){
+            let i = 0;
+            for(;i<children.length;i++){
+                let child = children[i];
+                if(child.label==name){
+                    return child.label+": "+child.desc;
+                }else{
+                    if(child.children!=undefined){
+                        let result = this.getChildrenDesc(child.children, name);
+                        if(result != null){
+                            return result;
+                        }
+                    }
+                }
+            }
+            return null;
+
         }
 
     },
@@ -1329,6 +1458,11 @@ var createModelItem = Vue.extend({
         // 销毁监听
         this.socket.onclose = this.close
     },
+
+    created(){
+
+    },
+
     mounted() {
 
         let that = this;
@@ -1409,6 +1543,13 @@ var createModelItem = Vue.extend({
                 }
             })
 
+            $(".el-tree-node__content").on("mouseenter",(event)=>{
+                let name = event.currentTarget.children[2].innerText
+                let desc = this.getClassificationDesc(name)
+                this.curClassDesc = desc;
+            })
+
+
 
             //this.getModels();
         });
@@ -1416,11 +1557,13 @@ var createModelItem = Vue.extend({
         $.ajax({
             type: "GET",
             url: "/user/load",
-            data: {},
+            data: {
+
+            },
             cache: false,
             async: false,
             success: (data) => {
-                data=JSON.parse(data);
+                // data=JSON.parse(data);
                 console.log(data);
                 if (data.oid == "") {
                     alert("Please login");
@@ -1442,15 +1585,15 @@ var createModelItem = Vue.extend({
 
         var oid = this.$route.params.editId;
 
-        this.draft.oid=window.localStorage.getItem('draft')
-        window.localStorage.removeItem('draft')
+        this.draft.oid=window.localStorage.getItem('draft');
+        window.localStorage.removeItem('draft');
         var user_num = 0;
 
         if ((oid === "0") || (oid === "") || (oid === null)|| (oid === undefined)) {
 
-            this.editTypeLocal = 'create'
+            this.editTypeLocal = 'create';
             // $("#title").text("Create Model Item")
-            $("#subRteTitle").text("/Create Model Item")
+            $("#subRteTitle").text("/Create Model Item");
 
             $('#aliasInput').tagEditor({
                 forceLowercase: false
@@ -1459,28 +1602,33 @@ var createModelItem = Vue.extend({
             this.editTypeLocal = "create";
 
             let interval = setInterval(function () {
-                initTinymce('textarea#singleDescription')
+                initTinymce('textarea#singleDescription');
                 clearInterval(interval);
             }, 500);
 
             this.$set(this.languageAdd.local, "value", "en-US");
             this.$set(this.languageAdd.local, "label", "English (United States)");
-            initTinymce('textarea#modelItemText')
+            initTinymce('textarea#modelItemText');
 
-            this.loadMatchedCreateDraft()
-            if(this.draft.oid!='')
-                this.loadDraftByOid()
+            this.loadMatchedCreateDraft();
+            if(this.draft.oid!=''&&this.draft.oid!=null&&typeof (this.draft.oid)!="undefined"){
+                // this.loadDraftByOid()
+                this.initDraft('create','/user/userSpace#/models/modelitem','draft',this.draft.oid)
+            }
 
         }
         else {
 
-            this.editTypeLocal = 'edit'
-            if(this.draft.oid==''||this.draft.oid==null||typeof (this.draft.oid)=="undefined")
-                this.loadMatchedDraft()
-            // $("#title").text("Modify Model Item")
+            this.editTypeLocal = 'modify';
+            if(this.draft.oid==''||this.draft.oid==null||typeof (this.draft.oid)=="undefined"){
+                this.initDraft('edit','/user/userSpace#/models/modelitem','item',this.$route.params.editId)
+            }else{
+                this.initDraft('edit','/user/userSpace#/models/modelitem','draft',this.draft.oid)
+            }
+                // $("#title").text("Modify Model Item")
             $("#subRteTitle").text("/Modify Model Item");
 
-            document.title="Modify Model Item | OpenGMS"
+            // document.title="Modify Model Item | OpenGMS"
             $.ajax({
                 url: "/modelItem/getInfo/" + oid,
                 type: "get",
@@ -1490,172 +1638,13 @@ var createModelItem = Vue.extend({
                     console.log(result);
                     var basicInfo = result.data;
 
-                    //cls
-                    this.cls = basicInfo.classifications;
-                    this.status = basicInfo.status;
-                    let ids=[];
-                    for(i=0;i<this.cls.length;i++){
-                        for(j=0;j<2;j++){
-                            for(k=0;k<this.treeData[j].children.length;k++){
-                                let children=this.treeData[j].children[k].children;
-                                if(children==null) {
-                                    if (this.cls[i] == this.treeData[j].children[k].oid) {
-                                        ids.push(this.treeData[j].children[k].id);
-                                        this.clsStr += this.treeData[j].children[k].label;
-                                        if (i != this.cls.length - 1) {
-                                            this.clsStr += ", ";
-                                        }
-                                        break;
-                                    }
-                                }
-                                else{
-                                    for(x=0;x<children.length;x++){
-                                        if (this.cls[i] == children[x].oid) {
-                                            ids.push(children[x].id);
-                                            this.clsStr += children[x].label;
-                                            if (i != this.cls.length - 1) {
-                                                this.clsStr += ", ";
-                                            }
-                                            break;
-                                        }
-                                    }
-                                }
-
-                            }
-                            if(ids.length-1==i){
-                                break;
-                            }
-                        }
-                    }
-
-                    this.$refs.tree2.setCheckedKeys(ids);
-
-                    $(".providers").children(".panel").remove();
-
-                    let authorship = basicInfo.authorship;
-                    if(authorship!=null) {
-                        for (i = 0; i < authorship.length; i++) {
-                            user_num++;
-                            var content_box = $(".providers");
-                            var str = "<div class='panel panel-primary'> <div class='panel-heading'> <h4 class='panel-title'> <a class='accordion-toggle collapsed' style='color:white' data-toggle='collapse' data-target='#user";
-                            str += user_num;
-                            str += "' href='javascript:;'> NEW </a> </h4><a href='javascript:;' class='fa fa-times author_close' style='float:right;margin-top:8px;color:white'></a></div><div id='user";
-                            str += user_num;
-                            str += "' class='panel-collapse collapse in'><div class='panel-body user-contents'> <div class='user-attr'>\n" +
-                                "                                                                                                    <div>\n" +
-                                "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
-                                "                                                                                                               style='font-weight: bold;'>\n" +
-                                "                                                                                                            Name:\n" +
-                                "                                                                                                        </lable>\n" +
-                                "                                                                                                        <div class='input-group col-sm-10'>\n" +
-                                "                                                                                                            <input type='text'\n" +
-                                "                                                                                                                   name=\"name\"\n" +
-                                "                                                                                                                   class='form-control' value='" +
-                                authorship[i].name +
-                                "'>\n" +
-                                "                                                                                                        </div>\n" +
-                                "                                                                                                    </div>\n" +
-                                "                                                                                                    <div style=\"margin-top:10px\">\n" +
-                                "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
-                                "                                                                                                               style='font-weight: bold;'>\n" +
-                                "                                                                                                            Affiliation:\n" +
-                                "                                                                                                        </lable>\n" +
-                                "                                                                                                        <div class='input-group col-sm-10'>\n" +
-                                "                                                                                                            <input type='text'\n" +
-                                "                                                                                                                   name=\"ins\"\n" +
-                                "                                                                                                                   class='form-control' value='" +
-                                authorship[i].ins +
-                                "'>\n" +
-                                "                                                                                                        </div>\n" +
-                                "                                                                                                    </div>\n" +
-                                "                                                                                                    <div style=\"margin-top:10px\">\n" +
-                                "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
-                                "                                                                                                               style='font-weight: bold;'>\n" +
-                                "                                                                                                            Email:\n" +
-                                "                                                                                                        </lable>\n" +
-                                "                                                                                                        <div class='input-group col-sm-10'>\n" +
-                                "                                                                                                            <input type='text'\n" +
-                                "                                                                                                                   name=\"email\"\n" +
-                                "                                                                                                                   class='form-control' value='" +
-                                authorship[i].email +
-                                "'>\n" +
-                                "                                                                                                        </div>\n" +
-                                "                                                                                                    </div>\n" +
-                                "                                                                                                    <div style=\"margin-top:10px\">\n" +
-                                "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
-                                "                                                                                                               style='font-weight: bold;'>\n" +
-                                "                                                                                                            Homepage:\n" +
-                                "                                                                                                        </lable>\n" +
-                                "                                                                                                        <div class='input-group col-sm-10'>\n" +
-                                "                                                                                                            <input type='text'\n" +
-                                "                                                                                                                   name=\"homepage\"\n" +
-                                "                                                                                                                   class='form-control' value='" +
-                                authorship[i].homepage +
-                                "'>\n" +
-                                "                                                                                                        </div>\n" +
-                                "                                                                                                    </div>\n" +
-                                "                                                                                                </div></div> </div> </div>"
-                            content_box.append(str)
-                        }
-                    }
-
-
-                    $("#nameInput").val(basicInfo.name);
-                    $("#descInput").val(basicInfo.description);
-                    this.itemName=basicInfo.name
-                    //image
-                    if (basicInfo.image != "") {
-                        $("#imgShow").attr("src", basicInfo.image);
-                        $('#imgShow').show();
-                    }
-                    //reference
-
-                    for (i = 0; i < basicInfo.references.length; i++) {
-                        var ref = basicInfo.references[i];
-                        table.row.add([
-                            ref.title,
-                            ref.author,
-                            ref.date,
-                            ref.journal,
-                            ref.volume,
-                            ref.pages,
-                            ref.links,
-                            ref.doi,
-                            "<center><a href='javascript:;' class='fa fa-times refClose' style='color:red'></a></center>"]).draw();
-                    }
-                    if (basicInfo.references.length > 0) {
-                        $("#dynamic-table").css("display", "block")
-                    }
-
-                    //tags
-                    $('#tagInput').tagEditor('destroy');
-                    $('#tagInput').tagEditor({
-                        initialTags: basicInfo.keywords,
-                        forceLowercase: false,
-                        placeholder: 'Enter keywords ...'
-                    });
-
-
-                    //detail
-                    initTinymce('textarea#conceptText')
-                    this.localizationList = basicInfo.localizationList;
-                    let interval = setInterval(() => {
-                        this.changeLocalization(this.localizationList[0])
-                        clearInterval(interval);
-                    }, 1000);
-
-                    //alias
-                    $('#aliasInput').tagEditor({
-                        initialTags: basicInfo.alias,
-                        forceLowercase: false,
-                        // placeholder: 'Enter alias ...'
-                    });
+                    this.insertInfo(basicInfo)
                 }
             })
             // window.sessionStorage.setItem("editModelItem_id", "");
         }
-        if(this.draft.oid!=''&&this.draft.oid!=null&&typeof (this.draft.oid)!="undefined")
-            this.loadDraftByOid()
+        // if(this.draft.oid!=''&&this.draft.oid!=null&&typeof (this.draft.oid)!="undefined")
+        //     this.loadDraftByOid()
 
         $("#step").steps({
             onFinish: function () {
@@ -1663,14 +1652,18 @@ var createModelItem = Vue.extend({
             },
             onChange: (currentIndex, newIndex, stepDirection) => {
                 if (currentIndex === 0 && stepDirection === "forward") {
-                    if (this.cls.length == 0) {
+                    if (this.treeData_select.length == 0) {
                         new Vue().$message({
                             message: 'Please select at least one classification!',
                             type: 'warning',
                             offset: 70,
                         });
                         return false;
-                    } else if ($("#nameInput").val().trim() == "") {
+                    }
+                    return true;
+                }
+                else if (currentIndex === 1 && stepDirection === "forward") {
+                    if ($("#nameInput").val().trim() == "") {
                         new Vue().$message({
                             message: 'Please enter name!',
                             type: 'warning',
@@ -1690,6 +1683,7 @@ var createModelItem = Vue.extend({
                         return true;
                     }
                 } else{
+                    // this.saveDraft();
                     return true;
                 }
             }
@@ -1726,7 +1720,7 @@ var createModelItem = Vue.extend({
         // });
 
         //table
-        table = $('#dynamic-table').DataTable({
+        this.dynamicTable = $('#dynamic-table').DataTable({
             //"aaSorting": [[ 0, "asc" ]],
             "paging": false,
             // "ordering":false,
@@ -1752,41 +1746,14 @@ var createModelItem = Vue.extend({
             $("#doiTitle").val("")
         })
 
-        $("#modal_save").click(function () {
-            let tags1 = $('#refAuthor').tagEditor('getTags')[0].tags;
-            for (i = 0; i < tags1.length; i++) { $('#refAuthor').tagEditor('removeTag', tags1[i]); }
-            if (tags1.length>0&&$("#refTitle").val()!='') {
-                table.row.add([
-                    $("#refTitle").val(),
-                    tags1,
-                    $("#refDate").val(),
-                    $("#refJournal").val(),
-                    $("#volumeIssue").val(),
-                    $("#refPages").val(),
-                    $("#refLink").val(),
-                    $("#doiTitle").val(),
-                     "<center><a href='javascript:;' class='fa fa-times refClose' style='color:red'></a></center>"]).draw();
-
-                $("#dynamic-table").css("display", "block")
-                $("#refinfo").modal("hide")
-                $("#refTitle").val("")
-                var tags = $('#refAuthor').tagEditor('getTags')[0].tags;
-                for (i = 0; i < tags.length; i++) {
-                    $('#refAuthor').tagEditor('removeTag', tags[i]);
-                }
-                $("#refDate").val("")
-                $("#volumeIssue").val(""),
-                $("#refJournal").val("")
-                $("#refPages").val("")
-                $("#doiTitle").val("")
-                $("#refLink").val("")
-            }
-
-        })
+        // $("#modal_save").click(function () {
+        //
+        //
+        // })
         //table end
 
         $(document).on("click", ".refClose", function () {
-            table.row($(this).parents("tr")).remove().draw();
+            vthis.dynamicTable.row($(this).parents("tr")).remove().draw();
             //$(this).parents("tr").eq(0).remove();
             console.log($("tbody tr"));
             if ($("tbody tr").eq(0)[0].innerText == "No data available in table") {
@@ -1880,55 +1847,8 @@ var createModelItem = Vue.extend({
         // }
 
         $(".finish").click(()=> {
-            modelItemObj.status=this.status;
-            modelItemObj.classifications = this.cls;//[$("#parentNode").attr("pid")];
-            modelItemObj.name = $("#nameInput").val();
-            modelItemObj.alias = $("#aliasInput").val().split(",");
-            if (modelItemObj.alias.length === 1 && modelItemObj.alias[0] === "") {
-                modelItemObj.alias = [];
-            }
-            modelItemObj.keywords = $("#tagInput").val().split(",");
-            modelItemObj.description = $("#descInput").val();
-            modelItemObj.uploadImage = $('#imgShow').get(0).currentSrc;
-            modelItemObj.authorship=[];
-            userspace.getUserData($("#providersPanel .user-contents .form-control"), modelItemObj.authorship);
 
-            if(modelItemObj.name.trim()==""){
-                alert("please enter name");
-                return;
-            }
-            else if(modelItemObj.classifications.length==0){
-                alert("please select classification");
-                return;
-            }
-
-            modelItemObj.localizationList = [];
-
-            this.currentLocalization.description = tinymce.activeEditor.getContent();
-            this.currentLocalization.localCode = this.languageAdd.local.value;
-            this.currentLocalization.localName = this.languageAdd.local.label;
-
-            modelItemObj.localizationList.push(this.currentLocalization);
-
-            modelItemObj.references = new Array();
-            var ref_lines = $("#dynamic-table tr");
-            for (i = 1; i < ref_lines.length; i++) {
-                var ref_prop = ref_lines.eq(i).children("td");
-                if (ref_prop != 0) {
-                    var ref = {};
-                    ref.title = ref_prop.eq(0).text();
-                    if (ref.title == "No data available in table")
-                        break;
-                    ref.author = ref_prop.eq(1).text().split(",");
-                    ref.date = ref_prop.eq(2).text();
-                    ref.journal = ref_prop.eq(3).text();
-                    ref.volume = ref_prop.eq(4).text();
-                    ref.pages = ref_prop.eq(5).text();
-                    ref.links = ref_prop.eq(6).text();
-                    ref.doi = ref_prop.eq(7).text();
-                    modelItemObj.references.push(ref);
-                }
-            }
+            modelItemObj = this.getItemContent('finish')
 
             let formData = new FormData();
 
@@ -2206,8 +2126,7 @@ var createModelItem = Vue.extend({
             $("#imgFile").click()
             $("#imgFile").change(function () {
 
-                fileUpload(this,1500,function (file) {
-
+                fileUpload(this,2048,function (file) {
 
                     //创建一个图像对象，用于接收读取的文件
                     oImg=new Image();
@@ -2233,14 +2152,14 @@ var createModelItem = Vue.extend({
                         let originW = oImg.width;//图像初始宽度
                         let originH = oImg.height;
 
-                        maxW=130
-                        maxH=130
+                        maxW=160
+                        maxH=160
                         targetW=originW
                         targetH=originH
 
                         //设置canvas的宽、高
-                        canvas.width=150
-                        canvas.height=150
+                        canvas.width=200
+                        canvas.height=200
 
                         var positionX
                         var positionY
@@ -2249,16 +2168,16 @@ var createModelItem = Vue.extend({
                             if(originH/originW < maxH/maxW) {//图片宽
                                 targetH = maxH;
                                 targetW = Math.round(maxH * (originW / originH));
-                                positionX=75-targetW/2+'px'
-                                positionY='10px'
-                                canvas.style.backgroundSize = "auto 130px "
+                                positionX=100-targetW/2+'px'
+                                positionY='20px'
+                                canvas.style.backgroundSize = "auto 160px "
                             }else {
                                 targetW = maxW;
                                 targetH = Math.round(maxW * (originH / originW));
-                                positionX='10px'
-                                positionY=75-targetH/2+'px'
+                                positionX='20px'
+                                positionY=100-targetH/2+'px'
                                 console.log(positionY)
-                                canvas.style.backgroundSize = "130px auto"
+                                canvas.style.backgroundSize = "160px auto"
 
                             }
                         }
@@ -2267,23 +2186,23 @@ var createModelItem = Vue.extend({
                             if(originH/originW < maxH/maxW) {//图片宽
                                 targetH = maxH;
                                 targetW = Math.round(maxH * (originW / originH));
-                                positionX=75-targetW/2+'px'
+                                positionX=100-targetW/2+'px'
                                 positionY='10px'
-                                canvas.style.backgroundSize = "auto 130px "
+                                canvas.style.backgroundSize = "auto 160px "
                             }else {
                                 targetW = maxW;
                                 targetH = Math.round(maxW * (originH / originW));
                                 positionX='10px'
-                                positionY=75-targetH/2+'px'
+                                positionY=100-targetH/2+'px'
                                 console.log(positionY)
-                                canvas.style.backgroundSize = "130px auto"
+                                canvas.style.backgroundSize = "160px auto"
                             }
                         }
 
                         oldTarW=targetW
                         oldTarH=targetH
                         //清除画布
-                        context.clearRect(0,0,150,150);
+                        context.clearRect(0,0,200,200);
 
                         let img="url("+oImg.src+")";
                         console.log(oImg.src===img)
@@ -2311,9 +2230,9 @@ var createModelItem = Vue.extend({
                         // else
                         //     context.drawImage(oImg,10,0,targetW,targetH);
 
-                        context.fillStyle = 'rgba(204,204,204,0.62)';
+                        context.fillStyle = 'rgba(217,217,217,.55)';
                         context.beginPath()
-                        context.rect(0,0,150,150);
+                        context.rect(0,0,200,200);
                         context.closePath()
                         context.fill()
 
@@ -2321,7 +2240,7 @@ var createModelItem = Vue.extend({
 
                         context.fillStyle='yellow'
                         context.beginPath()
-                        context.rect(10,10,130,130)
+                        context.rect(20,20,160,160)
                         context.closePath()
                         context.fill();
 
@@ -2334,6 +2253,8 @@ var createModelItem = Vue.extend({
                         // $('.dragBar').eq(0).css('background-color','#cfe5fa')
 
                         vthis.dragReady=true
+
+                        document.getElementsByClassName('dragBlock')[0].style.left = '-7px'//滚动条归位
                     }
 
                 })
@@ -2383,8 +2304,8 @@ var createModelItem = Vue.extend({
                     limitX=targetW-maxW
                     limitY=targetH-maxH
 
-                    let maxMoveXR=10-parseFloat(posX)
-                    let maxMoveXD=10-parseFloat(posY)
+                    let maxMoveXR=20-parseFloat(posX)
+                    let maxMoveXD=20-parseFloat(posY)
 
                     if(e.pageX>lastX) dirR=1  //向左方向值
                     else dirR=-1
@@ -2424,12 +2345,12 @@ var createModelItem = Vue.extend({
                     console.log(moveX, moveY)
 
                     console.log(endX, endY)
-                    if (endX <= 10&&endX>=-limitX+10) {
+                    if (endX <= 20&&endX>=-limitX+20) {
                         endX = endX + 'px'
                         canvas.style.backgroundPositionX = endX
                     }
 
-                    if (endY <= 10&&endY>=-limitY+10) {
+                    if (endY <= 20&&endY>=-limitY+20) {
                         endY = endY + 'px'
                         canvas.style.backgroundPositionY = endY
                     }
@@ -2471,16 +2392,16 @@ var createModelItem = Vue.extend({
                 // context.fillRect(0,10,targetW,targetH);
                 //
                 // context.closePath()
-                context.clearRect(0,0,150,150)
+                context.clearRect(0,0,200,200)
                 canvas.style.backgroundImage = ""
                 if(targetW<targetH){
-                    let nx=0-(10-x)/130*150
-                    let ny=0-(10-y)/130*150
-                    context.drawImage(oImg,nx,ny,targetW/130*150,targetH/130*150);
+                    let nx=0-(20-x)/160*200
+                    let ny=0-(20-y)/160*200
+                    context.drawImage(oImg,nx,ny,targetW/160*200,targetH/160*200);
                 }else{
-                    let nx=0-(10-x)/130*150
-                    let ny=0-(10-y)/130*150
-                    context.drawImage(oImg,nx,ny,targetW/130*150,targetH/130*150);
+                    let nx=0-(20-x)/160*200
+                    let ny=0-(20-y)/160*200
+                    context.drawImage(oImg,nx,ny,targetW/160*200,targetH/160*200);
                 }
                 let url= canvas.toDataURL();
                 saveImage(url)
@@ -2540,16 +2461,16 @@ var createModelItem = Vue.extend({
                         // eY=75-(75-y)/times
                         // console.log(eX,eY)
 
-                        newX=75-(75-x)*timesP
-                        newY=75-(75-y)*timesP
-                        if(newY>10)//防止缩放超出边界
-                            newY=10
-                        else if(newY+newTH<140)
-                            newY=140-newTH
-                        if(newX>10)
-                            newX=10
-                        else if(newX+newTW<140)
-                            newX=140-newTW
+                        newX=100-(100-x)*timesP
+                        newY=100-(100-y)*timesP
+                        if(newY>20)//防止缩放超出边界
+                            newY=20
+                        else if(newY+newTH<180)
+                            newY=180-newTH
+                        if(newX>20)
+                            newX=20
+                        else if(newX+newTW<180)
+                            newX=180-newTW
                         console.log(timesP)
                         console.log("wz"+newX,newY)
 
@@ -2588,8 +2509,9 @@ var createModelItem = Vue.extend({
 
         function saveImage(img) {
 
-            $('#imgShow').get(0).src = img;
-            $('#imgShow').show();
+            // $('#imgShow').get(0).src = img;
+            // $('#imgShow').show();
+            vthis.itemInfo.image = img
             vthis.loading=true
             vthis.dragReady=false
             setTimeout(()=>{

@@ -24,9 +24,12 @@
                         width="200">
                 </el-table-column>
                 <el-table-column
-                        prop="name"
+
                         label="Name"
                         >
+                    <template slot-scope="scope">
+                        <a :href="'/'+scope.row.type+'/'+scope.row.originOid" target="_blank">{{scope.row.name}}</a>
+                    </template>
                 </el-table-column>
                 <el-table-column
                         prop="type"
@@ -74,9 +77,12 @@
                         width="200">
                 </el-table-column>
                 <el-table-column
-                        prop="name"
+
                         label="Name"
                 >
+                    <template slot-scope="scope">
+                        <a :href="'/'+scope.row.type+'/'+scope.row.originOid" target="_blank">{{scope.row.name}}</a>
+                    </template>
                 </el-table-column>
                 <el-table-column
                         prop="type"
@@ -116,9 +122,12 @@
                         width="200">
                 </el-table-column>
                 <el-table-column
-                        prop="name"
+
                         label="Name"
                 >
+                    <template slot-scope="scope">
+                        <a :href="'/'+scope.row.type+'/'+scope.row.originOid" target="_blank">{{scope.row.name}}</a>
+                    </template>
                 </el-table-column>
                 <el-table-column
                         prop="type"
@@ -189,15 +198,14 @@
                     if(event.type=="modelItem"){
                         window.open("/version/"+event.type+"/"+event.originOid);
                     }
-                    else{
-                        window.open("/version/"+event.type+"/"+event.oid);
+                    else {
+                        window.open("/version/" + event.type + "/" + event.oid);
                     }
 
                 },
                 viewAccept(event){
 
                     window.open("/version/history/"+event.type+"/"+event.oid);
-
                 },
                 viewReject(event){
 
@@ -218,30 +226,37 @@
                         data: JSON.stringify(data),
                         async: true,
                         success:(json)=>{
-                            window.location.reload();
+                            // window.location.reload();
+                            let a = this.tableData.indexOf(event);
+                            if(a>=0){
+                                this.tableData.splice(a,1);
+                            }
                         }
                     })
-
 
                 },
                 reject(event){
 
-                     let data={
-                         modifier:event.modifier,
-                         type:event.type,
-                         oid:event.oid,
-                         originOid:event.originOid
-                     }
-                     $.ajax({
-                         type:"POST",
-                         url:"/version/reject",
-                         contentType: "application/json",
-                         data:JSON.stringify(data),
-                         async: true,
-                         success:(json)=>{
-                             window.location.reload();
-                         }
-                     })
+                    let data={
+                        modifier:event.modifier,
+                        type:event.type,
+                        oid:event.oid,
+                        originOid:event.originOid
+                    }
+                    $.ajax({
+                        type:"POST",
+                        url:"/version/reject",
+                        contentType: "application/json",
+                        data:JSON.stringify(data),
+                        async: true,
+                        success:(json)=>{
+                            // window.location.reload();
+                            let a = this.tableData.indexOf(event);
+                            if(a>=0){
+                                this.tableData.splice(a,1);
+                            }
+                        }
+                    })
 
                 }
 

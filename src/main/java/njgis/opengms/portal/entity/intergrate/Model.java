@@ -11,7 +11,7 @@ public class Model {
 
     private String name;
 
-    private String pid;
+    private String md5;
 
     private String description;
 

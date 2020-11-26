@@ -36,9 +36,4 @@ public class ThemeAddDTO {
     List<Application>application;
     List<SubApplication> subApplications;
     List<Application> sub_application;//
-
-
-
-
-
 }

@@ -206,7 +206,7 @@
                 </div>
 
                 <!--<i >-->
-                    <div th:each="theme,index:${themeResult}" th:if="${theme.status!='Private'}" class="el-col el-col-6 pull-left" style="padding:0 15px 20px 0;">
+                <div th:each="theme,index:${themeResult}" th:if="${theme.status!='Private'}" class="el-col el-col-6 pull-left" style="padding:0 15px 20px 0;">
                     <el-card slot="header" shadow="hover">
                         <a th:href="'../repository/theme/'+${theme.oid}"  target="_blank">
                             <img th:src="'../static'+${theme.img}"  style="width:100%;height: auto;" class="image">
@@ -222,7 +222,7 @@
                             </div>
                             <div class="el-col el-col-17" style="display:flex;">
                                 <div class="pull-left" style="display: block;margin:0 auto;">
-                                    <a th:href="'/user/'+${theme.creator_oid}"><h4 th:text="${theme.creator_name}">Tom Marvolo Riddle</h4></a>
+                                    <a th:href="'/profile/'+${theme.creator_oid}"><h4 th:text="${theme.creator_name}">Tom Marvolo Riddle</h4></a>
                                 </div>
                             </div>
                         </div>

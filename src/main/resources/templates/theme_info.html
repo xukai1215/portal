@@ -79,6 +79,7 @@
                                     </div>
                                 </div>
                                 <!--<el-radio-group v-model="isCollapse" style="margin-bottom: 20px;">-->
+                                <!--<el-radio-group v-model="isCollapse" style="margin-bottom: 20px;">-->
                                     <!--<el-radio-button :label="false">展开</el-radio-button>-->
                                     <!--<el-radio-button :label="true">收起</el-radio-button>-->
                                 <!--</el-radio-group>-->
@@ -250,7 +251,7 @@
                                     <!--<el-row type="center" class="row-bg" id="content2">-->
                                         <el-col th:each="item:${maintainer}" style="margin:20px 20px 0 0;float: left">
                                             <el-card>
-                                            <a th:href="'/user/'+${item.id}" target = "_blank">
+                                            <a th:href="'/profile/'+${item.id}" target = "_blank">
                                                     <div  style="margin: 5px;height: 40px;display: flex;justify-content: center;align-items: center;padding: 10px;">
                                                         <div class="el-col ">
                                                             <img src="/static/img/icon/default.png"
@@ -752,7 +753,8 @@
 <script type="text/javascript" src="/static/js/common/bootstrap-treeview.js"></script>
 <script type="text/javascript" src="/static/js/common/jquery-steps.js"></script>
 <script src="/static/js/common/vue-avatar.min.js"></script>
-<script src="/static/js/tinymce/tinymce.min.js"></script>
+<!--<script src="/static/js/tinymce/tinymce.min.js"></script>-->
+<script src="/static/js/tinymce_5.3.2/tinymce/js/tinymce/tinymce.min.js"></script>
 <script src="/static/element-ui/index.js"></script>
 <script src="/static/element-ui/umd/locale/en.js"></script>
 
@@ -768,5 +770,6 @@
 <script src="/static/socket/sockjs.min.js"></script>
 <script src="/static/js/page/create-theme.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jutils-src"></script>
+<!--<script type="text/javascript" src="/static/js/page/userSpace1.js"></script>-->
 
 </html>

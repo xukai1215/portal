@@ -287,6 +287,14 @@
         </dependency>
 
         <dependency>
+            <groupId>org.gdal</groupId>
+            <artifactId>gdal</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/main/resources/lib/gdal.jar</systemPath>
+        </dependency>
+
+        <dependency>
             <groupId>com.ip2location</groupId>
             <artifactId>ip2location</artifactId>
             <version>1.0</version>
@@ -300,6 +308,14 @@
             <version>1.0</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/src/main/resources/lib/mxgraph-all.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>com.gdal</groupId>
+            <artifactId>gdal</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/main/resources/lib/gdal.jar</systemPath>
         </dependency>
 
 
