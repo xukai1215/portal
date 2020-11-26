@@ -1265,7 +1265,7 @@ var vue = new Vue({
                     oid:modelOid
                 }
             }).then(res => {
-                    window.open('/user/'+res.data.data)
+                    window.open('/profile/'+res.data.data)
                 }
 
             )

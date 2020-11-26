@@ -119,7 +119,7 @@
                         </div>
                         <div class="el-col">
                             <div class="pull-left" style="display: block;margin-left: 15px;">
-                                <a th:href="'/user/'+${user.oid}"><h4 th:text="${user.name}" style="padding: 0;">Tom Marvolo Riddle</h4></a>
+                                <a th:href="'/profile/'+${user.userId}"><h4 th:text="${user.name}" style="padding: 0;">Tom Marvolo Riddle</h4></a>
                             </div>
                         </div>
                     </div>
@@ -162,7 +162,7 @@
                         <table class="table table-bordered" >
                             <thead>
                             <tr>
-                                <th class="thMain" th:text="${localization.language}"></th>
+                                <th class="thMain" th:text="${localization.localName}"></th>
                             </tr>
                             </thead>
                         </table>
@@ -240,7 +240,7 @@
                         <div class="panel-body" style="padding-left: 0px; padding-top: 7px; padding-right: 0px;">
                             <dl>
                                 <dt>Last modifier :&nbsp</dt>
-                                <dd><a th:text="${lastModifier.name}" th:href="${'/user/'+lastModifier.oid}"
+                                <dd><a th:text="${lastModifier.name}" th:href="${'/profile/'+lastModifier.userId}"
                                        target="_blank"></a></dd>
                                 <dt>Last modify time :&nbsp</dt>
                                 <dd th:text="${lastModifyTime}"></dd>
@@ -290,7 +290,7 @@
                         </div>
                         <div class="el-col">
                             <div class="pull-left" style="display: block;margin-left: 15px;">
-                                <a th:href="'/user/'+${user.oid}"><h4 th:text="${user.name}" style="padding: 0;">Tom Marvolo Riddle</h4></a>
+                                <a th:href="'/profile/'+${user.userId}"><h4 th:text="${user.name}" style="padding: 0;">Tom Marvolo Riddle</h4></a>
                             </div>
                         </div>
                     </div>
@@ -318,7 +318,7 @@
                         <div class="panel-body" style="padding-left: 0px; padding-top: 7px; padding-right: 0px;">
                             <dl>
                                 <dt>Last modifier :&nbsp</dt>
-                                <dd><a th:text="${lastModifier.name}" th:href="${'/user/'+lastModifier.oid}"
+                                <dd><a th:text="${lastModifier.name}" th:href="${'/profile/'+lastModifier.userId}"
                                        target="_blank"></a></dd>
                                 <dt>Last modify time :&nbsp</dt>
                                 <dd th:text="${lastModifyTime}"></dd>

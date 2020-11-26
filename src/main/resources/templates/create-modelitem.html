@@ -102,6 +102,9 @@
                                                         <div class="step-app">
                                                             <ul class="step-steps text-center">
                                                                 <li>
+                                                                    <a href="#step0">Classification</a>
+                                                                </li>
+                                                                <li>
                                                                     <a href="#step1">Basic Info</a>
                                                                 </li>
                                                                 <li>
@@ -114,40 +117,9 @@
                                                             </ul>
                                                             <div class="step-content">
                                                                 <div class="step-tab-panel" :class="step==1?'active':''" id="step1">
-                                                                    <div class="col-sm-4 tree" style="margin-top:10px">
-                                                                        <el-card>
-                                                                            <div slot="header" class="clearfix text-center">
-                                                                                <span style="font-size: 20px;color:#444">Model Classifications</span>
-                                                                            </div>
-                                                                            <el-tree style="max-height: 458px;overflow: auto"
-                                                                                     class="wzhScrollbar"
-                                                                                     id="tree2"
-                                                                                     ref="tree2"
-                                                                                     :data="treeData"
-                                                                                     show-checkbox
-                                                                                     node-key="id"
-                                                                                     :default-expanded-keys="[1,64]"
 
-                                                                                     @check-change="handleCheckChange"
-                                                                                     :props="defaultProps">
-                                                                            </el-tree>
-                                                                        </el-card>
-                                                                    </div>
-                                                                    <div class="col-sm-8" style="margin-top:10px;">
+                                                                    <div class="col-sm-offset-2 col-sm-8" style="margin-top:10px;">
                                                                         <div id="RepositoryParentsPanel">
-
-                                                                            <div class="form-horizontal">
-                                                                                <div class="form-group">
-                                                                                    <label for="parentNode"
-                                                                                           class="col-sm-2 control-label"><span class="xing">* </span>Classifications</label>
-                                                                                    <div class="col-sm-10">
-                                                                            <textarea class="form-control"
-                                                                                      id="parentNode"
-                                                                                      v-model="clsStr"
-                                                                                      readonly></textarea>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
 
                                                                             <div class="form-horizontal">
                                                                                 <div class="form-group">
@@ -241,8 +213,7 @@
 
                                                                             <div class="form-horizontal">
                                                                                 <div class="form-group">
-                                                                                    <label for="parentNode"
-                                                                                           class="col-sm-2 control-label">References</label>
+                                                                                    <label class="col-sm-2 control-label">References</label>
                                                                                     <div class="col-sm-10">
                                                                                         <table class="display table table-bordered table-striped dataTable"
                                                                                                id="dynamic-table"
@@ -380,6 +351,151 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
+                                                                <div class="step-tab-panel" id="step0">
+                                                                    <div>
+                                                                        <label>Please select one or more classifications the model belongs to:</label>
+                                                                    </div>
+
+                                                                    <div class="col-sm-offset-0 col-sm-7 tree" style="margin-top:10px">
+                                                                        <el-card shadow="never">
+                                                                            <div slot="header" class="clearfix text-center">
+                                                                                <span style="font-size: 20px;color:#444">Model Classifications</span>
+                                                                            </div>
+                                                                            <el-tree style="height: 400px;overflow: auto"
+                                                                                     class="col-sm-6 wzhScrollbar"
+                                                                                     id="tree2"
+                                                                                     ref="tree2"
+                                                                                     :data="treeData_part1"
+                                                                                     show-checkbox
+                                                                                     node-key="id"
+                                                                                     :default-expanded-keys="[1,9,30]"
+
+                                                                                     @check-change="handleCheckChange"
+                                                                                     :props="defaultProps">
+                                                                            </el-tree>
+                                                                            <el-tree style="height: 400px;overflow: auto"
+                                                                                     class="col-sm-6 wzhScrollbar"
+                                                                                     id="tree3"
+                                                                                     ref="tree3"
+                                                                                     :data="treeData_part2"
+                                                                                     show-checkbox
+                                                                                     node-key="id"
+                                                                                     :default-expanded-keys="[14,19]"
+
+                                                                                     @check-change="handleCheckChange"
+                                                                                     :props="defaultProps">
+                                                                            </el-tree>
+                                                                        </el-card>
+                                                                    </div>
+                                                                    <div class="col-sm-5" style="margin-top:10px">
+
+                                                                        <el-card shadow="never">
+                                                                            <div slot="header" class="clearfix text-center">
+                                                                                <span style="font-size: 20px;color:#444">Selected Classifications</span>
+                                                                            </div>
+                                                                            <el-tree style="height: 287px;overflow: auto"
+                                                                                     class="wzhScrollbar"
+                                                                                     id="tree_select"
+                                                                                     ref="tree_select"
+                                                                                     :data="treeData_select"
+                                                                                     node-key="id"
+                                                                                     :props="defaultProps">
+                                                                            </el-tree>
+
+                                                                        </el-card>
+                                                                        <el-card shadow="never" style="height:100px;">
+                                                                            {{curClassDesc}}
+
+                                                                        </el-card>
+
+                                                                    </div>
+                                                                </div>
+                                                                <div class="step-tab-panel" id="step2">
+                                                                    <div v-if="editTypeLocal=='create'" class="singleLocalization">
+                                                                        <div style="margin-bottom:10px;">
+                                                                            <div><b>Language :</b> (After creating, you can describe the item in different languages by editing)</div>
+                                                                            <el-select v-model="languageAdd.local" filterable placeholder="Please select language">
+                                                                                <el-option
+                                                                                        v-for="item in languageList"
+                                                                                        :key="item.value"
+                                                                                        :label="item.label"
+                                                                                        :value="item">
+                                                                                    <span style="float: left">{{ item.label }}</span>
+                                                                                    <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
+                                                                                </el-option>
+                                                                            </el-select>
+                                                                        </div>
+                                                                        <div style="margin-bottom:10px;">
+                                                                            <div><b>Model Item Name :</b> </div>
+                                                                            <el-input v-model="currentLocalization.name" placeholder="Please enter concept's name in your selected language"></el-input>
+                                                                        </div>
+                                                                        <div style="margin-bottom:10px;">
+                                                                            <div><b>Description :</b> </div>
+                                                                            <textarea id="singleDescription"></textarea>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div v-if="editTypeLocal=='modify'" class="localization">
+                                                                        <el-card style="width: 30%;float:left">
+                                                                            <div slot="header" class="clearfix">
+                                                                                <span style="font-weight: bold">Localization Description</span>
+                                                                                <el-button
+                                                                                        style="float: right; padding: 3px 0"
+                                                                                        type="text" @click="addLocalization">+ Add
+                                                                                </el-button>
+                                                                            </div>
+                                                                            <el-collapse-transition>
+                                                                                <div v-show="languageAdd.show">
+                                                                                    <el-select v-model="languageAdd.local" filterable placeholder="Please select language" style="width:80%;float: left;">
+                                                                                        <el-option
+                                                                                                v-for="item in languageList"
+                                                                                                :key="item.value"
+                                                                                                :label="item.label"
+                                                                                                :value="item">
+                                                                                            <span style="float: left">{{ item.label }}</span>
+                                                                                            <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
+                                                                                        </el-option>
+                                                                                    </el-select>
+                                                                                    <el-button @click="confirmAddLocal" type="success" style="width:10%;float: left;"><i class="el-icon-check"></i></el-button>
+                                                                                    <el-button @click="cancelAddLocal" type="danger" style="width:10%;"><i class="el-icon-close"></i></el-button>
+                                                                                </div>
+                                                                            </el-collapse-transition>
+                                                                            <div class="clearfix" style="height:400px;overflow: auto;">
+                                                                                <el-table
+                                                                                        :data="localizationList"
+                                                                                        :show-header="false"
+                                                                                >
+                                                                                    <el-table-column>
+                                                                                        <template slot-scope="props">
+                                                                                            <el-tooltip class="item" effect="light" :content="props.row.localCode" placement="top">
+                                                                                                <el-button
+                                                                                                        :class="{localizationSelected:props.row.selected}"
+                                                                                                        style="width:90%;float:left;"
+                                                                                                        @click="changeLocalization(props.row)">
+                                                                                                    {{props.row.localName}}
+                                                                                                </el-button>
+                                                                                            </el-tooltip>
+
+                                                                                            <el-button style="width:10%;" @click="deleteLocalization(props.row)"><i
+                                                                                                    class="el-icon-close"></i>
+                                                                                            </el-button>
+
+                                                                                        </template>
+                                                                                    </el-table-column>
+                                                                                </el-table>
+                                                                            </div>
+                                                                        </el-card>
+                                                                        <el-card style="width: 70%;">
+                                                                            <div slot="header" class="clearfix">
+                                                                                <span>Model Item Name : </span>
+                                                                                <el-input v-model="currentLocalization.name" placeholder="Please enter concept's localized name"></el-input>
+
+                                                                            </div>
+                                                                            <textarea id="conceptText" style="float:left">
+
+                                                                    </textarea>
+                                                                        </el-card>
+                                                                    </div>
+                                                                </div>
                                                                 <div class="step-tab-panel" id="step3">
                                                                     <div class="panel panel-success" style="border:none">
 
@@ -484,95 +600,8 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                                <div class="step-tab-panel" id="step2">
-                                                                    <div v-if="editTypeLocal=='create'" class="singleLocalization">
-                                                                        <div style="margin-bottom:10px;">
-                                                                            <div><b>Language :</b> (After creating, you can describe the item in different languages by editing)</div>
-                                                                            <el-select v-model="languageAdd.local" filterable placeholder="Please select language">
-                                                                                <el-option
-                                                                                        v-for="item in languageList"
-                                                                                        :key="item.value"
-                                                                                        :label="item.label"
-                                                                                        :value="item">
-                                                                                    <span style="float: left">{{ item.label }}</span>
-                                                                                    <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
-                                                                                </el-option>
-                                                                            </el-select>
-                                                                        </div>
-                                                                        <div style="margin-bottom:10px;">
-                                                                            <div><b>Model Item Name :</b> </div>
-                                                                            <el-input v-model="currentLocalization.name" placeholder="Please enter concept's name in your selected language"></el-input>
-                                                                        </div>
-                                                                        <div style="margin-bottom:10px;">
-                                                                            <div><b>Description :</b> </div>
-                                                                            <textarea id="singleDescription"></textarea>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div v-if="editTypeLocal=='modify'" class="localization">
-                                                                        <el-card style="width: 30%;float:left">
-                                                                            <div slot="header" class="clearfix">
-                                                                                <span style="font-weight: bold">Localization Description</span>
-                                                                                <el-button
-                                                                                        style="float: right; padding: 3px 0"
-                                                                                        type="text" @click="addLocalization">+ Add
-                                                                                </el-button>
-                                                                            </div>
-                                                                            <el-collapse-transition>
-                                                                                <div v-show="languageAdd.show">
-                                                                                    <el-select v-model="languageAdd.local" filterable placeholder="Please select language" style="width:80%;float: left;">
-                                                                                        <el-option
-                                                                                                v-for="item in languageList"
-                                                                                                :key="item.value"
-                                                                                                :label="item.label"
-                                                                                                :value="item">
-                                                                                            <span style="float: left">{{ item.label }}</span>
-                                                                                            <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
-                                                                                        </el-option>
-                                                                                    </el-select>
-                                                                                    <el-button @click="confirmAddLocal" type="success" style="width:10%;float: left;"><i class="el-icon-check"></i></el-button>
-                                                                                    <el-button @click="cancelAddLocal" type="danger" style="width:10%;"><i class="el-icon-close"></i></el-button>
-                                                                                </div>
-                                                                            </el-collapse-transition>
-                                                                            <div class="clearfix" style="height:400px;overflow: auto;">
-                                                                                <el-table
-                                                                                        :data="localizationList"
-                                                                                        :show-header="false"
-                                                                                >
-                                                                                    <el-table-column>
-                                                                                        <template slot-scope="props">
-                                                                                            <el-tooltip class="item" effect="light" :content="props.row.localCode" placement="top">
-                                                                                                <el-button
-                                                                                                        :class="{localizationSelected:props.row.selected}"
-                                                                                                        style="width:90%;float:left;"
-                                                                                                        @click="changeLocalization(props.row)">
-                                                                                                    {{props.row.localName}}
-                                                                                                </el-button>
-                                                                                            </el-tooltip>
-
-                                                                                            <el-button style="width:10%;" @click="deleteLocalization(props.row)"><i
-                                                                                                    class="el-icon-close"></i>
-                                                                                            </el-button>
-
-                                                                                        </template>
-                                                                                    </el-table-column>
-                                                                                </el-table>
-                                                                            </div>
-                                                                        </el-card>
-                                                                        <el-card style="width: 70%;">
-                                                                            <div slot="header" class="clearfix">
-                                                                                <span>Model Item Name : </span>
-                                                                                <el-input v-model="currentLocalization.name" placeholder="Please enter concept's localized name"></el-input>
-
-                                                                            </div>
-                                                                            <textarea id="conceptText" style="float:left">
-
-                                                                    </textarea>
-                                                                        </el-card>
-                                                                    </div>
-                                                                    <textarea id="modelItemText"></textarea>
-                                                                </div>
                                                             </div>
-                                                            <div class="step-footer text-right">
+                                                            <div class="step-footer text-right pull-right">
                                                                 <button class="btn btn-danger prev" @click="cancelEditClick()" style="">
                                                                     Exit
                                                                 </button>

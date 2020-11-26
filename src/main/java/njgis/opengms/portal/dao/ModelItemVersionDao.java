@@ -20,4 +20,6 @@ public interface ModelItemVersionDao extends MongoRepository<ModelItemVersion,St
 
     ModelItemVersion findFirstByOid(String oid);
 
+    List<ModelItemVersion> findAllByVerStatusAndClassifications2In(int num, String classification);
+
 }

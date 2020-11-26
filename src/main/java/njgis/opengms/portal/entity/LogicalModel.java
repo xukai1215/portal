@@ -32,6 +32,7 @@ public class LogicalModel extends Item {
 
     List<String> image;
 
+//    List<String> modelItems;
 //    LogicalModelRelate relate;
 
     Object mdl;

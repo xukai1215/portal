@@ -185,7 +185,7 @@
                         </div>
                         <div class="el-col">
                             <div class="pull-left" style="display: block;margin-left: 15px;">
-                                <a th:href="'/user/'+${user.oid}"><h4 th:text="${user.name}" style="padding: 0;">Tom
+                                <a th:href="'/profile/'+${user.userId}"><h4 th:text="${user.name}" style="padding: 0;">Tom
                                     Marvolo Riddle</h4></a>
                             </div>
                         </div>
@@ -297,12 +297,32 @@
                     <div class="head_text">
                         <h4>Detailed Description</h4>
                     </div>
+
+                    <el-dropdown style="float:right;padding:0 10px;background-color: white;cursor:pointer;" trigger="click" @command="changeDetailLanguage" >
+
+                        <span v-if="currentDetailLanguage==''" class="el-dropdown-link" >
+                            <span th:text="${detailLanguage}"></span><i class="el-icon-arrow-down el-icon--right"></i>
+                        </span>
+                        <span v-else class="el-dropdown-link" >
+                            {{currentDetailLanguage}}<i class="el-icon-arrow-down el-icon--right"></i>
+                        </span>
+
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item th:each="language:${languageList}" th:text="${language}" th:attr="command=${language}">View Count</el-dropdown-item>
+                            <!--<el-dropdown-item command="Name">Name</el-dropdown-item>-->
+                            <!--<el-dropdown-item command="Create Time">Create Time</el-dropdown-item>-->
+
+                        </el-dropdown-menu>
+                    </el-dropdown>
+                    <span class="fa fa-language" style="background-color:white;padding-left:10px;float:right;font-size:23px;"></span>
                     <!--<span class="blockEdit">-->
                     <!--<el-button type="primary" icon="el-icon-edit" @click="getClassifications" circle></el-button>-->
                     <!--</span>-->
                 </div>
                 <div class="block_content">
-                    <div th:utext="${detail}" id="detail" class="detailIntroducePanel">
+                    <div v-if="detail==''" th:utext="${detail}" id="detail" class="detailIntroducePanel">
+                    </div>
+                    <div v-else v-html="detail" id="detail" class="detailIntroducePanel">
                     </div>
                 </div>
                 <div class="fullPaper text-center hide">
@@ -846,7 +866,7 @@
                         <div class="panel-body" style="padding-left: 0px; padding-top: 7px; padding-right: 0px;">
                             <dl>
                                 <dt>Last modifier :&nbsp</dt>
-                                <dd><a th:text="${lastModifier.name}" th:href="${'/user/'+lastModifier.oid}"
+                                <dd><a th:text="${lastModifier.name}" th:href="${'/profile/'+lastModifier.userId}"
                                        target="_blank"></a></dd>
                                 <dt>Last modify time :&nbsp</dt>
                                 <dd th:text="${lastModifyTime}"></dd>
@@ -901,7 +921,7 @@
                         </div>
                         <div class="el-col">
                             <div class="pull-left" style="display: block;margin-left: 15px;">
-                                <a th:href="'/user/'+${user.oid}"><h4 th:text="${user.name}" style="padding: 0;">Tom
+                                <a th:href="'/profile/'+${user.userId}"><h4 th:text="${user.name}" style="padding: 0;">Tom
                                     Marvolo Riddle</h4></a>
                             </div>
                         </div>
@@ -988,7 +1008,7 @@
                         <div class="panel-body" style="padding-left: 0px; padding-top: 7px; padding-right: 0px;">
                             <dl>
                                 <dt>Last modifier :&nbsp</dt>
-                                <dd><a th:text="${lastModifier.name}" th:href="${'/user/'+lastModifier.oid}"
+                                <dd><a th:text="${lastModifier.name}" th:href="${'/profile/'+lastModifier.userId}"
                                        target="_blank"></a></dd>
                                 <dt>Last modify time :&nbsp</dt>
                                 <dd th:text="${lastModifyTime}"></dd>

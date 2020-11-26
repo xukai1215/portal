@@ -98,7 +98,7 @@
                             <div class="block_content">
                                 <img th:src="${user.image}==''?'/static/img/icon/default.png':${user.image}" class="round_icon" style="width:50px;height: 50px;float:left;">
                                 <div class="text-center" style="margin-left: 55px;display: block;">
-                                    <a th:href="'/user/'+${user.oid}"><h4 th:text="${user.name}">Tom Marvolo Riddle</h4></a>
+                                    <a th:href="'/profile/'+${user.userId}"><h4 th:text="${user.name}">Tom Marvolo Riddle</h4></a>
                                 </div>
                                 <div class="text-center">
                                     <h5 th:text="'contributed at '+${date}">contributed at 2018-7-13 14:32:18 </h5>
@@ -117,7 +117,7 @@
                             <div class="block_content">
                                 <img th:src="${user.image}==''?'/static/img/icon/default.png':${user.image}" class="round_icon" style="width:50px;height: 50px;float:left;">
                                 <div class="text-center" style="margin-left: 55px;display: block;">
-                                    <a th:href="'/user/'+${user.oid}"><h4 th:text="${user.name}">Tom Marvolo Riddle</h4></a>
+                                    <a th:href="'/profile/'+${user.userId}"><h4 th:text="${user.name}">Tom Marvolo Riddle</h4></a>
                                 </div>
                                 <div class="text-center">
                                     <h5 th:text="'contributed at '+${date}">contributed at 2018-7-13 14:32:18 </h5>

@@ -147,9 +147,45 @@ public class ModelItemService {
         }
 
         //详情页面
-        String detailResult;
-        String model_detailDesc=modelInfo.getDetail();
-        detailResult = commonService.getDetail(model_detailDesc);
+//        String detailResult;
+//        String model_detailDesc=modelInfo.getDetail();
+//        detailResult = commonService.getDetail(model_detailDesc);
+
+        //排序
+        List<Localization> locals = modelInfo.getLocalizationList();
+        Collections.sort(locals);
+
+        String detailResult = "";
+        String detailLanguage = "";
+        //先找中英文描述
+        for(Localization localization:locals){
+            String local = localization.getLocalCode();
+            if(local.equals("en")||local.equals("zh")||local.contains("en-")||local.contains("zh-")){
+                String localDesc = localization.getDescription();
+                if(localDesc!=null&&!localDesc.equals("")) {
+                    detailLanguage = localization.getLocalName();
+                    detailResult = localization.getDescription();
+                    break;
+                }
+            }
+        }
+        //如果没有中英文，则使用其他语言描述
+        if(detailResult.equals("")){
+            for(Localization localization:locals){
+                String localDesc = localization.getDescription();
+                if(localDesc!=null&&!localDesc.equals("")) {
+                    detailLanguage = localization.getLocalName();
+                    detailResult = localization.getDescription();
+                    break;
+                }
+            }
+        }
+
+        //语言列表
+        List<String> languageList = new ArrayList<>();
+        for(Localization local:locals){
+            languageList.add(local.getLocalName());
+        }
 
 
         //时间
@@ -380,6 +416,8 @@ public class ModelItemService {
         modelAndView.addObject("metaKeywords",meta_keywords);
         modelAndView.addObject("classifications",classResult);
         modelAndView.addObject("classifications2", class2Result);
+        modelAndView.addObject("detailLanguage",detailLanguage);
+        modelAndView.addObject("languageList", languageList);
         modelAndView.addObject("detail",detailResult);
         modelAndView.addObject("date",dateResult);
         modelAndView.addObject("year",calendar.get(Calendar.YEAR));
@@ -407,69 +445,69 @@ public class ModelItemService {
             ModelItem modelItem=modelItemDao.findFirstByOid(id);
 
             //详情页面
-            String detailResult;
-            String model_detailDesc=modelItem.getDetail();
-            int num=model_detailDesc.indexOf("/upload/document/");
-            if(num==-1||num>20){
-                detailResult=model_detailDesc;
-            }
-            else {
-                if(model_detailDesc.indexOf("/")==0){
-                    model_detailDesc.substring(1);
-                }
-                //model_detailDesc = model_detailDesc.length() > 0 ? model_detailDesc.substring(1) : model_detailDesc;
-                String filePath = resourcePath.substring(0,resourcePath.length()-7) +"/" + model_detailDesc;
-                try {
-                    filePath = java.net.URLDecoder.decode(filePath, "utf-8");
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-                if (model_detailDesc.length() > 0) {
-                    File file = new File(filePath);
-                    if (file.exists()) {
-                        StringBuilder detail = new StringBuilder();
-                        try {
-                            FileInputStream fileInputStream = new FileInputStream(file);
-                            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, "UTF-8");
-                            BufferedReader br = new BufferedReader(inputStreamReader);
-                            String line;
-                            while ((line = br.readLine()) != null) {
-                                line = line.replaceAll("<h1", "<h1 style='font-size:16px;margin-top:0'");
-                                line = line.replaceAll("<h2", "<h2 style='font-size:16px;margin-top:0'");
-                                line = line.replaceAll("<h3", "<h3 style='font-size:16px;margin-top:0'");
-                                line = line.replaceAll("<p", "<p style='font-size:14px;text-indent:2em'");
-                                detail.append(line);
-                            }
-                            br.close();
-                            inputStreamReader.close();
-                            fileInputStream.close();
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                        } catch (UnsupportedEncodingException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        detailResult = detail.toString();
-                    } else {
-                        detailResult = model_detailDesc;
-                    }
-                } else {
-                    detailResult = model_detailDesc;
-                }
-            }
-
-            int index;
-            if((index = detailResult.indexOf("</head>"))!=-1){
-                detailResult = detailResult.substring(index+7);
-            }
-
-            detailResult = Utils.saveBase64Image(detailResult,modelItem.getOid(),resourcePath, htmlLoadPath);
-
-
-            modelItem.setDetail(detailResult);
-
-            modelItem.setImage(modelItem.getImage());
+//            String detailResult;
+//            String model_detailDesc=modelItem.getDetail();
+//            int num=model_detailDesc.indexOf("/upload/document/");
+//            if(num==-1||num>20){
+//                detailResult=model_detailDesc;
+//            }
+//            else {
+//                if(model_detailDesc.indexOf("/")==0){
+//                    model_detailDesc.substring(1);
+//                }
+//                //model_detailDesc = model_detailDesc.length() > 0 ? model_detailDesc.substring(1) : model_detailDesc;
+//                String filePath = resourcePath.substring(0,resourcePath.length()-7) +"/" + model_detailDesc;
+//                try {
+//                    filePath = java.net.URLDecoder.decode(filePath, "utf-8");
+//                } catch (UnsupportedEncodingException e) {
+//                    e.printStackTrace();
+//                }
+//                if (model_detailDesc.length() > 0) {
+//                    File file = new File(filePath);
+//                    if (file.exists()) {
+//                        StringBuilder detail = new StringBuilder();
+//                        try {
+//                            FileInputStream fileInputStream = new FileInputStream(file);
+//                            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, "UTF-8");
+//                            BufferedReader br = new BufferedReader(inputStreamReader);
+//                            String line;
+//                            while ((line = br.readLine()) != null) {
+//                                line = line.replaceAll("<h1", "<h1 style='font-size:16px;margin-top:0'");
+//                                line = line.replaceAll("<h2", "<h2 style='font-size:16px;margin-top:0'");
+//                                line = line.replaceAll("<h3", "<h3 style='font-size:16px;margin-top:0'");
+//                                line = line.replaceAll("<p", "<p style='font-size:14px;text-indent:2em'");
+//                                detail.append(line);
+//                            }
+//                            br.close();
+//                            inputStreamReader.close();
+//                            fileInputStream.close();
+//                        } catch (FileNotFoundException e) {
+//                            e.printStackTrace();
+//                        } catch (UnsupportedEncodingException e) {
+//                            e.printStackTrace();
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
+//                        detailResult = detail.toString();
+//                    } else {
+//                        detailResult = model_detailDesc;
+//                    }
+//                } else {
+//                    detailResult = model_detailDesc;
+//                }
+//            }
+//
+//            int index;
+//            if((index = detailResult.indexOf("</head>"))!=-1){
+//                detailResult = detailResult.substring(index+7);
+//            }
+//
+//            detailResult = Utils.saveBase64Image(detailResult,modelItem.getOid(),resourcePath, htmlLoadPath);
+//
+//
+//            modelItem.setDetail(detailResult);
+//
+//            modelItem.setImage(modelItem.getImage());
             return modelItem;
         } catch (Exception e) {
             System.out.println("有人乱查数据库！！该ID不存在Model Item对象");
@@ -487,7 +525,9 @@ public class ModelItemService {
         modelItem.setStatus(modelItemAddDTO.getStatus());
         modelItem.setAuthor(author);
         modelItem.setOid(UUID.randomUUID().toString());
-        modelItem.setDetail(Utils.saveBase64Image(modelItemAddDTO.getDetail(),modelItem.getOid(),resourcePath,htmlLoadPath));
+        modelItem.setDetail("");
+        //TODO: localization图片本地化存储
+//        modelItem.setDetail(Utils.saveBase64Image(modelItemAddDTO.getDetail(),modelItem.getOid(),resourcePath,htmlLoadPath));
 
         String path="/modelItem/" + UUID.randomUUID().toString() + ".jpg";
         String[] strs=modelItemAddDTO.getUploadImage().split(",");
@@ -1124,7 +1164,7 @@ public class ModelItemService {
         String searchText = modelItemFindDTO.getSearchText();
         //List<String> classifications=modelItemFindDTO.getClassifications();
         //默认以viewCount排序
-        Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
+        Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, modelItemFindDTO.getSortField());
         Pageable pageable = PageRequest.of(page, pageSize, sort);
 
         Classification classification=classificationService.getByOid(classes.get(0));
@@ -1180,7 +1220,7 @@ public class ModelItemService {
 
             JSONObject userObj = new JSONObject();
             User user = userDao.findFirstByUserName(modelItems.get(i).getAuthor());
-            userObj.put("oid", user.getOid());
+            userObj.put("userId", user.getUserId());
             userObj.put("image", user.getImage().equals("") ? "" : htmlLoadPath + user.getImage());
             userObj.put("name", user.getName());
 
@@ -1209,7 +1249,7 @@ public class ModelItemService {
         String searchText = modelItemFindDTO.getSearchText();
         //List<String> classifications=modelItemFindDTO.getClassifications();
         //默认以viewCount排序
-        Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
+        Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, modelItemFindDTO.getSortField());
         Pageable pageable = PageRequest.of(page, pageSize, sort);
 
         Classification classification = classification2Service.getByOid(classes.get(0));
@@ -1265,7 +1305,7 @@ public class ModelItemService {
 
             JSONObject userObj=new JSONObject();
             User user=userDao.findFirstByUserName(modelItems.get(i).getAuthor());
-            userObj.put("oid",user.getOid());
+            userObj.put("userId",user.getUserId());
             userObj.put("image",user.getImage().equals("")?"":htmlLoadPath+user.getImage());
             userObj.put("name",user.getName());
 

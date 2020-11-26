@@ -15,6 +15,7 @@ import njgis.opengms.portal.entity.ComputableModel;
 import njgis.opengms.portal.entity.ModelItem;
 import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.entity.support.AuthorInfo;
+import njgis.opengms.portal.entity.support.Localization;
 import njgis.opengms.portal.entity.support.ModelRelation;
 import njgis.opengms.portal.enums.RelationTypeEnum;
 import njgis.opengms.portal.service.*;
@@ -242,6 +243,19 @@ public class ModelItemRestController {
         ModelItem modelItem=modelItemService.getByOid(id);
         modelItem.setImage(modelItem.getImage().equals("")?"":htmlLoadPath+modelItem.getImage());
         return ResultUtils.success(modelItem);
+    }
+
+    @RequestMapping (value = "/getDetailByLanguage", method = RequestMethod.GET)
+    JsonResult getDetailByLanguage(@RequestParam(value="oid") String oid, @RequestParam(value="language") String language){
+
+        ModelItem modelItem = modelItemService.getByOid(oid);
+        List<Localization> localizationList = modelItem.getLocalizationList();
+        for(Localization localization : localizationList){
+            if(localization.getLocalName().equals(language)){
+                return ResultUtils.success(localization.getDescription());
+            }
+        }
+        return ResultUtils.error(-1,"language does not exist in this model item.");
     }
 
     @RequestMapping(value = "/getClassification/{id}", method = RequestMethod.GET)

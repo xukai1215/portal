@@ -4,11 +4,15 @@ import njgis.opengms.portal.dto.UserResultDTO;
 import njgis.opengms.portal.entity.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import java.util.List;
+
 public interface UserDao extends MongoRepository<User,String> {
 
     User findFirstById(String id);
 
     User findFirstByOid(String id);
+
+    User findFirstByUserId(String userId);
 
     User findFirstByName(String name);
 
@@ -18,4 +22,5 @@ public interface UserDao extends MongoRepository<User,String> {
 
     UserResultDTO findByUserName(String userName);
 
+    List<User> findAllByUserIdContains(String userId);
 }

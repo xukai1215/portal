@@ -1710,6 +1710,15 @@ public class UserService {
         }
     }
 
+    public User getByUserId(String id) {
+        try {
+            return userDao.findFirstByUserId(id);
+        } catch (Exception e) {
+            System.out.println("有人乱查数据库！！该OID不存在User对象");
+            throw new MyException(ResultEnum.NO_OBJECT);
+        }
+    }
+
     public int addUser(UserAddDTO user) {
 
         User u = userDao.findFirstByUserName(user.getUserName());
@@ -1733,8 +1742,46 @@ public class UserService {
             user1.setWiki("");
             Affiliation affiliation = new Affiliation();
             user1.setAffiliation(affiliation);
+            user1.setUserId(generateUserId(user1.getName().trim()));
             userDao.insert(user1);
             return 1;
+        }
+    }
+
+    public String generateUserId(String name){
+        name = name.trim().replaceAll(" ","_");
+        //查询userid重名的用户
+        List<User> list = userDao.findAllByUserIdContains(name);
+        //若没有重名，则直接使用
+        if(list.size()==0) {
+            return name;
+        }else { //有重名则判断是否是真正重名，并计算排序序号
+            List<Integer> orders = new ArrayList<>();
+            for (User u : list) {
+                //userid前部是否一致
+                if (u.getUserId().startsWith(name)) {
+                    String left = u.getUserId().replace(name, "");
+                    if (left.equals("")) {
+                        orders.add(1);
+                    }else{
+                        String[] leftNameSplit = left.split("_");
+                        if(leftNameSplit.length==2 && leftNameSplit[0].equals("")){
+                            try {
+                                int num = Integer.parseInt(leftNameSplit[1]);
+                                orders.add(num);
+                            }catch (Exception e){
+                                continue;
+                            }
+                        }
+                    }
+                }
+            }
+            if(orders.size()==0) { // 不是真正重名
+                return name;
+            }else {
+                orders.sort(Comparator.comparingInt(Integer::intValue).reversed());
+                return name + "_" + orders.get(0)+1;
+            }
         }
     }
 
@@ -1867,6 +1914,7 @@ public class UserService {
         userInfo.put("uid", user.getUserName());
         userInfo.put("name", user.getName());
         userInfo.put("image", getImage(user.getOid()));
+        userInfo.put("userId", user.getUserId());
 
         countInfo.put("modelItems",user.getModelItems());
         countInfo.put("dataItems",user.getDataItems());
@@ -1924,6 +1972,7 @@ public class UserService {
         JSONObject userJson = new JSONObject();
         userJson.put("name", user.getName());
         userJson.put("oid", user.getOid());
+        userJson.put("userId", user.getUserId());
         userJson.put("image", user.getImage().equals("") ? "" : htmlLoadPath + user.getImage());
         return userJson;
     }

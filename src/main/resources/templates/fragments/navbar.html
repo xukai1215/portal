@@ -169,7 +169,7 @@
         <div th:if="${logged}" class="subLog zmax" id="logedSub" style="right: 0px">
             <ul>
                 <li><a id="userSpaceDir" href="/user/userSpace">My Space</a></li>
-                <li><a id="userPageDir" th:href="${'/user/' + userNavBar.oid}">My Page</a></li>
+                <li><a id="userPageDir" th:href="${'/profile/' + userNavBar.userId}">My Page</a></li>
                 <li>
                     <!--<el-badge :value="2" class="item">-->
                     <!--<a id="userNoticeDir" href="/user/userSpace#/notice">Notice</a>-->
@@ -190,7 +190,7 @@
                 <li style="padding-top: 16px;background-color: rgb(8,10,14)"><p style="text-align: center;font-size: 15.2px;color: white">
                     Hello ! &nbsp;&nbsp;<span id="userAloha" style="font-size: 15.5px;" th:text="${userNavBar.name}"></span></p></li>
                 <li><a href="/user/userSpace">My Space</a></li>
-                <li><a id="phoneUserPageDir" th:href="${'/user/' + userNavBar.oid}">My Page</a></li>
+                <li><a id="phoneUserPageDir" th:href="${'/profile/' + userNavBar.userId}">My Page</a></li>
                 <li class="el-badge item">
                     <a id="userNoticeDir2" href="/user/userSpace#/notice">Notice</a>
                     <sup th:if="${userNavBar.messageNum}" class="el-badge__content is-fixed notice_num" th:text="${userNavBar.messageNum}" style="right: 45%!important;"></sup>

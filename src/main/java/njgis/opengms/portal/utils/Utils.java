@@ -749,6 +749,9 @@ public class Utils {
     }
 
     public static String saveBase64Image(String content,String oid,String resourcePath,String htmlLoadPath){
+        if(content==null){
+            return null;
+        }
         int startIndex = 0, endIndex = 0, index = 0;
         while (content!=null&&content.indexOf("src=\"data:im", startIndex) != -1) {
             int Start = content.indexOf("src=\"data:im", startIndex) + 5;

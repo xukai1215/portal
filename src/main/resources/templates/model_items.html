@@ -86,38 +86,27 @@
                             @current-change="handleCurrentChange"
                             :props="defaultProps">
                     </el-tree>
-                    <el-tree
-                            style="display: none;"
-                            id="tree2"
-                            ref="tree2"
-                            :data="treeData"
-                            show-checkbox
-                            node-key="id"
-                            :default-expanded-keys="[]"
 
-                            @check-change="handleCheckChange"
-                            :props="defaultProps">
-                    </el-tree>
                 </el-card>
 
-                <!--<el-card class="box-card categoryList" style="position:relative">-->
-                <!--<div slot="header" class="clearfix text-center">-->
-                <!--<span style="font-size: 20px;color:#444">Model Classifications 2</span>-->
-                <!--</div>-->
+                <el-card class="box-card categoryList" style="position:relative">
+                <div slot="header" class="clearfix text-center">
+                <span style="font-size: 20px;color:#444">Model Classifications 2</span>
+                </div>
 
-                <!--<el-tree-->
-                <!--id="tree3"-->
-                <!--ref="tree3"-->
-                <!--:data="treeData2"-->
-                <!--:highlight-current="true"-->
-                <!--node-key="id"-->
-                <!--:default-expanded-keys="[1,14,19,24]"-->
+                <el-tree
+                id="tree3"
+                ref="tree3"
+                :data="treeData2"
+                :highlight-current="true"
+                node-key="id"
+                :default-expanded-keys="[1,14,19,24]"
 
-                <!--@current-change="handleCurrentChange2"-->
-                <!--:props="defaultProps">-->
-                <!--</el-tree>-->
+                @current-change="handleCurrentChange2"
+                :props="defaultProps">
+                </el-tree>
 
-                <!--</el-card>-->
+                </el-card>
             </div>
             <div class="el-col el-col-18 minScreen_maxWidth">
                 <div class="searcherPanel">
@@ -226,10 +215,42 @@
                     </span>
                 </div>
 
-                <div id="curClassBar" role="alert" class="alert alert-info" style="margin-bottom: 2px;"><span><strong class="minScreen_curClass">Current Classification: {{currentClass}} </strong>
-                    <strong v-if="pageOption.progressBar" style="float: right;">Loading... </strong>
-                    <strong v-if="!pageOption.progressBar" style="float: right;">{{pageOption.total}} items</strong></span><br> <span></span> <span></span>
+                <div id="curClassBar" role="alert" class="alert alert-info" style="margin-bottom: 2px;">
+                    <strong class="minScreen_curClass">Current Classification: {{currentClass}} </strong>
+                        <!--<strong v-if="pageOption.progressBar" style="float: right;">Loading... </strong>-->
+                        <!--<strong v-if="!pageOption.progressBar" style="float: right;">{{pageOption.total}} items</strong>-->
+                        <span style="float:right;">
+                            <span style="font-weight: bold">Sorted By:</span>
+                            <el-dropdown trigger="click" @command="changeSortField" style="cursor:pointer;">
+                                <span class="el-dropdown-link">
+                                    {{sortTypeName}}<i class="el-icon-arrow-down el-icon--right"></i>
+                                </span>
+                                <el-dropdown-menu slot="dropdown">
+                                    <el-dropdown-item command="View Count">View Count</el-dropdown-item>
+                                    <el-dropdown-item command="Name">Name</el-dropdown-item>
+                                    <el-dropdown-item command="Create Time">Create Time</el-dropdown-item>
+
+                                </el-dropdown-menu>
+                            </el-dropdown>
+                            <el-dropdown trigger="click" @command="changeSortOrder" style="cursor:pointer;">
+                                <span class="el-dropdown-link">
+                                    {{sortOrder}}<i class="el-icon-arrow-down el-icon--right"></i>
+                                </span>
+                                <el-dropdown-menu slot="dropdown">
+                                    <el-dropdown-item command="asc.">asc.</el-dropdown-item>
+                                    <el-dropdown-item command="desc.">desc.</el-dropdown-item>
+                                </el-dropdown-menu>
+                            </el-dropdown>
+                        </span>
+
                 </div>
+
+                <el-pagination style="text-align: center;margin:10px 0" v-if="pageOption.paginationShow && pageOption.searchResult.length>0"
+                               @current-change="handlePageChange"
+                               :current-page="pageOption.currentPage"
+                               layout="total, prev, pager, next, jumper"
+                               :total="pageOption.total">
+                </el-pagination>
 
                 <div class="modelPanel" v-loading="pageOption.progressBar">
                     <div class="content-body">
@@ -267,13 +288,13 @@
                             <hr>
                             <div class="detail_bottom">
                                 <div style="display:inline-block;float: left;">
-                                    <a :href="'/user/'+ pageOption.users[key].oid">
+                                    <a :href="'/profile/'+ pageOption.users[key].userId">
                                     <img :src="pageOption.users[key].image==''?'/static/img/icon/default.png':pageOption.users[key].image"
                                          class="round_icon"
                                          style="margin-top:-5px;width:30px;height: 30px;display: inline-block;">
                                     </a>
 
-                                    <a :href="'/user/'+ pageOption.users[key].oid" target="_blank"
+                                    <a :href="'/profile/'+ pageOption.users[key].userId" target="_blank"
                                        style="display: inline-block;margin-left: 5px;"><h4>
                                         {{pageOption.users[key].name}}</h4></a>
 
@@ -312,7 +333,7 @@
                     <el-pagination style="text-align: center;margin-top:20px" v-if="pageOption.paginationShow && pageOption.searchResult.length>0"
                                    @current-change="handlePageChange"
                                    :current-page="pageOption.currentPage"
-                                   layout="total, prev, pager, next"
+                                   layout="total, prev, pager, next, jumper"
                                    :total="pageOption.total">
                     </el-pagination>
                 </div>

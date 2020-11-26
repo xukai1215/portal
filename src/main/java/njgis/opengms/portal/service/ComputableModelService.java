@@ -351,6 +351,15 @@ public class ComputableModelService {
                 }
             }
 
+            //modelItem
+            ModelItem modelItem = modelItemDao.findFirstByOid(modelInfo.getRelateModelItem());
+            JSONObject modelItemInfo = new JSONObject();
+            modelItemInfo.put("oid",modelItem.getOid());
+            modelItemInfo.put("name",modelItem.getName());
+            modelItemInfo.put("description", modelItem.getDescription());
+            modelItemInfo.put("img",modelItem.getImage().equals("") ? null : htmlLoadPath + modelItem.getImage());
+
+
 
             ModelAndView modelAndView = new ModelAndView();
 
@@ -375,6 +384,7 @@ public class ComputableModelService {
             modelAndView.addObject("loadPath", htmlLoadPath);
             modelAndView.addObject("lastModifier", modifierJson);
             modelAndView.addObject("lastModifyTime", lastModifyTime);
+            modelAndView.addObject("relateModelItem", modelItemInfo);
 
 
             return modelAndView;

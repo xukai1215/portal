@@ -86,4 +86,6 @@ public class User {
     Date lastSendEmailTime;
 
     GeoInfoMeta geoInfo;
+
+    String userId;
 }

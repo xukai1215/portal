@@ -200,7 +200,7 @@
             </el-table-column>
             <el-table-column label="Contributor">
               <template slot-scope="scope">
-                <a :href="'/user/'+scope.row.author.oid" target="_blank">{{scope.row.author.name}}</a>
+                <a :href="'/profile/'+scope.row.author.oid" target="_blank">{{scope.row.author.name}}</a>
               </template>
             </el-table-column>
             <el-table-column label="Create Time" width="120px">
@@ -1194,7 +1194,7 @@
                                                     label="Contributor"
                                             >
                                                 <template slot-scope="scope">
-                                                    <a :href="'/user/'+scope.row.author.oid" target="_blank">{{scope.row.author.name}}</a>
+                                                    <a :href="'/profile/'+scope.row.author.oid" target="_blank">{{scope.row.author.name}}</a>
                                                 </template>
                                             </el-table-column>
                                             <el-table-column label="Create Time" width="120px">
@@ -1271,7 +1271,7 @@
                                         </el-table-column>
                                         <el-table-column label="Contributor">
                                             <template slot-scope="scope">
-                                                <a :href="'/user/'+scope.row.author.oid" target="_blank">{{scope.row.author.name}}</a>
+                                                <a :href="'/profile/'+scope.row.author.oid" target="_blank">{{scope.row.author.name}}</a>
                                             </template>
                                         </el-table-column>
                                         <el-table-column label="Create Time" width="120px">
