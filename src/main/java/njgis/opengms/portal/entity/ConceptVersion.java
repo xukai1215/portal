@@ -26,13 +26,13 @@ public class ConceptVersion extends Version {
     String creator;
     int readStatus;
 
-    String alias;
     String parentId;
     String xml;
-    String description_ZH;
-    String description_EN;
-    String name_ZH;
-    String name_EN;
+//    String description_ZH;
+//    String description_EN;
+//    String name_ZH;
+//    String name_EN;
+
 
     //版本相关
     String modifier;

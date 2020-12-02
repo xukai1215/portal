@@ -102,6 +102,12 @@ public class PortalApplicationTests {
     UserService userService;
 
     @Autowired
+    Classification2Dao classification2Dao;
+
+    @Autowired
+    ModelItemVersionDao modelItemVersionDao;
+
+    @Autowired
     SpatialReferenceClassificationDao spatialReferenceClassificationDao;
 
     @Value("${resourcePath}")
@@ -118,12 +124,6 @@ public class PortalApplicationTests {
             userDao.save(user);
         }
     }
-
-    @Autowired
-    Classification2Dao classification2Dao;
-
-    @Autowired
-    ModelItemVersionDao modelItemVersionDao;
 
     @Test
     public void classificationNumStats(){

@@ -12,5 +12,6 @@ public class UserResultDTO {
     String oid;
     String name;
     String image;
+    String userId;
 
 }
