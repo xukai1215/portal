@@ -1,5 +1,6 @@
 package njgis.opengms.portal.dao;
 
+import njgis.opengms.portal.dto.Template.TemplateAddDTO;
 import njgis.opengms.portal.dto.Template.TemplateResultDTO;
 import njgis.opengms.portal.entity.Item;
 import njgis.opengms.portal.entity.Template;
@@ -48,4 +49,6 @@ public interface TemplateDao extends MongoRepository<Template,String> {
     Page<TemplateResultDTO> findByNameContainsIgnoreCaseAndAuthorAndStatusIn(String name, String author,List<String> status, Pageable pageable);
 
     List<Item> findAllByAuthorshipIsNotNull();
+
+    Template findFirstByName(String name);
 }

@@ -27,9 +27,13 @@ public interface DataHubsDao extends MongoRepository<DataHubs, String> {
     DataHubs findFirstByAuthorship(List<AuthorInfo> authorship);
     DataHubs findFirstByReference(String reference);
     DataHubs findFirstByDistributedNodeDataId(String distributedId);
+//    Page<DataItemResultDTO> findAllByClassificationsIn(String classification, Pageable pageable);
     Page<DataItemResultDTO> findAllByClassificationsIn(String classification, Pageable pageable);
     //用户中心所有用户上传的数据条目列表
     Page<DataHubs> findByAuthor(Pageable pageable, String author);
     Page<DataItemResultDTO> findByNameLikeIgnoreCase(Pageable pageable, String name);
     Page<DataItemResultDTO> findByNameLikeAndAuthorIgnoreCase(Pageable pageable, String name, String author);
+    List<DataHubs> findAllByClassificationsIn(String oid);
+
+
 }
