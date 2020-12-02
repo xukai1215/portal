@@ -1941,6 +1941,7 @@ public class UserService {
         userInfo.put("subjectAreas", user.getSubjectAreas());
         userInfo.put("name", user.getName());
         userInfo.put("oid", user.getOid());
+        userInfo.put("userId", user.getUserId());
         userInfo.put("userName", user.getUserName());
         userInfo.put("email", user.getEmail());
         userInfo.put("phone", user.getPhone());
@@ -1982,6 +1983,7 @@ public class UserService {
         JSONObject userJson = new JSONObject();
         userJson.put("name", user.getName());
         userJson.put("oid", user.getOid());
+        userJson.put("userId", user.getUserId());
         userJson.put("image", user.getImage().equals("") ? "" : htmlLoadPath + user.getImage());
         return userJson;
     }

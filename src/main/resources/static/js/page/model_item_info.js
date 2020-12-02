@@ -912,8 +912,10 @@ var info=new Vue({
                         let href = window.location.href;
                         let hrefs = href.split('/');
                         let oid = hrefs[hrefs.length - 1].split("#")[0];
-                        // window.location.href = "/user/userSpace#/model/manageModelItem/"+oid;
-                        this.editDialogOpen()
+                        window.location.href = "/user/userSpace#/model/manageModelItem/"+oid;
+                        // this.editDialogOpen()
+
+
                         // $.ajax({
                         //     type: "GET",
                         //     url: "/modelItem/getUserOidByOid",

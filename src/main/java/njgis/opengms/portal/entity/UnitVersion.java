@@ -26,12 +26,11 @@ public class UnitVersion extends Version {
 
     int loadCount;
 
-    String alias;
     String type;
     String parentId;
     String xml;
-    String description_ZH;
-    String description_EN;
+//    String description_ZH;
+//    String description_EN;
 
     //版本相关
     String modifier;

@@ -843,6 +843,7 @@ var createModelItem = Vue.extend({
 
         insertInfo(basicInfo){
             this.cls = basicInfo.classifications2;
+            this.cls = this.cls == null?[]:this.cls;
             this.status = basicInfo.status;
 
             this.getMatchedNode(this.cls);
@@ -948,12 +949,12 @@ var createModelItem = Vue.extend({
             }
 
             //tags
-            $('#tagInput').tagEditor('destroy');
-            $('#tagInput').tagEditor({
-                initialTags: basicInfo.keywords,
-                forceLowercase: false,
-                placeholder: 'Enter keywords ...'
-            });
+            // $('#tagInput').tagEditor('destroy');
+            // $('#tagInput').tagEditor({
+            //     initialTags: basicInfo.keywords,
+            //     forceLowercase: false,
+            //     placeholder: 'Enter keywords ...'
+            // });
 
 
             //detail
@@ -965,12 +966,12 @@ var createModelItem = Vue.extend({
             }, 1000);
 
             //alias
-            $('#aliasInput').tagEditor('destroy');
-            $('#aliasInput').tagEditor({
-                initialTags: basicInfo.alias,
-                forceLowercase: false,
-                // placeholder: 'Enter alias ...'
-            });
+            // $('#aliasInput').tagEditor('destroy');
+            // $('#aliasInput').tagEditor({
+            //     initialTags: basicInfo.alias,
+            //     forceLowercase: false,
+            //     // placeholder: 'Enter alias ...'
+            // });
             // //detail
             // tinyMCE.remove(tinyMCE.editors[0])
             // $("#modelItemText").html(content.detail);//可能会赋值不成功
@@ -1438,7 +1439,7 @@ var createModelItem = Vue.extend({
             for(;i<children.length;i++){
                 let child = children[i];
                 if(child.label==name){
-                    return child.label+": "+child.desc;
+                    return "<b>"+child.label+": </b>"+child.desc;
                 }else{
                     if(child.children!=undefined){
                         let result = this.getChildrenDesc(child.children, name);
