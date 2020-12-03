@@ -79,7 +79,7 @@ new Vue({
 
             sortTypeName:"View Count",
             sortFieldName:"viewCount",
-            sortOrder:"desc.",
+            sortOrder:"Desc.",
         }
     },
     methods: {
@@ -93,7 +93,7 @@ new Vue({
         changeSortOrder(ele){
             this.sortOrder=ele;
 
-            this.pageOption.sortAsc = ele==="asc.";
+            this.pageOption.sortAsc = ele==="Asc.";
 
             this.getModels();
         },
