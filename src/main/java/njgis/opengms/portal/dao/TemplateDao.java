@@ -4,6 +4,7 @@ import njgis.opengms.portal.dto.Template.TemplateAddDTO;
 import njgis.opengms.portal.dto.Template.TemplateResultDTO;
 import njgis.opengms.portal.entity.Item;
 import njgis.opengms.portal.entity.Template;
+import njgis.opengms.portal.entity.Theme;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -49,6 +50,11 @@ public interface TemplateDao extends MongoRepository<Template,String> {
     Page<TemplateResultDTO> findByNameContainsIgnoreCaseAndAuthorAndStatusIn(String name, String author,List<String> status, Pageable pageable);
 
     List<Item> findAllByAuthorshipIsNotNull();
+
+    List<Template> findAll();
+
+    List<Template> findAllByName(String name);
+
 
     Template findFirstByName(String name);
 }

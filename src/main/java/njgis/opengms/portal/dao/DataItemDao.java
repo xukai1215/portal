@@ -3,6 +3,7 @@ package njgis.opengms.portal.dao;
 import njgis.opengms.portal.dto.dataItem.DataItemResultDTO;
 import njgis.opengms.portal.entity.DataItem;
 import njgis.opengms.portal.entity.Item;
+import njgis.opengms.portal.entity.Template;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -67,6 +68,5 @@ public interface DataItemDao extends MongoRepository<DataItem,String> {
 
 
     List<DataItem> findAllByTabType(String tabType);
-
 
 }
