@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>Server Nodes | OpenGMS</title>
+    <script src="/static/js/common/vue.min.js"></script>
+    <script src="/static/js/common/vue-avatar.min.js"></script>
+    <script src="/static/element-ui/index.js"></script>
+
+    <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
+
+    <link rel="stylesheet" href="/static/css/base/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/base/style.css">
+    <link rel="stylesheet" href="/static/css/base/universal.css">
+    <link rel="stylesheet" href="/static/css/base/tree.css">
+    <link rel="stylesheet" href="/static/css/other/bootstrap-select.css">
+    <link rel="stylesheet" href="/static/css/page/model_items.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css"/>
+    <style>
+        .el-card__body a:hover {
+            color: #0886E9;
+        }
+
+        .el-card__body a {
+            color: black;
+        }
+
+        .el-tabs__item {
+            font-size: 18px;
+        }
+
+    </style>
+</head>
+<body>
+<div id="app">
+    <div th:replace="fragments/navbar :: unlog"></div>
+
+    <div class="clearfix" style="margin:40px 0px;height: auto;">
+        <div class="el-col el-col-20 el-col-offset-2">
+
+            <div class="el-row">
+                <h2 class="main-title">Server Nodes</h2>
+                <h4 class="sub-title">OpenGMS</h4>
+                <hr>
+            </div>
+            <div class="el-row" style="margin-top:20px;font-size: 20px">
+
+                <div id="echartMap" style="height: 700px"></div>
+                <!--<el-tabs v-model="activeName" @tab-click="handleClick" stretch="true">-->
+                    <!--<el-tab-pane label="Overview" name="overview">-->
+                        <!--<div id="all" style="height:700px;"></div>-->
+                    <!--</el-tab-pane>-->
+                    <!--&lt;!&ndash;<el-tab-pane label="Top" name="top"></el-tab-pane>&ndash;&gt;-->
+                    <!--<el-tab-pane label="Server Nodes" name="server">-->
+                        <!--<div id="echartMap" style="height: 700px"></div>-->
+                    <!--</el-tab-pane>-->
+                    <!--<el-tab-pane label="User Map" name="user" >-->
+                        <!--<div id="userMap" style="height: 700px"></div>-->
+                    <!--</el-tab-pane>-->
+                <!--</el-tabs>-->
+
+            </div>
+
+
+        </div>
+    </div>
+
+    <div th:replace="fragments/footer :: footer"></div>
+
+</div>
+
+</body>
+
+<script src="/static/js/common/jquery-3.3.1.min.js"></script>
+<script src="/static/js/common/echarts.min.js"></script>
+<script src="/static/js/common/world.js"></script>
+
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            activeName: 'overview',
+        },
+        methods: {
+            handleClick(tab, event) {
+                console.log(tab);
+                if(tab.name=="server"){
+
+                    $.ajax({
+                        type: "GET",
+                        url: "/server/serverNodes",
+                        data: {},
+
+                        crossDomain: true,
+                        xhrFields: {
+                            withCredentials: true
+                        },
+                        async: true,
+                        success: (res) => {
+                            console.log(res);
+
+                            var chartInfo = this.createChartInfo(res.data);
+                            // this.computerNodesInfos = chartInfo.cityCount;
+                            this.createChartMap(chartInfo);
+                        }
+                    })
+
+                }else if(tab.name=="user"){
+                    $.ajax({
+                        type: "GET",
+                        url: "/server/serverNodes",
+                        data: {},
+
+                        crossDomain: true,
+                        xhrFields: {
+                            withCredentials: true
+                        },
+                        async: true,
+                        success: (res) => {
+                            console.log(res);
+
+                            this.createUserMap();
+                        }
+                    })
+
+                }
+
+            },
+
+            createOverview(){
+                var allStatistic = echarts.init(document.getElementById('all'),'light');
+                allStatistic.showLoading();
+
+                $.get("/static/modelItemTree.json", function (diskData) {
+                    allStatistic.hideLoading();
+
+                    function colorMappingChange(value) {
+                        var levelOption = getLevelOption(value);
+                        chart.setOption({
+                            series: [{
+                                levels: levelOption
+                            }],
+
+
+                        });
+                    }
+
+                    var formatUtil = echarts.format;
+
+                    function getLevelOption() {
+                        return [
+                            {
+                                itemStyle: {
+                                    normal: {
+                                        borderColor: '#777',
+                                        borderWidth: 0,
+                                        gapWidth: 1
+                                    }
+                                },
+                                upperLabel: {
+                                    normal: {
+                                        show: false
+                                    }
+                                }
+                            },
+                            {
+                                itemStyle: {
+                                    normal: {
+                                        borderColor: '#555',
+                                        borderWidth: 5,
+                                        gapWidth: 1
+                                    },
+                                    emphasis: {
+                                        borderColor: '#ddd'
+                                    }
+                                }
+                            },
+                            {
+                                colorSaturation: [0.35, 0.5],
+                                itemStyle: {
+                                    normal: {
+                                        gapWidth: 1,
+                                        borderColorSaturation: 0.6
+                                    }
+                                }
+                            }
+                        ];
+                    }
+
+                    allStatistic.setOption(option = {
+
+                        title: {
+                            text: '',
+                            left: 'center'
+                        },
+
+                        tooltip: {
+                            formatter: function (info) {
+                                var value = info.value;
+                                var treePathInfo = info.treePathInfo;
+                                var treePath = [];
+
+                                for (var i = 1; i < treePathInfo.length; i++) {
+                                    treePath.push(treePathInfo[i].name);
+                                }
+
+                                return [
+                                    '<div class="tooltip-title">' + formatUtil.encodeHTML(treePath.join(' / ')) + '</div>',
+                                    'Number of models: ' + formatUtil.addCommas(value) ,
+                                ].join('');
+                            }
+                        },
+
+                        series: [
+                            {
+                                name: 'Model Classification',
+                                type: 'treemap',
+                                upperLabel: {
+                                    normal: {
+                                        show: true,
+                                        height:30
+                                    }
+                                },
+                                visibleMin: 300,
+                                roam: 'pan',
+                                label: {
+                                    show: true,
+                                    formatter: '{b}'
+                                },
+                                itemStyle: {
+                                    normal: {
+                                        borderColor: '#fff'
+                                    }
+                                },
+                                breadcrumb:{
+                                    top:'4%',
+                                },
+                                levels: getLevelOption(),
+                                data: diskData
+                            }
+                        ]
+                    });
+                });
+            },
+
+            createChartInfo(infoArray) {
+                var chartInfo = {};
+                var geoCoord = {};
+                //存放城市个数及城市下所在具体计算节点信息
+                var cityCount = [];
+                for (var i = 0; i < infoArray.length; i++) {
+                    var geoJson = infoArray[i].geoJson;
+                    var city = geoJson.city;
+                    var flag = false;
+                    //get the count of the same city
+                    for (let j = 0; j < cityCount.length; j++) {
+                        if (cityCount[j].name === city) {
+                            cityCount[j].value += 1;
+                            cityCount[j].computerNodeInfos.push(infoArray[i]);
+                            flag = true;
+                        }
+                    }
+                    if (!flag) {
+                        let cityObj = {
+                            name: '',
+                            value: 0,
+                            computerNodeInfos: []
+                        };
+                        cityObj.name = city;
+                        cityObj.value = 1;
+                        cityObj.computerNodeInfos.push(infoArray[i]);
+                        cityCount.push(cityObj);
+                        geoCoord[city] = [parseFloat(geoJson.longitude), parseFloat(geoJson.latitude)];
+
+                    }
+                }
+                chartInfo.geoCoord = geoCoord;
+                chartInfo.cityCount = cityCount;
+                return chartInfo;
+            },
+
+            createChartMap(chartInfo) {
+                var myChart = echarts.init(document.getElementById('echartMap'));
+                myChart.showLoading();
+                var chartdata = [];
+                for (var i = 0; i < chartInfo.cityCount.length; i++) {
+                    let cityObj = {
+                        name: '',
+                        value: 0
+                    };
+                    let city = chartInfo.cityCount[i];
+                    let geoCoord = chartInfo.geoCoord[city.name];
+                    geoCoord.push(city.value.toString());
+                    cityObj.name = city.name;
+                    cityObj.value = geoCoord;
+                    chartdata.push(cityObj);
+                }
+                myChart.hideLoading();
+                var MapOptions = {
+                    backgroundColor: "transparent",
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: '{b}'
+                    },
+                    geo: {
+                        show: true,
+                        map: 'world',
+                        label: {
+                            normal: {
+                                show: false,
+                                textStyle: {
+                                    color: 'rgba(0,0,0,0.4)'
+                                }
+                            },
+                            emphasis: {
+                                show: true,
+                                backgroundColor: '#2c3037',
+                                color: '#fff',
+                                padding: 5,
+                                fontSize: 14,
+                                borderRadius: 5
+                            }
+
+                        },
+                        roam: false,
+                        itemStyle: {
+                            normal: {
+                                areaColor: '#d8f5e8',
+                                borderColor: '#404a59',
+                                borderWidth: 0.5
+                            },
+                            emphasis: {
+                                areaColor: '#e5efff'
+                            }
+
+                        },
+
+                    },
+                    series: [
+                        {
+                            name: '点',
+                            type: 'scatter',
+                            coordinateSystem: 'geo',
+                            symbol: 'pin', //气泡
+                            symbolSize: 40
+                            ,
+                            label: {
+                                normal: {
+                                    show: true,
+                                    formatter: '{@[2]}',
+                                    textStyle: {
+                                        color: '#fff',
+                                        fontSize: 9,
+                                    }
+                                }
+                            },
+                            itemStyle: {
+                                normal: {
+                                    color: '#00c0ff', //标志颜色
+                                }
+                            },
+                            zlevel: 6,
+                            data: chartdata
+                        },
+                        {
+                            name: 'Top 5',
+                            type: 'effectScatter',
+                            coordinateSystem: 'geo',
+                            data: chartdata,
+                            symbolSize: 20,
+                            showEffectOn: 'render',
+                            rippleEffect: {
+                                brushType: 'stroke'
+                            },
+                            hoverAnimation: true,
+                            label: {
+                                normal: {
+                                    formatter: '{b}',
+                                    position: 'right',
+                                    show: false
+                                }
+                            },
+                            itemStyle: {
+                                normal: {
+                                    color: '#3daadb',
+                                    shadowBlur: 0,
+                                    shadowColor: '#3daadb'
+                                }
+                            },
+                            zlevel: 1
+                        },
+                    ]
+                };
+                // this.computerNodesMapOptions = MapOptions;
+                myChart.setOption(MapOptions);
+                console.log(chartdata);
+
+                // window.onresize = () => {
+                //     height = document.documentElement.clientHeight;
+                //     this.ScreenMinHeight = (height) + "px";
+                //     myChart.resize();
+                // };
+
+                // //添加地图点击事件
+                // myChart.on('click', function (params) {
+                //     if (params.componentType == "series") {
+                //         {
+                //             $("#pageContent").stop(true);
+                //             $("#pageContent").animate({scrollTop: $("#" + params.name).offset().top}, 500);
+                //         }
+                //     }
+                // })
+
+            },
+
+            createUserMap(){
+
+                var myChart = echarts.init(document.getElementById('userMap'));
+
+                var MapOptions = {
+                    backgroundColor: "transparent",
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: function(params){
+                            let value=params.value;
+                            if(value) {
+                                return params.name + ": " + params.value;
+                            }
+                            else{
+                                return params.name;
+                            }
+                        }
+                    },
+                    visualMap: {
+                        left: 'right',
+                        min: 0,
+                        max: 107,
+                        inRange: {
+                            color: ['#313695', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffbf', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026']
+                        },
+                        text:['High','Low'],           // 文本，默认为数值文本
+                        calculable: true
+                    },
+                    series: [
+                        {
+                            name: '点',
+                            type: 'map',
+                            roam: false,
+                            map:'world',
+                            itemStyle:{
+                                emphasis:{label:{show:true}}
+                            },
+                            // 文本位置修正
+                            textFixed: {
+                                Alaska: [20, -20]
+                            },
+                            data:[
+                                {name:'China',value: 107},
+                                {name:'India',value: 2},
+                                {name:'Australia',value: 3},
+                                {name:'United States',value: 2},
+                                {name:'South Africa',value: 1},
+                                {name:'Switzerland',value: 1},
+                                {name:'Canada',value: 1},
+                                {name:'United Kingdom',value: 1},
+                                {name:'Germany',value: 1},
+                                {name:'Spain',value: 1},
+                                ]
+
+                        }
+                    ]
+                };
+                // this.computerNodesMapOptions = MapOptions;
+                myChart.setOption(MapOptions);
+                console.log('wait to load');
+
+
+            }
+        },
+        mounted() {
+
+            //overview
+            // this.createOverview();
+
+            //server
+            $.ajax({
+                type: "GET",
+                url: "/server/serverNodes",
+                data: {},
+
+                crossDomain: true,
+                xhrFields: {
+                    withCredentials: true
+                },
+                async: true,
+                success: (res) => {
+                    console.log(res);
+
+                    var chartInfo = this.createChartInfo(res.data);
+                    // this.computerNodesInfos = chartInfo.cityCount;
+                    this.createChartMap(chartInfo);
+                }
+            })
+        }
+    })
+</script>
+
+<script src="/static/js/common/axios.min.js"></script>
+<script src="/static/js/common/bootstrap.js"></script>
+<script src="/static/element-ui/umd/locale/en.js"></script>
+<script src="/static/js/common/loadUser.js"></script>
+<script src="/static/js/common/navbar.js"></script>
+
+
+</html>
