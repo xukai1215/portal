@@ -1,5 +1,5 @@
-new Vue({
-    el: '#app',
+var data_application_info = new Vue({
+    el: '#data_application_info',
     components: {
         'avatar': VueAvatar.Avatar
     },
@@ -187,7 +187,7 @@ new Vue({
                 },
                 crossDomain: true,
                 success: (data) => {
-                    data = JSON.parse(data);
+                    // data = JSON.parse(data);
                     if (data.oid == "") {
                         this.$confirm('<div style=\'font-size: 18px\'>This function requires an account, <br/>please login first.</div>', 'Tip', {
                             dangerouslyUseHTMLString: true,
@@ -238,44 +238,44 @@ new Vue({
             })
         },
 
-        setSession(name, value) {
-            window.sessionStorage.setItem(name, value);
-        },
+        // setSession(name, value) {
+        //     window.sessionStorage.setItem(name, value);
+        // },
 
-        deploy(){
-            this.contentBeforeDeploy=false;
-            this.contentDeploying=true;
-            this.footerBeforeDeploy=false;
-
-            const hrefs=window.location.href.split("/");
-            const oid=hrefs[hrefs.length-1];
-            console.log(oid)
-            $.ajax({
-                type: "POST",
-                url: "/computableModel/deploy/"+oid,
-                data: {},
-                async: true,
-                success: (json) => {
-                    setTimeout(() => {
-                        this.contentDeploying = false;
-                        if (json.code == 0) {
-                            this.contentAfterDeploy_suc = true;
-                        }
-                        else {
-                            this.contentAfterDeploy_fail = true;
-                        }
-                        this.footerAfterDeploy = true;
-                    },500)
-                }
-            })
-        },
-        invoke(){
-            const href=window.location.href;
-
-            const hrefs=href.split("/");
-            console.log(hrefs);
-            window.location.href="/task/"+hrefs[hrefs.length-1];
-        },
+        // deploy(){
+        //     this.contentBeforeDeploy=false;
+        //     this.contentDeploying=true;
+        //     this.footerBeforeDeploy=false;
+        //
+        //     const hrefs=window.location.href.split("/");
+        //     const oid=hrefs[hrefs.length-1];
+        //     console.log(oid)
+        //     $.ajax({
+        //         type: "POST",
+        //         url: "/computableModel/deploy/"+oid,
+        //         data: {},
+        //         async: true,
+        //         success: (json) => {
+        //             setTimeout(() => {
+        //                 this.contentDeploying = false;
+        //                 if (json.code == 0) {
+        //                     this.contentAfterDeploy_suc = true;
+        //                 }
+        //                 else {
+        //                     this.contentAfterDeploy_fail = true;
+        //                 }
+        //                 this.footerAfterDeploy = true;
+        //             },500)
+        //         }
+        //     })
+        // },
+        // invoke(){
+        //     const href=window.location.href;
+        //
+        //     const hrefs=href.split("/");
+        //     console.log(hrefs);
+        //     window.location.href="/task/"+hrefs[hrefs.length-1];
+        // },
 
 
         handleDownload(index,row){
@@ -487,22 +487,22 @@ new Vue({
             }
         },
 
-        showMxGraph(){
-            $("#ModelShow").show();
+        // showMxGraph(){
+        //     $("#ModelShow").show();
+        //
+        //     document.body.scrollTop = 0;
+        //     document.documentElement.scrollTop = 0;
+        //     document.body.style.overflowY="hidden";
+        // },
 
-            document.body.scrollTop = 0;
-            document.documentElement.scrollTop = 0;
-            document.body.style.overflowY="hidden";
-        },
-
-        hideMxGraph(){
-            $("#ModelShow").hide();
-            document.body.style.overflowY="auto";
-        }
+        // hideMxGraph(){
+        //     $("#ModelShow").hide();
+        //     document.body.style.overflowY="auto";
+        // }
     },
     mounted(){
 
-        this.setSession("history", window.location.href);
+        // this.setSession("history", window.location.href);
         axios.get("/user/load")
             .then((res) => {
                 if (res.status == 200) {
@@ -538,80 +538,80 @@ new Vue({
             });
         }
 
-        $(".ab").click(function () {
+        // $(".ab").click(function () {
+        //
+        //         if (!$(this).hasClass('transform180'))
+        //             $(this).addClass('transform180')
+        //         else
+        //             $(this).removeClass('transform180')
+        //     }
+        // );
 
-                if (!$(this).hasClass('transform180'))
-                    $(this).addClass('transform180')
-                else
-                    $(this).removeClass('transform180')
-            }
-        );
-
-        diagram = new OGMSDiagram();
-        diagram.init($('#mxGraphContainer'),
-            {
-                width: 1000,       //! Width of panel
-                height: '100%',       //! Height of panel
-                // height: 1000,       //! Height of panel
-                enabled: false      //! Edit enabled
-            },
-            {
-                x: 500,            //! X postion of state information window
-                y: $("#mxGraphContainer").offset().top - $(window).scrollTop() ,              //! Y postion of state information window
-                width: 520,         //! Width of state information window
-                height: 650         //! Height of state information window
-            },
-            {
-                x: 1000,           //! X postion of data reference information window
-                y: $("#mxGraphContainer").offset().top - $(window).scrollTop(),              //! Y postion of data reference information window
-                width: 300,         //! Width of data reference information window
-                height: 400         //! Height of data reference information window
-            },
-            '/static/js/mxGraph/images/modelState.png',    //! state IMG
-            '/static/js/mxGraph/images/grid.gif',          //! Grid IMG
-            '/static/js/mxGraph/images/connector.gif',     //! Connection center IMG
-            false                       //! Debug button
-        );
-
-        console.log(Behavior)
-
-        var behavior={};
-
-        if (Behavior.StateGroup[0].States== '') {
-            behavior.states = [];
-        }
-        else {
-            behavior.states = Behavior.StateGroup[0].States[0].State;
-        }
-
-        if (Behavior.StateGroup[0].StateTransitions == "") {
-            behavior.transition = [];
-        }
-        else {
-            behavior.transition = Behavior.StateGroup[0].StateTransitions[0].Add;
-        }
-
-        if (Behavior.RelatedDatasets == "") {
-            behavior.dataRef = [];
-        }
-        else {
-            behavior.dataRef = Behavior.RelatedDatasets[0].DatasetItem;
-        }
-
-        //console.log(behavior)
-        this.loadjson=JSON.stringify(behavior).replace(new RegExp("\"Event\":","gm"), "\"events\":");
-        console.log(JSON.parse(this.loadjson));
-        diagram.loadJSON(this.loadjson);
-
-        diagram.onStatedbClick(function(state){
-            diagram.showStateWin({
-                x : 900,
-                y : $(window).scrollTop() + 80,
-            },{
-                width : 520,
-                height : 640
-            });
-
-        });
+        // diagram = new OGMSDiagram();
+        // diagram.init($('#mxGraphContainer'),
+        //     {
+        //         width: 1000,       //! Width of panel
+        //         height: '100%',       //! Height of panel
+        //         // height: 1000,       //! Height of panel
+        //         enabled: false      //! Edit enabled
+        //     },
+        //     {
+        //         x: 500,            //! X postion of state information window
+        //         y: $("#mxGraphContainer").offset().top - $(window).scrollTop() ,              //! Y postion of state information window
+        //         width: 520,         //! Width of state information window
+        //         height: 650         //! Height of state information window
+        //     },
+        //     {
+        //         x: 1000,           //! X postion of data reference information window
+        //         y: $("#mxGraphContainer").offset().top - $(window).scrollTop(),              //! Y postion of data reference information window
+        //         width: 300,         //! Width of data reference information window
+        //         height: 400         //! Height of data reference information window
+        //     },
+        //     '/static/js/mxGraph/images/modelState.png',    //! state IMG
+        //     '/static/js/mxGraph/images/grid.gif',          //! Grid IMG
+        //     '/static/js/mxGraph/images/connector.gif',     //! Connection center IMG
+        //     false                       //! Debug button
+        // );
+        //
+        // console.log(Behavior)
+        //
+        // var behavior={};
+        //
+        // if (Behavior.StateGroup[0].States== '') {
+        //     behavior.states = [];
+        // }
+        // else {
+        //     behavior.states = Behavior.StateGroup[0].States[0].State;
+        // }
+        //
+        // if (Behavior.StateGroup[0].StateTransitions == "") {
+        //     behavior.transition = [];
+        // }
+        // else {
+        //     behavior.transition = Behavior.StateGroup[0].StateTransitions[0].Add;
+        // }
+        //
+        // if (Behavior.RelatedDatasets == "") {
+        //     behavior.dataRef = [];
+        // }
+        // else {
+        //     behavior.dataRef = Behavior.RelatedDatasets[0].DatasetItem;
+        // }
+        //
+        // //console.log(behavior)
+        // this.loadjson=JSON.stringify(behavior).replace(new RegExp("\"Event\":","gm"), "\"events\":");
+        // console.log(JSON.parse(this.loadjson));
+        // diagram.loadJSON(this.loadjson);
+        //
+        // diagram.onStatedbClick(function(state){
+        //     diagram.showStateWin({
+        //         x : 900,
+        //         y : $(window).scrollTop() + 80,
+        //     },{
+        //         width : 520,
+        //         height : 640
+        //     });
+        //
+        // });
     }
 })

@@ -1301,9 +1301,9 @@ public class DataItemService {
     }
 
 
-    public Categorys getCategoryById(String id) {//准备注释掉
+    public DataCategorys getCategoryById(String id) {//准备注释掉
 
-        return categoryDao.findById(id).orElseGet(() -> {
+        return dataCategorysDao.findById(id).orElseGet(() -> {
             System.out.println("有人乱查数据库！！该ID不存在对象");
             throw new MyException(ResultEnum.NO_OBJECT);
         });

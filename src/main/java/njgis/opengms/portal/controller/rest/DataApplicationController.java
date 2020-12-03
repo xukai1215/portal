@@ -6,10 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dto.ComputableModel.ComputableModelResultDTO;
 import njgis.opengms.portal.dto.DataApplicationDTO;
-import njgis.opengms.portal.entity.Categorys;
-import njgis.opengms.portal.entity.ComputableModel;
-import njgis.opengms.portal.entity.DataApplication;
-import njgis.opengms.portal.entity.ModelItem;
+import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.service.DataApplicationService;
 import njgis.opengms.portal.service.DataItemService;
 import njgis.opengms.portal.service.UserService;
@@ -133,8 +130,8 @@ public class DataApplicationController {
         cates = dataApplication.getClassifications();
         List<String> categorys = new ArrayList<>();
         for(String cate : cates){
-            Categorys category = dataItemService.getCategoryById(cate);
-            categorys.add(category.getCategory());
+            DataCategorys dataCategorys = dataItemService.getCategoryById(cate);
+            categorys.add(dataCategorys.getCategory());
         }
 
         dataApplication.setCategorys(categorys);
