@@ -60,6 +60,9 @@ public class DataItemService {
     DataItemDao dataItemDao;
 
     @Autowired
+    DataItem2Dao dataItem2Dao;
+
+    @Autowired
     ModelItemDao modelItemDao;
 
     @Autowired
@@ -154,9 +157,11 @@ public class DataItemService {
                     if (file.exists()&&file.isFile())
                         file.delete();
                     //添加新图片
-                    String path = "/dataItem/" + UUID.randomUUID().toString() + ".jpg";
+                    String uuid = UUID.randomUUID().toString();
+                    String path = "/static/repository/dataItem/" + uuid + ".jpg";//入库
+                    String path1 = "/repository/dataItem/" + uuid + ".jpg";//存储
                     String imgStr = uploadImage.split(",")[1];
-                    Utils.base64StrToImage(imgStr, resourcePath + path);
+                    Utils.base64StrToImage(imgStr, resourcePath + path1);
                     dataItem.setImage(path);
                 }
                 dataItem.setLastModifyTime(now);
@@ -172,9 +177,11 @@ public class DataItemService {
                 if (uploadImage.equals("")){
                     dataItemVersion.setImage("");
                 }else if (!uploadImage.contains("/dataItem/")&&!uploadImage.equals("")){
-                    String path = "/dataItem/" + UUID.randomUUID().toString() + ".jpg";
+                    String uuid = UUID.randomUUID().toString();
+                    String path = "/static/repository/dataItem/" + uuid + ".jpg";//入库
+                    String path1 = "/repository/dataItem/" + uuid + ".jpg";//存储
                     String imgStr = uploadImage.split(",")[1];
-                    Utils.base64StrToImage(imgStr, resourcePath + path);
+                    Utils.base64StrToImage(imgStr, resourcePath + path1);
                     dataItemVersion.setImage(path);
                 }else {
                     String[] names = uploadImage.split("dataItem");
@@ -244,9 +251,11 @@ public class DataItemService {
                     if (file.exists()&&file.isFile())
                         file.delete();
                     //添加新图片
-                    String path = "/dataItem/" + UUID.randomUUID().toString() + ".jpg";
+                    String uuid = UUID.randomUUID().toString();
+                    String path = "/static/repository/dataItem/" + uuid + ".jpg";//入库
+                    String path1 = "/repository/dataItem/" + uuid + ".jpg";//存储
                     String imgStr = uploadImage.split(",")[1];
-                    Utils.base64StrToImage(imgStr, resourcePath + path);
+                    Utils.base64StrToImage(imgStr, resourcePath + path1);
                     dataHubs.setImage(path);
                 }
                 dataHubs.setLastModifyTime(now);
@@ -262,9 +271,11 @@ public class DataItemService {
                 if (uploadImage.equals("")){
                     dataHubsVersion.setImage("");
                 }else if (!uploadImage.contains("/dataItem/")&&!uploadImage.equals("")){
-                    String path = "/dataItem/" + UUID.randomUUID().toString() + ".jpg";
+                    String uuid = UUID.randomUUID().toString();
+                    String path = "/static/repository/dataItem/" + uuid + ".jpg";//入库
+                    String path1 = "/repository/dataItem/" + uuid + ".jpg";//存储
                     String imgStr = uploadImage.split(",")[1];
-                    Utils.base64StrToImage(imgStr, resourcePath + path);
+                    Utils.base64StrToImage(imgStr, resourcePath + path1);
                     dataHubsVersion.setImage(path);
                 }else {
                     String[] names = uploadImage.split("dataItem");
@@ -582,7 +593,7 @@ public class DataItemService {
         dataItem.setCreateTime(now);
 
         //设置dataItem的图片path以及存储图片
-        String path = "/repository/dataItem/" + UUID.randomUUID().toString() + ".jpg";
+        String path = "/static/repository/dataItem/" + UUID.randomUUID().toString() + ".jpg";
         String[] strs = dataItemAddDTO.getUploadImage().split(",");
         if(strs.length > 1){
             String imgStr = dataItemAddDTO.getUploadImage().split(",")[1];
@@ -591,6 +602,7 @@ public class DataItemService {
         } else {
             dataItem.setImage("");
         }
+
 
 //        dataItem.getComments().setCommentDate(now);
 
@@ -607,11 +619,13 @@ public class DataItemService {
         dataHubs.setTabType("hub");
 
         //设置dataItem的图片path以及存储图片
-        String path = "/repository/dataItem/" + UUID.randomUUID().toString() + ".jpg";
+        String uuid = UUID.randomUUID().toString();
+        String path = "/static/repository/dataItem/" + uuid + ".jpg";//入库
+        String path1 = "/repository/dataItem/" + uuid + ".jpg";//存储
         String[] strs = dataItemAddDTO.getUploadImage().split(",");
         if(strs.length > 1){
             String imgStr = dataItemAddDTO.getUploadImage().split(",")[1];
-            Utils.base64StrToImage(imgStr, resourcePath + path);
+            Utils.base64StrToImage(imgStr, resourcePath + path1);
             dataHubs.setImage(path);
         } else {
             dataHubs.setImage("");
@@ -810,7 +824,7 @@ public class DataItemService {
             tabType = "repository";
         }
 
-        Sort sort = new Sort(dataItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
+        Sort sort = new Sort(dataItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, dataItemFindDTO.getSortField());
         Pageable pageable = PageRequest.of(page, pageSize, sort);
         Page<DataItemResultDTO> dataItemPages;
         if(userOid==null){
@@ -840,7 +854,7 @@ public class DataItemService {
             count = dataItemPage.getTotalElements();
         }else {
             for (DataItemResultDTO dataItemResultDTO : dataItemss) {
-                if (dataItemResultDTO.getTabType().equals(tabType)) {
+                if (dataItemResultDTO.getTabType()!=null&&dataItemResultDTO.getTabType().equals(tabType)) {
                     dataItems.add(dataItemResultDTO);
                     count++;
                 }

@@ -16,6 +16,7 @@ public class DataItemFindDTO {
     Integer page = 1;
     Integer pageSize = 10;
     Boolean asc = false;
+    String sortField = "viewCount";
     List<String> classifications;
     String categoryId;
     List<String> searchContent;

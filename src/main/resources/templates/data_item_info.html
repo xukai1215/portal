@@ -82,7 +82,7 @@
                             <avatar th:username="${datainfo.data.name}" :size="90" :rounded="false"></avatar>
                         </div>
                         <div th:unless="${#strings.isEmpty(datainfo.data.image)}">
-                            <img th:src="'/static'+${datainfo.data.image}" class="image">
+                            <img th:src="${datainfo.data.image}" class="image">
                         </div>
                     </div>
 
@@ -124,7 +124,7 @@
 
                         <div class="el-col">
                             <div class="pull-left" style="display: block;margin-left: 15px;">
-                                <a th:href="'/profile/'+${user.userId}"><h4 th:text="${user.name}" style="padding: 0;">Tom Marvolo Riddle</h4></a>
+                                <a th:href="'/profile/'+${user.oid}"><h4 th:text="${user.name}" style="padding: 0;">Tom Marvolo Riddle</h4></a>
                             </div>
                         </div>
                     </div>
@@ -811,7 +811,7 @@
 
                         <div class="el-col">
                             <div class="pull-left" style="display: block;margin-left: 15px;">
-                                <a th:href="'/profile/'+${user.userId}"><h4 th:text="${user.name}" style="padding: 0;">Tom Marvolo Riddle</h4></a>
+                                <a th:href="'/profile/'+${user.oid}"><h4 th:text="${user.name}" style="padding: 0;">Tom Marvolo Riddle</h4></a>
                             </div>
                         </div>
                     </div>

@@ -33,6 +33,9 @@ var createDataItem = Vue.extend({
             ctegorys: [],
 
             data_img: [],
+            itemInfo: {
+                image: '',
+            },
 
             dataItemAddDTO: {
                 id:"",
@@ -203,19 +206,19 @@ var createDataItem = Vue.extend({
             this.dataItemAddDTO.keywords = $("#keywords").tagEditor('getTags')[0].tags;
 
             this.dataItemAddDTO.classifications = this.cls;
-            // this.dataItemAddDTO.displays.push($("#displays").val())
             this.dataItemAddDTO.displays = this.data_img;
-            let subStr = $('#imgShow').get(0).src.toString().substring(0,9);
-            console.log(subStr);
-            if(subStr === "data:imag"){
-                this.imageExist = true;
-            }
-            // if ()
-            if (this.imageExist!=false) {
-                this.dataItemAddDTO.uploadImage = $('#imgShow').get(0).src;
-            }else {
-                this.dataItemAddDTO.uploadImage = "";
-            }
+            this.dataItemAddDTO.uploadImage = this.itemInfo.image;
+            // let subStr = $('#imgShow').get(0).src.toString().substring(0,9);
+            // console.log(subStr);
+            // if(subStr === "data:imag"){
+            //     this.imageExist = true;
+            // }
+            // // if ()
+            // if (this.imageExist!=false) {
+            //     this.dataItemAddDTO.uploadImage = $('#imgShow').get(0).src;
+            // }else {
+            //     this.dataItemAddDTO.uploadImage = "";
+            // }
 
             this.dataItemAddDTO.reference = $("#ResourcesUrlText").val();
 
@@ -405,6 +408,27 @@ var createDataItem = Vue.extend({
                 // this.selectedFile.splice(Number(this.fileSelect), 1);
                 this.fileSelect = "";
             }
+        },
+        imgFile() {
+            $("#imgOne").click();
+        },
+        preImg() {
+            var file = $('#imgOne').get(0).files[0];
+            //创建用来读取此文件的对象
+            var reader = new FileReader();
+            //使用该对象读取file文件
+            reader.readAsDataURL(file);
+            //读取文件成功后执行的方法函数
+            reader.onload =  (e) => {
+                //读取成功后返回的一个参数e，整个的一个进度事件
+                //选择所要显示图片的img，要赋值给img的src就是e中target下result里面
+                //的base64编码格式的地址
+                this.itemInfo.image = e.target.result
+            }
+        },
+        deleteImg(){
+            this.$set(this.itemInfo,'image' , '')
+            console.log(this.itemInfo.image)
         },
     },
     mounted() {
@@ -678,6 +702,7 @@ var createDataItem = Vue.extend({
                     this.clsStr=data.categories;
                     this.cls = data.classifications;
                     this.dataItemAddDTO.viewCount = data.viewCount;
+                    this.itemInfo.image = data.image;
                     //清空
                     // $("#classification").val('')
                     $("#dataname").val(data.name);
@@ -701,14 +726,14 @@ var createDataItem = Vue.extend({
                     // $('#imgShow').get(0).src = data.image;
                     // $('#imgShow').show();
 
-                    if (data.image!=null&&data.image!="") {
-                        $('#imgShow').attr("src", "/static" + data.image);
-                        $('#imgShow').show();
-                        that.imageExist = true;
-                    }else {
-                        that.imageExist = false;
-                    }
-                    $("#displays").val('');
+                    // if (data.image!=null&&data.image!="") {
+                    //     $('#imgShow').attr("src", "/static" + data.image);
+                    //     $('#imgShow').show();
+                    //     that.imageExist = true;
+                    // }else {
+                    //     that.imageExist = false;
+                    // }
+                    // $("#displays").val('');
                     $("#dataresoureurl").val(data.reference);
 
                     // $("#coordinateSystem").val(data.meta.coordinateSystem);

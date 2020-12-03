@@ -150,37 +150,24 @@
 
                                                             <!--img type-->
                                                             <!--todo 依据类型选择图片-->
-
-                                                            <!--<small   class="form-text text-muted">Please choose your data type.</small>-->
-
-
-                                                            <!--data resources url-->
-<!--                                                            <label><span class="star">* </span>Data Type:</label><br>-->
-<!--                                                            <div class="input-group col-md-5" style="width: 400px;">-->
-<!--                                                                <el-radio-group v-model="dataItemAddDTO.dataType">-->
-<!--                                                                    <el-radio label="Url">Resources Url</el-radio>-->
-<!--                                                                    <el-radio label="File">Resource</el-radio>-->
-<!--                                                                </el-radio-group>-->
-<!--                                                            </div><br>-->
-                                                            <div class="flexCol">
-                                                                <label for="imgFile">Displays:</label>
-
-                                                                <div class="flexRow">
-                                                                    <img id="imgShow" src=""/>
-                                                                    <div id="imgChange">
-
-                                                                        <i class="fa fa-plus fa-5x"></i>
-                                                                    </div>
+                                                            <label
+                                                                    class="col-sm-2 control-label" style="margin-left: 20px;padding-bottom: 5px">Image:</label>
+                                                            <div class="col-sm-10">
+                                                                <!--                                                                                        <img id="imgShow" v-show="itemInfo.image"/>-->
+                                                                <img id="imgShow" style="display: inline" v-show="itemInfo.image!=undefined&&itemInfo.image!=''" :src="itemInfo.image"/>
+                                                                <div id="imgMask" class="flexCenter" v-if="itemInfo.image!=undefined&&itemInfo.image!=''"
+                                                                     style="position: absolute;width: 100px;height: 100px">
+                                                                    <div class="fa fa-times imgDelete" @click="deleteImg"></div>
+                                                                    <div class="fa fa-pencil imgEditBlock flexCenter" style="" @click="imgFile"></div>
                                                                 </div>
-
-                                                                <input id="imgFile" type="file"
-                                                                       style="display: none"
-                                                                       accept="image/*"/>
-                                                                <br>
-                                                                <small id="displaysHelp" class="form-text text-muted">Please
-                                                                    upload
-                                                                    pictures of the data which you are ready to upload.
-                                                                </small>
+                                                                <div v-if="itemInfo.image==''||itemInfo.image==undefined" class="cursorPointer loadImg" @click="imgFile">
+                                                                    <i class="fa fa-plus fa-5x"></i>
+                                                                </div>
+                                                                <input type="file" id="imgOne" @change="preImg()"
+                                                                       style="display: none" accept="image/*"/>
+                                                                <!--                                                                                        <input id="imgFile" type="file"-->
+                                                                <!--                                                                                               style="display: none"-->
+                                                                <!--                                                                                               accept="image/*"/>-->
                                                             </div>
                                                         </div>
                                                     </div>

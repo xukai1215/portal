@@ -17,7 +17,7 @@ var data_items = new Vue({
             findDto: {
                 page: 1,
                 pageSize: 10,
-                asc: true,
+                asc: false,
                 classifications:[],
                 category:'',
                 searchContent:[]
@@ -43,6 +43,10 @@ var data_items = new Vue({
             stretch:true,
             dataApplication: [],
             // categoryId:"5cb83fd0ea3cba3224b6e24e",
+            sortTypeName:"View Count",
+            sortFieldName:"viewCount",
+            sortOrder:"Desc.",
+            asc:false,
 
         }
     },
@@ -75,6 +79,7 @@ var data_items = new Vue({
                     this.findDto.searchText=this.searchText;
                     this.findDto.page=1;
                     this.findDto.tabType = this.dataType;
+                    this.findDto.asc = this.asc;
                     axios.post("/dataItem/searchByName/",that.findDto)
                         .then((res)=>{
                             console.log(res);
@@ -95,11 +100,13 @@ var data_items = new Vue({
         },
         //页码点击翻页
         handleCurrentChange(currentPage) {
+            this.currentPage = currentPage;
             //把当前页码给dto
             this.findDto.page=currentPage;
+            this.findDto.asc = this.asc;
             var that=this
             if(this.ca!=''){
-                axios.get("/dataItem/items/"+this.theDefaultCate+"&"+this.findDto.page+"&"+this.dataType)
+                axios.get("/dataItem/items/"+this.theDefaultCate+"&"+currentPage+"&"+this.dataType+"&"+this.sortFieldName+"&"+this.sortOrder)
                     .then(res=>{
                         setTimeout(()=>{
                             window.history.pushState(null,null,"?category="+that.theDefaultCate+"&page="+that.findDto.page)
@@ -146,17 +153,19 @@ var data_items = new Vue({
                 }
             }
             this.ca=this_button[0].innerText;
+            // let asc = (this.sortOrder === 'Asc.');
             this.findDto={
                 categoryId:item,
-                asc:true,
-                page:1
+                asc:this.asc,
+                page:1,
+                sortField:this.sortFieldName
             }
             this.progressBar=true;
             var that=this
             if(this.ca==="Hubs"){
                 this.hubs();
             }else {
-                axios.get("/dataItem/items/"+this.theDefaultCate+"&"+this.findDto.page+"&"+this.dataType)
+                axios.get("/dataItem/items/"+this.theDefaultCate+"&"+1+"&"+this.dataType+"&"+this.sortFieldName+"&"+this.sortOrder)
                     .then(res=>{
                         setTimeout(()=>{
                             console.log(res)
@@ -189,7 +198,7 @@ var data_items = new Vue({
             this.ca=this_button[0].innerText
             var that=this;
             let sendDate = (new Date()).getTime();
-            axios.get("/dataItem/items/"+this.theDefaultCate+"&"+this.findDto.page+"&"+this.dataType)
+            axios.get("/dataItem/items/"+this.theDefaultCate+"&"+1+"&"+this.dataType+"&"+this.sortFieldName+"&"+this.sortOrder)
                 .then(res=>{
                     let receiveDate = (new Date()).getTime();
                     let responseTimeMs = receiveDate - sendDate;
@@ -286,6 +295,33 @@ var data_items = new Vue({
             var r = window.location.search.substr(1).match(reg);
             if(r!=null)return  unescape(r[2]); return null;
         },
+        changeSortField(ele){
+            this.sortTypeName = ele;
+            let field = ele.replace(" ","").replace(ele[0],ele[0].toLowerCase());
+            this.sortFieldName = field;
+            this.getData();
+        },
+        changeSortOrder(ele){
+            this.sortOrder=ele;
+            this.asc = (this.sortOrder === 'Asc.');
+            this.getData();
+            // this.sortAsc = ele==="asc.";
+        },
+        getData(){
+            let that = this;
+            axios.get("/dataItem/items/"+this.theDefaultCate+"&"+this.currentPage+"&"+this.dataType+"&"+this.sortFieldName+"&"+this.sortOrder)
+                .then(res=>{
+                    setTimeout(()=>{
+                        console.log(res)
+                        that.list=res.data.data.content;
+                        that.datacount=res.data.data.totalElements;
+                        that.users=res.data.data.users;
+                        that.classclick=true;
+                        that.progressBar=false
+                        that.loading=false;
+                    },100)
+                });
+        }
     }
     ,
     mounted(){
@@ -295,7 +331,7 @@ var data_items = new Vue({
         let index = u.lastIndexOf("\/");
         that.dataType = u.substring(index+1,u.length);
         if(f[f.length-1]==="hubs"){
-            axios.get("/dataItem/items/"+this.theDefaultCate+"&"+1+"&"+this.dataType)
+            axios.get("/dataItem/items/"+this.theDefaultCate+"&"+1+"&"+this.dataType+"&"+this.sortFieldName+"&"+this.sortOrder)
                 .then(res=>{
                     setTimeout(()=>{
                         console.log(res)
@@ -321,7 +357,7 @@ var data_items = new Vue({
             }
             this.ca="Land Regions";
         }else if(f[f.length-1]==="repository"){
-           axios.get("/dataItem/items/"+this.theDefaultCate+"&"+1+"&"+this.dataType)
+            axios.get("/dataItem/items/"+this.theDefaultCate+"&"+1+"&"+this.dataType+"&"+this.sortFieldName+"&"+this.sortOrder)
                 .then(res=>{
                     setTimeout(()=>{
                         console.log(res)
@@ -347,7 +383,7 @@ var data_items = new Vue({
             }
             this.ca="Land Regions";
         }else if(f[f.length-1]==="network"){
-            axios.get("/dataItem/items/"+this.theDefaultCate+"&"+1+"&"+this.dataType)
+            axios.get("/dataItem/items/"+this.theDefaultCate+"&"+1+"&"+this.dataType+"&"+this.sortFieldName+"&"+this.sortOrder)
                 .then(res=>{
                     setTimeout(()=>{
                         console.log(res)
