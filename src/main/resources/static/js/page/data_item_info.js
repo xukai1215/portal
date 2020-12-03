@@ -1,6 +1,6 @@
 
 
-var  data_item_info= new Vue({
+var  data_item_info = new Vue({
     el: '#data_item_info',
     components: {
         'avatar': VueAvatar.Avatar

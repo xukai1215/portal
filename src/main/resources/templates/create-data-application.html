@@ -90,7 +90,7 @@
                                                 <div class="step-content">
                                                     <div class="step-tab-panel" id="step1">
                                                         <div class="col-md-3 col-sm-4"
-                                                             style="overflow-y: auto;height: 450px;">
+                                                             style="overflow-y: auto;height: 450px;width: auto;">
                                                             <el-card>
                                                                 <div slot="header" class="clearfix text-center">
                                                                     <span style="font-size: 20px;color:#444">Data Classifications</span>
@@ -110,10 +110,10 @@
                                                         </div>
 
                                                         <div class="form-group">
-                                                            <label class="control-label col-lg-2 col-md-3 col-md-offset-2">
+                                                            <label class="control-label col-lg-2 col-md-3 col-md-offset-2" style="margin-left: 20px">
                                                                 <span class="star">* </span>Category
                                                             </label>
-                                                            <div class="input-group col-md-5">
+                                                            <div class="input-group col-md-5" style="width: -webkit-fill-available;">
                                                                 <input type="text" class="form-control" v-model="clsStr" placeholder="Please choose the catgory of the data"
                                                                        id="classification" required="required" readonly/>
                                                             </div>
@@ -121,10 +121,10 @@
                                                         <div class="form-group">
                                                             <label data-original-title="Tooltip on top"
                                                                    class="control-label col-lg-2 col-md-3 col-md-offset-2 tooltips"
-                                                                   data-toggle="tooltip" data-placement="top" title="">
+                                                                   data-toggle="tooltip" data-placement="top" title=""  style="margin-left: 20px">
                                                                 <span class="xing">* </span>Status
                                                             </label>
-                                                            <div class="input-group col-md-5">
+                                                            <div class="input-group col-md-5" style="width: -webkit-fill-available;">
                                                                 <el-radio-group v-model="dataApplication.status" size="medium">
                                                                     <el-tooltip popper-class="fontsize-15" effect="light" content="Can be retrieved, shared and edited." placement="top">
                                                                         <el-radio-button label="Public"></el-radio-button>
@@ -142,37 +142,37 @@
                                                         </div>
 
                                                         <div class="form-group">
-                                                            <label class="control-label col-lg-2 col-md-3 col-md-offset-2">
+                                                            <label class="control-label col-lg-2 col-md-3 col-md-offset-2" style="margin-left: 20px">
                                                                 <span class="xing">* </span>Name
                                                             </label>
-                                                            <div class="input-group col-md-5">
+                                                            <div class="input-group col-md-5" style="width: -webkit-fill-available;">
                                                                 <input type="text" class="form-control"
                                                                        v-model="dataApplication.name">
                                                             </div>
                                                         </div>
 
                                                         <div class="form-group">
-                                                            <label class="control-label col-lg-2 col-md-3 col-md-offset-2">
+                                                            <label class="control-label col-lg-2 col-md-3 col-md-offset-2" style="margin-left: 20px">
                                                                 <span class="xing">* </span>Overview
                                                             </label>
-                                                            <div class="input-group col-md-5">
+                                                            <div class="input-group col-md-5" style="width: -webkit-fill-available;">
                                                         <textarea class="form-control" id="descInput"
                                                                   v-model="dataApplication.description"></textarea>
                                                             </div>
                                                         </div>
 
                                                         <div class="form-group" style="margin-top:10px">
-                                                            <label class="control-label col-lg-2 col-md-3 col-md-offset-2">
+                                                            <label class="control-label col-lg-2 col-md-3 col-md-offset-2" style="margin-left: 20px">
                                                                 <span class="xing">* </span>Content Type
                                                             </label>
                                                             <div class="input-group col-md-5" style="padding:5px 0;font-size:20px">
                                                                 <el-radio-group v-model="dataApplication.contentType">
                                                                     <!--<el-radio label="Package">Model Service Package</el-radio>-->
                                                                     <!--<el-radio label="md5">MD5</el-radio>-->
-                                                                    <el-radio label="Code">Source Code</el-radio>
-                                                                    <el-radio label="Library">Executable Library</el-radio>
-                                                                    <el-radio label="Service">Third-party Web-Service Link</el-radio>
-                                                                    <el-radio label="Link">Downloadable Link</el-radio>
+                                                                    <el-radio label="Code" style="display: block;padding: 5px">Source Code</el-radio>
+                                                                    <el-radio label="Library" style="display: block;padding: 5px">Executable Library</el-radio>
+                                                                    <el-radio label="Service" style="display: block;padding: 5px">Third-party Web-Service Link</el-radio>
+                                                                    <el-radio label="Link" style="display: block;padding: 5px">Downloadable Link</el-radio>
                                                                 </el-radio-group>
                                                             </div>
                                                         </div>

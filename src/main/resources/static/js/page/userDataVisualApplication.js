@@ -310,7 +310,7 @@ var userDataVisualApplication = Vue.extend(
                     },
                     crossDomain: true,
                     success: (data) => {
-                        data = JSON.parse(data);
+                        // data = JSON.parse(data);
                         console.log(data);
                         if (data.oid == "") {
                             alert("Please login");
