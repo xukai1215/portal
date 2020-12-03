@@ -2,7 +2,8 @@
 <html xmlns:th="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml" lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
     <title>Data Application | OpenGMS</title>
     <script src="/static/js/common/vue.min.js"></script>
     <script src="/static/js/common/vue-avatar.min.js"></script>
@@ -17,20 +18,26 @@
     <link rel="stylesheet" href="/static/css/other/bootstrap-select.css">
     <link rel="stylesheet" href="/static/css/page/model_items.css">
     <link rel="stylesheet" href="/static/css/base/bootstrap-tagsinput.css">
-    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css" />
-    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css"/>
     <style>
         .content-body .list-item:not(:first-child) {
             margin-top: -1px;
         }
-        .bootstrap-tagsinput{
-            min-height:36px;
+
+        .bootstrap-tagsinput {
+            min-height: 36px;
         }
-        .bootstrap-tagsinput input{
-            min-height:26px;
+
+        .bootstrap-tagsinput input {
+            min-height: 26px;
         }
-        .el-collapse-item__content{
+
+        .el-collapse-item__content {
             padding-bottom: 0px;
+        }
+        input[type=file] {
+            display: none;
         }
     </style>
 
@@ -45,48 +52,81 @@
                     <h2 class="main-title">Data Application</h2>
                     <h4 class="sub-title">The application of data
                     </h4>
-                    <button class="btn btn-success btn-lg" style="font-size: 15px;margin:10px;" @click="contribute()">+ Contribute</button>
+                    <button class="btn btn-success btn-lg" style="font-size: 15px;margin:10px;" @click="contribute()">+
+                        Contribute
+                    </button>
                 </div>
                 <hr>
             </div>
             <template>
                 <el-tabs v-model="activeName" type="card" @tab-click="handleClick" stretch="true">
                     <el-tab-pane label="UDX Data Manipulation " name="first">
-                        <button type="button" class="el-button el-button--primary" style="height: 100px; width: 70%; display: flex;flex-direction: column;
-                         margin: auto; font-size: xx-large; background: rgb(106, 138, 190);" @click="dialogVisible = true">
-                            <span style="margin: auto;"><i class="el-icon-magic-stick"  style="margin-right: 10px"></i>Mapping</span>
-                            <div style="margin: auto"><p style="font-size: large;">Map your data to a fixed format UDX</p></div>
-                        </button>
-                        <button type="button" class="el-button el-button--success" style="height: 100px; width: 70%; display: flex;flex-direction: column;
-                        margin: auto; font-size: xx-large; background: rgb(90, 182, 223); border-color: rgb(90, 182, 223);">
-                            <span style=" margin: auto;"><i class="el-icon-thumb" style="margin-right: 10px"></i>Refactor</span>
-                            <div style="margin: auto"><p style="font-size: large;">UDX to refactor your data</p></div>
-                        </button>
-                        <button type="button" class="el-button el-button--warning" style="height: 100px; width: 70%; display: flex;flex-direction: column;
-                         margin: auto; font-size: xx-large;"><!----><!----><span style=" margin: auto;">
-                            <i class="el-icon-video-play" style="margin-right: 10px"></i>Visualization</span>
-                            <div style="margin: auto"><p style="font-size: large;">Visualize your data through UDX</p></div>
-                        </button>
+                        <el-tooltip class="item" effect="dark" content="Under Construction..." placement="right-start">
+                            <button type="button" class="el-button" style="height: 550px; width: 30%; flex-direction: column;
+                         margin: 10px; font-size: xx-large; background: #FF7F50;border-color: rgb(90, 182, 223);color: black"
+                                    @click="dialogVisible = true">
+                                <div style="margin: 15% 5%;">
+                                    <span style="margin: 2%;"><i class="el-icon-magic-stick" style="margin-right: 10px"></i>Mapping</span>
+                                    <div style="margin: 2%"><p style="font-size: medium;">Map your data to a fixed format UDX</p></div>
+                                    <div style="margin-top: 15%">
+                                        <el-image style="width: 100%;margin-bottom: 5px" src="/static/img/work.png" fit="contain"></el-image>
+                                    </div>
+                                    <el-button round style="margin-top: 7%">Under Construction...</el-button>
+                                </div>
+                            </button>
+                        </el-tooltip>
+                        <el-tooltip class="item" effect="dark" content="Under Construction..." placement="right-start">
+                            <button type="button" class="el-button" style="height: 550px; width: 30%;flex-direction: column;
+                        margin: 10px; font-size: xx-large; background-color: #F4A460; border-color: rgb(90, 182, 223);color: black">
+                                <div style="margin: 15% 5%;">
+                                    <span style=" margin: 2%;"><i class="el-icon-thumb" style="margin-right: 10px"></i>Refactor</span>
+                                    <div style="margin: 2%"><p style="font-size: medium;">UDX to refactor your data</p></div>
+                                    <div style="margin-top: 15%">
+                                        <el-image style="width: 100%;margin-bottom: 5px" src="/static/img/work.png" fit="contain"></el-image>
+                                    </div>
+                                    <el-button round style="margin-top: 7%">Under Construction...</el-button>
+                                </div>
+                            </button>
+                        </el-tooltip>
+                        <el-tooltip class="item" effect="dark" content="Under Construction..." placement="right-start">
+                            <button type="button" class="el-button" style="height: 550px; width: 30%; flex-direction: column;
+                         margin: 10px; font-size: xx-large;background-color: #03A89E;border-color: rgb(90, 182, 223);color: black">
+                                <div style="margin: 15% 5%;">
+                                    <span style=" margin: 2%;"><i class="el-icon-video-play" style="margin-right: 10px"></i>Visualization</span>
+                                    <div style="margin: 2%"><p style="font-size: medium;">Visualize your data through UDX</p></div>
+                                    <div style="margin-top: 15%">
+                                        <el-image style="width: 100%;margin-bottom: 5px" src="/static/img/work.png" fit="contain"></el-image>
+                                    </div>
+                                    <el-button round style="margin-top: 7%">Under Construction...</el-button>
+                                </div>
+                            </button>
+                        </el-tooltip>
                     </el-tab-pane>
                     <el-tab-pane label="UDX Data Sharing" name="second">
                         <el-button type="primary" style="height: 100px;width: 50%;display: flex;margin: auto;font-size: xx-large;
-                        background: #6a8abe;">Mapping</el-button>
+                        background: #6a8abe;">Mapping
+                        </el-button>
                         <el-button type="success" style="height: 100px;width: 50%;display: flex;margin: auto;font-size: xx-large;
-                        background: #5ab6df;border-color: #5ab6df;">Refactor</el-button>
-                        <el-button type="warning" style="height: 100px;width: 50%;display: flex;margin: auto;font-size: xx-large"
-                        >Visualization</el-button>
+                        background: #5ab6df;border-color: #5ab6df;">Refactor
+                        </el-button>
+                        <el-button type="warning"
+                                   style="height: 100px;width: 50%;display: flex;margin: auto;font-size: xx-large"
+                        >Visualization
+                        </el-button>
                     </el-tab-pane>
                     <el-tab-pane label="Others" name="third">
                         <el-button type="primary" style="height: 100px;width: 50%;display: flex;margin: auto;font-size: xx-large;
-                        background: #6a8abe;">Mapping</el-button>
+                        background: #6a8abe;">Mapping
+                        </el-button>
                         <el-button type="success" style="height: 100px;width: 50%;display: flex;margin: auto;font-size: xx-large;
-                        background: #5ab6df;border-color: #5ab6df;">Refactor</el-button>
+                        background: #5ab6df;border-color: #5ab6df;">Refactor
+                        </el-button>
                         <el-button type="warning" style="height: 100px;width: 50%;display: flex;margin: auto;font-size: xx-large
-                        ">Visualization</el-button>
+                        ">Visualization
+                        </el-button>
                     </el-tab-pane>
                 </el-tabs>
             </template>
-
         </div>
     </div>
     <el-dialog
@@ -100,24 +140,134 @@
                 <el-step class="mappingStep" title="Data&Method"></el-step>
                 <el-step class="mappingStep" title="Invoke"></el-step>
             </el-steps>
-            <el-card :style="{display:(mappingActive==0?'block':'none')}" shadow="never">
-
+            <el-card :style="{display:(mappingActive===0?'block':'none')}" shadow="never">
+                <el-container>
+                    <el-main
+                            style="display:inline-block; width: 49%; height: 500px;border: solid 1px;border-radius: 5px">
+                        <el-table
+                                :data="setItems"
+                                style="width: 100%">
+                            <el-table-column
+                                    prop="name"
+                                    label="Name">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="description"
+                                    label="Description">
+                            </el-table-column>
+                            <el-table-column
+                                    label="Operation">
+                                <template slot-scope="scope">
+                                    <el-button type="danger" icon="el-icon-delete" @click="deleItem(scope)">delete
+                                    </el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </el-main>
+                    <el-main
+                            style="display:inline-block; width: 49%; height: 500px;border: solid 1px;border-radius: 5px;margin-left: 10px">
+                        <el-input
+                                v-model="templateName"
+                                placeholder="search by name"
+                                prefix-icon="el-icon-search"
+                                style="width: 60%">
+                        </el-input>
+                        <el-button style="width: 30%;margin-left: 10px" type="primary" icon="el-icon-search"
+                                   @click="searchTemplateClick">Search
+                        </el-button>
+                        <el-table
+                                :data="items.slice((currPage-1)*5,currPage*5)"
+                                style="width: 100%">
+                            <el-table-column
+                                    prop="name"
+                                    label="Name">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="description"
+                                    label="Description">
+                            </el-table-column>
+                            <el-table-column
+                                    label="Operation">
+                                <template slot-scope="scope">
+                                    <el-button type="primary" @click="addItem(scope.row)" :disabled="false">add
+                                    </el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                        <el-pagination
+                                :current-page="currPage"
+                                @current-change="handleCurrentChange"
+                                :hide-on-single-page=true
+                                :page-size="5"
+                                :total="items.length"
+                                layout="total, prev, pager, next, jumper">
+                        </el-pagination>
+                    </el-main>
+                </el-container>
             </el-card>
-            <el-card :style="{display:(mappingActive==1?'block':'none')}" shadow="never">
+            <el-card :style="{display:(mappingActive===1?'block':'none')}" shadow="never">
+                <el-container style="width: 100%; height: 400px">
+                    <el-main style="width: 49%; border: solid 1px;border-radius: 5px">
+                        <el-table
+                                :data="selectedFiles"
+                                style="width: 100%">
+                            <el-table-column
+                                    prop="name"
+                                    label="uploadFiles"></el-table-column>
+                            <el-table-column
+                                    label="operation">
+                                <template slot-scope="scope">
+                                    <el-button type="danger" icon="el-icon-delete" @click="deleFile(scope)">delete
+                                    </el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </el-main>
 
+                    <el-main style="width: 49%; border: solid 1px;border-radius: 5px;margin-left: 10px">
+                        <el-upload
+                                class="upload-demo"
+                                ref="upload"
+                                action="/template/uploadFiles"
+                                :on-preview="handlePreview"
+                                :on-remove="handleRemove"
+                                :on-success="uploadFilesSuccess"
+                                :file-list="fileList"
+                                multiple
+                                :auto-upload="false">
+                            <el-button slot="trigger" type="primary">select files</el-button>
+                            <el-button style="margin-left: 10px;" type="success" @click="submitUpload">Upload to the server
+                            </el-button>
+                            <div slot="tip" class="el-upload__tip">Upload the data files you need to convert
+                            </div>
+                        </el-upload>
+                    </el-main>
+                </el-container>
+                <el-container style="height: 90px;margin-top: 10px">
+                    <el-row style="margin-top: 10px;font-size: 28px;height: 50px">
+                        select method
+                        <el-radio v-model="UDXRadio" label="1" border style=" margin-left: 10px">data convert to UDX
+                        </el-radio>
+                        <el-radio v-model="UDXRadio" label="2" border style=" margin-left: 10px">data don't convert to
+                            UDX
+                        </el-radio>
+                    </el-row>
+                </el-container>
             </el-card>
-            <el-card :style="{display:(mappingActive==2?'block':'none')}" shadow="never">
+            <el-card :style="{display:(mappingActive===2?'block':'none')}" shadow="never">
+                <el-container style="width: 100%;height: 500px">
 
+                </el-container>
             </el-card>
             <!--<el-button style="margin-top: 12px;" @click="next">Next</el-button>-->
             <el-button circle icon="el-icon-arrow-left"
                        :style="{visibility:(mappingActive>0?'visible':'hidden')}" class="el-button--primary"
                        style="margin-top: 12px;position: absolute;left:4%;top:55px;"
                        @click="editThemePre"></el-button>
-            <el-button circle icon="el-icon-arrow-right" v-if="mappingActive<3" class="el-button--primary"
+            <el-button circle icon="el-icon-arrow-right" v-if="mappingActive<2" class="el-button--primary"
                        style="margin-top: 12px;position: absolute;right:4%;top:55px;"
                        @click="editThemeNext"></el-button>
-            <el-button circle icon="el-icon-check" v-if="mappingActive>=3" class="el-button--success"
+            <el-button circle icon="el-icon-check" v-if="mappingActive>=2" class="el-button--success"
                        style="margin-top: 12px;position: absolute;right:4%;top:55px;"
                        @click="editThemeFinish"></el-button>
         </div>
@@ -131,7 +281,7 @@
 <script src="/static/js/common/bootstrap-select.js"></script>
 <script src="/static/js/common/bootstrap-tagsinput.js"></script>
 <script src="/static/js/page/data_application.js"></script>
-<script  async src="/static/js/common/loadUser.js" ></script>
+<script async src="/static/js/common/loadUser.js"></script>
 <script src="/static/element-ui/umd/locale/en.js"></script>
 <script src="/static/js/common/navbar.js"></script>
 </html>
