@@ -6,6 +6,7 @@
           content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
     <title>Data Application | OpenGMS</title>
     <script src="/static/js/common/vue.min.js"></script>
+    <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
     <script src="/static/js/common/vue-avatar.min.js"></script>
     <script src="/static/element-ui/index.js"></script>
     <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
@@ -20,6 +21,9 @@
     <link rel="stylesheet" href="/static/css/base/bootstrap-tagsinput.css">
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css"/>
+
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/wzhFlexContainer.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/wzhStyle.css" />
     <style>
         .content-body .list-item:not(:first-child) {
             margin-top: -1px;
@@ -61,46 +65,123 @@
             <template>
 <!--                <el-tabs v-model="activeName" type="card" @tab-click="handleClick" stretch="true">-->
 <!--                    <el-tab-pane label="UDX Data Manipulation " name="first">-->
-                        <el-tooltip class="item" effect="dark" content="Under Construction..." placement="right-start">
-                            <button type="button" class="el-button" style="height: 550px; width: 30%; flex-direction: column;
-                         margin: 10px; font-size: xx-large; background: rgb(250, 236, 216);color: black"
-                                    @click="dialogVisible = true">
-                                <div style="margin: 15% 5%;">
-                                    <span style="margin: 2%;"><i class="el-icon-magic-stick" style="margin-right: 10px"></i>Mapping</span>
-                                    <div style="margin: 2%"><p style="font-size: medium;">Map your data to a fixed format UDX</p></div>
-                                    <div style="margin-top: 15%">
-                                        <el-image style="width: 100%;margin-bottom: 5px" src="/static/img/work.png" fit="contain"></el-image>
-                                    </div>
-                                    <el-button round style="margin-top: 7%">Under Construction...</el-button>
+                <section class="wzhSection darkSide" style="display:inline-block;width:30%;margin-right:4%;min-width:360px;">
+                    <div class="wzhSectionContainer" style="background-color: #576fab">
+                        <!--<div class="imgContainerW50 right0" style="background-image:url(/static/img/work.png);background-size:contain"></div>-->
+                        <div class="leftPart flexCol flexJustBetween flexAlignStart">
+                            <!--<div class="imgContainerW100" style="background-image:url(/static/img/model/modelExcution.png);height: 225px"></div>-->
+                            <div>
+                                <div class="noMargin sectionTitle" >
+                                    <p>
+                                        Mapping
+                                    </p>
                                 </div>
-                            </button>
-                        </el-tooltip>
-                        <el-tooltip class="item" effect="dark" content="Under Construction..." placement="right-start">
-                            <button type="button" class="el-button" style="height: 550px; width: 30%;flex-direction: column;
-                        margin: 10px; font-size: xx-large; background-color: rgb(253, 226, 226);  color: black">
-                                <div style="margin: 15% 5%;">
-                                    <span style=" margin: 2%;"><i class="el-icon-thumb" style="margin-right: 10px"></i>Refactor</span>
-                                    <div style="margin: 2%"><p style="font-size: medium;">UDX to refactor your data</p></div>
-                                    <div style="margin-top: 15%">
-                                        <el-image style="width: 100%;margin-bottom: 5px" src="/static/img/work.png" fit="contain"></el-image>
-                                    </div>
-                                    <el-button round style="margin-top: 7%">Under Construction...</el-button>
+
+                                <div class="sectionDescribe"  style="margin-top: 10px">
+                                    <p>You can view the existing mapping services and invoke them.</p>
+                                    <p>Choose what you need to invoke!</p>
                                 </div>
+
+                            </div>
+                            <img src="/static/img/work.png" style="height: 30%;"/>
+                            <button class="wzhBtn nutBtn plainBtn hoverPurple" @click="loadDeployedModelClick()">
+                                <p style="font-size: 2.0rem;font-weight: 600;font-family: Aktiv Grotesk">Under Construction...</p>
                             </button>
-                        </el-tooltip>
-                        <el-tooltip class="item" effect="dark" content="Under Construction..." placement="right-start">
-                            <button type="button" class="el-button" style="height: 550px; width: 30%; flex-direction: column;
-                         margin: 10px; font-size: xx-large;background-color: rgb(160, 207, 255);color: black">
-                                <div style="margin: 15% 5%;">
-                                    <span style=" margin: 2%;"><i class="el-icon-video-play" style="margin-right: 10px"></i>Visualization</span>
-                                    <div style="margin: 2%"><p style="font-size: medium;">Visualize your data through UDX</p></div>
-                                    <div style="margin-top: 15%">
-                                        <el-image style="width: 100%;margin-bottom: 5px" src="/static/img/work.png" fit="contain"></el-image>
-                                    </div>
-                                    <el-button round style="margin-top: 7%">Under Construction...</el-button>
+                        </div>
+                    </div>
+                </section>
+                <section class="wzhSection" style="display:inline-block;width:30%;margin-right:4%;min-width:360px;">
+                    <div class="wzhSectionContainer" style="background-color: #d4b2d5">
+                        <!--<div class="imgContainerW50 right0" style="background-image:url(/static/img/model/modelExcution.png);background-position-y: -18px"></div>-->
+                        <div class="leftPart flexCol flexJustBetween flexAlignStart">
+                            <div>
+                                <div class="noMargin sectionTitle" >
+                                    <p>
+                                        Refactor
+                                    </p>
                                 </div>
+
+                                <div class="sectionDescribe"  style="margin-top: 10px">
+                                    <p>You can view the existing refactor services and invoke them.</p>
+                                    <p>Choose what you need to invoke!</p>
+                                </div>
+
+                            </div>
+                            <img src="/static/img/work.png" style="height: 30%;"/>
+                            <button class="wzhBtn nutBtn plainBtn hoverJblue" @click="window.location.href='/computableModel/integrating'">
+                                <p style="font-size: 2.0rem;font-weight: 600;font-family: Aktiv Grotesk">Under Construction...</p>
                             </button>
-                        </el-tooltip>
+                        </div>
+                    </div>
+                </section>
+                <section class="wzhSection darkSide" style="display:inline-block;width:30%;min-width:360px;">
+                    <div class="wzhSectionContainer" style="background-color: #7eafd0">
+                        <!--<div class="imgContainerW50 right0" style="background-image:url(/static/img/model/modelExcution.png);background-position-y: -18px"></div>-->
+                        <div class="leftPart flexCol flexJustBetween flexAlignStart">
+                            <div>
+                                <div class="noMargin sectionTitle" >
+                                    <p>
+                                        Visualization
+                                    </p>
+                                </div>
+
+                                <div class="sectionDescribe"  style="margin-top: 10px">
+                                    <p>You can view the existing visual services and invoke them.</p>
+                                    <p>Choose what you need to invoke!</p>
+                                </div>
+
+                            </div>
+                            <img src="/static/img/work.png" style="height: 30%;"/>
+                            <button class="wzhBtn nutBtn plainBtn hoverOrange">
+                                <p style="font-size: 2.0rem;font-weight: 600;font-family: Aktiv Grotesk">Under Construction...</p>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+
+<!--                        <el-tooltip class="item" effect="dark" content="Under Construction..." placement="right-start">-->
+<!--                            <button type="button" class="el-button" style="height: 550px; width: 30%; flex-direction: column;-->
+<!--                         margin: 10px; font-size: xx-large; background: rgb(250, 236, 216);color: black"-->
+<!--                                    @click="dialogVisible = true">-->
+<!--                                <div style="margin: 15% 5%;">-->
+<!--                                    <span style="margin: 2%;"><i class="el-icon-magic-stick" style="margin-right: 10px"></i>Mapping</span>-->
+<!--                                    <div style="margin: 2%"><p style="font-size: medium;">Map your data to a fixed format UDX</p></div>-->
+<!--                                    <div style="margin-top: 15%">-->
+<!--                                        <el-image style="width: 100%;margin-bottom: 5px" src="/static/img/work.png" fit="contain"></el-image>-->
+<!--                                    </div>-->
+<!--                                    <el-button round style="margin-top: 7%">Under Construction...</el-button>-->
+<!--                                </div>-->
+<!--                            </button>-->
+<!--                        </el-tooltip>-->
+<!--                        <el-tooltip class="item" effect="dark" content="Under Construction..." placement="right-start">-->
+<!--                            <button type="button" class="el-button" style="height: 550px; width: 30%;flex-direction: column;-->
+<!--                        margin: 10px; font-size: xx-large; background-color: rgb(253, 226, 226);  color: black">-->
+<!--                                <div style="margin: 15% 5%;">-->
+<!--                                    <span style=" margin: 2%;"><i class="el-icon-thumb" style="margin-right: 10px"></i>Refactor</span>-->
+<!--                                    <div style="margin: 2%"><p style="font-size: medium;">UDX to refactor your data</p></div>-->
+<!--                                    <div style="margin-top: 15%">-->
+<!--                                        <el-image style="width: 100%;margin-bottom: 5px" src="/static/img/work.png" fit="contain"></el-image>-->
+<!--                                    </div>-->
+<!--                                    <el-button round style="margin-top: 7%">Under Construction...</el-button>-->
+<!--                                </div>-->
+<!--                            </button>-->
+<!--                        </el-tooltip>-->
+<!--                        <el-tooltip class="item" effect="dark" content="Under Construction..." placement="right-start">-->
+<!--                            <button type="button" class="el-button" style="height: 550px; width: 30%; flex-direction: column;-->
+<!--                         margin: 10px; font-size: xx-large;background-color: rgb(160, 207, 255);color: black">-->
+<!--                                <div style="margin: 15% 5%;">-->
+<!--                                    <span style=" margin: 2%;"><i class="el-icon-video-play" style="margin-right: 10px"></i>Visualization</span>-->
+<!--                                    <div style="margin: 2%"><p style="font-size: medium;">Visualize your data through UDX</p></div>-->
+<!--                                    <div style="margin-top: 15%">-->
+<!--                                        <el-image style="width: 100%;margin-bottom: 5px" src="/static/img/work.png" fit="contain"></el-image>-->
+<!--                                    </div>-->
+<!--                                    <el-button round style="margin-top: 7%">Under Construction...</el-button>-->
+<!--                                </div>-->
+<!--                            </button>-->
+<!--                        </el-tooltip>-->
+
+
 <!--                    </el-tab-pane>-->
 <!--                    <el-tab-pane label="UDX Data Sharing" name="second">-->
 <!--                        <el-button type="primary" style="height: 100px;width: 50%;display: flex;margin: auto;font-size: xx-large;-->
