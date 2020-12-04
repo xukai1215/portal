@@ -52,18 +52,18 @@
                     <h2 class="main-title">Data Application</h2>
                     <h4 class="sub-title">The application of data
                     </h4>
-                    <button class="btn btn-success btn-lg" style="font-size: 15px;margin:10px;" @click="contribute()">+
-                        Contribute
-                    </button>
+<!--                    <button class="btn btn-success btn-lg" style="font-size: 15px;margin:10px;" @click="contribute()">+-->
+<!--                        Contribute-->
+<!--                    </button>-->
                 </div>
                 <hr>
             </div>
             <template>
-                <el-tabs v-model="activeName" type="card" @tab-click="handleClick" stretch="true">
-                    <el-tab-pane label="UDX Data Manipulation " name="first">
+<!--                <el-tabs v-model="activeName" type="card" @tab-click="handleClick" stretch="true">-->
+<!--                    <el-tab-pane label="UDX Data Manipulation " name="first">-->
                         <el-tooltip class="item" effect="dark" content="Under Construction..." placement="right-start">
                             <button type="button" class="el-button" style="height: 550px; width: 30%; flex-direction: column;
-                         margin: 10px; font-size: xx-large; background: #FF7F50;border-color: rgb(90, 182, 223);color: black"
+                         margin: 10px; font-size: xx-large; background: rgb(250, 236, 216);color: black"
                                     @click="dialogVisible = true">
                                 <div style="margin: 15% 5%;">
                                     <span style="margin: 2%;"><i class="el-icon-magic-stick" style="margin-right: 10px"></i>Mapping</span>
@@ -77,7 +77,7 @@
                         </el-tooltip>
                         <el-tooltip class="item" effect="dark" content="Under Construction..." placement="right-start">
                             <button type="button" class="el-button" style="height: 550px; width: 30%;flex-direction: column;
-                        margin: 10px; font-size: xx-large; background-color: #F4A460; border-color: rgb(90, 182, 223);color: black">
+                        margin: 10px; font-size: xx-large; background-color: rgb(253, 226, 226);  color: black">
                                 <div style="margin: 15% 5%;">
                                     <span style=" margin: 2%;"><i class="el-icon-thumb" style="margin-right: 10px"></i>Refactor</span>
                                     <div style="margin: 2%"><p style="font-size: medium;">UDX to refactor your data</p></div>
@@ -90,7 +90,7 @@
                         </el-tooltip>
                         <el-tooltip class="item" effect="dark" content="Under Construction..." placement="right-start">
                             <button type="button" class="el-button" style="height: 550px; width: 30%; flex-direction: column;
-                         margin: 10px; font-size: xx-large;background-color: #03A89E;border-color: rgb(90, 182, 223);color: black">
+                         margin: 10px; font-size: xx-large;background-color: rgb(160, 207, 255);color: black">
                                 <div style="margin: 15% 5%;">
                                     <span style=" margin: 2%;"><i class="el-icon-video-play" style="margin-right: 10px"></i>Visualization</span>
                                     <div style="margin: 2%"><p style="font-size: medium;">Visualize your data through UDX</p></div>
@@ -101,31 +101,31 @@
                                 </div>
                             </button>
                         </el-tooltip>
-                    </el-tab-pane>
-                    <el-tab-pane label="UDX Data Sharing" name="second">
-                        <el-button type="primary" style="height: 100px;width: 50%;display: flex;margin: auto;font-size: xx-large;
-                        background: #6a8abe;">Mapping
-                        </el-button>
-                        <el-button type="success" style="height: 100px;width: 50%;display: flex;margin: auto;font-size: xx-large;
-                        background: #5ab6df;border-color: #5ab6df;">Refactor
-                        </el-button>
-                        <el-button type="warning"
-                                   style="height: 100px;width: 50%;display: flex;margin: auto;font-size: xx-large"
-                        >Visualization
-                        </el-button>
-                    </el-tab-pane>
-                    <el-tab-pane label="Others" name="third">
-                        <el-button type="primary" style="height: 100px;width: 50%;display: flex;margin: auto;font-size: xx-large;
-                        background: #6a8abe;">Mapping
-                        </el-button>
-                        <el-button type="success" style="height: 100px;width: 50%;display: flex;margin: auto;font-size: xx-large;
-                        background: #5ab6df;border-color: #5ab6df;">Refactor
-                        </el-button>
-                        <el-button type="warning" style="height: 100px;width: 50%;display: flex;margin: auto;font-size: xx-large
-                        ">Visualization
-                        </el-button>
-                    </el-tab-pane>
-                </el-tabs>
+<!--                    </el-tab-pane>-->
+<!--                    <el-tab-pane label="UDX Data Sharing" name="second">-->
+<!--                        <el-button type="primary" style="height: 100px;width: 50%;display: flex;margin: auto;font-size: xx-large;-->
+<!--                        background: #6a8abe;">Mapping-->
+<!--                        </el-button>-->
+<!--                        <el-button type="success" style="height: 100px;width: 50%;display: flex;margin: auto;font-size: xx-large;-->
+<!--                        background: #5ab6df;border-color: #5ab6df;">Refactor-->
+<!--                        </el-button>-->
+<!--                        <el-button type="warning"-->
+<!--                                   style="height: 100px;width: 50%;display: flex;margin: auto;font-size: xx-large"-->
+<!--                        >Visualization-->
+<!--                        </el-button>-->
+<!--                    </el-tab-pane>-->
+<!--                    <el-tab-pane label="Others" name="third">-->
+<!--                        <el-button type="primary" style="height: 100px;width: 50%;display: flex;margin: auto;font-size: xx-large;-->
+<!--                        background: #6a8abe;">Mapping-->
+<!--                        </el-button>-->
+<!--                        <el-button type="success" style="height: 100px;width: 50%;display: flex;margin: auto;font-size: xx-large;-->
+<!--                        background: #5ab6df;border-color: #5ab6df;">Refactor-->
+<!--                        </el-button>-->
+<!--                        <el-button type="warning" style="height: 100px;width: 50%;display: flex;margin: auto;font-size: xx-large-->
+<!--                        ">Visualization-->
+<!--                        </el-button>-->
+<!--                    </el-tab-pane>-->
+<!--                </el-tabs>-->
             </template>
         </div>
     </div>
