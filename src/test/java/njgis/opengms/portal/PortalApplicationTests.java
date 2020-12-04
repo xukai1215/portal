@@ -117,6 +117,30 @@ public class PortalApplicationTests {
     private String managerServerIpAndPort;
 
     @Test
+    public void changeConceptLocalization(){
+        List<Concept> conceptList = conceptDao.findAll();
+        for(Concept concept:conceptList){
+            Utils.count();
+            List<Localization> localizationList = concept.getLocalizationList();
+            for(int i = 0;i<localizationList.size();i++){
+                Localization localization = localizationList.get(i);
+                localization.setLocalCode("en-US");
+                localization.setLocalName("English (United States)");
+                for(int j=0;j<localization.getName().length();j++){
+                    if(isChinese(localization.getName().charAt(j))){
+                        localization.setLocalCode("zh-CN");
+                        localization.setLocalName("Chinese (Simplified)");
+                        break;
+                    }
+                }
+
+            }
+            conceptDao.save(concept);
+
+        }
+    }
+
+    @Test
     public void changeModelItemLocalization(){
 
         List<ModelItem> modelItemList = modelItemDao.findAll();

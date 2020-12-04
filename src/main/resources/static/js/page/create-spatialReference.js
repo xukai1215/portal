@@ -349,7 +349,7 @@ var createSpatialReference = Vue.extend({
                 { value: 'zu-ZA', label: 'Zulu (South Africa)' },
             ],
 
-            editTypeLocal:'create',
+            editType:'create',
 
             toCreate: 1,
 
@@ -612,12 +612,12 @@ var createSpatialReference = Vue.extend({
             item=item.substring(6,item.length)
             let obj={
                 content:content,
-                editType:this.editTypeLocal,
+                editType:this.editType,
                 itemType:item,
                 user:this.userId,
                 oid:this.draft.oid,
             }
-            if(this.editTypeLocal) {
+            if(this.editType) {
                 obj.itemOid=this.$route.params.editId?this.$route.params.editId:null
                 obj.itemName= this.itemName;
             }
@@ -792,7 +792,7 @@ var createSpatialReference = Vue.extend({
                 forceLowercase: false
             });
 
-            this.editTypeLocal = 'create';
+            this.editType = 'create';
 
             let interval = setInterval(function () {
                 initTinymce('textarea#singleDescription')

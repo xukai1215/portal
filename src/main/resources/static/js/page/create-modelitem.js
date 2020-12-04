@@ -252,7 +252,7 @@ var createModelItem = Vue.extend({
             itemInfo: {
                 image: '',
             },
-            editTypeLocal: "",//create,modify
+            editType: "",//create,modify
             currentLocalization: {
                 localCode: "",
                 localName: "",
@@ -749,7 +749,7 @@ var createModelItem = Vue.extend({
             userspace.getUserData($("#providersPanel .user-contents .form-control"), modelItemObj.authorship);
 
 
-            if(this.editTypeLocal == 'modify') {
+            if(this.editType == 'modify') {
 
                 for (i = 0; i < this.localizationList.length; i++) {
                     if (this.currentLocalization.localName == this.localizationList[i].localName) {
@@ -805,11 +805,11 @@ var createModelItem = Vue.extend({
             item=item.substring(6,item.length)
             let obj={
                 content:content,
-                editType:this.editTypeLocal,
+                editType:this.editType,
                 user:this.userId,
                 oid:this.draft.oid,
             }
-            if(this.editTypeLocal) {
+            if(this.editType) {
                 obj.itemOid=this.$route.params.editId?this.$route.params.editId:null
                 obj.itemName= this.itemName;
             }
@@ -1606,7 +1606,7 @@ var createModelItem = Vue.extend({
 
         if ((oid === "0") || (oid === "") || (oid === null)|| (oid === undefined)) {
 
-            this.editTypeLocal = 'create';
+            this.editType = 'create';
             // $("#title").text("Create Model Item")
             $("#subRteTitle").text("/Create Model Item");
 
@@ -1632,7 +1632,7 @@ var createModelItem = Vue.extend({
         }
         else {
 
-            this.editTypeLocal = 'modify';
+            this.editType = 'modify';
             if(this.draft.oid==''||this.draft.oid==null||typeof (this.draft.oid)=="undefined"){
                 this.initDraft('edit','/user/userSpace#/models/modelitem','item',this.$route.params.editId)
             }else{

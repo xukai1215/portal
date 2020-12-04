@@ -362,7 +362,7 @@ var createTemplate = Vue.extend({
                 { value: 'zu-ZA', label: 'Zulu (South Africa)' },
             ],
 
-            editTypeLocal:'create',
+            editType:'create',
 
             toCreate: 1,
 
@@ -603,12 +603,12 @@ var createTemplate = Vue.extend({
             item=item.substring(6,item.length)
             let obj={
                 content:content,
-                editType:this.editTypeLocal,
+                editType:this.editType,
                 itemType:item,
                 user:this.userId,
                 oid:this.draft.oid,
             }
-            if(this.editTypeLocal) {
+            if(this.editType) {
                 obj.itemOid=this.$route.params.editId?this.$route.params.editId:null
                 obj.itemName= this.itemName;
             }
@@ -788,7 +788,7 @@ var createTemplate = Vue.extend({
                 forceLowercase: false
             });
 
-            this.editTypeLocal = 'create';
+            this.editType = 'create';
 
             let interval = setInterval(function () {
                 initTinymce('textarea#singleDescription')
@@ -806,7 +806,7 @@ var createTemplate = Vue.extend({
 
         }
         else {
-            this.editTypeLocal = 'modify';
+            this.editType = 'modify';
             if(this.draft.oid==''||this.draft.oid==null||typeof (this.draft.oid)=="undefined"){
                 this.initDraft('edit','/user/userSpace#/models/modelitem','item',this.$route.params.editId)
             }else{

@@ -1092,7 +1092,7 @@ var createConcept = Vue.extend({
 
             concept_oid: "",
 
-            editTypeLocal:'create',
+            editType:'create',
 
             toCreate: 1,
 
@@ -1523,12 +1523,12 @@ var createConcept = Vue.extend({
             item=item.substring(6,item.length)
             let obj={
                 content:content,
-                editType:this.editTypeLocal,
+                editType:this.editType,
                 itemType:item,
                 user:this.userId,
                 oid:this.draft.oid,
             }
-            if(this.editTypeLocal) {
+            if(this.editType) {
                 obj.itemOid=this.$route.params.editId?this.$route.params.editId:null
                 obj.itemName= this.itemName;
             }
@@ -1707,7 +1707,7 @@ var createConcept = Vue.extend({
                 forceLowercase: false
             });
 
-            this.editTypeLocal = 'create';
+            this.editType = 'create';
 
             let interval = setInterval(function () {
                 initTinymce('textarea#singleDescription')
@@ -1725,7 +1725,7 @@ var createConcept = Vue.extend({
 
         } else {
 
-            this.editTypeLocal = 'modify';
+            this.editType = 'modify';
             if(this.draft.oid==''||this.draft.oid==null||typeof (this.draft.oid)=="undefined"){
                 this.initDraft('edit','/user/userSpace#/models/modelitem','item',this.$route.params.editId)
             }else{
