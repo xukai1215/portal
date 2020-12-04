@@ -974,14 +974,12 @@ var createModelItem = Vue.extend({
             }, 1000);
 
             //alias
-            if(basicInfo.alias.length>0){
-                $('#aliasInput').tagEditor('destroy');
-                $('#aliasInput').tagEditor({
-                    initialTags: basicInfo.alias ,
-                    forceLowercase: false,
-                    // placeholder: 'Enter alias ...'
-                });
-            }
+            $('#aliasInput').tagEditor('destroy');
+            $('#aliasInput').tagEditor({
+                initialTags: basicInfo.alias ,
+                forceLowercase: false,
+                // placeholder: 'Enter alias ...'
+            });
 
             // //detail
             // tinyMCE.remove(tinyMCE.editors[0])
@@ -1254,10 +1252,11 @@ var createModelItem = Vue.extend({
             this.dragReady = false
         },
 
-
         deleteImg(){
-            this.$set(this.itemInfo,'image' , '')
-            console.log(this.itemInfo.image)
+            let obj = document.getElementById('imgOne')
+            // obj.outerHTML=obj.outerHTML
+            obj.value = ''
+            this.itemInfoImage = ''
         },
 
         editImg(){
@@ -1709,6 +1708,9 @@ var createModelItem = Vue.extend({
 
 
         $('#tagInput').tagEditor({
+            forceLowercase: false
+        });
+         $('#aliasInput').tagEditor({
             forceLowercase: false
         });
         $("#refAuthor").tagEditor({

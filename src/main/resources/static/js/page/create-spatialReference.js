@@ -360,6 +360,8 @@ var createSpatialReference = Vue.extend({
             draftOid:'',
 
             startDraft:0,
+
+            itemInfoImage:''
         }
     },
     methods: {
@@ -538,8 +540,7 @@ var createSpatialReference = Vue.extend({
 
             //image
             if (basicInfo.image != "") {
-                $("#imgShow").attr("src", basicInfo.image);
-                $('#imgShow').show();
+                this.itemInfoImage = basicInfo.image
             }
 
             //detail
@@ -551,11 +552,13 @@ var createSpatialReference = Vue.extend({
             },1000);
 
             //alias
+            $('#aliasInput').tagEditor('destroy');
             $('#aliasInput').tagEditor({
-                initialTags: basicInfo.alias,
+                initialTags: basicInfo.alias ,
                 forceLowercase: false,
                 // placeholder: 'Enter alias ...'
             });
+
 
 
 
@@ -571,7 +574,7 @@ var createSpatialReference = Vue.extend({
             itemObj.wkname = $("#wknameInput").val();
             itemObj.wkt = $("#wktInput").val();
             itemObj.description = $("#descInput").val();
-            itemObj.uploadImage = $('#imgShow').get(0).currentSrc;
+            itemObj.image = this.itemInfoImage
             itemObj.localizationList = this.localizationList;
 
             if(callBack){
@@ -579,6 +582,36 @@ var createSpatialReference = Vue.extend({
             }
 
             return itemObj;
+        },
+
+        imgFile() {
+            $("#imgOne").click();
+        },
+
+        preImg() {
+
+
+            var file = $('#imgOne').get(0).files[0];
+            //创建用来读取此文件的对象
+            var reader = new FileReader();
+            //使用该对象读取file文件
+            reader.readAsDataURL(file);
+            //读取文件成功后执行的方法函数
+            reader.onload =  (e) => {
+                //读取成功后返回的一个参数e，整个的一个进度事件
+                //选择所要显示图片的img，要赋值给img的src就是e中target下result里面
+                //的base64编码格式的地址
+                this.itemInfoImage = e.target.result
+            }
+
+
+        },
+
+        deleteImg(){
+            let obj = document.getElementById('imgOne')
+            // obj.outerHTML=obj.outerHTML
+            obj.value = ''
+            this.itemInfoImage = ''
         },
 
         //draft
@@ -835,7 +868,9 @@ var createSpatialReference = Vue.extend({
                     }
                 })
             }
-
+            $('#aliasInput').tagEditor({
+                forceLowercase: false
+            });
             window.sessionStorage.setItem("editSpatial_id", "");
         }
 

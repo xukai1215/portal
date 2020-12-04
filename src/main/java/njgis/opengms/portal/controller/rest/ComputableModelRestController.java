@@ -262,6 +262,16 @@ public class ComputableModelRestController {
         return modelAndView;
     }
 
+    @RequestMapping(value = "/integratedModel",method = RequestMethod.GET)
+    ModelAndView integratedModel(HttpServletRequest request){
+        Page<ComputableModel> computableModelList = computableModelService.integratingList(0,"default",1);
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("integratedModeling_new");
+        modelAndView.addObject("computableModelList", computableModelList);
+
+        return modelAndView;
+    }
+
     @RequestMapping(value = "/getIntegratedTask/{taskId}",method = RequestMethod.GET)
     ModelAndView getIntegratedTask(@PathVariable("taskId") String taskId){
 
