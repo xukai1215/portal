@@ -77,11 +77,11 @@ public class EditDraftService {
 
     }
 
-    public JSONObject pageByUser(int asc,int page,int size,String user){
+    public JSONObject pageByUser(int asc,int page,int size,String itemType,String user){
         Sort sort = new Sort(asc == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "lastModifyTime");
 
         Pageable pageable = PageRequest.of(page, size, sort);
-        Page<EditDraft> editDraftPage = editDraftDao.findByUser(user,pageable);
+        Page<EditDraft> editDraftPage = editDraftDao.findByUserAndItemType(user,itemType,pageable);
 
         JSONObject result = new JSONObject();
         result.put("content",editDraftPage.getContent());
