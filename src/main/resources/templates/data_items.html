@@ -93,7 +93,7 @@
                             <el-collapse v-model="activeNames2" @change="handleChange1">
                                 <el-collapse-item title="Data-perspective" style="margin-left: 10%;font-size: 14px;" name="21">
                                     <el-button type="text" id="5f3e42ac0e989714e8364eb0" @click="chooseCate('5f3e42ac0e989714e8364eb0')">Geoinformation analysis</el-button>
-                                    <el-button type="text" id="5f3e42b40e989714e8364eb2" @click="chooseCate('5f3e42b40e989714e8364eb2')">Remote Sensing analysis</el-button>
+                                    <el-button type="text" id="5f3e42b40e989714e8364eb2" @click="chooseCate('5f3e42b40e989714e8364eb2')">Remote sensing analysis</el-button>
                                     <el-button type="text" id="5f3e42bc0e989714e8364eb4" @click="chooseCate('5f3e42bc0e989714e8364eb4')">Geostatistical analysis</el-button>
                                     <el-button type="text" id="5f3e42c30e989714e8364eb6" @click="chooseCate('5f3e42c30e989714e8364eb6')">Intelligent computation analysis</el-button>
                                 </el-collapse-item>
@@ -122,9 +122,6 @@
                     </div>
 
                 </div>
-
-
-
                 <div class="progressPanel">
                     <span class="barControl">
                         <div class="barContro_space">
@@ -133,15 +130,53 @@
                     </span>
                 </div>
                 <div  class="alert alert-success" role="alert" style="margin-bottom: 2px;">
-
-                    <span > <strong class="minScreen_curClass">{{ca!=''&&searchText.length==0?( ca=="We collect data from public hubs.."?"We collect data from public hubs..":"Current Category: "+ca):''}} </strong> <strong>{{searchText.length!=0&&ca==''?"Current Keywords: "+searchText:''}} </strong>  <strong style="float: right">{{datacount!=0 ?(datacount===-1?'loading...':datacount+' items'):'no data'}}</strong></span><br>
-                    <span>  </span>
-                    <span></span>
-
+                    <span>
+                        <strong class="minScreen_curClass">
+                            {{ca!=''&&searchText.length==0?( ca=="We collect data from public hubs.."?
+                            "We collect data from public hubs..":"Current Category: "+ca):''}}
+                        </strong>
+                        <strong>
+                            {{searchText.length!=0&&ca==''?"Current Keywords: "+searchText:''}}
+                        </strong>
+                        <strong style="float: right">
+                            {{datacount!=0 ?(datacount===-1?'loading...':datacount+' items'):'no data'}}
+                        </strong>
+                    </span><br>
                 </div>
                 <!--v-loading-->
 
                 <div class="maincontnt"  v-loading="loading">
+                        <span style="float:left;margin-top: 12px;margin-left: 15px">
+                            <span style="font-weight: bold">Sorted By: </span>&nbsp;
+                            <el-dropdown trigger="click" @command="changeSortField" style="cursor:pointer;">
+                                <span class="el-dropdown-link">
+                                    {{sortTypeName}}<i class="el-icon-arrow-down el-icon--right"></i>
+                                </span>
+                                <el-dropdown-menu slot="dropdown">
+                                    <el-dropdown-item command="View Count">View Count</el-dropdown-item>
+                                    <el-dropdown-item command="Name">Name</el-dropdown-item>
+                                    <el-dropdown-item command="Create Time">Create Time</el-dropdown-item>
+
+                                </el-dropdown-menu>
+                            </el-dropdown>
+                            <el-dropdown trigger="click" @command="changeSortOrder" style="cursor:pointer;">
+                                <span class="el-dropdown-link">
+                                    {{sortOrder}}<i class="el-icon-arrow-down el-icon--right"></i>
+                                </span>
+                                <el-dropdown-menu slot="dropdown">
+                                    <el-dropdown-item command="Asc.">Asc.</el-dropdown-item>
+                                    <el-dropdown-item command="Desc.">Desc.</el-dropdown-item>
+                                </el-dropdown-menu>
+                            </el-dropdown>
+                        </span>
+                        <el-pagination style="text-align: right;padding: 10px"
+                                       @current-change="handleCurrentChange"
+                                       :pager-count="5"
+                                       :page-size="findDto.pageSize"
+                                       :current-page="findDto.page"
+                                       layout="prev, pager, next"
+                                       :total="datacount">
+                        </el-pagination>
                         <div class="modelPanel" >
 
                             <div  class="content-body">

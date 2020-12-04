@@ -33,15 +33,15 @@
             /*padding: 0px;*/
         }
 
-        .mxWindowPane {
-            /*overflow-x: hidden !important;*/
-            overflow: unset !important;
-        }
+        /*.mxWindowPane {*/
+        /*    !*overflow-x: hidden !important;*!*/
+        /*    overflow: unset !important;*/
+        /*}*/
 
     </style>
 </head>
 <body>
-<div id="app">
+<div id="data_application_info">
     <div th:replace="fragments/navbar :: unlog"></div>
 
     <div class="clearfix" style="margin:40px 0px;height: auto;">
@@ -56,8 +56,10 @@
                     <h2 th:utext="${dataApplicationInfo.name}"
                         style="display: inline-block;margin:0px 10px;word-wrap:break-word; word-break:break-all;"></h2>
 
-                    <a href="javascript:void(0);" th:if="${dataApplicationInfo.status=='Public'&&history!=true}" class='fa fa-pencil fa-2x' aria-hidden='true'
-                       @click="edit"></a>
+                    <a href="javascript:void(0);" th:if="${dataApplicationInfo.status=='Public'&&history!=true}" class='fa fa-pencil fa-2x'
+                       aria-hidden='true'
+                       @click="edit" style="float: right;">
+                    </a>
                     <!--<el-tooltip popper-class="fontsize-15" content="There is another version haven't been reviewed, you can edit it later or contact us." effect="light" placement="left">-->
                         <!--<li th:if="${dataApplicationInfo.status=='Public'&&history!=true}" class='fa fa-pencil fa-2x' style="color:#cccccc" aria-hidden='true'></li>-->
                     <!--</el-tooltip>-->
@@ -204,7 +206,7 @@
                              th:key="${key.index}" @click.native="getid(id)"
                              style="width: 150px;"><!---->
                             <a target="_blank"
-                               th:href="${loadPath}+'/computableModel/'+${dataApplicationInfo.contentType}+${data.path}"
+                               th:href="'/static'+'/DataApplication/'+${dataApplicationInfo.contentType}+${data.path}"
                                style="color:black">
                                 <div class="el-card__body">
                                     <div class="el-row">
@@ -232,12 +234,12 @@
                     </div>
 
 
-                    <el-card class="browsermenu">
-                        <el-button id="dbtn" icon="el-icon-download" @click="downloaddata()" type="text">download
-                        </el-button>
-                        <br>
-                        <el-button id="sbtn" icon="el-icon-share" @click="share" type="text">share</el-button>
-                    </el-card>
+<!--                    <el-card class="browsermenu">-->
+<!--                        <el-button id="dbtn" icon="el-icon-download" @click="downloaddata()" type="text">download-->
+<!--                        </el-button>-->
+<!--                        <br>-->
+<!--                        <el-button id="sbtn" icon="el-icon-share" @click="share" type="text">share</el-button>-->
+<!--                    </el-card>-->
                     <!--refresh 白板刷新和全选功能，待进一步完善-->
 
                     <!--<el-card class="browser">-->
@@ -264,123 +266,6 @@
                     </div>
                 </div>
             </div>
-
-            <!--<div id="MDL" class="detail_block" th:if="${mdlJson}!=null">-->
-                <!--<div class="block_head">-->
-                    <!--<div class="head_text">-->
-                        <!--<h4>MDL</h4>-->
-                    <!--</div>-->
-                <!--</div>-->
-                <!--<el-tabs class="block_content" v-model="activeName" type="border-card" stretch="true">-->
-                    <!--<el-tab-pane label="AttributeSet" name="AttributeSet">-->
-                        <!--<table class="table table-bordered text-center">-->
-                            <!--<colgroup>-->
-                                <!--<col class="col1" style="width: 30%">-->
-                                <!--<col class="col2">-->
-                            <!--</colgroup>-->
-                            <!--<tbody>-->
-                            <!--<tr>-->
-                                <!--<td style="font-weight: bold;">Style</td>-->
-                                <!--<td th:text="${dataApplicationInfo.mdlJson.ModelClass[0].style}"></td>-->
-                            <!--</tr>-->
-                            <!--<tr th:each="category,key:${modelInfo.mdlJson.ModelClass[0].AttributeSet[0].Categories[0].Category}">-->
-                                <!--<td style="font-weight: bold;" th:if="${key.index}==0"-->
-                                    <!--th:attr="rowspan=${#lists.size(modelInfo.mdlJson.ModelClass[0].AttributeSet[0].Categories[0].Category)}">-->
-                                    <!--Categories-->
-                                <!--</td>-->
-                                <!--<td th:text="${category.principle}+' / '+${category.path}"></td>-->
-                            <!--</tr>-->
-                            <!--</tbody>-->
-                        <!--</table>-->
-
-                        <!--<table class="table table-bordered text-center"-->
-                               <!--th:each="local,key:${modelInfo.mdlJson.ModelClass[0].AttributeSet[0].LocalAttributes[0].LocalAttribute}">-->
-                            <!--<colgroup>-->
-                                <!--<col class="col1" style="width: 30%">-->
-                                <!--<col class="col2">-->
-                                <!--<col class="col3">-->
-                            <!--</colgroup>-->
-                            <!--<tbody>-->
-                            <!--<tr th:if="${local.local!=''}">-->
-                                <!--<td style="font-weight: bold;">Language</td>-->
-                                <!--<td colspan="2" th:text="${local.local}"></td>-->
-                            <!--</tr>-->
-                            <!--<tr th:if="${local.localName!=''}">-->
-                                <!--<td style="font-weight: bold;">Name</td>-->
-                                <!--<td colspan="2" th:text="${local.localName}"></td>-->
-                            <!--</tr>-->
-                            <!--<tr th:if="${local.Keywords!=''}">-->
-                                <!--<td style="font-weight: bold;">Keywords</td>-->
-                                <!--<td colspan="2" th:text="${local.Keywords}"></td>-->
-                            <!--</tr>-->
-                            <!--<tr th:if="${local.Abstract!=''}">-->
-                                <!--<td style="font-weight: bold;">Abstract</td>-->
-                                <!--<td colspan="2" th:text="${local.Abstract}"></td>-->
-                            <!--</tr>-->
-                            <!--<tr th:if="${local.wiki!=''}">-->
-                                <!--<td style="font-weight: bold;">Wiki</td>-->
-                                <!--<td colspan="2" th:text="${local.wiki}"></td>-->
-                            <!--</tr>-->
-                            <!--&lt;!&ndash;<div th:if="${modelInfo.mdlJson.ModelClass[0].AttributeSet[0].LocalAttributes[0].LocalAttribute[key.index].Mechanism}!=null">&ndash;&gt;-->
-                            <!--&lt;!&ndash;<tr th:each="mechanism,key:${local.Mechanism}">&ndash;&gt;-->
-                            <!--&lt;!&ndash;<td th:if="${key.index}==0" th:attr="rowspan=${#lists.size(local.Mechanism)}">Mechanism</td>&ndash;&gt;-->
-                            <!--&lt;!&ndash;<td th:text="${mechanism.name}"></td>&ndash;&gt;-->
-                            <!--&lt;!&ndash;<td th:text="${mechanism.value}"></td>&ndash;&gt;-->
-                            <!--&lt;!&ndash;</tr>&ndash;&gt;-->
-                            <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                            <!--</tbody>-->
-                        <!--</table>-->
-                    <!--</el-tab-pane>-->
-                    <!--<el-tab-pane label="Behavior" name="Behavior">-->
-                        <!--<el-button style="position: absolute; z-index: 900" @click="showMxGraph()"> Show Detail-->
-                        <!--</el-button>-->
-                        <!--<div id="mxGraphContainer"></div>-->
-                    <!--</el-tab-pane>-->
-                    <!--<el-tab-pane label="Runtime" name="Runtime">-->
-                        <!--<table id="runtime_table" class="table table-bordered text-center">-->
-                            <!--<thead>-->
-                            <!--<tr>-->
-                                <!--<th class="text-center">Type</th>-->
-                                <!--<th class="text-center">Property</th>-->
-                                <!--<th class="text-center">Value</th>-->
-                            <!--</tr>-->
-                            <!--</thead>-->
-                            <!--<tbody>-->
-                            <!--<div th:if="${modelInfo.mdlJson.ModelClass[0].Runtime[0].HardwareConfigures}!=''">-->
-                                <!--<tr th:each="hardware,key:${modelInfo.mdlJson.ModelClass[0].Runtime[0].HardwareConfigures[0].Add}">-->
-                                    <!--<td th:if="${key.index}==0" th:attr="rowspan=${key.size}">HardwareConfigures</td>-->
-                                    <!--<td th:text="${hardware.key}"></td>-->
-                                    <!--<td th:text="${hardware.value}"></td>-->
-                                <!--</tr>-->
-                            <!--</div>-->
-                            <!--<div th:if="${modelInfo.mdlJson.ModelClass[0].Runtime[0].SoftwareConfigures}!=''">-->
-                                <!--<tr th:each="software,key:${modelInfo.mdlJson.ModelClass[0].Runtime[0].SoftwareConfigures[0].Add}">-->
-                                    <!--<td th:if="${key.index}==0" th:attr="rowspan=${key.size}">SoftwareConfigures</td>-->
-                                    <!--<td th:text="${software.key}"></td>-->
-                                    <!--<td th:text="${software.value}"></td>-->
-                                <!--</tr>-->
-                            <!--</div>-->
-                            <!--<div th:if="${modelInfo.mdlJson.ModelClass[0].Runtime[0].Assemblies}!=''">-->
-                                <!--<tr th:each="assembly,key:${modelInfo.mdlJson.ModelClass[0].Runtime[0].Assemblies[0].Assembly}">-->
-                                    <!--<td th:if="${key.index}==0" th:attr="rowspan=${key.size}">Assemblies</td>-->
-                                    <!--<td th:text="${assembly.name}"></td>-->
-                                    <!--<td th:text="${assembly.path}"></td>-->
-                                <!--</tr>-->
-                            <!--</div>-->
-                            <!--<div th:if="${modelInfo.mdlJson.ModelClass[0].Runtime[0].SupportiveResources}!=''">-->
-                                <!--<tr th:each="support,key:${modelInfo.mdlJson.ModelClass[0].Runtime[0].SupportiveResources[0].Add}">-->
-                                    <!--<td th:if="${key.index}==0" th:attr="rowspan=${key.size}">SupportiveResources</td>-->
-                                    <!--<td th:text="${support.type}"></td>-->
-                                    <!--<td th:text="${support.name}"></td>-->
-                                <!--</tr>-->
-                            <!--</div>-->
-
-
-                            <!--</tbody>-->
-                        <!--</table>-->
-                    <!--</el-tab-pane>-->
-                <!--</el-tabs>-->
-            <!--</div>-->
 
             <div id="description" class="detail_block" th:if="${dataApplicationInfo.detail!=null&&dataApplicationInfo.detail!=''}">
                 <div class="block_head">
@@ -561,16 +446,8 @@
 
                         <div class="panel-body" style="padding-left: 0px; padding-top: 7px; padding-right: 0px;">
                             <dl>
-                                <!--<dt>Last modifier :&nbsp</dt>-->
-                                <!--<dd><a th:text="${lastModifier.name}" th:href="${'/profile/'+lastModifier.userId}"-->
-                                       <!--target="_blank"></a></dd>-->
                                 <dt>Last modify time :&nbsp</dt>
                                 <dd th:text="${lastModifyTime}"></dd>
-                                <!--<dt>Modify times :&nbsp</dt>-->
-                                <!--<dd><span th:text="${#lists.size(dataApplicationInfo.versions)+'&nbsp'}"></span><a-->
-                                        <!--th:href="'/version/historyList/computableModel/'+${dataApplicationInfo.oid}"-->
-                                        <!--target="_blank">View-->
-                                    <!--History</a></dd>-->
                             </dl>
                         </div>
 
@@ -598,11 +475,6 @@
 
     </div>
 
-    <!-- edit -->
-    <!--<el-dialog title="Edit Computable Model" class="responseDialog" :visible.sync="editComputableModelDialog" width="65%">-->
-        <!--<edit-computable-model-module :model-edit-oid="modelOid"></edit-computable-model-module>-->
-    <!--</el-dialog>-->
-
     <div th:replace="fragments/footer :: footer"></div>
 
 </div>
@@ -610,10 +482,10 @@
 
 </body>
 
-<script th:inline="javascript">
-    var Behavior = [[${behavior}]];
-    console.log([[${mdlJson}]])
-</script>
+<!--<script th:inline="javascript">-->
+<!--    var Behavior = [[${behavior}]];-->
+<!--    console.log([[${mdlJson}]])-->
+<!--</script>-->
 
 <script src="/static/js/common/jquery-3.3.1.min.js"></script>
 <script type="text/javascript" src="/static/js/common/jquery.tag-editor.js"></script>
@@ -631,17 +503,8 @@
 <script src="/static/js/common/copy.js"></script>
 <script src="/static/js/common/bootstrap.min.js"></script>
 <script src="/static/element-ui/umd/locale/en.js"></script>
-<script src="/static/js/common/navbar.js"></script>
 <script src="/static/js/common/vue-avatar.min.js"></script>
 
-<script>
-    mxBasePath = "/static/js/mxGraph";
-</script>
-
-<script type="text/javascript" src="/static/js/mxGraph/js/mxClient.js"></script>
-<script type="text/javascript" src="/static/js/mxGraph/js/ogmsDiagram.js"></script>
-
 <script src="/static/js/page/data_application_info.js"></script>
-<script src="../static/js/common/navbar.js"></script>
-
+<script src="/static/js/common/navbar.js"></script>
 </html>

@@ -63,79 +63,82 @@
 
             <div class="el-row" style="border-bottom: 0px solid #d8d8d8">
                 <div>
-                    <h2 class="main-title">Model Item Application</h2>
-                    <h4 class="sub-title">The practical application of model items.</h4>
+                    <h2 class="main-title">Model Application</h2>
+                    <h4 class="sub-title">The practical application of models.</h4>
                 </div>
-                <a class="cursorPointer hoverLineBtn" style="font-size: 17px;margin-top:10px;" href="/modelItem/repository">Model item repository
+                <a class="cursorPointer hoverLineBtn" style="font-size: 17px;margin-top:10px;" href="/modelItem/repository">Model repository
                     <i style="font-size: 13px;margin-left: 5px" class="ms-Icon ms-Icon--ChevronRight"></i>
                 </a>
             </div>
-            <section class="wzhSection darkSide">
+            <section class="wzhSection darkSide" style="display:inline-block;width:30%;margin-right:4%;min-width:360px;">
                 <div class="wzhSectionContainer" style="background-color: #9387e0">
-                    <div class="imgContainerW50 right0" style="background-image:url(../../static/img/work.png);background-size:contain"></div>
+                    <!--<div class="imgContainerW50 right0" style="background-image:url(/static/img/work.png);background-size:contain"></div>-->
                     <div class="leftPart flexCol flexJustBetween flexAlignStart">
-                        <div class="imgContainerW100" style="background-image:url(../../static/img/model/modelExcution.png);height: 225px"></div>
-                        <div class="textContainer">
+                        <!--<div class="imgContainerW100" style="background-image:url(/static/img/model/modelExcution.png);height: 225px"></div>-->
+                        <div>
                             <div class="noMargin sectionTitle" >
                                 <p>
-                                    Excution
+                                    Model Execution
                                 </p>
                             </div>
 
                             <div class="sectionDescribe"  style="margin-top: 10px">
-                                <p>We have provided plenty of models deployed,</p>
-                                <p>you can choose the one you need to excute.</p>
+                                <p>We have deployed plenty of models on the web.</p>
+                                <p>Choose what you need to execute!</p>
                             </div>
 
                         </div>
+                        <img src="/static/img/work.png" style="height: 30%;"/>
                         <button class="wzhBtn nutBtn plainBtn hoverPurple" @click="loadDeployedModelClick()">
                             <p style="font-size: 2.0rem;font-weight: 600;font-family: Aktiv Grotesk">Try it</p>
                         </button>
                     </div>
                 </div>
             </section>
-            <section class="wzhSection">
+            <section class="wzhSection" style="display:inline-block;width:30%;margin-right:4%;min-width:360px;">
                 <div class="wzhSectionContainer" style="background-color: #80bfff">
-                    <div class="imgContainerW50 right0" style="background-image:url(../../static/img/model/modelExcution.png);background-position-y: -18px"></div>
+                    <!--<div class="imgContainerW50 right0" style="background-image:url(/static/img/model/modelExcution.png);background-position-y: -18px"></div>-->
                     <div class="leftPart flexCol flexJustBetween flexAlignStart">
-                        <div class="textContainer">
+                        <div>
                             <div class="noMargin sectionTitle" >
                                 <p>
-                                    Integration
+                                    Model Integration
                                 </p>
                             </div>
 
                             <div class="sectionDescribe"  style="margin-top: 10px">
-                                <p>We have provided plenty of models deployed,</p>
-                                <p>you can choose the one you need to excute.</p>
+                                <p>Single model can not satisfy you?</p>
+                                <p>You can integrate models to solve complicated problem.</p>
                             </div>
 
                         </div>
+                        <img src="/static/img/work.png" style="height: 30%;"/>
                         <button class="wzhBtn nutBtn plainBtn hoverJblue" @click="window.location.href='/computableModel/integrating'">
                             <p style="font-size: 2.0rem;font-weight: 600;font-family: Aktiv Grotesk">Try it</p>
                         </button>
                     </div>
                 </div>
             </section>
-            <section class="wzhSection darkSide">
+            <section class="wzhSection darkSide" style="display:inline-block;width:30%;min-width:360px;">
                 <div class="wzhSectionContainer" style="background-color: #ecb6b6">
-                    <div class="imgContainerW50 right0" style="background-image:url(../../static/img/model/modelExcution.png);background-position-y: -18px"></div>
+                    <!--<div class="imgContainerW50 right0" style="background-image:url(/static/img/model/modelExcution.png);background-position-y: -18px"></div>-->
                     <div class="leftPart flexCol flexJustBetween flexAlignStart">
-                        <div class="textContainer">
+                        <div>
                             <div class="noMargin sectionTitle" >
                                 <p>
-                                    Uncertainty
+                                    Parameter Optimization
                                 </p>
                             </div>
 
                             <div class="sectionDescribe"  style="margin-top: 10px">
-                                <p>We have provided plenty of models deployed,</p>
-                                <p>you can choose the one you need to excute.</p>
+                                <p>Model results are not exact?</p>
+                                <p>Try to adjust parameters!</p>
                             </div>
 
                         </div>
+                        <img src="/static/img/work.png" style="height: 30%;"/>
                         <button class="wzhBtn nutBtn plainBtn hoverOrange">
-                            <p style="font-size: 2.0rem;font-weight: 600;font-family: Aktiv Grotesk">Try it</p>
+                            <p style="font-size: 2.0rem;font-weight: 600;font-family: Aktiv Grotesk">Under Construction...</p>
                         </button>
                     </div>
                 </div>
@@ -160,7 +163,7 @@
                                prop="author"
                        >
                            <template slot-scope="scope">
-                               <a class="cursorPointer" @click="viewUser(scope.row.authorOid)">{{scope.row.author}}</a>
+                               <a class="cursorPointer" @click="viewUser(scope.row.authorId)">{{scope.row.author}}</a>
                            </template>
                        </el-table-column>
                        <el-table-column
@@ -181,11 +184,11 @@
                    </el-pagination>
 
                </div>
-               <div slot="footer" class="dialog-footer">
-                   <span style="float:left;font-size: 16px">Or you can click <a style="cursor:pointer" @click="jump">here</a> to create a new one.</span>
-<!--                   <el-button @click="">Cancel</el-button>-->
-                   <el-button type="primary" @click="dialogTableVisible = false;">OK</el-button>
-               </div>
+               <!--<div slot="footer" class="dialog-footer">-->
+                   <!--<span style="float:left;font-size: 16px">Or you can click <a style="cursor:pointer" @click="jump">here</a> to create a new one.</span>-->
+<!--&lt;!&ndash;                   <el-button @click="">Cancel</el-button>&ndash;&gt;-->
+                   <!--<el-button type="primary" @click="dialogTableVisible = false;">OK</el-button>-->
+               <!--</div>-->
           </el-dialog>
         </div>
     </div>

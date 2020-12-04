@@ -91,7 +91,7 @@
 
                 <el-card class="box-card categoryList" style="position:relative">
                 <div slot="header" class="clearfix text-center">
-                <span style="font-size: 20px;color:#444">Model Classifications 2</span>
+                <span style="font-size: 20px;color:#444">Model Classifications</span>
                 </div>
 
                 <el-tree
@@ -217,14 +217,21 @@
 
                 <div id="curClassBar" role="alert" class="alert alert-info" style="margin-bottom: 2px;">
                     <strong class="minScreen_curClass">Current Classification: {{currentClass}} </strong>
-                        <!--<strong v-if="pageOption.progressBar" style="float: right;">Loading... </strong>-->
-                        <!--<strong v-if="!pageOption.progressBar" style="float: right;">{{pageOption.total}} items</strong>-->
-                        <span style="float:right;">
-                            <span style="font-weight: bold">Sorted By:</span>
+                        <strong v-if="pageOption.progressBar" style="float: right;">Loading... </strong>
+                        <strong v-if="!pageOption.progressBar" style="float: right;">{{pageOption.total}} items</strong>
+
+
+                </div>
+
+
+                <div class="modelPanel" v-loading="pageOption.progressBar">
+                    <div style="margin:10px 0" v-if="pageOption.searchResult.length>0">
+                        <div style="float:left;margin: 4px 0 4px 15px;">
+                            <span style="font-weight: bold;margin-right:5px;">Sorted By:</span>
                             <el-dropdown trigger="click" @command="changeSortField" style="cursor:pointer;">
-                                <span class="el-dropdown-link">
-                                    {{sortTypeName}}<i class="el-icon-arrow-down el-icon--right"></i>
-                                </span>
+                            <span class="el-dropdown-link">
+                                {{sortTypeName}}<i class="el-icon-arrow-down el-icon--right"></i>
+                            </span>
                                 <el-dropdown-menu slot="dropdown">
                                     <el-dropdown-item command="View Count">View Count</el-dropdown-item>
                                     <el-dropdown-item command="Name">Name</el-dropdown-item>
@@ -233,26 +240,23 @@
                                 </el-dropdown-menu>
                             </el-dropdown>
                             <el-dropdown trigger="click" @command="changeSortOrder" style="cursor:pointer;">
-                                <span class="el-dropdown-link">
-                                    {{sortOrder}}<i class="el-icon-arrow-down el-icon--right"></i>
-                                </span>
+                            <span class="el-dropdown-link">
+                                {{sortOrder}}<i class="el-icon-arrow-down el-icon--right"></i>
+                            </span>
                                 <el-dropdown-menu slot="dropdown">
-                                    <el-dropdown-item command="asc.">asc.</el-dropdown-item>
-                                    <el-dropdown-item command="desc.">desc.</el-dropdown-item>
+                                    <el-dropdown-item command="Asc.">Asc.</el-dropdown-item>
+                                    <el-dropdown-item command="Desc.">Desc.</el-dropdown-item>
                                 </el-dropdown-menu>
                             </el-dropdown>
-                        </span>
-
-                </div>
-
-                <el-pagination style="text-align: center;margin:10px 0" v-if="pageOption.paginationShow && pageOption.searchResult.length>0"
-                               @current-change="handlePageChange"
-                               :current-page="pageOption.currentPage"
-                               layout="total, prev, pager, next, jumper"
-                               :total="pageOption.total">
-                </el-pagination>
-
-                <div class="modelPanel" v-loading="pageOption.progressBar">
+                        </div>
+                        <el-pagination style="text-align: right;"
+                                       @current-change="handlePageChange"
+                                       :current-page="pageOption.currentPage"
+                                       :pager-count="5"
+                                       layout="prev, pager, next"
+                                       :total="pageOption.total">
+                        </el-pagination>
+                    </div>
                     <div class="content-body">
                         <div v-cloak class="list-item" v-for="(modelItem,key) in pageOption.searchResult">
                             <div class="detail_title">

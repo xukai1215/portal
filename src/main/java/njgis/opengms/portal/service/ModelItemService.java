@@ -343,8 +343,8 @@ public class ModelItemService {
                 jsonObj.put("name", unit.getName());
                 jsonObj.put("oid", unit.getOid());
 
-                jsonObj.put("description_ZH", unit.getDescription_ZH());
-                jsonObj.put("description_EN", unit.getDescription_EN());
+                jsonObj.put("description", unit.getDescription());
+//                jsonObj.put("description_EN", unit.getDescription_EN());
                 unitArray.add(jsonObj);
             }
         }
@@ -611,7 +611,7 @@ public class ModelItemService {
                 ModelItemVersion modelItemVersion = new ModelItemVersion();
                 BeanUtils.copyProperties(modelItemUpdateDTO, modelItemVersion, "id");
 
-                String uploadImage = modelItemUpdateDTO.getUploadImage();
+                String uploadImage = modelItemUpdateDTO.getUploadImage()==null?"":modelItemUpdateDTO.getUploadImage();
                 if(uploadImage.equals("")){
                     modelItemVersion.setImage("");
                 }

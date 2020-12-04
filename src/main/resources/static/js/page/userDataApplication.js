@@ -329,7 +329,7 @@ var userDataApplication = Vue.extend(
                     },
                     crossDomain: true,
                     success: (data) => {
-                        data = JSON.parse(data);
+                        // data = JSON.parse(data);
 
                         console.log(data);
 

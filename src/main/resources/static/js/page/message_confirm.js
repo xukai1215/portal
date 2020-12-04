@@ -1286,7 +1286,7 @@ var notice = Vue.extend({
         accept_data(event){
             let accepts=$(".accept_data");
 
-            for(i=0;i<accepts.length;i++){
+            for(let i=0;i<accepts.length;i++){
                 if(event.currentTarget===accepts[i]){
                     let tableItem=this.dataItem_tableData1[i];
                     let data={
@@ -1295,6 +1295,7 @@ var notice = Vue.extend({
                         oid:tableItem.oid,
                         originOid:tableItem.originId
                     };
+                    var pos = i;
                     $.ajax({
                         type:"POST",
                         url:"/version/accept",
@@ -1302,7 +1303,14 @@ var notice = Vue.extend({
                         data: JSON.stringify(data),
                         async: true,
                         success:(json)=>{
-                            window.location.reload();
+                            // window.location.reload();
+                            //改变vue中data值 前端值改变
+                            this.dataItem_tableData1_length--;
+                            this.table_length_sum--;
+                            this.version_sum--;
+                            var messageNum = docu
+                            this.dataItem_tableData1.splice(pos,1);
+
                         }
                     })
                 }
