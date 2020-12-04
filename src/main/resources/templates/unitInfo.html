@@ -103,6 +103,23 @@
                 </div>
             </div>
 
+            <div id="alias" class="detail_block" th:if="${info.alias!=null&&#lists.size(info.alias)>0}">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Alias</h4>
+                    </div>
+                </div>
+                <div class="block_content" style="margin-bottom:10px;">
+
+                    <!--<el-tag type="success"  v-for="iter in dataCategory" @click="clickDataItemInfo(iter.id)" style="margin-left: 10px;font-weight: bold;color: #3396ef"> {{iter.cateContent}}</el-tag>-->
+
+                    <el-tag th:each="alias:${info.alias}" th:text="${alias}"
+                            style="margin: 0 10px 10px 0;font-weight: bold;color: #3396ef"></el-tag>
+
+                </div>
+            </div>
+
+
             <div id="Contributor0" class="detail_block minScreen">
                 <div class="block_head">
                     <div class="head_text" style="padding-left: 10px;">

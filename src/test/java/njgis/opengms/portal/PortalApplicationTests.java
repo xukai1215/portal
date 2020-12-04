@@ -117,6 +117,17 @@ public class PortalApplicationTests {
     private String managerServerIpAndPort;
 
     @Test
+    public void changeSpatialRef(){
+        List<SpatialReference> spatialReferenceList = spatialReferenceDao.findAll();
+        for(SpatialReference spatialReference:spatialReferenceList){
+            List<String> alias = new ArrayList<>();
+            alias.add(spatialReference.getWkname());
+            spatialReference.setAlias(alias);
+            spatialReferenceDao.save(spatialReference);
+        }
+    }
+
+    @Test
     public void changeConceptLocalization(){
         List<Concept> conceptList = conceptDao.findAll();
         for(Concept concept:conceptList){
