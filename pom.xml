@@ -382,7 +382,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <version>RELEASE</version>
+            <!--<version>RELEASE</version>-->
         </dependency>
     </dependencies>
 
