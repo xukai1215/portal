@@ -1091,6 +1091,19 @@ var createConcept = Vue.extend({
             socket: "",
 
             concept_oid: "",
+
+            editTypeLocal:'create',
+
+            toCreate: 1,
+
+            startDraft:0,
+
+            draft:{
+                oid:'',
+            },
+
+            draftOid:'',
+
         }
     },
     methods: {
@@ -1384,6 +1397,157 @@ var createConcept = Vue.extend({
                 }
             })
         },
+
+        insertInfo(basicInfo){
+            let user_num = 0;
+
+            this.conceptInfo = basicInfo;
+
+            //cls
+            this.cls = basicInfo.classifications;
+            this.status = basicInfo.status;
+            let ids = [];
+            for (i = 0; i < this.cls.length; i++) {
+                for (j = 0; j < 2; j++) {
+                    for (k = 0; k < this.treeData[j].children.length; k++) {
+                        if (this.cls[i] == this.treeData[j].children[k].oid) {
+                            ids.push(this.treeData[j].children[k].id);
+                            this.parid = this.treeData[j].children[k].id;
+                            this.clsStr += this.treeData[j].children[k].label;
+                            if (i != this.cls.length - 1) {
+                                this.clsStr += ", ";
+                            }
+                            break;
+                        }
+                    }
+                    if (ids.length - 1 == i) {
+                        break;
+                    }
+                }
+            }
+
+            this.$refs.tree2.setCheckedKeys(ids);
+
+            $(".providers").children(".panel").remove();
+
+            $("#nameInput").val(basicInfo.name);
+            $("#descInput").val(basicInfo.description);
+
+            //image
+            if (basicInfo.image != "") {
+                $("#imgShow").attr("src", basicInfo.image);
+                $('#imgShow').show();
+            }
+
+            //related
+            this.relatedOid = basicInfo.related;
+            for (var i = 0; i < this.relatedOid.length; i++) {
+                this.searchByOid(this.relatedOid[i]);
+            }
+
+            $('#related').tagEditor('destroy')
+            $('#related').tagEditor({
+                initialTags: this.related,
+                forceLowercase: false,
+                placeholder: 'Enter keywords ...'
+            });
+
+            //detail
+            // if (basicInfo.detail != null) {
+            //     $("#comceptText").html(basicInfo.detail);
+            // }
+
+            initTinymce('textarea#conceptText')
+            this.localizationList = basicInfo.localizationList;
+            let interval = setInterval(()=> {
+                this.changeLocalization(this.localizationList[0])
+                clearInterval(interval);
+            },1000);
+
+            //alias
+            $('#aliasInput').tagEditor({
+                initialTags: basicInfo.alias,
+                forceLowercase: false,
+                // placeholder: 'Enter alias ...'
+            });
+
+        },
+
+        getItemContent(trigger,callBack){
+            let itemObj = {}
+
+            itemObj.classifications = this.cls;
+            itemObj.name = $("#nameInput").val();
+            itemObj.alias = $("#aliasInput").val().split(",");
+            itemObj.uploadImage = $('#imgShow').get(0).currentSrc;
+            itemObj.description = $("#descInput").val();
+            itemObj.related = this.relatedOid;
+            itemObj.status = this.status;
+            itemObj.localizationList = this.localizationList;
+
+            if(callBack){
+                callBack(itemObj)
+            }
+
+            return itemObj;
+        },
+
+        //draft
+        onInputName(){
+            console.log(1)
+            if(this.toCreate==1){
+                this.toCreate=0
+                this.startDraft=1
+                this.timeOut=setTimeout(()=>{
+                    this.toCreate=1
+                },30000)
+                setTimeout(()=>{
+                    this.createDraft()
+                },300)
+
+            }
+        },
+
+        getStep(){
+            let domID=$('.step-tab-panel.active')[0].id
+            return parseInt(domID.substring(domID.length-1,domID.length))
+        },
+
+        createDraft(){//请求后台创建一个草稿实例,如果存在则更新
+
+            var step = this.getStep()
+            let content=this.getItemContent(step)
+
+            let urls=window.location.href.split('/')
+            let item=urls[6]
+            item=item.substring(6,item.length)
+            let obj={
+                content:content,
+                editType:this.editTypeLocal,
+                itemType:item,
+                user:this.userId,
+                oid:this.draft.oid,
+            }
+            if(this.editTypeLocal) {
+                obj.itemOid=this.$route.params.editId?this.$route.params.editId:null
+                obj.itemName= this.itemName;
+            }
+
+            this.$refs.draftBox.createDraft(obj)
+        },
+
+        loadMatchedCreateDraft(){
+            this.$refs.draftBox.loadMatchedCreateDraft()
+        },
+
+        deleteDraft(){
+            this.$refs.draftBox.deleteDraft(this.draft.oid)
+        },
+
+        initDraft(editType,backUrl,oidFrom,oid){
+            this.$refs.draftBox.initDraft(editType,backUrl,oidFrom,oid)
+        },
+
         sendcurIndexToParent() {
             this.$emit('com-sendcurindex', this.curIndex)
         },
@@ -1528,6 +1692,7 @@ var createConcept = Vue.extend({
         })
 
         var oid = this.$route.params.editId;//取得所要edit的id
+        this.draft.oid=window.localStorage.getItem('draft');//取得保存的草稿的Oid
 
         this.search();
 
@@ -1542,7 +1707,7 @@ var createConcept = Vue.extend({
                 forceLowercase: false
             });
 
-            this.editType = "create";
+            this.editTypeLocal = 'create';
 
             let interval = setInterval(function () {
                 initTinymce('textarea#singleDescription')
@@ -1552,95 +1717,46 @@ var createConcept = Vue.extend({
             this.$set(this.languageAdd.local,"value","en-US");
             this.$set(this.languageAdd.local,"label","English (United States)");
 
+            this.loadMatchedCreateDraft();
+            if(this.draft.oid!=''&&this.draft.oid!=null&&typeof (this.draft.oid)!="undefined"){
+                // this.loadDraftByOid()
+                this.initDraft('create','/user/userSpace#/models/modelitem','draft',this.draft.oid)
+            }
+
         } else {
 
-            this.editType = "modify";
+            this.editTypeLocal = 'modify';
+            if(this.draft.oid==''||this.draft.oid==null||typeof (this.draft.oid)=="undefined"){
+                this.initDraft('edit','/user/userSpace#/models/modelitem','item',this.$route.params.editId)
+            }else{
+                this.initDraft('edit','/user/userSpace#/models/modelitem','draft',this.draft.oid)
+            }
+            // $("#title").text("Modify Conceptual Model")
+            $("#subRteTitle").text("/Modify Conceptual Model")
 
             // $("#title").text("Modify Concept & Semantic")
             $("#subRteTitle").text("/Modify Concept & Semantic")
             // document.title = "Modify Concept & Semantic | OpenGMS"
 
-            $.ajax({
-                url: "/repository/getConceptInfo/" + oid,
-                type: "get",
-                data: {},
+            if(window.localStorage.getItem('draft')==null) {
+                $.ajax({
+                    url: "/repository/getConceptInfo/" + oid,
+                    type: "get",
+                    data: {},
 
-                success: (result) => {
-                    console.log(result);
-                    var basicInfo = result.data;
-                    this.conceptInfo = basicInfo;
+                    success: (result) => {
+                        console.log(result);
+                        var basicInfo = result.data;
 
-                    //cls
-                    this.cls = basicInfo.classifications;
-                    this.status = basicInfo.status;
-                    let ids = [];
-                    for (i = 0; i < this.cls.length; i++) {
-                        for (j = 0; j < 2; j++) {
-                            for (k = 0; k < this.treeData[j].children.length; k++) {
-                                if (this.cls[i] == this.treeData[j].children[k].oid) {
-                                    ids.push(this.treeData[j].children[k].id);
-                                    this.parid = this.treeData[j].children[k].id;
-                                    this.clsStr += this.treeData[j].children[k].label;
-                                    if (i != this.cls.length - 1) {
-                                        this.clsStr += ", ";
-                                    }
-                                    break;
-                                }
-                            }
-                            if (ids.length - 1 == i) {
-                                break;
-                            }
-                        }
+                        this.insertInfo(basicInfo)
                     }
+                })
+            }
 
-                    this.$refs.tree2.setCheckedKeys(ids);
-
-                    $(".providers").children(".panel").remove();
-
-                    $("#nameInput").val(basicInfo.name);
-                    $("#descInput").val(basicInfo.description);
-
-                    //image
-                    if (basicInfo.image != "") {
-                        $("#imgShow").attr("src", basicInfo.image);
-                        $('#imgShow').show();
-                    }
-
-                    //related
-                    this.relatedOid = basicInfo.related;
-                    for (var i = 0; i < this.relatedOid.length; i++) {
-                        this.searchByOid(this.relatedOid[i]);
-                    }
-
-                    $('#related').tagEditor('destroy')
-                    $('#related').tagEditor({
-                        initialTags: this.related,
-                        forceLowercase: false,
-                        placeholder: 'Enter keywords ...'
-                    });
-
-                    //detail
-                    // if (basicInfo.detail != null) {
-                    //     $("#comceptText").html(basicInfo.detail);
-                    // }
-
-                    initTinymce('textarea#conceptText')
-                    this.localizationList = basicInfo.localizationList;
-                    let interval = setInterval(()=> {
-                        this.changeLocalization(this.localizationList[0])
-                        clearInterval(interval);
-                    },1000);
-
-                    //alias
-                    $('#aliasInput').tagEditor({
-                        initialTags: basicInfo.alias,
-                        forceLowercase: false,
-                        // placeholder: 'Enter alias ...'
-                    });
-                }
-            })
             window.sessionStorage.setItem("editConcept_id", "");
         }
+        window.localStorage.removeItem('draft')
+
 
         $("#step").steps({
             onFinish: function () {
@@ -1671,6 +1787,8 @@ var createConcept = Vue.extend({
                         });
                         return false;
                     } else {
+                        if(this.draft.oid!='')
+                            this.createDraft();
                         return true;
                     }
                 } else {
@@ -1747,14 +1865,8 @@ var createConcept = Vue.extend({
                     return;
                 }
             }
-            conceptObj.classifications = this.cls;
-            conceptObj.name = $("#nameInput").val();
-            conceptObj.alias = $("#aliasInput").val().split(",");
-            conceptObj.uploadImage = $('#imgShow').get(0).currentSrc;
-            conceptObj.description = $("#descInput").val();
-            conceptObj.related = this.relatedOid;
-            conceptObj.status = this.status;
-            conceptObj.localizationList = this.localizationList;
+
+            conceptObj = this.getItemContent('finish')
 
             let formData = new FormData();
             if ((oid === "0") || (oid === "") || (oid == null)) {
@@ -1890,6 +2002,18 @@ var createConcept = Vue.extend({
         // $(".prev").click(()=>{
         //
         // });
+
+        const timer = setInterval(()=>{
+            if(this.itemName!=''&&this.startDraft==1){
+                this.createDraft()
+            }
+        },30000)
+
+        this.$once('hook:beforeDestroy', ()=>{
+            clearInterval(timer)
+            clearTimeout(this.timeOut)
+        })
+
         $(document).on("keyup", ".username", function () {
 
             if ($(this).val()) {

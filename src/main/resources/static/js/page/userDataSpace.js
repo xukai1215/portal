@@ -1409,15 +1409,16 @@ var userDataSpace = Vue.extend(
 
             uploadRemove(file, fileList) {
                 this.uploadFiles = fileList;
-                let index=this.uploadFiles[0].name.lastIndexOf(".")
-                if(this.uploadName=='')
-                    this.uploadName=this.uploadFiles[0].name.substring(0,index);
+                if(this.uploadFiles.length==0)
+                    this.uploadName = ''
             },
 
             uploadChange(file, fileList) {
                 console.log(fileList)
                 this.uploadFiles = fileList;
                 let index=this.uploadFiles[0].name.lastIndexOf(".")
+                if(this.uploadFiles.length==0)
+                    this.uploadName = ''
                 if(this.uploadName=='')
                     this.uploadName=this.uploadFiles[0].name.substring(0,index);
             },

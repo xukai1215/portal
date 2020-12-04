@@ -166,7 +166,10 @@ var createModelItem = Vue.extend({
             cls: [],
             clsStr: '',
             status: 'Public',
-            curClassDesc: "Move your mouse to a classification to learn more.",
+            curClassDesc: {
+                label:'',
+                desc:"Move your mouse to a classification to learn more."
+            },
             nodekeys: [],
         socket:"",
 
@@ -513,6 +516,8 @@ var createModelItem = Vue.extend({
             ],
 
             dynamicTable:{},
+
+            startDraft:0,
         }
 
     },
@@ -703,17 +708,21 @@ var createModelItem = Vue.extend({
 
         },
 
+        //drafts
         onInputName(){
             console.log(1)
             if(this.toCreate==1){
                 this.toCreate=0
+                this.startDraft=1
                 this.timeOut=setTimeout(()=>{
                     this.toCreate=1
                 },30000)
-                this.createDraft()
+                setTimeout(()=>{
+                    this.createDraft()
+                },300)
             }
         },
-        //drafts
+
         getStep(){
             let domID=$('.step-tab-panel.active')[0].id
             return parseInt(domID.substring(domID.length-1,domID.length))
@@ -767,7 +776,7 @@ var createModelItem = Vue.extend({
                 if (ref_prop != 0) {
                     var ref = {};
                     ref.title = ref_prop.eq(0).text();
-                    if (trigger=='finish'&&ref.title == "No data available in table")
+                    if (ref.title == "No data available in table")
                         break;
                     ref.author = ref_prop.eq(1).text().split(",");
                     ref.date = ref_prop.eq(2).text();
@@ -797,7 +806,6 @@ var createModelItem = Vue.extend({
             let obj={
                 content:content,
                 editType:this.editTypeLocal,
-                itemType:item,
                 user:this.userId,
                 oid:this.draft.oid,
             }
@@ -949,12 +957,12 @@ var createModelItem = Vue.extend({
             }
 
             //tags
-            // $('#tagInput').tagEditor('destroy');
-            // $('#tagInput').tagEditor({
-            //     initialTags: basicInfo.keywords,
-            //     forceLowercase: false,
-            //     placeholder: 'Enter keywords ...'
-            // });
+            $('#tagInput').tagEditor('destroy');
+            $('#tagInput').tagEditor({
+                initialTags: basicInfo.keywords,
+                forceLowercase: false,
+                placeholder: 'Enter keywords ...'
+            });
 
 
             //detail
@@ -966,12 +974,15 @@ var createModelItem = Vue.extend({
             }, 1000);
 
             //alias
-            // $('#aliasInput').tagEditor('destroy');
-            // $('#aliasInput').tagEditor({
-            //     initialTags: basicInfo.alias,
-            //     forceLowercase: false,
-            //     // placeholder: 'Enter alias ...'
-            // });
+            if(basicInfo.alias.length>0){
+                $('#aliasInput').tagEditor('destroy');
+                $('#aliasInput').tagEditor({
+                    initialTags: basicInfo.alias ,
+                    forceLowercase: false,
+                    // placeholder: 'Enter alias ...'
+                });
+            }
+
             // //detail
             // tinyMCE.remove(tinyMCE.editors[0])
             // $("#modelItemText").html(content.detail);//可能会赋值不成功
@@ -1010,14 +1021,15 @@ var createModelItem = Vue.extend({
             this.$refs.draftBox.deleteDraft(this.draft.oid)
         },
 
-        checkItem(item){
-            let itemType = item.itemType.substring(0,1).toLowerCase()+item.itemType.substring(1)
-            window.location.href='/'+itemType+'/'+item.itemOid
+        initDraft(editType,backUrl,oidFrom,oid){
+            this.$refs.draftBox.initDraft(editType,backUrl,oidFrom,oid)
         },
 
-        initDraft(editType,backUrl,oidFrom,oid){
-              this.$refs.draftBox.initDraft(editType,backUrl,oidFrom,oid)
-        },
+        // checkItem(item){
+        //     let itemType = item.itemType.substring(0,1).toLowerCase()+item.itemType.substring(1)
+        //     window.location.href='/'+itemType+'/'+item.itemOid
+        // },
+
 
         //reference
         searchDoi(){
@@ -1439,7 +1451,10 @@ var createModelItem = Vue.extend({
             for(;i<children.length;i++){
                 let child = children[i];
                 if(child.label==name){
-                    return "<b>"+child.label+": </b>"+child.desc;
+                    return {
+                        label:child.label,
+                        desc:child.desc
+                    };
                 }else{
                     if(child.children!=undefined){
                         let result = this.getChildrenDesc(child.children, name);
@@ -1587,7 +1602,6 @@ var createModelItem = Vue.extend({
         var oid = this.$route.params.editId;
 
         this.draft.oid=window.localStorage.getItem('draft');
-        window.localStorage.removeItem('draft');
         var user_num = 0;
 
         if ((oid === "0") || (oid === "") || (oid === null)|| (oid === undefined)) {
@@ -1599,8 +1613,6 @@ var createModelItem = Vue.extend({
             $('#aliasInput').tagEditor({
                 forceLowercase: false
             });
-
-            this.editTypeLocal = "create";
 
             let interval = setInterval(function () {
                 initTinymce('textarea#singleDescription');
@@ -1630,20 +1642,25 @@ var createModelItem = Vue.extend({
             $("#subRteTitle").text("/Modify Model Item");
 
             // document.title="Modify Model Item | OpenGMS"
-            $.ajax({
-                url: "/modelItem/getInfo/" + oid,
-                type: "get",
-                data: {},
+            if(window.localStorage.getItem('draft')==null){
+                $.ajax({
+                    url: "/modelItem/getInfo/" + oid,
+                    type: "get",
+                    data: {},
 
-                success: (result) => {
-                    console.log(result);
-                    var basicInfo = result.data;
+                    success: (result) => {
+                        console.log(result);
+                        var basicInfo = result.data;
 
-                    this.insertInfo(basicInfo)
-                }
-            })
+                        this.insertInfo(basicInfo)
+                    }
+                })
+            }
+
             // window.sessionStorage.setItem("editModelItem_id", "");
         }
+
+        window.localStorage.removeItem('draft');
         // if(this.draft.oid!=''&&this.draft.oid!=null&&typeof (this.draft.oid)!="undefined")
         //     this.loadDraftByOid()
 
@@ -2085,7 +2102,7 @@ var createModelItem = Vue.extend({
         })
 
         const timer = setInterval(()=>{
-            if(this.itemName!=''){
+            if(this.itemName!=''&&this.startDraft==1){
                 this.createDraft()
             }
         },30000)

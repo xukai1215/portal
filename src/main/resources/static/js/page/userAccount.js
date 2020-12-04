@@ -719,7 +719,7 @@ var userAccount = Vue.extend(
                                     targetH = Math.round(maxW * (originH / originW));
                                     positionX='20px'
                                     positionY=100-targetH/2+'px'
-                                    console.log(positionY)
+                                    // console.log(positionY)
                                     canvas.style.backgroundSize = "160px auto"
 
                                 }
@@ -737,7 +737,7 @@ var userAccount = Vue.extend(
                                     targetH = Math.round(maxW * (originH / originW));
                                     positionX='10px'
                                     positionY=100-targetH/2+'px'
-                                    console.log(positionY)
+                                    // console.log(positionY)
                                     canvas.style.backgroundSize = "160px auto"
                                 }
                             }
@@ -748,7 +748,7 @@ var userAccount = Vue.extend(
                             context.clearRect(0,0,200,200);
 
                             let img="url("+oImg.src+")";
-                            console.log(oImg.src===img)
+                            // console.log(oImg.src===img)
 
                             canvas.style.backgroundPositionX = positionX
                             canvas.style.backgroundPositionY = positionY
@@ -812,7 +812,7 @@ var userAccount = Vue.extend(
                 var startX,startY,moveX,moveY,width,height,posX,posY,limitX,limitY,leaveX,leaveY,
                     lastX,lastY,dirR,dirD,noUseMoveR,noUseMoveD
                 var dragable=false
-                console.log('~~~~~~'+targetW,targetH)
+                // console.log('~~~~~~'+targetW,targetH)
                 $(document).off('mousemove')
                 $(document).off('mousedown')
                 $(document).on('mousedown','canvas',(e)=>{
@@ -840,8 +840,8 @@ var userAccount = Vue.extend(
 
                 $(document).on('mousemove',(e)=>{
                     if (dragable === true) {
-                        console.log($('.circlePhotoFrame').eq(0).children('canvas'))
-                        console.log(targetW)
+                        // console.log($('.circlePhotoFrame').eq(0).children('canvas'))
+                        // console.log(targetW)
                         var canvas = document.getElementsByTagName('canvas')[0]
 
                         limitX=targetW-maxW
@@ -856,20 +856,19 @@ var userAccount = Vue.extend(
                         if(e.pageY>lastY) dirD=1  //向下方向值
                         else dirD=-1
 
-                        console.log(e.pageX - startX)
+                        // console.log(e.pageX - startX)
 
                         if(e.pageX - startX>maxMoveXR){
                             if(dirR===1){
                                 lastX = e.pageX
                                 noUseMoveR=e.pageX - startX - maxMoveXR
-                                console.log('nouse'+noUseMoveR)
                             }
 
                             else{
                                 lastX = e.pageX
                                 // e.pageX-=noUseMoveR
-                                console.log('left'+e.pageX)
-                                console.log(e.pageX - startX)
+                                // console.log('left'+e.pageX)
+                                // console.log(e.pageX - startX)
                             }
 
                         }else{
@@ -885,9 +884,9 @@ var userAccount = Vue.extend(
                         endX = moveX + parseFloat(posX)
                         endY = moveY + parseFloat(posY)
 
-                        console.log(moveX, moveY)
+                        // console.log(moveX, moveY)
 
-                        console.log(endX, endY)
+                        // console.log(endX, endY)
                         if (endX <= 20&&endX>=-limitX+20) {
                             endX = endX + 'px'
                             canvas.style.backgroundPositionX = endX
@@ -966,7 +965,7 @@ var userAccount = Vue.extend(
                     leftStart=e.pageX
                     leaveLeft=0
                     left=block.css('left')
-                    console.log(leftStart)
+                    // console.log(leftStart)
                     return;
                 })
 
@@ -1014,8 +1013,8 @@ var userAccount = Vue.extend(
                                 newX=20
                             else if(newX+newTW<180)
                                 newX=180-newTW
-                            console.log(timesP)
-                            console.log("wz"+newX,newY)
+                            // console.log(timesP)
+                            // console.log("wz"+newX,newY)
 
                             newX=newX+'px'
                             newY=newY+'px'
@@ -1024,7 +1023,7 @@ var userAccount = Vue.extend(
                             canvas.style.backgroundPositionY = newY
 
                             leftPos=leftPos+'px'
-                            console.log(leftPos)
+                            // console.log(leftPos)
                             block.css('left',leftPos)
 
                             targetW=newTW

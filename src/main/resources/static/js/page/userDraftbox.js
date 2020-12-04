@@ -533,7 +533,36 @@ var userDraftBox = Vue.extend(
 
             continueToEdit(index,draft){
                 window.localStorage.setItem('draft',draft.oid) ;
-                window.location.href=index==0?'/user/userSpace#/model/createModelItem':'/user/userSpace#/model/manageModelItem/'+draft.itemOid
+                switch (draft.itemType.toLowerCase()){
+                    case 'modelitem':
+                        window.location.href=index==0?'/user/userSpace#/model/createModelItem':'/user/userSpace#/model/manageModelItem/'+draft.itemOid
+                        break;
+                    case 'conceptualmodel':
+                        window.location.href=index==0?'/user/userSpace#/model/createConceptualModel':'/user/userSpace#/model/manageConceptualModel/'+draft.itemOid
+                        break;
+                    case 'logicalmodel':
+                        window.location.href=index==0?'/user/userSpace#/model/createLogicalModel':'/user/userSpace#/model/manageLogicalModel/'+draft.itemOid
+                        break;
+                    case 'computablemodel':
+                        window.location.href=index==0?'/user/userSpace#/model/createComputableModel':'/user/userSpace#/model/manageComputableModel'+draft.itemOid
+                        break;
+                    case 'dataitem':
+                        window.location.href=index==0?'/user/userSpace#/data/createDataItem':'/user/userSpace#/model/manageDataItem/'+draft.itemOid
+                        break;
+                    case 'concept':
+                        window.location.href=index==0?'/user/userSpace#/community/createConcept':'/user/userSpace#/model/manageConcept/'+draft.itemOid
+                        break;
+                    case 'spatialreference':
+                        window.location.href=index==0?'/user/userSpace#/community/createSpatialReference':'/user/userSpace#/model/manageSpatialReference/'+draft.itemOid
+                        break;
+                    case 'template':
+                        window.location.href=index==0?'/user/userSpace#/community/createTemplate':'/user/userSpace#/model/manageTemplate/'+draft.itemOid
+                        break;
+                    case 'unit':
+                        window.location.href=index==0?'/user/userSpace#/community/createUnit':'/user/userSpace#/model/manageUnit/'+draft.itemOid
+                        break;
+                }
+
             },
 
             viewDraftDetail(draft){
