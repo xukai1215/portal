@@ -1021,7 +1021,7 @@ new Vue({
 
             this.transFormByGDAL().then(res =>{
                 let gdalResult = res
-                if(gdalResult == null||gdalResult == undefined){
+                if(gdalResult == null||gdalResult == undefined||gdalResult.toString() == '0,0,0'){
                     this.transformXY()
                 }else {
                     if(this.judgeUnit(this.outputCoordinate)==='metre') {
