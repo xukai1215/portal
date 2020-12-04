@@ -159,7 +159,7 @@
 
                     <!--<el-tag type="success"  v-for="iter in dataCategory" @click="clickDataItemInfo(iter.id)" style="margin-left: 10px;font-weight: bold;color: #3396ef"> {{iter.cateContent}}</el-tag>-->
 
-                    <el-tag th:each="classS:${modelInfo.alias}" th:text="${classS}"
+                    <el-tag th:each="alias:${modelInfo.alias}" th:text="${alias}"
                             style="margin: 0 10px 10px 0;font-weight: bold;color: #3396ef"></el-tag>
 
                 </div>
@@ -299,7 +299,7 @@
                         <h4>Detailed Description</h4>
                     </div>
 
-                    <el-dropdown style="float:right;padding:0 10px;background-color: white;cursor:pointer;" trigger="click" @command="changeDetailLanguage" >
+                    <el-dropdown v-cloak style="float:right;padding:0 10px;background-color: white;cursor:pointer;" trigger="click" @command="changeDetailLanguage" >
 
                         <span v-if="currentDetailLanguage==''" class="el-dropdown-link" >
                             <span th:text="${detailLanguage}"></span><i class="el-icon-arrow-down el-icon--right"></i>

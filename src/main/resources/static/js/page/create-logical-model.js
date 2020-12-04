@@ -58,7 +58,7 @@ var createLogicalModel = Vue.extend({
 
             logicalModel_oid:"",
 
-            editTypeLocal:'create',
+            editType:'create',
 
             toCreate: 1,
 
@@ -359,12 +359,12 @@ var createLogicalModel = Vue.extend({
             item=item.substring(6,item.length)
             let obj={
                 content:content,
-                editType:this.editTypeLocal,
+                editType:this.editType,
                 itemType:item,
                 user:this.userId,
                 oid:this.draft.oid,
             }
-            if(this.editTypeLocal) {
+            if(this.editType) {
                 obj.itemOid=this.$route.params.editId?this.$route.params.editId:null
                 obj.itemName= this.itemName;
             }
@@ -662,7 +662,7 @@ var createLogicalModel = Vue.extend({
 
 
         if ((oid === "0") || (oid === "") || (oid === null)|| (oid === undefined)) {
-            this.editTypeLocal = 'create';
+            this.editType = 'create';
             // $("#title").text("Create Logical Model")
             $("#subRteTitle").text("/Create Logical Model")
 
@@ -677,7 +677,7 @@ var createLogicalModel = Vue.extend({
             }
         }
         else{
-            this.editTypeLocal = 'modify';
+            this.editType = 'modify';
             if(this.draft.oid==''||this.draft.oid==null||typeof (this.draft.oid)=="undefined"){
                 this.initDraft('edit','/user/userSpace#/models/modelitem','item',this.$route.params.editId)
             }else{

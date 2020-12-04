@@ -55,7 +55,7 @@ var createConceptualModel = Vue.extend({
             userName: "",
             loginFlag: false,
 
-            editTypeLocal:'create',
+            editType:'create',
 
             path:"ws://localhost:8080/websocket",
             socket:"",
@@ -351,12 +351,12 @@ var createConceptualModel = Vue.extend({
             item=item.substring(6,item.length)
             let obj={
                 content:content,
-                editType:this.editTypeLocal,
+                editType:this.editType,
                 itemType:item,
                 user:this.userId,
                 oid:this.draft.oid,
             }
-            if(this.editTypeLocal) {
+            if(this.editType) {
                 obj.itemOid=this.$route.params.editId?this.$route.params.editId:null
                 obj.itemName= this.itemName;
             }
@@ -706,7 +706,7 @@ var createConceptualModel = Vue.extend({
 
         if ((oid === "0") || (oid === "") || (oid === null)|| (oid === undefined)) {
 
-            this.editTypeLocal = 'create';
+            this.editType = 'create';
             // $("#title").text("Create Conceptual Model")
             $("#subRteTitle").text("/Create Conceptual Model")
 
@@ -725,7 +725,7 @@ var createConceptualModel = Vue.extend({
         }
         else{
 
-            this.editTypeLocal = 'modify';
+            this.editType = 'modify';
             if(this.draft.oid==''||this.draft.oid==null||typeof (this.draft.oid)=="undefined"){
                 this.initDraft('edit','/user/userSpace#/models/modelitem','item',this.$route.params.editId)
             }else{

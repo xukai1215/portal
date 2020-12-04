@@ -337,7 +337,7 @@ var createUnit =Vue.extend({
                 { value: 'zu-ZA', label: 'Zulu (South Africa)' },
             ],
 
-            editTypeLocal:'create',
+            editType:'create',
 
             toCreate: 1,
 
@@ -576,12 +576,12 @@ var createUnit =Vue.extend({
             item=item.substring(6,item.length)
             let obj={
                 content:content,
-                editType:this.editTypeLocal,
+                editType:this.editType,
                 itemType:item,
                 user:this.userId,
                 oid:this.draft.oid,
             }
-            if(this.editTypeLocal) {
+            if(this.editType) {
                 obj.itemOid=this.$route.params.editId?this.$route.params.editId:null
                 obj.itemName= this.itemName;
             }
@@ -753,7 +753,7 @@ var createUnit =Vue.extend({
         var user_num = 0;
 
         if ((oid === "0") || (oid === "") || (oid === null)|| (oid === undefined)) {
-            this.editTypeLocal = 'create';
+            this.editType = 'create';
             // $("#title").text("Create Unit & Metric")
             $("#subRteTitle").text("/Create Unit & Metric")
 
@@ -777,7 +777,7 @@ var createUnit =Vue.extend({
 
         }
         else {
-            this.editTypeLocal = 'modify';
+            this.editType = 'modify';
             if(this.draft.oid==''||this.draft.oid==null||typeof (this.draft.oid)=="undefined"){
                 this.initDraft('edit','/user/userSpace#/models/modelitem','item',this.$route.params.editId)
             }else{
