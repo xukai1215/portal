@@ -58,6 +58,17 @@ var createLogicalModel = Vue.extend({
 
             logicalModel_oid:"",
 
+            editTypeLocal:'create',
+
+            toCreate: 1,
+
+            draft:{
+                oid:'',
+            },
+
+            startDraft:0,
+
+            draftOid:'',
         }
     },
     methods: {
@@ -168,6 +179,211 @@ var createLogicalModel = Vue.extend({
                 }
             }
         },
+
+        insertInfo(basicInfo){
+
+            let user_num = 0;
+            this.resources=basicInfo.resourceJson;
+
+            $("#search-box").val(basicInfo.relateModelItemName)
+            this.logicalModel.bindModelItem=basicInfo.relateModelItemName;
+            this.logicalModel.bindOid=basicInfo.relateModelItem;
+            this.logicalModel.status=basicInfo.status;
+
+            if(basicInfo.contentType=="MxGraph"){
+                $("input[name='ContentType']").eq(0).iCheck('check');
+                $("#MxGraph").show();
+                $("#Image").hide();
+            }
+            else{
+                $("input[name='ContentType']").eq(1).iCheck('check');
+                $("#MxGraph").hide();
+                $("#Image").show();
+            }
+
+            $(".providers").children(".panel").remove();
+
+            //detail
+
+            $("#logicalModelText").html(basicInfo.detail);
+
+            initTinymce('textarea#logicalModelText')
+
+            let authorship = basicInfo.authorship;
+            if(authorship!=null) {
+                for (i = 0; i < authorship.length; i++) {
+                    user_num++;
+                    var content_box = $(".providers");
+                    var str = "<div class='panel panel-primary'> <div class='panel-heading newAuthorHeader'> <h4 class='panel-title'> <a class='accordion-toggle collapsed' style='color:white' data-toggle='collapse' data-target='#user";
+                    str += user_num;
+                    str += "' href='javascript:;'> NEW </a> </h4><a href='javascript:;' class='fa fa-times author_close' style='float:right;margin-top:8px;color:white'></a></div><div id='user";
+                    str += user_num;
+                    str += "' class='panel-collapse collapse in'><div class='panel-body user-contents'> <div class='user-attr'>\n" +
+                        "                                                                                                    <div>\n" +
+                        "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
+                        "                                                                                                               style='font-weight: bold;'>\n" +
+                        "                                                                                                            Name:\n" +
+                        "                                                                                                        </lable>\n" +
+                        "                                                                                                        <div class='input-group col-sm-10'>\n" +
+                        "                                                                                                            <input type='text'\n" +
+                        "                                                                                                                   name=\"name\"\n" +
+                        "                                                                                                                   class='form-control' value='" +
+                        authorship[i].name +
+                        "'>\n" +
+                        "                                                                                                        </div>\n" +
+                        "                                                                                                    </div>\n" +
+                        "                                                                                                    <div style=\"margin-top:10px\">\n" +
+                        "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
+                        "                                                                                                               style='font-weight: bold;'>\n" +
+                        "                                                                                                            Affiliation:\n" +
+                        "                                                                                                        </lable>\n" +
+                        "                                                                                                        <div class='input-group col-sm-10'>\n" +
+                        "                                                                                                            <input type='text'\n" +
+                        "                                                                                                                   name=\"ins\"\n" +
+                        "                                                                                                                   class='form-control' value='" +
+                        authorship[i].ins +
+                        "'>\n" +
+                        "                                                                                                        </div>\n" +
+                        "                                                                                                    </div>\n" +
+                        "                                                                                                    <div style=\"margin-top:10px\">\n" +
+                        "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
+                        "                                                                                                               style='font-weight: bold;'>\n" +
+                        "                                                                                                            Email:\n" +
+                        "                                                                                                        </lable>\n" +
+                        "                                                                                                        <div class='input-group col-sm-10'>\n" +
+                        "                                                                                                            <input type='text'\n" +
+                        "                                                                                                                   name=\"email\"\n" +
+                        "                                                                                                                   class='form-control' value='" +
+                        authorship[i].email +
+                        "'>\n" +
+                        "                                                                                                        </div>\n" +
+                        "                                                                                                    </div>\n" +
+                        "                                                                                                    <div style=\"margin-top:10px\">\n" +
+                        "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
+                        "                                                                                                               style='font-weight: bold;'>\n" +
+                        "                                                                                                            Homepage:\n" +
+                        "                                                                                                        </lable>\n" +
+                        "                                                                                                        <div class='input-group col-sm-10'>\n" +
+                        "                                                                                                            <input type='text'\n" +
+                        "                                                                                                                   name=\"homepage\"\n" +
+                        "                                                                                                                   class='form-control' value='" +
+                        authorship[i].homepage +
+                        "'>\n" +
+                        "                                                                                                        </div>\n" +
+                        "                                                                                                    </div>\n" +
+                        "                                                                                                </div></div> </div> </div>"
+                    content_box.append(str)
+                }
+            }
+
+            this.logicalModel.name=basicInfo.name;
+            this.logicalModel.description=basicInfo.description
+
+            // $("#nameInput").val(basicInfo.name);
+            // $("#descInput").val(basicInfo.description)
+        },
+
+        getItemContent(trigger,callBack){
+            let itemObj = {}
+
+            itemObj.name=this.logicalModel.name
+            itemObj.status=this.logicalModel.status
+            itemObj.description=this.logicalModel.description
+            itemObj.bindModelItem=this.logicalModel.bindModelItem
+            itemObj.contentType=$("input[name='ContentType']:checked").val();
+            itemObj.isAuthor=$("input[name='author_confirm']:checked").val();
+            var detail = tinyMCE.activeEditor.getContent();
+            itemObj.detail = detail.trim();
+
+            itemObj.authorship=[];
+            userspace.getUserData($("#providersPanel .user-contents .form-control"), itemObj.authorship);
+
+            /**
+             * 张硕
+             * 2019.11.14
+             * 经过试验，logicalmodel只需要 cxml 就OK，所以暂时只存cxml，注释掉svg，xml，w，h
+             * 并不OK，需要存图片，所以不能注释
+             */
+            let iframeWindow=$("#ModelEditor")[0].contentWindow;
+            // itemObj.cXml=iframeWindow.getCxml();
+
+            let result=iframeWindow.getXml();
+
+            if(itemObj.contentType=="MxGraph") {
+                itemObj.svg = "<svg width='" + result.w + "px' height='" + result.h + "px' xmlns='http://www.w3.org/2000/svg' xmlns:html='http://www.w3.org/1999/xhtml'>" + iframeWindow.getSvg() + "</svg>";
+                itemObj.cXml=iframeWindow.getCxml();
+                itemObj.xml=result.xml;
+                itemObj.w=result.w;
+                itemObj.h=result.h;
+            }
+            else{
+                itemObj.svg="";
+                itemObj.cXml="";
+            }
+
+            if(callBack){
+                callBack(itemObj)
+            }
+
+            return itemObj
+        },
+
+        //draft
+        onInputName(){
+            console.log(1)
+            if(this.toCreate==1){
+                this.toCreate=0
+                this.timeOut=setTimeout(()=>{
+                    this.startDraft=1
+                    this.toCreate=1
+                },30000)
+                setTimeout(()=>{
+                    this.createDraft()
+                },300)
+
+            }
+        },
+
+        getStep(){
+            let domID=$('.step-tab-panel.active')[0].id
+            return parseInt(domID.substring(domID.length-1,domID.length))
+        },
+
+        createDraft(){//请求后台创建一个草稿实例,如果存在则更新
+
+            var step = this.getStep()
+            let content=this.getItemContent(step)
+
+            let urls=window.location.href.split('/')
+            let item=urls[6]
+            item=item.substring(6,item.length)
+            let obj={
+                content:content,
+                editType:this.editTypeLocal,
+                itemType:item,
+                user:this.userId,
+                oid:this.draft.oid,
+            }
+            if(this.editTypeLocal) {
+                obj.itemOid=this.$route.params.editId?this.$route.params.editId:null
+                obj.itemName= this.itemName;
+            }
+
+            this.$refs.draftBox.createDraft(obj)
+        },
+
+        loadMatchedCreateDraft(){
+            this.$refs.draftBox.loadMatchedCreateDraft()
+        },
+
+        deleteDraft(){
+            this.$refs.draftBox.deleteDraft(this.draft.oid)
+        },
+
+        initDraft(editType,backUrl,oidFrom,oid){
+            this.$refs.draftBox.initDraft(editType,backUrl,oidFrom,oid)
+        },
+
         sendcurIndexToParent(){
             this.$emit('com-sendcurindex',this.curIndex)
         },
@@ -440,11 +656,13 @@ var createLogicalModel = Vue.extend({
 
         var oid = this.$route.params.editId;//取得所要edit的id
 
+        this.draft.oid=window.localStorage.getItem('draft');//取得保存的草稿的Oid
+
         var user_num = 0;
 
 
         if ((oid === "0") || (oid === "") || (oid === null)|| (oid === undefined)) {
-
+            this.editTypeLocal = 'create';
             // $("#title").text("Create Logical Model")
             $("#subRteTitle").text("/Create Logical Model")
 
@@ -452,132 +670,46 @@ var createLogicalModel = Vue.extend({
 
             initTinymce('textarea#logicalModelText')
 
+            this.loadMatchedCreateDraft();
+            if(this.draft.oid!=''&&this.draft.oid!=null&&typeof (this.draft.oid)!="undefined"){
+                // this.loadDraftByOid()
+                this.initDraft('create','/user/userSpace#/models/modelitem','draft',this.draft.oid)
+            }
         }
         else{
-
+            this.editTypeLocal = 'modify';
+            if(this.draft.oid==''||this.draft.oid==null||typeof (this.draft.oid)=="undefined"){
+                this.initDraft('edit','/user/userSpace#/models/modelitem','item',this.$route.params.editId)
+            }else{
+                this.initDraft('edit','/user/userSpace#/models/modelitem','draft',this.draft.oid)
+            }
             // $("#title").text("Modify Logical Model")
             $("#subRteTitle").text("/Modify Logical Model")
             document.title="Modify Logical Model | OpenGMS"
 
-            $.ajax({
-                url: "/logicalModel/getInfo/" + oid,
-                type: "get",
-                data: {},
+            if(window.localStorage.getItem('draft')==null){
+                $.ajax({
+                    url: "/logicalModel/getInfo/" + oid,
+                    type: "get",
+                    data: {},
 
-                success: (result) => {
-                    console.log(result)
-                    var basicInfo = result.data;
+                    success: (result) => {
+                        console.log(result)
+                        var basicInfo = result.data;
 
-                    this.resources=basicInfo.resourceJson;
-
-                    $("#search-box").val(basicInfo.relateModelItemName)
-                    this.logicalModel.bindModelItem=basicInfo.relateModelItemName;
-                    this.logicalModel.bindOid=basicInfo.relateModelItem;
-                    this.logicalModel.status=basicInfo.status;
+                        this.insertInfo(basicInfo);
 
 
-                    if(basicInfo.contentType=="MxGraph"){
-                        $("input[name='ContentType']").eq(0).iCheck('check');
-                        $("#MxGraph").show();
-                        $("#Image").hide();
+
+
+
                     }
-                    else{
-                        $("input[name='ContentType']").eq(1).iCheck('check');
-                        $("#MxGraph").hide();
-                        $("#Image").show();
-                    }
+                })
 
-                    $(".providers").children(".panel").remove();
-
-                    //detail
-
-                    $("#logicalModelText").html(basicInfo.detail);
-
-                    initTinymce('textarea#logicalModelText')
-
-
-                    let authorship = basicInfo.authorship;
-                    if(authorship!=null) {
-                        for (i = 0; i < authorship.length; i++) {
-                            user_num++;
-                            var content_box = $(".providers");
-                            var str = "<div class='panel panel-primary'> <div class='panel-heading newAuthorHeader'> <h4 class='panel-title'> <a class='accordion-toggle collapsed' style='color:white' data-toggle='collapse' data-target='#user";
-                            str += user_num;
-                            str += "' href='javascript:;'> NEW </a> </h4><a href='javascript:;' class='fa fa-times author_close' style='float:right;margin-top:8px;color:white'></a></div><div id='user";
-                            str += user_num;
-                            str += "' class='panel-collapse collapse in'><div class='panel-body user-contents'> <div class='user-attr'>\n" +
-                                "                                                                                                    <div>\n" +
-                                "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
-                                "                                                                                                               style='font-weight: bold;'>\n" +
-                                "                                                                                                            Name:\n" +
-                                "                                                                                                        </lable>\n" +
-                                "                                                                                                        <div class='input-group col-sm-10'>\n" +
-                                "                                                                                                            <input type='text'\n" +
-                                "                                                                                                                   name=\"name\"\n" +
-                                "                                                                                                                   class='form-control' value='" +
-                                authorship[i].name +
-                                "'>\n" +
-                                "                                                                                                        </div>\n" +
-                                "                                                                                                    </div>\n" +
-                                "                                                                                                    <div style=\"margin-top:10px\">\n" +
-                                "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
-                                "                                                                                                               style='font-weight: bold;'>\n" +
-                                "                                                                                                            Affiliation:\n" +
-                                "                                                                                                        </lable>\n" +
-                                "                                                                                                        <div class='input-group col-sm-10'>\n" +
-                                "                                                                                                            <input type='text'\n" +
-                                "                                                                                                                   name=\"ins\"\n" +
-                                "                                                                                                                   class='form-control' value='" +
-                                authorship[i].ins +
-                                "'>\n" +
-                                "                                                                                                        </div>\n" +
-                                "                                                                                                    </div>\n" +
-                                "                                                                                                    <div style=\"margin-top:10px\">\n" +
-                                "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
-                                "                                                                                                               style='font-weight: bold;'>\n" +
-                                "                                                                                                            Email:\n" +
-                                "                                                                                                        </lable>\n" +
-                                "                                                                                                        <div class='input-group col-sm-10'>\n" +
-                                "                                                                                                            <input type='text'\n" +
-                                "                                                                                                                   name=\"email\"\n" +
-                                "                                                                                                                   class='form-control' value='" +
-                                authorship[i].email +
-                                "'>\n" +
-                                "                                                                                                        </div>\n" +
-                                "                                                                                                    </div>\n" +
-                                "                                                                                                    <div style=\"margin-top:10px\">\n" +
-                                "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
-                                "                                                                                                               style='font-weight: bold;'>\n" +
-                                "                                                                                                            Homepage:\n" +
-                                "                                                                                                        </lable>\n" +
-                                "                                                                                                        <div class='input-group col-sm-10'>\n" +
-                                "                                                                                                            <input type='text'\n" +
-                                "                                                                                                                   name=\"homepage\"\n" +
-                                "                                                                                                                   class='form-control' value='" +
-                                authorship[i].homepage +
-                                "'>\n" +
-                                "                                                                                                        </div>\n" +
-                                "                                                                                                    </div>\n" +
-                                "                                                                                                </div></div> </div> </div>"
-                            content_box.append(str)
-                        }
-                    }
-
-                    this.logicalModel.name=basicInfo.name;
-                    this.logicalModel.description=basicInfo.description
-
-                    // $("#nameInput").val(basicInfo.name);
-                    // $("#descInput").val(basicInfo.description)
-
-
-
-
-
-                }
-            })
+            }
         }
 
-
+        window.localStorage.removeItem('draft');
 
         $("#step").steps({
             onFinish: function () {
@@ -609,6 +741,8 @@ var createLogicalModel = Vue.extend({
                         return false;
                     }
                     else {
+                        if(this.draft.oid!='')
+                            this.createDraft();
                         return true;
                     }
                 }else{
@@ -627,36 +761,7 @@ var createLogicalModel = Vue.extend({
                 background: "rgba(0, 0, 0, 0.7)"
             });
 
-            this.logicalModel.contentType=$("input[name='ContentType']:checked").val();
-            this.logicalModel.isAuthor=$("input[name='author_confirm']:checked").val();
-            var detail = tinyMCE.activeEditor.getContent();
-            this.logicalModel.detail = detail.trim();
-
-            this.logicalModel.authorship=[];
-            userspace.getUserData($("#providersPanel .user-contents .form-control"), this.logicalModel.authorship);
-
-            /**
-             * 张硕
-             * 2019.11.14
-             * 经过试验，logicalmodel只需要 cxml 就OK，所以暂时只存cxml，注释掉svg，xml，w，h
-             * 并不OK，需要存图片，所以不能注释
-             */
-            let iframeWindow=$("#ModelEditor")[0].contentWindow;
-            // this.logicalModel.cXml=iframeWindow.getCxml();
-
-            let result=iframeWindow.getXml();
-
-            if(this.logicalModel.contentType=="MxGraph") {
-                this.logicalModel.svg = "<svg width='" + result.w + "px' height='" + result.h + "px' xmlns='http://www.w3.org/2000/svg' xmlns:html='http://www.w3.org/1999/xhtml'>" + iframeWindow.getSvg() + "</svg>";
-                this.logicalModel.cXml=iframeWindow.getCxml();
-                this.logicalModel.xml=result.xml;
-                this.logicalModel.w=result.w;
-                this.logicalModel.h=result.h;
-            }
-            else{
-                this.logicalModel.svg="";
-                this.logicalModel.cXml="";
-            }
+            this.logicalModel = this.getItemContent('finish')
 
 
             //添加图片
@@ -942,7 +1047,16 @@ var createLogicalModel = Vue.extend({
             content_box.append(str)
         })
 
+        const timer = setInterval(()=>{
+            if(this.itemName!=''&&this.startDraft==1){
+                this.createDraft()
+            }
+        },30000)
 
+        this.$once('hook:beforeDestroy', ()=>{
+            clearInterval(timer)
+            clearTimeout(this.timeOut)
+        })
 
         // if (mid === undefined || mid == null) {
         //     this.editorUrl = "http://127.0.0.1:8081http://127.0.0.1:8081/GeoModelingNew/modelItem/createModelItem.html";

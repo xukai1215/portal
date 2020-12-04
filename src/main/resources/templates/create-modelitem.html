@@ -75,7 +75,7 @@
                             <draft-box ref="draftBox"
                                        @insert-draft="insertInfo"
                                        @get-content="getItemContent"
-                                       :itemType="'modelItem'"></draft-box>
+                                       :item-type="'modelItem'"></draft-box>
 <!--                            <div v-if="savingDraft" class="flexJustStart flexAlignCenter" style="margin:15px 15px 0 0;color: rgb(6,91,186)">-->
 <!--                                <i class="ms-Icon ms-Icon&#45;&#45;ProgressLoopOuter rotate_cw_3" style="margin-right: 5px;font-size: 16px"></i>-->
 <!--                                <p style="margin: 0">Saving draft...</p>-->
@@ -404,7 +404,8 @@
 
                                                                         </el-card>
                                                                         <el-card shadow="never" style="height:100px;">
-                                                                            <div v-html="curClassDesc" ></div>
+                                                                            <span style="font-family: aktiv-grotesk;color: #737373;" v-if="curClassDesc.label!=''">{{curClassDesc.label}}: </span>
+                                                                            <span style="color: #636363;">{{curClassDesc.desc}}</span>
 
                                                                         </el-card>
 

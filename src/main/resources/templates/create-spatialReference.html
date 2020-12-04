@@ -65,6 +65,10 @@
                             <h3 style="margin-left: 10px"><a class="itemTitle" href="/user/userSpace#/community">Community </a><span
                                     id="subRteTitle"></span></h3>
                         </div>
+                        <draft-box ref="draftBox"
+                                   @insert-draft="insertInfo"
+                                   @get-content="getItemContent"
+                                   :item-type="'spatialReference'"></draft-box>
                     </section>
 
                     <div class="page-content-wrap container-fluid">
@@ -155,7 +159,7 @@
                                                                                        class="col-sm-2 control-label"><span class="xing">* </span>Name</label>
                                                                                 <div class="col-sm-10">
                                                                                     <input type="text" class="form-control"
-                                                                                           id="nameInput"/>
+                                                                                           id="nameInput" @input="onInputName"/>
                                                                                 </div>
                                                                             </div>
                                                                         </div>

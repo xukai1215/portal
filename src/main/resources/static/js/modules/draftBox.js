@@ -11,7 +11,7 @@ Vue.component("draft-box",
         props: {
             itemType: {
                 type: String,
-                default: 'modelitem'
+                default: 'modelItem'
             }
         },
         data() {
@@ -157,7 +157,7 @@ Vue.component("draft-box",
                     }
                 }).then(res=>{
                     if(res.data.code==0){
-                        if(res.data.data.length>1){
+                        if(res.data.data.length>=1){
                             this.matchedCreateDraft=res.data.data;
                             this.matchedCreateDraftDialog=true
                         }
@@ -188,18 +188,23 @@ Vue.component("draft-box",
             },
 
             loadDraft(){
+                this.draftLoading = true
                 axios.get('/draft/pageByUser',{
                     params:{
                         asc:0,
                         page:this.pageOption.currentPage-1,
                         size:6,
+                        itemType:this.itemType
                     }
                 }).then(res=>{
                     if(res.data.code==0){
                         let data=res.data.data
                         this.draftList=data.content
                         this.pageOption.total = data.total;
-                    }else{
+                        setTimeout(()=>{
+                            this.draftLoading = false;
+                        },150)
+                    }else if(res.data.code==1){
                         this.$alert('Please login first!', 'Error', {
                             type:"error",
                             confirmButtonText: 'OK',
@@ -207,6 +212,13 @@ Vue.component("draft-box",
                                 window.location.href = "/user/login";
                             }
                         });
+                    }else{
+                        this.$alert('Please try again','Warning', {
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                this.draftLoading = false;
+                            }
+                        })
                     }
                 })
             },
@@ -220,6 +232,7 @@ Vue.component("draft-box",
                     user:draft.user,
                     oid:this.draft.oid,
                     itemName:draft.itemName,
+                    itemOid:draft.itemOid,
                 }
                 obj.itemOid=draft.itemOid?draft.itemOid:null
 

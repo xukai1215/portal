@@ -61,12 +61,16 @@
                      :style="{'height':ScreenMinHeight,'min-height':ScreenMinHeight,'max-height':ScreenMaxHeight}"
                      id="pageContent">
                     <section role="description" class="flexJustBetween flexColCenter contentSection"
-                             style="max-width: 1050px;margin: 15px 10px;">
+                             style="max-width: 100%;margin: 15px 10px;">
                         <div class="flexRowContainer flexColCenter" style="margin-left: 18px">
                             <img class="square_40" style="margin-top: 10px" src="../../../static/img/model/model.png">
                             <h3 style="margin-left: 10px"><a class="itemTitle" href="/user/userSpace#/model">Model </a><span
                                     id="subRteTitle"></span></h3>
                         </div>
+                        <draft-box ref="draftBox"
+                                   @insert-draft="insertInfo"
+                                   @get-content="getItemContent"
+                                   :item-type="'computableModel'"></draft-box>
                     </section>
                     <div class="page-content-wrap container-fluid">
                         <div class="row">
@@ -134,7 +138,7 @@
                                                             </label>
                                                             <div class="input-group col-md-5">
                                                                 <input type="text" class="form-control"
-                                                                       v-model="computableModel.name">
+                                                                       v-model="computableModel.name" @input="onInputName">
                                                             </div>
                                                         </div>
 

@@ -147,7 +147,7 @@
                <div v-loading="loading">
                    <div class="flexRow flexJustCenter" style="margin-top: 12px; margin-left: 10px;">
                        <div class="flexRow flexColCenter" style="width: 50%;mini-width:250px">
-                           <input placeholder="Search for ..." v-model="searchText" class="noBorderInput miniInput" @keyup.enter="">
+                           <input placeholder="Search for ..." v-model="searchText" class="noBorderInput miniInput" @keyup.enter="searchDeployedModel(1)">
                        </div>
                        <i class="fa fa-search cursorPointer" style="font-size: 18px;" @click="searchDeployedModel(1)"></i>
                    </div>

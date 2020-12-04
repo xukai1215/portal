@@ -348,6 +348,18 @@ var createSpatialReference = Vue.extend({
                 { value: 'zu', label: 'Zulu' },
                 { value: 'zu-ZA', label: 'Zulu (South Africa)' },
             ],
+
+            editTypeLocal:'create',
+
+            toCreate: 1,
+
+            draft:{
+                oid:'',
+            },
+
+            draftOid:'',
+
+            startDraft:0,
         }
     },
     methods: {
@@ -487,6 +499,144 @@ var createSpatialReference = Vue.extend({
         changeOpen(n) {
             this.activeIndex = n;
         },
+
+        insertInfo(basicInfo){
+            let user_num = 0;
+
+            this.referenceInfo = basicInfo;
+
+            //cls
+            this.cls = basicInfo.classifications;
+            this.status = basicInfo.status;
+            let ids = [];
+            for (i = 0; i < this.cls.length; i++) {
+                for (j = 0; j < 1; j++) {
+                    for (k = 0; k < this.treeData[j].children.length; k++) {
+                        if (this.cls[i] == this.treeData[j].children[k].oid) {
+                            ids.push(this.treeData[j].children[k].id);
+                            this.parid = this.treeData[j].children[k].id;
+                            this.clsStr += this.treeData[j].children[k].label;
+                            if (i != this.cls.length - 1) {
+                                this.clsStr += ", ";
+                            }
+                            break;
+                        }
+                    }
+                    if (ids.length - 1 == i) {
+                        break;
+                    }
+                }
+            }
+
+            this.$refs.tree2.setCheckedKeys(ids);
+
+            $(".providers").children(".panel").remove();
+            $("#wknameInput").val(basicInfo.wkname);
+            $("#wktInput").val(basicInfo.wkt);
+            $("#nameInput").val(basicInfo.name);
+            $("#descInput").val(basicInfo.description);
+
+            //image
+            if (basicInfo.image != "") {
+                $("#imgShow").attr("src", basicInfo.image);
+                $('#imgShow').show();
+            }
+
+            //detail
+            initTinymce('textarea#conceptText')
+            this.localizationList = basicInfo.localizationList;
+            let interval = setInterval(()=> {
+                this.changeLocalization(this.localizationList[0])
+                clearInterval(interval);
+            },1000);
+
+            //alias
+            $('#aliasInput').tagEditor({
+                initialTags: basicInfo.alias,
+                forceLowercase: false,
+                // placeholder: 'Enter alias ...'
+            });
+
+
+
+        },
+
+        getItemContent(trigger,callBack){
+            let itemObj = {}
+
+            itemObj.classifications = this.cls;
+            itemObj.name = $("#nameInput").val();
+            itemObj.alias = $("#aliasInput").val().split(",");
+            itemObj.status = this.status;
+            itemObj.wkname = $("#wknameInput").val();
+            itemObj.wkt = $("#wktInput").val();
+            itemObj.description = $("#descInput").val();
+            itemObj.uploadImage = $('#imgShow').get(0).currentSrc;
+            itemObj.localizationList = this.localizationList;
+
+            if(callBack){
+                callBack(itemObj)
+            }
+
+            return itemObj;
+        },
+
+        //draft
+        onInputName(){
+            console.log(1)
+            if(this.toCreate==1){
+                this.toCreate=0
+                this.timeOut=setTimeout(()=>{
+                    this.toCreate=1
+                    this.startDraft=1
+                },30000)
+                setTimeout(()=>{
+                    this.createDraft()
+                },300)
+
+            }
+        },
+
+        getStep(){
+            let domID=$('.step-tab-panel.active')[0].id
+            return parseInt(domID.substring(domID.length-1,domID.length))
+        },
+
+        createDraft(){//请求后台创建一个草稿实例,如果存在则更新
+
+            var step = this.getStep()
+            let content=this.getItemContent(step)
+
+            let urls=window.location.href.split('/')
+            let item=urls[6]
+            item=item.substring(6,item.length)
+            let obj={
+                content:content,
+                editType:this.editTypeLocal,
+                itemType:item,
+                user:this.userId,
+                oid:this.draft.oid,
+            }
+            if(this.editTypeLocal) {
+                obj.itemOid=this.$route.params.editId?this.$route.params.editId:null
+                obj.itemName= this.itemName;
+            }
+
+            this.$refs.draftBox.createDraft(obj)
+        },
+
+        loadMatchedCreateDraft(){
+            this.$refs.draftBox.loadMatchedCreateDraft()
+        },
+
+        deleteDraft(){
+            this.$refs.draftBox.deleteDraft(this.draft.oid)
+        },
+
+        initDraft(editType,backUrl,oidFrom,oid){
+            this.$refs.draftBox.initDraft(editType,backUrl,oidFrom,oid)
+        },
+
         setSession(name, value) {
             window.sessionStorage.setItem(name, value);
         },
@@ -629,6 +779,7 @@ var createSpatialReference = Vue.extend({
         })
 
         var oid = this.$route.params.editId;//取得所要edit的id
+        this.draft.oid=window.localStorage.getItem('draft');//取得保存的草稿的Oid
 
         var user_num = 0;
 
@@ -641,7 +792,7 @@ var createSpatialReference = Vue.extend({
                 forceLowercase: false
             });
 
-            this.editType = "create";
+            this.editTypeLocal = 'create';
 
             let interval = setInterval(function () {
                 initTinymce('textarea#singleDescription')
@@ -650,81 +801,45 @@ var createSpatialReference = Vue.extend({
 
             this.$set(this.languageAdd.local,"value","en-US");
             this.$set(this.languageAdd.local,"label","English (United States)");
+
+            this.loadMatchedCreateDraft();
+            if(this.draft.oid!=''&&this.draft.oid!=null&&typeof (this.draft.oid)!="undefined"){
+                // this.loadDraftByOid()
+                this.initDraft('create','/user/userSpace#/models/modelitem','draft',this.draft.oid)
+            }
         }
         else {
 
             this.editType = "modify";
-
+            if(this.draft.oid==''||this.draft.oid==null||typeof (this.draft.oid)=="undefined"){
+                this.initDraft('edit','/user/userSpace#/models/modelitem','item',this.$route.params.editId)
+            }else{
+                this.initDraft('edit','/user/userSpace#/models/modelitem','draft',this.draft.oid)
+            }
             // $("#title").text("Modify Spatial Reference")
             $("#subRteTitle").text("/Modify Spatiotemporal Reference")
             // document.title = "Modify Spatial Reference | OpenGMS"
+            if(window.localStorage.getItem('draft')==null) {
+                $.ajax({
+                    url: "/repository/getSpatialInfo/" + oid,
+                    type: "get",
+                    data: {},
 
-            $.ajax({
-                url: "/repository/getSpatialInfo/" + oid,
-                type: "get",
-                data: {},
+                    success: (result) => {
+                        console.log(result)
+                        var basicInfo = result.data;
 
-                success: (result) => {
-                    console.log(result)
-                    var basicInfo = result.data;
-                    this.referenceInfo = basicInfo;
+                        this.insertInfo(basicInfo)
 
-                    //cls
-                    this.cls = basicInfo.classifications;
-                    this.status = basicInfo.status;
-                    let ids = [];
-                    for (i = 0; i < this.cls.length; i++) {
-                        for (j = 0; j < 1; j++) {
-                            for (k = 0; k < this.treeData[j].children.length; k++) {
-                                if (this.cls[i] == this.treeData[j].children[k].oid) {
-                                    ids.push(this.treeData[j].children[k].id);
-                                    this.parid = this.treeData[j].children[k].id;
-                                    this.clsStr += this.treeData[j].children[k].label;
-                                    if (i != this.cls.length - 1) {
-                                        this.clsStr += ", ";
-                                    }
-                                    break;
-                                }
-                            }
-                            if (ids.length - 1 == i) {
-                                break;
-                            }
-                        }
+
                     }
+                })
+            }
 
-                    this.$refs.tree2.setCheckedKeys(ids);
-
-                    $(".providers").children(".panel").remove();
-                    $("#wknameInput").val(basicInfo.wkname);
-                    $("#wktInput").val(basicInfo.wkt);
-                    $("#nameInput").val(basicInfo.name);
-                    $("#descInput").val(basicInfo.description);
-
-                    //image
-                    if (basicInfo.image != "") {
-                        $("#imgShow").attr("src", basicInfo.image);
-                        $('#imgShow').show();
-                    }
-
-                    //detail
-                    initTinymce('textarea#conceptText')
-                    this.localizationList = basicInfo.localizationList;
-                    let interval = setInterval(()=> {
-                        this.changeLocalization(this.localizationList[0])
-                        clearInterval(interval);
-                    },1000);
-
-                    //alias
-                    $('#aliasInput').tagEditor({
-                        initialTags: basicInfo.alias,
-                        forceLowercase: false,
-                        // placeholder: 'Enter alias ...'
-                    });
-
-                }
-            })
             window.sessionStorage.setItem("editSpatial_id", "");
         }
+
+        window.localStorage.removeItem('draft');
 
         $("#step").steps({
             onFinish: function () {
@@ -755,6 +870,8 @@ var createSpatialReference = Vue.extend({
                         });
                         return false;
                     } else {
+                        if(this.draft.oid!='')
+                            this.createDraft();
                         return true;
                     }
                 } else {
@@ -824,15 +941,7 @@ var createSpatialReference = Vue.extend({
                 }
             }
 
-            spatialObj.classifications = this.cls;
-            spatialObj.name = $("#nameInput").val();
-            spatialObj.alias = $("#aliasInput").val().split(",");
-            spatialObj.status = this.status;
-            spatialObj.wkname = $("#wknameInput").val();
-            spatialObj.wkt = $("#wktInput").val();
-            spatialObj.description = $("#descInput").val();
-            spatialObj.uploadImage = $('#imgShow').get(0).currentSrc;
-            spatialObj.localizationList = this.localizationList;
+            spatialObj = this.getItemContent('finish')
 
             let formData = new FormData();
             if ((oid === "0") || (oid === "") || (oid == null)) {
@@ -984,6 +1093,18 @@ var createSpatialReference = Vue.extend({
         //     let params = that.message_num_socket;
         //     that.send(params);
         // });
+
+        const timer = setInterval(()=>{
+            if(this.itemName!=''&&this.startDraft==1){
+                this.createDraft()
+            }
+        },30000)
+
+
+        this.$once('hook:beforeDestroy', ()=>{
+            clearInterval(timer)
+            clearTimeout(this.timeOut)
+        })
 
         $(document).on("keyup", ".username", function () {
 
