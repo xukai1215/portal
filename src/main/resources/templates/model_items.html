@@ -70,24 +70,24 @@
             </div>
             <div class="el-col el-col-6 minScreen_maxWidth" style="margin-top:29px;">
 
-                <el-card class="box-card categoryList" style="position:relative">
-                    <div slot="header" class="clearfix text-center">
-                        <span style="font-size: 20px;color:#444">Model Classifications</span>
-                    </div>
+                <!--<el-card class="box-card categoryList" style="position:relative">-->
+                    <!--<div slot="header" class="clearfix text-center">-->
+                        <!--<span style="font-size: 20px;color:#444">Model Classifications</span>-->
+                    <!--</div>-->
 
-                    <el-tree
-                            id="tree1"
-                            ref="tree1"
-                            :data="treeData"
-                            :highlight-current="true"
-                            node-key="id"
-                            :default-expanded-keys="[1,64]"
-                            :current-node-key="1"
-                            @current-change="handleCurrentChange"
-                            :props="defaultProps">
-                    </el-tree>
+                    <!--<el-tree-->
+                            <!--id="tree1"-->
+                            <!--ref="tree1"-->
+                            <!--:data="treeData"-->
+                            <!--:highlight-current="true"-->
+                            <!--node-key="id"-->
+                            <!--:default-expanded-keys="[1,64]"-->
+                            <!--:current-node-key="1"-->
+                            <!--@current-change="handleCurrentChange"-->
+                            <!--:props="defaultProps">-->
+                    <!--</el-tree>-->
 
-                </el-card>
+                <!--</el-card>-->
 
                 <el-card class="box-card categoryList" style="position:relative">
                 <div slot="header" class="clearfix text-center">
@@ -95,15 +95,15 @@
                 </div>
 
                 <el-tree
-                id="tree3"
-                ref="tree3"
-                :data="treeData2"
-                :highlight-current="true"
-                node-key="id"
-                :default-expanded-keys="[1,14,19,24]"
-
-                @current-change="handleCurrentChange2"
-                :props="defaultProps">
+                    id="tree3"
+                    ref="tree3"
+                    :data="treeData2"
+                    :highlight-current="true"
+                    node-key="id"
+                    :default-expanded-keys="[1,14,19,24]"
+                    :current-node-key="24"
+                    @current-change="handleCurrentChange2"
+                    :props="defaultProps">
                 </el-tree>
 
                 </el-card>

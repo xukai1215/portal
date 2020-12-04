@@ -117,6 +117,37 @@ public class PortalApplicationTests {
     private String managerServerIpAndPort;
 
     @Test
+    public void changeModelItemLocalization(){
+
+        List<ModelItem> modelItemList = modelItemDao.findAll();
+        for(ModelItem modelItem : modelItemList){
+            Utils.count();
+            String detail = modelItem.getDetail();
+            String localCode = "en-US";
+            String localName = "English (United States)";
+            for(int i = 0;i<detail.length();i++){
+                if(isChinese(detail.charAt(i))){
+                    localCode = "zh-CN";
+                    localName = "Chinese (Simplified)";
+                    break;
+                }
+            }
+            Localization localization = new Localization();
+            localization.setLocalCode(localCode);
+            localization.setLocalName(localName);
+            localization.setName("");
+            localization.setDescription(detail);
+            List<Localization> localizationList = new ArrayList<>();
+            localizationList.add(localization);
+            modelItem.setLocalizationList(localizationList);
+            modelItem.setAlias(new ArrayList<>());
+            modelItemDao.save(modelItem);
+        }
+
+
+    }
+
+    @Test
     public void removeUserId(){
         List<User> userList = userDao.findAll();
         for(User user:userList){

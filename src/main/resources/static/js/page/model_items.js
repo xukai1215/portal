@@ -12,10 +12,10 @@ new Vue({
             queryType: 'normal',
             searchText: '',
             classifications1: ["652bf1f8-2f3e-4f93-b0dc-f66505090873"],
-            classifications2: [],
-            classifications3: [],
+            classifications2: [],//advance
+            classifications3: ["9f7816be-c6e3-44b6-addf-98251e3d2e19"],
 
-            currentClass: "Earth System Subject",
+            currentClass:"Application-focused categories",
 
             pageOption: {
                 paginationShow:false,
@@ -719,10 +719,10 @@ new Vue({
             this.switchInit();
             this.setUrl("/modelItem/repository")
             this.pageOption.currentPage = 1;
-            this.classifications1=["all"];
-            this.$refs.tree1.setCurrentKey(null);
+            this.classifications3=["all"];
+            this.$refs.tree3.setCurrentKey(null);
             this.currentClass="ALL"
-            this.classType = null;
+            this.classType = 2;
             this.getModels(this.classType);
         },
         //页码change
@@ -759,7 +759,7 @@ new Vue({
         handleCurrentChange2(data) {
 
             this.switchInit();
-            this.setUrl("/modelItem/repository?category2="+data.oid);
+            this.setUrl("/modelItem/repository?category="+data.oid);
             // this.pageOption.searchResult=[];
             this.pageOption.total=0;
             this.pageOption.paginationShow=false;
@@ -954,21 +954,21 @@ new Vue({
         console.log(category,page)
 
         if(category!=null) {
-            this.classifications1=[];
-            this.classifications1.push(category);
-            for(i=0;i<this.treeData.length;i++){
-                if(category==this.treeData[i].oid){
-                    this.$refs.tree1.setCurrentKey(this.treeData[i].id);
-                    this.currentClass=this.treeData[i].label;
+            this.classifications3=[];
+            this.classifications3.push(category);
+            for(i=0;i<this.treeData2.length;i++){
+                if(category==this.treeData2[i].oid){
+                    this.$refs.tree3.setCurrentKey(this.treeData2[i].id);
+                    this.currentClass=this.treeData2[i].label;
                     break;
                 }
                 else{
-                    let children = this.treeData[i].children;
+                    let children = this.treeData2[i].children;
                     let find=false;
                     for(j=0;j<children.length;j++){
                         if(category==children[j].oid){
                             find=true;
-                            this.$refs.tree1.setCurrentKey(children[j].id);
+                            this.$refs.tree3.setCurrentKey(children[j].id);
                             this.currentClass=children[j].label;
                             $(".el-tree-node__expand-icon").eq(i).click();
                             break;
@@ -979,7 +979,7 @@ new Vue({
                                 for (k = 0; k < childrens.length; k++) {
                                     if (category == childrens[k].oid) {
                                         find = true;
-                                        this.$refs.tree1.setCurrentKey(childrens[k].id);
+                                        this.$refs.tree3.setCurrentKey(childrens[k].id);
                                         this.currentClass = childrens[k].label;
                                         $(".el-tree-node__expand-icon").eq(1).click();
                                         var index=j+2;
@@ -1012,7 +1012,7 @@ new Vue({
             this.pageOption.currentPage=page;
         }
 
-        this.getModels();
+        this.getModels(this.classType);
 
         // if(category!=null||page!=null){
         //     this.getModels();
