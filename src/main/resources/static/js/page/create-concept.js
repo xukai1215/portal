@@ -1104,6 +1104,8 @@ var createConcept = Vue.extend({
 
             draftOid:'',
 
+            itemInfoImage:'',
+
         }
     },
     methods: {
@@ -1435,8 +1437,7 @@ var createConcept = Vue.extend({
 
             //image
             if (basicInfo.image != "") {
-                $("#imgShow").attr("src", basicInfo.image);
-                $('#imgShow').show();
+                this.itemInfoImage = basicInfo.image
             }
 
             //related
@@ -1465,8 +1466,9 @@ var createConcept = Vue.extend({
             },1000);
 
             //alias
+            $('#aliasInput').tagEditor('destroy');
             $('#aliasInput').tagEditor({
-                initialTags: basicInfo.alias,
+                initialTags: basicInfo.alias ,
                 forceLowercase: false,
                 // placeholder: 'Enter alias ...'
             });
@@ -1479,7 +1481,7 @@ var createConcept = Vue.extend({
             itemObj.classifications = this.cls;
             itemObj.name = $("#nameInput").val();
             itemObj.alias = $("#aliasInput").val().split(",");
-            itemObj.uploadImage = $('#imgShow').get(0).currentSrc;
+            itemObj.image = this.itemInfoImage
             itemObj.description = $("#descInput").val();
             itemObj.related = this.relatedOid;
             itemObj.status = this.status;
@@ -1589,6 +1591,37 @@ var createConcept = Vue.extend({
         close: function () {
             console.log("socket已经关闭")
         },
+
+        imgFile() {
+            $("#imgOne").click();
+        },
+
+        preImg() {
+
+
+            var file = $('#imgOne').get(0).files[0];
+            //创建用来读取此文件的对象
+            var reader = new FileReader();
+            //使用该对象读取file文件
+            reader.readAsDataURL(file);
+            //读取文件成功后执行的方法函数
+            reader.onload =  (e) => {
+                //读取成功后返回的一个参数e，整个的一个进度事件
+                //选择所要显示图片的img，要赋值给img的src就是e中target下result里面
+                //的base64编码格式的地址
+                this.itemInfoImage = e.target.result
+            }
+
+
+        },
+
+        deleteImg(){
+            let obj = document.getElementById('imgOne')
+            // obj.outerHTML=obj.outerHTML
+            obj.value = ''
+            this.itemInfoImage = ''
+        },
+
         getMessageNum(concept_oid) {
             this.message_num_socket = 0;//初始化消息数目
             let data = {
@@ -1753,6 +1786,9 @@ var createConcept = Vue.extend({
                 })
             }
 
+            $('#aliasInput').tagEditor({
+                forceLowercase: false
+            });
             window.sessionStorage.setItem("editConcept_id", "");
         }
         window.localStorage.removeItem('draft')

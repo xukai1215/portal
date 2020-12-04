@@ -54,13 +54,14 @@ public class EditDraftRestController {
     @RequestMapping(value = "/pageByUser",method = RequestMethod.GET)
     public JsonResult getByUser(@RequestParam(value="asc") int asc,
                                 @RequestParam(value = "page") int page,
+                                @RequestParam(value = "itemType") String itemType,
                                 @RequestParam(value = "size") int size,HttpServletRequest httpServletRequest){
         HttpSession session = httpServletRequest.getSession();
         if(Utils.checkLoginStatus(session)==null){
             return ResultUtils.error(-1,"no login");
         }else{
             String userOid = session.getAttribute("oid").toString();
-            return ResultUtils.success(editDraftService.pageByUser(asc,page,size,userOid));
+            return ResultUtils.success(editDraftService.pageByUser(asc,page,size,itemType,userOid));
         }
     }
 
