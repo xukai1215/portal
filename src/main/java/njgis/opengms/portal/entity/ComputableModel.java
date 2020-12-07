@@ -19,7 +19,6 @@ import java.util.List;
 
 @Document
 @Data
-
 public class ComputableModel extends Item {
 
     String image;

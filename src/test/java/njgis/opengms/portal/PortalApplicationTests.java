@@ -110,6 +110,10 @@ public class PortalApplicationTests {
     @Autowired
     SpatialReferenceClassificationDao spatialReferenceClassificationDao;
 
+    @Autowired
+    UnitConversionDao unitConversionDao;
+
+
     @Value("${resourcePath}")
     private String resourcePath;
 
@@ -192,6 +196,137 @@ public class PortalApplicationTests {
     }
 
     @Test
+    public void addUnitConversionOid(){
+//        UnitConversion unitConversion=new UnitConversion();
+//        System.out.println(unitConversion.getOid());
+
+        List<UnitConversion> unitConversions=unitConversionDao.findAll();
+        Iterator<UnitConversion> iterator=unitConversions.iterator();
+        while (iterator.hasNext()){
+            UnitConversion unitConversion=iterator.next();
+            if(unitConversion.getOid()==null){
+                unitConversion.setOid(UUID.randomUUID().toString());
+                unitConversionDao.save(unitConversion);
+            }
+        }
+    }
+
+    @Test
+    public void unitCorrection(){
+        List<Unit> unitList=unitDao.findAll();
+        Iterator<Unit> unitIterator=unitList.iterator();
+        int num=0;
+        while (unitIterator.hasNext()){
+            Unit unit=unitIterator.next();
+            if(unit.getClassifications().size()>1)
+            {
+                List<String> newClassification=new ArrayList<>();
+                List<String> oldClassification=unit.getClassifications();
+                newClassification.add(oldClassification.get(0));
+                unit.setClassifications(newClassification);
+//                System.out.println(unit.getOid());
+//                num++;
+                unitDao.save(unit);
+            }
+
+
+
+        }
+    }
+
+    @Test
+    public void unitCorrectionName(){
+        List<Unit> unitList=unitDao.findAll();
+        Iterator<Unit> unitIterator=unitList.iterator();
+        while(unitIterator.hasNext()){
+            Unit unit=unitIterator.next();
+            List<Localization> locallizationList=unit.getLocalizationList();
+            String description=locallizationList.get(1).getName().replace(" ","_").toUpperCase();
+            if(!description.equals(unit.getName())){
+                System.out.println(description);
+                System.out.println(unit.getName());
+                return;
+            }
+        }
+    }
+
+
+    @Test
+    public void unitmatching(){
+
+        List<Unit> unitList=unitDao.findAll();
+        List<UnitConversion> unitConversionList=unitConversionDao.findAll();
+
+        int num=0;
+        Iterator<Unit> unitIterator=unitList.iterator();
+
+        while (unitIterator.hasNext()){
+            Unit unit=unitIterator.next();
+
+//            if(unit.getClassifications().get(0)==null){
+            Iterator<UnitConversion> unitConversionIterator=unitConversionList.iterator();
+
+            ok:while(unitConversionIterator.hasNext()){
+                UnitConversion unitConversion=unitConversionIterator.next();
+                List<Object> units=unitConversion.getUnits();
+
+                if(unit.getName().indexOf("_")==-1)
+                {
+                    for(Object objectunit:units){
+                        Map mapu=(HashMap)objectunit;
+                        String struc=mapu.get("SingularName").toString().toLowerCase();
+                        String stru=unit.getName().toLowerCase();
+
+                        if(stru.equals(struc))
+                        {
+                            List<String> classifications=unit.getClassifications();
+                            classifications.add(unitConversion.getOid());
+                            unit.setClassifications(classifications);
+                            num++;
+//                            System.out.println(unit.getName());
+//                            System.out.println(unitConversion.getName());
+//                            System.out.println("\n");
+//                            unitDao.save(unit);
+                            break ok;
+
+                        }
+                    }
+                }
+                else
+                {
+//                    List<String> listu=unit.getClassifications();
+//                    List<String> listuc=unitConversion.getClassifications();
+//                    if(listu!=null&&listuc!=null&&listu.get(0).equals(listuc.get(0))){
+                        for (Object objectunit:units) {
+
+                            Map mapu=(HashMap)objectunit;
+
+                            String struc=mapu.get("SingularName").toString().toLowerCase();
+                            String stru=unit.getName().toLowerCase().replace("_","");
+
+                            if(struc.equals(stru)){
+                                List<String> classifications=unit.getClassifications();
+                                classifications.add(unitConversion.getOid());
+                                unit.setClassifications(classifications);
+                                num++;
+//                              System.out.println(mapu.get("SingularName").toString().toLowerCase());
+//                              System.out.println(unit.getName().toLowerCase()+"\n");
+//                              unitDao.save(unit);
+                                System.out.println(unit.getName());
+                                System.out.println(unitConversion.getName());
+                                System.out.println("\n");
+                                break ok;
+                            }
+                        }
+//                }
+
+                }
+            }
+        }
+        System.out.println(num);
+    }
+
+    @Test
     public void classificationNumStats(){
         List<Classification2> classification2List = classification2Dao.findAll();
         for(Classification2 classification2 : classification2List){
@@ -216,6 +351,7 @@ public class PortalApplicationTests {
         removeUserId();
         List<User> userList = userDao.findAll();
         for(User user : userList){
+
             String name = user.getName().trim();
             name = name.replaceAll(" ","_");
             System.out.println(name);
@@ -2726,6 +2862,9 @@ public class PortalApplicationTests {
         System.out.println("kaishi");
 
     }
+
+
+
 
     @Test
     public void addRepositoriesAuthor() {

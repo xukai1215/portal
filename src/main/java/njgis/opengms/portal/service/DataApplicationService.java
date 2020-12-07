@@ -2,7 +2,6 @@ package njgis.opengms.portal.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.sun.org.apache.regexp.internal.RE;
 import lombok.extern.slf4j.Slf4j;
 import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.dto.DataApplicationDTO;
