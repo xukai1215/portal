@@ -263,6 +263,7 @@ public class TaskRestController {
     @RequestMapping(value="/runIntegratedTask",method = RequestMethod.POST)
     JsonResult runIntegratedModel(@RequestParam("file") MultipartFile file,
                                   @RequestParam("name") String name,
+                                  @RequestParam("taskOid") String taskOid,
                                   HttpServletRequest request) throws IOException {
         HttpSession session = request.getSession();
         if(session.getAttribute("uid")==null) {
@@ -293,7 +294,7 @@ public class TaskRestController {
                 else {
                     String taskId = responseEntity.getBody().getString("data");
                     Task task = new Task();
-                    task.setOid(UUID.randomUUID().toString());
+                    task.setOid(taskOid);
                     task.setTaskId(taskId);
                     task.setComputableName(name);
                     task.setIntegrate(true);

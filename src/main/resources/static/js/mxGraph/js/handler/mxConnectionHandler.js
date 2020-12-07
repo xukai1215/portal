@@ -2029,6 +2029,10 @@ mxConnectionHandler.prototype.connect = function(source, target, evt, dropTarget
 			}
 
 			if(edge.target.eid!=undefined&&edge.source.eid!=undefined){
+				if(edge.target.response==0&&edge.source.response==1){
+					alert('Reverse Link!')
+					return
+				}
 				window.parent.insertDataLink(edge)
 			}
 			if(edge.target.style.indexOf('condition')!=-1) {//如果向下連的是一個條件判斷

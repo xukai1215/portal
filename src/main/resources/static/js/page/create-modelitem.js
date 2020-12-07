@@ -934,7 +934,7 @@ var createModelItem = Vue.extend({
             this.itemName=basicInfo.name
             //image
             // if (basicInfo.uploadImage != "") {
-                this.itemInfo.image = basicInfo.uploadImage
+                this.itemInfo.image = basicInfo.image
             // }
             //reference
 
@@ -1184,9 +1184,9 @@ var createModelItem = Vue.extend({
                 $("#refLink").val(this.articleToBack.link);
                 if ($("#refAuthor").nextAll().length == 0) {//如果不存在tageditor,则创建一个
                     Vue.nextTick(() => {
-                        $("#refAuthor").tagEditor({
-                            forceLowercase: false
-                        })
+                        // $("#refAuthor").tagEditor({
+                        //     forceLowercase: false
+                        // })
                         $('#refAuthor').tagEditor('destroy');
                         $('#refAuthor').tagEditor({
                             initialTags: this.articleToBack.authors,
@@ -1256,7 +1256,7 @@ var createModelItem = Vue.extend({
             let obj = document.getElementById('imgOne')
             // obj.outerHTML=obj.outerHTML
             obj.value = ''
-            this.itemInfoImage = ''
+            this.$set(this.itemInfo,'image' , '')
         },
 
         editImg(){
@@ -1609,10 +1609,6 @@ var createModelItem = Vue.extend({
             // $("#title").text("Create Model Item")
             $("#subRteTitle").text("/Create Model Item");
 
-            $('#aliasInput').tagEditor({
-                forceLowercase: false
-            });
-
             let interval = setInterval(function () {
                 initTinymce('textarea#singleDescription');
                 clearInterval(interval);
@@ -1622,10 +1618,11 @@ var createModelItem = Vue.extend({
             this.$set(this.languageAdd.local, "label", "English (United States)");
             initTinymce('textarea#modelItemText');
 
-            this.loadMatchedCreateDraft();
             if(this.draft.oid!=''&&this.draft.oid!=null&&typeof (this.draft.oid)!="undefined"){
                 // this.loadDraftByOid()
                 this.initDraft('create','/user/userSpace#/models/modelitem','draft',this.draft.oid)
+            }else{
+                this.loadMatchedCreateDraft();
             }
 
         }
@@ -1893,9 +1890,9 @@ var createModelItem = Vue.extend({
                     data: formData,
                     success: (result)=> {
                         userspace.fullscreenLoading=false;
-                        // loading.close();
+                        loading.close();
                         if (result.code == 0) {
-
+                            this.deleteDraft()
                             this.$confirm('<div style=\'font-size: 18px\'>Create model item successfully!</div>', 'Tip', {
                                 dangerouslyUseHTMLString: true,
                                 confirmButtonText: 'View',
@@ -1952,10 +1949,11 @@ var createModelItem = Vue.extend({
 
                     success: (result)=> {
                         // setTimeout(()=>{loading.close();},1000)
-                        // loading.close()
+                        loading.close()
                         userspace.fullscreenLoading = false;
                         if (result.code === 0) {
                             if(result.data.method==="update") {
+                                this.deleteDraft()
                                 this.$confirm('<div style=\'font-size: 18px\'>Update model item successfully!</div>', 'Tip', {
                                     dangerouslyUseHTMLString: true,
                                     confirmButtonText: 'View',
@@ -2015,7 +2013,6 @@ var createModelItem = Vue.extend({
                 })
             }
 
-            this.deleteDraft()
         });
 
         // $(".prev").click(()=>{

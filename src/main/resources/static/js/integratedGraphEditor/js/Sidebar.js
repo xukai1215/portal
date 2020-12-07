@@ -507,7 +507,7 @@ Sidebar.prototype.searchEntries = function (searchTerms, count, page, success, e
         for (var i = 0; i < result.length; i++) {
           var model = result[i];
           var modelName = model.name;
-          this.createVertexTemplateEntry('rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#0073e8;fillColor=#d9edf7;', 210, 50, modelName, model.description, null, null, modelName, model);
+          this.createVertexTemplateEntry('rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#5bbbf2;fillColor=#5bbbf2;', 210, 50, modelName, model.description, null, null, modelName, model);
         }
 
         //
@@ -3023,10 +3023,10 @@ Sidebar.prototype.addClickHandler = function (elt, ds, cells) {
       var targetCell = graph.getSelectionModel().cells[0];
       if (targetCell.response == "1") {//判断鼠标加入的cell是一个input还是output
         graph.insertEdge(parent, null, '', targetCell, state, "edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=2;strokeColor=#000066;");
-
+        window.parent.dragIntoDataItem(targetCell)
       } else if (targetCell.response == "0") {
         graph.insertEdge(parent, null, '', state, targetCell, "edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=2;strokeColor=#000066;");
-
+        window.parent.dragIntoDataItem(targetCell)
       } else if (targetCell.md5 != undefined&&targetCell.md5 != ''){
         let modelAction = window.parent.addModeltoList(targetCell)
         targetCell.frontId = modelAction.id
@@ -3114,6 +3114,7 @@ Sidebar.prototype.createEventVertexTemplate = function (style, width, height, va
   cells[0].frontId = model.frontId;
   cells[0].mid = model.modelOid;
   cells[0].eid = event.eventId;
+  cells[0].name = event.name;
   cells[0].state = event.stateName;
   cells[0].optional = event.optional;
   cells[0].description = event.eventDesc;
@@ -3121,7 +3122,7 @@ Sidebar.prototype.createEventVertexTemplate = function (style, width, height, va
   cells[0].url = "";
   cells[0].origin = 'modelService';
   if(event.optional==false&&event.eventType=="response"){
-    cells[0].style = 'shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#a4000b;fillColor=none;'
+    cells[0].style = 'shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#f46161;fillColor=#aadcf8;'
   }
 
   if (eventType == true) {
@@ -3136,8 +3137,9 @@ Sidebar.prototype.createDataServiceEventVertexTemplate = function (style, width,
   var cells = [new mxCell((value != null) ? value : '', new mxGeometry(0, 0, width, height), style)];
   cells[0].vertex = true;
   cells[0].frontId = cell.frontId;
-  cells[0].mid = cell.id;
   cells[0].eid = event.eventId;
+  cells[0].name = event.name;
+  cells[0].eventName = event.eventName;
   cells[0].description = event.description;
   cells[0].type = event.type;
   cells[0].url = "";
@@ -3145,9 +3147,9 @@ Sidebar.prototype.createDataServiceEventVertexTemplate = function (style, width,
   cells[0].origin = 'dataService';
 
   if(event.response==true){
-    cells[0].style = 'shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#a4000b;fillColor=none;'
+    cells[0].style = 'shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#f46161;fillColor=#aadcf8;'
   }else{
-    cells[0].style = 'shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#449d44;fillColor=none;'
+    cells[0].style = 'shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#23b220;fillColor=#aadcf8;'
   }
 
   return this.createVertexTemplateFromCells(cells, width, height, title, showLabel, showTitle, allowCellsInserted);
@@ -3527,7 +3529,7 @@ Sidebar.prototype.addComputabelModel = function (computableModelList, expand) {
   for (var j = 0; j < computableModelList.size; j++) {
     var model = computableModelList.content[j];
     var modelName = model.name;
-    var a = this.createStateVertexTemplate('rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#0073e8;fillColor=#d9edf7;', 210, 50, modelName, model.description, null, null, modelName, model);
+    var a = this.createStateVertexTemplate('rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#5bbbf2;fillColor=#5bbbf2;', 210, 50, modelName, model.description, null, null, modelName, model);
     div.appendChild(a);
   }
 
@@ -3590,7 +3592,7 @@ Sidebar.prototype.addComputabelModelPage = function (computableModelList, div) {
   for (var i = 0; i < computableModelList.numberOfElements; i++) {
     var model = computableModelList.content[i];
     var modelName = model.name;
-    var a = this.createStateVertexTemplate('rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#0073e8;fillColor=#d9edf7;', 210, 50, modelName, model.description, null, null, modelName, model);
+    var a = this.createStateVertexTemplate('rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#5bbbf2;fillColor=#5bbbf2;', 210, 50, modelName, model.description, null, null, modelName, model);
     div.appendChild(a);
   }
 };
@@ -3770,7 +3772,7 @@ Sidebar.prototype.addModelToGraph = function (model) {
 
   hasSearchedTermsComputableModel.push(model)
   var pt = graph.getFreeInsertPoint();
-  var cell = graph.insertVertex(parent, null, model.name, pt.x, pt.y, 210, 50, "rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#0073e8;fillColor=#d9edf7");
+  var cell = graph.insertVertex(parent, null, model.name, pt.x, pt.y, 210, 50, "rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#5bbbf2;fillColor=#5bbbf2");
 
   cell.frontId = model.id;
   cell.name = model.name;

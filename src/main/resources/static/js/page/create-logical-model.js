@@ -670,10 +670,11 @@ var createLogicalModel = Vue.extend({
 
             initTinymce('textarea#logicalModelText')
 
-            this.loadMatchedCreateDraft();
             if(this.draft.oid!=''&&this.draft.oid!=null&&typeof (this.draft.oid)!="undefined"){
                 // this.loadDraftByOid()
                 this.initDraft('create','/user/userSpace#/models/modelitem','draft',this.draft.oid)
+            }else{
+                this.loadMatchedCreateDraft();
             }
         }
         else{
@@ -738,6 +739,7 @@ var createLogicalModel = Vue.extend({
                             type: 'warning',
                             offset: 70,
                         });
+
                         return false;
                     }
                     else {
@@ -789,6 +791,7 @@ var createLogicalModel = Vue.extend({
                     loading.close();
                     switch (res.data.code) {
                         case 1:
+                            this.deleteDraft()
                             this.$confirm('<div style=\'font-size: 18px\'>Create logical model successfully!</div>', 'Tip', {
                                 dangerouslyUseHTMLString: true,
                                 confirmButtonText: 'View',
@@ -858,6 +861,7 @@ var createLogicalModel = Vue.extend({
                         switch (res.data.code) {
 
                             case 0:
+                                this.deleteDraft()
                                 let currentUrl = window.location.href;
                                 let index = currentUrl.lastIndexOf("\/");
                                 that.logicalModel_oid = currentUrl.substring(index + 1,currentUrl.length);

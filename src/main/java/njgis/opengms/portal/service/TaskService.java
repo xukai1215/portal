@@ -1231,16 +1231,25 @@ public class TaskService {
             List<ModelAction> failedModelActions = converseOutputModelAction(j_modelActionList.getJSONArray("failed"));
             updateIntegratedTaskOutput(task,finishedModelActions,failedModelActions);
 
+            //todo common task 与 integrated task的合并
+            Task comTask = taskDao.findFirstByTaskId(task.getOid());
             switch (status){
                 case 0:
                     break;
                 case -1:
                     task.setStatus(-1);
+                    comTask = taskDao.findFirstByTaskId(task.getOid());
+                    comTask.setStatus(-1);
                     integratedTaskDao.save(task);
+                    taskDao.save(comTask);
                     break;
                 case 1:
                     task.setStatus(2);
                     integratedTaskDao.save(task);
+                    comTask = taskDao.findFirstByTaskId(task.getOid());
+                    comTask.setStatus(2);
+                    integratedTaskDao.save(task);
+                    taskDao.save(comTask);
                     break;
             }
             return data;

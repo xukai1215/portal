@@ -722,10 +722,11 @@ var createComputableModel = Vue.extend({
 
             initTinymce('textarea#computableModelText')
 
-            this.loadMatchedCreateDraft();
             if(this.draft.oid!=''&&this.draft.oid!=null&&typeof (this.draft.oid)!="undefined"){
                 // this.loadDraftByOid()
                 this.initDraft('create','/user/userSpace#/models/modelitem','draft',this.draft.oid)
+            }else{
+                this.loadMatchedCreateDraft();
             }
         }
         else {
@@ -883,6 +884,7 @@ var createComputableModel = Vue.extend({
                     // $(".uploading").css("display", "none");
                     switch (res.data.code) {
                         case 1:
+                            this.deleteDraft()
                             this.$confirm('<div style=\'font-size: 18px\'>Create computable model successfully!</div>', 'Tip', {
                                 dangerouslyUseHTMLString: true,
                                 confirmButtonText: 'View',
@@ -952,6 +954,7 @@ var createComputableModel = Vue.extend({
                     if(res.code===0) {
                         switch (res.data.code) {
                             case 0:
+                                this.deleteDraft()
                                 let currentUrl = window.location.href;
                                 let index = currentUrl.lastIndexOf("\/");
                                 that.computableModel_oid = currentUrl.substring(index + 1,currentUrl.length);

@@ -1118,13 +1118,13 @@ public class ComputableModelService {
 
     }
 
-    public JSONObject listByUserOid(ModelItemFindDTO modelItemFindDTO, String oid,String loadUser) {
+    public JSONObject listByUserOid(ModelItemFindDTO modelItemFindDTO, String userId,String loadUser) {
 
         int page = modelItemFindDTO.getPage();
         int pageSize = modelItemFindDTO.getPageSize();
         Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
         Pageable pageable = PageRequest.of(page, pageSize, sort);
-        User user = userDao.findFirstByOid(oid);
+        User user = userDao.findFirstByUserId(userId);
         Page<ComputableModel> modelItemPage = Page.empty();
 
 //        if(loadUser == null||!loadUser.equals(oid)) {

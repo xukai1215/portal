@@ -39,14 +39,14 @@ public class ProjectService {
         return false;
     }
 
-    public JSONObject listByUserOid(ProjectFindDTO projectFindDTO,String oid){
+    public JSONObject listByUserOid(ProjectFindDTO projectFindDTO,String userId){
         int page = projectFindDTO.getPage();
         int pageSize = projectFindDTO.getPageSize();
         Boolean asc = projectFindDTO.getAsc();
 
         Sort sort=new Sort(asc?Sort.Direction.ASC:Sort.Direction.DESC,"creatDate");
         Pageable pageable= PageRequest.of(page,pageSize,sort);
-        User user=userDao.findFirstByOid(oid);
+        User user=userDao.findFirstByUserId(userId);
         Page<ProjectResultDTO> projectResultDTOpage=projectDao.findByContributor(user.getUserName(),pageable);
         JSONObject result=new JSONObject();
         result.put("list",projectResultDTOpage.getContent());

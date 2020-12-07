@@ -1890,8 +1890,8 @@ public class UserService {
         return result;
     }
 
-    public JSONObject getUserInfoByOid(String oid) {
-        User user = userDao.findFirstByOid(oid);
+    public JSONObject getUserInfoByUserId(String userId) {
+        User user = userDao.findFirstByUserId(userId);
         String userName = user.getUserName();
         JSONObject result = new JSONObject();
         result.put("userInfo", getUser(userName));

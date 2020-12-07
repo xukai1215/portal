@@ -5818,7 +5818,7 @@ EventPanel.prototype.addoutputData = function(div,outputData,model){
         event.style.margin = '0px';
         div.appendChild(event);
 
-        event = ui.sidebar.createEventVertexTemplate('shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#449d44;fillColor=none;', 170, 50, outputData[i].eventName, null, null, null,true,model,false,outputData[i]);
+        event = ui.sidebar.createEventVertexTemplate('shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#5ac323;fillColor=#aadcf8;', 170, 50, outputData[i].eventName, null, null, null,true,model,false,outputData[i]);
 
         div.appendChild(event);
     }
@@ -5966,12 +5966,6 @@ InputEventPanel.prototype.addInputEventInfo = function(div,event,modelName){
     div.style.borderTop = "1px solid #dadce0";
     return div;
 };
-
-function configData(){
-	console.log('config')
-	var targetCell = graph.getSelectionModel().cells[0];
-	window.parent.dataCellConfig(targetCell);
-}
 
 InputEventPanel.prototype.addDownload = function(div, event, url){
     var ui = this.editorUi;
@@ -6264,7 +6258,7 @@ DataServicePanel.prototype.addoutputData = function(div,outputData,cell){
 		event.style.margin = '0px';
 		div.appendChild(event);
 
-		event = ui.sidebar.createDataServiceEventVertexTemplate('shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#449d44;fillColor=none;', 170, 50, outputData[i].eventName, null, null, null,true,model,false,outputData[i]);
+		event = ui.sidebar.createDataServiceEventVertexTemplate('shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#5ac323;fillColor=#aadcf8;', 170, 50, outputData[i].eventName, null, null, null,true,model,false,outputData[i]);
 
 		div.appendChild(event);
 	}
@@ -6285,28 +6279,27 @@ DataServiceDataPanel.prototype.init = function() {
 	var model;
 	var frontId = graph.getSelectionModel().cells[0].frontId;
 	var inputId = graph.getSelectionModel().cells[0].eid;
-	var input = null;
+	var event = graph.getSelectionModel().cells[0];
+
+	let type = event.response==1?'Input':'Output'
+
 	let cells = graph.getModel().cells
 	for (let i in cells) {
 		if (cells[i].frontId === frontId && (cells[i].token!=undefined||cells[i].type == 'dataService')) {
 			model = cells[i];
-			for (let eleEvent of model.inputData) {
-				if(eleEvent.eid === inputId){
-					input = eleEvent
-					break;
-				}
-			}
+
 		}
 	}
 
-	this.container.appendChild(this.addInputEventInfo(this.createPanel(),input,model.name));
+
+	this.container.appendChild(this.addEventInfo(this.createPanel(),event,model.name,type));
 	// this.container.appendChild(this.addDownload(this.createPanel(),event,url));
 };
 
-DataServiceDataPanel.prototype.addInputEventInfo = function(div,event,modelName,type){
+DataServiceDataPanel.prototype.addEventInfo = function(div,event,modelName,responseType){
 	var ui = this.editorUi;
 
-	var title = this.createTitle("Input Info : ");
+	var title = this.createTitle(responseType+" Info : ");
 	title.style.paddingBottom = '6px';
 	title.style.fontSize = "14px";
 	title.style.cursor = "default";
@@ -6339,7 +6332,7 @@ DataServiceDataPanel.prototype.addInputEventInfo = function(div,event,modelName,
 	div.appendChild(document.createElement("br"));
 
 	//加入一个配置按钮
-	if(type=='input'){
+	if(responseType.toLowerCase()=='input'){
 		let cfgButton = document.createElement("button");
 		cfgButton.innerHTML='Config'
 		cfgButton.setAttribute("type", "button");
@@ -6650,6 +6643,11 @@ ConditionLinkPanel.prototype.addConditionLinkInfo = function (div,edge,fromModel
 	return div
 }
 
+function configData(){
+	console.log('config')
+	var targetCell = graph.getSelectionModel().cells[0];
+	window.parent.dataCellConfig(targetCell);
+}
 
 function configCell(index){
 	var targetCell = graph.getSelectionModel().cells[0];

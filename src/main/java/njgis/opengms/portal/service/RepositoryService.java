@@ -574,13 +574,18 @@ public class RepositoryService {
 
         //设置图片
         String path = "/repository/concept/" + UUID.randomUUID().toString() + ".jpg";
-        String[] strs = conceptAddDTO.getUploadImage().split(",");
-        if (strs.length > 1) {
-            String imgStr = conceptAddDTO.getUploadImage().split(",")[1];
-            Utils.base64StrToImage(imgStr, resourcePath + path);
-            concept.setImage(path);
-        } else {
-            concept.setImage("");
+        if(conceptAddDTO.getUploadImage()!=null){
+            String[] strs=conceptAddDTO.getUploadImage().split(",");
+            if(strs.length>1) {
+                String imgStr = conceptAddDTO.getUploadImage().split(",")[1];
+                Utils.base64StrToImage(imgStr, resourcePath + path);
+                concept.setImage(path);
+            }
+            else {
+                concept.setImage("");
+            }
+        }else{
+            concept.setImage(null);
         }
 
         return conceptDao.insert(concept);
@@ -596,7 +601,7 @@ public class RepositoryService {
             conceptService.updateDescription(concept);
             //判断是否为新图片
             String uploadImage = conceptUpdateDTO.getUploadImage();
-            if (!uploadImage.contains("/concept/") && !uploadImage.equals("")) {
+            if (uploadImage!=null&&!uploadImage.contains("/concept/") && !uploadImage.equals("")) {
                 //删除旧图片
                 File file = new File(resourcePath + concept.getImage());
                 if (file.exists() && file.isFile())
@@ -909,13 +914,18 @@ public class RepositoryService {
 
         //设置图片
         String path = "/repository/spatialReference/" + UUID.randomUUID().toString() + ".jpg";
-        String[] strs = spatialAddDTO.getUploadImage().split(",");
-        if (strs.length > 1) {
-            String imgStr = spatialAddDTO.getUploadImage().split(",")[1];
-            Utils.base64StrToImage(imgStr, resourcePath + path);
-            spatial.setImage(path);
-        } else {
-            spatial.setImage("");
+        if(spatialAddDTO.getUploadImage()!=null){
+            String[] strs=spatialAddDTO.getUploadImage().split(",");
+            if(strs.length>1) {
+                String imgStr = spatialAddDTO.getUploadImage().split(",")[1];
+                Utils.base64StrToImage(imgStr, resourcePath + path);
+                spatial.setImage(path);
+            }
+            else {
+                spatial.setImage("");
+            }
+        }else{
+            spatial.setImage(null);
         }
 
         return spatialReferenceDao.insert(spatial);
@@ -930,7 +940,7 @@ public class RepositoryService {
             BeanUtils.copyProperties(spatialUpdateDTO, spatialReference);
             //判断是否为新图片
             String uploadImage = spatialUpdateDTO.getUploadImage();
-            if (!uploadImage.contains("/spatialReference/") && !uploadImage.equals("")) {
+            if (uploadImage!=null&&!uploadImage.contains("/spatialReference/") && !uploadImage.equals("")) {
                 //删除旧图片
                 File file = new File(resourcePath + spatialReference.getImage());
                 if (file.exists() && file.isFile())
@@ -1215,13 +1225,18 @@ public class RepositoryService {
 
         //设置图片
         String path = "/repository/template/" + UUID.randomUUID().toString() + ".jpg";
-        String[] strs = templateAddDTO.getUploadImage().split(",");
-        if (strs.length > 1) {
-            String imgStr = templateAddDTO.getUploadImage().split(",")[1];
-            Utils.base64StrToImage(imgStr, resourcePath + path);
-            template.setImage(path);
-        } else {
-            template.setImage("");
+        if(templateAddDTO.getUploadImage()!=null){
+            String[] strs=templateAddDTO.getUploadImage().split(",");
+            if(strs.length>1) {
+                String imgStr = templateAddDTO.getUploadImage().split(",")[1];
+                Utils.base64StrToImage(imgStr, resourcePath + path);
+                template.setImage(path);
+            }
+            else {
+                template.setImage("");
+            }
+        }else{
+            template.setImage(null);
         }
 
         return templateDao.insert(template);
@@ -1236,7 +1251,7 @@ public class RepositoryService {
             BeanUtils.copyProperties(templateUpdateDTO, template);
             //判断是否为新图片
             String uploadImage = templateUpdateDTO.getUploadImage();
-            if (!uploadImage.contains("/template/") && !uploadImage.equals("")) {
+            if (uploadImage!=null&&!uploadImage.contains("/template/") && !uploadImage.equals("")) {
                 //删除旧图片
                 File file = new File(resourcePath + template.getImage());
                 if (file.exists() && file.isFile())
@@ -1548,13 +1563,18 @@ public class RepositoryService {
 
         //设置图片
         String path = "/repository/unit/" + UUID.randomUUID().toString() + ".jpg";
-        String[] strs = unitAddDTO.getUploadImage().split(",");
-        if (strs.length > 1) {
-            String imgStr = unitAddDTO.getUploadImage().split(",")[1];
-            Utils.base64StrToImage(imgStr, resourcePath + path);
-            unit.setImage(path);
-        } else {
-            unit.setImage("");
+        if(unitAddDTO.getUploadImage()!=null){
+            String[] strs=unitAddDTO.getUploadImage().split(",");
+            if(strs.length>1) {
+                String imgStr = unitAddDTO.getUploadImage().split(",")[1];
+                Utils.base64StrToImage(imgStr, resourcePath + path);
+                unit.setImage(path);
+            }
+            else {
+                unit.setImage("");
+            }
+        }else{
+            unit.setImage(null);
         }
 
         return unitDao.insert(unit);
@@ -1569,7 +1589,7 @@ public class RepositoryService {
             BeanUtils.copyProperties(unitUpdateDTO, unit);
             //判断是否为新图片
             String uploadImage = unitUpdateDTO.getUploadImage();
-            if (!uploadImage.contains("/unit/") && !uploadImage.equals("")) {
+            if (uploadImage!=null&&!uploadImage.contains("/unit/") && !uploadImage.equals("")) {
                 //删除旧图片
                 File file = new File(resourcePath + unit.getImage());
                 if (file.exists() && file.isFile())

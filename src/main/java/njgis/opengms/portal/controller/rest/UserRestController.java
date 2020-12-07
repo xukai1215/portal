@@ -409,7 +409,7 @@ public class UserRestController {
 
     @RequestMapping(value = "/getUserInfoInUserPage", method = RequestMethod.GET)
     public JsonResult getUserInfoInUserPage(@RequestParam(value = "oid") String oid) {
-        JSONObject result = userService.getUserInfoByOid(oid);
+        JSONObject result = userService.getUserInfoByUserId(oid);
         System.out.println("/getUserInfoInUserPage" + result);
         return ResultUtils.success(result);
 

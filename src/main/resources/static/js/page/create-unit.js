@@ -536,11 +536,30 @@ var createUnit =Vue.extend({
             itemObj.classifications = this.cls;
             itemObj.name = $("#nameInput").val();
             itemObj.alias = $("#aliasInput").val().split(",");
-            itemObj.image = this.itemInfoImage
+            itemObj.uploadImage = this.itemInfoImage
             itemObj.description = $("#descInput").val();
             itemObj.status = this.status;
             itemObj.localizationList = this.localizationList;
+            if(this.editType == 'modify') {
 
+                for (i = 0; i < this.localizationList.length; i++) {
+                    if (this.currentLocalization.localName == this.localizationList[i].localName) {
+                        this.localizationList[i].name = this.currentLocalization.name;
+                        this.localizationList[i].description = tinymce.activeEditor.getContent();
+                        break;
+                    }
+                }
+                itemObj.localizationList = this.localizationList;
+
+            }else {
+                itemObj.localizationList = [];
+
+                this.currentLocalization.description = tinymce.activeEditor.getContent();
+                this.currentLocalization.localCode = this.languageAdd.local.value;
+                this.currentLocalization.localName = this.languageAdd.local.label;
+
+                itemObj.localizationList.push(this.currentLocalization);
+            }
             if(callBack){
                 callBack(itemObj)
             }
@@ -800,10 +819,11 @@ var createUnit =Vue.extend({
             this.$set(this.languageAdd.local,"value","en-US");
             this.$set(this.languageAdd.local,"label","English (United States)");
 
-            this.loadMatchedCreateDraft();
             if(this.draft.oid!=''&&this.draft.oid!=null&&typeof (this.draft.oid)!="undefined"){
                 // this.loadDraftByOid()
                 this.initDraft('create','/user/userSpace#/models/modelitem','draft',this.draft.oid)
+            }else{
+                this.loadMatchedCreateDraft();
             }
 
         }
@@ -943,20 +963,8 @@ var createUnit =Vue.extend({
 
             unitObj = this.getItemContent('finish');
 
-
-
-
             let formData=new FormData();
             if ((oid === "0") || (oid === "") || (oid == null)) {
-
-                unitObj.localizationList = [];
-
-                this.currentLocalization.description = tinymce.activeEditor.getContent();
-                this.currentLocalization.localCode = this.languageAdd.local.value;
-                this.currentLocalization.localName = this.languageAdd.local.label;
-
-                unitObj.localizationList.push(this.currentLocalization);
-
                 let file = new File([JSON.stringify(unitObj)],'ant.txt',{
                     type: 'text/plain',
                 });
@@ -972,6 +980,7 @@ var createUnit =Vue.extend({
                     success: (result)=> {
                         loading.close();
                         if (result.code == "0") {
+                            this.deleteDraft()
                             this.$confirm('<div style=\'font-size: 18px\'>Create unit successfully!</div>', 'Tip', {
                                 dangerouslyUseHTMLString: true,
                                 confirmButtonText: 'View',
@@ -1025,6 +1034,7 @@ var createUnit =Vue.extend({
                     success: (result)=> {
                         loading.close();
                         if (result.code === 0) {
+                            this.deleteDraft()
                             if (result.data.method === "update") {
                                 this.$confirm('<div style=\'font-size: 18px\'>Update unit successfully!</div>', 'Tip', {
                                     dangerouslyUseHTMLString: true,
