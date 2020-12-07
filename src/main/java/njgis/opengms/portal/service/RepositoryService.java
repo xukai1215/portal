@@ -3,6 +3,7 @@ package njgis.opengms.portal.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.gson.JsonObject;
 import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.dto.Concept.ConceptAddDTO;
 import njgis.opengms.portal.dto.Concept.ConceptFindDTO;
@@ -92,6 +93,9 @@ public class RepositoryService {
 
     @Autowired
     ConceptService conceptService;
+
+    @Autowired
+    UnitConversionDao unitConversionDao;
 
     @Autowired
     ConceptClassificationDao conceptClassificationDao;
@@ -1322,7 +1326,7 @@ public class RepositoryService {
         JSONArray classResult = new JSONArray();
 
         List<String> classifications = unit.getClassifications();
-        for(int i=0;i<classifications.size();i++){
+        for(int i=0;i<1;i++){
             array.clear();
             String classId=classifications.get(i);
             classification=unitClassificationDao.findFirstByOid(classId);
@@ -1388,6 +1392,9 @@ public class RepositoryService {
 
         String lastModifyTime=sdf.format(unit.getLastModifyTime());
 
+        if(classifications.size()>1){
+            modelAndView.addObject("oid_cvt",classifications.get(1));
+        }
 
         modelAndView.addObject("info", unit);
         modelAndView.addObject("classifications", classResult);
@@ -1534,6 +1541,14 @@ public class RepositoryService {
 
     public Unit getUnitByOid(String oid) {
         return unitDao.findByOid(oid);
+    }
+
+    public Object getUnitConversionBy0id(String oid){
+        UnitConversion unitConversion=unitConversionDao.findFirstByOid(oid);
+        JSONObject result = new JSONObject();
+        result.put("Units",unitConversion.getUnits());
+
+       return result;
     }
 
     public Unit insertUnit(UnitAddDTO unitAddDTO, String uid) {

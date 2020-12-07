@@ -70,7 +70,7 @@ public class RepositoryRestController {
     UnitDao unitDao;
 
     @Autowired
-    UnitVersionDao unitVersionDao;
+    UnitConversionDao unitConversionDao;
 
     @Autowired
     UserService userService;
@@ -653,6 +653,13 @@ public class RepositoryRestController {
         Unit unit=repositoryService.getUnitByOid(id);
         unit.setImage(unit.getImage()==null || unit.getImage().equals("")?"":htmlLoadPath+unit.getImage());
         return ResultUtils.success(unit);
+    }
+
+    @RequestMapping(value = "/getUnitConvertInfo/{oid}",method = RequestMethod.GET)
+    public Object getUnitConvertInfo(@PathVariable("oid") String oid){
+        Object result=repositoryService.getUnitConversionBy0id(oid);
+
+        return  result;
     }
 
     @RequestMapping(value = {"/createUnit","/newUserSpace/model/createUnit","/newUserSpace/model/manageUnit"},method = RequestMethod.GET)

@@ -3,7 +3,6 @@ package njgis.opengms.portal.controller.rest;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.JsonObject;
-import com.sun.org.apache.regexp.internal.RE;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import njgis.opengms.portal.bean.JsonResult;
