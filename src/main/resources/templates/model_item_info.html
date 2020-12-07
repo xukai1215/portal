@@ -20,7 +20,7 @@
     <link rel="stylesheet" href="/static/css/base/relate_item.css">
     <link rel="stylesheet" href="/static/css/page/model_item_info.css">
     <link rel="stylesheet" href="/static/css/common/userModule.css">
-    <link rel="stylesheet" href="/static/css/common/wzhStyle.css">
+    <!--<link rel="stylesheet" href="/static/css/common/wzhStyle.css">-->
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css"/>
 
@@ -159,7 +159,7 @@
 
                     <!--<el-tag type="success"  v-for="iter in dataCategory" @click="clickDataItemInfo(iter.id)" style="margin-left: 10px;font-weight: bold;color: #3396ef"> {{iter.cateContent}}</el-tag>-->
 
-                    <el-tag th:each="classS:${modelInfo.alias}" th:text="${classS}"
+                    <el-tag th:each="alias:${modelInfo.alias}" th:text="${alias}"
                             style="margin: 0 10px 10px 0;font-weight: bold;color: #3396ef"></el-tag>
 
                 </div>
@@ -244,35 +244,35 @@
                 </div>
             </div>
 
-            <div id="classification" class="detail_block">
-                <div class="block_head">
-                    <div class="head_text">
-                        <h4>Classification(s)</h4>
-                    </div>
-                    <span class="blockEdit">
-                        <el-button type="primary" icon="el-icon-edit" @click="getClassifications" circle></el-button>
-                    </span>
+            <!--<div id="classification" class="detail_block">-->
+                <!--<div class="block_head">-->
+                    <!--<div class="head_text">-->
+                        <!--<h4>Classification(s)</h4>-->
+                    <!--</div>-->
+                    <!--<span class="blockEdit">-->
+                        <!--<el-button type="primary" icon="el-icon-edit" @click="getClassifications" circle></el-button>-->
+                    <!--</span>-->
 
-                </div>
-                <div class="block_content" style="margin-top:20px;">
-                    <div th:each="classS:${classifications}">
-                        <span style="font-size:24px;margin-right: 8px">●</span>
-                        <el-breadcrumb separator-class="el-icon-arrow-right">
-                            <el-breadcrumb-item th:each="class:${classS}" th:text="${class.name}"
-                                                th:onclick="window.open('/modelItem/repository?category='+[[${class.oid}]])"
-                                                :to="{ path: '/' }">Earth
-                                System Classification
-                            </el-breadcrumb-item>
-                        </el-breadcrumb>
-                    </div>
+                <!--</div>-->
+                <!--<div class="block_content" style="margin-top:20px;">-->
+                    <!--<div th:each="classS:${classifications}">-->
+                        <!--<span style="font-size:24px;margin-right: 8px">●</span>-->
+                        <!--<el-breadcrumb separator-class="el-icon-arrow-right">-->
+                            <!--<el-breadcrumb-item th:each="class:${classS}" th:text="${class.name}"-->
+                                                <!---->
+                                                <!--:to="{ path: '/' }">Earth-->
+                                <!--System Classification-->
+                            <!--</el-breadcrumb-item>-->
+                        <!--</el-breadcrumb>-->
+                    <!--</div>-->
 
-                </div>
-            </div>
+                <!--</div>-->
+            <!--</div>-->
 
             <div id="classification2" class="detail_block">
                 <div class="block_head">
                     <div class="head_text">
-                        <h4>Classification2(s)</h4>
+                        <h4>Classification(s)</h4>
                     </div>
                     <span class="blockEdit">
                         <el-button type="primary" icon="el-icon-edit" @click="getClassifications" circle></el-button>
@@ -283,6 +283,7 @@
                         <span style="font-size:24px;margin-right: 8px">●</span>
                         <el-breadcrumb separator-class="el-icon-arrow-right">
                             <el-breadcrumb-item th:each="class:${classS}" th:text="${class.name}"
+                                                th:onclick="window.open('/modelItem/repository?category='+[[${class.oid}]])"
                                                 :to="{ path: '/' }">Earth
                                 System Classification
                             </el-breadcrumb-item>
@@ -298,7 +299,7 @@
                         <h4>Detailed Description</h4>
                     </div>
 
-                    <el-dropdown style="float:right;padding:0 10px;background-color: white;cursor:pointer;" trigger="click" @command="changeDetailLanguage" >
+                    <el-dropdown v-cloak style="float:right;padding:0 10px;background-color: white;cursor:pointer;" trigger="click" @command="changeDetailLanguage" >
 
                         <span v-if="currentDetailLanguage==''" class="el-dropdown-link" >
                             <span th:text="${detailLanguage}"></span><i class="el-icon-arrow-down el-icon--right"></i>
@@ -713,7 +714,7 @@
                                     <a th:href="'/repository/unit/'+${model.oid}"
                                        th:text="${model.name}">Ground Water Flow System</a>
                                     <p style="margin-top: 0px"
-                                       th:text="${model.description_EN!=''?model.description_EN:model.description_ZH}">
+                                       th:text="${model.description}">
                                         ANN-CA uses the artificial
                                         neural network method to extract
                                         land use change rules in the study area, and then applies the rules to

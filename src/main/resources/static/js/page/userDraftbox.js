@@ -533,7 +533,36 @@ var userDraftBox = Vue.extend(
 
             continueToEdit(index,draft){
                 window.localStorage.setItem('draft',draft.oid) ;
-                window.location.href=index==0?'/user/userSpace#/model/createModelItem':'/user/userSpace#/model/manageModelItem/'+draft.itemOid
+                switch (draft.itemType.toLowerCase()){
+                    case 'modelitem':
+                        window.location.href=index==0?'/user/userSpace#/model/createModelItem':'/user/userSpace#/model/manageModelItem/'+draft.itemOid
+                        break;
+                    case 'conceptualmodel':
+                        window.location.href=index==0?'/user/userSpace#/model/createConceptualModel':'/user/userSpace#/model/manageConceptualModel/'+draft.itemOid
+                        break;
+                    case 'logicalmodel':
+                        window.location.href=index==0?'/user/userSpace#/model/createLogicalModel':'/user/userSpace#/model/manageLogicalModel/'+draft.itemOid
+                        break;
+                    case 'computablemodel':
+                        window.location.href=index==0?'/user/userSpace#/model/createComputableModel':'/user/userSpace#/model/manageComputableModel'+draft.itemOid
+                        break;
+                    case 'dataitem':
+                        window.location.href=index==0?'/user/userSpace#/data/createDataItem':'/user/userSpace#/data/manageDataItem/'+draft.itemOid
+                        break;
+                    case 'concept':
+                        window.location.href=index==0?'/user/userSpace#/community/createConcept':'/user/userSpace#/community/manageConcept/'+draft.itemOid
+                        break;
+                    case 'spatialreference':
+                        window.location.href=index==0?'/user/userSpace#/community/createSpatialReference':'/user/userSpace#/community/manageSpatialReference/'+draft.itemOid
+                        break;
+                    case 'template':
+                        window.location.href=index==0?'/user/userSpace#/community/createTemplate':'/user/userSpace#/community/manageTemplate/'+draft.itemOid
+                        break;
+                    case 'unit':
+                        window.location.href=index==0?'/user/userSpace#/community/createUnit':'/user/userSpace#/community/manageUnit/'+draft.itemOid
+                        break;
+                }
+
             },
 
             viewDraftDetail(draft){
@@ -574,7 +603,11 @@ var userDraftBox = Vue.extend(
                         }
                     }
                 }
-                this.draftShow.content.detail=this.draftShow.content.detail.substring(3,this.draftShow.content.detail.length-4)
+                if(this.draftShow.content.detail!=undefined){
+                    this.draftShow.content.detail=this.draftShow.content.detail.substring(3,this.draftShow.content.detail.length-4)
+
+                }
+
             },
 
             deleteDraftClick(oid){

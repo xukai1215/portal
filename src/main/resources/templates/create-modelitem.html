@@ -75,12 +75,12 @@
                             <draft-box ref="draftBox"
                                        @insert-draft="insertInfo"
                                        @get-content="getItemContent"
-                                       :itemType="'modelItem'"></draft-box>
+                                       :item-type="'modelItem'"></draft-box>
 <!--                            <div v-if="savingDraft" class="flexJustStart flexAlignCenter" style="margin:15px 15px 0 0;color: rgb(6,91,186)">-->
 <!--                                <i class="ms-Icon ms-Icon&#45;&#45;ProgressLoopOuter rotate_cw_3" style="margin-right: 5px;font-size: 16px"></i>-->
 <!--                                <p style="margin: 0">Saving draft...</p>-->
 <!--                            </div>-->
-<!--                            <div v-if="editTypeLocal=='create'&&!savingDraft" class="flexJustStart flexAlignCenter" style="margin:15px 15px 0 0;color: rgb(6,91,186)">-->
+<!--                            <div v-if="editType=='create'&&!savingDraft" class="flexJustStart flexAlignCenter" style="margin:15px 15px 0 0;color: rgb(6,91,186)">-->
 <!--                               <button class="btn btn-noShadow btn-round" @click="loadDraftListClick"><p style="margin: 0;color: rgb(6,91,186)">Load draft</p></button>-->
 <!--                            </div>-->
                         </section>
@@ -404,14 +404,15 @@
 
                                                                         </el-card>
                                                                         <el-card shadow="never" style="height:100px;">
-                                                                            {{curClassDesc}}
+                                                                            <span style="font-family: aktiv-grotesk;color: #737373;" v-if="curClassDesc.label!=''">{{curClassDesc.label}}: </span>
+                                                                            <span style="color: #636363;">{{curClassDesc.desc}}</span>
 
                                                                         </el-card>
 
                                                                     </div>
                                                                 </div>
                                                                 <div class="step-tab-panel" id="step2">
-                                                                    <div v-if="editTypeLocal=='create'" class="singleLocalization">
+                                                                    <div v-if="editType=='create'" class="singleLocalization">
                                                                         <div style="margin-bottom:10px;">
                                                                             <div><b>Language :</b> (After creating, you can describe the item in different languages by editing)</div>
                                                                             <el-select v-model="languageAdd.local" filterable placeholder="Please select language">
@@ -434,7 +435,7 @@
                                                                             <textarea id="singleDescription"></textarea>
                                                                         </div>
                                                                     </div>
-                                                                    <div v-if="editTypeLocal=='modify'" class="localization">
+                                                                    <div v-if="editType=='modify'" class="localization">
                                                                         <el-card style="width: 30%;float:left">
                                                                             <div slot="header" class="clearfix">
                                                                                 <span style="font-weight: bold">Localization Description</span>

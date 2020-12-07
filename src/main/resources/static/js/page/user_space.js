@@ -5682,14 +5682,14 @@ var vue = new Vue({
                         $('#inputSubjectAreas').tagEditor({
                             initialTags: data.subjectAreas,
                             forceLowercase: false,
-                            placeholder: 'Enter Subject Areas ...'
+                            placeholder: 'Enter Study Areas ...'
                         });
                     } else {
                         $("#inputSubjectAreas").tagEditor("destroy");
                         $('#inputSubjectAreas').tagEditor({
                             initialTags: [],
                             forceLowercase: false,
-                            placeholder: 'Enter Subject Areas ...'
+                            placeholder: 'Enter Study Areas ...'
                         });
                     }
                     $('#myModal').modal('show');

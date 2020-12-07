@@ -36,6 +36,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -92,6 +93,9 @@ public class DataItemRestController {
     DataItemDao dataItemDao;
 
     @Autowired
+    DataItem2Dao dataItem2Dao;
+
+    @Autowired
     CategoryDao categoryDao;
 
     @Autowired
@@ -117,6 +121,9 @@ public class DataItemRestController {
 
     @Autowired
     DataHubsDao dataHubsDao;
+
+    @Autowired
+    TemplateDao templateDao;
 
     @Value ("${dataContainerIpAndPort}")
     String dataContainerIpAndPort;
@@ -227,24 +234,32 @@ public class DataItemRestController {
 
 
 
+//    @RequestMapping(value = "/test",method = )
+
+
     /**
      * dataItems页面，分页和分类的唯一标识
      * @param categorysId
      * @param page
      * @return
      */
-    @RequestMapping(value = "/items/{categorysId}&{page}&{dataType}",method = RequestMethod.GET)
+    @RequestMapping(value = "/items/{categorysId}&{page}&{dataType}&{ortFieldName}&{sortOrder}",method = RequestMethod.GET)
     JsonResult listByClassification(
             @PathVariable  String categorysId,
             @PathVariable Integer page,
             @PathVariable String dataType,
+            @PathVariable String ortFieldName,
+            @PathVariable String sortOrder,
             HttpServletRequest request){
         HttpSession session = request.getSession();
         String loadUser = null;
         if(session.getAttribute("oid")!=null)
             loadUser =  session.getAttribute("oid").toString();
 //        return ResultUtils.success(dataItemService.findByCateg(categorysId,page,false,10,loadUser,dataType));
-        Pageable pageable = PageRequest.of(page-1, 10);
+        Sort sort = new Sort(sortOrder.equals("Desc.")?Sort.Direction.DESC:Sort.Direction.ASC, ortFieldName);
+        Pageable pageable = PageRequest.of(page-1, 10, sort);
+//        Pageable pageable = PageRequest.of(page-1, 10);
+
         String tabType = "hub";
 
         Page<DataItemResultDTO> dataItemResultDTOPageable;
@@ -407,6 +422,9 @@ public class DataItemRestController {
         List<String> categories = dataItem.getClassifications();
         for (String category : categories) {
             DataCategorys dataCategorys = dataCategorysDao.findFirstById(category);
+            if (dataCategorys == null){
+                continue;
+            }
             String name = dataCategorys.getCategory();
             classifications.add(name);
         }
@@ -1274,9 +1292,9 @@ public class DataItemRestController {
 
     /**
      * 删除分布式节点的processing
-     * @param pcsId
-     * @param type
-     * @return
+     * @param pcsId pcs的id
+     * @param type 处理类型
+     * @return 删除结果
      */
     @RequestMapping(value = "/delProcessing",method = RequestMethod.DELETE)
     public JsonResult delProcessing(@RequestParam(value = "pcsId") String pcsId,
@@ -1872,7 +1890,7 @@ public class DataItemRestController {
         for (int i=0;i< oldCategory.length;i++){
             Categorys categorys = categoryDao.findFirstByCategory(oldCategory[i]);
             if (categorys == null){
-                log.info(i+"");
+                log.info(i+" "+oldCategory[i]);
                 return;
             }
             List<String> dataItem = categorys.getDataItem();
@@ -1880,16 +1898,18 @@ public class DataItemRestController {
             if (dataItem!=null){
                 for (int j=0;j<dataItem.size();j++){
                     //将原dataItem的分类转换为新的分类
-                    DataItem dataItem1 = dataItemDao.findFirstById(dataItem.get(j));
+                    DataItem2 dataItem1 = dataItem2Dao.findFirstById(dataItem.get(j));
                     if (dataItem1!=null) {
-//                        List<String> classifications = dataItem1.getClassifications();
-//                        if (classifications == null) {
-//                            classifications = new ArrayList<>();
-//                        }
-                        List<String> classifications = new ArrayList<>();
-                        classifications.add(dataCategorys.getId());
+//                        List<String> classifications = new ArrayList<>();
+                        List<String> classifications = dataItem1.getClassifications();
+                        if (classifications == null){
+                            classifications = new ArrayList<>();
+                        }
+                        if (!dataCategorys.getId().equals(classifications.get(0))) {
+                            classifications.add(dataCategorys.getId());
+                        }
                         dataItem1.setClassifications(classifications);
-                        dataItemDao.save(dataItem1);
+                        dataItem2Dao.save(dataItem1);
                         //将原dataItemId放入新的类别的dataRepository中
                         dataRepository.add(dataItem.get(j));
                     }
@@ -1905,9 +1925,9 @@ public class DataItemRestController {
      */
     @RequestMapping(value = "/tabType", method = RequestMethod.GET)
     public void tabType(){
-        List<DataItem> dataItems = dataItemDao.findAll();
+        List<DataItem2> dataItems = dataItem2Dao.findAll();
         int i=0;
-        for (DataItem dataItem:dataItems){
+        for (DataItem2 dataItem:dataItems){
             i++;
             //筛选 tabType!=hub dataType!=DistributedNode
             if (((dataItem.getTabType()==null)||!dataItem.getTabType().equals("hub"))&&
@@ -1915,7 +1935,7 @@ public class DataItemRestController {
                 dataItem.setTabType("repository");
                 log.error(i+"");
                 log.info("success");
-                dataItemDao.save(dataItem);
+                dataItem2Dao.save(dataItem);
             }
         }
     }
@@ -2042,5 +2062,63 @@ public class DataItemRestController {
 
         return jsonResult;
     }
+
+    /**
+     * 获取新的类别
+     * @return
+     */
+    @RequestMapping(value = "/getDataCate", method = RequestMethod.GET)
+    public ArrayList getDataCate(){
+        ArrayList res = new ArrayList();
+        List<DataCategorys> dataCategorys = dataCategorysDao.findAll();
+        for (DataCategorys dataCategorys1:dataCategorys){
+            res.add(dataCategorys1.getCategory());
+        }
+        return res;
+    }
+
+    /**
+     * 将部分hubs插入dataItem中，填补空白
+     */
+    @RequestMapping(value = "insertHubsToRepository", method = RequestMethod.GET)
+    public void insertHubsToRepository(@RequestParam(value = "oid") String oid){
+        //获取当前类别oid对应的hubs
+        DataCategorys dataCategorys = dataCategorysDao.findFirstById(oid);
+        List<String> dataHubs = dataCategorys.getDataHubs();
+        for(String dataHubss:dataHubs){
+            DataHubs dataHubs1 = dataHubsDao.findFirstById(dataHubss);
+            if (dataHubs1 == null){
+                continue;
+            }
+            log.info("success");
+            dataHubs1.setTabType("repository");
+            dataItem2Dao.insert(dataHubs1);
+        }
+    }
+
+    /**
+     * hubs数据复制给repository
+     * @param oid
+     */
+    @RequestMapping(value = "/hubsToRepos", method = RequestMethod.GET)
+    public void hubsToRepos(@RequestParam(value = "oid") String oid){
+        DataCategorys dataCategorys = dataCategorysDao.findFirstById(oid);
+        List<String> hubs = dataCategorys.getDataHubs();
+        dataCategorys.setDataRepository(hubs);
+        dataCategorysDao.save(dataCategorys);
+    }
+
+
+    @RequestMapping(value = "editInte", method = RequestMethod.GET)
+    public void editInte(@RequestParam(value = "oid") String oid){
+        List<DataHubs> dataHubs = dataHubsDao.findAllByClassificationsIn(oid);
+        for(DataHubs dataHubs1:dataHubs){
+            List<String> classifi = new ArrayList<>();
+            classifi.add("5f6c42d2efdc249dc47f4665");
+            dataHubs1.setClassifications(classifi);
+            dataHubsDao.save(dataHubs1);
+        }
+    }
+
 
 }

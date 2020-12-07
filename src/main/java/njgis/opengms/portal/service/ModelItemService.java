@@ -343,8 +343,8 @@ public class ModelItemService {
                 jsonObj.put("name", unit.getName());
                 jsonObj.put("oid", unit.getOid());
 
-                jsonObj.put("description_ZH", unit.getDescription_ZH());
-                jsonObj.put("description_EN", unit.getDescription_EN());
+                jsonObj.put("description", unit.getDescription());
+//                jsonObj.put("description_EN", unit.getDescription_EN());
                 unitArray.add(jsonObj);
             }
         }
@@ -611,7 +611,7 @@ public class ModelItemService {
                 ModelItemVersion modelItemVersion = new ModelItemVersion();
                 BeanUtils.copyProperties(modelItemUpdateDTO, modelItemVersion, "id");
 
-                String uploadImage = modelItemUpdateDTO.getUploadImage();
+                String uploadImage = modelItemUpdateDTO.getUploadImage()==null?"":modelItemUpdateDTO.getUploadImage();
                 if(uploadImage.equals("")){
                     modelItemVersion.setImage("");
                 }
@@ -1273,9 +1273,9 @@ public class ModelItemService {
         Page<ModelItemResultDTO> modelItemPage = null;
         if (userName == null) {
             if (searchText.equals("") && classes.get(0).equals("all")) {
-                modelItemPage = modelItemDao.findAllByNameContainsAndStatusIn("", itemStatusVisible, pageable);
+                modelItemPage = modelItemDao.findAllByNameContainsAndClassifications2IsNotNullAndStatusIn("", itemStatusVisible, pageable);
             } else if (!searchText.equals("") && classes.get(0).equals("all")) {
-                modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndStatusIn(searchText, itemStatusVisible, pageable);
+                modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndClassifications2IsNotNullAndStatusIn(searchText, itemStatusVisible, pageable);
             } else if (searchText.equals("") && !classes.get(0).equals("all")) {
                 modelItemPage = modelItemDao.findByClassifications2InAndStatusIn(classes, itemStatusVisible, pageable);
             } else {
@@ -1283,9 +1283,9 @@ public class ModelItemService {
             }
         } else {
             if (searchText.equals("") && classes.get(0).equals("all")) {
-                modelItemPage = modelItemDao.findAllByNameContainsAndAuthorAndStatusIn("", userName, itemStatusVisible, pageable);
+                modelItemPage = modelItemDao.findAllByNameContainsAndClassifications2IsNotNullAndAuthorAndStatusIn("", userName, itemStatusVisible, pageable);
             } else if (!searchText.equals("") && classes.get(0).equals("all")) {
-                modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndAuthorAndStatusIn(searchText, userName, itemStatusVisible, pageable);
+                modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndClassifications2IsNotNullAndAuthorAndStatusIn(searchText, userName, itemStatusVisible, pageable);
             } else if (searchText.equals("") && !classes.get(0).equals("all")) {
                 modelItemPage = modelItemDao.findByClassifications2InAndAuthorAndStatusIn(classes, userName, itemStatusVisible, pageable);
             } else {

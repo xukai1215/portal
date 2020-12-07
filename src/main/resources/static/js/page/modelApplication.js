@@ -129,8 +129,8 @@ var vue = new Vue({
                 window.open('/task/'+oid)
             },
 
-            viewUser(oid){
-                window.open('/user/'+oid)
+            viewUser(userId){
+                window.open('/profile/'+userId)
             },
 
             jump() {

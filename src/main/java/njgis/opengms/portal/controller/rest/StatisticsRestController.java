@@ -45,6 +45,13 @@ public class StatisticsRestController {
         return modelAndView;
     }
 
+    @RequestMapping(value="/serverNodes",method = RequestMethod.GET)
+    ModelAndView serverNodes(){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("serverNodes");
+        return modelAndView;
+    }
+
     @RequestMapping(value="/computableModel/{oid}",method= RequestMethod.GET)
     ModelAndView show(@PathVariable("oid") String oid){
         ModelAndView modelAndView=new ModelAndView();

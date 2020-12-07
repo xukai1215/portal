@@ -59,12 +59,16 @@
                      :style="{'height':ScreenMinHeight,'min-height':ScreenMinHeight,'max-height':ScreenMaxHeight}"
                      id="pageContent">
                     <section role="description" class="flexJustBetween flexColCenter contentSection"
-                             style="max-width: 1050px;margin: 15px 10px;">
+                             style="max-width: 100%;margin: 15px 10px;">
                         <div class="flexRowContainer flexColCenter" style="margin-left: 18px">
                             <img class="square_40" style="margin-top: 10px" src="../../../static/img/model/model.png">
                             <h3 style="margin-left: 10px"><a class="itemTitle" href="/user/userSpace#/community">Community </a><span
                                     id="subRteTitle"></span></h3>
                         </div>
+                        <draft-box ref="draftBox"
+                                   @insert-draft="insertInfo"
+                                   @get-content="getItemContent"
+                                   :item-type="'template'"></draft-box>
                     </section>
 
                     <div class="page-content-wrap container-fluid">
@@ -155,7 +159,7 @@
                                                                                 <div class="col-sm-10">
                                                                                     <input type="text"
                                                                                            class="form-control"
-                                                                                           id="nameInput"/>
+                                                                                           id="nameInput" @input="onInputName"/>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -200,11 +204,16 @@
                                                                                 <label for="nameInput"
                                                                                        class="col-sm-2 control-label">Image</label>
                                                                                 <div class="col-sm-10">
-                                                                                    <img id="imgShow" src=""/>
-                                                                                    <div id="imgChange">
+                                                                                    <img id="imgShow" style="display: inline" v-show="itemInfoImage!=undefined&&itemInfoImage!=''" :src="itemInfoImage"/>
+                                                                                    <div id="imgMask" class="flexCenter" v-if="itemInfoImage!=undefined&&itemInfoImage!=''"
+                                                                                         style="position: absolute;width: 100px;height: 100px">
+                                                                                        <div class="fa fa-times imgDelete" @click="deleteImg"></div>
+                                                                                        <div class="fa fa-pencil imgEditBlock flexCenter" style="" @click="imgFile"></div>
+                                                                                    </div>
+                                                                                    <div v-if="itemInfoImage==''||itemInfoImage==undefined" class="cursorPointer loadImg" @click="imgFile">
                                                                                         <i class="fa fa-plus fa-5x"></i>
                                                                                     </div>
-                                                                                    <input id="imgFile" type="file"
+                                                                                    <input id="imgOne" type="file" @change="preImg()"
                                                                                            style="display: none"
                                                                                            accept="image/*"/>
                                                                                 </div>
@@ -494,28 +503,6 @@
         $("#refAuthor").tagEditor({
             forceLowercase: false
         })
-
-        $("#imgChange").click(function () {
-            $("#imgFile").click();
-        });
-        $("#imgFile").change(function () {
-            //获取input file的files文件数组;
-            //$('#filed')获取的是jQuery对象，.get(0)转为原生对象;
-            //这边默认只能选一个，但是存放形式仍然是数组，所以取第一个元素使用[0];
-            var file = $('#imgFile').get(0).files[0];
-            //创建用来读取此文件的对象
-            var reader = new FileReader();
-            //使用该对象读取file文件
-            reader.readAsDataURL(file);
-            //读取文件成功后执行的方法函数
-            reader.onload = function (e) {
-                //读取成功后返回的一个参数e，整个的一个进度事件
-                //选择所要显示图片的img，要赋值给img的src就是e中target下result里面
-                //的base64编码格式的地址
-                $('#imgShow').get(0).src = e.target.result;
-                $('#imgShow').show();
-            }
-        });
 
 
     });

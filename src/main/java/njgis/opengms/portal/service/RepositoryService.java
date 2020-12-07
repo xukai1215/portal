@@ -413,7 +413,7 @@ public class RepositoryService {
 //    }
 
     public JSONObject searchConcept(RepositoryQueryDTO repositoryQueryDTO) {
-        Sort sort = new Sort(repositoryQueryDTO.getAsc() == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "name");
+        Sort sort = new Sort(repositoryQueryDTO.getAsc() == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, repositoryQueryDTO.getSortField());
         Pageable pageable = PageRequest.of(repositoryQueryDTO.getPage(), repositoryQueryDTO.getPageSize(), sort);
 
         Page<ConceptResultDTO> concepts = conceptDao.findByNameContainsIgnoreCaseAndStatusIn(repositoryQueryDTO.getSearchText(),itemStatusVisible, pageable);
@@ -434,7 +434,7 @@ public class RepositoryService {
     }
 
     public JSONObject getConceptList(RepositoryQueryDTO repositoryQueryDTO) {
-        Sort sort = new Sort(repositoryQueryDTO.getAsc() == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "name");
+        Sort sort = new Sort(repositoryQueryDTO.getAsc() == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, repositoryQueryDTO.getSortField());
         Pageable pageable = PageRequest.of(repositoryQueryDTO.getPage(), repositoryQueryDTO.getPageSize(), sort);
 
         Page<ConceptResultDTO> concepts;
@@ -792,7 +792,7 @@ public class RepositoryService {
     }
 
     public JSONObject searchSpatialReference(RepositoryQueryDTO repositoryQueryDTO) {
-        Sort sort = new Sort(repositoryQueryDTO.getAsc() == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "name");
+        Sort sort = new Sort(repositoryQueryDTO.getAsc() == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, repositoryQueryDTO.getSortField());
         Pageable pageable = PageRequest.of(repositoryQueryDTO.getPage(), repositoryQueryDTO.getPageSize(), sort);
 
         Page<SpatialResultDTO> spatialReferences = spatialReferenceDao.findByNameContainsIgnoreCaseAndStatusIn(repositoryQueryDTO.getSearchText(), itemStatusVisible,pageable);
@@ -813,7 +813,7 @@ public class RepositoryService {
     }
 
     public JSONObject getSpatialReferenceList(RepositoryQueryDTO repositoryQueryDTO) {
-        Sort sort = new Sort(repositoryQueryDTO.getAsc() == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "name");
+        Sort sort = new Sort(repositoryQueryDTO.getAsc() == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, repositoryQueryDTO.getSortField());
         Pageable pageable = PageRequest.of(repositoryQueryDTO.getPage(), repositoryQueryDTO.getPageSize(), sort);
 
         Page<SpatialResultDTO> spatialReferences;
@@ -1098,7 +1098,7 @@ public class RepositoryService {
     }
 
     public JSONObject searchTemplate(RepositoryQueryDTO repositoryQueryDTO) {
-        Sort sort = new Sort(repositoryQueryDTO.getAsc() == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "name");
+        Sort sort = new Sort(repositoryQueryDTO.getAsc() == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, repositoryQueryDTO.getSortField());
         Pageable pageable = PageRequest.of(repositoryQueryDTO.getPage(), repositoryQueryDTO.getPageSize(), sort);
 
         Page<TemplateResultDTO> templates = templateDao.findByNameContainsIgnoreCaseAndStatusIn(repositoryQueryDTO.getSearchText(),itemStatusVisible, pageable);
@@ -1119,7 +1119,7 @@ public class RepositoryService {
     }
 
     public JSONObject getTemplateList(RepositoryQueryDTO repositoryQueryDTO) {
-        Sort sort = new Sort(repositoryQueryDTO.getAsc() == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "name");
+        Sort sort = new Sort(repositoryQueryDTO.getAsc() == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, repositoryQueryDTO.getSortField());
         Pageable pageable = PageRequest.of(repositoryQueryDTO.getPage(), repositoryQueryDTO.getPageSize(), sort);
 
         Page<TemplateResultDTO> templates;
@@ -1409,7 +1409,7 @@ public class RepositoryService {
     }
 
     public JSONObject searchUnit(RepositoryQueryDTO repositoryQueryDTO) {
-        Sort sort = new Sort(repositoryQueryDTO.getAsc() == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "name");
+        Sort sort = new Sort(repositoryQueryDTO.getAsc() == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, repositoryQueryDTO.getSortField());
         Pageable pageable = PageRequest.of(repositoryQueryDTO.getPage(), repositoryQueryDTO.getPageSize(), sort);
 
         Page<UnitResultDTO> units = unitDao.findByNameContainsIgnoreCaseAndStatusIn(repositoryQueryDTO.getSearchText(),itemStatusVisible, pageable);
@@ -1430,7 +1430,7 @@ public class RepositoryService {
     }
 
     public JSONObject getUnitList(RepositoryQueryDTO repositoryQueryDTO) {
-        Sort sort = new Sort(repositoryQueryDTO.getAsc() == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "name");
+        Sort sort = new Sort(repositoryQueryDTO.getAsc() == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, repositoryQueryDTO.getSortField());
         Pageable pageable = PageRequest.of(repositoryQueryDTO.getPage(), repositoryQueryDTO.getPageSize(), sort);
 
         Page<UnitResultDTO> units;

@@ -1,5 +1,6 @@
 package njgis.opengms.portal.service;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.dao.TemplateDao;
 import njgis.opengms.portal.dao.UserDao;
@@ -90,5 +91,14 @@ public class TemplateService {
         }
         return template.getXml();
 
+    }
+
+    public List<Template> searchALL(){
+        List<Template> template = templateDao.findAll();
+        return template;
+    }
+    public List<Template> searchByName(String name){
+        List<Template> template = templateDao.findAllByName(name);
+        return template;
     }
 }

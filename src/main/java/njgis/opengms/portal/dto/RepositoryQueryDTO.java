@@ -14,5 +14,6 @@ public class RepositoryQueryDTO {
     String sortType;
     int asc;
     String searchText;
+    String sortField = "viewCount";
 
 }

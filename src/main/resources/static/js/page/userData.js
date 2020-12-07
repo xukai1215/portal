@@ -73,6 +73,19 @@ var userData = Vue.extend(
 
         mounted() {
 
+            let width = document.documentElement.clientWidth;
+            if(width <= 1212){
+                $(".dataLine").hide();
+                if (width<=1090){
+                    $(".leftData").css("width","80%");
+                    $(".rightData").css("width","80%");
+                }else {
+                    $(".leftData").css("width","45%");
+                    $(".rightData").css("width","45%");
+                }
+            }else {
+                $(".dataLine").show();
+            }
             var tha = this
             axios.get("/dataItem/createTree")
                 .then(res => {
@@ -93,14 +106,32 @@ var userData = Vue.extend(
 
             $(() => {
                 let height = document.documentElement.clientHeight;
+                let width = document.documentElement.clientWidth;
                 this.ScreenMinHeight = (height) + "px";
                 this.ScreenMaxHeight = (height) + "px";
 
                 window.onresize = () => {
-                    console.log('come on ..');
+                    // console.log('come on ..');
                     height = document.documentElement.clientHeight;
+                    width = document.documentElement.clientWidth;
                     this.ScreenMinHeight = (height) + "px";
                     this.ScreenMaxHeight = (height) + "px";
+                    console.log(width);
+                    if(width <= 1212){
+                        $(".dataLine").hide();
+                        if (width<=1090){
+                            $(".leftData").css("width","80%");
+                            $(".rightData").css("width","80%");
+                        }else {
+                            $(".leftData").css("width","45%");
+                            $(".rightData").css("width","45%");
+                        }
+                    }else {
+                        $(".dataLine").show();
+                        $(".leftData").css("width","45%");
+                        $(".rightData").css("width","45%");
+                    }
+
                 };
 
 
@@ -163,6 +194,10 @@ var userData = Vue.extend(
 
             //初始化的时候吧curIndex传给父组件，来控制bar的高亮显示
             this.sendcurIndexToParent()
+            //监听界面宽度，隐藏dataLine
+            // window.onresize = function (){
+            //     console.log($(window).width());
+            // }
         },
 
     }

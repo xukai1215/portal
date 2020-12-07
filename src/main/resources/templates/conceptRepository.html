@@ -86,12 +86,49 @@
                     </span>
                 </div>
 
-                <div role="alert" class="alert alert-info" style="margin-bottom: 2px;"><span><strong class="minScreen_curClass">Current Classification: {{currentClass}} </strong>
+                <div role="alert" class="alert alert-info" style="margin-bottom: 2px;">
+                    <strong class="minScreen_curClass">Current Classification: {{currentClass}} </strong>
                     <strong v-if="pageOption.progressBar" style="float: right;">Loading... </strong>
-                    <strong v-if="!pageOption.progressBar" style="float: right;">{{pageOption.total}} items</strong></span><br> <span></span> <span></span>
+                    <strong v-if="!pageOption.progressBar" style="float: right;">{{pageOption.total}} items</strong>
+
                 </div>
 
+
+
+
                 <div class="modelPanel" v-loading="pageOption.progressBar">
+                    <div v-if="pageOption.searchResult.length>0" style="margin:10px 0">
+                        <div style="float:left;margin: 4px 0 4px 15px;">
+                            <span style="font-weight: bold;margin-right:5px;">Sorted By:</span>
+                            <el-dropdown trigger="click" @command="changeSortField" style="cursor:pointer;">
+                            <span class="el-dropdown-link">
+                                {{sortTypeName}}<i class="el-icon-arrow-down el-icon--right"></i>
+                            </span>
+                                <el-dropdown-menu slot="dropdown">
+                                    <el-dropdown-item command="View Count">View Count</el-dropdown-item>
+                                    <el-dropdown-item command="Name">Name</el-dropdown-item>
+                                    <el-dropdown-item command="Create Time">Create Time</el-dropdown-item>
+
+                                </el-dropdown-menu>
+                            </el-dropdown>
+                            <el-dropdown trigger="click" @command="changeSortOrder" style="cursor:pointer;">
+                            <span class="el-dropdown-link">
+                                {{sortOrder}}<i class="el-icon-arrow-down el-icon--right"></i>
+                            </span>
+                                <el-dropdown-menu slot="dropdown">
+                                    <el-dropdown-item command="Asc.">Asc.</el-dropdown-item>
+                                    <el-dropdown-item command="Desc.">Desc.</el-dropdown-item>
+                                </el-dropdown-menu>
+                            </el-dropdown>
+                        </div>
+                        <el-pagination style="text-align: right;"
+                                       @current-change="handlePageChange"
+                                       :current-page="pageOption.currentPage"
+                                       :pager-count="5"
+                                       layout="prev, pager, next"
+                                       :total="pageOption.total">
+                        </el-pagination>
+                    </div>
                     <div class="content-body">
                         <div v-cloak class="list-item" v-for="(concept,key) in pageOption.searchResult">
                             <div class="detail_title">
@@ -120,10 +157,10 @@
                                 <div style="display:inline-block;float: left;">
                                     <!--<img :src="pageOption.users[key].image==''?'/static/img/icon/default.png':pageOption.users[key].image" class="round_icon" style="margin-top:-5px;width:30px;height: 30px;display: inline-block;">-->
                                     <!--<a :href="'/profile/'+ pageOption.users[key].oid" target="_blank" style="display: inline-block;margin-left: 5px;"><h4>{{pageOption.users[key].name}}</h4></a>-->
-                                    <a :href="'/profile/'+ pageOption.users[key].oid">
+                                    <a :href="'/profile/'+ pageOption.users[key].userId">
                                         <img :src="pageOption.users[key].image==''?'/static/img/icon/default.png':'/static'+pageOption.users[key].image" class="round_icon" style="margin-top: -5px; width: 30px; height: 30px; display: inline-block;">
                                     </a>
-                                    <a :href="'/profile/'+ pageOption.users[key].oid" target="_blank" style="display: inline-block; margin-left: 5px;"><h4>{{pageOption.users[key].name}}</h4></a>
+                                    <a :href="'/profile/'+ pageOption.users[key].userId" target="_blank" style="display: inline-block; margin-left: 5px;"><h4>{{pageOption.users[key].name}}</h4></a>
                                     <h4 class="screen_view">contributed at {{concept.createTime.substring(0,10)}} </h4>
                                     <h4 class="mobile_view">{{concept.createTime.substring(0,10)}} </h4>
                                 </div>

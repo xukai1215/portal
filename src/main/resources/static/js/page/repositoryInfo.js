@@ -62,9 +62,9 @@ new Vue({
             { value: 'zh', label: 'Chinese' },
             { value: 'zh-HK', label: 'Chinese (Hong Kong)' },
             { value: 'zh-MO', label: 'Chinese (Macau)' },
-            { value: 'zh-CN', label: 'Chinese (S)' },
+            { value: 'zh-CN', label: 'Chinese (Simplified)' },
             { value: 'zh-SG', label: 'Chinese (Singapore)' },
-            { value: 'zh-TW', label: 'Chinese (T)' },
+            { value: 'zh-TW', label: 'Chinese (Traditional)' },
             { value: 'hr', label: 'Croatian' },
             { value: 'hr-BA', label: 'Croatian (Bosnia and Herzegovina)' },
             { value: 'hr-HR', label: 'Croatian (Croatia)' },
@@ -1021,7 +1021,7 @@ new Vue({
 
             this.transFormByGDAL().then(res =>{
                 let gdalResult = res
-                if(gdalResult == null||gdalResult == undefined){
+                if(gdalResult == null||gdalResult == undefined||gdalResult.toString() == '0,0,0'){
                     this.transformXY()
                 }else {
                     if(this.judgeUnit(this.outputCoordinate)==='metre') {

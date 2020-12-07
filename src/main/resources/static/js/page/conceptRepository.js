@@ -684,10 +684,29 @@ new Vue({
             defaultProps: {
                 children: 'children',
                 label: 'label'
-            }
+            },
+
+            sortTypeName:"View Count",
+            sortFieldName:"viewCount",
+            sortOrder:"Desc.",
         }
     },
     methods: {
+
+        changeSortField(ele){
+            this.sortTypeName = ele;
+            let field = ele.replace(" ","").replace(ele[0],ele[0].toLowerCase());
+            this.sortFieldName = field;
+            this.getModels();
+        },
+
+        changeSortOrder(ele){
+            this.sortOrder=ele;
+
+            this.pageOption.sortAsc = ele==="Asc.";
+
+            this.getModels();
+        },
         contribute(){
             $.ajax({
                 url: '/user/load',
@@ -771,7 +790,7 @@ new Vue({
             let query={ };
             query.oid=data.classifications[0];
             query.page=data.page;
-            query.sortType= this.pageOption.sortType;
+            query.sortField= this.sortFieldName;
             if(data.asc){
                 query.asc= 1;
             }else{
