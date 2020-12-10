@@ -49,6 +49,16 @@
 
         }
 
+
+
+        .el-tree > .el-tree-node > .el-tree-node__content {
+            font-weight: bold;
+        }
+
+        .el-tree > .el-tree-node > .el-tree-node__children > .el-tree-node > .el-tree-node__content {
+            font-style: italic;
+        }
+
     </style>
 </head>
 <body>
@@ -100,7 +110,7 @@
                     :data="treeData2"
                     :highlight-current="true"
                     node-key="id"
-                    :default-expanded-keys="[1,14,19,24]"
+                    :default-expanded-keys="[1,9,30,14,19,24]"
                     :current-node-key="24"
                     @current-change="handleCurrentChange2"
                     :props="defaultProps">

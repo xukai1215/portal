@@ -121,6 +121,25 @@ public class PortalApplicationTests {
     private String managerServerIpAndPort;
 
     @Test
+    public void changeUnitAlias(){
+        List<Unit> unitList = unitDao.findAll();
+        for(int i = 0;i<unitList.size();i++){
+            Unit unit = unitList.get(i);
+            List<Localization> localizationList = unit.getLocalizationList();
+            for(int j = 0;j<localizationList.size();j++){
+                Localization localization = localizationList.get(j);
+                if(localization.getLocalCode().equals("zh-CN")){
+                    List<String> alias = new ArrayList<>();
+                    alias.add(localization.getName());
+                    unit.setAlias(alias);
+                    unitDao.save(unit);
+                    break;
+                }
+            }
+        }
+    }
+
+    @Test
     public void changeSpatialRef(){
         List<SpatialReference> spatialReferenceList = spatialReferenceDao.findAll();
         for(SpatialReference spatialReference:spatialReferenceList){
