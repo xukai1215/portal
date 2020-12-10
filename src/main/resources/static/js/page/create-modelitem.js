@@ -934,7 +934,7 @@ var createModelItem = Vue.extend({
             this.itemName=basicInfo.name
             //image
             // if (basicInfo.uploadImage != "") {
-                this.itemInfo.image = basicInfo.image
+                this.itemInfo.image = basicInfo.uploadImage
             // }
             //reference
 
@@ -1256,7 +1256,7 @@ var createModelItem = Vue.extend({
             let obj = document.getElementById('imgOne')
             // obj.outerHTML=obj.outerHTML
             obj.value = ''
-            this.$set(this.itemInfo,'image' , '')
+            this.itemInfoImage = ''
         },
 
         editImg(){

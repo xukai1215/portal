@@ -168,7 +168,43 @@
                 </div>
             </div>
 
-            <div id="description" class="detail_block">
+            <div id="transform" class="detail_block" style="display: none">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Transform</h4>
+                    </div>
+                </div>
+                <div class="block_content transformContainer" >
+                    <div class="col-sm-12 flexCol flexAlignCenter" >
+                        <div style="margin-bottom: 2%">
+                            <el-row :gutter="10">
+                               <div class="col-md-6"><input id="ipt1" type="text" class="form-control" placeholder="input a value" style="
+                          border-top-right-radius: 5px;
+                          border-top-left-radius: 5px;
+                          border-bottom-right-radius: 5px;
+                          border-bottom-left-radius: 5px;" value="1" /></div>
+                                <div class="col-md-6"><select class="form-control" id="slct1" placeholder="enter" ></select></div>
+                                </el-select>
+                            </el-row>
+
+                        </div>
+                        <div style="margin-bottom: 2%">
+                            <el-row :gutter="10">
+                                <div class="col-md-6"><input  readonly="readonly" id="ipt2" type="text" class="form-control" placeholder="input a value" style="border-radius: 20px;" value="1" /></div>
+                                <div class="col-md-6"><select class="form-control" id="slct2" placeholder="enter" ></select></div>
+                                </el-select>
+                            </el-row>
+                        </div>
+
+                    </div>
+<!--                    <button class="bg-primary" id="btn-cvt">Convert</button>-->
+                    <div class="col-sm-2 flexCol flexAlignCenter"><el-button id="btn-cvt" type="primary" >Convert</el-button></div>
+
+                </div>
+
+            </div>
+
+            <div id="description" th:if="${#lists.size(info.localizationList)>0}" class="detail_block">
                 <div class="block_head">
                     <div class="head_text">
                         <h4>Detailed Description</h4>
@@ -420,6 +456,224 @@
 <script src="/static/js/common/bootstrap.min.js"></script>
 <script src="/static/element-ui/umd/locale/en.js"></script>
 <script src="/static/js/common/navbar.js"></script>
+<script th:inline="javascript">
+
+    var oid_cvt=[[${oid_cvt}]];
+    if(oid_cvt!=null){
+        $("#transform").show();
+
+    }
+    var data;
+    var prearr=new Array();
+    if(oid_cvt!=""){
+        $.get("/repository/getUnitConvertInfo/"+ oid_cvt,function (result){
+            data=result;
+            adddata(data);
+        });
+        function adddata(data){
+            //json数据
+            // $("p").html(data.XmlDoc)
+
+            $('#slct1').append("<option style='display: none' value='-1'>select the unit</option>")
+            $('#slct2').append("<option style='display: none' value='-1'>select the unit</option>")
+            var a = 0
+            $.each(data.Units, function (i, field) {
+                //加入singularname
+                if(typeof (field['Prefixes'])=="object")
+                    prearr.push(field.SingularName);
+                a++;
+                var data = "<option value='" + a + "'>" + field.SingularName + '</option>'
+                $('#slct1').append(data)
+                $('#slct2').append(data)
+
+                //加入有前缀的singularname
+                if (field['Prefixes']) {
+                    $.each(field['Prefixes'], function (tmp, field1) {
+                        a++
+                        var data =
+                            "<option value='" +
+                            a +
+                            "'>" +
+                            field1 +
+                            field.SingularName +
+                            '</option>'
+                        $('#slct1').append(data)
+                        $('#slct2').append(data)
+                    })
+                }
+            })
+        }
+
+        $("#btn-cvt").click(function (){
+            //json数据
+            //得到input值以及选择的单位选项
+            var slct1_value = document.getElementById("slct1").options[document.getElementById('slct1').selectedIndex].text
+            var slct2_value = document.getElementById("slct2").options[document.getElementById('slct2').selectedIndex].text
+            var cvt_value = document.getElementById("ipt1").value
+
+            //用户未选择单位类型
+            if (slct1_value == 'select the unit' || slct2_value == 'select the unit')
+                alert("Please select the unit you want to convert!");
+            else {
+                //转换单位类型相同
+                if (slct1_value == slct2_value)
+                    document.getElementById("ipt2").value = cvt_value
+                else {
+
+                    var x = cvt_value
+                    var field
+                    var b_result
+
+
+                    //处理带有前缀的单位
+                    x = prefunc(slct1_value, x, 1)
+
+
+                    //unit to base
+                    for (field in data.Units) {
+                        if (data.Units[field].SingularName == slct1_value) {
+                            x = eval(data.Units[field].FromUnitToBaseFunc)
+                            break
+                        }
+                    }
+
+                    //处理带有前缀的单位
+                    x = prefunc(slct2_value, x, 2)
+
+
+                    //base to result
+                    for (field in data.Units) {
+                        if (data.Units[field].SingularName == slct2_value) {
+                            x = eval(data.Units[field].FromBaseToUnitFunc)
+                            break
+                        }
+                    }
+                    document.getElementById("ipt2").value = x
+                }
+            } //else
+
+
+        })
+        function select_prebase(value, loc, x, tag) {
+            //选择转换前后的单位
+            if (tag == 1)
+                return pre_base(value, loc, x)
+            else {
+                //alert(loc)
+                return base_pre(value, loc, x)
+            }
+
+
+        }
+        function base_pre(value, loc, x) {
+            //转换前缀to base unit
+            var pre = value.substring(0, loc)
+            switch (pre) {
+                case "Nano":
+                    return x / 1e-9
+                case "Micro":
+                    return x / 1e-6
+                case "Milli":
+                    return x / 1e-3
+                case "Centi":
+                    return x / 1e-2
+                case "Deci":
+                    return x / 1e-1
+                case "Hecto":
+                    return x / 1e2
+                case "Kilo":
+                    return x / 1e3
+                case "Mega":
+                    return x / 1e6
+                case "Yocto":
+                    return x / 1e-24
+                case "Zepto":
+                    return x / 1e-21
+                case "Atto":
+                    return x /1e-18
+                case "Femto":
+                    return x / 1e-15
+                case "Pico":
+                    return x / 1e-12
+                case "Deca":
+                    return x / 1e1
+                case "Giga":
+                    return x / 1e9
+                case "Tera":
+                    return x / 1e12
+                case "Peta":
+                    return x / 1e15
+                case "Exa":
+                    return x / 1e18
+                case "Zetta":
+                    return x / 1e21
+                case "Yotta":
+                    return x / 1e24
+
+            }
+
+        }
+        function pre_base(value, loc, x) {
+            //转换unit to 前缀
+            var pre = value.substring(0, loc)
+            switch (pre) {
+                case "Nano":
+                    return x * 1e-9
+                case "Micro":
+                    return x * 1e-6
+                case "Milli":
+                    return x * 1e-3
+                case "Centi":
+                    return x * 1e-2
+                case "Deci":
+                    return x * 1e-1
+                case "Hecto":
+                    return x * 1e2
+                case "Kilo":
+                    return x * 1e3
+                case "Mega":
+                    return x * 1e6
+                case "Yocto":
+                    return x * 1e-24
+                case "Zepto":
+                    return x * 1e-21
+                case "Atto":
+                    return x * 1e-18
+                case "Femto":
+                    return x * 1e-15
+                case "Pico":
+                    return x * 1e-12
+                case "Deca":
+                    return x * 1e1
+                case "Giga":
+                    return x * 1e9
+                case "Tera":
+                    return x * 1e12
+                case "Peta":
+                    return x * 1e15
+                case "Exa":
+                    return x * 1e18
+                case "Zetta":
+                    return x * 1e21
+                case "Yotta":
+                    return x * 1e24
+            }
+        }
+        //处理带有前缀的单位
+        function prefunc(value, x, tag) {
+            var loc;
+            for(field in prearr){
+                loc=value.search(prearr[field]);
+                if(loc!=-1&&loc!=0){
+                    return select_prebase(value,loc,x,tag);
+                }
+            }
+            return x;
+        }
+    }
+
+
+</script>
 <script>
     function submitFrom() {
         var arry = $("#addConceptLocalizationForm").serializeArray();

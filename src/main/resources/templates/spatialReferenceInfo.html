@@ -66,7 +66,6 @@
 <body>
 <div id="app">
     <div th:replace="fragments/navbar :: unlog"></div>
-
     <div class="clearfix" style="margin:40px 0px;height: auto;">
 
         <div class="left-panel el-col">
@@ -256,7 +255,7 @@
                 </div>
             </div>
 
-            <div id="description" class="detail_block">
+            <div id="description" th:if="${#lists.size(info.localizationList)>0}" class="detail_block">
                 <div class="block_head">
                     <div class="head_text">
                         <h4>Detailed Description</h4>

@@ -22,7 +22,7 @@ public class ModelItem extends Item {
     List<Reference> references = new ArrayList<>();
     List<String> relatedData = new ArrayList<>();
 
-    ModelItemRelate relate;
+    ModelItemRelate relate = new ModelItemRelate();
 
     List<ModelRelation> modelRelationList = new ArrayList<>();
 
