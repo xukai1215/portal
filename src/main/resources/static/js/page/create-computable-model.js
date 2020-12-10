@@ -417,6 +417,7 @@ var createComputableModel = Vue.extend({
         getItemContent(trigger,callBack){
             let itemObj = {}
 
+            itemObj.bindOid = this.computableModel.bindOid
             itemObj.bindModelItem = this.computableModel.bindModelItem
             itemObj.status = this.computableModel.status
             itemObj.name = this.computableModel.name
@@ -792,6 +793,8 @@ var createComputableModel = Vue.extend({
                         return false;
                     }
                     else {
+                        if(this.draft.oid!='')
+                            this.createDraft();
                         return true;
                     }
                 }

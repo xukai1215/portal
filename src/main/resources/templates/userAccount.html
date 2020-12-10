@@ -68,9 +68,9 @@
                                 <div class="contentCard flexCol flexColCenter" style="height: 450px">
                                     <div v-cloak class="col-md-12">
 
-                                        <div class="panel-body">
+                                        <div class="panel-body ">
                                             <h4 style="margin-left: -5px">Personal Infomation</h4>
-                                            <ul class="p-info" style="overflow: auto;height: 250px;">
+                                            <ul class="p-info wzhScrollbar" style="overflow: auto;height: 250px;">
                                                 <li>
                                                     <div class="title"><h5>Name</h5></div>
                                                     <div class="desk"><h5>{{userInfo.name}}</h5></div>
@@ -234,57 +234,50 @@
                                            style=" color: #ebebeb;font-size: 28px"></i>
                                     </div>
                                 </div>
-                                <div class="modal-body text-center">
+                                <div class="modal-body">
                                     <form class="form-horizontal" role="form" style="margin-top: 40px">
-                                        <div class="form-group wzhModalForm">
-                                            <label for="inputName" class="col-lg-3 col-sm-3 control-label">Name</label>
-                                            <div class="col-lg-9">
+                                        <div class="wzhModalForm">
+                                            <label for="inputName">Name</label>
+                                            <div class="">
                                                 <input type="text" class="form-control" id="inputName"
                                                        placeholder="Name" v-model="userInfo.name">
                                             </div>
                                         </div>
-                                        <div class="form-group wzhModalForm">
-                                            <label for="inputPhone"
-                                                   class="col-lg-3 col-sm-3 control-label">Phone</label>
-                                            <div class="col-lg-9">
+                                        <div class="wzhModalForm">
+                                            <label for="inputPhone">Phone</label>
+                                            <div class="">
                                                 <input type="text" class="form-control" id="inputPhone"
                                                        placeholder="Phone" v-model="userInfo.phone">
                                             </div>
                                         </div>
-                                        <div class="form-group wzhModalForm">
-                                            <label for="inputHomePage"
-                                                   class="col-lg-3 col-sm-3 control-label">Home
-                                                Page</label>
-                                            <div class="col-lg-9">
+                                        <div class="wzhModalForm">
+                                            <label for="inputHomePage">Home Page</label>
+                                            <div class="">
                                                 <input type="text" class="form-control" id="inputHomePage"
                                                        v-model="userInfo.wiki"
                                                        placeholder="Home Page">
                                             </div>
                                         </div>
-                                        <div class="form-group wzhModalForm">
-                                            <label for="inputOrganizations"
-                                                   class="col-lg-3 col-sm-3 control-label">Organizations</label>
-                                            <div class="col-lg-9">
+                                        <div class="wzhModalForm">
+                                            <label for="inputOrganizations">Organizations</label>
+                                            <div class="">
                                                 <input type="text" class="form-control"
                                                        id="inputOrganizations"
                                                        placeholder="Organizations">
                                             </div>
                                         </div>
-                                        <div class="form-group wzhModalForm">
-                                            <label for="inputSubjectAreas"
-                                                   class="col-lg-3 col-sm-3 control-label">Subject
-                                                Areas</label>
-                                            <div class="col-lg-9">
+                                        <div class="wzhModalForm">
+                                            <label for="inputSubjectAreas">Subject Areas</label>
+                                            <div class="">
                                                 <input type="text" class="form-control"
                                                        id="inputSubjectAreas"
                                                        placeholder="Study Areas">
                                             </div>
                                         </div>
-                                        <div class="form-group wzhModalForm">
-                                            <label for="inputDescription"
-                                                   class="col-lg-3 col-sm-3 control-label">Description</label>
-                                            <div class="col-lg-9">
-                                        <textarea type="text" class="form-control" id="inputDescription"
+                                        <div class="wzhModalForm">
+                                            <label for="inputDescription">Description</label>
+                                            <div class="">
+                                                <textarea type="text" class="form-control" id="inputDescription"
                                                   v-model="userInfo.description"
                                                   placeholder="Description"></textarea>
                                             </div>
@@ -294,7 +287,7 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button id="saveUser" type="button" class="btn btn-round btn-primary "
-                                            style="text-transform: capitalize;font-size: 15px"
+                                            style="text-transform: capitalize;font-size: 15px;    margin-right: 15px;"
                                             @click="saveEditInfo">Save
                                     </button>
                                 </div>
@@ -316,30 +309,27 @@
                                     <h4 class="modal-title" style="color: #737373;text-align: center;">Change
                                         Password</h4>
                                 </div>
-                                <div class="modal-body text-center">
+                                <div class="modal-body">
                                     <form class="form-horizontal" role="form">
-                                        <div class="form-group wzhModalForm">
-                                            <label for="inputName" class="col-sm-4 control-label">Old
-                                                Password</label>
-                                            <div class="col-lg-8">
+                                        <div class="wzhModalForm">
+                                            <label for="inputName">Old Password</label>
+                                            <div>
                                                 <input type="password" class="form-control"
                                                        id="inputOldPass"
                                                        placeholder="Old password">
                                             </div>
                                         </div>
-                                        <div class="form-group wzhModalForm">
-                                            <label for="inputPhone" class="col-sm-4 control-label">New
-                                                Password</label>
-                                            <div class="col-lg-8">
+                                        <div class="wzhModalForm">
+                                            <label for="inputPhone">New Password</label>
+                                            <div>
                                                 <input type="password" class="form-control"
                                                        id="inputPassword"
                                                        placeholder="New password">
                                             </div>
                                         </div>
-                                        <div class="form-group wzhModalForm">
-                                            <label for="inputHomePage" class="col-sm-4 control-label">Confirm
-                                                Password</label>
-                                            <div class="col-lg-8">
+                                        <div class="wzhModalForm">
+                                            <label for="inputHomePage" >Confirm Password</label>
+                                            <div>
                                                 <input type="password" class="form-control"
                                                        id="inputPassAgain"
                                                        placeholder="New password again">
@@ -348,7 +338,7 @@
                                     </form>
 
                                 </div>
-                                <div class="modal-footer">
+                                <div class="modal-footer" style="padding: 15px 24px">
                                     <button @click="submitPass" type="button"
                                             class="btn btn-round btn-primary"
                                             style="text-transform: capitalize;font-size: 15px">Submit

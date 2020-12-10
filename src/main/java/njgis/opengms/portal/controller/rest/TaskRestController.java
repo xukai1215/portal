@@ -11,10 +11,9 @@ import njgis.opengms.portal.dto.task.ResultDataDTO;
 import njgis.opengms.portal.dto.task.TestDataUploadDTO;
 import njgis.opengms.portal.dto.task.UploadDataDTO;
 import njgis.opengms.portal.entity.ComputableModel;
-import njgis.opengms.portal.entity.DataProcessing;
-import njgis.opengms.portal.entity.ModelAction;
+import njgis.opengms.portal.entity.intergrate.DataProcessing;
+import njgis.opengms.portal.entity.intergrate.ModelAction;
 import njgis.opengms.portal.entity.Task;
-import njgis.opengms.portal.entity.intergrate.Model;
 import njgis.opengms.portal.entity.support.DailyViewCount;
 import njgis.opengms.portal.entity.support.TaskData;
 import njgis.opengms.portal.entity.support.UserTaskInfo;
@@ -40,7 +39,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.rmi.CORBA.Util;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
@@ -342,11 +340,12 @@ public class TaskRestController {
             List<Map<String,String>> processingTools = integratedTaskAddDto.getProcessingTools();
             List<ModelAction> modelActions = integratedTaskAddDto.getModelActions();
             List<DataProcessing> dataProcessings = integratedTaskAddDto.getDataProcessings();
+            List<Map<String,Object>> dataItems = integratedTaskAddDto.getDataItems();
             List<Map<String,String>> dataLinks = integratedTaskAddDto.getDataLinks();
             String description = integratedTaskAddDto.getDescription();
             String taskName = integratedTaskAddDto.getTaskName();
 
-            return ResultUtils.success(taskService.saveIntegratedTask(xml, mxgraph, models,processingTools, modelActions,dataProcessings,dataLinks,userName,taskName,description));
+            return ResultUtils.success(taskService.saveIntegratedTask(xml, mxgraph, models,processingTools, modelActions,dataProcessings,dataItems,dataLinks,userName,taskName,description));
         }
     }
 
@@ -366,11 +365,12 @@ public class TaskRestController {
             List<Map<String,String>> models = integratedTaskAddDto.getModels();
             List<ModelAction> modelActions = integratedTaskAddDto.getModelActions();
             List<DataProcessing> dataProcessings = integratedTaskAddDto.getDataProcessings();
+            List<Map<String,Object>> dataItems = integratedTaskAddDto.getDataItems();
             List<Map<String,String>> dataLinks = integratedTaskAddDto.getDataLinks();
             String description = integratedTaskAddDto.getDescription();
             String taskName = integratedTaskAddDto.getTaskName();
 
-            return ResultUtils.success(taskService.updateIntegratedTask(taskOid, xml, mxgraph, models, modelActions,dataProcessings,dataLinks,userName,taskName,description));
+            return ResultUtils.success(taskService.updateIntegratedTask(taskOid, xml, mxgraph, models, modelActions,dataProcessings,dataItems,dataLinks,userName,taskName,description));
         }
     }
 

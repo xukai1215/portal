@@ -225,12 +225,17 @@ var vue = new Vue({
             }
         },
 
-        changeMxView(){
+        selectView(command){
+            this.currentView = command
+
+            this.changeMxView(command)
 
         },
 
-        selectView(command){
-            this.currentView = command
+        changeMxView(viewType){
+            let mxgraphXml = this.iframeWindow.getCXml()
+
+
         },
 
         checkMutiFlow(data){//判断是否有输入是其他模型的多输出
@@ -964,7 +969,7 @@ var vue = new Vue({
                             "\t\t\t<Outputs>\n";
                         for (var k = 0; k < this.dataProcessings[i].outputData.length; k++) {
                             this.dataProcessings[i].outputData[k].url=''
-                            xml += "\t\t\t\t<DataConfiguration id='" +`${this.dataProcessings[i].type=='modelService'?`${this.dataProcessings[i].outputData[k].eventId}`:`${this.dataProcessings[i].outputData[k].id}`}`
+                            xml += "\t\t\t\t<DataConfiguration id='" + this.dataProcessings[i].outputData[k].eventId
                             if(this.dataProcessings[i].type==='modelService'){
                                 xml += "' state='" + this.dataProcessings[i].outputData[k].stateName + "' event='" + this.dataProcessings[i].outputData[k].eventName
                             }
@@ -1383,50 +1388,34 @@ var vue = new Vue({
                     outputData:[],
                     inputData:[],
                 }
-                if(dataProcessing.type=='modelService'){
-                    for(let event of dataProcessing.outputData){
-                        addProcessing.outputData.push({
-                            eventDesc: event.eventDesc,
-                            eventId: event.eventId,
-                            data: event.data,
-                            eventName: event.eventName,
-                            eventType: event.eventType,
-                            optional: event.optional,
-                            stateName: event.stateName,
-                        })
-                    }
-                    for(let event of dataProcessing.inputData){
-                        addProcessing.inputData.push({
-                            eventDesc: event.eventDesc,
-                            eventId: event.eventId,
-                            data: event.data,
-                            eventName: event.eventName,
-                            eventType: event.eventType,
-                            optional: event.optional,
-                            stateName: event.stateName,
-                            value: event.value,
-                            link: event.link,
-                            linkEvent: event.linkEvent,
-                            fileName: event.fileName,
-                            suffix: event.suffix,
-                        })
-                    }
-                }else{
-                    for(let event of dataProcessing.outputData){
-                        addProcessing.outputData.push({
-                            id:event.id,
-                        })
-                    }
-                    for(let event of dataProcessing.inputData){
-                        addProcessing.inputData.push({
-                            id:event.id,
-                            value: event.value,
-                            link: event.link,
-                            linkEvent: event.linkEvent,
-                            fileName: event.fileName,
-                            suffix: event.suffix,
-                        })
-                    }
+                for(let event of dataProcessing.outputData){
+                    addProcessing.outputData.push({
+                        eventDesc: event.eventDesc,
+                        eventId: event.eventId,
+                        data: event.data,
+                        eventName: event.eventName,
+                        name:event.name,
+                        eventType: event.eventType,
+                        optional: event.optional,
+                        stateName: event.stateName,
+                    })
+                }
+                for(let event of dataProcessing.inputData){
+                    addProcessing.inputData.push({
+                        eventDesc: event.eventDesc,
+                        eventId: event.eventId,
+                        data: event.data,
+                        name:event.name,
+                        eventName: event.eventName,
+                        eventType: event.eventType,
+                        optional: event.optional,
+                        stateName: event.stateName,
+                        value: event.value,
+                        link: event.link,
+                        linkEvent: event.linkEvent,
+                        fileName: event.fileName,
+                        suffix: event.suffix,
+                    })
                 }
 
 
@@ -1494,6 +1483,7 @@ var vue = new Vue({
                 modelActions: model7modelActions[1],
                 dataProcessings: tool7Processing[1],
                 dataLinks: dataLinks,
+                dataItems: this.dataItems,
                 description: this.taskDescription,
                 taskName: this.taskName,
             }
@@ -1726,6 +1716,9 @@ var vue = new Vue({
         openUserDataSpace(event) {
             this.currentEvent = event;
             this.userDataSpaceVisible = true;
+            this.$nextTick(()=>{
+                this.$refs.userDataSpace.getFilePackage();
+            })
         },
         // selectInputData(data) {
         //     this.currentEvent.value = data.url;
@@ -1764,6 +1757,100 @@ var vue = new Vue({
             if(task.dataProcessings!=undefined){
                 this.dataProcessings = task.dataProcessings
             }
+
+            this.dataItems = []
+            this.dataItemList = {}
+
+            // if(this.dataItemList[parentId]==undefined){
+            //     let list = []
+            //     list.push(dataItem)
+            //     Vue.set(this.dataItemList,parentId,list)
+            // }else{
+            //     let list = this.dataItemList[parentId]
+            //     list.push(dataItem);
+            //     Vue.set(this.dataItemList,parentId,list)
+            // }
+            // this.addColorPool(parentId)
+
+            //loadDataItem
+            for(let modelAction of this.modelActions){
+                for(let input of modelAction.inputData){
+                    if(input.value!=undefined||input.link!=undefined){
+                        let dataItem = input
+                        dataItem.parentId = modelAction.id
+                        let parentId = modelAction.id
+                        this.dataItems.push(dataItem)
+                        if(this.dataItemList[parentId]==undefined){
+                            let list = []
+                            list.push(dataItem)
+                            Vue.set(this.dataItemList,parentId,list)
+                        }else{
+                            let list = this.dataItemList[parentId]
+                            list.push(dataItem);
+                            Vue.set(this.dataItemList,parentId,list)
+                        }
+                        this.addColorPool(parentId)
+                    }
+                }
+                for(let output of modelAction.outputData){
+                    if(output.value!=undefined||output.link!=undefined){
+                        let dataItem = output
+                        dataItem.parentId = modelAction.id
+                        let parentId = modelAction.id
+                        this.dataItems.push(dataItem)
+                        if(this.dataItemList[parentId]==undefined){
+                            let list = []
+                            list.push(dataItem)
+                            Vue.set(this.dataItemList,parentId,list)
+                        }else{
+                            let list = this.dataItemList[parentId]
+                            list.push(dataItem);
+                            Vue.set(this.dataItemList,parentId,list)
+                        }
+                        this.addColorPool(parentId)
+                    }
+                }
+            }
+
+            for(let action of this.dataProcessings){
+                for(let input of action.inputData){
+                    if(input.value!=undefined||input.link!=undefined){
+                        let dataItem = input
+                        dataItem.parentId = action.id
+                        let parentId = action.id
+                        this.dataItems.push(dataItem)
+                        if(this.dataItemList[parentId]==undefined){
+                            let list = []
+                            list.push(dataItem)
+                            Vue.set(this.dataItemList,parentId,list)
+                        }else{
+                            let list = this.dataItemList[parentId]
+                            list.push(dataItem);
+                            Vue.set(this.dataItemList,parentId,list)
+                        }
+                        this.addColorPool(parentId)
+                    }
+                }
+                for(let output of action.outputData){
+                    if(output.value!=undefined||output.link!=undefined){
+                        let dataItem = output
+                        dataItem.parentId = action.id
+                        let parentId = action.id
+                        this.dataItems.push(dataItem)
+                        if(this.dataItemList[parentId]==undefined){
+                            let list = []
+                            list.push(dataItem)
+                            Vue.set(this.dataItemList,parentId,list)
+                        }else{
+                            let list = this.dataItemList[parentId]
+                            list.push(dataItem);
+                            Vue.set(this.dataItemList,parentId,list)
+                        }
+                        this.addColorPool(parentId)
+                    }
+                }
+            }
+
             this.iframeWindow.setCXml(task.mxGraph);
             this.taskInfoVisible = false
             this.currentTask = task
@@ -2536,31 +2623,35 @@ var vue = new Vue({
             let parentId = '';
 
             let dataItem = {}
-            if(targetAction.md5!=undefined){
-                for(let input of targetAction.inputData){
-                    if(input.eventId == dataItemCell.eid){
-                        input.parentId = dataItemCell.frontId
-                        input.link = dataItemCell.link
-                        input.type = dataItemCell.type
-                        input.linkEvent = dataItemCell.linkEvent
-                        dataItem = input
 
+            for(let input of targetAction.inputData){
+                if(input.eventId == dataItemCell.eid){
+                    dataItem.parentId = dataItemCell.frontId
+                    dataItem.link = dataItemCell.link
+                    dataItem.type = dataItemCell.type
+                    dataItem.linkEvent = dataItemCell.linkEvent
+                    dataItem.eventId = input.eventId
+                    dataItem.eventName = input.eventName
+                    dataItem.name = input.name
+                    dataItem.eventType = input.eventType
+                    dataItem.optional = input.eventType
+                    dataItem.response = input.response
+                    dataItem.value = input.response
+
+                    break
+                }
+            }
+            if(parentId==''){
+                for(let output of targetAction.outputData){
+                    if(output.eventId == dataItemCell.eid){
+                        output.parentId = dataItemCell.frontId
+                        output.link = dataItemCell.link
+                        output.type = dataItemCell.type
+                        output.linkEvent = dataItemCell.linkEvent
+                        dataItem = output
                         break
                     }
                 }
-                if(parentId==''){
-                    for(let output of targetAction.outputData){
-                        if(output.eventId == dataItemCell.eid){
-                            output.parentId = dataItemCell.frontId
-                            output.link = dataItemCell.link
-                            output.type = dataItemCell.type
-                            output.linkEvent = dataItemCell.linkEvent
-                            dataItem = output
-                            break
-                        }
-                    }
-                }
-
             }
 
             parentId = dataItem.parentId
@@ -2578,6 +2669,7 @@ var vue = new Vue({
 
             this.addColorPool(parentId)
         },
+
 
         deleteDataItem(dataItemId,parentId){
             let modelDataItems = this.dataItemList[parentId]
@@ -2871,7 +2963,7 @@ var vue = new Vue({
         }, // arguments: [H,S,L]!!!
 
         getBottomBorder(dataItem){
-            if(dataItem.eventType=='response'){
+            if(dataItem.response){
                 if(!dataItem.optional){
                     return '#fc7c7c'
                 }else {

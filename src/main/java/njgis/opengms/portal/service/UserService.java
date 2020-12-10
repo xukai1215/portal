@@ -2258,7 +2258,7 @@ public class UserService {
         for (int i = 0; i < files.size(); i++) {
 
             String fileName = files.get(i).get("file_name").toString();
-            String url = "http://" + dataContainerIpAndPort + "/data?uid=" + files.get(i).get("source_store_id").toString();
+            String url = "http://" + dataContainerIpAndPort + "/data/" + files.get(i).get("source_store_id").toString();
             String[] a = fileName.split("\\.");
             String name = files.get(i).get("label").toString();
             String suffix = files.get(i).get("suffix").toString();

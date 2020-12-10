@@ -751,8 +751,6 @@ public class UserRestController {
             @RequestBody UploadUserFileDTO uploadUserFileDTO
             , HttpServletRequest httpServletRequest) {
 
-        System.out.print(uploadUserFileDTO.getFiles());
-        System.out.print(uploadUserFileDTO.getPaths());
         List<Map> fileArray = uploadUserFileDTO.getFiles();
         List<String> paths = uploadUserFileDTO.getPaths();
 

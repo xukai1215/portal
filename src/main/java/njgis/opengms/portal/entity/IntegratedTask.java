@@ -1,6 +1,8 @@
 package njgis.opengms.portal.entity;
 
 import lombok.Data;
+import njgis.opengms.portal.entity.intergrate.DataProcessing;
+import njgis.opengms.portal.entity.intergrate.ModelAction;
 import org.springframework.data.annotation.Id;
 
 import java.util.Date;
@@ -26,6 +28,7 @@ public class IntegratedTask {
     List<Map<String,String>> processingTools;
     List<ModelAction> modelActions;
     List<DataProcessing> dataProcessings;
+    List<Map<String,Object>> dataItems;
     List<Map<String,String>> dataLinks;
 
     String xml;

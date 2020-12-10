@@ -1,9 +1,7 @@
-package njgis.opengms.portal.entity;
+package njgis.opengms.portal.entity.intergrate;
 
 import lombok.Data;
-
-import java.util.List;
-import java.util.Map;
+import njgis.opengms.portal.entity.intergrate.Action;
 
 @Data
 public class ModelAction extends Action {

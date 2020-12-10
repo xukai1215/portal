@@ -313,8 +313,10 @@ var vue = new Vue({
                         event.stateName = state.name;
                         event.name = event.eventName;
                         if (event.eventType == "response") {
+                            event.response = true
                             inputData.push(event);
                         } else {
+                            event.response = false
                             outputData.push(event);
                         }
                     }
@@ -1696,6 +1698,10 @@ var vue = new Vue({
         openUserDataSpace(event) {
             this.currentEvent = event;
             this.userDataSpaceVisible = true;
+
+            this.$nextTick(()=>{
+                this.$refs.userDataSpace.getFilePackage();
+            })
         },
         // selectInputData(data) {
         //     this.currentEvent.value = data.url;

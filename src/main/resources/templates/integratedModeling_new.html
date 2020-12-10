@@ -43,6 +43,10 @@
             background-position-x: center;
             background-position-y: top;
         }
+
+        .el-dropdown.minWidDrop .el-button.el-button--primary.el-button--small:not(.el-dropdown__caret-button){
+            min-width: 120px;
+        }
     </style>
 </head>
 <body class="clearfix">
@@ -100,8 +104,14 @@
                     </div>
                     <div class="flexJustStart flexAlignCenter">
                         <h5>View: </h5>
-                        <el-dropdown split-button type="primary" size="small" trigger="click" @command="selectView" @click="changeMxView()" style="margin-right: 5px">
-                           {{currentView}}
+                        <el-dropdown
+                                split-button
+                                class="minWidDrop"
+                                type="primary"
+                                size="small"
+                                trigger="click"
+                                @command="selectView" @click="" style="margin-right: 5px">
+                            <span style="width: 130px"><i class="fa fa-eye" aria-hidden="true" style="margin-right: 3px"></i>{{currentView}}</span>
                             <el-dropdown-menu slot="dropdown">
                                 <el-dropdown-item command="All Items">All Items</el-dropdown-item>
                                 <el-dropdown-item command="Model Items">Model Items</el-dropdown-item>
@@ -245,7 +255,7 @@
                                  style="min-width: 145px;max-width: 145px;height: 130px;border-bottom: 8px solid; "
                                  :style="{borderBottomColor:getBottomBorder(dataItem)}" >
                                 <a class="w100" >
-                                    <p class="textEllipsis cursorPointer" :style="{color:getColor(dataItem.parentId)}" @click="riseDataItem(dataItem,i)">{{dataItem.name}}</p>
+                                    <p class="textEllipsis cursorPointer" :style="{color:getColor(dataItem.parentId)}" @click="riseDataItem(dataItem,i)">{{dataItem.eventName==undefined?dataItem.name:dataItem.eventName}}</p>
                                 </a>
                             </div>
                         </div>
@@ -258,7 +268,7 @@
 
     </div>
 
-    <el-dialog title="Input Data Configuration" :visible.sync="configVisible" width="65%">
+    <el-dialog title="Input Data Configuration" :visible.sync="configVisible" ref="userDataSpace" width="65%">
         <el-tabs>
             <div class="el-tabs__header is-top">
                 <div class="el-tabs__nav-wrap is-top">
@@ -450,8 +460,11 @@
         </div>
     </el-dialog>
 
-    <el-dialog title="Select Data From My Data Space" append-to-body :visible.sync="userDataSpaceVisible" width="68%"
-               class="noScroll">
+    <el-dialog title="Select Data From My Data Space"
+               append-to-body
+               :visible.sync="userDataSpaceVisible"
+               ref="userDataSpace"
+               width="68%" class="noScroll">
         <user-data
                 @com-selectfile="selectDataspaceFile"
                 @com-removefile="removeDataspaceFile"
