@@ -417,7 +417,7 @@ var createComputableModel = Vue.extend({
         getItemContent(trigger,callBack){
             let itemObj = {}
 
-            itemObj.bindModelItem = this.computableModel.bindModelItem
+            itemObj.bindOid = this.computableModel.bindOid
             itemObj.status = this.computableModel.status
             itemObj.name = this.computableModel.name
             itemObj.description = this.computableModel.description

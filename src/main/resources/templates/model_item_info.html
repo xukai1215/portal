@@ -274,9 +274,9 @@
                     <div class="head_text">
                         <h4>Classification(s)</h4>
                     </div>
-                    <span class="blockEdit">
-                        <el-button type="primary" icon="el-icon-edit" @click="getClassifications" circle></el-button>
-                    </span>
+                    <!--<span class="blockEdit">-->
+                        <!--<el-button type="primary" icon="el-icon-edit" @click="getClassifications" circle></el-button>-->
+                    <!--</span>-->
                 </div>
                 <div class="block_content" style="margin-top:20px;">
                     <div th:each="classS:${classifications2}">
@@ -293,7 +293,7 @@
                 </div>
             </div>
 
-            <div id="description" th:if="${detail!=''}" class="detail_block">
+            <div id="description" th:if="${#lists.size(modelInfo.localizationList)>0}" class="detail_block">
                 <div class="block_head">
                     <div class="head_text">
                         <h4>Detailed Description</h4>
@@ -938,8 +938,13 @@
             <div id="Authorship" class="detail_block"
                  >
                 <div class="block_head">
-                    <div class="head_text" style="padding-left: 10px;">
+                    <div class="head_text" style="padding-left: 10px;padding-right: 15px;display: inline-flex">
                         <h4>Authorship</h4>
+                        <el-tooltip popper-class="fontsize-15" effect="light"
+                                    content="We deeply understand that a model may be attributed to the efforts of a team. If all author information is not listed here, please click the feedback below."
+                                    placement="top">
+                            <i class="fa fa-question-circle-o" aria-hidden="true" style="margin-top:4px;"></i>
+                        </el-tooltip>
                     </div>
                 </div>
                 <div class="block_content text-center" style="padding-left:10px">
@@ -976,8 +981,7 @@
                     </div>
                     <div th:if="${#lists.size(modelInfo.authorship)>0}">
                         <el-tag type="info">Is authorship not correct? <a href="javascript:void(0)" @click="feedBack"
-                                                                          style="text-decoration: underline">Feed
-                            back</a></el-tag>
+                                                                          style="text-decoration: underline">Feedback</a></el-tag>
                     </div>
                 </div>
             </div>
