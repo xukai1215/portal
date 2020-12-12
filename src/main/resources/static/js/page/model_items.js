@@ -728,7 +728,7 @@ new Vue({
         //页码change
         handlePageChange(val) {
             this.switchInit();
-            let data=this.$refs.tree1.getCurrentNode();
+            let data=this.$refs.tree3.getCurrentNode();
             if(data!=null) {
                 this.setUrl("/modelItem/repository?category=" + data.oid + "&page=" + val);
             }

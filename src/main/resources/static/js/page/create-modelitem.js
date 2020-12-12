@@ -957,7 +957,10 @@ var createModelItem = Vue.extend({
             }
 
             //tags
-            $('#tagInput').tagEditor('destroy');
+            if ($("#tagInput").nextAll().length > 0)//如果存在tageditor,则销毁
+                Vue.nextTick(() => {
+                    $('#tagInput').tagEditor('destroy');
+                })
             $('#tagInput').tagEditor({
                 initialTags: basicInfo.keywords,
                 forceLowercase: false,
@@ -974,7 +977,10 @@ var createModelItem = Vue.extend({
             }, 1000);
 
             //alias
-            $('#aliasInput').tagEditor('destroy');
+            if ($("#aliasInput").nextAll().length > 0)//如果存在tageditor,则销毁
+                Vue.nextTick(() => {
+                    $('#aliasInput').tagEditor('destroy');
+                })
             $('#aliasInput').tagEditor({
                 initialTags: basicInfo.alias ,
                 forceLowercase: false,
@@ -1219,7 +1225,7 @@ var createModelItem = Vue.extend({
                     })
                 })
 
-            $('#refAuthor').tagEditor('destroy');
+            // $('#refAuthor').tagEditor('destroy');
             $('#refAuthor').tagEditor({
                 initialTags:  [''],
                 forceLowercase: false,
@@ -1603,15 +1609,26 @@ var createModelItem = Vue.extend({
         this.draft.oid=window.localStorage.getItem('draft');
         var user_num = 0;
 
+        $("#refAuthor").tagEditor({
+            forceLowercase: false
+        });
+
         if ((oid === "0") || (oid === "") || (oid === null)|| (oid === undefined)) {
 
             this.editType = 'create';
             // $("#title").text("Create Model Item")
             $("#subRteTitle").text("/Create Model Item");
 
+            // //alias
             $('#aliasInput').tagEditor({
                 forceLowercase: false
             });
+
+            $('#tagInput').tagEditor({
+                forceLowercase: false
+            });
+
+
 
             let interval = setInterval(function () {
                 initTinymce('textarea#singleDescription');
@@ -1706,16 +1723,6 @@ var createModelItem = Vue.extend({
             }
         });
 
-
-        $('#tagInput').tagEditor({
-            forceLowercase: false
-        });
-         $('#aliasInput').tagEditor({
-            forceLowercase: false
-        });
-        $("#refAuthor").tagEditor({
-            forceLowercase: false
-        })
 
         // $("#imgChange").click(function () {
         //     $("#imgFile").click();
