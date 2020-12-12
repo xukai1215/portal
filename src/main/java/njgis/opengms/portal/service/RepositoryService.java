@@ -384,6 +384,8 @@ public class RepositoryService {
                 Maintainer maintainer = maintainers.get(i);
                 ma.put("name", maintainer.getName());
                 ma.put("id", maintainer.getId());
+                User user = userDao.findFirstByOid(maintainer.getId());
+                ma.put("image",user.getImage());
                 maintainer_result.add(ma);
             }
         }
