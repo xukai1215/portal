@@ -690,4 +690,15 @@ public class ThemeRestController {
         Integer messageNum = user.getMessageNum();
         return messageNum;
     }
+
+    @RequestMapping(value = "/getMaintainer/{themeOid}", method = RequestMethod.GET)
+    public List<Maintainer> getMaintainer(@PathVariable(value = "themeOid") String themeOid){
+        List<Maintainer> maintainers = themeDao.findFirstByOid(themeOid).getMaintainer();
+        User user;
+        for(Maintainer maintainer:maintainers){
+            user = userDao.findFirstByOid(maintainer.getId());
+            maintainer.setImage(user.getImage());
+        }
+        return maintainers;
+    }
 }

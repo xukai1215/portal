@@ -70,8 +70,8 @@
                     <el-card id="subcard" style="min-width: 60px">
                                 <div class="logoPanel">
                                 </div>
-                                <div slot="header" class="clearfix text-center headerImg">
-                                    <img th:src="'/static'+${info.image}" id="header_image">
+                                <div slot="header" class="clearfix text-center headerImg" style="position: relative;">
+                                    <img th:src="'/static'+${info.image}" id="header_image" style="height: 76.5px">
                                     <div>
                                         <a class="themename_item" th:utext="${info.themename}" style="font-size: 24px;color:#444"></a>
                                         <el-input type="text" v-model="form.name" id="edit_themename" class="edit_themename" th:value="${info.themename}" style="display: none"></el-input>
@@ -90,7 +90,9 @@
                                         @select=""
                                         active-text-color="#409EFF"
                                         :collapse="isCollapse"
-                                        :collapse-transition = "false">
+                                        :collapse-transition = "false"
+                                        style=" position: absolute;top: 150px; bottom: 0px; left: 0; right: 0;
+                                        overflow-x: hidden; overflow-y: auto; margin-bottom: 62px;">
                                    <el-menu-item index="1" th:onclick="'javascript:show(\'detailinfo'+'\',\'BasicInfoPanel\',\'detailIntroducePanel\')'">
                                        <i class="el-icon-info"></i>
                                        <span slot="title">Theme Info</span>
@@ -250,23 +252,37 @@
                             <div id="maintainers">
                                 <div class="x_content"  id="maintainers1" style="display: contents;">
                                     <!--<el-row type="center" class="row-bg" id="content2">-->
-                                        <el-col th:each="item:${maintainer}" style="margin:20px 20px 0 0;float: left">
-                                            <el-card>
-                                            <a th:href="'/profile/'+${item.id}" target = "_blank">
-                                                    <div  style="margin: 5px;height: 40px;display: flex;justify-content: center;align-items: center;padding: 10px;">
-                                                        <div class="el-col ">
-                                                            <img src="/static/img/icon/default.png"
-                                                                 class="round_icon" style="width:40px;height: 40px;float:left;">
-                                                        </div>
-                                                        <div class="el-col">
-                                                            <div class="pull-left" style="display: block;margin-left: 15px;">
-                                                                <h4  th:text="${item.name}" style="padding: 0;"></h4>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
+                                    <div v-for="(item, index) in maintainer" :key="index">
+                                        <el-col :span="8" style="padding:10px;height:350px;width:230px">
+                                            <el-card :body-style="{ padding: '0px' }" target="_blank">
+                                                <a :href="'/profile/'+item.name"><img :src="'/static' + item.image" class="image" /></a>
+                                                <div style="padding: 14px;">
+                                                    <p style="text-align: center;">{{ item.name }}</p>
+<!--                                                    <div class="bottom clearfix">-->
+<!--                                                        <el-button type="text" class="button">Detail</el-button>-->
+<!--                                                    </div>-->
+                                                </div>
                                             </el-card>
                                         </el-col>
+                                    </div>
+<!--                                        <el-col th:each="item:${maintainer}" style="margin:20px 20px 0 0;float: left">-->
+<!--                                            <el-card>-->
+<!--                                            <a th:href="'/profile/'+${item.name}" target = "_blank">-->
+<!--                                                    <div  style="margin: 5px;height: 40px;display: flex;justify-content: center;-->
+<!--                                                    align-items: center;padding: 10px;">-->
+<!--                                                        <div class="el-col ">-->
+<!--                                                            <img th:src="${item.image}"-->
+<!--                                                                 class="round_icon" style="width:40px;height: 40px;float:left;">-->
+<!--                                                        </div>-->
+<!--                                                        <div class="el-col">-->
+<!--                                                            <div class="pull-left" style="display: block;margin-left: 15px;">-->
+<!--                                                                <h4  th:text="${item.name}" style="padding: 0;"></h4>-->
+<!--                                                            </div>-->
+<!--                                                        </div>-->
+<!--                                                    </div>-->
+<!--                                                </a>-->
+<!--                                            </el-card>-->
+<!--                                        </el-col>-->
                                     <!--</el-row>-->
                                 </div>
                             </div>
