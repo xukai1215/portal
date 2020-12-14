@@ -7,6 +7,7 @@ new Vue({
         activeIndex: '8-1',
 
         useroid: "",
+        userId:"",
         userImg: "",
         //comment
         commentText: "",
@@ -1162,6 +1163,7 @@ new Vue({
 
                 if (res.oid != '') {
                     this.useroid = res.oid;
+                    this.userId = res.data.userId;
                     this.userImg = res.image;
                 }
 

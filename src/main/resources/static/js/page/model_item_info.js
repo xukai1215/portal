@@ -82,6 +82,7 @@ var info=new Vue({
             }],
 
             useroid: '',
+            userId: "",
             userUid:"",
             userImg:"",
             loading: false,
@@ -688,7 +689,7 @@ var info=new Vue({
         },
         feedBack(){
             $.get("/user/load",{},(result)=>{
-                let json = JSON.parse(result);
+                let json = result;
                 if (json.oid == "") {
                     this.confirmLogin();
                 }
@@ -1666,6 +1667,7 @@ var info=new Vue({
                     if (res.data.oid != '') {
                         this.useroid = res.data.oid;
                         this.userUid = res.data.uid;
+                        this.userId = res.data.userId;
                         this.userImg = res.data.image;
                     }
 

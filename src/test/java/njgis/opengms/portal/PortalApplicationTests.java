@@ -2,6 +2,7 @@ package njgis.opengms.portal;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.gson.JsonObject;
 import com.ip2location.IP2Location;
 import com.ip2location.IPResult;
 import njgis.opengms.portal.dao.*;
@@ -119,6 +120,174 @@ public class PortalApplicationTests {
 
     @Value("${managerServerIpAndPort}")
     private String managerServerIpAndPort;
+
+    @Test
+    public void parseXML(){
+        String xml = "\t<ModelClass>\n" +
+                "\t\t<$>\n" +
+                "\t\t\t<name>Game_of_life</name>\n" +
+                "\t\t\t<uid>0c6cbbc0-a72b-417f-b51e-2a339281fc8f</uid>\n" +
+                "\t\t\t<type>SimpleCalculation</type>\n" +
+                "\t\t</$>\n" +
+                "\t\t<AttributeSet>\n" +
+                "\t\t\t<Categories>\n" +
+                "\t\t\t\t<Category>\n" +
+                "\t\t\t\t\t<$>\n" +
+                "\t\t\t\t\t\t<principle>SimpleCalculation</principle>\n" +
+                "\t\t\t\t\t\t<path></path>\n" +
+                "\t\t\t\t\t</$>\n" +
+                "\t\t\t\t</Category>\n" +
+                "\t\t\t</Categories>\n" +
+                "\t\t\t<LocalAttributes>\n" +
+                "\t\t\t\t<LocalAttribute>\n" +
+                "\t\t\t\t\t<$>\n" +
+                "\t\t\t\t\t\t<local>EN_US</local>\n" +
+                "\t\t\t\t\t\t<localName>Game_of_life</localName>\n" +
+                "\t\t\t\t\t\t<wiki></wiki>\n" +
+                "\t\t\t\t\t</$>\n" +
+                "\t\t\t\t\t<Keywords>Game_of_life</Keywords>\n" +
+                "\t\t\t\t\t<Abstract></Abstract>\n" +
+                "\t\t\t\t</LocalAttribute>\n" +
+                "\t\t\t</LocalAttributes>\n" +
+                "\t\t</AttributeSet>\n" +
+                "\t\t<Behavior>\n" +
+                "\t\t\t<RelatedDatasets>\n" +
+                "\t\t\t\t<DatasetItem>\n" +
+                "\t\t\t\t\t<$>\n" +
+                "\t\t\t\t\t\t<name>TXT</name>\n" +
+                "\t\t\t\t\t\t<type>internal</type>\n" +
+                "\t\t\t\t\t\t<description>SAGA Type:Grid</description>\n" +
+                "\t\t\t\t\t</$>\n" +
+                "\t\t\t\t\t<UdxDeclaration>\n" +
+                "\t\t\t\t\t\t<$>\n" +
+                "\t\t\t\t\t\t\t<name></name>\n" +
+                "\t\t\t\t\t\t\t<description></description>\n" +
+                "\t\t\t\t\t\t</$>\n" +
+                "\t\t\t\t\t\t<UdxNode>\n" +
+                "\t\t\t\t\t\t\t\t\t\t\t\t\t \n" +
+                "\t\t\t\t\t\t\t\t\t\t\t</UdxNode>\n" +
+                "\t\t\t\t\t\t<SemanticAttachment>\n" +
+                "\t\t\t\t\t\t\t<Concepts></Concepts>\n" +
+                "\t\t\t\t\t\t\t<SpatialRefs></SpatialRefs>\n" +
+                "\t\t\t\t\t\t\t<Units></Units>\n" +
+                "\t\t\t\t\t\t\t<DataTemplates></DataTemplates>\n" +
+                "\t\t\t\t\t\t</SemanticAttachment>\n" +
+                "\t\t\t\t\t</UdxDeclaration>\n" +
+                "\t\t\t\t</DatasetItem>\n" +
+                "\t\t\t</RelatedDatasets>\n" +
+                "\t\t\t<StateGroup>\n" +
+                "\t\t\t\t<States>\n" +
+                "\t\t\t\t\t<State>\n" +
+                "\t\t\t\t\t\t<$>\n" +
+                "\t\t\t\t\t\t\t<id>2c4f6083-e17e-4ffd-94bd-ee5a09a04ff3</id>\n" +
+                "\t\t\t\t\t\t\t<name>Run</name>\n" +
+                "\t\t\t\t\t\t\t<type>basic</type>\n" +
+                "\t\t\t\t\t\t\t<description>Start Run</description>\n" +
+                "\t\t\t\t\t\t</$>\n" +
+                "\t\t\t\t\t\t<Event>\n" +
+                "\t\t\t\t\t\t\t<$>\n" +
+                "\t\t\t\t\t\t\t\t<name>original_life_map</name>\n" +
+                "\t\t\t\t\t\t\t\t<type>response</type>\n" +
+                "\t\t\t\t\t\t\t\t<description>original life map.</description>\n" +
+                "\t\t\t\t\t\t\t\t<optional>false</optional>\n" +
+                "\t\t\t\t\t\t\t</$>\n" +
+                "\t\t\t\t\t\t\t<ResponseParameter>\n" +
+                "\t\t\t\t\t\t\t\t<$>\n" +
+                "\t\t\t\t\t\t\t\t\t<datasetReference>TXT</datasetReference>\n" +
+                "\t\t\t\t\t\t\t\t\t<description></description>\n" +
+                "\t\t\t\t\t\t\t\t</$>\n" +
+                "\t\t\t\t\t\t\t</ResponseParameter>\n" +
+                "\t\t\t\t\t\t</Event>\n" +
+                "\t\t\t\t\t\t<Event>\n" +
+                "\t\t\t\t\t\t\t<$>\n" +
+                "\t\t\t\t\t\t\t\t<name>generated_life_map</name>\n" +
+                "\t\t\t\t\t\t\t\t<type>noresponse</type>\n" +
+                "\t\t\t\t\t\t\t\t<description>result of life map.</description>\n" +
+                "\t\t\t\t\t\t\t\t<optional>false</optional>\n" +
+                "\t\t\t\t\t\t\t</$>\n" +
+                "\t\t\t\t\t\t\t<DispatchParameter>\n" +
+                "\t\t\t\t\t\t\t\t<$>\n" +
+                "\t\t\t\t\t\t\t\t\t<datasetReference>TXT</datasetReference>\n" +
+                "\t\t\t\t\t\t\t\t\t<description></description>\n" +
+                "\t\t\t\t\t\t\t\t</$>\n" +
+                "\t\t\t\t\t\t\t</DispatchParameter>\n" +
+                "\t\t\t\t\t\t</Event>\n" +
+                "\t\t\t\t\t</State>\n" +
+                "\t\t\t\t</States>\n" +
+                "\t\t\t\t<StateTransitions></StateTransitions>\n" +
+                "\t\t\t</StateGroup>\n" +
+                "\t\t</Behavior>\n" +
+                "\t\t<Runtime>\n" +
+                "\t\t\t<$>\n" +
+                "\t\t\t\t<name>Game_of_life</name>\n" +
+                "\t\t\t\t<version>1.0</version>\n" +
+                "\t\t\t\t<baseDir></baseDir>\n" +
+                "\t\t\t\t<entry>encapsulateGoF.py</entry>\n" +
+                "\t\t\t</$>\n" +
+                "\t\t\t<HardwareConfigures>\n" +
+                "\t\t\t\t<Add>\n" +
+                "\t\t\t\t\t<$>\n" +
+                "\t\t\t\t\t\t<key>cpu core numble</key>\n" +
+                "\t\t\t\t\t\t<value>[2,infinite)</value>\n" +
+                "\t\t\t\t\t</$>\n" +
+                "\t\t\t\t</Add>\n" +
+                "\t\t\t\t<Add>\n" +
+                "\t\t\t\t\t<$>\n" +
+                "\t\t\t\t\t\t<key>disk avail size</key>\n" +
+                "\t\t\t\t\t\t<value>[50GB,infinite)</value>\n" +
+                "\t\t\t\t\t</$>\n" +
+                "\t\t\t\t</Add>\n" +
+                "\t\t\t\t<Add>\n" +
+                "\t\t\t\t\t<$>\n" +
+                "\t\t\t\t\t\t<key>cpu frequency</key>\n" +
+                "\t\t\t\t\t\t<value>[2.2GHz,infinite)</value>\n" +
+                "\t\t\t\t\t</$>\n" +
+                "\t\t\t\t</Add>\n" +
+                "\t\t\t\t<Add>\n" +
+                "\t\t\t\t\t<$>\n" +
+                "\t\t\t\t\t\t<key>memory size</key>\n" +
+                "\t\t\t\t\t\t<value>[2GB,infinite)</value>\n" +
+                "\t\t\t\t\t</$>\n" +
+                "\t\t\t\t</Add>\n" +
+                "\t\t\t</HardwareConfigures>\n" +
+                "\t\t\t<SoftwareConfigures>\n" +
+                "\t\t\t\t<Add>\n" +
+                "\t\t\t\t\t<$>\n" +
+                "\t\t\t\t\t\t<key>VC++ Runtime</key>\n" +
+                "\t\t\t\t\t\t<platform>x64</platform>\n" +
+                "\t\t\t\t\t\t<value>default</value>\n" +
+                "\t\t\t\t\t</$>\n" +
+                "\t\t\t\t</Add>\n" +
+                "\t\t\t\t<Add>\n" +
+                "\t\t\t\t\t<$>\n" +
+                "\t\t\t\t\t\t<key>Operating System</key>\n" +
+                "\t\t\t\t\t\t<platform>x64</platform>\n" +
+                "\t\t\t\t\t\t<value>linux</value>\n" +
+                "\t\t\t\t\t</$>\n" +
+                "\t\t\t\t</Add>\n" +
+                "\t\t\t</SoftwareConfigures>\n" +
+                "\t\t\t<Assemblies>\n" +
+                "\t\t\t\t<Assembly>\n" +
+                "\t\t\t\t\t<$>\n" +
+                "\t\t\t\t\t\t<name>GDALRasterMapping.exe</name>\n" +
+                "\t\t\t\t\t\t<path>$(DataMappingPath)\\GDALRasterMapping\\</path>\n" +
+                "\t\t\t\t\t</$>\n" +
+                "\t\t\t\t</Assembly>\n" +
+                "\t\t\t\t<Assembly>\n" +
+                "\t\t\t\t\t<$>\n" +
+                "\t\t\t\t\t\t<name>OGRVectorMapping.exe</name>\n" +
+                "\t\t\t\t\t\t<path>$(DataMappingPath)\\OGRVectorMapping\\</path>\n" +
+                "\t\t\t\t\t</$>\n" +
+                "\t\t\t\t</Assembly>\n" +
+                "\t\t\t</Assemblies>\n" +
+                "\t\t\t<SupportiveResources></SupportiveResources>\n" +
+                "\t\t</Runtime>\n" +
+                "\t</ModelClass>\n" +
+                "\t\n";
+        xml = xml.replaceAll("<\\$>","").replaceAll("</\\$>","");
+        JSONObject jsonObject = XmlTool.documentToJSONObject(xml);
+        int a = 1;
+    }
 
     @Test
     public void changeUnitAlias(){
