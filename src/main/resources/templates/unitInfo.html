@@ -189,7 +189,7 @@
                         </div>
                         <div style="margin-bottom: 2%">
                             <el-row :gutter="10">
-                                <div class="col-md-6"><input  readonly="readonly" id="ipt2" type="text" class="form-control" placeholder="input a value" style="border-radius: 20px;"/></div>
+                                <div class="col-md-6"><input  readonly="readonly" id="ipt2" type="text" class="form-control" placeholder="output a value" style="border-radius: 20px;"/></div>
                                 <div class="col-md-6"><select class="form-control" id="slct2" placeholder="enter" ></select></div>
                                 </el-select>
                             </el-row>
@@ -473,6 +473,11 @@ if(oid_cvt!="") {
         adddata(data);
     });
     var name = [[${info.name}]];
+    if(name.indexOf('_')!=-1)
+    {
+        name=name.replace(/_/,'');
+    }
+
     //
 
     function adddata(data) {
@@ -490,7 +495,7 @@ if(oid_cvt!="") {
             a++;
             tag=0;
             var data = "<option value='" + a + "'>" + field.SingularName + '</option>'
-            if(field.SingularName==name.charAt(0).concat(name.substring(1).toLowerCase()))
+            if(field.SingularName.toString().toUpperCase()==name)
             {
                 var data2="<option value='" + a + "'>" + field.SingularName + '</option>'
                 data="<option selected value='" + a + "'>" + field.SingularName + '</option>'
