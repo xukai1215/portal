@@ -1409,8 +1409,6 @@ var createModelItem = Vue.extend({
                     }
                 }
             })
-
-
         },
 
         imgFile() {
@@ -1418,7 +1416,6 @@ var createModelItem = Vue.extend({
         },
 
         preImg() {
-
 
             var file = $('#imgOne').get(0).files[0];
             //创建用来读取此文件的对象
@@ -1433,7 +1430,6 @@ var createModelItem = Vue.extend({
                 this.itemInfo.image = e.target.result
             }
 
-
         },
 
         getClassificationDesc(name){
@@ -1445,6 +1441,7 @@ var createModelItem = Vue.extend({
             }
             return desc;
         },
+
         getChildrenDesc(children, name){
             let i = 0;
             for(;i<children.length;i++){

@@ -20,6 +20,7 @@ var createComputableModel = Vue.extend({
                     email: "",
                 },
                 md5:"",
+                mdl:"",
                 deploy:false
             },
 
@@ -69,6 +70,12 @@ var createComputableModel = Vue.extend({
             draftOid:'',
 
             startDraft:0,
+
+            exisedServiceDialog:false,
+
+            exisedServices:[],
+
+            customAddMd5:false,
         }
     },
     methods: {
@@ -244,6 +251,87 @@ var createComputableModel = Vue.extend({
         close: function () {
             console.log("socket已经关闭")
         },
+        formatDate(value,callback) {
+            const date = new Date(value);
+            y = date.getFullYear();
+            M = date.getMonth() + 1;
+            d = date.getDate();
+            H = date.getHours();
+            m = date.getMinutes();
+            s = date.getSeconds();
+            if (M < 10) {
+                M = '0' + M;
+            }
+            if (d < 10) {
+                d = '0' + d;
+            }
+            if (H < 10) {
+                H = '0' + H;
+            }
+            if (m < 10) {
+                m = '0' + m;
+            }
+            if (s < 10) {
+                s = '0' + s;
+            }
+
+            const t = y + '-' + M + '-' + d + ' ' + H + ':' + m + ':' + s;
+            if(callback == null||callback == undefined)
+                return t;
+            else
+                callback(t);
+        },
+        getServiceByMd5(){
+            this.exisedServices = []
+            if(this.computableModel.md5=='')
+                return
+            let flag
+            $.ajax({
+                url:"/computableModel/findAllByMd5",
+                type:"GET",
+                async:false,
+                data:{
+                    md5:this.computableModel.md5
+                },
+                success:(res) => {
+                    if (res.code != 0)
+                        return
+
+                    if (res.data.length != 0){
+                        this.exisedServiceDialog = true
+                        this.exisedServices = res.data
+                        flag = false
+                    }else{
+                        this.$message({
+                            message: 'No existed service of this MD5',
+                        });
+                        flag = true
+                    }
+                }
+
+            })
+
+            return flag;
+        },
+
+        getServiceByMd5Check(){
+            let res = this.getServiceByMd5()
+            return res
+        },
+
+        cancelMd5(){
+            this.computableModel.md5 = ''
+            this.exisedServiceDialog = false
+        },
+        inputMd5(){
+            this.customAddMd5 = false
+        },
+
+        addMd5(){
+            this.exisedServiceDialog = false
+            this.customAddMd5 = true
+            $(".next").click()
+        },
 
         getMessageNum(computableModel_oid){
             this.message_num_socket = 0;//初始化消息数目
@@ -321,12 +409,33 @@ var createComputableModel = Vue.extend({
             })
         },
 
-        insertInfo(basicInfo){
+        async getBindModelInfo(modelOid){
+            let data = null
+            await axios.get('/modelItem/searchByOid',{
+                params:{
+                    oid:modelOid
+                }
+            }).then(
+                res=>{
+                    if(res.data.code!=-1){
+                        data = res.data.data
+                    }else{
+
+                    }
+                }
+            )
+
+            return data
+        },
+
+        async insertInfo(basicInfo){
             if(basicInfo.resourceJson!=null)
                 this.resources=basicInfo.resourceJson;
 
-            this.computableModel.bindModelItem=basicInfo.relateModelItemName;
-            this.computableModel.bindOid=basicInfo.relateModelItem;
+            let modelItem = await this.getBindModelInfo(basicInfo.relateModelItem)
+
+            this.computableModel.bindModelItem=modelItem.name;
+            this.computableModel.bindOid=modelItem.oid;
             this.computableModel.status=basicInfo.status;
 
             this.computableModel.contentType = basicInfo.contentType;
@@ -417,8 +526,7 @@ var createComputableModel = Vue.extend({
         getItemContent(trigger,callBack){
             let itemObj = {}
 
-            itemObj.bindOid = this.computableModel.bindOid
-            itemObj.bindModelItem = this.computableModel.bindModelItem
+            itemObj.relateModelItem = this.computableModel.bindOid
             itemObj.status = this.computableModel.status
             itemObj.name = this.computableModel.name
             itemObj.description = this.computableModel.description
@@ -498,24 +606,6 @@ var createComputableModel = Vue.extend({
             this.$refs.draftBox.initDraft(editType,backUrl,oidFrom,oid)
         },
         ///
-
-        getServiceByMd5(){
-
-            $.ajax({
-                url:"/task/getServiceByMd5/" + this.computableModel.md5,
-                success:function (res) {
-                    if (res.code != 0)
-                        return
-
-                    if (res.data == null){
-                        console.log("Don't find a Service by this MD5!")
-                    }
-
-                    console.log(data)
-                }
-
-            })
-        }
     },
     mounted() {
         let that = this;
@@ -692,23 +782,23 @@ var createComputableModel = Vue.extend({
 
                     var bindOid=this.getSession("bindOid");
                     this.computableModel.bindOid=bindOid;
-                    $.ajax({
-                        type: "Get",
-                        url: "/modelItem/getInfo/"+bindOid,
-                        data: { },
-                        cache: false,
-                        async: true,
-                        success: (json) => {
-                            if(json.data!=null){
-
-                                this.computableModel.bindModelItem=json.data.name;
-                                this.clearSession();
-                            }
-                            else{
-
-                            }
-                        }
-                    })
+                    // $.ajax({
+                    //     type: "Get",
+                    //     url: "/modelItem/getInfo/"+bindOid,
+                    //     data: { },
+                    //     cache: false,
+                    //     async: true,
+                    //     success: (json) => {
+                    //         if(json.data!=null){
+                    //
+                    //             this.computableModel.bindModelItem=json.data.name;
+                    //             this.clearSession();
+                    //         }
+                    //         else{
+                    //
+                    //         }
+                    //     }
+                    // })
                 }
             }
         })
@@ -818,7 +908,27 @@ var createComputableModel = Vue.extend({
                             });
                             return false;
                         }
-                    }else{
+                    }else if(this.computableModel.contentType=="md5"){
+                        if(this.computableModel.md5!=''&&this.computableModel.mdl!=''){
+                            if(this.customAddMd5)
+                                return true
+                            return  this.getServiceByMd5Check()
+                        }else if(this.computableModel.md5==''){
+                            new Vue().$message({
+                                message: 'Please enter md5!',
+                                type: 'warning',
+                                offset: 70,
+                            });
+                            return false
+                        }else if(this.computableModel.mdl==''){
+                            new Vue().$message({
+                                message: 'Please enter mdl!',
+                                type: 'warning',
+                                offset: 70,
+                            });
+                            return false
+                        }
+                    } else{
                         if(this.draft.oid!='')
                             this.createDraft();
                         return true;

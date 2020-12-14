@@ -100,7 +100,13 @@ public class ComputableModelService {
     private List<String> itemStatusVisible;
 
     public List<ComputableModel> findAllByMd5(String md5){
-        return computableModelDao.findAllByMd5(md5);
+        List<ComputableModel> computableModelList = computableModelDao.findAllByMd5(md5);
+        for(int i=0;i<computableModelList.size();i++){
+            User user = userService.findUserByUserName(computableModelList.get(i).getAuthor());
+            computableModelList.get(i).setAuthor_name(user.getName());
+        }
+
+        return computableModelList;
     }
 
     /**
@@ -607,7 +613,7 @@ public class ComputableModelService {
                 computableModel.setStatus(jsonObject.getString("status"));
                 computableModel.setName(jsonObject.getString("name"));
                 computableModel.setDetail(jsonObject.getString("detail"));
-                computableModel.setRelateModelItem(jsonObject.getString("bindOid"));
+                computableModel.setRelateModelItem(jsonObject.getString("relateModelItem"));
                 computableModel.setDescription(jsonObject.getString("description"));
                 computableModel.setContentType(jsonObject.getString("contentType"));
                 computableModel.setUrl(jsonObject.getString("url"));

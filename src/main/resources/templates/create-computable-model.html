@@ -160,7 +160,7 @@
 
                                                                 <el-radio-group v-model="computableModel.contentType">
                                                                     <el-radio label="Package">OpenGMS Model-Service Package</el-radio>
-                                                                    <!--<el-radio label="md5">MD5</el-radio>-->
+                                                                    <el-radio label="md5">MD5</el-radio>
                                                                     <el-radio label="Code">Source Code</el-radio>
                                                                     <el-radio label="Library">Executable Library</el-radio>
                                                                     <el-radio label="Service">Third-party Web-Service Link</el-radio>
@@ -215,12 +215,20 @@
                                                         <div id="MD5" class="clearfix"
                                                              style="margin-top:50px" v-if="computableModel.contentType=='md5'">
                                                             <div class="form-group">
-                                                                <label for="MD5_text"
-                                                                       class="control-label col-md-4 col-md-offset-2">Please
-                                                                    enter computable model's MD5:</label>
+                                                                <label class="control-label col-md-4 col-md-offset-2" style="padding: 10px 15px;">
+                                                                    Please insert the MD5 of the openGMS wrapper package:</label>
                                                                 <div class="col-sm-8 col-md-offset-2">
-                                                                    <input id="MD5_text" class="form-control"
-                                                                              v-model="computableModel.md5" @onblur="getServiceByMd5" @keyup.enter="getServiceByMd5"/>
+                                                                    <el-input id="MD5_text" v-model="computableModel.md5" @change="inputMd5" @keyup.enter="getServiceByMd5">
+                                                                        <el-button slot="append" @click="getServiceByMd5">Check Duplicate</el-button>
+                                                                    </el-input>
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label class="control-label col-md-4 col-md-offset-2" style="padding: 10px 15px;">
+                                                                    Please insert the MDL of the openGMS wrapper package:</label>
+                                                                <div class="col-sm-8 col-md-offset-2">
+                                                                    <el-input id="MD5_text" type="textarea" :rows="3" v-model="computableModel.mdl" @change="inputMd5" @keyup.enter="getServiceByMd5">
+                                                                    </el-input>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -479,6 +487,42 @@
                                        :total="pageOption.total">
                         </el-pagination>
 
+                </el-dialog>
+
+                <el-dialog :visible.sync="exisedServiceDialog" title="Existed services" center width="50%">
+                    <p style="text-align: center">There exist computable models of this md5 on OpenGMS platform, do you still want to add a new one?</p>
+                    <div class="wzhScrollbar" style="max-height: 500px;">
+                        <el-table style="padding-left:10px "
+                                  :data="exisedServices">
+                            <el-table-column
+                                    label="Name"
+                            >
+                                <template slot-scope="scope">
+                                    <a class="cursorPointer" @click="window.open('/computableModel/'+scope.row.oid)">{{scope.row.name}}</a>
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                    label="Contributor"
+                            >
+                                <template slot-scope="scope">
+                                    <a class="cursorPointer" @click="window.open('/profile/'+scope.row.author_name)">{{scope.row.author_name}}</a>
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                    label="Last modify time"
+                            >
+                                <template slot-scope="scope">
+                                    <span>{{formatDate(scope.row.lastModifyTime)}}</span>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+
+                    </div>
+
+                    <span slot="footer" class="dialog-footer">
+                            <el-button style="float: right" size="small" @click="cancelMd5">Cancel</el-button>
+                            <el-button style="float: right;margin-right: 5px" size="small" type="primary" @click="addMd5">Yes, add new one</el-button>
+                    </span>
                 </el-dialog>
             </div>
 
