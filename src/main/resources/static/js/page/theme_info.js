@@ -213,6 +213,7 @@ var vue = new Vue({
             isCollapse: false,
             // drawer: false,
             // direction: 'rtl',
+            maintainer:[],
         }
     },
     methods: {
@@ -452,6 +453,9 @@ var vue = new Vue({
                 }
             })
         },
+        // aaa(item){
+        //     window.location.href='/profile/'+item.name
+        // },
         search2() {
             this.relateType = "dataItem";
             if (this.pageOption2.currentPage == 0) {
@@ -1240,6 +1244,14 @@ var vue = new Vue({
             }
 
         });
+        $.ajax({
+            type:"GET",
+            url:"/theme/getMaintainer/"+this.themeoid,
+            success:(data) =>{
+                that.maintainer = data;
+            }
+
+        })
     }
 });
 
