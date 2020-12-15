@@ -126,7 +126,7 @@ var vue = new Vue({
                 oid:'121',
                 name:'testTool',
             }
-            ],
+        ],
 
         logicalModelLoadDialog:false,
 
@@ -174,11 +174,21 @@ var vue = new Vue({
 
         editCase:-1,
 
-        dataLines:['Default'],
+        dataLines:[''],
 
-        dataItemList:[],
+        dataItemList: {},//用于html显示
 
-        dataColorPool:{},
+        dataItems:[],//dataItem平铺方便索引
+
+        modelColorPool:{},
+
+        linkedDataItems:[],
+
+        lightDataLinks:[],
+
+        mxgraphExpand:0,
+
+        currentView:'All Items',
     },
 
     computed:{
@@ -203,6 +213,30 @@ var vue = new Vue({
     },
 
     methods: {
+
+        expandMxgraph(){
+            if(this.mxgraphExpand==0){
+                this.mxgraphExpand=1
+                document.getElementsByTagName('body')[0].scrollTop = 0
+                document.getElementsByTagName('body')[0].style.overflow = 'hidden'
+            }else{
+                this.mxgraphExpand=0
+                document.getElementsByTagName('body')[0].style.overflow = ''
+            }
+        },
+
+        selectView(command){
+            this.currentView = command
+
+            this.changeMxView(command)
+
+        },
+
+        changeMxView(viewType){
+            let mxgraphXml = this.iframeWindow.getCXml()
+
+
+        },
 
         checkMutiFlow(data){//判断是否有输入是其他模型的多输出
             for(let i=0;i<this.modelActions.length;i++){
@@ -312,11 +346,10 @@ var vue = new Vue({
                         var event = state.event[k];
                         event.stateName = state.name;
                         event.name = event.eventName;
+                        // event.parentId = modelAction.id;
                         if (event.eventType == "response") {
-                            event.response = true
                             inputData.push(event);
                         } else {
-                            event.response = false
                             outputData.push(event);
                         }
                     }
@@ -827,7 +860,7 @@ var vue = new Vue({
                 xml += "\t<ProcessingTools>\n";
                 for (let i = 0; i < this.processingTools.length; i++) {
                     xml += "\t\t<ProcessingTool name='" + this.processingTools[i].name + "' type='" + this.processingTools[i].type + "' source='" + this.processingTools[i].source + "' service='" + this.processingTools[i].service
-                         ;
+                    ;
                     if(this.processingTools.type == 'dataService'){
                         xml += ("' token='" + this.processingTools[i].token)
                     }
@@ -936,7 +969,7 @@ var vue = new Vue({
                             "\t\t\t<Outputs>\n";
                         for (var k = 0; k < this.dataProcessings[i].outputData.length; k++) {
                             this.dataProcessings[i].outputData[k].url=''
-                            xml += "\t\t\t\t<DataConfiguration id='" +`${this.dataProcessings[i].type=='modelService'?`${this.dataProcessings[i].outputData[k].eventId}`:`${this.dataProcessings[i].outputData[k].id}`}`
+                            xml += "\t\t\t\t<DataConfiguration id='" + this.dataProcessings[i].outputData[k].eventId
                             if(this.dataProcessings[i].type==='modelService'){
                                 xml += "' state='" + this.dataProcessings[i].outputData[k].stateName + "' event='" + this.dataProcessings[i].outputData[k].eventName
                             }
@@ -1355,50 +1388,34 @@ var vue = new Vue({
                     outputData:[],
                     inputData:[],
                 }
-                if(dataProcessing.type=='modelService'){
-                    for(let event of dataProcessing.outputData){
-                        addProcessing.outputData.push({
-                            eventDesc: event.eventDesc,
-                            eventId: event.eventId,
-                            data: event.data,
-                            eventName: event.eventName,
-                            eventType: event.eventType,
-                            optional: event.optional,
-                            stateName: event.stateName,
-                        })
-                    }
-                    for(let event of dataProcessing.inputData){
-                        addProcessing.inputData.push({
-                            eventDesc: event.eventDesc,
-                            eventId: event.eventId,
-                            data: event.data,
-                            eventName: event.eventName,
-                            eventType: event.eventType,
-                            optional: event.optional,
-                            stateName: event.stateName,
-                            value: event.value,
-                            link: event.link,
-                            linkEvent: event.linkEvent,
-                            fileName: event.fileName,
-                            suffix: event.suffix,
-                        })
-                    }
-                }else{
-                    for(let event of dataProcessing.outputData){
-                        addProcessing.outputData.push({
-                            id:event.id,
-                        })
-                    }
-                    for(let event of dataProcessing.inputData){
-                        addProcessing.inputData.push({
-                            id:event.id,
-                            value: event.value,
-                            link: event.link,
-                            linkEvent: event.linkEvent,
-                            fileName: event.fileName,
-                            suffix: event.suffix,
-                        })
-                    }
+                for(let event of dataProcessing.outputData){
+                    addProcessing.outputData.push({
+                        eventDesc: event.eventDesc,
+                        eventId: event.eventId,
+                        data: event.data,
+                        eventName: event.eventName,
+                        name:event.name,
+                        eventType: event.eventType,
+                        optional: event.optional,
+                        stateName: event.stateName,
+                    })
+                }
+                for(let event of dataProcessing.inputData){
+                    addProcessing.inputData.push({
+                        eventDesc: event.eventDesc,
+                        eventId: event.eventId,
+                        data: event.data,
+                        name:event.name,
+                        eventName: event.eventName,
+                        eventType: event.eventType,
+                        optional: event.optional,
+                        stateName: event.stateName,
+                        value: event.value,
+                        link: event.link,
+                        linkEvent: event.linkEvent,
+                        fileName: event.fileName,
+                        suffix: event.suffix,
+                    })
                 }
 
 
@@ -1466,6 +1483,7 @@ var vue = new Vue({
                 modelActions: model7modelActions[1],
                 dataProcessings: tool7Processing[1],
                 dataLinks: dataLinks,
+                dataItems: this.dataItems,
                 description: this.taskDescription,
                 taskName: this.taskName,
             }
@@ -1698,7 +1716,6 @@ var vue = new Vue({
         openUserDataSpace(event) {
             this.currentEvent = event;
             this.userDataSpaceVisible = true;
-
             this.$nextTick(()=>{
                 this.$refs.userDataSpace.getFilePackage();
             })
@@ -1740,6 +1757,100 @@ var vue = new Vue({
             if(task.dataProcessings!=undefined){
                 this.dataProcessings = task.dataProcessings
             }
+
+            this.dataItems = []
+            this.dataItemList = {}
+
+            // if(this.dataItemList[parentId]==undefined){
+            //     let list = []
+            //     list.push(dataItem)
+            //     Vue.set(this.dataItemList,parentId,list)
+            // }else{
+            //     let list = this.dataItemList[parentId]
+            //     list.push(dataItem);
+            //     Vue.set(this.dataItemList,parentId,list)
+            // }
+            // this.addColorPool(parentId)
+
+            //loadDataItem
+            for(let modelAction of this.modelActions){
+                for(let input of modelAction.inputData){
+                    if(input.value!=undefined||input.link!=undefined){
+                        let dataItem = input
+                        dataItem.parentId = modelAction.id
+                        let parentId = modelAction.id
+                        this.dataItems.push(dataItem)
+                        if(this.dataItemList[parentId]==undefined){
+                            let list = []
+                            list.push(dataItem)
+                            Vue.set(this.dataItemList,parentId,list)
+                        }else{
+                            let list = this.dataItemList[parentId]
+                            list.push(dataItem);
+                            Vue.set(this.dataItemList,parentId,list)
+                        }
+                        this.addColorPool(parentId)
+                    }
+                }
+                for(let output of modelAction.outputData){
+                    if(output.value!=undefined||output.link!=undefined){
+                        let dataItem = output
+                        dataItem.parentId = modelAction.id
+                        let parentId = modelAction.id
+                        this.dataItems.push(dataItem)
+                        if(this.dataItemList[parentId]==undefined){
+                            let list = []
+                            list.push(dataItem)
+                            Vue.set(this.dataItemList,parentId,list)
+                        }else{
+                            let list = this.dataItemList[parentId]
+                            list.push(dataItem);
+                            Vue.set(this.dataItemList,parentId,list)
+                        }
+                        this.addColorPool(parentId)
+                    }
+                }
+            }
+
+            for(let action of this.dataProcessings){
+                for(let input of action.inputData){
+                    if(input.value!=undefined||input.link!=undefined){
+                        let dataItem = input
+                        dataItem.parentId = action.id
+                        let parentId = action.id
+                        this.dataItems.push(dataItem)
+                        if(this.dataItemList[parentId]==undefined){
+                            let list = []
+                            list.push(dataItem)
+                            Vue.set(this.dataItemList,parentId,list)
+                        }else{
+                            let list = this.dataItemList[parentId]
+                            list.push(dataItem);
+                            Vue.set(this.dataItemList,parentId,list)
+                        }
+                        this.addColorPool(parentId)
+                    }
+                }
+                for(let output of action.outputData){
+                    if(output.value!=undefined||output.link!=undefined){
+                        let dataItem = output
+                        dataItem.parentId = action.id
+                        let parentId = action.id
+                        this.dataItems.push(dataItem)
+                        if(this.dataItemList[parentId]==undefined){
+                            let list = []
+                            list.push(dataItem)
+                            Vue.set(this.dataItemList,parentId,list)
+                        }else{
+                            let list = this.dataItemList[parentId]
+                            list.push(dataItem);
+                            Vue.set(this.dataItemList,parentId,list)
+                        }
+                        this.addColorPool(parentId)
+                    }
+                }
+            }
+
             this.iframeWindow.setCXml(task.mxGraph);
             this.taskInfoVisible = false
             this.currentTask = task
@@ -1853,8 +1964,15 @@ var vue = new Vue({
         },
 
         insertDataLink(edgeCell){//传入mxgraph中的连线，生成datalink
+
             let targetCell = edgeCell.target//edge的两端是event
             let sourceCell = edgeCell.source
+
+            if(sourceCell.response==1&&targetCell.response==0){//连反的情况
+                return
+            }
+
+            this.linkDataItem(sourceCell,targetCell)
 
             let targetModelAction = this.findTargetModelAction(targetCell.frontId)[1]
             let sourceModelAction = this.findTargetModelAction(sourceCell.frontId)[1]
@@ -2310,7 +2428,6 @@ var vue = new Vue({
         },
 
         loadCondition(){
-
             this.conditionConfigDialog = false
         },
 
@@ -2363,15 +2480,15 @@ var vue = new Vue({
         addConditionCaseConfirm(conditionCase){
 
             if(conditionCase.operator==''||conditionCase.standard==''){
-                 this.$alert('Please complete information of the case', 'Tip', {
-                          type:"warning",
-                          confirmButtonText: 'OK',
-                          callback: ()=>{
-                              return
-                          }
-                      }
-                  );
-                 return
+                this.$alert('Please complete information of the case', 'Tip', {
+                        type:"warning",
+                        confirmButtonText: 'OK',
+                        callback: ()=>{
+                            return
+                        }
+                    }
+                );
+                return
             }
             this.conditionCaseDialog = false
             this.conditionConfig.cases.push(conditionCase)
@@ -2446,16 +2563,16 @@ var vue = new Vue({
         checkConditionStatus(){//检查所有condition的连线是否正确，内容是否完整
             for(let condition of this.conditions){
                 if(condition.value==''||condition.format==''||condition.cases.length==0){
-                     this.$alert('Please recheck the conditions', 'Tip', {
-                              type:"warning",
-                              confirmButtonText: 'OK',
-                              callback: ()=>{
-                                  return
-                              }
-                          }
-                      );
+                    this.$alert('Please recheck the conditions', 'Tip', {
+                            type:"warning",
+                            confirmButtonText: 'OK',
+                            callback: ()=>{
+                                return
+                            }
+                        }
+                    );
 
-                     return false;
+                    return false;
                 }else if(condition.true == undefined||condition.true==''||condition.false==undefined||condition.false==''){
                     this.$alert('Please check the direction of condition' + condition.expression, 'Tip', {
                             type:"warning",
@@ -2471,14 +2588,14 @@ var vue = new Vue({
                     try{
                         for(let conditionCase of condition.cases){
                             if(conditionCase.operator==''||conditionCase.standard=='') {
-                                 this.$alert('Please recheck cases of the conditions', 'Tip', {
-                                          type:"warning",
-                                          confirmButtonText: 'OK',
-                                          callback: ()=>{
-                                              return
-                                          }
-                                      }
-                                  );
+                                this.$alert('Please recheck cases of the conditions', 'Tip', {
+                                        type:"warning",
+                                        confirmButtonText: 'OK',
+                                        callback: ()=>{
+                                            return
+                                        }
+                                    }
+                                );
                             }
                             return false
                         }
@@ -2503,45 +2620,361 @@ var vue = new Vue({
             let targetActionInfo = this.findTargetModelAction(dataItemCell.frontId)
 
             let targetAction = targetActionInfo[1]
+            let parentId = '';
 
-            if(targetAction.md5!=undefined){
-                for(let input of targetAction.inputData){
-                    if(input.eventId == dataItemCell.eid){
-                        this.dataItemList.push(input)
-                        break
-                    }
+            let dataItem = {}
+
+            for(let input of targetAction.inputData){
+                if(input.eventId == dataItemCell.eid){
+                    dataItem.parentId = dataItemCell.frontId
+                    dataItem.link = dataItemCell.link
+                    dataItem.type = dataItemCell.type
+                    dataItem.linkEvent = dataItemCell.linkEvent
+                    dataItem.eventId = input.eventId
+                    dataItem.eventName = input.eventName
+                    dataItem.name = input.name
+                    dataItem.eventType = input.eventType
+                    dataItem.optional = input.eventType
+                    dataItem.response = input.response
+                    dataItem.value = input.response
+
+                    break
                 }
-
+            }
+            if(parentId==''){
                 for(let output of targetAction.outputData){
                     if(output.eventId == dataItemCell.eid){
-                        this.dataItemList.push(output)
+                        output.parentId = dataItemCell.frontId
+                        output.link = dataItemCell.link
+                        output.type = dataItemCell.type
+                        output.linkEvent = dataItemCell.linkEvent
+                        dataItem = output
                         break
                     }
                 }
             }
+
+            parentId = dataItem.parentId
+            if(this.dataItemList[parentId]==undefined){
+                let list = []
+                list.push(dataItem)
+                Vue.set(this.dataItemList,parentId,list)
+            }else{
+                let list = this.dataItemList[parentId]
+                list.push(dataItem);
+                Vue.set(this.dataItemList,parentId,list)
+            }
+
+            this.dataItems.push(dataItem)
+
+            this.addColorPool(parentId)
+        },
+
+
+        deleteDataItem(dataItemId,parentId){
+            let modelDataItems = this.dataItemList[parentId]
+            for(let i=modelDataItems.length-1;i>=0;i--){
+                if(modelDataItems[i].eventId == dataItemId){
+                    modelDataItems.splice(i,1);
+                    if(modelDataItems.length>0){
+                        Vue.set(this.dataItemList,parentId,modelDataItems)
+                    }else{
+                        delete this.dataItemList[parentId]
+                    }
+                }
+            }
+
+            for(let i=this.dataItems.length-1;i>=0;i--){
+                if(this.dataItems.eventId == dataItemId ){
+                    this.dataItems.splice(i,1);
+                }
+            }
+        },
+
+        floatMask(mask,width){
+            mask.style.zIndex = 1
+            mask.style.backgroundColor = '#f2f2f217'
+            mask.style.backdropFilter = 'blur(2px) saturate(110%)'
+            mask.style.width = width + 'px'
+        },
+
+        riseDataItem(dataItem,busIndex){
+            this.linkedDataItems = []
+            let width = this.$refs.dataBusList[0].offsetWidth
+            this.floatMask(this.$refs.acrylicMask[0],width)
+            this.linkedDataItems = this.getLinkedDataItem(dataItem)
+            // this.insertLink(this.linkedDataItems);
+            this.$refs.dataFlowRoad[0].style.zIndex = 3
+
+            this.lightDataLinks = []
+            for(let dataLink of this.dataLinks){
+                if(dataLink.source == dataItem.eventId||dataLink.target == dataItem.eventId){
+                    this.lightDataLinks.push(dataLink)
+                }
+            }
+        },
+
+        insertLink(linkedDataItems){
+            for(let dataItem of linkedDataItems ){
+                if(dataItem.link!=undefined){
+                    let linkedDataItem = dataItem.linkData
+
+                    let dataDom = this.$refs['dataItemCard'+dataItem.eventId][0]
+                    let linkedDom = this.$refs['dataItemCard'+linkedDataItem.eventId][0]
+
+                    let start = dataDom.offsetLeft > linkedDom.offsetLeft?linkedDom.offsetLeft:dataDom.offsetLeft + 145
+                    let end = dataDom.offsetLeft < linkedDom.offsetLeft?linkedDom.offsetLeft:dataDom.offsetLeft
+                    let width = Math.abs(end - start) - 0.5
+
+                    this.drawLink(start,end,width)
+
+                }
+            }
+        },
+
+
+        drawLink(start,end,width){
+            let linkDom = document.createElement('div')
+            linkDom.classList.add('dataFlowLink')
+            linkDom.style.marginLeft = start + 'px'
+            linkDom.style.width = width + 'px'
+
+            this.$refs.dataFlowRoad[0].style.zIndex = 3
+            this.$refs.dataFlowRoad[0].appendChild(linkDom)
+        },
+
+
+        getFlowLinkPosition(dataLink){
+            let dataDom = this.$refs['dataItemCard'+dataLink.target][0]
+            let linkedDom = this.$refs['dataItemCard'+dataLink.source][0]
+
+            let start = (dataDom.offsetLeft > linkedDom.offsetLeft?linkedDom.offsetLeft:dataDom.offsetLeft) + 145
+            let end = dataDom.offsetLeft < linkedDom.offsetLeft?linkedDom.offsetLeft:dataDom.offsetLeft
+            let width = Math.abs(end - start) - 0.5
+
+            return `margin-left:${start}px;width:${width}px`
+        },
+
+        flatContainer(event,){
+            let el = event.currentTarget
+            el.style.zIndex = -1
+            el.style.backgroundColor = 'transparent'
+            el.style.backdropFilter = 'none'
+            // let cards = $('.lightingDataItem')
+            // for(let card of cards){
+            //     card.classList.remove('lightingDataItem')
+            // }
+            setTimeout(()=>{
+                this.linkedDataItems = []
+
+            },350)
+
+            this.$refs.dataFlowRoad[0].style.zIndex = -1
+
+            // let flowLinks = document.getElementsByClassName('dataFlowLink')
+            // for(let i=flowLinks.length-1;i>=0;i--){
+            //     flowLinks[i].remove();
+            // }
+
+
+        },
+
+        linkDataItem(fromCell,toCell){
+
+            if(fromCell.response==0&&toCell.response==1){
+                let fromDataItem = this.findTargetItem(fromCell.eid,'eventId',this.dataItems)
+                let toDataItem = this.findTargetItem(toCell.eid,'eventId',this.dataItems)
+
+                toDataItem.link = fromDataItem.eventId
+                toDataItem.linkData = fromDataItem
+            }
+
+        },
+
+        getLinkedDataItem(r_dataItem){
+            let targetEid = r_dataItem.eventId
+            let linkedDataItems = [r_dataItem]
+
+            let dataItem = r_dataItem
+            while(dataItem.link!=undefined){
+                dataItem = this.findTargetItem(dataItem.link,'eventId',this.dataItems)
+                if(dataItem==null){
+                    break
+                }
+                linkedDataItems.push(dataItem)
+            }
+
+            let from = r_dataItem.linkData
+            for(let i = 0;i<this.dataItems.length;i++){
+                if(this.dataItems[i].link == r_dataItem.eventId){
+                    linkedDataItems.push(this.dataItems[i])
+                }
+            }
+
+
+            return linkedDataItems
+        },
+
+        getFlowTargetData(resourceId){
+            let result = []
+            for(let i = 0;i<this.dataItems.length;i++){
+                if(this.dataItems[i].link == resourceId){
+                    result.push(this.dataItems[i])
+                }
+            }
+        },
+
+        getDataLinkFlowData(dataItem,result){
+            if(dataItem.link!=undefined){
+                let linkData = this.findTargetItem(dataItem.link,'eventId',this.dataItems)
+
+                result.push(linkData)
+            }
+        },
+
+        findTargetItem(targetId,property,list){
+            for(let i=0;i<list.length;i++){
+                if(list[i][property]===targetId)
+                    return list[i];
+            }
+
+            return null
         },
 
         addColorPool(id){
-            let color = this.color16();
+            if(this.modelColorPool[id]==undefined){
+                let color = this.color16() ;
+                let y_color = 0.2126 * color[0] + 0.7152 * color[1] + 0.0722 * color[2]
 
-            while(object.values(this.dataColorPool).indexOf(color)!=-1){
-                color = this.color16();
+                while(Object.values(this.modelColorPool).indexOf(color)!=-1||Math.abs(y_color-255)<45||!this.checkColor(color)){
+                    color = this.color16();
+                    y_color = 0.2126 * color[0] + 0.7152 * color[1] + 0.0722 * color[2]
+                }
+
+                this.modelColorPool[id]=color;
             }
 
-            this.dataColorPool[id]=color;
+        },
+
+        checkColor(targetColor){
+            let colors = Object.values(this.modelColorPool)
+            for(let color of colors){
+                if(Math.abs(targetColor[0]-color[0])<12&&Math.abs(targetColor[1]-color[1])<12&&Math.abs(targetColor[2]-color[2])<12){
+                    return false
+                }
+            }
+            return true
         },
 
         getColor(id){
-            return this.dataColorPool[id];
+            return this.rgbString(this.modelColorPool[id]);
         },
 
         color16(){//十六进制颜色随机
-            let r = Math.floor(Math.random()*256);
-            let g = Math.floor(Math.random()*256);
-            let b = Math.floor(Math.random()*256);
-            let color = '#'+r.toString(16)+g.toString(16)+b.toString(16);
-            return color;
-        }
+            let h = Math.floor(Math.random()*360);
+            let s = Math.floor(Math.random()*100);
+            let l = Math.floor(Math.random()*66);
+            let r = Math.floor(Math.random()*255);
+            let g = Math.floor(Math.random()*255);
+            let b = Math.floor(Math.random()*255);
+            // let color = '#'+h.toString(16)+s.toString(16)+l.toString(16);
+            // return [h,s,l];
+            return [r,g,b];
+        },
+
+        hslString(hsl){
+            return `hsl(${hsl[0]}deg ${hsl[1]}% ${hsl[2]}%)`
+        },
+
+        rgbString(rgb){
+            return `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`
+        },
+
+        hsl2rgb(HSL) {
+            // arguments: [H,S,L] or H,S,L
+            //return [r, g, b];
+            let h,s,l
+            if (HSL instanceof Array) {
+                h = Number(HSL[0]) / 360;
+                s = Number(HSL[1]) / 100;
+                l = Number(HSL[2]) / 100;
+            } else {
+                h = Number(arguments[0]) / 360;
+                s = Number(arguments[1]) / 100;
+                l = Number(arguments[2]) / 100;
+            }
+            // var h = H/360;
+            //var s = S/100;
+            //var l = L/100;
+            let r, g, b;
+
+            if (s == 0) {
+                r = g = b = l; // achromatic
+            } else {
+                var hue2rgb = function hue2rgb(p, q, t) {
+                    if (t < 0) t += 1;
+                    if (t > 1) t -= 1;
+                    if (t < 1 / 6) return p + (q - p) * 6 * t;
+                    if (t < 1 / 2) return q;
+                    if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+                    return p;
+                }
+
+                var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+                var p = 2 * l - q;
+                r = hue2rgb(p, q, h + 1 / 3);
+                g = hue2rgb(p, q, h);
+                b = hue2rgb(p, q, h - 1 / 3);
+            }
+
+            return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+        },
+
+        rgb2hex(rgb) {
+            if (rgb instanceof Array) {
+                r = Number(rgb[0]);
+                g = Number(rgb[1]);
+                b = Number(rgb[2]);
+            } else {
+                r = Number(arguments[0]);
+                g = Number(arguments[1]);
+                b = Number(arguments[2]);
+            }
+            var hexR = r.toString(16);
+            if (hexR.length == 1) {
+                hexR = "0" + hexR;
+            };
+            var hexG = g.toString(16);
+            if (hexG.length == 1) {
+                hexG = "0" + hexG;
+            };
+            var hexB = b.toString(16);
+            if (hexB.length == 1) {
+                hexB = "0" + hexB;
+            };
+            return [hexR, hexG, hexB];
+        }, // arguments: array [r,g,b] or 3 values: r,g,b
+
+        hsl2hex(HSL) { // arguments: [H,S,L]!!!
+            var rgb = this.hsl2rgb(HSL);
+            console.log(rgb)
+            let hexArray = this.rgb2hex(rgb);
+            return '#'+hexArray[0].toString(16)+hexArray[1].toString(16)+hexArray[2].toString(16);
+        }, // arguments: [H,S,L]!!!
+
+        getBottomBorder(dataItem){
+            if(dataItem.response){
+                if(!dataItem.optional){
+                    return '#fc7c7c'
+                }else {
+                    return '#7090b8'
+                }
+            }else {
+                return '#9ad153'
+            }
+        },
+
+
     },
 
     mounted() {
@@ -2693,6 +3126,7 @@ var vue = new Vue({
         window.refreshConditionLink = this.refreshConditionLink;
         window.refreshConditionInfo = this.refreshConditionInfo;
         window.dragIntoDataItem = this.dragIntoDataItem;
+        window.deleteDataItem = this.deleteDataItem;
         //aaa
     }
 

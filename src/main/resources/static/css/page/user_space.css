@@ -350,7 +350,7 @@ span:focus {
 .page-content {
     min-height: 100%;
     /*margin-left: 220px;*/
-    padding-bottom: 80px;
+    padding-bottom: 50px;
     /*background: rgba(252, 251, 251, 0.88);*/
     position: relative;
     zoom: 1;
@@ -3199,6 +3199,10 @@ nav .totalContainer{
 
 .wzhSelectContainer input{
     width: 125px;
+}
+
+.el-message-box__message{
+    word-break: break-word;
 }
 
 @media only screen and (min-width: 1000px) {

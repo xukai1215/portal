@@ -798,6 +798,8 @@ var userAccount = Vue.extend(
                             vthis.dragReady=true
 
                             document.getElementsByClassName('dragBlock')[0].style.left = '-7px'//滚动条归位
+
+                            $("#imgFile")[0].value = ''
                         }
 
                     })

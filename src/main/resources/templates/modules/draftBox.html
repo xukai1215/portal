@@ -104,13 +104,13 @@
             <div class="el-message-box__content">
                 <div class="el-message-box__status el-icon-warning"></div>
                 <div class="el-message-box__message">
-                    <p style="word-break: break-word;">You have a draft about this Item, do you want to save the latest version of it? If not, this draft will be deleted.</p>
+                    <p style="word-break: break-word;">You have a <span style="font-weight: 600;">draft</span>  about this Item, do you want to <span style="font-weight: 600;color: #44972e">save</span> the latest version of it? If not, this draft will be deleted.</p>
                 </div>
             </div>
             <span slot="footer" class="dialog-footer">
                         <el-button size="small" @click="cancelDraftDialog = false" style="float: left">Cancel</el-button>
                         <el-button size="small" @click="cancelEdit">No</el-button>
-                        <el-button size="small" type="primary" @click="saveDraft">Yes</el-button>
+                        <el-button size="small" type="primary" @click="saveEdit">Yes</el-button>
                     </span>
         </el-dialog>
     </div>

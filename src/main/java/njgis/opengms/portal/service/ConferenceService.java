@@ -38,7 +38,7 @@ public class ConferenceService {
         return false;
     }
 
-    public JSONObject listByUserOid(ConferenceFindDTO conferenceFindDTO, String oid){
+    public JSONObject listByUserOid(ConferenceFindDTO conferenceFindDTO, String userId){
         int page=conferenceFindDTO.getPage();
         int pageSize = conferenceFindDTO.getPageSize();
         Boolean asc = conferenceFindDTO.getAsc();
@@ -46,7 +46,7 @@ public class ConferenceService {
 
         Sort sort=new Sort(asc?Sort.Direction.ASC : Sort.Direction.DESC, "creatDate");
         Pageable pageable= PageRequest.of(page,pageSize,sort);
-        User user=userDao.findFirstByOid(oid);
+        User user = userDao.findFirstByUserId(userId);
         Page<ConferenceResultDTO> conferenceResultDTOPage=conferenceDao.findByContributor(user.getUserName(),pageable);
         JSONObject result=new JSONObject();
         result.put("list",conferenceResultDTOPage.getContent());

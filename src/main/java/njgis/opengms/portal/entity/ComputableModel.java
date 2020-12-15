@@ -33,11 +33,11 @@ public class ComputableModel extends Item {
 
     String md5;
     Boolean deploy;
-    /**
-     * user oid
-     */
-    String author_oid;
-    String author_name;
+//    /**
+//     * user oid
+//     */
+//    String author_oid;
+//    String author_name;
 
     List<String> classifications;
     List<String> resources;

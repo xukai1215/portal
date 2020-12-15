@@ -97,8 +97,10 @@
                                     id="subRteTitle"></span></h3>
                         </div>
                         <draft-box ref="draftBox"
-                                   @insert-draft="insertInfo"
+                                   @insert-draft="insertDraft"
+                                   @get-draft="getDraft"
                                    @get-content="getItemContent"
+                                   @draft-jump="draftJump"
                                    :item-type="'conceptualModel'"></draft-box>
                     </section>
 
@@ -378,6 +380,12 @@
                                                 </div>
                                             </div>
                                             <div class="step-footer text-right">
+                                                <button class="btn btn-danger prev" @click="cancelEditClick()" style="">
+                                                    Exit
+                                                </button>
+                                                <div class="innerBorderCol btn btn-warning"
+                                                     style="padding: 0;margin: 0 10px;height: 20px;background-color: #cccccc !important;cursor: auto">
+                                                </div>
                                                 <button class="btn btn-warning prev" data-direction="prev">
                                                     Previous
                                                 </button>
@@ -426,7 +434,7 @@
                             </el-table-column>
                             <el-table-column label="Contributor">
                                 <template slot-scope="props">
-                                    <a :href="'/profile/'+props.row.author_oid" target="_blank">{{props.row.author_name}}</a>
+                                    <a :href="'/profile/'+props.row.author_name" target="_blank">{{props.row.author_name}}</a>
                                 </template>
                             </el-table-column>
                             <el-table-column fixed="right" label="Operation" width="100">

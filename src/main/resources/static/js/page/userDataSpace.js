@@ -281,7 +281,7 @@ var userDataSpace = Vue.extend(
                         .then(res=> {
                             let json=res.data;
                             if(json.code==-1){
-                                alert("Please login first!")
+                                this.$alert("Please login first!")
                                 window.sessionStorage.setItem("history", window.location.href);
                                 window.location.href="/user/login"
                             }
@@ -358,11 +358,12 @@ var userDataSpace = Vue.extend(
             },
 
             getFilePackage(){
+                this.managerloading = true
                 axios.get("/user/getFolderAndFile",{})
                     .then(res=> {
                         let json=res.data;
                         if(json.code==-1){
-                            alert("Please login first!")
+                            this.$alert("Please login first!")
                             window.sessionStorage.setItem("history", window.location.href);
                             window.location.href="/user/login"
                         }
@@ -370,6 +371,9 @@ var userDataSpace = Vue.extend(
                             this.myFile=res.data.data[0].children;
                             console.log(this.myFile)
                             this.myFileShown=this.myFile;
+                            setTimeout(()=>{
+                                this.managerloading = false
+                            },55)
                         }
 
 
@@ -454,6 +458,7 @@ var userDataSpace = Vue.extend(
                     }
                 }
 
+                this.managerloading = true
                 $.ajax({
                     type: "GET",
                     url: "/user/getFileByPath",
@@ -472,7 +477,10 @@ var userDataSpace = Vue.extend(
                             if(this.myFileShown.length>0)
                                 this.fatherIndex = this.myFileShown[0].father
                             this.refreshChild(this.myFile);
-                            console.log(this.myFileShown)
+
+                            setTimeout(()=>{
+                                this.managerloading = false
+                            },125)
                         }
                     }
 
@@ -1116,10 +1124,10 @@ var userDataSpace = Vue.extend(
 
 
             right_download(){
-                let id=this.rightTargetItem.url.split('=')[1]
+                let url=this.rightTargetItem.url
                 //下载接口
-                if(id!=undefined) {
-                    window.open( 'http://221.226.60.2:8082/data?uid='+id);
+                if(url!=undefined) {
+                    window.open( url);
                 }
                 else{
                     this.$message.error("No data can be downloaded.");
@@ -1495,7 +1503,7 @@ var userDataSpace = Vue.extend(
                         this.uploadProgress = progressEvent.loaded / progressEvent.total * 100 | 0;  //百分比
                     }
                 }).then((res)=> {
-                    if(res.data.code==0){
+                    if(res.data.code==1){
                         let data=res.data.data;
                         if(this.uploadFiles.length==1){
                             let index=this.uploadFiles[0].name.lastIndexOf(".")
@@ -1504,6 +1512,8 @@ var userDataSpace = Vue.extend(
                         else{
                             data.suffix="zip";
                         }
+
+                        data.file_name = this.uploadName
                         data.label=data.file_name;
                         data.file_name+="."+data.suffix;
                         data.upload=true;
@@ -1521,7 +1531,7 @@ var userDataSpace = Vue.extend(
                         }
                         this.uploadLoading=false;
                         // this.uploadDialogVisible=false;
-                        this.remoteMethod("");
+                        this.remoteMethod("none");
                         this.$refs.upload.clearFiles();
 
 

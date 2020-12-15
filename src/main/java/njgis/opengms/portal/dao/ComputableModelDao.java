@@ -27,7 +27,7 @@ public interface ComputableModelDao extends MongoRepository<ComputableModel,Stri
 
     Page<ComputableModel> findByStatusNotLike(String statusNotLike, Pageable pageable);
 
-    List<ComputableModel> findAllByMd5(String md5);
+    List<ComputableModelResultDTO> findAllByMd5(String md5);
 
     List<ComputableModel> findAllByNameContainsIgnoreCase(String key);
 

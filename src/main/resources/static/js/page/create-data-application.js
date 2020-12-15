@@ -164,24 +164,6 @@ var createDataApplication = Vue.extend({
         sendUserToParent(userId){
             this.$emit('com-senduserinfo',userId)
         },
-
-        getServiceByMd5(){
-
-            $.ajax({
-                url:"/task/getServiceByMd5/" + this.dataApplication.md5,
-                success:function (res) {
-                    if (res.code != 0)
-                        return
-
-                    if (res.data == null){
-                        console.log("Don't find a Service by this MD5!")
-                    }
-
-                    console.log(data)
-                }
-
-            })
-        },
         handleCheckChange(data, checked, indeterminate) {
             let checkedNodes = this.$refs.tree.getCheckedNodes()
             let classes = [];

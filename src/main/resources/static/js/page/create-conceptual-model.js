@@ -163,12 +163,33 @@ var createConceptualModel = Vue.extend({
             window.sessionStorage.clear();
         },
 
-        insertInfo(basicInfo){
-            this.resources=basicInfo.resourceJson;
+        async getBindModelInfo(modelOid){
+            let data = null
+            await axios.get('/modelItem/searchByOid',{
+                params:{
+                    oid:modelOid
+                }
+            }).then(
+                res=>{
+                    if(res.data.code!=-1){
+                        data = res.data.data
+                    }else{
+
+                    }
+                }
+            )
+
+            return data
+        },
+
+        async insertInfo(basicInfo){
+            this.resources=basicInfo.resourceJson==undefined?[]:basicInfo.resourceJson;
+
+            let modelItem = await this.getBindModelInfo(basicInfo.relatedModelItem)
+            this.conceptualModel.bindModelItem=modelItem.name;
+            this.conceptualModel.bindOid=modelItem.oid;
 
             $("#search-box").val(basicInfo.relateModelItemName)
-            this.conceptualModel.bindModelItem=basicInfo.relateModelItemName;
-            this.conceptualModel.bindOid=basicInfo.relateModelItem;
             this.conceptualModel.status=basicInfo.status;
 
 
@@ -270,9 +291,10 @@ var createConceptualModel = Vue.extend({
         getItemContent(trigger,callBack){
             let itemObj = {}
 
+            itemObj.resourceJson = this.resources
             itemObj.name = this.conceptualModel.name
             itemObj.description = this.conceptualModel.description
-            itemObj.bindModelItem = this.conceptualModel.bindModelItem
+            itemObj.relatedModelItem = this.conceptualModel.bindOid
             itemObj.status = this.conceptualModel.status
             itemObj.contentType=$("input[name='ContentType']:checked").val();
             itemObj.isAuthor=$("input[name='author_confirm']:checked").val();
@@ -374,6 +396,28 @@ var createConceptualModel = Vue.extend({
 
         initDraft(editType,backUrl,oidFrom,oid){
             this.$refs.draftBox.initDraft(editType,backUrl,oidFrom,oid)
+        },
+
+        getDraft(){
+            return this.$refs.draftBox.getDraft();
+        },
+
+        insertDraft(draftContent){
+            this.insertInfo(draftContent)
+        },
+
+        cancelEditClick(){
+            if(this.getDraft()!=null){
+                this.$refs.draftBox.cancelDraftDialog=true
+            }else{
+                setTimeout(() => {
+                    window.location.href = "/user/userSpace#/models/conceptualmodel";
+                }, 905)
+            }
+        },
+
+        draftJump(){
+            window.location.href = '/user/userSpace#/models/conceptualmodel';
         },
 
         addFile(){
@@ -716,10 +760,11 @@ var createConceptualModel = Vue.extend({
 
             initTinymce('textarea#conceptualModelText')
 
-            this.loadMatchedCreateDraft();
             if(this.draft.oid!=''&&this.draft.oid!=null&&typeof (this.draft.oid)!="undefined"){
                 // this.loadDraftByOid()
                 this.initDraft('create','/user/userSpace#/models/modelitem','draft',this.draft.oid)
+            }else{
+                this.loadMatchedCreateDraft();
             }
 
         }
@@ -833,6 +878,7 @@ var createConceptualModel = Vue.extend({
                     loading.close();
                     switch (res.data.code) {
                         case 1:
+                            this.deleteDraft()
                             this.$confirm('<div style=\'font-size: 18px\'>Create conceptual model successfully!</div>', 'Tip', {
                                 dangerouslyUseHTMLString: true,
                                 confirmButtonText: 'View',
@@ -898,6 +944,7 @@ var createConceptualModel = Vue.extend({
                     if(res.code===0) {
                         switch (res.data.code) {
                             case 0:
+                                this.deleteDraft()
                                 let currentUrl = window.location.href;
                                 let index = currentUrl.lastIndexOf("\/");
                                 that.conceptualModel_oid = currentUrl.substring(index + 1,currentUrl.length);

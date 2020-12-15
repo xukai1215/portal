@@ -245,7 +245,7 @@ Vue.component("user-data",
                         .then(res => {
                             let json = res.data;
                             if (json.code == -1) {
-                                alert("Please login first!")
+                                this.$alert("Please login first!")
                                 window.sessionStorage.setItem("history", window.location.href);
                                 window.location.href = "/user/login"
                             } else {
@@ -320,19 +320,21 @@ Vue.component("user-data",
             },
 
             getFilePackage() {
+                this.managerloading = true
+
                 axios.get("/user/getFolderAndFile", {})
                     .then(res => {
                         let json = res.data;
                         if (json.code == -1) {
-                            alert("Please login first!")
+                            this.$alert("Please login first!")
                             window.sessionStorage.setItem("history", window.location.href);
                             window.location.href = "/user/login"
                         } else {
                             this.myFile = res.data.data[0].children;
                             console.log(this.myFile)
                             this.myFileShown = this.myFile;
+                            this.managerloading = false
                         }
-
 
                     });
             },
@@ -402,7 +404,7 @@ Vue.component("user-data",
                         this.pathShown.push(pathList[i].data)
                     }
                 }
-
+                this.managerloading = true
                 $.ajax({
                     type: "GET",
                     url: "/user/getFileByPath",
@@ -413,7 +415,7 @@ Vue.component("user-data",
                     contentType: "application/x-www-form-urlencoded",
                     success: (json) => {
                         if (json.code == -1) {
-                            alert("Please login first!")
+                            this.$alert("Please login first!")
                             window.sessionStorage.setItem("history", window.location.href);
                             window.location.href = "/user/login"
                         } else {
@@ -422,6 +424,10 @@ Vue.component("user-data",
                                 this.fatherIndex = this.myFileShown[0].father
                             this.refreshChild(this.myFile);
                             console.log(this.myFileShown)
+                            setTimeout(()=>{
+                                this.managerloading = false
+
+                            },105)
                         }
                     }
 
@@ -515,7 +521,7 @@ Vue.component("user-data",
                         contentType: "application/x-www-form-urlencoded",
                         success: (json) => {
                             if (json.code == -1) {
-                                alert("Please login first!")
+                                this.$alert("Please login first!")
                                 window.sessionStorage.setItem("history", window.location.href);
                                 window.location.href = "/user/login"
                             } else {
@@ -614,7 +620,7 @@ Vue.component("user-data",
                         contentType: "application/x-www-form-urlencoded",
                         success: (json) => {
                             if (json.code == -1) {
-                                alert("Please login first!")
+                                this.$alert("Please login first!")
                                 window.sessionStorage.setItem("history", window.location.href);
                                 window.location.href = "/user/login"
                             }
@@ -741,7 +747,7 @@ Vue.component("user-data",
                                         contentType: "application/x-www-form-urlencoded",
                                         success: (json) => {
                                             if (json.code == -1) {
-                                                alert("Please login first!")
+                                                this.$alert("Please login first!")
                                                 window.sessionStorage.setItem("history", window.location.href);
                                                 window.location.href = "/user/login"
                                             } else {
@@ -797,7 +803,7 @@ Vue.component("user-data",
                                         contentType: "application/x-www-form-urlencoded",
                                         success: (json) => {
                                             if (json.code == -1) {
-                                                alert("Please login first!")
+                                                this.$alert("Please login first!")
                                                 window.sessionStorage.setItem("history", window.location.href);
                                                 window.location.href = "/user/login"
                                             } else {
@@ -971,7 +977,7 @@ Vue.component("user-data",
                     success: (json) => {
 
                         if (json.code != 0) {
-                            alert("Please login first!");
+                            this.$alert("Please login first!");
                             window.location.href = "/user/login";
                         } else {
                             const data = json.data;
@@ -1167,7 +1173,7 @@ Vue.component("user-data",
                                     success: (json) => {
                                         let data = json.data;
                                         if (json.code == -1) {
-                                            alert("Please login first!")
+                                            this.$alert("Please login first!")
                                             window.sessionStorage.setItem("history", window.location.href);
                                             window.location.href = "/user/login"
                                         } else {
@@ -1245,7 +1251,7 @@ Vue.component("user-data",
                                     contentType: "application/x-www-form-urlencoded",
                                     success: (json) => {
                                         if (json.code == -1) {
-                                            alert("Please login first!")
+                                            this.$alert("Please login first!")
                                             window.sessionStorage.setItem("history", window.location.href);
                                             window.location.href = "/user/login"
                                         } else {
@@ -1351,7 +1357,7 @@ Vue.component("user-data",
                     }).then((res) => {
                         let json = res.data;
                         if (json.code == -1) {
-                            alert("Please login first!")
+                            this.$alert("Please login first!")
                             window.sessionStorage.setItem("history", window.location.href);
                             window.location.href = "/user/login"
                         } else {
@@ -1460,7 +1466,7 @@ Vue.component("user-data",
                         this.uploadProgress = progressEvent.loaded / progressEvent.total * 100 | 0;  //百分比
                     }
                 }).then((res)=> {
-                    if(res.data.code==0){
+                    if(res.data.code==1){
                         let data=res.data.data;
                         if(this.uploadFiles.length==1){
                             let index=this.uploadFiles[0].name.lastIndexOf(".")
@@ -1581,7 +1587,7 @@ Vue.component("user-data",
                     .then(res=> {
                         let json=res.data;
                         if(json.code==-1){
-                            alert("Please login first!")
+                            this.$alert("Please login first!")
                             window.sessionStorage.setItem("history", window.location.href);
                             window.location.href="/user/login"
                         }
@@ -1730,7 +1736,7 @@ Vue.component("user-data",
                     contentType: "application/json",
                     success: (json) => {
                         if (json.code == -1) {
-                            alert("Please login first!")
+                            this.$alert("Please login first!")
                             window.sessionStorage.setItem("history", window.location.href);
                             window.location.href = "/user/login"
                         } else {
@@ -1823,7 +1829,7 @@ Vue.component("user-data",
                     contentType: "application/x-www-form-urlencoded",
                     success: (json) => {
                         if (json.code == -1) {
-                            alert("Please login first!")
+                            this.$alert("Please login first!")
                             window.sessionStorage.setItem("history", window.location.href);
                             window.location.href = "/user/login"
                         } else {
@@ -2050,7 +2056,7 @@ Vue.component("user-data",
                     success: (json) => {
 
                         if (json.code != 0) {
-                            alert("Please login first!");
+                            this.$alert("Please login first!");
                             window.location.href = "/user/login";
                         } else {
                             const data = json.data;
@@ -2139,75 +2145,75 @@ Vue.component("user-data",
                 // };
 
 
-                $.ajax({
-                    type: "GET",
-                    url: "/user/load",
-                    data: {},
-                    cache: false,
-                    async: false,
-                    xhrFields: {
-                        withCredentials: true
-                    },
-                    crossDomain: true,
-                    success: (data) => {
-                        console.log(data);
-
-                        if (data.oid == "") {
-                            alert("Please login");
-                            window.location.href = "/user/login";
-                        } else {
-                            this.userId = data.oid;
-                            this.userName = data.name;
-                            console.log(this.userId)
-                            this.sendUserToParent(this.userId)
-                            // this.addAllData()
-
-                            // axios.get("/dataItem/amountofuserdata",{
-                            //     params:{
-                            //         userOid:this.userId
-                            //     }
-                            // }).then(res=>{
-                            //     that.dcount=res.data
-                            // });
-
-                            $("#author").val(this.userName);
-
-                            var index = window.sessionStorage.getItem("index");
-                            if (index != null && index != undefined && index != "" && index != NaN) {
-                                this.defaultActive = index;
-                                this.handleSelect(index, null);
-                                window.sessionStorage.removeItem("index");
-                                this.curIndex = index
-
-                            } else {
-                                // this.changeRter(1);
-                            }
-
-                            window.sessionStorage.removeItem("tap");
-                            //this.getTasksInfo();
-                            this.load = false;
-                        }
-                    }
-                })
+                // $.ajax({
+                //     type: "GET",
+                //     url: "/user/load",
+                //     data: {},
+                //     cache: false,
+                //     async: false,
+                //     xhrFields: {
+                //         withCredentials: true
+                //     },
+                //     crossDomain: true,
+                //     success: (data) => {
+                //         console.log(data);
+                //
+                //         if (data.oid == "") {
+                //             this.$alert("Please login");
+                //             window.location.href = "/user/login";
+                //         } else {
+                //             this.userId = data.oid;
+                //             this.userName = data.name;
+                //             console.log(this.userId)
+                //             this.sendUserToParent(this.userId)
+                //             // this.addAllData()
+                //
+                //             // axios.get("/dataItem/amountofuserdata",{
+                //             //     params:{
+                //             //         userOid:this.userId
+                //             //     }
+                //             // }).then(res=>{
+                //             //     that.dcount=res.data
+                //             // });
+                //
+                //             $("#author").val(this.userName);
+                //
+                //             var index = window.sessionStorage.getItem("index");
+                //             if (index != null && index != undefined && index != "" && index != NaN) {
+                //                 this.defaultActive = index;
+                //                 this.handleSelect(index, null);
+                //                 window.sessionStorage.removeItem("index");
+                //                 this.curIndex = index
+                //
+                //             } else {
+                //                 // this.changeRter(1);
+                //             }
+                //
+                //             window.sessionStorage.removeItem("tap");
+                //             //this.getTasksInfo();
+                //             this.load = false;
+                //         }
+                //     }
+                // })
 
                 var that = this
                 //获取data item分类树
-                axios.get("/dataItem/createTree")
-                    .then(res => {
-                        that.tObj = res.data;
-                        for (var e in that.tObj) {
-                            var a = {
-                                key: e,
-                                value: that.tObj[e]
-                            }
-                            if (e != 'Data Resouces Hubs') {
-                                that.categoryTree.push(a);
-                            }
-
-
-                        }
-
-                    })
+                // axios.get("/dataItem/createTree")
+                //     .then(res => {
+                //         that.tObj = res.data;
+                //         for (var e in that.tObj) {
+                //             var a = {
+                //                 key: e,
+                //                 value: that.tObj[e]
+                //             }
+                //             if (e != 'Data Resouces Hubs') {
+                //                 that.categoryTree.push(a);
+                //             }
+                //
+                //
+                //         }
+                //
+                //     })
 
                 //this.getModels();
             });
@@ -2324,13 +2330,8 @@ Vue.component("user-data",
                 )
             })
 
-            this.getFilePackage();
-            this.getUserTaskInfo();
-
-            var user_num = 0;
-
-            //初始化的时候吧curIndex传给父组件，来控制bar的高亮显示
-            this.sendcurIndexToParent()
+            // this.getFilePackage();
+            // this.getUserTaskInfo();
 
             console.log(this.singleChoice)
         },

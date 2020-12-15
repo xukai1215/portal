@@ -51,7 +51,7 @@ public class AwardandHonorService {
 
     }
 
-    public JSONObject listByUserOid(AwardandHonorFindDTO awardandHonorFindDTO, String oid ){
+    public JSONObject listByUserOid(AwardandHonorFindDTO awardandHonorFindDTO, String userId ){
         int page=awardandHonorFindDTO.getPage();
         int pageSize = awardandHonorFindDTO.getPageSize();
         Boolean asc = awardandHonorFindDTO.getAsc();
@@ -59,7 +59,7 @@ public class AwardandHonorService {
 
         Sort sort=new Sort(asc?Sort.Direction.ASC : Sort.Direction.DESC, sortElement);
         Pageable pageable= PageRequest.of(page,5,sort);
-        User user=userDao.findFirstByOid(oid);
+        User user=userDao.findFirstByUserId(userId);
         List<AwardandHonorResultDTO> awardandHonorResultDTO=awardandHonorDao.findByContributor(user.getUserName(),sort);
 
         JSONObject result=new JSONObject();

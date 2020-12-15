@@ -306,7 +306,7 @@ new Vue({
                     ],
 
                 resourceSortElement:'viewCount',
-                resourceSortEleText:'viewcount',
+                resourceSortEleText:'View Count',
             }
         },
 
@@ -1828,7 +1828,7 @@ new Vue({
 
         selectSortEle(command){
             this.resourceSortElement = command
-            this.resourceSortEleText = command.toLowerCase()
+            this.resourceSortEleText = command
             this.pageOption.currentPage=1;
             this.searchResource()
         },
