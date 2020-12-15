@@ -30,4 +30,5 @@ public class DataApplicationDTO {
 
     String contentType;
     String url;//Third-party Web-Service Link
+    String method;
 }

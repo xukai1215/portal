@@ -3,6 +3,7 @@ package njgis.opengms.portal.entity;
 import com.alibaba.fastjson.JSONArray;
 import lombok.Data;
 import njgis.opengms.portal.entity.support.AuthorInfo;
+import njgis.opengms.portal.entity.support.InvokeService;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -55,5 +56,8 @@ public class DataApplication {
     String image;
     List<String> contributors;
     String lastModifier;
+
+    List<InvokeService> invokeServices;
+    String method;
 
 }

@@ -7,11 +7,10 @@ import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.dto.DataApplicationDTO;
 import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.entity.support.AuthorInfo;
+import njgis.opengms.portal.entity.support.InvokeService;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.Utils;
-import njgis.opengms.portal.utils.XmlTool;
-import njgis.opengms.portal.utils.ZipUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,14 +19,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.util.DigestUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-import sun.misc.IOUtils;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.*;
-import java.sql.SQLTransactionRollbackException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -170,6 +164,15 @@ public class DataApplicationService {
                 dataApplication.setCreateTime(now);
                 dataApplication.setLastModifyTime(now);
 
+                //将服务invokeApplications置入
+                InvokeService invokeService = new InvokeService();
+                invokeService.setOid(UUID.randomUUID().toString());
+                invokeService.setMethod(dataApplication.getMethod());
+                invokeService.setName(dataApplication.getName());
+                List<InvokeService> invokeServices = new ArrayList<>();
+                invokeServices.add(invokeService);
+                dataApplication.setInvokeServices(invokeServices);
+
                 dataApplicationDao.insert(dataApplication);
 
                 result.put("code", 1);
@@ -179,6 +182,8 @@ public class DataApplicationService {
                 result.put("code", -2);
             }
         }
+
+
 
         return result;
     }
