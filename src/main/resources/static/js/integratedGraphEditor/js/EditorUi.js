@@ -959,7 +959,7 @@ EditorUi.prototype.splitSize = (mxClient.IS_TOUCH || mxClient.IS_POINTER) ? 12 :
 /**
  * Specifies the height of the menubar. Default is 34.
  */
-EditorUi.prototype.menubarHeight = 34;
+EditorUi.prototype.menubarHeight = 0;
 
 /**
  * Specifies the width of the format panel should be enabled. Default is true.
@@ -979,12 +979,12 @@ EditorUi.prototype.toolbarHeight = 0;
 /**
  * Specifies the height of the footer. Default is 28.
  */
-EditorUi.prototype.footerHeight = 28;
+EditorUi.prototype.footerHeight = 1;
 
 /**
  * Specifies the height of the optional sidebarFooterContainer. Default is 34.
  */
-EditorUi.prototype.sidebarFooterHeight = 34;
+EditorUi.prototype.sidebarFooterHeight = 0;
 
 /**
  * Specifies the position of the horizontal split bar. Default is 240 or 118 for

@@ -562,12 +562,31 @@ var createTemplate = Vue.extend({
             itemObj.classifications = this.cls;
             itemObj.name = $("#nameInput").val();
             itemObj.alias = $("#aliasInput").val().split(",");
-            itemObj.image = this.itemInfoImage
+            itemObj.uploadImage = this.itemInfoImage
             itemObj.description = $("#descInput").val();
             itemObj.xml = $("#xml").val();
             itemObj.status = this.status;
             itemObj.localizationList = this.localizationList;
+            if(this.editType == 'modify') {
 
+                for (i = 0; i < this.localizationList.length; i++) {
+                    if (this.currentLocalization.localName == this.localizationList[i].localName) {
+                        this.localizationList[i].name = this.currentLocalization.name;
+                        this.localizationList[i].description = tinymce.activeEditor.getContent();
+                        break;
+                    }
+                }
+                itemObj.localizationList = this.localizationList;
+
+            }else {
+                itemObj.localizationList = [];
+
+                this.currentLocalization.description = tinymce.activeEditor.getContent();
+                this.currentLocalization.localCode = this.languageAdd.local.value;
+                this.currentLocalization.localName = this.languageAdd.local.label;
+
+                itemObj.localizationList.push(this.currentLocalization);
+            }
             if(callBack){
                 callBack(itemObj)
             }
@@ -659,6 +678,28 @@ var createTemplate = Vue.extend({
 
         initDraft(editType,backUrl,oidFrom,oid){
             this.$refs.draftBox.initDraft(editType,backUrl,oidFrom,oid)
+        },
+
+        getDraft(){
+            return this.$refs.draftBox.getDraft();
+        },
+
+        insertDraft(draftContent){
+            this.insertInfo(draftContent)
+        },
+
+        cancelEditClick(){
+            if(this.getDraft()!=null){
+                this.$refs.draftBox.cancelDraftDialog=true
+            }else{
+                setTimeout(() => {
+                    window.location.href = "/user/userSpace#/communities/dataTemplate";
+                }, 905)
+            }
+        },
+
+        draftJump(){
+            window.location.href = '/user/userSpace#/communities/dataTemplate';
         },
 
         changeOpen(n) {
@@ -831,10 +872,11 @@ var createTemplate = Vue.extend({
             this.$set(this.languageAdd.local,"value","en-US");
             this.$set(this.languageAdd.local,"label","English (United States)");
 
-            this.loadMatchedCreateDraft();
             if(this.draft.oid!=''&&this.draft.oid!=null&&typeof (this.draft.oid)!="undefined"){
                 // this.loadDraftByOid()
                 this.initDraft('create','/user/userSpace#/models/modelitem','draft',this.draft.oid)
+            }else{
+                this.loadMatchedCreateDraft();
             }
 
         }
@@ -975,20 +1017,8 @@ var createTemplate = Vue.extend({
 
             templateObj = this.getItemContent('finish')
 
-
-
-
             let formData=new FormData();
             if ((oid === "0") || (oid === "") || (oid == null)) {
-
-                templateObj.localizationList = [];
-
-                this.currentLocalization.description = tinymce.activeEditor.getContent();
-                this.currentLocalization.localCode = this.languageAdd.local.value;
-                this.currentLocalization.localName = this.languageAdd.local.label;
-
-                templateObj.localizationList.push(this.currentLocalization);
-
                 let file = new File([JSON.stringify(templateObj)],'ant.txt',{
                     type: 'text/plain',
                 });
@@ -1004,6 +1034,7 @@ var createTemplate = Vue.extend({
                     success: (result)=> {
                         loading.close();
                         if (result.code == "0") {
+                            this.deleteDraft()
                             this.$confirm('<div style=\'font-size: 18px\'>Create data template successfully!</div>', 'Tip', {
                                 dangerouslyUseHTMLString: true,
                                 confirmButtonText: 'View',
@@ -1058,6 +1089,7 @@ var createTemplate = Vue.extend({
                         loading.close();
                         if (result.code === 0) {
                             if (result.data.method === "update") {
+                                this.deleteDraft()
                                 this.$confirm('<div style=\'font-size: 18px\'>Update data template successfully!</div>', 'Tip', {
                                     dangerouslyUseHTMLString: true,
                                     confirmButtonText: 'View',

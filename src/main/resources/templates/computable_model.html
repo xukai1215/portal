@@ -20,6 +20,7 @@
     <link rel="stylesheet" type="text/css" href="/static/js/mxGraph/css/common.css">
     <link rel="stylesheet" href="/static/css/common/userModule.css">
     <link rel="stylesheet" href="/static/css/common/wzhStyle.css">
+    <link rel="stylesheet" href="/static/css/common/wzhFlexContainer.css">
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css"/>
 
@@ -104,22 +105,22 @@
                         <!--<div th:utext="'&nbsp&nbsp'+${modelInfo.shareCount}">&nbsp&nbsp37</div>-->
                         <span th:if="${modelInfo.contentType=='Package'}">
                             <button th:unless="${modelInfo.deploy==true}" class="btn btn-lg btn-info" type="button"
-                                    @click="dialogVisible = true">Deploy
-                            </button>
-                            <button th:if="${modelInfo.deploy==true}" class="btn btn-lg btn-success" type="button"
-                                    @click="invoke()">
-                                Invoke
+                                    @click="deployModel()">Deploy
                             </button>
                         </span>
-
+<!--                        -->
+                        <button th:if="${modelInfo.deploy==true||modelInfo.contentType=='md5'}" class="btn btn-lg btn-success" type="button"
+                                @click="invoke()">Invoke
+                        </button>
                         <a href="javascript:void(0)" class="fa fa-eye " aria-hidden="true"></a>
                         <div th:utext="'&nbsp&nbsp'+${modelInfo.viewCount}">&nbsp&nbsp341</div>
+
                     </div>
 
                 </div>
+                <p th:if="${modelInfo.contentType=='md5'}" style="color: #A8A8A8;font-style: italic;font-size: 12px;margin-left: 20px">This model is deployed on a personal model server of the contributor.</p>
 
             </div>
-
             <div id="Contributor0" class="detail_block minScreen">
                 <div class="block_head">
                     <div class="head_text" style="padding-left: 10px;padding-right: 15px;display: inline-flex">
@@ -689,6 +690,65 @@
         <edit-computable-model-module :model-edit-oid="modelOid"></edit-computable-model-module>
     </el-dialog>
 
+    <el-dialog title="select model server" center :visible.sync="selectModelServerDialog">
+        <div style="flex: 1.5;margin-left: 5px">
+            <p style="text-align: center;font-style: italic;color: #999999">We have provided several servers of different platforms for model deploying.</p>
+            <p style="text-align: center;font-style: italic;color: #999999">If you want to deploy this model only on your model server, please change its content type to 'md5' in your space.</p>
+            <div class="wzhScrollbar"
+                     style="height: 340px;min-height: 350px">
+                <div style="width: 100%;margin-bottom: 10px">
+                    <div class="col-sm-12 col-md-6 col-lg-6"
+                         v-if="publicModelContainerList.length!=0"
+
+                         v-for="(container,index) in publicModelContainerList">
+                        <el-card class="box-card serverCard"
+                                 :class="container.status?'cursorPointer':''"
+                                 :style="container.ip==modelServerUrl.split(':')[0]?'border-top:8px solid #36c94f':''"
+                                 @click.native="selectModelServer(container)"
+                        >
+                            <div class="content">
+                                <div class="clearfix">
+                                    <div class="pull-left">
+                                        <h4>
+                                            {{container.hardware.hostName}}
+
+                                        </h4>
+                                        <p style="margin-bottom:5px">
+                                            {{container.hardware.system}}
+                                            {{container.hardware.version}}</p>
+                                        <p>{{container.hardware.cpu_Core}}
+                                            Core -
+                                            {{container.hardware.totalMemory}}
+                                            RAM -
+                                            {{container.hardware.diskAll}}
+                                            Hard Disk</p>
+                                    </div>
+                                </div>
+                                <div class="clearfix"
+                                     style="margin-top:10px">
+                                    <div class="serverStatus pull-left"
+                                         v-if="container.status">
+                                        <span style="background: #6FCE7F;display:inline-block;width:10px;height:10px;border-radius: 50%;"></span>
+                                        Running
+                                    </div>
+                                    <div class="serverStatus pull-left"
+                                         v-else>
+                                        <span style="background: #929994;display:inline-block;width:10px;height:10px;border-radius: 50%;"></span>
+                                        Offline
+                                    </div>
+                                </div>
+                            </div>
+                        </el-card>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <span slot="footer" class="dialog-footer">
+            <el-button style="float: right;margin-right: 5px" size="small" type="primary" @click="deploy">Deploy</el-button>
+            <el-button style="float: right" size="small" @click="selectModelServerDialog=false">Cancel</el-button>
+        </span>
+    </el-dialog>
     <div th:replace="fragments/footer :: footer"></div>
 
 </div>

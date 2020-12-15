@@ -21,6 +21,7 @@ import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.*;
 import org.apache.commons.io.FileUtils;
+import org.apache.http.entity.ContentType;
 import org.bson.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -34,8 +35,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import sun.misc.IOUtils;
@@ -99,8 +104,14 @@ public class ComputableModelService {
     @Value(value = "Public,Discoverable")
     private List<String> itemStatusVisible;
 
-    public List<ComputableModel> findAllByMd5(String md5){
-        return computableModelDao.findAllByMd5(md5);
+    public List<ComputableModelResultDTO> findAllByMd5(String md5){
+        List<ComputableModelResultDTO> computableModelList = computableModelDao.findAllByMd5(md5);
+        for(int i=0;i<computableModelList.size();i++){
+            User user = userService.findUserByUserName(computableModelList.get(i).getAuthor());
+            computableModelList.get(i).setAuthor_name(user.getName());
+        }
+
+        return computableModelList;
     }
 
     /**
@@ -358,7 +369,7 @@ public class ComputableModelService {
             modelItemInfo.put("name",modelItem.getName());
             modelItemInfo.put("description", modelItem.getDescription());
             modelItemInfo.put("img",modelItem.getImage().equals("") ? null : htmlLoadPath + modelItem.getImage());
-
+            modelItemInfo.put("contentType", modelInfo.getContentType());
 
 
             ModelAndView modelAndView = new ModelAndView();
@@ -470,6 +481,34 @@ public class ComputableModelService {
         return jsonObject;
     }
 
+    public int doPostIntoDataContainer(String url, String savefileName) throws IOException {
+        JSONObject jsonObject = new JSONObject();
+
+        RestTemplate restTemplate = new RestTemplate();
+        File file = new File(savefileName);
+        FileInputStream fileInputStream=new FileInputStream(file);
+        MultipartFile multipartFile = new MockMultipartFile(file.getName(), file.getName(),
+                ContentType.APPLICATION_OCTET_STREAM.toString(), fileInputStream);
+        MultiValueMap<String, Object> part = new LinkedMultiValueMap<>();
+        part.add("ms_limited", 0);//模型服务是否公开，0为public
+        part.add("file_model", multipartFile.getResource());//对应的部署包
+        JSONObject result = restTemplate.postForObject(url, part, JSONObject.class);
+
+        if(result.getIntValue("code")==-1){
+
+            return -1;
+        }else{
+            String deployStatus = result.getString("result");
+            if(deployStatus.equals("suc")){
+                return 1;
+            }else {
+                return 0;
+            }
+
+        }
+
+    }
+
     public JSONObject doPostWithDeployPackage(String url, String savefileName, String fileName, String param) {
 
         try {
@@ -561,19 +600,31 @@ public class ComputableModelService {
     @Value("${managerServerIpAndPort}")
     private String managerServer;
 
-    public String deploy(String id) {
-        //获取可以将部署包进行部署的任务服务器信息
-        JSONObject result = new JSONObject();
-        String urlStr = "http://" + managerServer + "/GeoModeling/taskNode/getTaskForMicroService";
-        JSONObject serviceTaskResult = Utils.connentURL(Utils.Method.GET, urlStr);
-        if (serviceTaskResult != null && serviceTaskResult.getInteger("code") == 1) {
-            //task服务器API，部署包通过task server进行部署
-            String deployUrl = "http://" + serviceTaskResult.getJSONObject("data").getString("host") + ":" + serviceTaskResult.getJSONObject("data").getString("port") + "/server/modelser/deploy";
-            ComputableModel computableModel = computableModelDao.findFirstByOid(id);
-            //String saveFilePath = ConceptualModelService.class.getClassLoader().getResource("").getPath() + "static/upload/computableModel/Package" + computableModel.getResources().get(0);
-            String saveFilePath = resourcePath + "/computableModel/Package" + computableModel.getResources().get(0);
-            String[] paths = computableModel.getResources().get(0).split("/");
-            String fileName = paths[paths.length - 1];
+    public String deploy(String id,String modelServer) throws IOException {
+        String deployUrl = null;
+        ComputableModel computableModel = computableModelDao.findFirstByOid(id);
+        //String saveFilePath = ConceptualModelService.class.getClassLoader().getResource("").getPath() + "static/upload/computableModel/Package" + computableModel.getResources().get(0);
+        String saveFilePath = resourcePath + "/computableModel/Package" + computableModel.getResources().get(0);
+        String[] paths = computableModel.getResources().get(0).split("/");
+        String fileName = paths[paths.length - 1];
+
+        if(!modelServer.equals("")){
+            String deployUrlDir = "http://" + modelServer + "/modelser";
+
+            int result = doPostIntoDataContainer(deployUrlDir,saveFilePath);
+            if(result==1){
+                return "suc";
+            }
+        }else{
+            //获取可以将部署包进行部署的任务服务器信息
+            JSONObject result = new JSONObject();
+            String urlStr = "http://" + managerServer + "/GeoModeling/taskNode/getTaskForMicroService";
+            JSONObject serviceTaskResult = Utils.connentURL(Utils.Method.GET, urlStr);
+            if (serviceTaskResult != null && serviceTaskResult.getInteger("code") == 1) {
+                deployUrl = "http://" + serviceTaskResult.getJSONObject("data").getString("host") + ":" + serviceTaskResult.getJSONObject("data").getString("port") + "/server/modelser/deploy";
+            }
+        }
+        if (deployUrl != null) {
             JSONObject deployResult = doPostWithDeployPackage(deployUrl, saveFilePath, fileName, "0");
             if (deployResult != null && deployResult.getInteger("code") == 1) {
                 //更新计算模型信息
@@ -581,6 +632,7 @@ public class ComputableModelService {
                 String modelserUrl = "http://" + data.getString("host") + ":" + data.getString("port") + "/modelser/" + data.getString("msid");
                 computableModel.setModelserUrl(modelserUrl);
                 computableModel.setDeploy(true);
+                computableModel.setLastModifyTime(new Date());
                 computableModelDao.save(computableModel);
                 return "suc";
             }
@@ -607,11 +659,11 @@ public class ComputableModelService {
                 computableModel.setStatus(jsonObject.getString("status"));
                 computableModel.setName(jsonObject.getString("name"));
                 computableModel.setDetail(jsonObject.getString("detail"));
-                computableModel.setRelateModelItem(jsonObject.getString("bindOid"));
+                computableModel.setRelateModelItem(jsonObject.getString("relateModelItem"));
                 computableModel.setDescription(jsonObject.getString("description"));
                 computableModel.setContentType(jsonObject.getString("contentType"));
                 computableModel.setUrl(jsonObject.getString("url"));
-                String md5 = "";
+                String md5 = null;
                 if (jsonObject.getString("contentType").equals("Package")) {
                     String filePath = path + resources.get(0);
                     File file = new File(filePath);
@@ -691,17 +743,6 @@ public class ComputableModelService {
 
                         computableModel.setMdl(content);
                         JSONObject mdlJson = XmlTool.documentToJSONObject(content);
-//                        处理mdl格式错误
-                        JSONObject modelClass=mdlJson.getJSONArray("ModelClass").getJSONObject(0);
-//                        JSONObject runtime=modelClass.getJSONArray("Runtime").getJSONObject(0);
-
-                        String type=modelClass.getString("type");
-                        if(type!=null){
-                            modelClass.put("style",type);
-                        }
-                        if(modelClass.getJSONArray("Runtime").getJSONObject(0).getJSONArray("SupportiveResources")==null){
-                            modelClass.getJSONArray("Runtime").getJSONObject(0).put("SupportiveResources","");
-                        }
 //
 //                        JSONArray HCinsert=modelClass.getJSONArray("Runtime").getJSONObject(0).getJSONArray("HardwareConfigures").getJSONObject(0).getJSONArray("INSERT");
 //                        if(HCinsert!=null){
@@ -735,6 +776,7 @@ public class ComputableModelService {
 //
 //                        modelClass.getJSONArray("Runtime").remove(0);
 //                        modelClass.getJSONArray("Runtime").add(runtime);
+                        JSONObject modelClass = checkMdlJson(mdlJson);
                         mdlJson.getJSONArray("ModelClass").remove(0);
                         mdlJson.getJSONArray("ModelClass").add(modelClass);
                         //End
@@ -745,9 +787,20 @@ public class ComputableModelService {
 
                     Utils.deleteDirectory(destDirPath);
                 }
+                else if(jsonObject.getString("contentType").equals("md5")){
+                    String mdl = jsonObject.getString("mdl");
+                    computableModel.setMdl(jsonObject.getString("mdl"));
+                    md5 = jsonObject.getString("md5");
+
+                    JSONObject mdlJson = XmlTool.documentToJSONObject(mdl);
+                    JSONObject modelClass = checkMdlJson(mdlJson);
+                    mdlJson.getJSONArray("ModelClass").remove(0);
+                    mdlJson.getJSONArray("ModelClass").add(modelClass);
+                    //End
+                    computableModel.setMdlJson(mdlJson);
+                }
 
                 computableModel.setMd5(md5);
-
 
                 JSONArray jsonArray = jsonObject.getJSONArray("authorship");
                 List<AuthorInfo> authorship = new ArrayList<>();
@@ -804,6 +857,7 @@ public class ComputableModelService {
         String author0 = computableModel_ori.getAuthor();
         ComputableModel computableModel = new ComputableModel();
         BeanUtils.copyProperties(computableModel_ori, computableModel);
+        String contentType = jsonObject.getString("contentType");
 
         if (!computableModel_ori.isLock()) {
             String path = resourcePath + "/computableModel/" + jsonObject.getString("contentType");
@@ -818,7 +872,7 @@ public class ComputableModelService {
                 computableModel.setResources(resources);
                 computableModel.setMdlJson(null);
                 try {
-                    String md5 = "";
+                    String md5 = null;
                     if (jsonObject.getString("contentType").equals("Package")) {
                         String filePath = path + resources.get(0);
                         FileInputStream file = new FileInputStream(filePath);
@@ -904,19 +958,33 @@ public class ComputableModelService {
 
                         Utils.deleteDirectory(destDirPath);
                     }
-
                     computableModel.setMd5(md5);
+
                     computableModel.setDeploy(false);
+
                 } catch (Exception e) {
                     e.printStackTrace();
                     result.put("code", -2);
                 }
+            }else if(contentType.equals("md5")){
+                String mdl = jsonObject.getString("mdl");
+                computableModel.setMdl(mdl);
+                String md5 = jsonObject.getString("md5");
+                computableModel.setMd5(md5);
+                JSONObject mdlJson = XmlTool.documentToJSONObject(mdl);
+                JSONObject modelClass = checkMdlJson(mdlJson);
+                mdlJson.getJSONArray("ModelClass").remove(0);
+                mdlJson.getJSONArray("ModelClass").add(modelClass);
+                //End
+                computableModel.setMdlJson(mdlJson);
+
+                computableModel.setDeploy(true);
             }
 
             computableModel.setName(jsonObject.getString("name"));
             computableModel.setStatus(jsonObject.getString("status"));
             computableModel.setDetail(jsonObject.getString("detail"));
-            computableModel.setRelateModelItem(jsonObject.getString("bindOid"));
+            computableModel.setRelateModelItem(jsonObject.getString("relateModelItem"));
             computableModel.setDescription(jsonObject.getString("description"));
             computableModel.setContentType(jsonObject.getString("contentType"));
             computableModel.setUrl(jsonObject.getString("url"));
@@ -987,6 +1055,27 @@ public class ComputableModelService {
         } else {
             return null;
         }
+    }
+
+    public  JSONObject checkMdlJson(JSONObject mdlJson){
+        try{
+            //处理mdl格式错误
+            JSONObject modelClass=mdlJson.getJSONArray("ModelClass").getJSONObject(0);
+            //JSONObject runtime=modelClass.getJSONArray("Runtime").getJSONObject(0);
+
+            String type=modelClass.getString("type");
+            if(type!=null){
+                modelClass.put("style",type);
+            }
+            if(modelClass.getJSONArray("Runtime").getJSONObject(0).getJSONArray("SupportiveResources")==null){
+                modelClass.getJSONArray("Runtime").getJSONObject(0).put("SupportiveResources","");
+            }
+
+            return modelClass;
+        }catch (Exception e){
+            return new JSONObject();
+        }
+
     }
 
     private String generateTestData(String testDataDirectory, String oid) throws IOException {
@@ -1118,13 +1207,13 @@ public class ComputableModelService {
 
     }
 
-    public JSONObject listByUserOid(ModelItemFindDTO modelItemFindDTO, String oid,String loadUser) {
+    public JSONObject listByUserOid(ModelItemFindDTO modelItemFindDTO, String userId,String loadUser) {
 
         int page = modelItemFindDTO.getPage();
         int pageSize = modelItemFindDTO.getPageSize();
         Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
         Pageable pageable = PageRequest.of(page, pageSize, sort);
-        User user = userDao.findFirstByOid(oid);
+        User user = userDao.findFirstByUserId(userId);
         Page<ComputableModel> modelItemPage = Page.empty();
 
 //        if(loadUser == null||!loadUser.equals(oid)) {

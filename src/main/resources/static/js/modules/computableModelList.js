@@ -481,7 +481,7 @@ Vue.component("computable-models",
         selectToParent(model){
           this.$emit('select-computable-model',model)
         },
-        removeFromParent(){
+        removeFromParent(model){
           this.$emit('remove-computable-model',model)
         },
 

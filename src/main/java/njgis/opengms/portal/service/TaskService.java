@@ -3,7 +3,6 @@ package njgis.opengms.portal.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.google.gson.JsonObject;
 import njgis.opengms.portal.AbstractTask.AsyncTask;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dao.ComputableModelDao;
@@ -19,7 +18,9 @@ import njgis.opengms.portal.entity.DataItem;
 import njgis.opengms.portal.entity.Task;
 import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.entity.*;
+import njgis.opengms.portal.entity.intergrate.DataProcessing;
 import njgis.opengms.portal.entity.intergrate.Model;
+import njgis.opengms.portal.entity.intergrate.ModelAction;
 import njgis.opengms.portal.entity.support.*;
 import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.MyHttpUtils;
@@ -45,7 +46,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.xml.bind.annotation.XmlMimeType;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
@@ -1155,8 +1155,8 @@ public class TaskService {
         return "suc";
     }
 
-    public String saveIntegratedTask( String xml, String mxgraph, List<Map<String,String>> models, List<Map<String,String>> processingTools,
-                                      List<ModelAction> modelActions,List<DataProcessing> dataProcessings,List<Map<String,String>> dataLinks,String userName,String taskName,String description){
+    public String saveIntegratedTask(String xml, String mxgraph, List<Map<String,String>> models, List<Map<String,String>> processingTools,
+                                     List<ModelAction> modelActions, List<DataProcessing> dataProcessings,List<Map<String,Object>> dataItems, List<Map<String,String>> dataLinks, String userName, String taskName, String description){
         IntegratedTask integratedTask = new IntegratedTask();
 
         integratedTask.setOid(UUID.randomUUID().toString());
@@ -1164,6 +1164,7 @@ public class TaskService {
         integratedTask.setProcessingTools(processingTools);
         integratedTask.setModelActions(modelActions);
         integratedTask.setDataProcessings(dataProcessings);
+        integratedTask.setDataItems(dataItems);
         integratedTask.setDataLinks(dataLinks);
         integratedTask.setXml(xml);
         integratedTask.setMxGraph(mxgraph);
@@ -1190,13 +1191,14 @@ public class TaskService {
 
     //用户更新集成Task的信息
     public IntegratedTask updateIntegratedTask( String taskOid, String xml, String mxgraph, List<Map<String,String>> models,
-                                                List<ModelAction> modelActions,List<DataProcessing> dataProcessings,List<Map<String,String>> dataLinks,String userName,String taskName,String description){
+                                                List<ModelAction> modelActions,List<DataProcessing> dataProcessings, List<Map<String,Object>> dataItems,List<Map<String,String>> dataLinks,String userName,String taskName,String description){
         IntegratedTask integratedTask = integratedTaskDao.findByOid(taskOid);
 
         integratedTask.setModels(models);
         integratedTask.setModelActions(modelActions);
         integratedTask.setDataProcessings(dataProcessings);
         integratedTask.setDataLinks(dataLinks);
+        integratedTask.setDataItems(dataItems);
         integratedTask.setXml(xml);
         integratedTask.setMxGraph(mxgraph);
         integratedTask.setTaskName(taskName);
@@ -1231,16 +1233,25 @@ public class TaskService {
             List<ModelAction> failedModelActions = converseOutputModelAction(j_modelActionList.getJSONArray("failed"));
             updateIntegratedTaskOutput(task,finishedModelActions,failedModelActions);
 
+            //todo common task 与 integrated task的合并
+            Task comTask = taskDao.findFirstByTaskId(task.getOid());
             switch (status){
                 case 0:
                     break;
                 case -1:
                     task.setStatus(-1);
+                    comTask = taskDao.findFirstByTaskId(task.getOid());
+                    comTask.setStatus(-1);
                     integratedTaskDao.save(task);
+                    taskDao.save(comTask);
                     break;
                 case 1:
                     task.setStatus(2);
                     integratedTaskDao.save(task);
+                    comTask = taskDao.findFirstByTaskId(task.getOid());
+                    comTask.setStatus(2);
+                    integratedTaskDao.save(task);
+                    taskDao.save(comTask);
                     break;
             }
             return data;

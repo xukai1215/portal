@@ -821,10 +821,6 @@ var createModelItem = Vue.extend({
             this.$refs.draftBox.loadMatchedCreateDraft()
         },
 
-        insertDraft(){
-
-        },
-
         getMatchedNode(oids){
             this.getMatchedNode_DIGUI(this.treeData_part1,oids);
             this.getMatchedNode_DIGUI(this.treeData_part2,oids);
@@ -847,6 +843,14 @@ var createModelItem = Vue.extend({
                     }
                 }
             }
+        },
+
+        getDraft(){
+            return this.$refs.draftBox.getDraft();
+        },
+
+        insertDraft(draftContent){
+            this.insertInfo(draftContent)
         },
 
         insertInfo(basicInfo){
@@ -957,10 +961,7 @@ var createModelItem = Vue.extend({
             }
 
             //tags
-            if ($("#tagInput").nextAll().length > 0)//如果存在tageditor,则销毁
-                Vue.nextTick(() => {
-                    $('#tagInput').tagEditor('destroy');
-                })
+            $('#tagInput').tagEditor('destroy');
             $('#tagInput').tagEditor({
                 initialTags: basicInfo.keywords,
                 forceLowercase: false,
@@ -977,10 +978,7 @@ var createModelItem = Vue.extend({
             }, 1000);
 
             //alias
-            if ($("#aliasInput").nextAll().length > 0)//如果存在tageditor,则销毁
-                Vue.nextTick(() => {
-                    $('#aliasInput').tagEditor('destroy');
-                })
+            $('#aliasInput').tagEditor('destroy');
             $('#aliasInput').tagEditor({
                 initialTags: basicInfo.alias ,
                 forceLowercase: false,
@@ -996,25 +994,13 @@ var createModelItem = Vue.extend({
         },
 
         cancelEditClick(){
-            if(this.draft.oid!=''&&this.draft.oid!=null){
+            if(this.getDraft()!=null){
                 this.$refs.draftBox.cancelDraftDialog=true
             }else{
                 setTimeout(() => {
                     window.location.href = "/user/userSpace#/models/modelitem";
                 }, 905)
             }
-            // this.$confirm('You have a draft about this Item, do you want to save the latest version of it? If not, this draft will be deleted.', 'Tips', {
-            //     confirmButtonText: 'Yes',
-            //     cancelButtonText: 'No',
-            //     type: 'warning'
-            // }).then(() => {
-            //     this.saveDraft()
-            // }).catch(() => {
-            //     this.deleteDraft()
-            //     setTimeout(()=>{
-            //         window.location.href = "/user/userSpace#/models/modelitem";
-            //     },905)
-            // });
         },
 
         draftJump(){
@@ -1022,7 +1008,7 @@ var createModelItem = Vue.extend({
         },
 
         deleteDraft(){
-            this.$refs.draftBox.deleteDraft(this.draft.oid)
+            this.$refs.draftBox.deleteDraft()//draft的oid在draftbox组件里存储了
         },
 
         initDraft(editType,backUrl,oidFrom,oid){
@@ -1190,9 +1176,9 @@ var createModelItem = Vue.extend({
                 $("#refLink").val(this.articleToBack.link);
                 if ($("#refAuthor").nextAll().length == 0) {//如果不存在tageditor,则创建一个
                     Vue.nextTick(() => {
-                        $("#refAuthor").tagEditor({
-                            forceLowercase: false
-                        })
+                        // $("#refAuthor").tagEditor({
+                        //     forceLowercase: false
+                        // })
                         $('#refAuthor').tagEditor('destroy');
                         $('#refAuthor').tagEditor({
                             initialTags: this.articleToBack.authors,
@@ -1225,7 +1211,7 @@ var createModelItem = Vue.extend({
                     })
                 })
 
-            // $('#refAuthor').tagEditor('destroy');
+            $('#refAuthor').tagEditor('destroy');
             $('#refAuthor').tagEditor({
                 initialTags:  [''],
                 forceLowercase: false,
@@ -1415,8 +1401,6 @@ var createModelItem = Vue.extend({
                     }
                 }
             })
-
-
         },
 
         imgFile() {
@@ -1424,7 +1408,6 @@ var createModelItem = Vue.extend({
         },
 
         preImg() {
-
 
             var file = $('#imgOne').get(0).files[0];
             //创建用来读取此文件的对象
@@ -1439,7 +1422,6 @@ var createModelItem = Vue.extend({
                 this.itemInfo.image = e.target.result
             }
 
-
         },
 
         getClassificationDesc(name){
@@ -1451,6 +1433,7 @@ var createModelItem = Vue.extend({
             }
             return desc;
         },
+
         getChildrenDesc(children, name){
             let i = 0;
             for(;i<children.length;i++){
@@ -1609,26 +1592,11 @@ var createModelItem = Vue.extend({
         this.draft.oid=window.localStorage.getItem('draft');
         var user_num = 0;
 
-        $("#refAuthor").tagEditor({
-            forceLowercase: false
-        });
-
         if ((oid === "0") || (oid === "") || (oid === null)|| (oid === undefined)) {
 
             this.editType = 'create';
             // $("#title").text("Create Model Item")
             $("#subRteTitle").text("/Create Model Item");
-
-            // //alias
-            $('#aliasInput').tagEditor({
-                forceLowercase: false
-            });
-
-            $('#tagInput').tagEditor({
-                forceLowercase: false
-            });
-
-
 
             let interval = setInterval(function () {
                 initTinymce('textarea#singleDescription');
@@ -1639,10 +1607,11 @@ var createModelItem = Vue.extend({
             this.$set(this.languageAdd.local, "label", "English (United States)");
             initTinymce('textarea#modelItemText');
 
-            this.loadMatchedCreateDraft();
             if(this.draft.oid!=''&&this.draft.oid!=null&&typeof (this.draft.oid)!="undefined"){
                 // this.loadDraftByOid()
                 this.initDraft('create','/user/userSpace#/models/modelitem','draft',this.draft.oid)
+            }else{
+                this.loadMatchedCreateDraft();
             }
 
         }
@@ -1723,6 +1692,16 @@ var createModelItem = Vue.extend({
             }
         });
 
+
+        $('#tagInput').tagEditor({
+            forceLowercase: false
+        });
+         $('#aliasInput').tagEditor({
+            forceLowercase: false
+        });
+        $("#refAuthor").tagEditor({
+            forceLowercase: false
+        })
 
         // $("#imgChange").click(function () {
         //     $("#imgFile").click();
@@ -1900,9 +1879,9 @@ var createModelItem = Vue.extend({
                     data: formData,
                     success: (result)=> {
                         userspace.fullscreenLoading=false;
-                        // loading.close();
+                        loading.close();
                         if (result.code == 0) {
-
+                            this.deleteDraft()
                             this.$confirm('<div style=\'font-size: 18px\'>Create model item successfully!</div>', 'Tip', {
                                 dangerouslyUseHTMLString: true,
                                 confirmButtonText: 'View',
@@ -1959,10 +1938,11 @@ var createModelItem = Vue.extend({
 
                     success: (result)=> {
                         // setTimeout(()=>{loading.close();},1000)
-                        // loading.close()
+                        loading.close()
                         userspace.fullscreenLoading = false;
                         if (result.code === 0) {
                             if(result.data.method==="update") {
+                                this.deleteDraft()
                                 this.$confirm('<div style=\'font-size: 18px\'>Update model item successfully!</div>', 'Tip', {
                                     dangerouslyUseHTMLString: true,
                                     confirmButtonText: 'View',
@@ -2022,7 +2002,6 @@ var createModelItem = Vue.extend({
                 })
             }
 
-            this.deleteDraft()
         });
 
         // $(".prev").click(()=>{

@@ -1,4 +1,4 @@
-package njgis.opengms.portal.entity;
+package njgis.opengms.portal.entity.intergrate;
 
 import lombok.Data;
 

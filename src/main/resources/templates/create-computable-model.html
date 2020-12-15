@@ -68,8 +68,10 @@
                                     id="subRteTitle"></span></h3>
                         </div>
                         <draft-box ref="draftBox"
-                                   @insert-draft="insertInfo"
+                                   @insert-draft="insertDraft"
+                                   @get-draft="getDraft"
                                    @get-content="getItemContent"
+                                   @draft-jump="draftJump"
                                    :item-type="'computableModel'"></draft-box>
                     </section>
                     <div class="page-content-wrap container-fluid">
@@ -159,8 +161,12 @@
                                                             <div class="input-group col-md-5" style="padding:5px 0;font-size:20px">
 
                                                                 <el-radio-group v-model="computableModel.contentType">
-                                                                    <el-radio label="Package">OpenGMS Model-Service Package</el-radio>
-                                                                    <el-radio label="md5">MD5</el-radio>
+                                                                    <el-tooltip class="item" effect="dark" content="For model that haven't been deployed" placement="top-start">
+                                                                        <el-radio label="Package" >OpenGMS Model-Service Package</el-radio>
+                                                                    </el-tooltip>
+                                                                    <el-tooltip class="item" effect="dark" content="For model that is already deployed" placement="top-start">
+                                                                        <el-radio label="md5">MD5</el-radio>
+                                                                    </el-tooltip>
                                                                     <el-radio label="Code">Source Code</el-radio>
                                                                     <el-radio label="Library">Executable Library</el-radio>
                                                                     <el-radio label="Service">Third-party Web-Service Link</el-radio>
@@ -215,77 +221,141 @@
                                                         <div id="MD5" class="clearfix"
                                                              style="margin-top:50px" v-if="computableModel.contentType=='md5'">
                                                             <div class="form-group">
-                                                                <label for="MD5_text"
-                                                                       class="control-label col-md-4 col-md-offset-2">Please
-                                                                    enter computable model's MD5:</label>
+                                                                <label class="control-label col-md-4 col-md-offset-2" style="padding: 10px 15px;">
+                                                                    Please insert the MD5 of the openGMS wrapper package:</label>
                                                                 <div class="col-sm-8 col-md-offset-2">
-                                                                    <input id="MD5_text" class="form-control"
-                                                                              v-model="computableModel.md5" @onblur="getServiceByMd5" @keyup.enter="getServiceByMd5"/>
+                                                                    <el-input id="MD5_text" v-model="computableModel.md5" @change="inputMd5" @keyup.enter="getServiceByMd5">
+                                                                        <el-button slot="append" @click="getServiceByMd5">Check Duplicate</el-button>
+                                                                    </el-input>
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label class="control-label col-md-4 col-md-offset-2" style="padding: 10px 15px;">
+                                                                    Please insert the MDL of the openGMS wrapper package:</label>
+                                                                <div class="col-sm-8 col-md-offset-2">
+                                                                    <el-input id="MD5_text" type="textarea" :rows="3" v-model="computableModel.mdl" @change="inputMd5" @keyup.enter="getServiceByMd5">
+                                                                    </el-input>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div id="Files" v-if="computableModel.contentType=='Package'||computableModel.contentType=='Code'||computableModel.contentType=='Library'">
-                                                            <el-button v-if="(resources.length==0&&computableModel.contentType=='Package')||computableModel.contentType!='Package'" type="primary"
-                                                                       @click="addFile()">+ Add
-                                                            </el-button>
-                                                            <el-button v-if="resources.length!=0" type="danger"
-                                                                       @click="removeFile()">- Remove
-                                                            </el-button>
-                                                            <el-button v-if="resources.length!=0&&computableModel.contentType=='Package'" type="success"
-                                                                       @click="replaceFile()">Replace
-                                                            </el-button>
+                                                        <div id="Files" style="" class="flexRow flexWrap"
+                                                             v-if="computableModel.contentType=='Package'||computableModel.contentType=='Code'||computableModel.contentType=='Library'">
+                                                            <div style="flex: 1;margin-left: 5px">
+                                                                <h5 style="font-weight: 500;flex: 1;min-width: 400px">
+                                                                    Upload your package:</h5>
+                                                                <el-button
+                                                                        v-if="(resources.length==0&&computableModel.contentType=='Package')||computableModel.contentType!='Package'"
+                                                                        type="primary"
+                                                                        @click="addFile()">+ Add
+                                                                </el-button>
+                                                                <el-button v-if="resources.length!=0" type="danger"
+                                                                           @click="removeFile()">- Remove
+                                                                </el-button>
+                                                                <el-button
+                                                                        v-if="resources.length!=0&&computableModel.contentType=='Package'"
+                                                                        type="success"
+                                                                        @click="replaceFile()">Replace
+                                                                </el-button>
 
-                                                            <el-card :body-style="{ padding:'9px'}"
-                                                                     style="margin-top: 10px">
-                                                                <span><i class="el-icon-document"></i>&nbsp&nbsp contents</span>
-                                                            </el-card>
-
-
-                                                            <el-card style="height: 300px;overflow-y:auto"
-                                                                     id="browsercont" class="filecontent">
-
-                                                                <div @click="resClick"
-                                                                     v-for="(resource, index) in resources">
-                                                                    <!--</el-row>-->
-                                                                    <el-card style="width:10%;cursor:pointer;" :key="index"
-                                                                             :align="index"
-                                                                             :title="resource.name" class="dataitemisol"
-                                                                             shadow="never">
-
-                                                                        <el-row>
-                                                                            <el-col :span="6">&nbsp</el-col>
-                                                                            <el-col :span="12"><a><img
-                                                                                    :src="'/static/img/filebrowser/'+resource.suffix+'.svg'"
-                                                                                    onerror="this.onerror='';src='/static/img/filebrowser/unknow.svg'"
-                                                                                    style="height: 60%;width:100%"></a>
-                                                                            </el-col>
-                                                                            <el-col :span="6">&nbsp</el-col>
-                                                                        </el-row>
-                                                                        <el-row style="height: 45px;">
-                                                                            <el-col :span="20">
-
-                                                                                <p style="overflow: hidden;word-wrap: break-word;word-break: break-all;text-align: center;display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;line-height: 1.5"
-                                                                                >{{resource.name}}</p>
-                                                                            </el-col>
-                                                                            <el-col :span="2">&nbsp</el-col>
-
-                                                                        </el-row>
-
-                                                                        <!--menu item -->
+                                                                <el-card :body-style="{ padding:'9px'}"
+                                                                         style="margin-top: 10px">
+                                                                    <span><i class="el-icon-document"></i>&nbsp&nbsp contents</span>
+                                                                </el-card>
 
 
-                                                                    </el-card>
+                                                                <el-card style="height: 300px;overflow-y:auto"
+                                                                         id="browsercont" class="filecontent">
 
-                                                                </div>
-                                                            </el-card>
+                                                                    <div @click="resClick"
+                                                                         v-for="(resource, index) in resources">
+                                                                        <!--</el-row>-->
+                                                                        <el-card style="width:10%;cursor:pointer;"
+                                                                                 :key="index"
+                                                                                 :align="index"
+                                                                                 :title="resource.name"
+                                                                                 class="dataitemisol"
+                                                                                 shadow="never">
 
-                                                            <input id="file" type="file" style="display: none;"
-                                                                   accept="application/x-zip-compressed"/>
+                                                                            <el-row>
+                                                                                <el-col :span="6">&nbsp</el-col>
+                                                                                <el-col :span="12"><a><img
+                                                                                        :src="'/static/img/filebrowser/'+resource.suffix+'.svg'"
+                                                                                        onerror="this.onerror='';src='/static/img/filebrowser/unknow.svg'"
+                                                                                        style="height: 60%;width:100%"></a>
+                                                                                </el-col>
+                                                                                <el-col :span="6">&nbsp</el-col>
+                                                                            </el-row>
+                                                                            <el-row style="height: 45px;">
+                                                                                <el-col :span="20">
 
-                                                            <input id="file_multi" type="file" style="display: none;" multiple="multiple"/>
+                                                                                    <p style="overflow: hidden;word-wrap: break-word;word-break: break-all;text-align: center;display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;line-height: 1.5"
+                                                                                    >{{resource.name}}</p>
+                                                                                </el-col>
+                                                                                <el-col :span="2">&nbsp</el-col>
+
+                                                                            </el-row>
+
+                                                                            <!--menu item -->
 
 
+                                                                        </el-card>
 
+                                                                    </div>
+                                                                </el-card>
+
+                                                                <input id="file" type="file" style="display: none;"
+                                                                       accept="application/x-zip-compressed"/>
+
+                                                                <input id="file_multi" type="file"
+                                                                       style="display: none;" multiple="multiple"/>
+                                                            </div>
+<!--                                                            <div style="flex: 1.5;margin-left: 5px">-->
+<!--                                                                <el-card class="wzhScrollbar"-->
+<!--                                                                         style="margin-top: 60px;height: 340px;min-width: 400px">-->
+<!--                                                                    <div class="col-sm-12 col-md-6 col-lg-6"-->
+<!--                                                                         v-if="publicModelContainerList.length!=0"-->
+<!--                                                                         v-for="(container,index) in publicModelContainerList">-->
+<!--                                                                        <el-card class="box-card serverCard"-->
+<!--                                                                                 :class="container.status?'cursorPointer':''"-->
+<!--                                                                                 :style="container.ip==computableModel.modelserUrl.split(':')[0]?'border-top:8px solid #36c94f':''"-->
+<!--                                                                                 @click.native="selectModelServer(container)"-->
+<!--                                                                        >-->
+<!--                                                                            <div class="content">-->
+<!--                                                                                <div class="clearfix">-->
+<!--                                                                                    <div class="pull-left">-->
+<!--                                                                                        <h4>-->
+<!--                                                                                            {{container.hardware.hostName}}-->
+
+<!--                                                                                        </h4>-->
+<!--                                                                                        <p style="margin-bottom:5px">-->
+<!--                                                                                            {{container.hardware.system}}-->
+<!--                                                                                            {{container.hardware.version}}</p>-->
+<!--                                                                                        <p>{{container.hardware.cpu_Core}}-->
+<!--                                                                                            Core - -->
+<!--                                                                                            {{container.hardware.totalMemory}}-->
+<!--                                                                                            RAM - -->
+<!--                                                                                            {{container.hardware.diskAll}}-->
+<!--                                                                                            Hard Disk</p>-->
+<!--                                                                                    </div>-->
+<!--                                                                                </div>-->
+<!--                                                                                <div class="clearfix"-->
+<!--                                                                                     style="margin-top:10px">-->
+<!--                                                                                    <div class="serverStatus pull-left"-->
+<!--                                                                                         v-if="container.status">-->
+<!--                                                                                        <span style="background: #6FCE7F;display:inline-block;width:10px;height:10px;border-radius: 50%;"></span>-->
+<!--                                                                                        Running-->
+<!--                                                                                    </div>-->
+<!--                                                                                    <div class="serverStatus pull-left"-->
+<!--                                                                                         v-else>-->
+<!--                                                                                        <span style="background: #929994;display:inline-block;width:10px;height:10px;border-radius: 50%;"></span>-->
+<!--                                                                                        Offline-->
+<!--                                                                                    </div>-->
+<!--                                                                                </div>-->
+<!--                                                                            </div>-->
+<!--                                                                        </el-card>-->
+<!--                                                                    </div>-->
+<!--                                                                </el-card>-->
+<!--                                                            </div>-->
                                                         </div>
                                                     </div>
                                                     <div class="step-tab-panel" id="step3">
@@ -397,6 +467,11 @@
                                                     </div>
                                                 </div>
                                                 <div class="step-footer text-right">
+                                                    <button class="btn btn-danger prev" @click="cancelEditClick()" style="">
+                                                        Exit
+                                                    </button>
+                                                    <div class="innerBorderCol btn btn-warning"
+                                                         style="padding: 0;margin: 0 10px;height: 20px;background-color: #cccccc !important;cursor: auto"></div>
                                                     <button class="btn btn-warning prev" data-direction="prev">
                                                         Previous
                                                     </button>
@@ -457,7 +532,7 @@
                             </el-table-column>
                             <el-table-column label="Contributor">
                                 <template slot-scope="props">
-                                    <a :href="'/profile/'+props.row.author_oid" target="_blank">{{props.row.author_name}}</a>
+                                    <a :href="'/profile/'+props.row.author_name" target="_blank">{{props.row.author_name}}</a>
                                 </template>
                             </el-table-column>
                             <el-table-column fixed="right" label="Operation" width="100">
@@ -479,6 +554,42 @@
                                        :total="pageOption.total">
                         </el-pagination>
 
+                </el-dialog>
+
+                <el-dialog :visible.sync="exisedServiceDialog" title="Existed services" center width="50%">
+                    <p style="text-align: center">There exist computable models of this md5 on OpenGMS platform, do you still want to add a new one?</p>
+                    <div class="wzhScrollbar" style="max-height: 500px;">
+                        <el-table style="padding-left:10px "
+                                  :data="exisedServices">
+                            <el-table-column
+                                    label="Name"
+                            >
+                                <template slot-scope="scope">
+                                    <a class="cursorPointer" @click="window.open('/computableModel/'+scope.row.oid)">{{scope.row.name}}</a>
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                    label="Contributor"
+                            >
+                                <template slot-scope="scope">
+                                    <a class="cursorPointer" @click="window.open('/profile/'+scope.row.author_name)">{{scope.row.author_name}}</a>
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                    label="Last modify time"
+                            >
+                                <template slot-scope="scope">
+                                    <span>{{formatDate(scope.row.lastModifyTime)}}</span>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+
+                    </div>
+
+                    <span slot="footer" class="dialog-footer">
+                            <el-button style="float: right" size="small" @click="cancelMd5">Cancel</el-button>
+                            <el-button style="float: right;margin-right: 5px" size="small" type="primary" @click="addMd5">Yes, add new one</el-button>
+                    </span>
                 </el-dialog>
             </div>
 

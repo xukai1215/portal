@@ -49,14 +49,14 @@ public class EducationExperienceService {
 
     }
 
-    public JSONObject listByUserOid(EducationExperienceFindDTO educationExperienceFindDTO, String oid ){
+    public JSONObject listByUserOid(EducationExperienceFindDTO educationExperienceFindDTO, String userId ){
         int page=educationExperienceFindDTO.getPage();
         int pageSize = educationExperienceFindDTO.getPageSize();
         Boolean asc = educationExperienceFindDTO.getAsc();
 
         Sort sort=new Sort(asc?Sort.Direction.ASC : Sort.Direction.DESC, educationExperienceFindDTO.getSortElement());
         Pageable pageable= PageRequest.of(page,pageSize,sort);
-        User user=userDao.findFirstByOid(oid);
+        User user=userDao.findFirstByUserId(userId);
         List<EducationExperienceResultDTO> educationExperienceResultDTOList=educationExperienceDao.findByContributor(user.getUserName(),sort);
 
         JSONObject result=new JSONObject();

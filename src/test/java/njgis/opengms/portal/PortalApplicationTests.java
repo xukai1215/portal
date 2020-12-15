@@ -3312,6 +3312,19 @@ public class PortalApplicationTests {
     }
 
     @Test
+    public void getMdlJson() throws DocumentException {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "http://172.21.212.85:8060/modelser/json/5f6424fe91bf101cfc1c7ddc";
+        String modelInfo_mc = restTemplate.getForObject(url,String.class);
+        JSONObject j_modelInfo = JSONObject.parseObject(modelInfo_mc);
+        String mdlJson = j_modelInfo.getJSONObject("data").getString("ms_xml");
+        String mdlJson_xml = XmlTool.json2Xml(mdlJson.substring(0,mdlJson.length()));
+//        mdlJson_xml = XmlTool.jsonToXML(mdlJson,"");
+        String xml = mdlJson.replaceAll("<\\$>","").replaceAll("</\\$>","");
+        JSONObject jsonObject = JSONObject.parseObject(xml);
+    }
+
+    @Test
     public void changeCharset() {
         ComputableModel computableModel = computableModelDao.findFirstByOid("f02abeb9-cf97-42af-aa9e-f4ed408b3526");
         String mdl = computableModel.getMdl();
@@ -3364,6 +3377,8 @@ public class PortalApplicationTests {
             return false;
         }
     }
+
+
 //
 //    @Test
 //    public void changeSpatialIndex(){
