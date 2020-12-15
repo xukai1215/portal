@@ -9,7 +9,7 @@ var createDataApplication = Vue.extend({
                 status:"Public",
                 name: "",
                 description: "",
-                contentType: "Code",
+                contentType: "Package",
                 url: "",
                 isAuthor: true,
                 author: {
@@ -81,6 +81,8 @@ var createDataApplication = Vue.extend({
             userDataList:[],
             authorDataList:[],
             dialogVisible: false,
+
+            method:"converse",
         }
     },
     methods: {
@@ -539,7 +541,8 @@ var createDataApplication = Vue.extend({
                     }
                 }
                 else if(currentIndex === 1 && stepDirection === "forward"){
-                    if(this.dataApplication.contentType=="Code"||this.dataApplication.contentType=="Library"){
+                    if(this.dataApplication.contentType=="Code"||this.dataApplication.contentType=="Library"
+                        ||this.dataApplication.contentType=="Package"){
                         if(this.fileArray.length==0&&this.resources.length==0){
                             new Vue().$message({
                                 message: 'Please select at least one file!',
@@ -592,6 +595,7 @@ var createDataApplication = Vue.extend({
             this.dataApplication.authorship=[];
             this.dataApplication.classifications = this.cls;
             this.dataApplication.type = "process";
+            this.dataApplication.method = this.method;
 
 
             userspace.getUserData($("#providersPanel .user-contents .form-control"), this.dataApplication.authorship);
