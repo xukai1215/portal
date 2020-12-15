@@ -821,10 +821,6 @@ var createModelItem = Vue.extend({
             this.$refs.draftBox.loadMatchedCreateDraft()
         },
 
-        insertDraft(){
-
-        },
-
         getMatchedNode(oids){
             this.getMatchedNode_DIGUI(this.treeData_part1,oids);
             this.getMatchedNode_DIGUI(this.treeData_part2,oids);
@@ -847,6 +843,14 @@ var createModelItem = Vue.extend({
                     }
                 }
             }
+        },
+
+        getDraft(){
+            return this.$refs.draftBox.getDraft();
+        },
+
+        insertDraft(draftContent){
+            this.insertInfo(draftContent)
         },
 
         insertInfo(basicInfo){
@@ -990,25 +994,13 @@ var createModelItem = Vue.extend({
         },
 
         cancelEditClick(){
-            if(this.draft.oid!=''&&this.draft.oid!=null){
+            if(this.getDraft()!=null){
                 this.$refs.draftBox.cancelDraftDialog=true
             }else{
                 setTimeout(() => {
                     window.location.href = "/user/userSpace#/models/modelitem";
                 }, 905)
             }
-            // this.$confirm('You have a draft about this Item, do you want to save the latest version of it? If not, this draft will be deleted.', 'Tips', {
-            //     confirmButtonText: 'Yes',
-            //     cancelButtonText: 'No',
-            //     type: 'warning'
-            // }).then(() => {
-            //     this.saveDraft()
-            // }).catch(() => {
-            //     this.deleteDraft()
-            //     setTimeout(()=>{
-            //         window.location.href = "/user/userSpace#/models/modelitem";
-            //     },905)
-            // });
         },
 
         draftJump(){
@@ -1016,7 +1008,7 @@ var createModelItem = Vue.extend({
         },
 
         deleteDraft(){
-            this.$refs.draftBox.deleteDraft(this.draft.oid)
+            this.$refs.draftBox.deleteDraft()//draft的oid在draftbox组件里存储了
         },
 
         initDraft(editType,backUrl,oidFrom,oid){

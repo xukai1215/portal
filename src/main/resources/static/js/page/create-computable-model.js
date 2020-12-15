@@ -13,6 +13,7 @@ var createComputableModel = Vue.extend({
                 description: "",
                 contentType: "Package",
                 url: "",
+                modelserUrl:'',
                 isAuthor: true,
                 author: {
                     name: "",
@@ -76,6 +77,98 @@ var createComputableModel = Vue.extend({
             exisedServices:[],
 
             customAddMd5:false,
+
+            publicModelContainerList: [{
+                ip: '172.21.213.105',
+                port:8060,
+                geoInfo: {
+                    city: "Nanjing",
+                    countryCode: "CN",
+                    countryName: "China",
+                    latitude: "32.0617",
+                    longitude: "118.7778",
+                    region: "Jiangsu",
+                },
+                hardware: {
+                    cpu_Core: 8,
+                    diskAll: "300G",
+                    diskAvailable: "280G",
+                    platform: "Windows",
+                    system: "Windows Server",
+                    totalMemory: "8G",
+                    version: "2012",
+                },
+                status: true
+            },
+                {
+                    ip: '172.21.212.78',
+                    port:8060,
+                    geoInfo: {
+                        city: "Nanjing",
+                        countryCode: "CN",
+                        countryName: "China",
+                        latitude: "32.0617",
+                        longitude: "118.7778",
+                        region: "Jiangsu",
+                    },
+                    hardware: {
+                        cpu_Core: 4,
+                        diskAll: "400G",
+                        diskAvailable: "387G",
+                        platform: "Windows",
+                        system: "Windows Server",
+                        totalMemory: "8G",
+                        version: "2012",
+                    },
+                    status: false
+                },
+                {
+                    ip: '172.21.213.50',
+                    port:8060,
+                    geoInfo: {
+                        city: "Nanjing",
+                        countryCode: "CN",
+                        countryName: "China",
+                        latitude: "32.0617",
+                        longitude: "118.7778",
+                        region: "Jiangsu",
+                    },
+                    hardware: {
+                        cpu_Core: 8,
+                        diskAll: "120G",
+                        diskAvailable: "75G",
+                        platform: "Linux",
+                        system: "CentOS",
+                        totalMemory: "4G",
+                        version: "7",
+                    },
+                    status: false
+                },
+                {
+                    ip: '172.21.213.50',
+                    port:8060,
+                    geoInfo: {
+                        city: "Nanjing",
+                        countryCode: "CN",
+                        countryName: "China",
+                        latitude: "32.0617",
+                        longitude: "118.7778",
+                        region: "Jiangsu",
+                    },
+                    hardware: {
+                        cpu_Core: 8,
+                        diskAll: "120G",
+                        diskAvailable: "75G",
+                        platform: "Linux",
+                        system: "Ubuntu",
+                        totalMemory: "4G",
+                        version: "7",
+                    },
+                    status: false
+                }
+
+            ],
+
         }
     },
     methods: {
@@ -437,6 +530,8 @@ var createComputableModel = Vue.extend({
             this.computableModel.bindModelItem=modelItem.name;
             this.computableModel.bindOid=modelItem.oid;
             this.computableModel.status=basicInfo.status;
+            this.computableModel.md5=basicInfo.md5;
+            this.computableModel.mdl=basicInfo.mdl;
 
             this.computableModel.contentType = basicInfo.contentType;
 
@@ -532,7 +627,9 @@ var createComputableModel = Vue.extend({
             itemObj.description = this.computableModel.description
             itemObj.contentType = this.computableModel.contentType
             itemObj.url = this.computableModel.url
+            itemObj.modelserUrl = this.computableModel.modelserUrl
             itemObj.md5 = this.computableModel.md5
+            itemObj.mdl = this.computableModel.mdl
 
             itemObj.isAuthor=$("input[name='author_confirm']:checked").val();
 
@@ -550,7 +647,39 @@ var createComputableModel = Vue.extend({
             return itemObj;
         },
 
+        selectModelServer(container){
+            if(!container.status){
+                this.$message({
+                    message: 'Server Offline!',
+                    offset: 70,
+                });
+                return
+            }
+            if(this.computableModel.modelserUrl.split(':')[0] == container.ip){//如果选中则取消选择
+                this.computableModel.modelserUrl = ''
+                this.$message({
+                    message: 'Cancel select server!',
+                    offset: 70,
+                });
+            }else{
+                this.computableModel.modelserUrl = container.ip + ':' +container.port
+                this.$message({
+                    message: 'Succeed to select server!',
+                    type:'success',
+                    offset: 70,
+                });
+            }
+        },
+
         //draft
+        getDraft(){
+            return this.$refs.draftBox.getDraft();
+        },
+
+        insertDraft(draftContent){
+            this.insertInfo(draftContent)
+        },
+
         onInputName(){
             console.log(1)
             if(this.toCreate==1){
@@ -604,6 +733,20 @@ var createComputableModel = Vue.extend({
 
         initDraft(editType,backUrl,oidFrom,oid){
             this.$refs.draftBox.initDraft(editType,backUrl,oidFrom,oid)
+        },
+
+        cancelEditClick(){
+            if(this.getDraft()!=null){
+                this.$refs.draftBox.cancelDraftDialog=true
+            }else{
+                setTimeout(() => {
+                    window.location.href = "/user/userSpace#/models/computablemodel";
+                }, 905)
+            }
+        },
+
+        draftJump(){
+            window.location.href = '/user/userSpace#/models/computablemodel';
         },
         ///
     },
@@ -898,6 +1041,14 @@ var createComputableModel = Vue.extend({
                             });
                             return false;
                         }
+                        // if(this.computableModel.contentType=="Package"&&this.computableModel.modelserUrl==''){
+                        //     new Vue().$message({
+                        //         message: 'Please select a model server!',
+                        //         type: 'warning',
+                        //         offset: 70,
+                        //     });
+                        //     return false;
+                        // }
                     }
                     if(this.computableModel.contentType=="Service"||this.computableModel.contentType=="Link"){
                         if(this.computableModel.url==""){
@@ -907,8 +1058,10 @@ var createComputableModel = Vue.extend({
                                 offset: 70,
                             });
                             return false;
+                        }else {
+                            return true
                         }
-                    }else if(this.computableModel.contentType=="md5"){
+                    }else if(this.computableModel.contentType=="md5"&&newIndex==2){
                         if(this.computableModel.md5!=''&&this.computableModel.mdl!=''){
                             if(this.customAddMd5)
                                 return true
@@ -1067,7 +1220,6 @@ var createComputableModel = Vue.extend({
                     if(res.code===0) {
                         switch (res.data.code) {
                             case 0:
-                                this.deleteDraft()
                                 let currentUrl = window.location.href;
                                 let index = currentUrl.lastIndexOf("\/");
                                 that.computableModel_oid = currentUrl.substring(index + 1,currentUrl.length);
@@ -1084,6 +1236,7 @@ var createComputableModel = Vue.extend({
                                     }
                                 });
                             case 1:
+                                this.deleteDraft()
                                 this.$confirm('<div style=\'font-size: 18px\'>Update computable model successfully!</div>', 'Tip', {
                                     dangerouslyUseHTMLString: true,
                                     confirmButtonText: 'View',

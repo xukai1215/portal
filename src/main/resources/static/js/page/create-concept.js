@@ -1571,6 +1571,28 @@ var createConcept = Vue.extend({
             this.$refs.draftBox.initDraft(editType,backUrl,oidFrom,oid)
         },
 
+        draftJump(){
+            window.location.href = '/user/userSpace#/communities/concept&semantic';
+        },
+
+        getDraft(){
+            return this.$refs.draftBox.getDraft();
+        },
+
+        insertDraft(draftContent){
+            this.insertInfo(draftContent)
+        },
+
+        cancelEditClick(){
+            if(this.getDraft()!=null){
+                this.$refs.draftBox.cancelDraftDialog=true
+            }else{
+                setTimeout(() => {
+                    window.location.href = "/user/userSpace#/communities/concept&semantic";
+                }, 905)
+            }
+        },
+
         sendcurIndexToParent() {
             this.$emit('com-sendcurindex', this.curIndex)
         },

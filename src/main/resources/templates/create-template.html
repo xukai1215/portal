@@ -66,8 +66,10 @@
                                     id="subRteTitle"></span></h3>
                         </div>
                         <draft-box ref="draftBox"
-                                   @insert-draft="insertInfo"
+                                   @insert-draft="insertDraft"
+                                   @get-draft="getDraft"
                                    @get-content="getItemContent"
+                                   @draft-jump="draftJump"
                                    :item-type="'template'"></draft-box>
                     </section>
 
@@ -314,6 +316,12 @@
                                                         </div>
 
                                                         <div class="step-footer text-right">
+                                                            <button class="btn btn-danger prev" @click="cancelEditClick()" style="">
+                                                                Exit
+                                                            </button>
+                                                            <div class="innerBorderCol btn btn-warning"
+                                                                 style="padding: 0;margin: 0 10px;height: 20px;background-color: #cccccc !important;cursor: auto">
+                                                            </div>
                                                             <button class="btn btn-warning prev" data-direction="prev">
                                                                 Previous
                                                             </button>

@@ -35,6 +35,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
@@ -203,9 +204,9 @@ public class ComputableModelRestController {
         return ResultUtils.success(computableModelResultDTO);
     }
 
-    @RequestMapping(value = "/deploy/{id}",method = RequestMethod.POST)
-    JsonResult deploy(@PathVariable("id") String id){
-        String result=computableModelService.deploy(id);
+    @RequestMapping(value = "/deploy",method = RequestMethod.POST)
+    JsonResult deploy(@RequestParam("id")String id,@RequestParam("modelServer")String modelServer) throws IOException {
+        String result=computableModelService.deploy(id,modelServer);
         if(result!=null){
             return ResultUtils.success(result);
         }
@@ -213,7 +214,6 @@ public class ComputableModelRestController {
             return ResultUtils.error(-1,"deploy failed.");
         }
     }
-
 
 
     @RequestMapping (value = "/listByUserOid",method = RequestMethod.GET)
@@ -421,7 +421,7 @@ public class ComputableModelRestController {
 
     @RequestMapping (value = "/findAllByMd5", method = RequestMethod.GET)
     public JsonResult findByMd5(@RequestParam(value="md5") String md5){
-        List<ComputableModel> computableModel = computableModelService.findAllByMd5(md5);
+        List<ComputableModelResultDTO> computableModel = computableModelService.findAllByMd5(md5);
         return ResultUtils.success(computableModel);
     }
 

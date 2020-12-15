@@ -3201,6 +3201,10 @@ nav .totalContainer{
     width: 125px;
 }
 
+.el-message-box__message{
+    word-break: break-word;
+}
+
 @media only screen and (min-width: 1000px) {
     .mainContent {
         max-width: 1150px;

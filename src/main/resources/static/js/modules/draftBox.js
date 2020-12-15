@@ -263,8 +263,15 @@ Vue.component("draft-box",
             cancelEdit() {
                 this.deleteDraft()
                 setTimeout(() => {
-                    this.$emit('draftJump')
-                }, 808)
+                    this.$emit('draft-jump')
+                }, 608)
+            },
+
+            saveEdit(){
+                this.saveDraft()
+                setTimeout(() => {
+                    this.$emit('draft-jump')
+                }, 608)
             },
 
             saveDraft(){
@@ -280,7 +287,7 @@ Vue.component("draft-box",
                 ).then(
                     res=>{
                         if(res.data.code==0){
-                            this.$message({message: 'Save successfully',type: 'success'})
+                            this.$message({message: 'Save draft successfully',type: 'success'})
                         }
                         setTimeout(()=>{
                             this.savingDraft=false
@@ -300,6 +307,14 @@ Vue.component("draft-box",
             insertDraft(draft){
                 this.draft = draft
                 this.$emit('insert-draft',draft.content)
+            },
+
+            getDraft(){
+                if(this.draft.oid!=''&&this.draft.oid!=undefined&&this.draft.oid!=null){
+                    return this.draft
+                }else{
+                    return null
+                }
             },
 
             deleteDraft(){

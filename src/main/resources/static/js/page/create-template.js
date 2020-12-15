@@ -680,6 +680,28 @@ var createTemplate = Vue.extend({
             this.$refs.draftBox.initDraft(editType,backUrl,oidFrom,oid)
         },
 
+        getDraft(){
+            return this.$refs.draftBox.getDraft();
+        },
+
+        insertDraft(draftContent){
+            this.insertInfo(draftContent)
+        },
+
+        cancelEditClick(){
+            if(this.getDraft()!=null){
+                this.$refs.draftBox.cancelDraftDialog=true
+            }else{
+                setTimeout(() => {
+                    window.location.href = "/user/userSpace#/communities/dataTemplate";
+                }, 905)
+            }
+        },
+
+        draftJump(){
+            window.location.href = '/user/userSpace#/communities/dataTemplate';
+        },
+
         changeOpen(n) {
             this.activeIndex = n;
         },
