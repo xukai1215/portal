@@ -37,6 +37,7 @@ import org.springframework.util.DigestUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -113,6 +114,11 @@ public class PortalApplicationTests {
 
     @Autowired
     UnitConversionDao unitConversionDao;
+
+    @Autowired
+    UnitClassificationDao unitClassificationDao;
+
+
 
 
     @Value("${resourcePath}")
@@ -397,6 +403,93 @@ public class PortalApplicationTests {
                 unitConversionDao.save(unitConversion);
             }
         }
+    }
+
+    @Test
+    public void addUnitFromConversion(){
+        List<UnitConversion> unitConversionList=unitConversionDao.findAll();
+        Iterator<UnitConversion> unitConversionIterator=unitConversionList.iterator();
+        int num=0;
+        while (unitConversionIterator.hasNext()){
+            UnitConversion unitConversion=unitConversionIterator.next();
+            Unit unit=new Unit();
+
+            //type
+//            unit.setType("Derivation");
+//            if(Array.getLength(unitConversion.getBaseDimensions())<2){
+//                unit.setType("Basic");
+//            }
+            //tag
+//            String classification=unitConversion.getClassifications().get(0);
+//            UnitClassification unitClassification=unitClassificationDao.findFirstByOid(classification);
+//            unit.setTag(unitClassification.getNameEn());
+            //xml
+            //expression
+
+            //classifications-第一个是分类unitclassification，第二个是转换unitconversion
+           List<String> classificationList=new ArrayList<>();
+           List<String> unitclassi=unitConversion.getClassifications();
+           if(unitclassi!=null&&unitclassi.size()>0)
+               classificationList.add(unitclassi.get(0));
+
+           classificationList.add(unitConversion.getOid());
+           unit.setClassifications(classificationList);
+
+            //oid
+            unit.setOid(UUID.randomUUID().toString());
+            //name
+            unit.setName(unitConversion.getName());
+            //list alias
+            List<String> alias=new ArrayList<>();
+            alias.add(unitConversion.getName().toUpperCase());
+            unit.setAlias(alias);
+
+            //description
+            unit.setDescription(unitConversion.getXmlDoc());
+            //author
+            unit.setAuthor("XiaoYu He");
+
+            //data
+            unit.setCreateTime(new Date());
+            unit.setLastModifyTime(new Date());
+
+            //status
+            unit.setStatus("Public");
+            List<Localization> localizationList=new ArrayList<>();
+            Localization localization=new Localization();
+            localization.setLocalCode("zh-CN");
+            localization.setLocalName("Chinese (Simplified)");
+            localization.setName("");
+            localization.setDescription("");
+            localizationList.add(localization);
+
+            Localization localization1=new Localization();
+            localization1.setLocalCode("en-US");
+            localization1.setLocalName("English (United States)");
+            localization1.setName(unitConversion.getName());
+            localization1.setDescription(unitConversion.getXmlDoc());
+            localizationList.add(localization1);
+            unit.setLocalizationList(localizationList);
+
+            //lock
+            unit.setLock(false);
+
+            //authorship
+            unit.setAuthorship(null);
+
+            //sharecount、viewcount、thumbscount、dailyviewcount
+            unit.setShareCount(0);
+            unit.setViewCount(0);
+            unit.setThumbsUpCount(0);
+            unit.setDailyViewCount(null);
+
+            ++num;
+            unitDao.save(unit);
+
+         }
+
+        System.out.println(num);
+
     }
 
     @Test
