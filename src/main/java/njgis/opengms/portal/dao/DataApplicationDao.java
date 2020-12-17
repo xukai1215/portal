@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -17,9 +18,23 @@ public interface DataApplicationDao extends MongoRepository<DataApplication, Str
 
     DataApplication findFirstById(String id);
 
-    Page<DataApplication> findByAuthorAndType(Pageable pageable, String author, String type);
+    Page<DataApplication> findByAuthorAndTypeAndStatusNotLike(Pageable pageable, String author, String type,String status);
 
-    Page<DataApplication> findByAuthorAndNameContainsAndType(Pageable pageable, String author, String name, String type);
+    Page<DataApplication> findByAuthorAndNameContainsAndTypeAndStatusNotLike(Pageable pageable, String author, String name, String type,String status);
+    Page<DataApplication> findByNameLikeAndStatusNotLike(Pageable pageable,String name,String status);
 
-//    DataApplication findBy
+    Page<DataApplication> findByStatusNotLike(String status,Pageable pageable);
+
+    Page<DataApplication> findByClassificationsInAndStatusNotLike(List<String> classifications,Pageable pageable,String status);
+
+    Page<DataApplication> findByMethodLikeAndNameLikeAndStatusNotLike(String method,String name,String status,Pageable pageable);
+
+    Page<DataApplication> findByMethodLikeAndStatusNotLike(String method,String status,Pageable pageable);
+
+    Page<DataApplication> findByNameLikeAndStatusNotLike(String name,String status,Pageable pageable);
+    //
+    // List<DataApplication> findAllByAuthorshipIsNotNull();
+    //
+    // Page<DataApplication> findAllByContentTypeAndNameContainsIgnoreCaseAndClassificationsIn(String contentType,String Name,List<String> cls,Pageable pageable);
+
 }

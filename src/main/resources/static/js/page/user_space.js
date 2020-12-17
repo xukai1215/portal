@@ -1,4 +1,4 @@
-//element-ui 切换英文，勿删！
+ //element-ui 切换英文，勿删！
 ELEMENT.locale(ELEMENT.lang.en)
 var vue = new Vue({
     el: "#app",
@@ -4720,11 +4720,11 @@ var vue = new Vue({
                 this.selectedPath.unshift(node);
                 node=node.parent;
             }
-            let allFder={
+            let allFolder={
                 key:'0',
                 label:'All Folder'
             }
-            this.selectedPath.unshift(allFder)
+            this.selectedPath.unshift(allFolder)
             console.log(this.selectedPath)
             this.selectPathDialog=false;
             this.selectFolderVisible=false;

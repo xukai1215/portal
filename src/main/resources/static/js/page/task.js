@@ -1446,8 +1446,9 @@ var vue = new Vue({
             // }
             this.showDataChose = true;
             this.getUserTaskInfo()
-            this.getFilePackage()
-
+            this.$nextTick(()=>{
+                this.$refs.userDataSpace.getFilePackage();
+            })
 
         },
 

@@ -2,32 +2,26 @@ package njgis.opengms.portal.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import njgis.opengms.portal.dao.*;
-import njgis.opengms.portal.dto.DataApplicationDTO;
+import njgis.opengms.portal.dto.dataApplication.DataApplicationDTO;
+import njgis.opengms.portal.dto.dataApplication.DataApplicationFindDTO;
 import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.entity.support.AuthorInfo;
+import njgis.opengms.portal.entity.support.InvokeService;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.Utils;
-import njgis.opengms.portal.utils.XmlTool;
-import njgis.opengms.portal.utils.ZipUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
-import org.springframework.util.DigestUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-import sun.misc.IOUtils;
+import springfox.documentation.spring.web.json.Json;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.*;
-import java.sql.SQLTransactionRollbackException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -61,6 +55,10 @@ public class DataApplicationService {
 
     @Autowired
     UserDao userDao;
+
+    @Value("${htmlLoadPath}")
+    private String htmlLoadPath;
+
 
     public ModelAndView getPage(String id){
         try {
@@ -147,6 +145,90 @@ public class DataApplicationService {
 
     }
 
+    public ModelAndView getPageWith_id(String id){
+        try {
+            DataApplication dataApplication = dataApplicationDao.findFirstById(id);
+            List<String> classifications = dataApplication.getClassifications();
+
+            //时间
+            Date date = dataApplication.getCreateTime();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String dateResult = simpleDateFormat.format(date);
+
+            //用户信息
+            JSONObject userJson = userService.getItemUserInfoByOid(dataApplication.getAuthor());
+            //资源信息
+            JSONArray resourceArray = new JSONArray();
+            List<String> resources = dataApplication.getResources();
+
+            if (resources != null) {
+                for (int i = 0; i < resources.size(); i++) {
+                    String path = resources.get(i);
+                    String[] arr = path.split("\\.");
+                    String suffix = arr[arr.length - 1];
+                    arr = path.split("/");
+                    String name = arr[arr.length - 1].substring(14);
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("name", name);
+                    jsonObject.put("suffix", suffix);
+                    jsonObject.put("path", resources.get(i));
+                    resourceArray.add(jsonObject);
+                }
+            }
+
+            String lastModifyTime = simpleDateFormat.format(dataApplication.getLastModifyTime());
+
+            //authorship
+            String authorshipString="";
+            List<AuthorInfo> authorshipList=dataApplication.getAuthorship();
+            if(authorshipList!=null){
+                for (AuthorInfo author:authorshipList) {
+                    if(authorshipString.equals("")){
+                        authorshipString+=author.getName();
+                    }
+                    else{
+                        authorshipString+=", "+author.getName();
+                    }
+
+                }
+            }
+
+
+            ModelAndView modelAndView = new ModelAndView();
+
+            modelAndView.setViewName("data_application_info");
+
+            List<String> categories = classifications;
+            List<String> classificationName = new ArrayList<>();
+
+            for (String category: categories){
+                DataCategorys categorys = dataCategorysDao.findFirstById(category);
+                String name = categorys.getCategory();
+                classificationName.add(name);
+            }
+
+            modelAndView.addObject("dataApplicationInfo", dataApplication);
+            modelAndView.addObject("classifications", classificationName);
+            modelAndView.addObject("date", dateResult);
+            modelAndView.addObject("year", calendar.get(Calendar.YEAR));
+            modelAndView.addObject("user", userJson);
+            modelAndView.addObject("authorship", authorshipString);
+            modelAndView.addObject("resources", resourceArray);
+            modelAndView.addObject("lastModifyTime", lastModifyTime);
+
+
+            return modelAndView;
+
+
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new MyException(e.getMessage());
+        }
+    }
+
     public JSONObject insert(List<MultipartFile> files, JSONObject jsonObject, String oid, DataApplicationDTO dataApplicationDTO){
         JSONObject result = new JSONObject();
         DataApplication dataApplication = new DataApplication();
@@ -170,6 +252,15 @@ public class DataApplicationService {
                 dataApplication.setCreateTime(now);
                 dataApplication.setLastModifyTime(now);
 
+                //将服务invokeApplications置入
+                InvokeService invokeService = new InvokeService();
+                invokeService.setOid(UUID.randomUUID().toString());
+                invokeService.setMethod(dataApplication.getMethod());
+                invokeService.setName(dataApplication.getName());
+                List<InvokeService> invokeServices = new ArrayList<>();
+                invokeServices.add(invokeService);
+                dataApplication.setInvokeServices(invokeServices);
+
                 dataApplicationDao.insert(dataApplication);
 
                 result.put("code", 1);
@@ -179,6 +270,8 @@ public class DataApplicationService {
                 result.put("code", -2);
             }
         }
+
+
 
         return result;
     }
@@ -195,8 +288,8 @@ public class DataApplicationService {
 
         Sort sort = new Sort(as ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
         Pageable pageable = PageRequest.of(page, pagesize, sort);
-        Page<DataApplication> dataApplications = dataApplicationDao.findByAuthorAndType(pageable, author, type);
-        return dataApplicationDao.findByAuthorAndType(pageable, author,type);
+        Page<DataApplication> dataApplications = dataApplicationDao.findByAuthorAndTypeAndStatusNotLike(pageable, author, type,"Private");
+        return dataApplicationDao.findByAuthorAndTypeAndStatusNotLike(pageable, author,type,"Private");
 
     }
 
@@ -204,7 +297,7 @@ public class DataApplicationService {
         //todo 超出堆内存解决办法
         Sort sort = new Sort(asc==1 ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
         Pageable pageable = PageRequest.of(page, pageSize, sort);
-        Page<DataApplication> dataApplications= dataApplicationDao.findByAuthorAndNameContainsAndType(pageable, userOid, searchText, type);
+        Page<DataApplication> dataApplications= dataApplicationDao.findByAuthorAndNameContainsAndTypeAndStatusNotLike(pageable, userOid, searchText, type,"Private");
         return dataApplications;
     }
 
@@ -323,4 +416,262 @@ public class DataApplicationService {
             return -1;
         }
     }
+
+    // public JSONObject findAll() {
+    //     Page<DataApplication> dataApplicationPage = dataApplicationDao.findByStatusNotLike(PageRequest.of(2, 10, new Sort(Sort.Direction.ASC,"createTime")),"private");
+    //
+    //     List<DataApplication> dataApplications = dataApplicationPage.getContent();
+    //
+    //     JSONArray jsonArray = new JSONArray();
+    //     for (int i=0;i<dataApplications.size();++i) {
+    //
+    //         DataApplication dataApplication = dataApplications.get(i);
+    //
+    //         String oid = dataApplication.getAuthor();
+    //         User user = userDao.findFirstByOid(oid);
+    //         JSONObject userObject = new JSONObject();
+    //         userObject.put("id",user.getOid());
+    //         userObject.put("image",user.getImage().equals("")?"":htmlLoadPath + user.getImage());
+    //         userObject.put("name",user.getName());
+    //
+    //         JSONObject jsonObject = new JSONObject();
+    //         jsonObject.put("author",userObject);
+    //         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    //         jsonObject.put("createTime",simpleDateFormat.format(dataApplication.getCreateTime()));
+    //         jsonObject.put("name",dataApplication.getName());
+    //         jsonObject.put("description",dataApplication.getDescription());
+    //         jsonObject.put("type",dataApplication.getType());
+    //         jsonObject.put("status",dataApplication.getStatus());
+    //         jsonObject.put("oid",dataApplication.getOid());
+    //         jsonArray.add(jsonObject);
+    //     }
+    //     JSONArray users = new JSONArray();
+    //     for(int i=0;i<dataApplications.size();++i) {
+    //         DataApplication dataApplication = dataApplications.get(i);
+    //         String oid = dataApplication.getAuthor();
+    //         User user = userDao.findFirstByOid(oid);
+    //         JSONObject userObj = new JSONObject();
+    //         userObj.put("userId",user.getUserId());
+    //         userObj.put("image", user.getImage().equals("") ? "" : htmlLoadPath + user.getImage());
+    //         userObj.put("name", user.getName());
+    //         users.add(userObj);
+    //
+    //         dataApplications.get(i).setAuthor(user.getName());
+    //         dataApplications.get(i).setOid(dataApplication.getId());
+    //     }
+    //     JSONObject res = new JSONObject();
+    //     res.put("list",jsonArray);
+    //     res.put("total",dataApplicationPage.getTotalElements());
+    //     res.put("users",users);
+    //     return res;
+    // }
+
+
+    public  Page<DataApplication> selectMethodByNameAndMethod(String name, String method,Pageable pageable) {
+        if(name.equals("") && method.equals("")){
+            return dataApplicationDao.findByStatusNotLike("private",pageable);
+        }else if(name.equals("") && !method.equals("")){
+            return dataApplicationDao.findByMethodLikeAndStatusNotLike(method,"private",pageable);
+        }else if(!name.equals("") && method.equals("")){
+            return dataApplicationDao.findByNameLikeAndStatusNotLike(name,"private",pageable);
+        } else{
+            return dataApplicationDao.findByMethodLikeAndNameLikeAndStatusNotLike(method,name,"private",pageable);
+        }
+    }
+
+    public JSONObject searchApplication(DataApplicationFindDTO dataApplicationFindDTO){
+        Pageable pageable = PageRequest.of(dataApplicationFindDTO.getPage()-1, dataApplicationFindDTO.getPageSize(), new Sort(dataApplicationFindDTO.getAsc()? Sort.Direction.ASC: Sort.Direction.DESC,dataApplicationFindDTO.getSortField()));
+        Page<DataApplication> dataApplicationPage =selectMethodByNameAndMethod(dataApplicationFindDTO.getSearchText(),dataApplicationFindDTO.getMethod(),pageable);
+        List<DataApplication> dataApplications = dataApplicationPage.getContent();
+
+        JSONArray jsonArray = new JSONArray();
+        for (int i=0;i<dataApplications.size();++i) {
+
+            DataApplication dataApplication = dataApplications.get(i);
+
+            String oid = dataApplication.getAuthor();
+            User user = userDao.findFirstByOid(oid);
+            JSONObject userObject = new JSONObject();
+            userObject.put("id",user.getOid());
+            userObject.put("image",user.getImage().equals("")?"":htmlLoadPath + user.getImage());
+            userObject.put("name",user.getName());
+
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("author",userObject);
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            jsonObject.put("createTime",simpleDateFormat.format(dataApplication.getCreateTime()));
+            jsonObject.put("name",dataApplication.getName());
+            jsonObject.put("description",dataApplication.getDescription());
+            jsonObject.put("type",dataApplication.getType());
+            jsonObject.put("status",dataApplication.getStatus());
+            jsonObject.put("oid",dataApplication.getOid());
+            jsonArray.add(jsonObject);
+        }
+        JSONArray users = new JSONArray();
+        for(int i=0;i<dataApplications.size();++i) {
+            DataApplication dataApplication = dataApplications.get(i);
+            String oid = dataApplication.getAuthor();
+            User user = userDao.findFirstByOid(oid);
+            JSONObject userObj = new JSONObject();
+            userObj.put("userId",user.getUserId());
+            userObj.put("image", user.getImage().equals("") ? "" : htmlLoadPath + user.getImage());
+            userObj.put("name", user.getName());
+            users.add(userObj);
+
+            dataApplications.get(i).setAuthor(user.getName());
+            dataApplications.get(i).setOid(dataApplication.getId());
+        }
+        JSONObject res = new JSONObject();
+        res.put("list",jsonArray);
+        res.put("total",dataApplicationPage.getTotalElements());
+        res.put("users",users);
+
+        return res;
+    }
+
+
+    // public JSONObject searchByName(DataApplicationFindDTO dataApplicationFindDTO,String userOid) {
+    //     int page = dataApplicationFindDTO.getPage()-1;
+    //     int pageSize = dataApplicationFindDTO.getPageSize();
+    //     String searchText = dataApplicationFindDTO.getSearchText();
+    //     Sort sort = new Sort(dataApplicationFindDTO.getAsc() ? Sort.Direction.ASC:Sort.Direction.DESC, dataApplicationFindDTO.getSortField());
+    //     Pageable pageable = PageRequest.of(page,pageSize,sort);
+    //     Page<DataApplication> dataApplicationPage;
+    //     if(userOid==null){
+    //
+    //     }
+    //
+    // }
+
+    public Categorys getCateId(String id) {
+        return categoryDao.findById(id).orElseGet(() -> {
+
+            System.out.println("有人乱查数据库！！该ID不存在对象:" + id);
+
+            throw new MyException(ResultEnum.NO_OBJECT);
+
+        });
+    }
+
+    // //分类加关键字
+    // public Page<DataApplication> listBySearch(DataApplicationFindDTO dataApplicationFindDTO) {
+    //     List<String> dataApplicationId = new ArrayList<>();
+    //     dataApplicationId = getCateId(dataApplicationFindDTO.getCategoryId()).getDataItem();
+    //     DataApplication dataApplication = new DataApplication();
+    //     List<DataApplication> res = new ArrayList<>();
+    //     for(int i=0;i<dataApplicationId.size();++i){
+    //         dataApplication = getById(dataApplicationId.get(i));
+    //         for(int j=0;j<dataApplicationFindDTO.getSearchContent().size();++j){
+    //             if(dataApplication.getName().contains(dataApplicationFindDTO.getSearchContent().get(j))||dataApplication.getDescription().contains(dataApplicationFindDTO.getSearchContent().get(i))){
+    //                 res.add(dataApplication);
+    //             }
+    //         }
+    //     }
+    //     List<DataApplication> findList = new ArrayList<>();
+    //     Integer ind = (dataApplicationFindDTO.getPage()*dataApplicationFindDTO.getPageSize() - dataApplicationFindDTO.getPageSize());
+    //     if(res.size()<=dataApplicationFindDTO.getPageSize()) {
+    //         findList = res;
+    //     } else {
+    //         if(ind + dataApplicationFindDTO.getPageSize() > res.size()) {
+    //             int exp = res.size()%dataApplicationFindDTO.getPageSize();
+    //             if((ind%dataApplicationFindDTO.getPageSize())==exp) {
+    //                 findList.add(res.get(ind));
+    //             } else {
+    //                 findList = res.subList(ind,ind+exp);
+    //             }
+    //         }else{
+    //             findList = res.subList(ind,ind+dataApplicationFindDTO.getPageSize());
+    //         }
+    //     }
+    //     Sort sort = new Sort(dataApplicationFindDTO.getAsc()? Sort.Direction.ASC: Sort.Direction.DESC,"createTime");
+    //     Page pageResult = new PageImpl(findList,new PageRequest(dataApplicationFindDTO.getPage(),dataApplicationFindDTO.getPageSize(),sort),res.size());
+    //     return pageResult;
+    // }
+    //
+    // public JSONObject searchResourceByCate(DataApplicationFindDTO dataApplicationFindDTO) {
+    //     int page = dataApplicationFindDTO.getPage();
+    //     int pageSize = dataApplicationFindDTO.getPageSize();
+    //     Sort sort = new Sort(dataApplicationFindDTO.getAsc()? Sort.Direction.ASC: Sort.Direction.DESC,"viewCount");
+    //     Pageable pageable = PageRequest.of(page,pageSize,sort);
+    //
+    //     Page<DataApplication> dataApplicationPage = dataApplicationDao.findByClassificationsInAndStatusNotLike(dataApplicationFindDTO.getClassifications(),pageable,"Private");
+    //     List<DataApplication> dataApplications = dataApplicationPage.getContent();
+    //
+    //     JSONArray users = new JSONArray();
+    //     for(int i=0;i<dataApplications.size();++i) {
+    //         DataApplication dataApplication = dataApplications.get(i);
+    //         String oid = dataApplication.getAuthor();
+    //         User user = userDao.findFirstByOid(oid);
+    //         JSONObject userObj = new JSONObject();
+    //         userObj.put("oid", user.getOid());
+    //         userObj.put("image", user.getImage().equals("") ? "" : htmlLoadPath + user.getImage());
+    //         userObj.put("name", user.getName());
+    //         users.add(userObj);
+    //
+    //         dataApplications.get(i).setAuthor(user.getName());
+    //         dataApplications.get(i).setOid(dataApplication.getId());
+    //     }
+    //
+    //     JSONArray jsonArray = new JSONArray();
+    //     for (int i=0;i<dataApplications.size();++i) {
+    //         JSONObject jsonObject = new JSONObject();
+    //         DataApplication dataApplication = dataApplications.get(i);
+    //
+    //         String oid = dataApplication.getAuthor();
+    //         User user = userDao.findFirstByOid(oid);
+    //         JSONObject userObject = new JSONObject();
+    //         userObject.put("oid",user.getOid());
+    //         userObject.put("image",user.getImage().equals("")?"":htmlLoadPath + user.getImage());
+    //         userObject.put("name",user.getName());
+    //
+    //         jsonObject.put("author",userObject);
+    //         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    //         jsonObject.put("createTime",simpleDateFormat.format(dataApplication.getCreateTime()));
+    //         jsonObject.put("name",dataApplication.getName());
+    //         jsonObject.put("description",dataApplication.getDescription());
+    //         jsonObject.put("type",dataApplication.getType());
+    //         jsonObject.put("status",dataApplication.getStatus());
+    //         jsonArray.add(jsonObject);
+    //     }
+    //     JSONObject res = new JSONObject();
+    //     res.put("list",jsonArray);
+    //     res.put("total",dataApplicationPage.getTotalElements());
+    //     res.put("users",users);
+    //     return res;
+    // }
+    //
+    // public JSONObject searchByName(DataApplicationFindDTO dataApplicationFindDTO,String userOid) {
+    //     int page = dataApplicationFindDTO.getPage() - 1;
+    //     int pageSize = dataApplicationFindDTO.getPageSize();
+    //     String searchText = dataApplicationFindDTO.getSearchText();
+    //
+    //     Sort sort = new Sort(dataApplicationFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, dataApplicationFindDTO.getSortField());
+    //     Pageable pageable = PageRequest.of(page, pageSize, sort);
+    //
+    //     Page<DataApplication> dataApplicationPage = dataApplicationDao.findByNameLikeAndStatusNotLike(pageable,dataApplicationFindDTO.getSearchText(),"Private");
+    //     List<DataApplication> dataApplications = dataApplicationPage.getContent();
+    //
+    //     JSONArray users = new JSONArray();
+    //     for(int i=0;i<dataApplications.size();++i) {
+    //         DataApplication dataApplication = dataApplications.get(i);
+    //         String oid = dataApplication.getAuthor();
+    //         User user = userDao.findFirstByOid(oid);
+    //         JSONObject userObj = new JSONObject();
+    //         userObj.put("oid", user.getOid());
+    //         userObj.put("image", user.getImage().equals("") ? "" : htmlLoadPath + user.getImage());
+    //         userObj.put("name", user.getName());
+    //         users.add(userObj);
+    //
+    //         dataApplications.get(i).setAuthor(user.getName());
+    //         dataApplications.get(i).setOid(dataApplication.getId());
+    //     }
+    //
+    //     JSONObject res = new JSONObject();
+    //     res.put("list",dataApplications);
+    //     res.put("total",dataApplicationPage.getTotalElements());
+    //     res.put("pages",dataApplicationPage.getTotalPages());
+    //     res.put("users",users);
+    //
+    //     return  res;
+    // }
 }

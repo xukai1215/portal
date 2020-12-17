@@ -1,4 +1,4 @@
-package njgis.opengms.portal.dto;
+package njgis.opengms.portal.dto.dataApplication;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,7 +22,7 @@ public class DataApplicationDTO {
 
     //Public, Discoverable or Private
     String status;
-
+    String operation;
     String type;
 
     //authorship
@@ -30,4 +30,5 @@ public class DataApplicationDTO {
 
     String contentType;
     String url;//Third-party Web-Service Link
+    String method;  // processing visualization
 }
