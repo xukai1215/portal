@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Data Applications Repository | OpenGMS</title>
+
+    <script src="/static/js/common/vue.min.js"></script>
+    <script src="/static/js/common/vue-avatar.min.js"></script>
+
+    <script src="/static/element-ui/index.js"></script>
+    <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
+
+
+
+    <link rel="stylesheet" href="/static/css/base/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/base/style.css">
+    <link rel="stylesheet" href="/static/css/base/universal.css">
+    <link rel="stylesheet" href="/static/css/base/list.css">
+    <link rel="stylesheet" href="/static/css/base/tree.css">
+    <link rel="stylesheet" href="/static/css/other/bootstrap-select.css">
+    <link rel="stylesheet" href="/static/css/page/model_items.css">
+    <link rel="stylesheet" href="/static/css/base/bootstrap-tagsinput.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css" />
+
+    <style>
+        .content-body .list-item:not(:first-child) {
+            margin-top: -1px;
+        }
+        .bootstrap-tagsinput{
+            min-height:36px;
+        }
+        .bootstrap-tagsinput input{
+            min-height:26px;
+        }
+        .el-collapse-item__content{
+            padding-bottom: 0px;
+        }
+        .el-collapse-item__header{
+            font-size: 14px;
+        }
+        .el-card__header{
+            padding-bottom: 0px;
+        }
+        .el-card__body{
+            height: 280px;
+            padding-top: 0px;
+        }
+    </style>
+
+</head>
+<body>
+<div id="data_applications" v-cloak>
+    <div th:replace="fragments/navbar :: unlog"></div>
+
+    <div class="clearfix" style="margin-bottom: 40px;">
+        <div class="mainContent">
+            <div class="el-row">
+                <div class="data-top">
+                    <h2 class="main-title">Data Applications Repository</h2>
+                    <h4 class="sub-title">The repository of data applications (one-stop hub with public shared data applications resources)
+                    </h4>
+                    <button class="btn btn-success btn-lg" style="font-size: 15px;margin:10px;" @click="contribute()">+ Contribute</button>
+                </div>
+                <hr>
+            </div>
+            <div class="el-col el-col-6 minScreen_maxWidth" style="margin-top:29px;">
+                <el-card class="box-card categoryList">
+                    <div slot="header" class="clearfix text-center" style="border-bottom: 1px solid #eaeaea;height: 80px;padding-bottom: 0px">
+                        <span style="font-size: large;">Data Categories</span>
+                    </div>
+                     <div class="el-card__header;" style="padding-top: 0px">
+                         <div role="button"  tabindex="0" class="el-collapse-item__header" @click="chooseCate('conversion')" style="font-size: medium;height: 75px;border-bottom: 1px solid #eaeaea;">Conversion</div>
+                         <div role="button"  tabindex="0" class="el-collapse-item__header" @click="chooseCate('procession')" style="font-size: medium;height: 75px;border-bottom: 1px solid #eaeaea;">Procession</div>
+                         <div role="button"  tabindex="0" class="el-collapse-item__header" @click="chooseCate('visualization')" style="font-size: medium;height: 75px;border-bottom: 1px solid #eaeaea;">Visualization</div>
+                         <div role="button"  tabindex="0" class="el-collapse-item__header" @click="chooseCate('all')" style="font-size: medium;height: 75px;border-bottom: 1px solid #eaeaea;">All</div>
+                     </div>
+                </el-card>
+            </div>
+            <div class="el-col el-col-18 minScreen_maxWidth" >
+                <div class="searcherPanel">
+                    <div class="searcherPanel">
+                        <div class="searcherInputPanel" @keydown.enter="search()">
+                            <input id="searchBox" type="text" placeholder="Data Applications Name..." v-model="searchText">
+                            <button @click="search()"><i class="glyphicon glyphicon-search"></i> Search</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="progressPanel">
+                    <span class="barControl">
+                        <div class="barContro_space">
+                            <span class="progress_line" :class="{active:progressBar}"></span>
+                        </div>
+                    </span>
+                </div>
+                <div  class="alert alert-success" role="alert" style="margin-bottom: 2px;">
+                    <span >
+                        <strong class="minScreen_curClass">
+                            {{method===''?'':"Current Category: "+method}}
+                        </strong>
+                        <strong style="color: cornflowerblue">
+                            {{searchText.length===0?'':"Current Keywords: "+searchText}}
+                        </strong>
+                        <strong style="float: right">
+                            {{datacount!=0 ?(datacount===-1?'loading...':datacount+' items'):'no data'}}
+                        </strong>
+                        </span><br>
+                </div>
+                <!--v-loading-->
+                <div class="maincontnt"  v-loading="loading">
+                    <span style="float:left;margin-top: 12px;margin-left: 15px">
+                            <span style="font-weight: bold">Sorted By: </span>&nbsp;
+                            <el-dropdown trigger="click" @command="changeSortField" style="cursor:pointer;">
+                                <span class="el-dropdown-link">
+                                    {{sortTypeName}}<i class="el-icon-arrow-down el-icon--right"></i>
+                                </span>
+                                <el-dropdown-menu slot="dropdown">
+                                    <el-dropdown-item command="View Count">View Count</el-dropdown-item>
+                                    <el-dropdown-item command="Name">Name</el-dropdown-item>
+                                    <el-dropdown-item command="Create Time">Create Time</el-dropdown-item>
+
+                                </el-dropdown-menu>
+                            </el-dropdown>
+                            <el-dropdown trigger="click" @command="changeSortOrder" style="cursor:pointer;">
+                                <span class="el-dropdown-link">
+                                    {{sortOrder}}<i class="el-icon-arrow-down el-icon--right"></i>
+                                </span>
+                                <el-dropdown-menu slot="dropdown">
+                                    <el-dropdown-item command="Asc.">Asc.</el-dropdown-item>
+                                    <el-dropdown-item command="Desc.">Desc.</el-dropdown-item>
+                                </el-dropdown-menu>
+                            </el-dropdown>
+                        </span>
+                    <el-pagination style="text-align: right;padding: 10px"
+                                   @current-change="handleCurrentChange"
+                                   :pager-count="5"
+                                   :page-size="findDto.pageSize"
+                                   :current-page="findDto.page"
+                                   layout="prev, pager, next"
+                                   :total="datacount">
+                    </el-pagination>
+                    <div class="modelPanel" >
+                        <div  class="content-body">
+                            <div class="list-item" v-for="(item,index) in list" :key="index">
+                                <div class="detail_title">
+                                    <el-tooltip popper-class="fontsize-15" effect="light" :content="item.status" placement="left">
+                                        <i v-if="item.status=='Public'" class="el-icon-unlock public fontsize-24 pull-right"></i>
+                                        <i v-if="item.status=='Discoverable'" class="el-icon-unlock discoverable fontsize-24 pull-right"></i>
+                                    </el-tooltip>
+                                    <a :class="item.viewCount>100?'hot':''" :href="goto(item.oid)" target="_blank" >{{item.name}}&nbsp&nbsp</a>
+                                </div>
+                                <div class="detail_overview">
+                                    <a class="img" :href="'/dataApplication/'+ item.oid" target="_blank">
+                                        <avatar  :username="item.name" :size="90"
+                                                 :rounded="false"></avatar>
+                                    </a>
+                                    <div class="info">
+                                        <p style="height:40px;-webkit-line-clamp:2;">{{item.description}}</p>
+                                        <div class="tags" v-for="(tagitem,ind) in item.keywords" :key="ind" style="display: inline-block">
+                                            <span class="badge badge-info" >{{tagitem}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="detail_bottom">
+                                    <div style="display:inline-block;float: left;">
+                                        <a :href="'/profile/'+users[index].userId">
+                                            <img :src="users[index].image==''?'/static/img/icon/default.png':users[index].image" class="round_icon"
+                                                 style="margin-top:-5px;width:30px;height: 30px;display: inline-block;">
+                                        </a>
+                                        <a :href="'/profile/'+users[index].userId" style="display: inline-block;margin-left: 5px;"><h4>{{users[index].name}}</h4></a>
+                                        <h4 class="screen_view">contributed at {{formatDate(item.createTime).substring(0,10)}}</h4>
+                                        <h4 class="mobile_view">{{formatDate(item.createTime).substring(0,10)}}</h4>
+                                    </div>
+                                    <div class="detail_option">
+                                        <a class="fa fa-eye" aria-hidden="true"></a>&nbsp&nbsp{{item.viewCount}}
+                                    </div>
+                                    <br>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <el-pagination style="text-align: center;margin-top:20px"
+                                   @current-change="handleCurrentChange"
+                                   :page-size="findDto.pageSize"
+                                   :current-page="findDto.page"
+                                   layout="total,prev, pager, next, jumper"
+                                   :total="datacount">
+                    </el-pagination>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:replace="fragments/footer :: footer"></div>
+</div>
+</body>
+<script src="/static/js/common/jquery-3.3.1.js"></script>
+<script src="/static/js/common/axios.min.js"></script>
+<script src="/static/js/common/bootstrap.js"></script>
+<script src="/static/js/common/bootstrap-select.js"></script>
+<script src="/static/js/common/bootstrap-tagsinput.js"></script>
+<script src="/static/js/page/data_application_repository.js"></script>
+<script  async src="/static/js/common/loadUser.js" ></script>
+<script src="/static/element-ui/umd/locale/en.js"></script>
+<script src="/static/js/common/navbar.js"></script>
+</html>

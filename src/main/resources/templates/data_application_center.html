@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>DataApplication Center | OpenGMS</title>
+    <script src="/static/js/common/vue.min.js"></script>
+    <script src="/static/js/common/vue-avatar.min.js"></script>
+    <script src="/static/element-ui/index.js"></script>
+
+    <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
+
+    <link rel="stylesheet" href="/static/css/base/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/base/style.css">
+    <link rel="stylesheet" href="/static/css/base/universal.css">
+    <link rel="stylesheet" href="/static/css/base/list.css">
+    <link rel="stylesheet" href="/static/css/base/tree.css">
+    <link rel="stylesheet" href="/static/css/other/bootstrap-select.css">
+    <link rel="stylesheet" href="/static/css/page/model_items.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css" />
+    <style>
+        .el-card__body a:hover {
+            color: #0886E9;
+        }
+        .el-card__body a {
+            color: black;
+        }
+        .author{
+            height: 41px;
+            display: none; /*flex;*/
+            justify-content: center;
+            align-items: center;
+            border-bottom: 1px solid #EBEEF5;
+            padding: 20px 0;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div th:replace="fragments/navbar :: unlog"></div>
+
+    <div class="clearfix" style="margin:40px 0px;height: auto;">
+        <div class="el-col el-col-20 el-col-offset-2">
+
+            <div class="el-row">
+                <h2 class="main-title">DataApplication Center</h2>
+                <h4 class="sub-title">OpenGMS</h4>
+                <hr>
+            </div>
+            <div class="el-row" style="margin-top:29px; margin-bottom:20px;">
+                <div class="el-col el-col-6 pull-left" style="padding:0 15px 20px 0;">
+                    <el-card slot="header" shadow="hover">
+                        <a href="https://geomodeling.njnu.edu.cn/hydro-model-integration/main" target="_blank">
+                            <img src="/static/img/thematic_center/swmm1_gaitubao_1438x690_gaitubao_1438x689.png" style="width:100%;height:auto" class="image">
+                        </a>
+                        <div style="text-align: center;padding: 15px 0">
+                            <a href="https://geomodeling.njnu.edu.cn/hydro-model-integration/main" target="_blank" style="font-size: 20px;font-weight: bold">Hydrological Modeling</a>
+                        </div>
+                    </el-card>
+                    <div class="el-row author">
+                        <div class="el-col el-col-4 el-col-offset-3">
+                            <img th:src="'/static/img/icon/default.png'"
+                                 class="round_icon" style="width:40px;height: 40px;float:left;">
+                        </div>
+                        <div class="el-col el-col-17" style="display:flex;">
+                            <div class="pull-left" style="display: block;margin:0 auto;">
+                                <a href="../user/42"><h4>NNU_Group</h4></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="el-col el-col-6 pull-left" style="padding:0 15px 20px 0;">
+                    <el-card slot="header" shadow="hover">
+                        <a href="https://geomodeling.njnu.edu.cn/FGM-theme/" target="_blank">
+                            <img src="/static/img/thematic_center/Foresty_gaitubao_1916x919.png" style="width:100%;height:auto" class="image">
+                        </a>
+                        <div style="text-align: center;padding: 15px 0">
+                            <a href="https://geomodeling.njnu.edu.cn/FGM-theme/" target="_blank" style="font-size: 19px;font-weight: bold">Forest Growth</a>
+                        </div>
+                    </el-card>
+                    <div class="el-row author">
+                        <div class="el-col el-col-4 el-col-offset-3">
+                            <img th:src="'/static/img/icon/default.png'"
+                                 class="round_icon" style="width:40px;height: 40px;float:left;">
+                        </div>
+                        <div class="el-col el-col-17" style="display:flex;">
+                            <div class="pull-left" style="display: block;margin:0 auto;">
+                                <a href="../user/42"><h4>NNU_Group</h4></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="el-col el-col-6 pull-left" style="padding:0 15px 20px 0;">
+                    <el-card slot="header" shadow="hover">
+                        <a href="https://geomodeling.njnu.edu.cn/Saga_Theme/saga_model.html" target="_blank">
+                            <img src="/static/img/thematic_center/saga.jpg" style="width:100%;height:auto;" class="image">
+                        </a>
+                        <div style="text-align: center;padding: 15px 0">
+                            <a href="https://geomodeling.njnu.edu.cn/Saga_Theme/saga_model.html" target="_blank" style="font-size: 20px;font-weight: bold">SAGA</a>
+                        </div>
+                    </el-card>
+                    <div class="el-row author">
+                        <div class="el-col el-col-4 el-col-offset-3">
+                            <img th:src="'/static/img/icon/default.png'"
+                                 class="round_icon" style="width:40px;height: 40px;float:left;">
+                        </div>
+                        <div class="el-col el-col-17" style="display:flex;">
+                            <div class="pull-left" style="display: block;margin:0 auto;">
+                                <a href="../user/42"><h4>NNU_Group</h4></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="el-col el-col-6 pull-left" style="padding:0 15px 20px 0;">
+                    <el-card slot="header" shadow="hover">
+                        <a href="https://geomodeling.njnu.edu.cn/TrafficNoiseTheme/" target="_blank">
+                            <img src="/static/img/thematic_center/TrafficNoise.jpg" style="width:100%;height: auto;" class="image">
+                        </a>
+                        <div style="text-align: center;padding: 15px 0">
+                            <a href="https://geomodeling.njnu.edu.cn/TrafficNoiseTheme/" target="_blank" style="font-size: 20px;font-weight: bold">Traffic Noise</a>
+                        </div>
+                    </el-card>
+                    <div class="el-row author">
+                        <div class="el-col el-col-4 el-col-offset-3">
+                            <img th:src="'/static/img/icon/default.png'"
+                                 class="round_icon" style="width:40px;height: 40px;float:left;">
+                        </div>
+                        <div class="el-col el-col-17" style="display:flex;">
+                            <div class="pull-left" style="display: block;margin:0 auto;">
+                                <a href="../user/42"><h4>NNU_Group</h4></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="el-col el-col-6 pull-left" style="padding:0 15px 20px 0;">
+                    <el-card slot="header" shadow="hover">
+                        <a href="https://geomodeling.njnu.edu.cn/Bicycle-sharing/theme/info" target="_blank">
+                            <img src="/static/img/thematic_center/SharingBicyclesTheme.jpg" style="width:100%;height: auto;" class="image">
+                        </a>
+                        <div style="text-align: center;padding: 15px 0">
+                            <a href="https://geomodeling.njnu.edu.cn/Bicycle-sharing/theme/info" target="_blank" style="font-size: 20px;font-weight: bold">Bicycle-sharing</a>
+                        </div>
+                    </el-card>
+                    <div class="el-row author">
+                        <div class="el-col el-col-4 el-col-offset-3">
+                            <img th:src="'/static/img/icon/default.png'"
+                                 class="round_icon" style="width:40px;height: 40px;float:left;">
+                        </div>
+                        <div class="el-col el-col-17" style="display:flex;">
+                            <div class="pull-left" style="display: block;margin:0 auto;">
+                                <a href="../user/42"><h4>NNU_Group</h4></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="el-col el-col-6 pull-left" style="padding:0 15px 20px 0;">
+                    <el-card slot="header" shadow="hover">
+                        <a href="https://geomodeling.njnu.edu.cn/Beautiful-China/" target="_blank">
+                            <img src="/static/img/thematic_center/BeautifulChina.png" style="width:100%;height: auto;" class="image">
+                        </a>
+                        <div style="text-align: center;padding: 15px 0">
+                            <a href="https://geomodeling.njnu.edu.cn/Beautiful-China/" target="_blank" style="font-size: 20px;font-weight: bold">Beautiful China</a>
+                        </div>
+                    </el-card>
+                    <div class="el-row author">
+                        <div class="el-col el-col-4 el-col-offset-3">
+                            <img th:src="'/static/img/icon/default.png'"
+                                 class="round_icon" style="width:40px;height: 40px;float:left;">
+                        </div>
+                        <div class="el-col el-col-17" style="display:flex;">
+                            <div class="pull-left" style="display: block;margin:0 auto;">
+                                <a href="../user/42"><h4>NNU_Group</h4></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="el-col el-col-6 pull-left" style="padding:0 15px 20px 0;">
+                    <el-card slot="header" shadow="hover">
+                        <a href="https://geomodeling.njnu.edu.cn/app/geodetector.html" target="_blank">
+                            <img src="/static/img/thematic_center/geodetector.png" style="width:100%;height: auto;" class="image">
+                        </a>
+                        <div style="text-align: center;padding: 15px 0">
+                            <a href="https://geomodeling.njnu.edu.cn/app/geodetector.html" target="_blank" style="font-size: 20px;font-weight: bold">Geodetector</a>
+                        </div>
+                    </el-card>
+                    <div class="el-row author">
+                        <div class="el-col el-col-4 el-col-offset-3">
+                            <img th:src="'/static/img/icon/default.png'"
+                                 class="round_icon" style="width:40px;height: 40px;float:left;">
+                        </div>
+                        <div class="el-col el-col-17" style="display:flex;">
+                            <div class="pull-left" style="display: block;margin:0 auto;">
+                                <a href="../user/42"><h4>NNU_Group</h4></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--<i >-->
+                <div th:each="theme,index:${themeResult}" th:if="${theme.status!='Private'}" class="el-col el-col-6 pull-left" style="padding:0 15px 20px 0;">
+                    <el-card slot="header" shadow="hover">
+                        <a th:href="'../repository/theme/'+${theme.oid}"  target="_blank">
+                            <img th:src="'../static'+${theme.img}"  style="width:100%;height: auto;" class="image">
+                        </a>
+                        <div style="text-align: center;padding: 15px 0">
+                            <a th:href="'../repository/theme/'+${theme.oid}" th:utext="${theme.name}" target="_blank" style="font-size: 20px;font-weight: bold"></a>
+                        </div>
+                    </el-card>
+                    <div class="el-row author">
+                        <div class="el-col el-col-4 el-col-offset-3">
+                            <img th:src="'/static/img/icon/default.png'"
+                                 class="round_icon" style="width:40px;height: 40px;float:left;">
+                        </div>
+                        <div class="el-col el-col-17" style="display:flex;">
+                            <div class="pull-left" style="display: block;margin:0 auto;">
+                                <a th:href="'/profile/'+${theme.creator_oid}"><h4 th:text="${theme.creator_name}">Tom Marvolo Riddle</h4></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--</i>-->
+
+
+
+
+            </div>
+
+
+        </div>
+    </div>
+
+    <div th:replace="fragments/footer :: footer"></div>
+
+</div>
+
+</body>
+
+<script src="/static/js/common/jquery-3.3.1.min.js"></script>
+
+<script src="/static/js/common/axios.min.js"></script>
+<script src="/static/js/common/bootstrap.js"></script>
+<script src="/static/js/common/bootstrap-select.js"></script>
+<script src="/static/js/page/spatialReferenceRepository.js"></script>
+<script src="/static/element-ui/umd/locale/en.js"></script>
+<script src="/static/js/common/navbar.js"></script>
+<script src="/static/js/common/loadUser.js"></script>
+
+
+</html>

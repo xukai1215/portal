@@ -6,6 +6,7 @@ var createDataApplication = Vue.extend({
             curIndex: '3',
 
             dataApplication: {
+                method:"Conversion",
                 status:"Public",
                 name: "",
                 description: "",
@@ -81,8 +82,6 @@ var createDataApplication = Vue.extend({
             userDataList:[],
             authorDataList:[],
             dialogVisible: false,
-
-            method:"converse",
         }
     },
     methods: {
@@ -165,6 +164,24 @@ var createDataApplication = Vue.extend({
         },
         sendUserToParent(userId){
             this.$emit('com-senduserinfo',userId)
+        },
+
+        getServiceByMd5(){
+
+            $.ajax({
+                url:"/task/getServiceByMd5/" + this.dataApplication.md5,
+                success:function (res) {
+                    if (res.code != 0)
+                        return
+
+                    if (res.data == null){
+                        console.log("Don't find a Service by this MD5!")
+                    }
+
+                    console.log(data)
+                }
+
+            })
         },
         handleCheckChange(data, checked, indeterminate) {
             let checkedNodes = this.$refs.tree.getCheckedNodes()
@@ -513,15 +530,15 @@ var createDataApplication = Vue.extend({
             },
             onChange: (currentIndex, newIndex, stepDirection) => {
                 if (currentIndex === 0 && stepDirection === "forward") {
-                    if (that.clsStr.length == 0) {
-                        new Vue().$message({
-                            message: 'Please complete data category!',
-                            type: 'warning',
-                            offset: 70,
-                        });
-                        return false;
-                    }
-                    else if (this.dataApplication.name.trim() == "") {
+                    // if (that.clsStr.length == 0) {
+                    //     new Vue().$message({
+                    //         message: 'Please complete data category!',
+                    //         type: 'warning',
+                    //         offset: 70,
+                    //     });
+                    //     return false;
+                    // }
+                    if (this.dataApplication.name.trim() == "") {
                         new Vue().$message({
                             message: 'Please enter name!',
                             type: 'warning',
@@ -535,8 +552,7 @@ var createDataApplication = Vue.extend({
                             offset: 70,
                         });
                         return false;
-                    }
-                    else {
+                    }                    else {
                         return true;
                     }
                 }
@@ -591,11 +607,9 @@ var createDataApplication = Vue.extend({
 
             var detail = tinyMCE.activeEditor.getContent();
             this.dataApplication.detail = detail.trim();
-
             this.dataApplication.authorship=[];
             this.dataApplication.classifications = this.cls;
             this.dataApplication.type = "process";
-            this.dataApplication.method = this.method;
 
 
             userspace.getUserData($("#providersPanel .user-contents .form-control"), this.dataApplication.authorship);
@@ -706,7 +720,6 @@ var createDataApplication = Vue.extend({
                                 let currentUrl = window.location.href;
                                 let index = currentUrl.lastIndexOf("\/");
                                 that.dataApplication_oid = currentUrl.substring(index + 1,currentUrl.length);
-                                console.log(that.dataApplication_oid);
                                 //当change submitted时，其实数据库中已经更改了，但是对于消息数目来说还没有及时改变，所以在此处获取消息数目，实时更新导航栏消息数目，
                                 // that.getMessageNum(that.dataApplication_oid);
                                 // let params = that.message_num_socket;

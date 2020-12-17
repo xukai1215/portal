@@ -58,6 +58,5 @@ public class DataApplication {
     String lastModifier;
 
     List<InvokeService> invokeServices;
-    String method;
-
+    String method; // processing visualization
 }
