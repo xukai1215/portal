@@ -1215,21 +1215,15 @@ public class DataItemRestController {
         }
 
 
+
         //解析xml  利用Iterator获取xml的各种子节点
         Document document = DocumentHelper.parseText(xml);
-        Element employees = document.getRootElement();
-        int count = 0;
+        Element root = document.getRootElement();
         ArrayList<String> parameters = new ArrayList<>();
-        for (Iterator i = employees.elementIterator(); i.hasNext(); ) {
-            Element employee = (Element) i.next();
-            count++;
-            if (count != 3){
-                continue;
-            }
-            for (Iterator j = employee.elementIterator(); j.hasNext(); ) {
-                Element node = (Element) j.next();
-                parameters.add(node.attribute(0).getValue());
-            }
+        List<Element> pas =  root.element("Parameter").elements();
+        for (Element e : pas){
+            log.info(e.attributeValue("name"));
+            parameters.add(e.attributeValue("name"));
         }
         jsonObject.put("parameters", parameters);
         jsonObject.put("code", 0);

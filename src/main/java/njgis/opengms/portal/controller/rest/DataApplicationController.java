@@ -4,6 +4,9 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dao.DataApplicationDao;
+import njgis.opengms.portal.dto.ComputableModel.ComputableModelResultDTO;
+//import njgis.opengms.portal.dto.DataApplicationDTO;
+import njgis.opengms.portal.dao.DataApplicationDao;
 import njgis.opengms.portal.dao.ThemeDao;
 import njgis.opengms.portal.dao.UserDao;
 import njgis.opengms.portal.dto.dataApplication.DataApplicationDTO;
@@ -237,107 +240,6 @@ public class DataApplicationController {
     }
 
 
-    // /**
-    //  * dataApplications 页面中的搜索
-    //  * @return
-    //  */
-    // @RequestMapping(value = "/methods/all",method = RequestMethod.GET)
-    // JsonResult getAll() {
-    //     System.out.println("?");
-    //     return ResultUtils.success(dataApplicationService.findAll());
-    // }
-    //
-    // @RequestMapping(value = "/methods/listBySearch",method = RequestMethod.POST)
-    // JsonResult listByName(@RequestBody DataApplicationFindDTO dataApplicationFindDTO){
-    //     return ResultUtils.success(dataApplicationService.listBySearch(dataApplicationFindDTO));
-    // }
-    //
-    // @RequestMapping(value = "/methods/searchByName",method = RequestMethod.POST)
-    // JsonResult searchByName(@RequestBody DataApplicationFindDTO dataApplicationFindDTO) {
-    //     return ResultUtils.success(dataApplicationService.searchByName(dataApplicationFindDTO,null));
-    // }
-
-
-//     /**
-//      * dataApplications 页面，分页和分类的唯一标识
-//      * @param method
-//      * @param page
-//      * @param ortFieldName
-//      * @param sortOrder
-//      * @param request
-//      * @return
-//      */
-//     @RequestMapping(value = "/methods/{method}&{page}&{ortFieldName}&{sortOrder}",method = RequestMethod.GET)
-//     JsonResult listByClassifications(
-//             @PathVariable String method,
-//             @PathVariable Integer page,
-//             @PathVariable String ortFieldName,
-//             @PathVariable String sortOrder,
-//             HttpServletRequest request){
-//         // HttpSession session = request.getSession();
-//         // String loadUser = null;
-//         // if(session.getAttribute("oid")!=null) {
-//         //     loadUser = session.getAttribute("oid").toString();
-//         // }
-// //        return ResultUtils.success(dataItemService.findByCateg(categorysId,page,false,10,loadUser,dataType));
-//         Sort sort = new Sort(sortOrder.equals("Desc.")?Sort.Direction.DESC:Sort.Direction.ASC, ortFieldName);
-//         Pageable pageable = PageRequest.of(page-1, 10, sort);
-//
-//         // String tabType = "hub";
-//         //
-//         // Page<DataItemResultDTO> dataItemResultDTOPageable;
-//         // if (dataType.equals("hubs")) {
-//         //     tabType = "hub";
-//         //     dataItemResultDTOPageable = dataHubsDao.findAllByClassificationsIn(categorysId, pageable);
-//         // }else if (dataType.equals("repository")){
-//         //     tabType = "repository";
-//         //     dataItemResultDTOPageable =
-//         //             dataItemDao.findAllByClassificationsAndTabTypeIn(categorysId, tabType, pageable);
-//         // }else {
-//         //     tabType = "network";
-//         //     dataItemResultDTOPageable =
-//         //             dataItemDao.findAllByClassificationsAndTabTypeIn(categorysId, tabType, pageable);
-//         // }
-//         //
-//         Page<DataApplication> dataApplicationPage;
-//
-//         dataApplicationPage = dataApplicationDao.findByMethodLikeAndStatusNotLike(method,pageable,"private");
-//         // if(method.equals("all")) {
-//         //     dataApplicationPage = dataApplicationDao.findAllAndStatusNot(pageable,"private");
-//         // } else{
-//         //     dataApplicationPage = dataApplicationService.searchResourceByCate(data)
-//         // }
-//         JSONObject result = new JSONObject();
-//         result.put("content", dataApplicationPage.getContent());
-//         JSONArray users = new JSONArray();
-//         for (int i=0;i<dataApplicationPage.getContent().size();i++){
-//             JSONObject userJson = new JSONObject();
-//             User user = userDao.findFirstByOid(dataApplicationPage.getContent().get(i).getAuthor());
-//             userJson.put("name", user.getName());
-//             userJson.put("oid", user.getOid());
-//             userJson.put("userId", user.getUserId());
-//             String img = user.getImage();
-//             userJson.put("image", img.equals("") ? "" : htmlLoadPath + user.getImage());
-//             users.add(userJson);
-//         }
-//         result.put("users", users);
-//         result.put("totalElements", dataApplicationPage.getTotalElements());
-//
-//         return ResultUtils.success(result);
-//     }
-
-    // @RequestMapping(value = "/searchByName",method = RequestMethod.POST)
-    // JsonResult searchByName(RequestBody DataApplicationFindDTO){
-    //
-    // }
-
-    // /**
-    //  * 通过数据条目页面，打开dataApplication页面
-    //  */
-    // @RequestMapping(value = "/methods/{id}",method = RequestMethod.GET)
-    // ModelAndView get(@PathVariable("id") String id) {
-    //
-    // }
 
     /**
      * 通过数据条目页面，打开dataApplication页面,这里面根据的是_id来进行访问的，前面个是根据oid来访问的

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import njgis.opengms.portal.entity.support.AuthorInfo;
+import njgis.opengms.portal.entity.support.TestData;
 
 import java.util.List;
 
@@ -31,4 +32,6 @@ public class DataApplicationDTO {
     String contentType;
     String url;//Third-party Web-Service Link
     String method;  // processing visualization
+
+    List<TestData> testData;//存储testData的id
 }

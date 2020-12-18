@@ -203,6 +203,34 @@ var createDataApplication = Vue.extend({
             this.clsStr=str;
 
         },
+        openDataSpace(){
+            this.dialogVisible = true;
+            this.$nextTick(()=>{
+                this.$refs.userDataSpace.getFilePackage();
+            })
+        },
+        handleClose(done) {
+            this.$confirm('Confirm to close?')
+                .then(_ => {
+                    done();
+                })
+                .catch(_ => {
+                });
+        },
+        selectDataspaceFile(file){
+            if (this.selectedFile.indexOf(file) > -1) {
+                for (var i = 0; i < this.selectedFile.length; i++) {
+                    if (this.selectedFile[i] === file) {
+                        //删除
+                        this.selectedFile.splice(i, 1);
+                        // this.downloadDataSetName.splice(i, 1)
+                        break
+                    }
+                }
+            } else {
+                this.selectedFile.push(file);
+            }
+        },
     },
     mounted() {
         let that = this;
@@ -610,6 +638,15 @@ var createDataApplication = Vue.extend({
             this.dataApplication.authorship=[];
             this.dataApplication.classifications = this.cls;
             this.dataApplication.type = "process";
+            // this.dataApplication.method = this.method;
+            let testData = [];
+            for(let item of this.selectedFile){
+                let obj = new Object();
+                obj.oid = item.id;
+                obj.url = item.url;
+                testData.push(obj);
+            }
+            this.dataApplication.testData = testData;
 
 
             userspace.getUserData($("#providersPanel .user-contents .form-control"), this.dataApplication.authorship);
