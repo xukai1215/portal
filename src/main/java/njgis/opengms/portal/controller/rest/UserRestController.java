@@ -329,7 +329,7 @@ public class UserRestController {
         }
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)            // 明明根据userId来写的，坑啊（有_id,oid,userID)
     public ModelAndView getUserPage(@PathVariable("id") String id, HttpServletRequest req) {
         ModelAndView modelAndView = new ModelAndView();
         HttpSession session = req.getSession();

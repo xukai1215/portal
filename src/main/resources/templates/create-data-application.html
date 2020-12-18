@@ -80,7 +80,7 @@
                                                         <a href="#step2">Resource</a>
                                                     </li>
                                                     <li>
-                                                        <a href="#step3">Content</a>
+                                                        <a href="#step3">Detail</a>
                                                     </li>
                                                     <li>
                                                         <a href="#step4">Authorship</a>
@@ -88,43 +88,62 @@
                                                 </ul>
                                                 <br><br>
                                                 <div class="step-content">
-                                                    <div class="step-tab-panel" id="step1">
-                                                        <div class="col-md-3 col-sm-4"
-                                                             style="overflow-y: auto;height: 450px;width: auto;">
-                                                            <el-card>
-                                                                <div slot="header" class="clearfix text-center">
-                                                                    <span style="font-size: 20px;color:#444">Data Classifications</span>
-                                                                </div>
-                                                                <el-tree style="height: 320px;overflow: auto"
-                                                                         id="tree"
-                                                                         ref="tree"
-                                                                         :data="treeData"
-                                                                         show-checkbox
-                                                                         node-key="id"
-                                                                         :default-expanded-keys="[]"
-                                                                         :current-node-key="100"
-                                                                         @check-change="handleCheckChange"
-                                                                         :props="defaultProps">
-                                                                </el-tree>
-                                                            </el-card>
-                                                        </div>
-
-                                                        <div class="form-group">
-                                                            <label class="control-label col-lg-2 col-md-3 col-md-offset-2" style="margin-left: 20px">
-                                                                <span class="star">* </span>Category
+                                                    <div class="step-tab-panel col-md-offset-1" id="step1">
+                                                        <div class="form-group cl-md-6">
+                                                            <label class="control-label col-lg-2 col-md-3 col-md-offset-1">
+                                                                <span class="xing">* </span>Bind Data
                                                             </label>
-                                                            <div class="input-group col-md-5" style="width: -webkit-fill-available;">
-                                                                <input type="text" class="form-control" v-model="clsStr" placeholder="Please choose the catgory of the data"
-                                                                       id="classification" required="required" readonly/>
+                                                            <div class="input-group col-md-5">
+                                                                <el-button type="primary" @click="openDataSpace()" style="margin-right:10px">Bind</el-button>
                                                             </div>
                                                         </div>
-                                                        <div class="form-group">
+                                                        <div class="form-group cl-md-6">
+                                                            <label class="control-label col-lg-2 col-md-3 col-md-offset-1">
+                                                                <span class="xing">* </span>Name
+                                                            </label>
+                                                            <div class="input-group col-md-5">
+                                                                <input type="text" class="form-control"
+                                                                       v-model="dataApplication.name">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group cl-md-6">
+                                                            <label class="control-label col-lg-2 col-md-3 col-md-offset-1">
+                                                                <span class="xing">* </span>Overview
+                                                            </label>
+                                                            <div class="input-group col-md-5">
+                                                                <textarea class="form-control" id="descInput"
+                                                                          v-model="dataApplication.description"></textarea>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group cl-md-6">
                                                             <label data-original-title="Tooltip on top"
-                                                                   class="control-label col-lg-2 col-md-3 col-md-offset-2 tooltips"
-                                                                   data-toggle="tooltip" data-placement="top" title=""  style="margin-left: 20px">
+                                                                   class="control-label col-lg-2 col-md-3 col-md-offset-1 tooltips"
+                                                                   data-toggle="tooltip" data-placement="top" title="">
+                                                                <span class="xing">* </span>Method
+                                                            </label>
+                                                            <div class="input-group col-md-5">
+                                                                <el-radio-group v-model="dataApplication.method" size="medium">
+                                                                    <el-tooltip popper-class="fontsize-15" effect="light" content="Data processing method" placement="top">
+                                                                        <el-radio-button label="Conversion"></el-radio-button>
+                                                                    </el-tooltip>
+                                                                    <el-tooltip popper-class="fontsize-15" effect="light" content="Data processing method" placement="top">
+                                                                        <el-radio-button label="Processing"></el-radio-button>
+                                                                    </el-tooltip>
+                                                                    <el-tooltip popper-class="fontsize-15" class="item" effect="light" content="Data visualization method" placement="top">
+                                                                        <el-radio-button label="Visualization"></el-radio-button>
+                                                                    </el-tooltip>
+
+                                                                </el-radio-group>
+
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group cl-md-6">
+                                                            <label data-original-title="Tooltip on top"
+                                                                   class="control-label col-lg-2 col-md-3 col-md-offset-1 tooltips"
+                                                                   data-toggle="tooltip" data-placement="top" title="">
                                                                 <span class="xing">* </span>Status
                                                             </label>
-                                                            <div class="input-group col-md-5" style="width: -webkit-fill-available;">
+                                                            <div class="input-group col-md-5">
                                                                 <el-radio-group v-model="dataApplication.status" size="medium">
                                                                     <el-tooltip popper-class="fontsize-15" effect="light" content="Can be retrieved, shared and edited." placement="top">
                                                                         <el-radio-button label="Public"></el-radio-button>
@@ -135,40 +154,18 @@
                                                                     <el-tooltip popper-class="fontsize-15" class="item" effect="light" content="Can NOT be retrieved and shared, can ONLY be edited by creator." placement="top">
                                                                         <el-radio-button label="Private"></el-radio-button>
                                                                     </el-tooltip>
-
                                                                 </el-radio-group>
-
                                                             </div>
                                                         </div>
-
-                                                        <div class="form-group">
-                                                            <label class="control-label col-lg-2 col-md-3 col-md-offset-2" style="margin-left: 20px">
-                                                                <span class="xing">* </span>Name
-                                                            </label>
-                                                            <div class="input-group col-md-5" style="width: -webkit-fill-available;">
-                                                                <input type="text" class="form-control"
-                                                                       v-model="dataApplication.name">
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="form-group">
-                                                            <label class="control-label col-lg-2 col-md-3 col-md-offset-2" style="margin-left: 20px">
-                                                                <span class="xing">* </span>Overview
-                                                            </label>
-                                                            <div class="input-group col-md-5" style="width: -webkit-fill-available;">
-                                                        <textarea class="form-control" id="descInput"
-                                                                  v-model="dataApplication.description"></textarea>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="form-group" style="margin-top:10px">
-                                                            <label class="control-label col-lg-2 col-md-3 col-md-offset-2" style="margin-left: 20px">
+                                                        <div class="form-group cl-md-6" style="margin-top:10px">
+                                                            <label class="control-label col-lg-2 col-md-3 col-md-offset-1">
                                                                 <span class="xing">* </span>Content Type
                                                             </label>
                                                             <div class="input-group col-md-5" style="padding:5px 0;font-size:20px">
                                                                 <el-radio-group v-model="dataApplication.contentType">
                                                                     <!--<el-radio label="Package">Model Service Package</el-radio>-->
                                                                     <!--<el-radio label="md5">MD5</el-radio>-->
+                                                                    <el-radio label = "Package" style="display: block;padding: 5px">OpenGMS Data-Service Package</el-radio>
                                                                     <el-radio label="Code" style="display: block;padding: 5px">Source Code</el-radio>
                                                                     <el-radio label="Library" style="display: block;padding: 5px">Executable Library</el-radio>
                                                                     <el-radio label="Service" style="display: block;padding: 5px">Third-party Web-Service Link</el-radio>
@@ -362,7 +359,6 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
                                                 <div class="step-footer text-right">
                                                     <button class="btn btn-warning prev" data-direction="prev">
                                                         Previous
@@ -394,6 +390,18 @@
                         </div>
                     </div>
                 </div>
+                </div>
+                <el-dialog
+                        title="Data Select"
+                        :visible.sync="dialogVisible"
+                        width="80%"
+                        :before-close="handleClose">
+                    <user-data @com-selectfile="selectDataspaceFile" ref="userDataSpace" style="height: 505px;"></user-data>
+                    <span slot="footer" class="dialog-footer">
+                      <el-button @click="dialogVisible = false">Cancel</el-button>
+                      <el-button type="primary" @click="dialogVisible = false">Confirm</el-button>
+                    </span>
+                </el-dialog>
             </div>
 
         </template>
@@ -401,6 +409,8 @@
     </div>
 </div>
 </div>
+<!--<template th:replace="modules/userDataSpaceModule :: userDataSpaceModule"></template>-->
+<!--<script src="/static/js/modules/userDataSpaceModule.js"></script>-->
 </body>
 
 <script src="/static/js/common/jquery-3.3.1.min.js"></script>
@@ -416,6 +426,6 @@
 
 <script th:replace="fragments/newSideBar :: headSideBar"></script>
 <script th:replace="fragments/newSideBar :: sideBarComponent"></script>
-<!--<script src="/static/js/page/create-computable-model.js"></script>-->
+
 
 </html>
