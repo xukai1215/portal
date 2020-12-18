@@ -131,6 +131,14 @@ var router = new VueRouter({
                 component:userServer,
             },
             {
+                path:'/server/modelserver',
+                component:userModelServer,
+            },
+            {
+                path:'/server/dataserver',
+                component:userDataServer,
+            },
+            {
                 path:'/task',
                 component:userTask,
             },

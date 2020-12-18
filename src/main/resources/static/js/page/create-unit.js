@@ -665,7 +665,7 @@ var createUnit =Vue.extend({
             }else{
                 setTimeout(() => {
                     window.location.href = "/user/userSpace#/communities/unit&metric";
-                }, 905)
+                }, 305)
             }
         },
 

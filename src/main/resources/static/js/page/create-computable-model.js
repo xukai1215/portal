@@ -169,6 +169,8 @@ var createComputableModel = Vue.extend({
 
             ],
 
+            currentStep:0,
+
         }
     },
     methods: {
@@ -525,13 +527,20 @@ var createComputableModel = Vue.extend({
             if(basicInfo.resourceJson!=null)
                 this.resources=basicInfo.resourceJson;
 
-            let modelItem = await this.getBindModelInfo(basicInfo.relateModelItem)
+            let modelItem = {
+                name:'',
+                oid:''
+            }
+            if(basicInfo.relateModelItem!=null&&basicInfo.relateModelItem!=undefined){
+                modelItem = await this.getBindModelInfo(basicInfo.relateModelItem)
+            }
 
             this.computableModel.bindModelItem=modelItem.name;
             this.computableModel.bindOid=modelItem.oid;
             this.computableModel.status=basicInfo.status;
             this.computableModel.md5=basicInfo.md5;
             this.computableModel.mdl=basicInfo.mdl;
+            this.computableModel.url=basicInfo.url;
 
             this.computableModel.contentType = basicInfo.contentType;
 
@@ -741,7 +750,7 @@ var createComputableModel = Vue.extend({
             }else{
                 setTimeout(() => {
                     window.location.href = "/user/userSpace#/models/computablemodel";
-                }, 905)
+                }, 305)
             }
         },
 
@@ -1095,7 +1104,7 @@ var createComputableModel = Vue.extend({
         });
 
 
-        $(".finish").click(()=>{
+        $(".finish").on('click',()=>{
             this.formData=new FormData();
 
             if(this.computableModel.bindModelItem==""){

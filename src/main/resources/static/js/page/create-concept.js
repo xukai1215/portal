@@ -1589,7 +1589,7 @@ var createConcept = Vue.extend({
             }else{
                 setTimeout(() => {
                     window.location.href = "/user/userSpace#/communities/concept&semantic";
-                }, 905)
+                }, 305)
             }
         },
 

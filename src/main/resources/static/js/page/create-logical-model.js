@@ -180,14 +180,43 @@ var createLogicalModel = Vue.extend({
             }
         },
 
-        insertInfo(basicInfo){
+        async getBindModelInfo(modelOid){
+            let data = null
+            await axios.get('/modelItem/searchByOid',{
+                params:{
+                    oid:modelOid
+                }
+            }).then(
+                res=>{
+                    if(res.data.code!=-1){
+                        data = res.data.data
+                    }else{
+
+                    }
+                }
+            )
+
+            return data
+        },
+
+        async insertInfo(basicInfo){
 
             let user_num = 0;
             this.resources=basicInfo.resourceJson;
 
-            $("#search-box").val(basicInfo.relateModelItemName)
-            this.logicalModel.bindModelItem=basicInfo.relateModelItemName;
-            this.logicalModel.bindOid=basicInfo.relateModelItem;
+            let modelItem = {
+                name:'',
+                oid:''
+            }
+            if(basicInfo.relateModelItem!=null&&basicInfo.relateModelItem!=undefined){
+                modelItem = await this.getBindModelInfo(basicInfo.relateModelItem)
+            }
+
+            this.logicalModel.bindModelItem=modelItem.name;
+            this.logicalModel.bindOid=modelItem.oid;
+
+            $("#search-box").val(basicInfo.bindModelItem)
+
             this.logicalModel.status=basicInfo.status;
 
             if(basicInfo.contentType=="MxGraph"){
@@ -289,7 +318,7 @@ var createLogicalModel = Vue.extend({
             itemObj.name=this.logicalModel.name
             itemObj.status=this.logicalModel.status
             itemObj.description=this.logicalModel.description
-            itemObj.bindModelItem=this.logicalModel.bindModelItem
+            itemObj.relateModelItem = this.logicalModel.bindOid
             itemObj.contentType=$("input[name='ContentType']:checked").val();
             itemObj.isAuthor=$("input[name='author_confirm']:checked").val();
             var detail = tinyMCE.activeEditor.getContent();
@@ -398,7 +427,7 @@ var createLogicalModel = Vue.extend({
             }else{
                 setTimeout(() => {
                     window.location.href = "/user/userSpace#/models/createLogicalModel";
-                }, 905)
+                }, 305)
             }
         },
 

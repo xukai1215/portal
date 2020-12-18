@@ -999,7 +999,7 @@ var createModelItem = Vue.extend({
             }else{
                 setTimeout(() => {
                     window.location.href = "/user/userSpace#/models/modelitem";
-                }, 905)
+                }, 305)
             }
         },
 

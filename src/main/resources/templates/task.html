@@ -785,13 +785,16 @@
                         <!--</el-upload>-->
                         <!--</el-dialog>-->
 
-                        <el-dialog title="Personal Center Data ( User Space -> My Data )" :visible.sync="showDataChose"
-                                   width="70%">
+                        <el-dialog title="Personal Center Data ( User Space -> My Data )"
+                                   :visible.sync="showDataChose"
+                                   width="70%"
+                                   class="centerDialog"
+                        >
                             <user-data
                                     @com-selectfile="selectDataspaceFile"
                                     @com-removefile="removeDataspaceFile"
                                     single-choice
-                                    ref="userDataSpace" style="height: 505px;"></user-data>
+                                    ref="userDataSpace" style="height: 508px;"></user-data>
 <!--                            <div class="researchTitle" style="justify-content: space-between">-->
 <!--                                &lt;!&ndash;                                <ul class="researchMenu flexRowContainer">&ndash;&gt;-->
 <!--                                &lt;!&ndash;                                    <li :class="{researchMenuChoosed:dataChosenIndex==1}" style="cursor: pointer;"&ndash;&gt;-->

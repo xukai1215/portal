@@ -75,6 +75,7 @@
     <script src="/static/js/common/vue-router.js"></script>
     <script src="/static/js/common/vue-avatar.min.js"></script>
     <script src="/static/js/common/vue-cropper.min.js"></script>
+    <script src="/static/js/utils/qs.js"></script>
     <script src="/static/element-ui/index.js"></script>
     <script src="/static/element-ui/umd/locale/en.js"></script>
     <script src="/static/js/common/echarts.min.js"></script>
@@ -247,6 +248,12 @@
 <!--userServer组件-->
 <template th:replace="userServer :: userServer"></template>
 <script src="/static/js/page/userServer.js"></script>
+<!--userModelServer组件-->
+<template th:replace="userModelServer :: userModelServer"></template>
+<script src="/static/js/page/userModelServer.js"></script>
+<!--userDataServer组件-->
+<template th:replace="userDataServer :: userDataServer"></template>
+<script src="/static/js/page/userDataServer.js"></script>
 <!--userTask组件-->
 <template th:replace="userTask :: userTask"></template>
 <script src="/static/js/page/userspaceTask.js"></script>

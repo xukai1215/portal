@@ -467,6 +467,9 @@
                                                     </div>
                                                 </div>
                                                 <div class="step-footer text-right">
+<!--                                                    <button class="btn btn-danger prev" @click="cancelEditClick()" style="">-->
+<!--                                                        Exit and save draft-->
+<!--                                                    </button>-->
                                                     <button class="btn btn-danger prev" @click="cancelEditClick()" style="">
                                                         Exit
                                                     </button>
@@ -477,7 +480,10 @@
                                                     </button>
                                                     <button class="btn btn-primary next" data-direction="next">Next
                                                     </button>
-                                                    <button class="btn btn-success finish" data-direction="finish">
+                                                    <button v-show="editType=='modify'" class="btn btn-success finish" data-direction="next" >
+                                                        Submit Edit
+                                                    </button>
+                                                    <button v-show="editType=='create'" class="btn btn-success finish" data-direction="finish">
                                                         Finish
                                                     </button>
                                                 </div>

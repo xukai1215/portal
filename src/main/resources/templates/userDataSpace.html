@@ -93,11 +93,11 @@
                                                             <i class="glyphicon glyphicon-plus-sign"></i><span
                                                                 style="font-size: 15px">Add folder</span>
                                                         </button>
-<!--                                                        <button class="dwload btn btn-info btn-round"-->
-<!--                                                                v-if="downloadDataSet.length>0" @click="userDownload">-->
-<!--                                                            <i class="glyphicon glyphicon-download"></i><span-->
-<!--                                                                style="font-size: 15px">Download</span>-->
-<!--                                                        </button>-->
+                                                        <button class="dwload btn btn-info btn-round"
+                                                                v-if="downloadDataSet.length>0" @click="userDownload">
+                                                            <i class="glyphicon glyphicon-download"></i><span
+                                                                style="font-size: 15px">Download</span>
+                                                        </button>
                                                         <button class="dwload btn btn-primary btn-round" v-if="pasteTargetItem.id"
                                                                 @click="pasteFile">
                                                             <i style="font-size: 16px" class="fa fa-clipboard">></i><span
@@ -180,13 +180,14 @@
                                                                     <i class="fa fa-refresh" style="font-weight: 600;transition: .5s ease-out"></i>
                                                                 </div>
                                                                 <div class="showPathContainer" style="margin-left: 10px">
-                                                                    <div>path</div>
+                                                                    <div style="color: #3f4d60">path</div>
                                                                     :
                                                                     <div v-for="(path,index) in pathShown"
+                                                                         v-if="searchContentShown==''"
                                                                          :style="{color:index==pathShown.length-1?'#222222':'#666666'}">
                                                                         /{{path.label}}
                                                                     </div>
-                                                                    <div v-if="searchContentShown!=''" style="font-style: italic">
+                                                                    <div v-else style="font-style: italic">
                                                                         search results of '{{searchContentShown}}'
                                                                     </div>
                                                                 </div>
@@ -714,82 +715,82 @@
                                     </el-table>
                                 </el-card>
                             </li>
-                            <li style="cursor: pointer" @click="dataTreeClick(2)"><span
-                                    class="el-tree-node__expand-icon el-icon-caret-right treeLi"></span>
-                                <span style="font-size: 16px;margin-left: 5px">Output Data</span></li>
-                            <ul class="flexLi" style="margin-left: 18px">
-                                <div class="filePackageList">
-                                    <li v-for="(item,index) in userTaskFullInfo.tasks"
-                                        @click="dropPackageContent(item,index)">
-                                        <span class="el-tree-node__expand-icon el-icon-caret-right treeChildLi"></span>
-                                        <span style="font-size: 16px;margin-left: 8px">{{item.computableName}}@{{formatDate(item.runTime)}}</span>
-                                        <div class="packageContent">
-                                            <el-card shadow="never">
-                                                <el-table
-                                                        ref="multipleTableDataSharing"
-                                                        :data="taskDataList"
-                                                        tooltip-effect="dark"
+<!--                            <li style="cursor: pointer" @click="dataTreeClick(2)"><span-->
+<!--                                    class="el-tree-node__expand-icon el-icon-caret-right treeLi"></span>-->
+<!--                                <span style="font-size: 16px;margin-left: 5px">Output Data</span></li>-->
+<!--                            <ul class="flexLi" style="margin-left: 18px">-->
+<!--                                <div class="filePackageList">-->
+<!--                                    <li v-for="(item,index) in userTaskFullInfo.tasks"-->
+<!--                                        @click="dropPackageContent(item,index)">-->
+<!--                                        <span class="el-tree-node__expand-icon el-icon-caret-right treeChildLi"></span>-->
+<!--                                        <span style="font-size: 16px;margin-left: 8px">{{item.computableName}}@{{formatDate(item.runTime)}}</span>-->
+<!--                                        <div class="packageContent">-->
+<!--                                            <el-card shadow="never">-->
+<!--                                                <el-table-->
+<!--                                                        ref="multipleTableDataSharing"-->
+<!--                                                        :data="taskDataList"-->
+<!--                                                        tooltip-effect="dark"-->
 
-                                                        style="width: 100%"
-                                                        @select="handleSelectionChange">
-                                                    <el-table-column
-                                                            type="selection"
-                                                            width="55">
-                                                    </el-table-column>
-                                                    <el-table-column
-                                                            prop="type"
-                                                            label="Type"
-                                                            width="120"
-                                                            :filters="[{ text: 'Input', value: 'Input' }, { text: 'Output', value: 'Output' }]"
-                                                            :filter-method="filterType"
-                                                            filter-placement="bottom-start"
-                                                            filter-multiple="false"
-                                                            show-overflow-tooltip>
-                                                        <template slot-scope="scope">
-                                                            <el-tag
-                                                                    :type="scope.row.type === 'Input' ? 'primary' : 'success'"
-                                                                    disable-transitions>{{scope.row.type}}
-                                                            </el-tag>
-                                                        </template>
-                                                    </el-table-column>
-                                                    <el-table-column
-                                                            label="Name"
-                                                    >
-                                                        <template slot-scope="scope">{{ scope.row.tag }}</template>
-                                                    </el-table-column>
-                                                    <el-table-column
-                                                            prop="event"
-                                                            label="Event"
-                                                    >
-                                                    </el-table-column>
-                                                    <el-table-column
-                                                            prop="statename"
-                                                            label="State"
-                                                            :filters="stateFilters"
-                                                            :filter-method="filterState"
-                                                            filter-placement="bottom-start"
-                                                            show-overflow-tooltip>
-                                                    </el-table-column>
+<!--                                                        style="width: 100%"-->
+<!--                                                        @select="handleSelectionChange">-->
+<!--                                                    <el-table-column-->
+<!--                                                            type="selection"-->
+<!--                                                            width="55">-->
+<!--                                                    </el-table-column>-->
+<!--                                                    <el-table-column-->
+<!--                                                            prop="type"-->
+<!--                                                            label="Type"-->
+<!--                                                            width="120"-->
+<!--                                                            :filters="[{ text: 'Input', value: 'Input' }, { text: 'Output', value: 'Output' }]"-->
+<!--                                                            :filter-method="filterType"-->
+<!--                                                            filter-placement="bottom-start"-->
+<!--                                                            filter-multiple="false"-->
+<!--                                                            show-overflow-tooltip>-->
+<!--                                                        <template slot-scope="scope">-->
+<!--                                                            <el-tag-->
+<!--                                                                    :type="scope.row.type === 'Input' ? 'primary' : 'success'"-->
+<!--                                                                    disable-transitions>{{scope.row.type}}-->
+<!--                                                            </el-tag>-->
+<!--                                                        </template>-->
+<!--                                                    </el-table-column>-->
+<!--                                                    <el-table-column-->
+<!--                                                            label="Name"-->
+<!--                                                    >-->
+<!--                                                        <template slot-scope="scope">{{ scope.row.tag }}</template>-->
+<!--                                                    </el-table-column>-->
+<!--                                                    <el-table-column-->
+<!--                                                            prop="event"-->
+<!--                                                            label="Event"-->
+<!--                                                    >-->
+<!--                                                    </el-table-column>-->
+<!--                                                    <el-table-column-->
+<!--                                                            prop="statename"-->
+<!--                                                            label="State"-->
+<!--                                                            :filters="stateFilters"-->
+<!--                                                            :filter-method="filterState"-->
+<!--                                                            filter-placement="bottom-start"-->
+<!--                                                            show-overflow-tooltip>-->
+<!--                                                    </el-table-column>-->
 
 
-                                                    <el-table-column
-                                                            label="Download"
-                                                            width="120">
-                                                        <template slot-scope="scope">
-                                                            <el-button
-                                                                    size="mini"
-                                                                    type="default"
-                                                                    @click="downloadSingle(scope.row.url)">
-                                                                Download
-                                                            </el-button>
-                                                        </template>
-                                                    </el-table-column>
-                                                </el-table>
-                                            </el-card>
-                                        </div>
-                                    </li>
-                                </div>
-                            </ul>
+<!--                                                    <el-table-column-->
+<!--                                                            label="Download"-->
+<!--                                                            width="120">-->
+<!--                                                        <template slot-scope="scope">-->
+<!--                                                            <el-button-->
+<!--                                                                    size="mini"-->
+<!--                                                                    type="default"-->
+<!--                                                                    @click="downloadSingle(scope.row.url)">-->
+<!--                                                                Download-->
+<!--                                                            </el-button>-->
+<!--                                                        </template>-->
+<!--                                                    </el-table-column>-->
+<!--                                                </el-table>-->
+<!--                                            </el-card>-->
+<!--                                        </div>-->
+<!--                                    </li>-->
+<!--                                </div>-->
+<!--                            </ul>-->
                             <li style="cursor: pointer" @click="dataTreeClick(3)"><span
                                     class="el-tree-node__expand-icon el-icon-caret-right treeLi"></span>
                                 <span style="font-size: 16px;margin-left: 5px">Fork Data</span></li>

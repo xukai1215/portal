@@ -434,7 +434,7 @@ var userDataSpace = Vue.extend(
             // },
 
             refreshPackage(index,pathList){
-
+                this.searchContentShown = ''
                 let paths = []
                 if(index==1){//刷新所显示的文件
                     let i = this.pathShown.length - 1;
@@ -1019,16 +1019,18 @@ var userDataSpace = Vue.extend(
 
                 let sourceId = new Array()
 
-                for (let i = 0; i < this.downloadDataSet.length; i++) {
-                    sourceId.push(this.getSourceId(this.downloadDataSet[i].url))
-                    // console.log(sourceId)
-                }
+
 
 
                 if (this.downloadDataSet.length > 0) {
+                    let ids = []
+                    for(let i=0;i<this.downloadDataSet.length;i++){
+                        let urls = this.downloadDataSet[i].url.split("/")
+                        ids.push(urls[urls.length-1])
+                    }
+                    let idstr = ids.toString();
 
-                    const keys = sourceId.map(_ => `sourceStoreId=${_}`).join('&');
-                    let url = "http://221.226.60.2:8082/data?uid=" + keys;
+                    let url = "http://221.226.60.2:8082/batchData?oids=" + idstr;
                     window.open(url)
                     // let link = document.createElement('a');
                     // link.style.display = 'none';
@@ -1160,11 +1162,28 @@ var userDataSpace = Vue.extend(
                 })
             },
 
+            //批量删除数据容器记录
+            delete_batchData_dataManager(ids){
+                axios.delete("/dispatchRequest/batchdelete", {
+                    params: {
+                        ids: ids
+                    },
+                    paramsSerializer: params => {
+                        return qs.stringify(params, { indices: false })
+                    }
+                }).then((res) => {
+                    if(res.code == 0){
+                        // console.log('suc')
+                    }
+                    // if (res.data.msg === "成功") {
+
+                    // }
+
+                })
+            },
+
             deleteAll(){
                 const h = this.$createElement;
-                if(this.rightTargetItem.package==false){
-                    var sourceId=this.getSourceId(this.rightTargetItem.url)
-                }
 
                 this.$msgbox({
                     title: ' ',
@@ -1182,8 +1201,6 @@ var userDataSpace = Vue.extend(
                     beforeClose: (action, instance, done) => {
 
                         if (action === 'confirm') {
-                            if(this.rightTargetItem.package==false)
-                                this.delete_data_dataManager(sourceId)
                             instance.confirmButtonLoading = true;
                             instance.confirmButtonText = 'deleting...';
                             setTimeout(() => {
@@ -1200,8 +1217,16 @@ var userDataSpace = Vue.extend(
                                             window.sessionStorage.setItem("history", window.location.href);
                                             window.location.href = "/user/login"
                                         } else {
-                                            for(let i=0;i<data.length;i++)
+                                            for(let i=0;i<data.length;i++){
+
                                                 this.deleteInfront(data[i],this.myFile)
+                                            }
+                                            let ids=[]
+                                            for(let i=0;i<this.downloadDataSet.length;i++){
+                                                let urls = this.downloadDataSet[i].url.split("/")
+                                                ids.push(urls[urls.length-1])
+                                            }
+                                            this.delete_batchData_dataManager(ids)
 
                                             this.downloadDataSet=[];
                                             this.downloadDataSetName=[];
@@ -1394,7 +1419,7 @@ var userDataSpace = Vue.extend(
                             this.fileSearchResult=json.data.data;
                             this.myFileShown=this.fileSearchResult
                             this.searchContentShown=this.searchContent
-                            this.pathShown=[];
+                            // this.pathShown=[];
                         }
                     })
 
