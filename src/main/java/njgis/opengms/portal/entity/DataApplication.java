@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import lombok.Data;
 import njgis.opengms.portal.entity.support.AuthorInfo;
 import njgis.opengms.portal.entity.support.InvokeService;
+import njgis.opengms.portal.entity.support.TestData;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -59,4 +60,8 @@ public class DataApplication {
 
     List<InvokeService> invokeServices;
     String method; // processing visualization
+//    String method;
+
+    List<TestData> testData;//存储testData的id
+    String packagePath;//存储部署包的路径
 }

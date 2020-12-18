@@ -29,7 +29,7 @@ public interface DataApplicationDao extends MongoRepository<DataApplication, Str
 
     Page<DataApplication> findByMethodLikeAndNameLikeAndStatusNotLike(String method,String name,String status,Pageable pageable);
 
-    Page<DataApplication> findByMethodLikeAndStatusNotLike(String method,String status,Pageable pageable);
+    Page<DataApplication> findByMethod(String method,Pageable pageable);
 
     Page<DataApplication> findByNameLikeAndStatusNotLike(String name,String status,Pageable pageable);
     //
