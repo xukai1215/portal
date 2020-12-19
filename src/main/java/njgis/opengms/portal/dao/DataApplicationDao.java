@@ -37,4 +37,5 @@ public interface DataApplicationDao extends MongoRepository<DataApplication, Str
     //
     // Page<DataApplication> findAllByContentTypeAndNameContainsIgnoreCaseAndClassificationsIn(String contentType,String Name,List<String> cls,Pageable pageable);
 
+
 }
