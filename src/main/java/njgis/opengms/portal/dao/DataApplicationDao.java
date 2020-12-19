@@ -18,20 +18,20 @@ public interface DataApplicationDao extends MongoRepository<DataApplication, Str
 
     DataApplication findFirstById(String id);
 
-    Page<DataApplication> findByAuthorAndTypeAndStatusNotLike(Pageable pageable, String author, String type,String status);
+    Page<DataApplication> findByAuthorAndType(Pageable pageable, String author, String type);
 
-    Page<DataApplication> findByAuthorAndNameContainsAndTypeAndStatusNotLike(Pageable pageable, String author, String name, String type,String status);
-    Page<DataApplication> findByNameLikeAndStatusNotLike(Pageable pageable,String name,String status);
+    Page<DataApplication> findByAuthorAndNameContainsAndType(Pageable pageable, String author, String name, String type);
+    Page<DataApplication> findByNameLike(Pageable pageable,String name);
 
-    Page<DataApplication> findByStatusNotLike(String status,Pageable pageable);
 
-    Page<DataApplication> findByClassificationsInAndStatusNotLike(List<String> classifications,Pageable pageable,String status);
+    Page<DataApplication> findByClassificationsIn(List<String> classifications,Pageable pageable);
 
-    Page<DataApplication> findByMethodLikeAndNameLikeAndStatusNotLike(String method,String name,String status,Pageable pageable);
+    Page<DataApplication> findByMethodLikeIgnoreCaseAndNameLike(String method,String name,Pageable pageable);
 
+    Page<DataApplication> findByMethodLikeIgnoreCase(String method,Pageable pageable);
     Page<DataApplication> findByMethod(String method,Pageable pageable);
 
-    Page<DataApplication> findByNameLikeAndStatusNotLike(String name,String status,Pageable pageable);
+    Page<DataApplication> findByNameLike(String name,Pageable pageable);
     //
     // List<DataApplication> findAllByAuthorshipIsNotNull();
     //

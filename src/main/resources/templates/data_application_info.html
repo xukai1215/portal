@@ -251,6 +251,58 @@
                 </div>
             </div>
 
+            <div id="invoke" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>MDL</h4>
+                    </div>
+                </div>
+                <el-tabs class="block_content" v-model="activeName" type="border-card" stretch="true">
+                    <el-tab-pane label="AttributeSet" name="AttributeSet">
+<!--                        <table class="table table-bordered text-center" v-for="item in methodsData">-->
+<!--                            <colgroup>-->
+<!--                                <col class="col1" style="width: 40%">-->
+<!--                                <col class="col2">-->
+<!--                            </colgroup>-->
+<!--                            <tbody>-->
+<!--                            <tr>-->
+<!--                                <td style="font-weight: bold;">{{item.key}}</td>-->
+<!--                                <td colspan="2">{{item.val}}</td>-->
+<!--                            </tr>-->
+<!--                            </tbody>-->
+<!--                        </table>-->
+<!--                        <a :href="gotoTask()">-->
+<!--                            <button type="button" class="btn btn-lg btn-success" style="margin-left: 80%">Invoke-->
+<!--                            </button>-->
+<!--                        </a>-->
+                        <el-table :data="methodsData" style="width: 100%">
+                            <el-table-column prop="key" label="name"></el-table-column>
+                            <el-table-column prop="val" label="method type"></el-table-column>
+                            <el-table-column label="operation">
+                                <template slot-scope="scope">
+                                    <a :href="gotoTask()">
+                                        <button type="button" class="btn btn-lg btn-success">Invoke
+                                        </button>
+                                    </a>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </el-tab-pane>
+                    <el-tab-pane label="Behavior" name="Behavior">
+<!--                        <el-button style="position: absolute; z-index: 900" @click=""> Show Detail-->
+<!--                        </el-button>-->
+
+                    </el-tab-pane>
+                    <el-tab-pane label="Runtime" name="Runtime">
+                        <table id="runtime_table" class="table table-bordered text-center">
+
+
+                            </tbody>
+                        </table>
+                    </el-tab-pane>
+                </el-tabs>
+            </div>
+
             <div id="link" class="detail_block"
                  th:if="${dataApplicationInfo.contentType=='Link'||(dataApplicationInfo.contentType=='Service')}">
                 <div class="block_head">

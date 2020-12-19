@@ -339,8 +339,8 @@ public class DataApplicationService {
 
         Sort sort = new Sort(as ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
         Pageable pageable = PageRequest.of(page, pagesize, sort);
-        Page<DataApplication> dataApplications = dataApplicationDao.findByAuthorAndTypeAndStatusNotLike(pageable, author, type,"Private");
-        return dataApplicationDao.findByAuthorAndTypeAndStatusNotLike(pageable, author,type,"Private");
+        Page<DataApplication> dataApplications = dataApplicationDao.findByAuthorAndType(pageable, author, type);
+        return dataApplicationDao.findByAuthorAndType(pageable, author,type);
 
     }
 
@@ -348,7 +348,7 @@ public class DataApplicationService {
         //todo 超出堆内存解决办法
         Sort sort = new Sort(asc==1 ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
         Pageable pageable = PageRequest.of(page, pageSize, sort);
-        Page<DataApplication> dataApplications= dataApplicationDao.findByAuthorAndNameContainsAndTypeAndStatusNotLike(pageable, userOid, searchText, type,"Private");
+        Page<DataApplication> dataApplications= dataApplicationDao.findByAuthorAndNameContainsAndType(pageable, userOid, searchText, type);
         return dataApplications;
     }
 
@@ -764,13 +764,13 @@ public class DataApplicationService {
 
     public  Page<DataApplication> selectMethodByNameAndMethod(String name, String method,Pageable pageable) {
         if(name.equals("") && method.equals("")){
-            return dataApplicationDao.findByStatusNotLike("private",pageable);
+            return dataApplicationDao.findAll(pageable);
         }else if(name.equals("") && !method.equals("")){
-            return dataApplicationDao.findByMethod(method,pageable);
+            return dataApplicationDao.findByMethodLikeIgnoreCase(method,pageable);
         }else if(!name.equals("") && method.equals("")){
-            return dataApplicationDao.findByNameLikeAndStatusNotLike(name,"private",pageable);
+            return dataApplicationDao.findByNameLike(name,pageable);
         } else{
-            return dataApplicationDao.findByMethodLikeAndNameLikeAndStatusNotLike(method,name,"private",pageable);
+            return dataApplicationDao.findByMethodLikeIgnoreCaseAndNameLike(method,name,pageable);
         }
     }
 
