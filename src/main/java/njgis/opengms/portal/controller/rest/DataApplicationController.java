@@ -2,6 +2,7 @@ package njgis.opengms.portal.controller.rest;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dao.DataApplicationDao;
 import njgis.opengms.portal.dto.ComputableModel.ComputableModelResultDTO;
@@ -12,27 +13,44 @@ import njgis.opengms.portal.dao.UserDao;
 import njgis.opengms.portal.dto.dataApplication.DataApplicationDTO;
 import njgis.opengms.portal.dto.dataApplication.DataApplicationFindDTO;
 import njgis.opengms.portal.entity.*;
+import njgis.opengms.portal.entity.support.InvokeService;
+import njgis.opengms.portal.entity.support.Maintainer;
 import njgis.opengms.portal.service.DataApplicationService;
 import njgis.opengms.portal.service.DataItemService;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
 import org.apache.commons.io.IOUtils;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -40,6 +58,7 @@ import java.util.List;
  * @Date 2020.07.30 11:07
  */
 @RestController
+@Slf4j
 @RequestMapping(value = "/dataApplication")
 public class DataApplicationController {
     @Autowired
@@ -253,6 +272,57 @@ public class DataApplicationController {
     @RequestMapping(value = "/methods/getApplication",method = RequestMethod.POST)
     JsonResult getApplication(@RequestBody DataApplicationFindDTO dataApplicationFindDTO){
         return  ResultUtils.success(dataApplicationService.searchApplication(dataApplicationFindDTO));
+    }
+
+    @RequestMapping(value = "/invokeMethod", method = RequestMethod.GET)
+    JsonResult invokeMethod(@RequestParam(value = "dataApplicationId") String dataApplicationId,
+                            @RequestParam(value = "serviceId") String serviceId,
+                            @RequestParam(value = "params") String params,
+                            HttpServletRequest request) throws UnsupportedEncodingException, MalformedURLException, DocumentException {
+        JsonResult jsonResult = new JsonResult();
+        DataApplication dataApplication = dataApplicationDao.findFirstByOid(dataApplicationId);
+        List<InvokeService> invokeServices = dataApplication.getInvokeServices();
+        String url = "http://111.229.14.128:8898/extPcs?dataId=";//invoke接口
+
+        //门户测试解绑
+//        HttpSession session=request.getSession();
+//        if(session.getAttribute("uid")==null){
+//            return ResultUtils.error(-1,"no login");
+//        }
+//        String reqUsrId = session.getAttribute("uid").toString();
+        String reqUsrId = "33";//门户测试时注释掉
+        String token = "fcky/35Rezr+Kyazr8SRWA==";
+        token = URLEncoder.encode(token, "UTF-8");
+        for (InvokeService invokeService : invokeServices){
+            if(invokeService.getServiceId().equals(serviceId)){
+                url += invokeService.getDataId();
+                url += ("&params=" + params);
+                url += ("&name=" + invokeService.getName());
+                url += ("&token=" + token);//token注意要加密  注意此处使用门户节点的token，目前先用我的token代替
+                url += ("&reqUsrOid=" + reqUsrId);
+                url += ("&pcsId=" + serviceId);
+                log.info(url);
+                break;
+            }
+        }
+        //调用url
+        RestTemplate restTemplate = new RestTemplate();
+
+        String response = restTemplate.getForObject(url,String.class);
+        log.info(response + "");
+
+        //解析xml，获取下载链接
+        //将string串读取为xml
+        Document configXML = DocumentHelper.parseText(response);
+        //获取根元素
+        Element root = configXML.getRootElement();
+        String urlRes = root.element("uid").getText();
+        urlRes = root.element("uid").getName();
+        urlRes = root.element("uid").getTextTrim();
+        urlRes = root.element("uid").getStringValue();
+
+        jsonResult.setData(response);
+        return jsonResult;
     }
 
 }

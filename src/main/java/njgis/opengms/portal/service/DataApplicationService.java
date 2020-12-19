@@ -601,17 +601,11 @@ public class DataApplicationService {
     public Boolean deployPackage(DataApplication dataApplication) throws Exception {
         //跨域调用容器接口，部署数据
         String dataUrl="http://"+ dataContainerDeployPort +"/newFile";
-        StringBuffer url = new StringBuffer(dataUrl)
-                .append("&uid={uid}")
-                .append("&instype={instype}")
-                .append("&userToken={userToken}")
-                .append("&id={id}")
-                .append("&oid={oid}")
-                .append("&name={name}")
-                .append("&date={date}")
-                .append("&type={type}")
-                .append("&authority={authority}")
-                .append("&meta={meta}");
+
+        List<InvokeService> invokeServices = dataApplication.getInvokeServices();
+        InvokeService invokeService = invokeServices.get(0);
+
+
 
         RestTemplate restTemplate = new RestTemplate();
         Map<String, Object> part = new HashMap<>();
@@ -626,6 +620,8 @@ public class DataApplicationService {
         part.put("date", date.toString());
         part.put("type", "file");
         part.put("authority", true);
+
+        invokeService.setDataId(newFileId);
 
         MetaData metaData = new MetaData();
         metaData.setDataPath(dataApplication.getTestData().get(0).getPath());
@@ -650,7 +646,8 @@ public class DataApplicationService {
         Date date2 = new Date();
         part2.add("date", date2.toString());
 
-        part2.add("id", UUID.randomUUID().toString());
+        String serviceId = UUID.randomUUID().toString();
+        part2.add("id", serviceId);
         part2.add("instype", "Processing");
         part2.add("name", dataApplication.getName());
         part2.add("oid", "I3MXbzRq/NZkbWcKO8tF0w==");
@@ -702,6 +699,11 @@ public class DataApplicationService {
         part2.add("uid", "0");
         part2.add("userToken", "f30f0e82-f6f1-4264-a302-caff7c40ccc9");
         part2.add("processingPath", destDirPath);
+
+        invokeService.setServiceId(serviceId);
+        List<InvokeService> invokeServices1 = new ArrayList<>();
+        invokeServices1.add(invokeService);
+        dataApplication.setInvokeServices(invokeServices1);
 
         JSONObject jsonObject = restTemplate2.postForObject(prcUrl, part2,JSONObject.class);
         dataApplicationDao.save(dataApplication);
