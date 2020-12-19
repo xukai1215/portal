@@ -20,6 +20,6 @@ public class InvokeService {
     String token;//寻找节点
     List<TestData> dataSet;//分布式节点的数据信息
     String name;//服务名称
-    String method;//converse process visual
+    String method;//data process visual
     Boolean isPortal;//门户新建的还是绑定的
 }

@@ -145,6 +145,9 @@ var userDataServer = Vue.extend(
                                 this.nodeLoading=false
                             }
                         }
+                    },
+                    error:res=>{
+                        this.loading = false
                     }
                 })
             },
@@ -179,7 +182,7 @@ var userDataServer = Vue.extend(
                                 this.dataNode[type.toLowerCase()] = data
                             }
                         }
-                    }
+                    },
                 })
 
                 return data
@@ -211,6 +214,9 @@ var userDataServer = Vue.extend(
                                 },150)
                             }
                         }
+                    },
+                    error:res=>{
+                        this.loading = false
                     }
                 })
 
@@ -222,7 +228,21 @@ var userDataServer = Vue.extend(
             },
 
             download(data){
+                axios.get("getNodeDataUrl",{
+                    id:data.id,
+                    token:data.token
+                }).then(
+                    res=>{
+                        data = res.data
+                        if (data.code == -1) {
+                            alert("Please login first!")
+                            window.location.href="/user/login";
+                        } else {
 
+                        }
+
+                    }
+                )
             },
 
             bindDataItem(data){

@@ -4,10 +4,12 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import njgis.opengms.portal.bean.JsonResult;
+import njgis.opengms.portal.service.DataServerService;
 import njgis.opengms.portal.utils.MyHttpUtils;
 import njgis.opengms.portal.utils.ResultUtils;
 import njgis.opengms.portal.utils.XmlTool;
 import org.dom4j.DocumentException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpRequest;
 import org.springframework.web.HttpRequestHandler;
@@ -32,6 +34,8 @@ public class DataServerRestController {
     @Value("${dataServerManager}")
     private String dataServerManager;
 
+    @Autowired
+    DataServerService dataServerService;
 
     @RequestMapping(value = "/getAllNodes", method = RequestMethod.GET)
     public JsonResult getAllNodes() throws DocumentException {
@@ -69,12 +73,19 @@ public class DataServerRestController {
             }
 
             JSONObject jsonObject = XmlTool.xml2Json(xml);
-
-            JSONArray nodes = jsonObject.getJSONArray("onlineServiceNodes");
             JSONObject userNode = new JSONObject();
-            for(int i=0;i<nodes.size();i++){
-                JSONObject node = (JSONObject) nodes.get(i);
-                if(node.getString("node").equals(userName)){
+            try {
+                JSONArray nodes = jsonObject.getJSONArray("onlineServiceNodes");
+
+                for (int i = 0; i < nodes.size(); i++) {
+                    JSONObject node = (JSONObject) nodes.get(i);
+                    if (node.getString("node").equals(userName)) {
+                        userNode = node;
+                    }
+                }
+            } catch (Exception e) {
+                JSONObject node = jsonObject.getJSONObject("onlineServiceNodes");
+                if (node.getString("node").equals(userName)) {
                     userNode = node;
                 }
             }
@@ -118,6 +129,20 @@ public class DataServerRestController {
             }
 
             return ResultUtils.success(result);
+        }
+    }
+
+    @RequestMapping(value = "/getNodeDataUrl", method = RequestMethod.GET)
+    public JsonResult getNodeDataUrl(@RequestParam("token") String token,@RequestParam("id") String id,HttpServletRequest request) throws IOException, URISyntaxException, DocumentException {
+
+        HttpSession session = request.getSession();
+
+        String userName = session.getAttribute("uid").toString();
+        if(userName==null){
+            return ResultUtils.error(-1, "no login");
+        }else {
+
+            return ResultUtils.success(dataServerService.getNodeData(token,id,userName));
         }
     }
 }

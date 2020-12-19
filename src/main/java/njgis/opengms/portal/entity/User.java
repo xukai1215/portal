@@ -80,6 +80,8 @@ public class User {
 
     int messageNum;
 
+    String dataNodeToken;
+
     Affiliation affiliation;
     Date createTime;
     Date updateTime;
