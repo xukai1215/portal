@@ -302,6 +302,7 @@ public class DataApplicationService {
                 invokeService.setServiceId(UUID.randomUUID().toString());//
                 invokeService.setMethod(dataApplication.getMethod());
                 invokeService.setName(dataApplication.getName());
+                invokeService.setIsPortal(true);
                 List<InvokeService> invokeServices = new ArrayList<>();
                 invokeServices.add(invokeService);
                 dataApplication.setInvokeServices(invokeServices);
@@ -339,8 +340,8 @@ public class DataApplicationService {
 
         Sort sort = new Sort(as ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
         Pageable pageable = PageRequest.of(page, pagesize, sort);
-        Page<DataApplication> dataApplications = dataApplicationDao.findByAuthorAndTypeAndStatusNotLike(pageable, author, type,"Private");
-        return dataApplicationDao.findByAuthorAndTypeAndStatusNotLike(pageable, author,type,"Private");
+        Page<DataApplication> dataApplications = dataApplicationDao.findByAuthorAndType(pageable, author, type);
+        return dataApplicationDao.findByAuthorAndType(pageable, author,type);
 
     }
 
@@ -348,7 +349,7 @@ public class DataApplicationService {
         //todo 超出堆内存解决办法
         Sort sort = new Sort(asc==1 ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
         Pageable pageable = PageRequest.of(page, pageSize, sort);
-        Page<DataApplication> dataApplications= dataApplicationDao.findByAuthorAndNameContainsAndTypeAndStatusNotLike(pageable, userOid, searchText, type,"Private");
+        Page<DataApplication> dataApplications= dataApplicationDao.findByAuthorAndNameContainsAndType(pageable, userOid, searchText, type);
         return dataApplications;
     }
 
@@ -601,17 +602,11 @@ public class DataApplicationService {
     public Boolean deployPackage(DataApplication dataApplication) throws Exception {
         //跨域调用容器接口，部署数据
         String dataUrl="http://"+ dataContainerDeployPort +"/newFile";
-        StringBuffer url = new StringBuffer(dataUrl)
-                .append("&uid={uid}")
-                .append("&instype={instype}")
-                .append("&userToken={userToken}")
-                .append("&id={id}")
-                .append("&oid={oid}")
-                .append("&name={name}")
-                .append("&date={date}")
-                .append("&type={type}")
-                .append("&authority={authority}")
-                .append("&meta={meta}");
+
+        List<InvokeService> invokeServices = dataApplication.getInvokeServices();
+        InvokeService invokeService = invokeServices.get(0);
+
+
 
         RestTemplate restTemplate = new RestTemplate();
         Map<String, Object> part = new HashMap<>();
@@ -626,6 +621,10 @@ public class DataApplicationService {
         part.put("date", date.toString());
         part.put("type", "file");
         part.put("authority", true);
+
+        List<String> dataIds = new ArrayList<>();
+        dataIds.add(newFileId);
+        invokeService.setDataIds(dataIds);
 
         MetaData metaData = new MetaData();
         metaData.setDataPath(dataApplication.getTestData().get(0).getPath());
@@ -650,7 +649,8 @@ public class DataApplicationService {
         Date date2 = new Date();
         part2.add("date", date2.toString());
 
-        part2.add("id", UUID.randomUUID().toString());
+        String serviceId = UUID.randomUUID().toString();
+        part2.add("id", serviceId);
         part2.add("instype", "Processing");
         part2.add("name", dataApplication.getName());
         part2.add("oid", "I3MXbzRq/NZkbWcKO8tF0w==");
@@ -702,6 +702,11 @@ public class DataApplicationService {
         part2.add("uid", "0");
         part2.add("userToken", "f30f0e82-f6f1-4264-a302-caff7c40ccc9");
         part2.add("processingPath", destDirPath);
+
+        invokeService.setServiceId(serviceId);
+        List<InvokeService> invokeServices1 = new ArrayList<>();
+        invokeServices1.add(invokeService);
+        dataApplication.setInvokeServices(invokeServices1);
 
         JSONObject jsonObject = restTemplate2.postForObject(prcUrl, part2,JSONObject.class);
         dataApplicationDao.save(dataApplication);
@@ -762,13 +767,13 @@ public class DataApplicationService {
 
     public  Page<DataApplication> selectMethodByNameAndMethod(String name, String method,Pageable pageable) {
         if(name.equals("") && method.equals("")){
-            return dataApplicationDao.findByStatusNotLike("private",pageable);
+            return dataApplicationDao.findAll(pageable);
         }else if(name.equals("") && !method.equals("")){
-            return dataApplicationDao.findByMethod(method,pageable);
+            return dataApplicationDao.findByMethodLikeIgnoreCase(method,pageable);
         }else if(!name.equals("") && method.equals("")){
-            return dataApplicationDao.findByNameLikeAndStatusNotLike(name,"private",pageable);
+            return dataApplicationDao.findByNameLike(name,pageable);
         } else{
-            return dataApplicationDao.findByMethodLikeAndNameLikeAndStatusNotLike(method,name,"private",pageable);
+            return dataApplicationDao.findByMethodLikeIgnoreCaseAndNameLike(method,name,pageable);
         }
     }
 

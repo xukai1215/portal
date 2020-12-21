@@ -434,7 +434,7 @@ var createDataApplication = Vue.extend({
 
         if ((oid === "0") || (oid === "") || (oid === null)|| (oid === undefined)) {
 
-            $("#subRteTitle").text("/Create Data Processing Application");
+            $("#subRteTitle").text("/Create Data Method");
 
             initTinymce('textarea#dataApplicationText')
 

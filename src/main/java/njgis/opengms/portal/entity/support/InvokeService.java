@@ -4,9 +4,10 @@ import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
 
 import java.util.List;
-import java.util.Map;
+
 
 /**
  * @Author mingyuan
@@ -16,10 +17,19 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 public class InvokeService {
-    String serviceId;//门户部署id以及分布式节点绑定id
+    String serviceId;//pcsId
+//    String reqUsrOid;//调用时需要的用户
+
     String token;//寻找节点
-    List<TestData> dataSet;//分布式节点的数据信息
     String name;//服务名称
-    String method;//data process visual
+
+    List<String> dataIds;
+    String params;//例如南京市,北京市
+
+    //List<TestData> dataSet;//分布式节点的数据信息
+    String method;//Conversion Processing Visualization
+
+    String cacheUrl;//调用成功后可直接缓存供下次调用，此为用测试数据的结果 记录上次cache
+
     Boolean isPortal;//门户新建的还是绑定的
 }

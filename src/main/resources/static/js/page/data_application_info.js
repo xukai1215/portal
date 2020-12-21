@@ -46,6 +46,8 @@ var data_application_info = new Vue({
             mDiagram: null,
             editComputableModelDialog:false,
             modelOid:'',
+
+            methodsData:new Array(),
         }
     },
     methods: {
@@ -487,6 +489,30 @@ var data_application_info = new Vue({
             }
         },
 
+        getApplication(){
+            let str = window.location.href.split('/')
+            let oid = str[str.length-1]
+            let that = this
+            axios.get('/dataApplication/getApplication/' + oid).then((res) => {
+                if(res.status === 200) {
+                    // let temp = res.data.data.invokeServices
+                    //
+                    // temp['key'] = 'name'
+                    // temp['val'] = res.data.data.name;
+                    // let temp1 = {}
+                    // temp1['key'] = 'method'
+                    // temp1['val'] = res.data.data.method
+                    that.methodsData = res.data.data.invokeServices
+                    // that.methodsData.push(temp1)
+                }
+            }).catch(function (err) {console.log(err)})
+        },
+        gotoTask(){
+            let str = window.location.href.split('/')
+            let oid = str[str.length-1]
+            return "/dataApplication/task/"+oid
+        }
+
         // showMxGraph(){
         //     $("#ModelShow").show();
         //
@@ -499,6 +525,8 @@ var data_application_info = new Vue({
         //     $("#ModelShow").hide();
         //     document.body.style.overflowY="auto";
         // }
+
+        // 表格
     },
     mounted(){
 
@@ -513,7 +541,8 @@ var data_application_info = new Vue({
 
                 }
             })
-        this.getComments();
+        this.getComments()
+        this.getApplication()
 
         $(document).on('mouseover mouseout','.flexRowSpaceBetween',function(e){
 
