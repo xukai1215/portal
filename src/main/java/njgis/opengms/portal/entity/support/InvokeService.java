@@ -18,18 +18,18 @@ import java.util.List;
 @NoArgsConstructor
 public class InvokeService {
     String serviceId;//pcsId
-    String reqUsrOid;
+//    String reqUsrOid;//调用时需要的用户
 
     String token;//寻找节点
     String name;//服务名称
 
-    String dataId;
+    List<String> dataIds;
     String params;//例如南京市,北京市
 
-    List<TestData> dataSet;//分布式节点的数据信息
-    String method;//converse process visual
+    //List<TestData> dataSet;//分布式节点的数据信息
+    String method;//Conversion Processing Visualization
 
-    String cacheUrl;//调用成功后可直接缓存供下次调用，此为用测试数据的结果
+    String cacheUrl;//调用成功后可直接缓存供下次调用，此为用测试数据的结果 记录上次cache
 
     Boolean isPortal;//门户新建的还是绑定的
 }

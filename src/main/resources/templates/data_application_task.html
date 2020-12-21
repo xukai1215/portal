@@ -97,7 +97,7 @@
                     Load data
                 </el-button>
 
-                <el-button plain type="primary" style="min-width: 121px">
+                <el-button plain type="primary" style="min-width: 121px" @click="dialogVisible = true">
                     <i class="fa fa-hand-spock-o"></i>&nbsp;Invoke
                 </el-button>
             </div>
@@ -159,7 +159,7 @@
                                         <div>
                                             <el-col :span="6" :offset="1">
                                                 <!--:value="modelInEvent.tag"-->
-                                                <el-input class="model-input">
+                                                <el-input class="model-input" v-model="input" >
                                                 </el-input>
                                             </el-col>
 
@@ -169,7 +169,7 @@
                                                         <i class="fa fa-folder-open"></i>
                                                     </el-button>
 
-                                                    <el-button plain round type="warning">
+                                                    <el-button plain round type="warning" @click="downLoadTestData()">
                                                         <i class="fa fa-download"></i>
                                                     </el-button>
 
@@ -208,7 +208,7 @@
                                     <div>
                                         <el-col :span="6" :offset="1">
                                             <!--:value="modelInEvent.tag"-->
-                                            <el-input class="model-input">
+                                            <el-input class="model-input" v-model="outPutData">
                                             </el-input>
                                         </el-col>
 
@@ -218,7 +218,7 @@
                                                     <i class="fa fa-folder-open"></i>
                                                 </el-button>
 
-                                                <el-button plain round type="warning">
+                                                <el-button plain round type="warning" @click="downloadResult()">
                                                     <i class="fa fa-download"></i>
                                                 </el-button>
 
@@ -242,6 +242,7 @@
             </div>
         </div>
     </div>
+
     <!--<el-dialog :visible.sync="loadDataVisible" title="Load Data" class="wzhDialog"-->
     <!--           style="height: 915px !important;">-->
     <!--    <el-tag class="flexRowSpaceBetween"-->
@@ -257,9 +258,34 @@
     <!--</el-dialog>-->
     </div>
     <div th:replace="fragments/footer :: footer"></div>
+    <el-dialog
+            v-loading="loading"
+        title="Invoke"
+        :visible.sync="dialogVisible"
+        width="80%"
+        :before-close="handleClose">
+    <el-card>
+        <div class="" style="display: inline-block;width: 60%;">
+            <p style="font-weight: 600">XML description of visualization:</p><br>
+            <pre v-if="xml" lang="xml">{{xml}}</pre>
+        </div>
+        <div class="" style="display: inline-block;float: right;width: 35%">
+            <p style="font-weight: 600">Parameters to be filled in:</p><br>
+            <div class="" v-for = "(para,i) in parameters">
+                <p>{{para}}</p>
+                <input type="text" autocomplete="off" v-model="parameter" placeholder="Please enter the content" :id ="para" class="el-input__inner">
+            </div>
+        </div>
+    </el-card>
+    <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">Cancel</el-button>
+        <el-button type="primary" @click = "invokeNow()">Invoke Now</el-button>
+    </span>
+</el-dialog>
 </div>
 <template th:replace="modules/userDataSpaceModule :: userDataSpaceModule"></template>
 </body>
+
 
 
 <script>

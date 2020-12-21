@@ -495,14 +495,15 @@ var data_application_info = new Vue({
             let that = this
             axios.get('/dataApplication/getApplication/' + oid).then((res) => {
                 if(res.status === 200) {
-                    let temp = {}
-                    temp['key'] = 'name'
-                    temp['val'] = res.data.data.name;
-                    let temp1 = {}
-                    temp1['key'] = 'method'
-                    temp1['val'] = res.data.data.method
-                    that.methodsData.push(temp)
-                    that.methodsData.push(temp1)
+                    // let temp = res.data.data.invokeServices
+                    //
+                    // temp['key'] = 'name'
+                    // temp['val'] = res.data.data.name;
+                    // let temp1 = {}
+                    // temp1['key'] = 'method'
+                    // temp1['val'] = res.data.data.method
+                    that.methodsData = res.data.data.invokeServices
+                    // that.methodsData.push(temp1)
                 }
             }).catch(function (err) {console.log(err)})
         },

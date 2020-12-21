@@ -302,6 +302,7 @@ public class DataApplicationService {
                 invokeService.setServiceId(UUID.randomUUID().toString());//
                 invokeService.setMethod(dataApplication.getMethod());
                 invokeService.setName(dataApplication.getName());
+                invokeService.setIsPortal(true);
                 List<InvokeService> invokeServices = new ArrayList<>();
                 invokeServices.add(invokeService);
                 dataApplication.setInvokeServices(invokeServices);
@@ -621,7 +622,9 @@ public class DataApplicationService {
         part.put("type", "file");
         part.put("authority", true);
 
-        invokeService.setDataId(newFileId);
+        List<String> dataIds = new ArrayList<>();
+        dataIds.add(newFileId);
+        invokeService.setDataIds(dataIds);
 
         MetaData metaData = new MetaData();
         metaData.setDataPath(dataApplication.getTestData().get(0).getPath());
