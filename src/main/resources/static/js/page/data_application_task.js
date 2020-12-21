@@ -3,6 +3,7 @@ let vue = new Vue({
     data: function (){
         return {
             applicationInfo:'',
+            invokeService:'',
             user:'',
             applicationOid:'',
             radioStyle: "Classic",
@@ -12,7 +13,17 @@ let vue = new Vue({
                     desc:'this is a test step'
                 }
             },
-            loadDataVisible:false
+            loadDataVisible:false,
+            testData:'',
+            input:'Test Map Data',
+            xml:'',
+            parameters:'',
+            dialogVisible:false,
+            parameter:'',
+            loading:false,
+            resultData:'',
+            outPutData:''
+
         }
     },
     methods:{
@@ -46,6 +57,43 @@ let vue = new Vue({
         },
         goPersonCenter(oid) {
             window.open("/user/" + oid);
+        },
+        downLoadTestData(){
+            window.location.href = this.testData[0].url;
+        },
+        handleClose(done) {
+            this.$confirm('确认关闭？')
+                .then(_ => {
+                    done();
+                })
+                .catch(_ => {});
+        },
+        invokeNow(){
+            this.loading = true;
+            let that = this;
+            let formData = new FormData();
+            formData.append("dataApplicationId", this.applicationOid);
+            formData.append("serviceId",this.invokeService[0].serviceId);
+            formData.append("params",this.parameter);
+
+            $.ajax({
+                url:"/dataApplication/invokeMethod",
+                type:"POST",
+                data:formData,
+                // cache:false,
+                processData: false,
+                contentType: false,
+                success:(json)=>{
+                    console.log(json);
+                    that.resultData = json.data;
+                    that.outPutData = "OutData";
+                    this.loading = false;
+                    that.dialogVisible = false;
+                }
+            });
+        },
+        downloadResult(){
+            window.location.href = this.resultData.cacheUrl;
         }
     },
     async mounted(){
@@ -63,7 +111,16 @@ let vue = new Vue({
         await axios.get("/dataApplication/getApplication/" + this.applicationOid).then((res) => {
             if (res.status === 200) {
                 that.applicationInfo = res.data.data
+                that.testData = res.data.data.testData;
+                that.invokeService = res.data.data.invokeServices;
             }
         })
+        await axios.get("/dataApplication/getParemeter/" + this.applicationOid).then((res) => {
+            if (res.status === 200) {
+                that.parameters = res.data.data.parameters;
+                that.xml = res.data.data.xml;
+            }
+        })
+
     }
 })
