@@ -58,6 +58,26 @@ var userDataServer = Vue.extend(
                 loading:false,
                 nodeLoading:false,
 
+                dataItemBindDialog:false,
+                dataMethodBindDialog:false,
+                dataItems:[],
+                dataMethods:[],
+
+                configNodeData:{
+                },
+
+                unbindConfirmDialog:false,
+
+                pageOption: {
+                    paginationShow:false,
+                    progressBar: true,
+                    sortAsc: false,
+                    currentPage: 1,
+                    pageSize: 5,
+
+                    total: 11,
+                    searchResult: [],
+                },
             }
         },
 
@@ -135,7 +155,7 @@ var userDataServer = Vue.extend(
                             alert("Please login first!")
                             window.location.href="/user/login";
                         } else {
-                            if(res.data == undefined){
+                            if(res.data == undefined||Object.keys(res.data).length == 0){
                                 this.dataNode.status = 0
                                 this.nodeLoading=false
                             }else{
@@ -164,7 +184,7 @@ var userDataServer = Vue.extend(
                 let data
                 $.ajax({
                     type: "GET",
-                    url: "/dataServer/getNodeContent",
+                    url: "/dataServer/getNodeContentCheck",
                     data:{
                        token:token,
                        type:type,
@@ -193,7 +213,7 @@ var userDataServer = Vue.extend(
                 this.loading=true
                 $.ajax({
                     type: "GET",
-                    url: "/dataServer/getNodeContent",
+                    url: "/dataServer/getNodeContentCheck",
                     data:{
                         token:token,
                         type:type,
@@ -228,9 +248,10 @@ var userDataServer = Vue.extend(
             },
 
             download(data){
-                axios.get("getNodeDataUrl",{
-                    id:data.id,
-                    token:data.token
+                axios.get("/dataServer/getNodeDataUrl",{params:{
+                        id:data.id,
+                        token:data.token
+                    },
                 }).then(
                     res=>{
                         data = res.data
@@ -245,7 +266,171 @@ var userDataServer = Vue.extend(
                 )
             },
 
-            bindDataItem(data){
+            handlePageChange(index){
+                if(index==1){
+                    this.listDataItem()
+                }else if(index==2){
+                    this.listDataMethod()
+                }
+            },
+
+            listDataItem(){
+                $.ajax({
+                    type: "GET",
+                    url: "/dataServer/pageAllDataItemChecked",
+                    data:{
+                        page:this.pageOption.currentPage-1,
+                        pageSize:this.pageOption.pageSize,
+                        asc:1,
+                        sortEle:"name"
+                    },
+                    async:false,
+                    success: (res) => {
+                        if (res.code == -1) {
+                            alert("Please login first!")
+                            window.location.href="/user/login";
+                        } else {
+                            if(res.data == undefined){
+
+                            }else{
+                                let data = res.data
+                                this.dataItems = data.content
+                                this.pageOption.total = data.total
+                                setTimeout(()=>{
+                                    this.loading = false
+                                },150)
+                            }
+                        }
+                    },
+                    error:res=>{
+                        this.loading = false
+                    }
+                })
+            },
+
+            listDataMethod(){
+                $.ajax({
+                    type: "GET",
+                    url: "/dataServer/pageAllDataAppicationChecked",
+                    data:{
+                        page:this.pageOption.currentPage-1,
+                        pageSize:this.pageOption.pageSize,
+                        asc:1,
+                        sortEle:"name"
+                    },
+                    async:false,
+                    success: (res) => {
+                        if (res.code == -1) {
+                            alert("Please login first!")
+                            window.location.href="/user/login";
+                        } else {
+                            if(res.data == undefined){
+
+                            }else{
+                                let data = res.data
+                                this.dataItems = data.content
+                                this.pageOption.total = data.total
+                                setTimeout(()=>{
+                                    this.loading = false
+                                },150)
+                            }
+                        }
+                    },
+                    error:res=>{
+                        this.loading = false
+                    }
+                })
+            },
+
+            bindDataItemList(data){
+                this.dataItemBindDialog = true
+                this.configNodeData = data
+                // this.pageOption.currentPage = 1
+                this.listDataItem()
+            },
+
+            bindDataMethodList(method){
+                this.dataMethodBindDialog = true
+                this.configNodeData = method
+                this.pageOption.currentPage = 1
+                this.listDataMethod()
+            },
+
+            bindDataItem(item){
+                let dataSets = []
+                dataSets.push(this.configNodeData.dataSet)
+                let data={
+                    serverId:this.configNodeData.id,
+                    name:this.configNodeData.name,
+                    token:this.configNodeData.token,
+                    dataSet:dataSets,
+                    type:'Data',
+                    item:item.oid
+                }
+                axios.post("/dataServer/bindDataItem",
+                    data
+                ).then(
+                    res=>{
+                        let data = res.data
+                        if(data.code==-1){
+                            alert("Please login first!")
+                            window.location.href="/user/login";
+                        }else if(data.code==0){
+                            this.configNodeData.bindItems=data.data.bindItems
+                            this.$message({message: 'Bind successfully',type: 'success'})
+                        }
+                    })
+
+            },
+
+            bindDataMethod(){
+                let data={
+                    serverId:this.configNodeData.id,
+                    name:this.configNodeData.name,
+                    token:this.configNodeData.token,
+                    type:'Data',
+                    item:item.oid
+                }
+                axios.post("/dataServer/bindDataItem",
+                    data
+                ).then(
+                    res=>{
+                        let data = res.data
+                        if(data.code==-1){
+                            alert("Please login first!")
+                            window.location.href="/user/login";
+                        }else if(data.code==0){
+                            this.configNodeData.bindItems=data.data.bindItems
+                            this.$message({message: 'Bind successfully',type: 'success'})
+                        }
+                    })
+            },
+
+            isBinded(item){
+                if(this.configNodeData.bindItems!=null&& this.configNodeData.bindItems.indexOf(item.oid)!=-1){
+                    return true
+                }else {
+                    return false
+                }
+            },
+
+            unbindDataItemClick (){
+
+
+            },
+
+            unbindDataItem(){
+
+
+            },
+
+            unbindDataMethodClick (){
+
+
+            },
+
+            unbindDataMethod(){
+
 
             },
 

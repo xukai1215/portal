@@ -94,18 +94,18 @@
                                                         <el-table-column
                                                                 prop="name"
                                                                 label="Name"
-                                                                width="220">
+                                                                width="290">
                                                         </el-table-column>
                                                         <el-table-column
                                                                 prop="date"
                                                                 label="Date"
-                                                                width="180">
+                                                                width="160">
                                                         </el-table-column>
                                                         <el-table-column
                                                                 label="Option">
                                                             <template slot-scope="scope">
-                                                                <el-button size="mini" round @click="download(scope.row)" style="margin-right: 2px"><span><i class="fa fa-arrow-down"></i></span>Download</el-button>
-                                                                <el-button size="mini" round type="success" @click="bindDataItem(1,scope.row)">Bind Item</el-button>
+<!--                                                                <el-button size="mini" round @click="download(scope.row)" style="margin-right: 2px"><span><i class="fa fa-arrow-down"></i></span>Download</el-button>-->
+                                                                <el-button size="mini" round type="success" @click="bindDataItemList(scope.row)">Bind Item</el-button>
                                                             </template>
                                                         </el-table-column>
                                                     </el-table>
@@ -122,18 +122,17 @@
                                                         <el-table-column
                                                                 prop="name"
                                                                 label="Name"
-                                                                width="220">
+                                                                width="290">
                                                         </el-table-column>
                                                         <el-table-column
                                                                 prop="date"
                                                                 label="Date"
-                                                                width="180">
+                                                                width="160">
                                                         </el-table-column>
                                                         <el-table-column
                                                                 label="Option">
                                                             <template slot-scope="scope">
-                                                                <el-button size="mini" round @click="download(scope.row)" style="margin-right: 2px"><span><i class="fa fa-arrow-down"></i></span>Download</el-button>
-                                                                <el-button size="mini" round type="success" @click="bindDataItem(1,scope.row)">Bind Item</el-button>
+                                                                <el-button size="mini" round type="success" @click="bindDataMethodList(scope.row)">Bind Item</el-button>
                                                             </template>
                                                         </el-table-column>
                                                     </el-table>
@@ -149,17 +148,17 @@
                                                         <el-table-column
                                                                 prop="name"
                                                                 label="Name"
-                                                                width="220">
+                                                                width="290">
                                                         </el-table-column>
                                                         <el-table-column
                                                                 prop="date"
                                                                 label="Date"
-                                                                width="180">
+                                                                width="160">
                                                         </el-table-column>
                                                         <el-table-column
                                                                 label="Option">
                                                             <template slot-scope="scope">
-                                                                <el-button size="mini" round @click="download(scope.row)" style="margin-right: 2px"><span><i class="fa fa-arrow-down"></i></span>Download</el-button>
+<!--                                                                <el-button size="mini" round @click="download(scope.row)" style="margin-right: 2px"><span><i class="fa fa-arrow-down"></i></span>Download</el-button>-->
                                                                 <el-button size="mini" round type="success" @click="bindDataItem(1,scope.row)">Bind Item</el-button>
                                                             </template>
                                                         </el-table-column>
@@ -181,6 +180,105 @@
             </div>
 
         </div>
+        <el-dialog title="Bind DataItem" :visible.sync="dataItemBindDialog" width="50%">
+            <span slot="footer" class="dialog-footer">
+                <el-table
+                        :data="dataItems">
+                     <el-table-column
+                             prop="name"
+                             label="Name"
+                             width="320">
+                          <template slot-scope="props">
+                                    <a :href="'/dataItem/'+props.row.oid" target="_blank">{{props.row.name}}</a>
+                          </template>
+                     </el-table-column>
+                     <el-table-column
+                             label="Contributor">
+                          <template slot-scope="props">
+                                    <a :href="'/profile/'+props.row.contributorId" target="_blank">{{props.row.contributor}}</a>
+                          </template>
+                     </el-table-column>
+                     <el-table-column
+                             label="Option">
+                         <template slot-scope="scope">
+                             <el-button size="mini"
+                                        type="primary"
+                                        plain
+                                        round
+                                        style="margin-right: 2px"
+                                        v-if="isBinded(scope.row)"
+                             @click="unbindDataItemClick(scope.row)">
+                                 Unbind
+                             </el-button>
+                             <el-button size="mini" round type="success" v-else
+                                        @click="bindDataItem(scope.row)">Bind</el-button>
+                         </template>
+                     </el-table-column>
+                </el-table>
+                <el-pagination style="text-align: center;margin-top:20px"
+                               @current-change="handlePageChange(1)"
+                               :current-page="pageOption.currentPage"
+                               layout="total, prev, pager, next, jumper"
+                               :page-size="6"
+                               :total="pageOption.total">
+                        </el-pagination>
+                <!--                <el-button @click="bindDataItem()" size="medium" type="danger">Confirm</el-button>-->
+                <el-button @click="dataItemBindDialog=false" style="margin-right: 15px" size="medium">Cancel</el-button>
+            </span>
+        </el-dialog>
+        <el-dialog title="Bind Data Method" :visible.sync="dataMethodBindDialog" width="50%">
+            <span slot="footer" class="dialog-footer">
+                <el-table
+                        :data="dataMethods">
+                     <el-table-column
+                             prop="name"
+                             label="Name"
+                             width="320">
+                          <template slot-scope="props">
+                                    <a :href="'/dataApplication/'+props.row.oid" target="_blank">{{props.row.name}}</a>
+                          </template>
+                     </el-table-column>
+                     <el-table-column
+                             label="Contributor">
+                          <template slot-scope="props">
+                                    <a :href="'/profile/'+props.row.contributorId" target="_blank">{{props.row.contributor}}</a>
+                          </template>
+                     </el-table-column>
+                     <el-table-column
+                             label="Option">
+                         <template slot-scope="scope">
+                             <el-button size="mini"
+                                        type="primary"
+                                        plain
+                                        round
+                                        style="margin-right: 2px"
+                                        v-if="isBinded(scope.row)"
+                                        @click="unbindDataItemClick(scope.row)">
+                                 Unbind
+                             </el-button>
+                             <el-button size="mini" round type="success" v-else
+                                        @click="bindDataItem(scope.row)">Bind</el-button>
+                         </template>
+                     </el-table-column>
+                </el-table>
+                <el-pagination style="text-align: center;margin-top:20px"
+                               @current-change="handlePageChange(2)"
+                               :current-page="pageOption.currentPage"
+                               layout="total, prev, pager, next, jumper"
+                               :page-size="6"
+                               :total="pageOption.total">
+                        </el-pagination>
+                <!--                <el-button @click="bindDataItem()" size="medium" type="danger">Confirm</el-button>-->
+                <el-button @click="dataItemBindDialog=false" style="margin-right: 15px" size="medium">Cancel</el-button>
+            </span>
+        </el-dialog>
+        <el-dialog :visible.sync="unbindConfirmDialog">
+            <div>Confirm to unbind from this item?</div>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="unbindConfirmDialog = false">Cancel</el-button>
+                <el-button type="primary" @click="unbindDataItem">Confirm</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 </body>

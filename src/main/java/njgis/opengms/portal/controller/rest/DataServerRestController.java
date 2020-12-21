@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import njgis.opengms.portal.bean.JsonResult;
+import njgis.opengms.portal.dto.DataNodeContentDTO;
 import njgis.opengms.portal.service.DataServerService;
 import njgis.opengms.portal.utils.MyHttpUtils;
 import njgis.opengms.portal.utils.ResultUtils;
@@ -13,10 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpRequest;
 import org.springframework.web.HttpRequestHandler;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
@@ -55,7 +53,7 @@ public class DataServerRestController {
     }
 
     @RequestMapping(value = "/getUserNodes", method = RequestMethod.GET)
-    public JsonResult getAllNodes(HttpServletRequest request) throws DocumentException {
+    public JsonResult getUserNodes(HttpServletRequest request) throws DocumentException {
 
         HttpSession session = request.getSession();
 
@@ -63,34 +61,13 @@ public class DataServerRestController {
         if(userName==null){
             return ResultUtils.error(-1, "no login");
         }else{
-            String url = "http://" + dataServerManager+"/onlineNodes";
-
-            RestTemplate restTemplate = new RestTemplate();
-            String xml = restTemplate.getForObject(url,String.class);
-
-            if(xml.equals("err")){
+            JSONObject jsonObject = dataServerService.getUserNode(userName);
+            if(jsonObject.isEmpty()){
                 return ResultUtils.error(-1,"err");
+            }else {
+                return ResultUtils.success(jsonObject);
             }
 
-            JSONObject jsonObject = XmlTool.xml2Json(xml);
-            JSONObject userNode = new JSONObject();
-            try {
-                JSONArray nodes = jsonObject.getJSONArray("onlineServiceNodes");
-
-                for (int i = 0; i < nodes.size(); i++) {
-                    JSONObject node = (JSONObject) nodes.get(i);
-                    if (node.getString("node").equals(userName)) {
-                        userNode = node;
-                    }
-                }
-            } catch (Exception e) {
-                JSONObject node = jsonObject.getJSONObject("onlineServiceNodes");
-                if (node.getString("node").equals(userName)) {
-                    userNode = node;
-                }
-            }
-
-            return ResultUtils.success(userNode);
         }
 
 
@@ -98,7 +75,7 @@ public class DataServerRestController {
     }
 
     @RequestMapping(value = "/getNodeContent", method = RequestMethod.GET)
-    public JsonResult getNodesProcessings(@RequestParam("token") String token,@RequestParam("type") String type,HttpServletRequest request) throws IOException, URISyntaxException, DocumentException {
+    public JsonResult getNodeContent(@RequestParam("token") String token,@RequestParam("type") String type,HttpServletRequest request) throws IOException, URISyntaxException, DocumentException {
 
         HttpSession session = request.getSession();
 
@@ -132,6 +109,19 @@ public class DataServerRestController {
         }
     }
 
+    @RequestMapping(value = "/getNodeContentCheck", method = RequestMethod.GET)
+    public JsonResult getNodeContentCheck(@RequestParam("token") String token,@RequestParam("type") String type,HttpServletRequest request) throws Exception {
+
+        HttpSession session = request.getSession();
+
+        String userName = session.getAttribute("uid").toString();
+        if(userName==null){
+            return ResultUtils.error(-1, "no login");
+        }else {
+            return ResultUtils.success(dataServerService.getNodeContentCheck(token,type));
+        }
+    }
+
     @RequestMapping(value = "/getNodeDataUrl", method = RequestMethod.GET)
     public JsonResult getNodeDataUrl(@RequestParam("token") String token,@RequestParam("id") String id,HttpServletRequest request) throws IOException, URISyntaxException, DocumentException {
 
@@ -144,5 +134,35 @@ public class DataServerRestController {
 
             return ResultUtils.success(dataServerService.getNodeData(token,id,userName));
         }
+    }
+
+    @RequestMapping(value = "/pageAllDataItemChecked", method = RequestMethod.GET)
+    public JsonResult pageAll(@RequestParam(value = "page") int page,
+                              @RequestParam(value = "pageSize") int pageSize,
+                              @RequestParam(value="asc") int asc,
+                              @RequestParam(value="sortEle") String sortEle,
+                              HttpServletRequest request
+    ){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid")==null){
+            return ResultUtils.error(-1,"no login");
+        }
+        else{
+            String userId = session.getAttribute("uid").toString();
+            return ResultUtils.success(dataServerService.pageAllDataItemChecked(page,pageSize,asc,sortEle,userId));
+        }
+    }
+
+    @RequestMapping(value = "/bindDataItem", method = RequestMethod.POST)
+    public JsonResult bindDataItem(@RequestBody DataNodeContentDTO dataNodeContentDTO,HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid")==null){
+            return ResultUtils.error(-1,"no login");
+        }
+        else{
+            String userName = session.getAttribute("uid").toString();
+            return ResultUtils.success(dataServerService.bindDataItem(dataNodeContentDTO,userName));
+        }
+
     }
 }
