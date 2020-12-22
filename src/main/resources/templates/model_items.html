@@ -71,33 +71,33 @@
 
             <div class="el-row">
                 <h2 class="main-title">Model Item Repository</h2>
-                <el-button type="primary">All</el-button>
-                <el-button @click="window.location.href='/modelItem/repository1'">1</el-button>
-                <el-button @click="window.location.href='/modelItem/repository2'">2</el-button>
+                <!--<el-button type="primary">All</el-button>-->
+                <!--<el-button @click="window.location.href='/modelItem/repository1'">1</el-button>-->
+                <!--<el-button @click="window.location.href='/modelItem/repository2'">2</el-button>-->
                 <h4 class="sub-title">The repository of models (include tools, algorithms, packages, et al.)</h4>
                 <button id="contributeBtn" class="btn btn-success btn-lg" style="font-size: 15px;margin:10px;" @click="contribute()">+ Contribute</button>
                 <hr>
             </div>
             <div class="el-col el-col-6 minScreen_maxWidth" style="margin-top:29px;">
 
-                <el-card class="box-card categoryList" style="position:relative">
-                    <div slot="header" class="clearfix text-center">
-                        <span style="font-size: 20px;color:#444">Model Classifications</span>
-                    </div>
+                <!--<el-card class="box-card categoryList" style="position:relative">-->
+                    <!--<div slot="header" class="clearfix text-center">-->
+                        <!--<span style="font-size: 20px;color:#444">Model Classifications</span>-->
+                    <!--</div>-->
 
-                    <el-tree
-                            id="tree1"
-                            ref="tree1"
-                            :data="treeData"
-                            :highlight-current="true"
-                            node-key="id"
-                            :default-expanded-keys="[1,64]"
-                            :current-node-key="1"
-                            @current-change="handleCurrentChange"
-                            :props="defaultProps">
-                    </el-tree>
+                    <!--<el-tree-->
+                            <!--id="tree1"-->
+                            <!--ref="tree1"-->
+                            <!--:data="treeData"-->
+                            <!--:highlight-current="true"-->
+                            <!--node-key="id"-->
+                            <!--:default-expanded-keys="[1,64]"-->
+                            <!--:current-node-key="1"-->
+                            <!--@current-change="handleCurrentChange"-->
+                            <!--:props="defaultProps">-->
+                    <!--</el-tree>-->
 
-                </el-card>
+                <!--</el-card>-->
 
                 <el-card class="box-card categoryList" style="position:relative">
                 <div slot="header" class="clearfix text-center">
