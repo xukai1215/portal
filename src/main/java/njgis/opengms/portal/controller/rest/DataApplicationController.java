@@ -2,34 +2,54 @@ package njgis.opengms.portal.controller.rest;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import lombok.extern.slf4j.Slf4j;
+import com.google.gson.JsonObject;
 import njgis.opengms.portal.bean.JsonResult;
+import njgis.opengms.portal.bean.LoginRequired;
 import njgis.opengms.portal.dao.DataApplicationDao;
 import njgis.opengms.portal.dao.ThemeDao;
 import njgis.opengms.portal.dao.UserDao;
 import njgis.opengms.portal.dto.dataApplication.DataApplicationDTO;
 import njgis.opengms.portal.dto.dataApplication.DataApplicationFindDTO;
 import njgis.opengms.portal.entity.*;
+import njgis.opengms.portal.entity.support.InvokeService;
+import njgis.opengms.portal.entity.support.Maintainer;
 import njgis.opengms.portal.service.DataApplicationService;
 import njgis.opengms.portal.service.DataItemService;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
 import org.apache.commons.io.IOUtils;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
+import springfox.documentation.spring.web.json.Json;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
+import java.io.*;
+import javax.xml.crypto.Data;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -37,6 +57,7 @@ import java.util.List;
  * @Date 2020.07.30 11:07
  */
 @RestController
+@Slf4j
 @RequestMapping(value = "/dataApplication")
 public class DataApplicationController {
     @Autowired
@@ -159,7 +180,7 @@ public class DataApplicationController {
         }
     }
 
-    @RequestMapping(value = "/getApplication", method = RequestMethod.GET)
+    @RequestMapping(value = "/getApplication", method = RequestMethod.GET)      // 这是拿到用户上传的所有条目
     public JsonResult getUserUploadData(@RequestParam(value = "userOid", required = false) String userOid,
                                         @RequestParam(value = "page", required = false) Integer page,
                                         @RequestParam(value = "pagesize", required = false) Integer pagesize,
@@ -169,11 +190,16 @@ public class DataApplicationController {
         return ResultUtils.success(dataApplicationService.getUsersUploadData(userOid, page - 1, pagesize, asc,type));
     }
 
+    @RequestMapping(value = "/getApplication/{oid}",method = RequestMethod.GET)     // 根据oid拿到条目的所有信息
+    public JsonResult getApplicationByOid(@PathVariable("oid") String oid) {
+        DataApplication dataApplication = dataApplicationDao.findFirstByOid(oid);
+        return ResultUtils.success(JSONObject.toJSON(dataApplication));
+    }
+
     @RequestMapping (value="/{id}",method = RequestMethod.GET)
     public ModelAndView get(@PathVariable("id") String id){
         return dataApplicationService.getPage(id);
     }
-
 
 
     @RequestMapping(value="/searchDataByUserId",method = RequestMethod.GET)
@@ -237,120 +263,136 @@ public class DataApplicationController {
     }
 
 
-    // /**
-    //  * dataApplications 页面中的搜索
-    //  * @return
-    //  */
-    // @RequestMapping(value = "/methods/all",method = RequestMethod.GET)
-    // JsonResult getAll() {
-    //     System.out.println("?");
-    //     return ResultUtils.success(dataApplicationService.findAll());
-    // }
-    //
-    // @RequestMapping(value = "/methods/listBySearch",method = RequestMethod.POST)
-    // JsonResult listByName(@RequestBody DataApplicationFindDTO dataApplicationFindDTO){
-    //     return ResultUtils.success(dataApplicationService.listBySearch(dataApplicationFindDTO));
-    // }
-    //
-    // @RequestMapping(value = "/methods/searchByName",method = RequestMethod.POST)
-    // JsonResult searchByName(@RequestBody DataApplicationFindDTO dataApplicationFindDTO) {
-    //     return ResultUtils.success(dataApplicationService.searchByName(dataApplicationFindDTO,null));
-    // }
-
-
-//     /**
-//      * dataApplications 页面，分页和分类的唯一标识
-//      * @param method
-//      * @param page
-//      * @param ortFieldName
-//      * @param sortOrder
-//      * @param request
-//      * @return
-//      */
-//     @RequestMapping(value = "/methods/{method}&{page}&{ortFieldName}&{sortOrder}",method = RequestMethod.GET)
-//     JsonResult listByClassifications(
-//             @PathVariable String method,
-//             @PathVariable Integer page,
-//             @PathVariable String ortFieldName,
-//             @PathVariable String sortOrder,
-//             HttpServletRequest request){
-//         // HttpSession session = request.getSession();
-//         // String loadUser = null;
-//         // if(session.getAttribute("oid")!=null) {
-//         //     loadUser = session.getAttribute("oid").toString();
-//         // }
-// //        return ResultUtils.success(dataItemService.findByCateg(categorysId,page,false,10,loadUser,dataType));
-//         Sort sort = new Sort(sortOrder.equals("Desc.")?Sort.Direction.DESC:Sort.Direction.ASC, ortFieldName);
-//         Pageable pageable = PageRequest.of(page-1, 10, sort);
-//
-//         // String tabType = "hub";
-//         //
-//         // Page<DataItemResultDTO> dataItemResultDTOPageable;
-//         // if (dataType.equals("hubs")) {
-//         //     tabType = "hub";
-//         //     dataItemResultDTOPageable = dataHubsDao.findAllByClassificationsIn(categorysId, pageable);
-//         // }else if (dataType.equals("repository")){
-//         //     tabType = "repository";
-//         //     dataItemResultDTOPageable =
-//         //             dataItemDao.findAllByClassificationsAndTabTypeIn(categorysId, tabType, pageable);
-//         // }else {
-//         //     tabType = "network";
-//         //     dataItemResultDTOPageable =
-//         //             dataItemDao.findAllByClassificationsAndTabTypeIn(categorysId, tabType, pageable);
-//         // }
-//         //
-//         Page<DataApplication> dataApplicationPage;
-//
-//         dataApplicationPage = dataApplicationDao.findByMethodLikeAndStatusNotLike(method,pageable,"private");
-//         // if(method.equals("all")) {
-//         //     dataApplicationPage = dataApplicationDao.findAllAndStatusNot(pageable,"private");
-//         // } else{
-//         //     dataApplicationPage = dataApplicationService.searchResourceByCate(data)
-//         // }
-//         JSONObject result = new JSONObject();
-//         result.put("content", dataApplicationPage.getContent());
-//         JSONArray users = new JSONArray();
-//         for (int i=0;i<dataApplicationPage.getContent().size();i++){
-//             JSONObject userJson = new JSONObject();
-//             User user = userDao.findFirstByOid(dataApplicationPage.getContent().get(i).getAuthor());
-//             userJson.put("name", user.getName());
-//             userJson.put("oid", user.getOid());
-//             userJson.put("userId", user.getUserId());
-//             String img = user.getImage();
-//             userJson.put("image", img.equals("") ? "" : htmlLoadPath + user.getImage());
-//             users.add(userJson);
-//         }
-//         result.put("users", users);
-//         result.put("totalElements", dataApplicationPage.getTotalElements());
-//
-//         return ResultUtils.success(result);
-//     }
-
-    // @RequestMapping(value = "/searchByName",method = RequestMethod.POST)
-    // JsonResult searchByName(RequestBody DataApplicationFindDTO){
-    //
-    // }
-
-    // /**
-    //  * 通过数据条目页面，打开dataApplication页面
-    //  */
-    // @RequestMapping(value = "/methods/{id}",method = RequestMethod.GET)
-    // ModelAndView get(@PathVariable("id") String id) {
-    //
-    // }
 
     /**
      * 通过数据条目页面，打开dataApplication页面,这里面根据的是_id来进行访问的，前面个是根据oid来访问的
      */
-    @RequestMapping(value = "/methods/{id}",method = RequestMethod.GET)
-    ModelAndView getPage(@PathVariable("id") String id) {
-        return dataApplicationService.getPageWith_id(id);
-    }
+//    @RequestMapping(value = "/methods/{id}",method = RequestMethod.GET)
+//    ModelAndView getPage(@PathVariable("id") String id) {
+//        return dataApplicationService.getPageWith_id(id);
+//    }
 
 
     @RequestMapping(value = "/methods/getApplication",method = RequestMethod.POST)
     JsonResult getApplication(@RequestBody DataApplicationFindDTO dataApplicationFindDTO){
         return  ResultUtils.success(dataApplicationService.searchApplication(dataApplicationFindDTO));
     }
+
+    @RequestMapping(value = "/invokeMethod", method = RequestMethod.POST)
+    JsonResult invokeMethod(@RequestParam(value = "dataApplicationId") String dataApplicationId,
+                            @RequestParam(value = "serviceId") String serviceId,
+                            @RequestParam(value = "params") String params,
+                            HttpServletRequest request) throws UnsupportedEncodingException, MalformedURLException, DocumentException {
+        JsonResult jsonResult = new JsonResult();
+        DataApplication dataApplication = dataApplicationDao.findFirstByOid(dataApplicationId);
+        List<InvokeService> invokeServices = dataApplication.getInvokeServices();
+        String url = "http://111.229.14.128:8898/extPcs?dataId=";//invoke接口
+
+        //门户测试解绑
+//        HttpSession session=request.getSession();
+//        if(session.getAttribute("uid")==null){
+//            return ResultUtils.error(-1,"no login");
+//        }
+//        String reqUsrId = session.getAttribute("uid").toString();
+        String reqUsrId = "33";//门户测试时注释掉
+        String token = "fcky/35Rezr+Kyazr8SRWA==";
+        token = URLEncoder.encode(token, "UTF-8");
+
+        for (InvokeService invokeService : invokeServices){
+            if(invokeService.getServiceId().equals(serviceId)){
+                List<String> dataIds = invokeService.getDataIds();
+                url += dataIds.get(0);
+                url += ("&params=" + params);
+                url += ("&name=" + invokeService.getName());
+                url += ("&token=" + token);//token注意要加密  注意此处使用门户节点的token，目前先用我的token代替
+                url += ("&reqUsrOid=" + reqUsrId);
+                url += ("&pcsId=" + serviceId);
+                log.info(url);
+
+                //调用url
+                RestTemplate restTemplate = new RestTemplate();
+
+                String response = restTemplate.getForObject(url,String.class);
+                log.info(response + "");
+
+                //解析xml，获取下载链接
+                //将string串读取为xml
+                Document configXML = DocumentHelper.parseText(response);
+                //获取根元素
+                Element root = configXML.getRootElement();
+                String urlRes = root.element("uid").getText();
+
+                invokeService.setCacheUrl(urlRes);
+                jsonResult.setData(invokeService);
+                break;
+            }
+        }
+        dataApplication.setInvokeServices(invokeServices);
+        dataApplicationDao.save(dataApplication);
+        jsonResult.setMsg("suc");
+        jsonResult.setCode(0);
+//        jsonResult.setData(in);
+        return jsonResult;
+    }
+
+    @LoginRequired
+    @RequestMapping(value = "/task/{id}", method = RequestMethod.GET)
+    ModelAndView getTask(@PathVariable("id") String id) {
+
+        ModelAndView modelAndView = new ModelAndView();
+
+        modelAndView.setViewName("data_application_task");
+
+        return modelAndView;
+    }
+
+    /**
+     * 获取xml以及paremeter
+     * @return
+     */
+    @RequestMapping(value = "/getParemeter/{oid}", method = RequestMethod.GET)
+    public JsonResult getParemeter(@PathVariable(value = "oid") String oid) throws IOException, DocumentException {
+        JsonResult jsonResult = new JsonResult();
+        DataApplication dataApplication = dataApplicationDao.findFirstByOid(oid);
+        String packagePath = dataApplication.getPackagePath();
+        File file = new File(packagePath);
+        File[] files = file.listFiles();
+        String fileName = null;
+        JSONObject jsonObject = new JSONObject();
+        for (File file1:files){
+            fileName = file1.getName();
+            if (file1.getName().substring(file1.getName().lastIndexOf(".")).equals(".xml")){
+                //解析xml文件
+                if (!file1.exists()){
+                    return null;
+                }
+                FileInputStream inputStream = new FileInputStream(file1);
+                int length = inputStream.available();
+                byte bytes[] = new byte[length];
+                inputStream.read(bytes);
+                inputStream.close();
+                String xml = new String(bytes, StandardCharsets.UTF_8);
+
+                //解析xml  利用Iterator获取xml的各种子节点
+                Document document = DocumentHelper.parseText(xml);
+                Element root = document.getRootElement();
+                ArrayList<String> parameters = new ArrayList<>();
+                List<Element> pas =  root.element("Parameter").elements();
+                for (Element e : pas){
+                    log.info(e.attributeValue("name"));
+                    parameters.add(e.attributeValue("name"));
+                }
+                jsonObject.put("parameters", parameters);
+                jsonObject.put("xml",xml);
+                break;
+            }
+        }
+        jsonResult.setData(jsonObject);
+        jsonResult.setCode(0);
+        jsonResult.setMsg("suc");
+
+        return jsonResult;
+    }
+
 
 }

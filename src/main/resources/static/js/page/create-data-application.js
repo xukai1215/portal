@@ -55,28 +55,28 @@ var createDataApplication = Vue.extend({
             socket:"",
 
             dataApplication_oid:"",
-            treeData: [{
-                id: 1,
-                label: 'All Folder',
-                children: [{
-                    id: 4,
-                    label: '二级 1-1',
-                    children: [{
-                        id: 9,
-                        label: '三级 1-1-1'
-                    }, {
-                        id: 10,
-                        label: '三级 1-1-2'
-                    }]
-                }]
-            }],
-            categoryTree: [],
-            defaultProps: {
-                children: 'children',
-                label: 'label'
-            },
-            cls: [],//分类的id队列
-            clsStr: '',//分类的label队列
+            // treeData: [{
+            //     id: 1,
+            //     label: 'All Folder',
+            //     children: [{
+            //         id: 4,
+            //         label: '二级 1-1',
+            //         children: [{
+            //             id: 9,
+            //             label: '三级 1-1-1'
+            //         }, {
+            //             id: 10,
+            //             label: '三级 1-1-2'
+            //         }]
+            //     }]
+            // }],
+            // categoryTree: [],
+            // defaultProps: {
+            //     children: 'children',
+            //     label: 'label'
+            // },
+            // cls: [],//分类的id队列
+            // clsStr: '',//分类的label队列
 
             selectedFile:[],
             userDataList:[],
@@ -202,6 +202,34 @@ var createDataApplication = Vue.extend({
             this.cls=classes;
             this.clsStr=str;
 
+        },
+        openDataSpace(){
+            this.dialogVisible = true;
+            this.$nextTick(()=>{
+                this.$refs.userDataSpace.getFilePackage();
+            })
+        },
+        handleClose(done) {
+            this.$confirm('Confirm to close?')
+                .then(_ => {
+                    done();
+                })
+                .catch(_ => {
+                });
+        },
+        selectDataspaceFile(file){
+            if (this.selectedFile.indexOf(file) > -1) {
+                for (var i = 0; i < this.selectedFile.length; i++) {
+                    if (this.selectedFile[i] === file) {
+                        //删除
+                        this.selectedFile.splice(i, 1);
+                        // this.downloadDataSetName.splice(i, 1)
+                        break
+                    }
+                }
+            } else {
+                this.selectedFile.push(file);
+            }
         },
     },
     mounted() {
@@ -406,7 +434,7 @@ var createDataApplication = Vue.extend({
 
         if ((oid === "0") || (oid === "") || (oid === null)|| (oid === undefined)) {
 
-            $("#subRteTitle").text("/Create Data Processing Application");
+            $("#subRteTitle").text("/Create Data Method");
 
             initTinymce('textarea#dataApplicationText')
 
@@ -610,6 +638,15 @@ var createDataApplication = Vue.extend({
             this.dataApplication.authorship=[];
             this.dataApplication.classifications = this.cls;
             this.dataApplication.type = "process";
+            // this.dataApplication.method = this.method;
+            let testData = [];
+            for(let item of this.selectedFile){
+                let obj = new Object();
+                obj.oid = item.id;
+                obj.url = item.url;
+                testData.push(obj);
+            }
+            this.dataApplication.testData = testData;
 
 
             userspace.getUserData($("#providersPanel .user-contents .form-control"), this.dataApplication.authorship);

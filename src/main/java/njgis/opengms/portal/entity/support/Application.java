@@ -6,8 +6,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 
 /**
- * @Auther mingyuan
- * @Data 2019.10.24 18:01
+ * @Author mingyuan
+ * @Date 2019.10.24 18:01
  */
 @Data
 @AllArgsConstructor

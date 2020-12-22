@@ -59,8 +59,8 @@
         <div class="mainContent">
             <div class="el-row">
                 <div class="data-top">
-                    <h2 class="main-title">Data Applications Repository</h2>
-                    <h4 class="sub-title">The repository of data applications (one-stop hub with public shared data applications resources)
+                    <h2 class="main-title">Data Methods</h2>
+                    <h4 class="sub-title">The repository of data methods (one-stop hub with public shared data methods resources)
                     </h4>
                     <button class="btn btn-success btn-lg" style="font-size: 15px;margin:10px;" @click="contribute()">+ Contribute</button>
                 </div>
@@ -73,7 +73,7 @@
                     </div>
                      <div class="el-card__header;" style="padding-top: 0px">
                          <div role="button"  tabindex="0" class="el-collapse-item__header" @click="chooseCate('conversion')" style="font-size: medium;height: 75px;border-bottom: 1px solid #eaeaea;">Conversion</div>
-                         <div role="button"  tabindex="0" class="el-collapse-item__header" @click="chooseCate('procession')" style="font-size: medium;height: 75px;border-bottom: 1px solid #eaeaea;">Procession</div>
+                         <div role="button"  tabindex="0" class="el-collapse-item__header" @click="chooseCate('processing')" style="font-size: medium;height: 75px;border-bottom: 1px solid #eaeaea;">Processing</div>
                          <div role="button"  tabindex="0" class="el-collapse-item__header" @click="chooseCate('visualization')" style="font-size: medium;height: 75px;border-bottom: 1px solid #eaeaea;">Visualization</div>
                          <div role="button"  tabindex="0" class="el-collapse-item__header" @click="chooseCate('all')" style="font-size: medium;height: 75px;border-bottom: 1px solid #eaeaea;">All</div>
                      </div>
@@ -97,9 +97,10 @@
                 </div>
                 <div  class="alert alert-success" role="alert" style="margin-bottom: 2px;">
                     <span >
-                        <strong class="minScreen_curClass">
+                        <strong class="minScreen_curClass" style="border-right: 1px solid rgb(234, 234, 234)">
                             {{method===''?'':"Current Category: "+method}}
                         </strong>
+                        <span style="width: 2px;height: 100%">{{searchText.length===0?'':'|'}}</span>
                         <strong style="color: cornflowerblue">
                             {{searchText.length===0?'':"Current Keywords: "+searchText}}
                         </strong>

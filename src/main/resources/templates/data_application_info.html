@@ -49,29 +49,25 @@
         <div class="left-panel el-col">
             <div class="detail">
                 <div class="detail_title">
-                    <i th:if="${dataApplicationInfo.status=='Public'}"
-                       class="el-icon-unlock public fontsize-2em pull-right"></i>
-                    <i th:if="${dataApplicationInfo.status=='Discoverable'}"
-                       class="el-icon-unlock discoverable fontsize-2em pull-right"></i>
-                    <i th:if="${dataApplicationInfo.status=='Private'}"
-                       class="el-icon-lock private fontsize-2em pull-right"></i>
+                    <i th:if="${dataApplicationInfo.status=='Public'}" class="el-icon-unlock public fontsize-2em pull-right"></i>
+                    <i th:if="${dataApplicationInfo.status=='Discoverable'}" class="el-icon-unlock discoverable fontsize-2em pull-right"></i>
+                    <i th:if="${dataApplicationInfo.status=='Private'}" class="el-icon-lock private fontsize-2em pull-right"></i>
                     <!--</el-tooltip>-->
                     <h2 th:utext="${dataApplicationInfo.name}"
                         style="display: inline-block;margin:0px 10px;word-wrap:break-word; word-break:break-all;"></h2>
 
-                    <a href="javascript:void(0);" th:if="${dataApplicationInfo.status=='Public'&&history!=true}"
-                       class='fa fa-pencil fa-2x'
+                    <a href="javascript:void(0);" th:if="${dataApplicationInfo.status=='Public'&&history!=true}" class='fa fa-pencil fa-2x'
                        aria-hidden='true'
                        @click="edit" style="float: right;">
                     </a>
                     <!--<el-tooltip popper-class="fontsize-15" content="There is another version haven't been reviewed, you can edit it later or contact us." effect="light" placement="left">-->
-                    <!--<li th:if="${dataApplicationInfo.status=='Public'&&history!=true}" class='fa fa-pencil fa-2x' style="color:#cccccc" aria-hidden='true'></li>-->
+                        <!--<li th:if="${dataApplicationInfo.status=='Public'&&history!=true}" class='fa fa-pencil fa-2x' style="color:#cccccc" aria-hidden='true'></li>-->
                     <!--</el-tooltip>-->
 
                     <!--<a href="javascript:void(0)" class='fa fa-star-o fa-2x pull-right' aria-hidden='true'></a>-->
                 </div>
                 <div class="detail_overview">
-                    <div class="img">
+                    <div  class="img">
                         <!--<img th:case="''" src="/static/img/model/calcModel.png">-->
                         <!--<img src="/static/img/model/logical.png">-->
                         <!--<img th:case="*" th:src="'/static/img'+${dataApplicationInfo.image}">-->
@@ -100,20 +96,20 @@
                     </div>
 
                     <!--<div th:if="${history!=true}" class="detail_option">-->
-                    <!--&lt;!&ndash;<a href="javascript:void(0)" class="fa fa-share-square-o" aria-hidden="true"></a>&ndash;&gt;-->
-                    <!--&lt;!&ndash;<div th:utext="'&nbsp&nbsp'+${modelInfo.shareCount}">&nbsp&nbsp37</div>&ndash;&gt;-->
-                    <!--<span th:if="${dataApplicationInfo.contentType=='Package'}">-->
-                    <!--<button th:unless="${modelInfo.deploy==true}" class="btn btn-lg btn-info" type="button"-->
-                    <!--@click="dialogVisible = true">Deploy-->
-                    <!--</button>-->
-                    <!--<button th:if="${modelInfo.deploy==true}" class="btn btn-lg btn-success" type="button"-->
-                    <!--@click="invoke()">-->
-                    <!--Invoke-->
-                    <!--</button>-->
-                    <!--</span>-->
+                        <!--&lt;!&ndash;<a href="javascript:void(0)" class="fa fa-share-square-o" aria-hidden="true"></a>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<div th:utext="'&nbsp&nbsp'+${modelInfo.shareCount}">&nbsp&nbsp37</div>&ndash;&gt;-->
+                        <!--<span th:if="${dataApplicationInfo.contentType=='Package'}">-->
+                            <!--<button th:unless="${modelInfo.deploy==true}" class="btn btn-lg btn-info" type="button"-->
+                                    <!--@click="dialogVisible = true">Deploy-->
+                            <!--</button>-->
+                            <!--<button th:if="${modelInfo.deploy==true}" class="btn btn-lg btn-success" type="button"-->
+                                    <!--@click="invoke()">-->
+                                <!--Invoke-->
+                            <!--</button>-->
+                        <!--</span>-->
 
-                    <!--<a href="javascript:void(0)" class="fa fa-eye " aria-hidden="true"></a>-->
-                    <!--<div th:utext="'&nbsp&nbsp'+${modelInfo.viewCount}">&nbsp&nbsp341</div>-->
+                        <!--<a href="javascript:void(0)" class="fa fa-eye " aria-hidden="true"></a>-->
+                        <!--<div th:utext="'&nbsp&nbsp'+${modelInfo.viewCount}">&nbsp&nbsp341</div>-->
                     <!--</div>-->
 
                 </div>
@@ -136,8 +132,7 @@
                         </div>
                         <div class="el-col">
                             <div class="pull-left" style="display: block;margin-left: 15px;">
-                                <a th:href="'/profile/'+${user.userId}"><h4 th:text="${user.name}" style="padding: 0;">
-                                    Tom
+                                <a th:href="'/profile/'+${user.userId}"><h4 th:text="${user.name}" style="padding: 0;">Tom
                                     Marvolo Riddle</h4></a>
                             </div>
                         </div>
@@ -168,8 +163,7 @@
                 <div class="block_content text-center" style="padding-left:10px">
 
                     <div style="text-align: left;" th:each="author,key:${dataApplicationInfo.authorship}">
-                        <span role="button" tabindex="0" th:class="${key.index==0?'ab':'ab transform180'}"
-                              style="float: right;"><a
+                        <span role="button" tabindex="0" th:class="${key.index==0?'ab':'ab transform180'}" style="float: right;"><a
                                 data-toggle="collapse" th:href="'#authorshipPhone'+${key.index}" class="detail-toggle"
                                 aria-expanded="true"><i class="fa fa-caret-up" style="font-size: 21px"></i></a></span>
                         <li class="NavHead" style="font-size: 16px;" th:text="${author.name}">NNU_Group</li>
@@ -189,6 +183,24 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <div id="description" class="detail_block" th:if="${dataApplicationInfo.detail!=null&&dataApplicationInfo.detail!=''}">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Detailed Description</h4>
+                    </div>
+                </div>
+                <div class="block_content">
+                    <div th:utext="${dataApplicationInfo.detail}" id="detail" class="detailIntroducePanel">
+                    </div>
+                </div>
+                <div class="fullPaper text-center hide">
+                    <a id="fullPaper" style="cursor:pointer;font-size:16px;">View Full Content<i
+                            class="fa fa-angle-down"
+                            style="margin-left: 10px;color:red;font-weight: bold"
+                            aria-hidden="true"></i></a>
                 </div>
             </div>
 
@@ -244,12 +256,12 @@
                     </div>
 
 
-                    <!--                    <el-card class="browsermenu">-->
-                    <!--                        <el-button id="dbtn" icon="el-icon-download" @click="downloaddata()" type="text">download-->
-                    <!--                        </el-button>-->
-                    <!--                        <br>-->
-                    <!--                        <el-button id="sbtn" icon="el-icon-share" @click="share" type="text">share</el-button>-->
-                    <!--                    </el-card>-->
+<!--                    <el-card class="browsermenu">-->
+<!--                        <el-button id="dbtn" icon="el-icon-download" @click="downloaddata()" type="text">download-->
+<!--                        </el-button>-->
+<!--                        <br>-->
+<!--                        <el-button id="sbtn" icon="el-icon-share" @click="share" type="text">share</el-button>-->
+<!--                    </el-card>-->
                     <!--refresh 白板刷新和全选功能，待进一步完善-->
 
                     <!--<el-card class="browser">-->
@@ -259,6 +271,60 @@
 
 
                 </div>
+            </div>
+
+            <div id="invoke" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Service Instance</h4>
+                    </div>
+                </div>
+<!--                <el-tabs class="block_content" v-model="activeName" type="border-card" stretch="true">-->
+<!--                    <el-tab-pane label="AttributeSet" name="AttributeSet">-->
+<!--                        <table class="table table-bordered text-center" v-for="item in methodsData">-->
+<!--                            <colgroup>-->
+<!--                                <col class="col1" style="width: 40%">-->
+<!--                                <col class="col2">-->
+<!--                            </colgroup>-->
+<!--                            <tbody>-->
+<!--                            <tr>-->
+<!--                                <td style="font-weight: bold;">{{item.key}}</td>-->
+<!--                                <td colspan="2">{{item.val}}</td>-->
+<!--                            </tr>-->
+<!--                            </tbody>-->
+<!--                        </table>-->
+<!--                        <a :href="gotoTask()">-->
+<!--                            <button type="button" class="btn btn-lg btn-success" style="margin-left: 80%">Invoke-->
+<!--                            </button>-->
+<!--                        </a>-->
+                <div style="padding: 30px;margin-left:20px">
+                     <el-table :data="methodsData" style="width: 100%">
+                            <el-table-column prop="name" label="name"></el-table-column>
+                            <el-table-column prop="method" label="method type"></el-table-column>
+                            <el-table-column label="operation">
+                                <template slot-scope="scope">
+                                    <a :href="gotoTask()">
+                                        <button type="button" class="btn btn-lg btn-success">Invoke
+                                        </button>
+                                    </a>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                </div>
+<!--                    </el-tab-pane>-->
+<!--                    <el-tab-pane label="Behavior" name="Behavior">-->
+<!--&lt;!&ndash;                        <el-button style="position: absolute; z-index: 900" @click=""> Show Detail&ndash;&gt;-->
+<!--&lt;!&ndash;                        </el-button>&ndash;&gt;-->
+
+<!--                    </el-tab-pane>-->
+<!--                    <el-tab-pane label="Runtime" name="Runtime">-->
+<!--                        <table id="runtime_table" class="table table-bordered text-center">-->
+
+
+<!--                            </tbody>-->
+<!--                        </table>-->
+<!--                    </el-tab-pane>-->
+<!--                </el-tabs>-->
             </div>
 
             <div id="link" class="detail_block"
@@ -274,25 +340,6 @@
                             https://geomodeling.njnu.edu.cn/conceptualmodel/4e028983-c8c0-4d98-86cd-85fc16a00d21
                         </a>
                     </div>
-                </div>
-            </div>
-
-            <div id="description" class="detail_block"
-                 th:if="${dataApplicationInfo.detail!=null&&dataApplicationInfo.detail!=''}">
-                <div class="block_head">
-                    <div class="head_text">
-                        <h4>Detailed Description</h4>
-                    </div>
-                </div>
-                <div class="block_content">
-                    <div th:utext="${dataApplicationInfo.detail}" id="detail" class="detailIntroducePanel">
-                    </div>
-                </div>
-                <div class="fullPaper text-center hide">
-                    <a id="fullPaper" style="cursor:pointer;font-size:16px;">View Full Content<i
-                            class="fa fa-angle-down"
-                            style="margin-left: 10px;color:red;font-weight: bold"
-                            aria-hidden="true"></i></a>
                 </div>
             </div>
 
@@ -318,6 +365,19 @@
                     </div>
                     <div id="copy" class="btn btn-info">
                         Copy
+                    </div>
+                </div>
+            </div>
+
+            <div id="copyright" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Copyright and Disclaimer</h4>
+                    </div>
+                </div>
+                <div class="block_content">
+                    <div class="copyright_text">
+                        All copyrights of a material (model, data, article, etc.) in the OpenGMS fully belong to its author/developer/designer (or any other wording about the owner). The OpenGMS takes every care to avoid copyright infringement, contributor(s) should carefully employ materials from other sources and give proper citations.
                     </div>
                 </div>
             </div>
@@ -362,21 +422,21 @@
             </div>
         </div>
         <div class="right-panel el-col" style="border-left: #d2d2d2 solid 1px;margin-left:-1px">
-            <div id="classification0" class="detail_block">
-                <div class="block_head">
-                    <div class="head_text">
-                        <h4>Category Tags</h4>
-                    </div>
-                </div>
-                <div class="block_content" style="margin-bottom:10px;">
+<!--            <div id="classification0" class="detail_block">-->
+<!--                <div class="block_head">-->
+<!--                    <div class="head_text">-->
+<!--                        <h4>Category Tags</h4>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="block_content" style="margin-bottom:10px;">-->
 
                     <!--<el-tag type="success"  v-for="iter in dataCategory" @click="clickDataItemInfo(iter.id)" style="margin-left: 10px;font-weight: bold;color: #3396ef"> {{iter.cateContent}}</el-tag>-->
 
-                    <el-tag type="success" th:each="classS:${classifications}" th:text="${classS}"
-                            style="margin: 0 10px 10px 0;font-weight: bold;color: #3396ef"></el-tag>
+<!--                    <el-tag type="success" th:each="classS:${classifications}" th:text="${classS}"-->
+<!--                            style="margin: 0 10px 10px 0;font-weight: bold;color: #3396ef"></el-tag>-->
 
-                </div>
-            </div>
+<!--                </div>-->
+<!--            </div>-->
 
             <div id="Contributor" class="detail_block">
                 <div class="block_head">
@@ -394,8 +454,7 @@
                         </div>
                         <div class="el-col">
                             <div class="pull-left" style="display: block;margin-left: 15px;">
-                                <a th:href="'/profile/'+${user.userId}"><h4 th:text="${user.name}" style="padding: 0;">
-                                    Tom
+                                <a th:href="'/profile/'+${user.userId}"><h4 th:text="${user.name}" style="padding: 0;">Tom
                                     Marvolo Riddle</h4></a>
                             </div>
                         </div>
@@ -415,19 +474,14 @@
             <div id="Authorship" class="detail_block"
                  th:if="${dataApplicationInfo.authorship!=null&&#lists.size(dataApplicationInfo.authorship)!=0}">
                 <div class="block_head">
-                    <div class="head_text" style="padding-left: 10px;padding-right: 15px;display: inline-flex"><h4>
-                        Authorship</h4>
-                        <el-tooltip popper-class="fontsize-15" effect="light"
-                                    content="We deeply understand that a model may be attributed to the efforts of a team. If all author information is not listed here, please click the feedback below."
-                                    placement="top"><i class="fa fa-question-circle-o" aria-hidden="true"
-                                                       style="margin-top:4px;"></i></el-tooltip>
+                    <div class="head_text" style="padding-left: 10px;">
+                        <h4>Authorship</h4>
                     </div>
                 </div>
                 <div class="block_content text-center" style="padding-left:10px">
 
                     <div style="text-align: left;" th:each="author,key:${dataApplicationInfo.authorship}">
-                        <span role="button" tabindex="0" th:class="${key.index==0?'ab':'ab transform180'}"
-                              style="float: right;"><a
+                        <span role="button" tabindex="0" th:class="${key.index==0?'ab':'ab transform180'}" style="float: right;"><a
                                 data-toggle="collapse" th:href="'#authorship'+${key.index}" class="detail-toggle"
                                 aria-expanded="true"><i class="fa fa-caret-up" style="font-size: 21px"></i></a></span>
                         <li class="NavHead" style="font-size: 16px;" th:text="${author.name}">NNU_Group</li>

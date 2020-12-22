@@ -89,35 +89,17 @@
                                                 <br><br>
                                                 <div class="step-content">
                                                     <div class="step-tab-panel col-md-offset-1" id="step1">
-<!--                                                        <div class="col-md-4 col-sm-4"-->
-<!--                                                             style="overflow-y: auto;height: 450px;">-->
-<!--                                                            <el-card>-->
-<!--                                                                <div slot="header" class="clearfix text-center">-->
-<!--                                                                    <span style="font-size: 20px;color:#444">Data Classifications</span>-->
-<!--                                                                </div>-->
-<!--                                                                <el-tree style="height: 320px;overflow: auto;font-size: large"-->
-<!--                                                                         id="tree"-->
-<!--                                                                         ref="tree"-->
-<!--                                                                         :data="treeData"-->
-<!--                                                                         show-checkbox-->
-<!--                                                                         node-key="id"-->
-<!--                                                                         :default-expanded-keys="[]"-->
-<!--                                                                         :current-node-key="100"-->
-<!--                                                                         @check-change="handleCheckChange"-->
-<!--                                                                         :props="defaultProps">-->
-<!--                                                                </el-tree>-->
-<!--                                                            </el-card>-->
-<!--                                                        </div>-->
-<!--                                                        <div class="form-group cl-md-6">-->
-<!--                                                            <label class="control-label col-lg-2 col-md-3 col-md-offset-1">-->
-<!--                                                                <span class="star">* </span>Category-->
-<!--                                                            </label>-->
-<!--                                                            <div class="input-group col-md-5">-->
-<!--                                                                <input type="text" class="form-control" v-model="clsStr" placeholder="Please choose the catgory of the data"-->
-<!--                                                                       id="classification" required="required" readonly/>-->
-<!--                                                            </div>-->
-<!--                                                        </div>-->
-
+                                                        <div class="form-group cl-md-6">
+                                                            <label class="control-label col-lg-2 col-md-3 col-md-offset-1">
+                                                                <span class="xing">* </span>Bind Test Data
+                                                            </label>
+                                                            <div class="input-group col-md-5">
+                                                                <el-button type="primary" @click="openDataSpace()" style="margin-right:10px;display: inline-block">Bind</el-button>
+                                                                <div v-for="(item,index) in selectedFile" style="display: inline-block;padding-left: 5px;">
+                                                                    <el-tag type="success">{{item.label}}.{{item.suffix}}</el-tag>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                         <div class="form-group cl-md-6">
                                                             <label class="control-label col-lg-2 col-md-3 col-md-offset-1">
                                                                 <span class="xing">* </span>Name
@@ -127,14 +109,13 @@
                                                                        v-model="dataApplication.name">
                                                             </div>
                                                         </div>
-
                                                         <div class="form-group cl-md-6">
                                                             <label class="control-label col-lg-2 col-md-3 col-md-offset-1">
                                                                 <span class="xing">* </span>Overview
                                                             </label>
                                                             <div class="input-group col-md-5">
-                                                        <textarea class="form-control" id="descInput"
-                                                                  v-model="dataApplication.description"></textarea>
+                                                                <textarea class="form-control" id="descInput"
+                                                                          v-model="dataApplication.description"></textarea>
                                                             </div>
                                                         </div>
                                                         <div class="form-group cl-md-6">
@@ -187,11 +168,11 @@
                                                                 <el-radio-group v-model="dataApplication.contentType">
                                                                     <!--<el-radio label="Package">Model Service Package</el-radio>-->
                                                                     <!--<el-radio label="md5">MD5</el-radio>-->
-                                                                    <el-radio label = "Package" style="display: block;">OpenGMS Data-Service Package</el-radio>
-                                                                    <el-radio label="Code" style="display: block;">Source Code</el-radio>
-                                                                    <el-radio label="Library" style="display: block;">Executable Library</el-radio>
-                                                                    <el-radio label="Service" style="display: block;">Third-party Web-Service Link</el-radio>
-                                                                    <el-radio label="Link" style="display: block;">Downloadable Link</el-radio>
+                                                                    <el-radio label = "Package" style="display: block;padding: 5px">OpenGMS Data-Service Package</el-radio>
+                                                                    <el-radio label="Code" style="display: block;padding: 5px">Source Code</el-radio>
+                                                                    <el-radio label="Library" style="display: block;padding: 5px">Executable Library</el-radio>
+                                                                    <el-radio label="Service" style="display: block;padding: 5px">Third-party Web-Service Link</el-radio>
+                                                                    <el-radio label="Link" style="display: block;padding: 5px">Downloadable Link</el-radio>
                                                                 </el-radio-group>
                                                             </div>
                                                         </div>
@@ -381,7 +362,6 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
                                                 <div class="step-footer text-right">
                                                     <button class="btn btn-warning prev" data-direction="prev">
                                                         Previous
@@ -413,6 +393,18 @@
                         </div>
                     </div>
                 </div>
+                </div>
+                <el-dialog
+                        title="Data Select"
+                        :visible.sync="dialogVisible"
+                        width="80%"
+                        :before-close="handleClose">
+                    <user-data @com-selectfile="selectDataspaceFile" ref="userDataSpace" style="height: 505px;"></user-data>
+                    <span slot="footer" class="dialog-footer">
+                      <el-button @click="dialogVisible = false">Cancel</el-button>
+                      <el-button type="primary" @click="dialogVisible = false">Confirm</el-button>
+                    </span>
+                </el-dialog>
             </div>
 
         </template>
@@ -420,6 +412,8 @@
     </div>
 </div>
 </div>
+<!--<template th:replace="modules/userDataSpaceModule :: userDataSpaceModule"></template>-->
+<!--<script src="/static/js/modules/userDataSpaceModule.js"></script>-->
 </body>
 
 <script src="/static/js/common/jquery-3.3.1.min.js"></script>
@@ -435,7 +429,6 @@
 
 <script th:replace="fragments/newSideBar :: headSideBar"></script>
 <script th:replace="fragments/newSideBar :: sideBarComponent"></script>
-<!--<script src="/static/js/page/create-computable-model.js"></script>-->
+
 
 </html>
-
