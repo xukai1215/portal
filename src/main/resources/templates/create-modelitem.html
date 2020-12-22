@@ -43,6 +43,8 @@
             word-break: break-all;
             overflow: hidden;
         }
+
+
     </style>
 
 </head>
@@ -120,7 +122,7 @@
                                                             <div class="step-content">
                                                                 <div class="step-tab-panel" :class="step==1?'active':''" id="step1">
 
-                                                                    <div class="col-sm-offset-2 col-sm-8" style="margin-top:10px;">
+                                                                    <div class="col-sm-offset-2 col-sm-8" style="margin-top:10px;float:none">
                                                                         <div id="RepositoryParentsPanel">
 
                                                                             <div class="form-horizontal">
@@ -129,13 +131,13 @@
                                                                                            class="col-sm-2 control-label"><span class="xing">* </span>Status</label>
                                                                                     <div class="col-sm-10">
                                                                                         <el-radio-group v-model="status" size="medium">
-                                                                                            <el-tooltip popper-class="fontsize-15" effect="light" content="Can be retrieved, shared and edited." placement="top">
+                                                                                            <el-tooltip popper-class="fontsize-15" effect="light" content="This item can be retrieved, shared and edited." placement="top">
                                                                                                 <el-radio-button label="Public"></el-radio-button>
                                                                                             </el-tooltip>
-                                                                                            <el-tooltip popper-class="fontsize-15" class="item" effect="light" content="Can be retrieved and shared, can ONLY be edited by creator." placement="top">
+                                                                                            <el-tooltip popper-class="fontsize-15" class="item" effect="light" content="This item can be retrieved and shared, can ONLY be edited by creator." placement="top">
                                                                                                 <el-radio-button label="Discoverable"></el-radio-button>
                                                                                             </el-tooltip>
-                                                                                            <el-tooltip popper-class="fontsize-15" class="item" effect="light" content="Can NOT be retrieved and shared, can ONLY be edited by creator." placement="top">
+                                                                                            <el-tooltip popper-class="fontsize-15" class="item" effect="light" content="This item can NOT be retrieved and shared, can ONLY be edited by creator." placement="top">
                                                                                                 <el-radio-button label="Private"></el-radio-button>
                                                                                             </el-tooltip>
 
@@ -364,7 +366,7 @@
                                                                                 <span style="font-size: 20px;color:#444">Model Classifications</span>
                                                                             </div>
                                                                             <el-tree style="height: 400px;overflow: auto"
-                                                                                     class="col-sm-6 wzhScrollbar"
+                                                                                     class="col-lg-6 col-md-12 wzhScrollbar"
                                                                                      id="tree2"
                                                                                      ref="tree2"
                                                                                      :data="treeData_part1"
@@ -376,7 +378,7 @@
                                                                                      :props="defaultProps">
                                                                             </el-tree>
                                                                             <el-tree style="height: 400px;overflow: auto"
-                                                                                     class="col-sm-6 wzhScrollbar"
+                                                                                     class="col-lg-6 col-md-12 wzhScrollbar"
                                                                                      id="tree3"
                                                                                      ref="tree3"
                                                                                      :data="treeData_part2"
@@ -430,7 +432,7 @@
                                                                         </div>
                                                                         <div style="margin-bottom:10px;">
                                                                             <div><b>Model Item Name :</b> </div>
-                                                                            <el-input v-model="currentLocalization.name" placeholder="Please enter concept's name in your selected language"></el-input>
+                                                                            <el-input v-model="currentLocalization.name" placeholder="Please enter the model's name in your selected language"></el-input>
                                                                         </div>
                                                                         <div style="margin-bottom:10px;">
                                                                             <div><b>Description :</b> </div>
@@ -489,8 +491,8 @@
                                                                         </el-card>
                                                                         <el-card style="width: 70%;">
                                                                             <div slot="header" class="clearfix">
-                                                                                <span>Model Item Name : </span>
-                                                                                <el-input v-model="currentLocalization.name" placeholder="Please enter concept's localized name"></el-input>
+                                                                                <span>Model Name : </span>
+                                                                                <el-input v-model="currentLocalization.name" placeholder="Please enter the model's localized name"></el-input>
 
                                                                             </div>
                                                                             <textarea id="conceptText" style="float:left">

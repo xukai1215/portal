@@ -25,10 +25,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-mongodb</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-rest</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -323,14 +319,6 @@
             <systemPath>${project.basedir}/src/main/resources/lib/mxgraph-all.jar</systemPath>
         </dependency>
 
-        <dependency>
-            <groupId>com.gdal</groupId>
-            <artifactId>gdal</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/src/main/resources/lib/gdal.jar</systemPath>
-        </dependency>
-
 
         <!--<dependency>-->
         <!--<groupId>org.apache.tomcat.embed</groupId>-->
@@ -395,6 +383,11 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <!--<version>RELEASE</version>-->
+        </dependency>
+        <!-- 加密 -->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>

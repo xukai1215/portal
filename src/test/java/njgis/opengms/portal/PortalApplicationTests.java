@@ -2,7 +2,6 @@ package njgis.opengms.portal;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.google.gson.JsonObject;
 import com.ip2location.IP2Location;
 import com.ip2location.IPResult;
 import njgis.opengms.portal.dao.*;
@@ -16,6 +15,7 @@ import njgis.opengms.portal.utils.MyFileUtils;
 import njgis.opengms.portal.utils.Object.ChartOption;
 import njgis.opengms.portal.utils.Utils;
 import njgis.opengms.portal.utils.XmlTool;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -33,11 +33,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.ClassUtils;
-import org.springframework.util.DigestUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.*;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -127,6 +125,237 @@ public class PortalApplicationTests {
     @Value("${managerServerIpAndPort}")
     private String managerServerIpAndPort;
 
+
+    @Test
+    public void passwordsha256(){
+        try {
+            for (User user : userDao.findAll()) {
+                user.setPassword(DigestUtils.sha256Hex(user.getPassword()));
+                userDao.save(user);
+            }
+        } catch (Exception e){
+
+        }
+    }
+
+    @Test
+    public void changeModelItemClassification(){
+        List<ModelItem> modelItemList = modelItemDao.findAll();
+        for(ModelItem modelItem:modelItemList){
+            String author = modelItem.getAuthor();
+            List<String> cls = modelItem.getClassifications();
+            List<String> cls2 = modelItem.getClassifications2();
+            if(author.equals("wzh")&&cls2==null&&cls.contains("12b11f3e-8d6e-48c9-bf3a-f9fb5c5e0dd4")&&cls.size()==1){
+                List<String> newCls = new ArrayList<>();
+                newCls.add("75aee2b7-b39a-4cd0-9223-3b7ce755e457");
+                modelItem.setClassifications2(newCls);
+                modelItemDao.save(modelItem);
+            }
+            if(author.equals("wzh")&&cls2==null&&cls.contains("ea1f9c14-9bdb-4da6-b728-a9853620e95f")&&cls.size()==1){
+                List<String> newCls = new ArrayList<>();
+                newCls.add("75aee2b7-b39a-4cd0-9223-3b7ce755e457");
+                modelItem.setClassifications2(newCls);
+                modelItemDao.save(modelItem);
+            }
+        }
+    }
+
+    @Test
+    public void changeSongJComputableName(){
+        List<ComputableModel> computableModelList = computableModelDao.findAll();
+        for(ComputableModel computableModel:computableModelList){
+            if(computableModel.getAuthor().equals("SongJ")) {
+                String name = computableModel.getName();
+                computableModel.setName(name.replaceAll("_", " "));
+                computableModelDao.save(computableModel);
+            }
+        }
+    }
+
+    @Test
+    public void addClassification2(){
+        List<ModelItem> modelItemList = modelItemDao.findAll();
+        for(ModelItem modelItem : modelItemList){
+            if(modelItem.getAuthor().equals("SongJ")){
+                List<String> cls = new ArrayList<>();
+                cls.add("afa99af9-4224-4fac-a81f-47a7fb663dba");
+                modelItem.setClassifications2(cls);
+                String name = modelItem.getName();
+                name = name.replaceAll("_"," ");
+                modelItem.setName(name);
+                modelItemDao.save(modelItem);
+            }
+        }
+    }
+
+    @Test
+    public void parseXML(){
+        String xml = "\t<ModelClass>\n" +
+                "\t\t<$>\n" +
+                "\t\t\t<name>Game_of_life</name>\n" +
+                "\t\t\t<uid>0c6cbbc0-a72b-417f-b51e-2a339281fc8f</uid>\n" +
+                "\t\t\t<type>SimpleCalculation</type>\n" +
+                "\t\t</$>\n" +
+                "\t\t<AttributeSet>\n" +
+                "\t\t\t<Categories>\n" +
+                "\t\t\t\t<Category>\n" +
+                "\t\t\t\t\t<$>\n" +
+                "\t\t\t\t\t\t<principle>SimpleCalculation</principle>\n" +
+                "\t\t\t\t\t\t<path></path>\n" +
+                "\t\t\t\t\t</$>\n" +
+                "\t\t\t\t</Category>\n" +
+                "\t\t\t</Categories>\n" +
+                "\t\t\t<LocalAttributes>\n" +
+                "\t\t\t\t<LocalAttribute>\n" +
+                "\t\t\t\t\t<$>\n" +
+                "\t\t\t\t\t\t<local>EN_US</local>\n" +
+                "\t\t\t\t\t\t<localName>Game_of_life</localName>\n" +
+                "\t\t\t\t\t\t<wiki></wiki>\n" +
+                "\t\t\t\t\t</$>\n" +
+                "\t\t\t\t\t<Keywords>Game_of_life</Keywords>\n" +
+                "\t\t\t\t\t<Abstract></Abstract>\n" +
+                "\t\t\t\t</LocalAttribute>\n" +
+                "\t\t\t</LocalAttributes>\n" +
+                "\t\t</AttributeSet>\n" +
+                "\t\t<Behavior>\n" +
+                "\t\t\t<RelatedDatasets>\n" +
+                "\t\t\t\t<DatasetItem>\n" +
+                "\t\t\t\t\t<$>\n" +
+                "\t\t\t\t\t\t<name>TXT</name>\n" +
+                "\t\t\t\t\t\t<type>internal</type>\n" +
+                "\t\t\t\t\t\t<description>SAGA Type:Grid</description>\n" +
+                "\t\t\t\t\t</$>\n" +
+                "\t\t\t\t\t<UdxDeclaration>\n" +
+                "\t\t\t\t\t\t<$>\n" +
+                "\t\t\t\t\t\t\t<name></name>\n" +
+                "\t\t\t\t\t\t\t<description></description>\n" +
+                "\t\t\t\t\t\t</$>\n" +
+                "\t\t\t\t\t\t<UdxNode>\n" +
+                "\t\t\t\t\t\t\t\t\t\t\t\t\t \n" +
+                "\t\t\t\t\t\t\t\t\t\t\t</UdxNode>\n" +
+                "\t\t\t\t\t\t<SemanticAttachment>\n" +
+                "\t\t\t\t\t\t\t<Concepts></Concepts>\n" +
+                "\t\t\t\t\t\t\t<SpatialRefs></SpatialRefs>\n" +
+                "\t\t\t\t\t\t\t<Units></Units>\n" +
+                "\t\t\t\t\t\t\t<DataTemplates></DataTemplates>\n" +
+                "\t\t\t\t\t\t</SemanticAttachment>\n" +
+                "\t\t\t\t\t</UdxDeclaration>\n" +
+                "\t\t\t\t</DatasetItem>\n" +
+                "\t\t\t</RelatedDatasets>\n" +
+                "\t\t\t<StateGroup>\n" +
+                "\t\t\t\t<States>\n" +
+                "\t\t\t\t\t<State>\n" +
+                "\t\t\t\t\t\t<$>\n" +
+                "\t\t\t\t\t\t\t<id>2c4f6083-e17e-4ffd-94bd-ee5a09a04ff3</id>\n" +
+                "\t\t\t\t\t\t\t<name>Run</name>\n" +
+                "\t\t\t\t\t\t\t<type>basic</type>\n" +
+                "\t\t\t\t\t\t\t<description>Start Run</description>\n" +
+                "\t\t\t\t\t\t</$>\n" +
+                "\t\t\t\t\t\t<Event>\n" +
+                "\t\t\t\t\t\t\t<$>\n" +
+                "\t\t\t\t\t\t\t\t<name>original_life_map</name>\n" +
+                "\t\t\t\t\t\t\t\t<type>response</type>\n" +
+                "\t\t\t\t\t\t\t\t<description>original life map.</description>\n" +
+                "\t\t\t\t\t\t\t\t<optional>false</optional>\n" +
+                "\t\t\t\t\t\t\t</$>\n" +
+                "\t\t\t\t\t\t\t<ResponseParameter>\n" +
+                "\t\t\t\t\t\t\t\t<$>\n" +
+                "\t\t\t\t\t\t\t\t\t<datasetReference>TXT</datasetReference>\n" +
+                "\t\t\t\t\t\t\t\t\t<description></description>\n" +
+                "\t\t\t\t\t\t\t\t</$>\n" +
+                "\t\t\t\t\t\t\t</ResponseParameter>\n" +
+                "\t\t\t\t\t\t</Event>\n" +
+                "\t\t\t\t\t\t<Event>\n" +
+                "\t\t\t\t\t\t\t<$>\n" +
+                "\t\t\t\t\t\t\t\t<name>generated_life_map</name>\n" +
+                "\t\t\t\t\t\t\t\t<type>noresponse</type>\n" +
+                "\t\t\t\t\t\t\t\t<description>result of life map.</description>\n" +
+                "\t\t\t\t\t\t\t\t<optional>false</optional>\n" +
+                "\t\t\t\t\t\t\t</$>\n" +
+                "\t\t\t\t\t\t\t<DispatchParameter>\n" +
+                "\t\t\t\t\t\t\t\t<$>\n" +
+                "\t\t\t\t\t\t\t\t\t<datasetReference>TXT</datasetReference>\n" +
+                "\t\t\t\t\t\t\t\t\t<description></description>\n" +
+                "\t\t\t\t\t\t\t\t</$>\n" +
+                "\t\t\t\t\t\t\t</DispatchParameter>\n" +
+                "\t\t\t\t\t\t</Event>\n" +
+                "\t\t\t\t\t</State>\n" +
+                "\t\t\t\t</States>\n" +
+                "\t\t\t\t<StateTransitions></StateTransitions>\n" +
+                "\t\t\t</StateGroup>\n" +
+                "\t\t</Behavior>\n" +
+                "\t\t<Runtime>\n" +
+                "\t\t\t<$>\n" +
+                "\t\t\t\t<name>Game_of_life</name>\n" +
+                "\t\t\t\t<version>1.0</version>\n" +
+                "\t\t\t\t<baseDir></baseDir>\n" +
+                "\t\t\t\t<entry>encapsulateGoF.py</entry>\n" +
+                "\t\t\t</$>\n" +
+                "\t\t\t<HardwareConfigures>\n" +
+                "\t\t\t\t<Add>\n" +
+                "\t\t\t\t\t<$>\n" +
+                "\t\t\t\t\t\t<key>cpu core numble</key>\n" +
+                "\t\t\t\t\t\t<value>[2,infinite)</value>\n" +
+                "\t\t\t\t\t</$>\n" +
+                "\t\t\t\t</Add>\n" +
+                "\t\t\t\t<Add>\n" +
+                "\t\t\t\t\t<$>\n" +
+                "\t\t\t\t\t\t<key>disk avail size</key>\n" +
+                "\t\t\t\t\t\t<value>[50GB,infinite)</value>\n" +
+                "\t\t\t\t\t</$>\n" +
+                "\t\t\t\t</Add>\n" +
+                "\t\t\t\t<Add>\n" +
+                "\t\t\t\t\t<$>\n" +
+                "\t\t\t\t\t\t<key>cpu frequency</key>\n" +
+                "\t\t\t\t\t\t<value>[2.2GHz,infinite)</value>\n" +
+                "\t\t\t\t\t</$>\n" +
+                "\t\t\t\t</Add>\n" +
+                "\t\t\t\t<Add>\n" +
+                "\t\t\t\t\t<$>\n" +
+                "\t\t\t\t\t\t<key>memory size</key>\n" +
+                "\t\t\t\t\t\t<value>[2GB,infinite)</value>\n" +
+                "\t\t\t\t\t</$>\n" +
+                "\t\t\t\t</Add>\n" +
+                "\t\t\t</HardwareConfigures>\n" +
+                "\t\t\t<SoftwareConfigures>\n" +
+                "\t\t\t\t<Add>\n" +
+                "\t\t\t\t\t<$>\n" +
+                "\t\t\t\t\t\t<key>VC++ Runtime</key>\n" +
+                "\t\t\t\t\t\t<platform>x64</platform>\n" +
+                "\t\t\t\t\t\t<value>default</value>\n" +
+                "\t\t\t\t\t</$>\n" +
+                "\t\t\t\t</Add>\n" +
+                "\t\t\t\t<Add>\n" +
+                "\t\t\t\t\t<$>\n" +
+                "\t\t\t\t\t\t<key>Operating System</key>\n" +
+                "\t\t\t\t\t\t<platform>x64</platform>\n" +
+                "\t\t\t\t\t\t<value>linux</value>\n" +
+                "\t\t\t\t\t</$>\n" +
+                "\t\t\t\t</Add>\n" +
+                "\t\t\t</SoftwareConfigures>\n" +
+                "\t\t\t<Assemblies>\n" +
+                "\t\t\t\t<Assembly>\n" +
+                "\t\t\t\t\t<$>\n" +
+                "\t\t\t\t\t\t<name>GDALRasterMapping.exe</name>\n" +
+                "\t\t\t\t\t\t<path>$(DataMappingPath)\\GDALRasterMapping\\</path>\n" +
+                "\t\t\t\t\t</$>\n" +
+                "\t\t\t\t</Assembly>\n" +
+                "\t\t\t\t<Assembly>\n" +
+                "\t\t\t\t\t<$>\n" +
+                "\t\t\t\t\t\t<name>OGRVectorMapping.exe</name>\n" +
+                "\t\t\t\t\t\t<path>$(DataMappingPath)\\OGRVectorMapping\\</path>\n" +
+                "\t\t\t\t\t</$>\n" +
+                "\t\t\t\t</Assembly>\n" +
+                "\t\t\t</Assemblies>\n" +
+                "\t\t\t<SupportiveResources></SupportiveResources>\n" +
+                "\t\t</Runtime>\n" +
+                "\t</ModelClass>\n" +
+                "\t\n";
+        xml = xml.replaceAll("<\\$>","").replaceAll("</\\$>","");
+        JSONObject jsonObject = XmlTool.documentToJSONObject(xml);
+        int a = 1;
+    }
+
     @Test
     public void changeUnitAlias(){
         List<Unit> unitList = unitDao.findAll();
@@ -179,6 +408,37 @@ public class PortalApplicationTests {
             conceptDao.save(concept);
 
         }
+    }
+
+    @Test
+    public void localizationFull(){
+        List<ModelItem> modelitemList = modelItemDao.findAll();
+        for(ModelItem modelItem : modelitemList){
+            List<Localization> localizationList = modelItem.getLocalizationList();
+            for(int i=0;i<localizationList.size();i++){
+                Localization localization = localizationList.get(i);
+                if(localization.getLocalCode()==null){
+                    if(localization.getDescription()!=null){
+                        String localCode = "en-US";
+                        String localName = "English (United States)";
+                        for(int j = 0;j<localization.getDescription().length();j++){
+                            if(isChinese(localization.getDescription().charAt(j))){
+                                localCode = "zh-CN";
+                                localName = "Chinese (Simplified)";
+                                break;
+                            }
+                        }
+                        localization.setLocalCode(localCode);
+                        localization.setLocalName(localName);
+                        localizationList.set(i,localization);
+                        modelItem.setLocalizationList(localizationList);
+                        modelItemDao.save(modelItem);
+                    }
+                }
+
+            }
+        }
+
     }
 
     @Test
@@ -1748,7 +2008,7 @@ public class PortalApplicationTests {
         List<User> userList = userDao.findAll();
         for (User user : userList) {
             String password = user.getPassword();
-            user.setPassword(DigestUtils.md5DigestAsHex(password.getBytes()));
+//            user.setPassword(DigestUtils.md5DigestAsHex(password.getBytes()));
             userDao.save(user);
         }
 //        User user=userDao.findFirstByUserName("xukai");
@@ -1910,24 +2170,28 @@ public class PortalApplicationTests {
     public void extractDetailImage() {
         List<ModelItem> modelItemList = modelItemDao.findAll();
         for (int i = 0; i < modelItemList.size(); i++) {
+
             ModelItem modelItem = modelItemList.get(i);//modelItemDao.findFirstByName("城市综合实力指数");
-            String detail = modelItem.getDetail();
-            if (detail != null) {
-                int startIndex = 0, endIndex = 0, index = 0;
-                while (detail.indexOf("src=\"data:im", startIndex) != -1) {
-                    int Start = detail.indexOf("src=\"data:im", startIndex) + 5;
-                    int typeStart = detail.indexOf("/", Start) + 1;
-                    int typeEnd = detail.indexOf(";", typeStart);
-                    String type = detail.substring(typeStart, typeEnd);
-                    startIndex = typeEnd + 8;
-                    endIndex = detail.indexOf("\"", startIndex);
-                    String imgStr = detail.substring(startIndex, endIndex);
+//            ModelItem modelItem = modelItemDao.findFirstByName("AVHRR图像大气影响校正模型");
+            List<Localization> localizationList = modelItem.getLocalizationList();
+            if(localizationList!=null) {
+                String detail = localizationList.get(0).getDescription();
+                if (detail != null) {
+                    int startIndex = 0, endIndex = 0, index = 0;
+                    while (detail.indexOf("src=\"data:im", startIndex) != -1) {
+                        int Start = detail.indexOf("src=\"data:im", startIndex) + 5;
+                        int typeStart = detail.indexOf("/", Start) + 1;
+                        int typeEnd = detail.indexOf(";", typeStart);
+                        String type = detail.substring(typeStart, typeEnd);
+                        startIndex = typeEnd + 8;
+                        endIndex = detail.indexOf("\"", startIndex);
+                        String imgStr = detail.substring(startIndex, endIndex);
 
-                    String imageName = "/detailImage/" + modelItem.getOid() + "/" + modelItem.getOid() + "_" + (index++) + "." + type;
-                    Utils.base64StrToImage(imgStr, "D:/upload_1111" + imageName);
+                        String imageName = "/detailImage/" + modelItem.getOid() + "/" + modelItem.getOid() + "_" + (index++) + "." + type;
+                        Utils.base64StrToImage(imgStr, "D:/upload" + imageName);
 
-                    detail = detail.substring(0, Start) + "/static" + imageName + detail.substring(endIndex, detail.length());
-                }
+                        detail = detail.substring(0, Start) + "/static" + imageName + detail.substring(endIndex, detail.length());
+                    }
 //            ModelItem modelItem1=new ModelItem();
 //            BeanUtils.copyProperties(modelItem,modelItem1);
 //            modelItem1.setId(UUID.randomUUID().toString());
@@ -1936,8 +2200,10 @@ public class PortalApplicationTests {
 //            modelItem1.setDetail(detail);
 //            modelItem1.setCreateTime(new Date());
 //            modelItemDao.insert(modelItem1);
-                modelItem.setDetail(detail);
-                modelItemDao.save(modelItem);
+                    localizationList.get(0).setDescription(detail);
+                    modelItem.setLocalizationList(localizationList);
+                    modelItemDao.save(modelItem);
+                }
             }
             Utils.count();
         }
@@ -3150,7 +3416,7 @@ public class PortalApplicationTests {
         String modelInfo_mc = restTemplate.getForObject(url,String.class);
         JSONObject j_modelInfo = JSONObject.parseObject(modelInfo_mc);
         String mdlJson = j_modelInfo.getJSONObject("data").getString("ms_xml");
-        String mdlJson_xml = XmlTool.json2Xml(mdlJson.substring(0,mdlJson.length()));
+//        String mdlJson_xml = XmlTool.json2Xml(mdlJson.substring(0,mdlJson.length()));
 //        mdlJson_xml = XmlTool.jsonToXML(mdlJson,"");
         String xml = mdlJson.replaceAll("<\\$>","").replaceAll("</\\$>","");
         JSONObject jsonObject = JSONObject.parseObject(xml);

@@ -172,6 +172,83 @@ var createComputableModel = Vue.extend({
         }
     },
     methods: {
+        singleFileInputBindEvent(){
+            $("#file").on("change", ()=> {
+                this.fileArray=[];
+                this.resources=[];
+                let files=$("#file")[0].files;
+                let file=files[0];
+
+
+                let res={};
+                res.name=file.name;
+                res.path="";
+                let names=res.name.split('.');
+                res.suffix=names[names.length-1];
+                res.size=file.size;
+                res.lastModified=file.lastModified;
+                res.type=file.type;
+
+                if(res.suffix!=='zip'){
+                    this.$message({
+                        message: 'Please select a zip file!',
+                        type: 'error',
+                        offset: 70,
+                    });
+                }else{
+                    this.fileArray.push(file);
+                    this.resources.push(res);
+                }
+
+                //清空
+                document.getElementById("file").value='';
+
+            });
+        },
+        multiFileInputBindEvent(){
+            $("#file_multi").on("change", ()=> {
+                let files=$("#file_multi")[0].files;
+                for(i=0;i<files.length;i++){
+                    let file=files[i];
+
+                    let res={};
+                    res.name=file.name;
+                    res.path="";
+                    let names=res.name.split('.');
+                    res.suffix=names[names.length-1];
+                    res.size=file.size;
+                    res.lastModified=file.lastModified;
+                    res.type=file.type;
+                    let exist = false;
+                    for(j=0;j<this.fileArray.length;j++) {
+                        let fileExist = this.fileArray[j];
+                        if(fileExist.name==file.name&&fileExist.lastModified == file.lastModified&&fileExist.size == file.size && fileExist.type == file.type){
+                            exist = true;
+                            break;
+                        }
+                    }
+                    if(!exist){
+                        this.fileArray.push(file);
+                        this.resources.push(res);
+                    }
+                }
+
+
+                //清空
+                let file=document.getElementById("file_multi");
+                file.value='';
+            });
+        },
+        contentTypeChange(type){
+            this.fileArray=[];
+            this.resources=[];
+            if(type==="Package"){
+                this.singleFileInputBindEvent();
+            }else if(type==="Code"||type==="Library"){
+                this.multiFileInputBindEvent();
+            }
+
+        },
         selectModelItem(index,info){
             console.log(info);
             this.computableModel.bindModelItem = info.name;
@@ -836,71 +913,9 @@ var createComputableModel = Vue.extend({
             //this.getModels();
         });
 
+        this.singleFileInputBindEvent();
+        this.multiFileInputBindEvent();
 
-        $("#file").change(()=> {
-            this.fileArray=[];
-            this.resources=[];
-            let files=$("#file")[0].files;
-            let file=files[0];
-
-
-            let res={};
-            res.name=file.name;
-            res.path="";
-            let names=res.name.split('.');
-            res.suffix=names[names.length-1];
-            res.size=file.size;
-            res.lastModified=file.lastModified;
-            res.type=file.type;
-
-            if(res.suffix!=='zip'){
-                this.$message({
-                    message: 'Please select a zip file!',
-                    type: 'error',
-                    offset: 70,
-                });
-            }else{
-                this.fileArray.push(file);
-                this.resources.push(res);
-            }
-
-            //清空
-            document.getElementById("file").value='';
-
-        });
-
-        $("#file_multi").change(()=> {
-            let files=$("#file_multi")[0].files;
-            for(i=0;i<files.length;i++){
-                let file=files[i];
-
-                let res={};
-                res.name=file.name;
-                res.path="";
-                let names=res.name.split('.');
-                res.suffix=names[names.length-1];
-                res.size=file.size;
-                res.lastModified=file.lastModified;
-                res.type=file.type;
-                let exist = false;
-                for(j=0;j<this.fileArray.length;j++) {
-                    let fileExist = this.fileArray[j];
-                    if(fileExist.name==file.name&&fileExist.lastModified == file.lastModified&&fileExist.size == file.size && fileExist.type == file.type){
-                        exist = true;
-                        break;
-                    }
-                }
-                if(!exist){
-                    this.fileArray.push(file);
-                    this.resources.push(res);
-                }
-            }
-
-
-            //清空
-            let file=document.getElementById("file_multi");
-            file.value='';
-        });
 
         $.ajax({
             type: "GET",
@@ -925,23 +940,23 @@ var createComputableModel = Vue.extend({
 
                     var bindOid=this.getSession("bindOid");
                     this.computableModel.bindOid=bindOid;
-                    // $.ajax({
-                    //     type: "Get",
-                    //     url: "/modelItem/getInfo/"+bindOid,
-                    //     data: { },
-                    //     cache: false,
-                    //     async: true,
-                    //     success: (json) => {
-                    //         if(json.data!=null){
-                    //
-                    //             this.computableModel.bindModelItem=json.data.name;
-                    //             this.clearSession();
-                    //         }
-                    //         else{
-                    //
-                    //         }
-                    //     }
-                    // })
+                    $.ajax({
+                        type: "Get",
+                        url: "/modelItem/getInfo/"+bindOid,
+                        data: { },
+                        cache: false,
+                        async: true,
+                        success: (json) => {
+                            if(json.data!=null){
+
+                                this.computableModel.bindModelItem=json.data.name;
+                                this.clearSession();
+                            }
+                            else{
+
+                            }
+                        }
+                    })
                 }
             }
         })
@@ -1040,6 +1055,8 @@ var createComputableModel = Vue.extend({
                                 offset: 70,
                             });
                             return false;
+                        }else{
+                            return true;
                         }
                         // if(this.computableModel.contentType=="Package"&&this.computableModel.modelserUrl==''){
                         //     new Vue().$message({

@@ -505,15 +505,15 @@ var userAccount = Vue.extend(
                     }
 
                     let data = {};
-                    data.oldPass = hex_md5(oldPass);
-                    data.newPass = hex_md5(newPass);
+                    data.oldPass = hex_sha256(hex_md5(oldPass));
+                    data.newPass = hex_sha256(hex_md5(newPass));
 
                     $.ajax({
                         url: "/user/changePassword",
                         type: "POST",
                         async: false,
                         data: data,
-                        success: function (result) {
+                        success: (result)=> {
                             if (result.code == -1) {
                                 this.$alert('Please login first', 'Tip', {
                                     type:"info",

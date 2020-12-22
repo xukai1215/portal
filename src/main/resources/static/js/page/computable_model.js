@@ -6,6 +6,7 @@ new Vue({
             activeName: 'AttributeSet',
 
             useroid:"",
+            userId:"",
             userImg:"",
             //comment
             commentText: "",
@@ -654,6 +655,7 @@ new Vue({
                 if (res.status == 200) {
                     if (res.data.oid != '') {
                         this.useroid = res.data.oid;
+                        this.userId = res.data.userId;
                         this.userImg = res.data.image;
                     }
 

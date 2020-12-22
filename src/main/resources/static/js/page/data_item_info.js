@@ -36,6 +36,7 @@ var  data_item_info = new Vue({
             userName:'',
             useroid:'',
             userUid:'',
+            userId:"",
             dataCategory:[],
             viewCount:'',
             related3Models:[],
@@ -1573,6 +1574,7 @@ var  data_item_info = new Vue({
                     if (res.data.oid != '') {
                         this.useroid = res.data.oid;
                         this.userUid = res.data.uid;
+                        this.userId = res.data.userId;
                         this.userImg = res.data.image;
                     }
 
