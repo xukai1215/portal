@@ -225,7 +225,7 @@
                                                                     Please insert the MD5 of the openGMS wrapper package:</label>
                                                                 <div class="col-sm-8 col-md-offset-2">
                                                                     <el-input id="MD5_text" v-model="computableModel.md5" @change="inputMd5" @keyup.enter="getServiceByMd5">
-                                                                        <el-button slot="append" @click="getServiceByMd5">Check Duplicate</el-button>
+                                                                        <el-button slot="append" @click="checkMd5Deployed">Check Deployed</el-button>
                                                                     </el-input>
                                                                 </div>
                                                             </div>
@@ -480,7 +480,7 @@
                                                     </button>
                                                     <button class="btn btn-primary next" data-direction="next">Next
                                                     </button>
-                                                    <button v-show="editType=='modify'" class="btn btn-success finish" data-direction="next" >
+                                                    <button v-if="editType=='modify'" @click="submitEdit" class="btn btn-success finish" data-direction="next" >
                                                         Submit Edit
                                                     </button>
                                                     <button v-show="editType=='create'" class="btn btn-success finish" data-direction="finish">

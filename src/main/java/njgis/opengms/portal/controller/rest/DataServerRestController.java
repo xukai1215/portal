@@ -137,7 +137,7 @@ public class DataServerRestController {
     }
 
     @RequestMapping(value = "/pageAllDataItemChecked", method = RequestMethod.GET)
-    public JsonResult pageAll(@RequestParam(value = "page") int page,
+    public JsonResult pageAllDataItemChecked(@RequestParam(value = "page") int page,
                               @RequestParam(value = "pageSize") int pageSize,
                               @RequestParam(value="asc") int asc,
                               @RequestParam(value="sortEle") String sortEle,
@@ -153,6 +153,24 @@ public class DataServerRestController {
         }
     }
 
+    @RequestMapping(value = "/pageAllDataAppicationChecked", method = RequestMethod.GET)
+    public JsonResult pageAllDataAppicationChecked(@RequestParam(value = "page") int page,
+                              @RequestParam(value = "pageSize") int pageSize,
+                              @RequestParam(value="asc") int asc,
+                              @RequestParam(value="sortEle") String sortEle,
+                              @RequestParam(value="type") String type,
+                              HttpServletRequest request
+    ){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid")==null){
+            return ResultUtils.error(-1,"no login");
+        }
+        else{
+            String userId = session.getAttribute("uid").toString();
+            return ResultUtils.success(dataServerService.pageAllDataAppicationChecked(page,pageSize,asc,sortEle,type,userId));
+        }
+    }
+
     @RequestMapping(value = "/bindDataItem", method = RequestMethod.POST)
     public JsonResult bindDataItem(@RequestBody DataNodeContentDTO dataNodeContentDTO,HttpServletRequest request){
         HttpSession session = request.getSession();
@@ -162,6 +180,45 @@ public class DataServerRestController {
         else{
             String userName = session.getAttribute("uid").toString();
             return ResultUtils.success(dataServerService.bindDataItem(dataNodeContentDTO,userName));
+        }
+
+    }
+
+    @RequestMapping(value = "/unbindDataItem", method = RequestMethod.POST)
+    public JsonResult unbindDataItem(@RequestBody DataNodeContentDTO dataNodeContentDTO,HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid")==null){
+            return ResultUtils.error(-1,"no login");
+        }
+        else{
+            String userName = session.getAttribute("uid").toString();
+            return ResultUtils.success(dataServerService.unbindDataItem(dataNodeContentDTO,userName));
+        }
+
+    }
+
+    @RequestMapping(value = "/bindDataMethod", method = RequestMethod.POST)
+    public JsonResult bindDataMethod(@RequestBody DataNodeContentDTO dataNodeContentDTO,HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid")==null){
+            return ResultUtils.error(-1,"no login");
+        }
+        else{
+            String userName = session.getAttribute("uid").toString();
+            return ResultUtils.success(dataServerService.bindDataMethod(dataNodeContentDTO,userName));
+        }
+
+    }
+
+    @RequestMapping(value = "/unbindDataMethod", method = RequestMethod.POST)
+    public JsonResult unbindDataMethod(@RequestBody DataNodeContentDTO dataNodeContentDTO,HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid")==null){
+            return ResultUtils.error(-1,"no login");
+        }
+        else{
+            String userName = session.getAttribute("uid").toString();
+            return ResultUtils.success(dataServerService.unbindDataMethod(dataNodeContentDTO,userName));
         }
 
     }

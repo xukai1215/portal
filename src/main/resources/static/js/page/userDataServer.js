@@ -4,7 +4,6 @@ var userDataServer = Vue.extend(
         data(){
             return{
                 //页面样式控制
-                loading: 'false',
                 load: true,
                 ScreenMinHeight: "0px",
                 ScreenMaxHeight: "0px",
@@ -45,7 +44,7 @@ var userDataServer = Vue.extend(
 
                 isInSearch:0,
 
-                activeName:'first',
+                activeName:'Data',
 
                 dataNode:{
                     baseInfo:{},
@@ -78,6 +77,8 @@ var userDataServer = Vue.extend(
                     total: 11,
                     searchResult: [],
                 },
+
+                unbindConfirmDialog:false,
             }
         },
 
@@ -167,7 +168,7 @@ var userDataServer = Vue.extend(
                         }
                     },
                     error:res=>{
-                        this.loading = false
+                        this.nodeLoading=false
                     }
                 })
             },
@@ -210,7 +211,7 @@ var userDataServer = Vue.extend(
 
             getNodeContent(token,type){
                 let data
-                this.loading=true
+                this.nodeLoading=true
                 $.ajax({
                     type: "GET",
                     url: "/dataServer/getNodeContentCheck",
@@ -230,13 +231,13 @@ var userDataServer = Vue.extend(
                                 data = res.data
                                 this.dataNode[type.toLowerCase()] = data
                                 setTimeout(()=>{
-                                    this.loading = false
+                                    this.nodeLoading = false
                                 },150)
                             }
                         }
                     },
                     error:res=>{
-                        this.loading = false
+                        this.nodeLoading = false
                     }
                 })
 
@@ -266,7 +267,9 @@ var userDataServer = Vue.extend(
                 )
             },
 
-            handlePageChange(index){
+            handlePageChange(page,index){
+                this.pageOption.currentPage = page
+
                 if(index==1){
                     this.listDataItem()
                 }else if(index==2){
@@ -275,6 +278,7 @@ var userDataServer = Vue.extend(
             },
 
             listDataItem(){
+                this.loading = true
                 $.ajax({
                     type: "GET",
                     url: "/dataServer/pageAllDataItemChecked",
@@ -298,7 +302,7 @@ var userDataServer = Vue.extend(
                                 this.pageOption.total = data.total
                                 setTimeout(()=>{
                                     this.loading = false
-                                },150)
+                                },125)
                             }
                         }
                     },
@@ -309,6 +313,7 @@ var userDataServer = Vue.extend(
             },
 
             listDataMethod(){
+                this.loading = true
                 $.ajax({
                     type: "GET",
                     url: "/dataServer/pageAllDataAppicationChecked",
@@ -316,7 +321,8 @@ var userDataServer = Vue.extend(
                         page:this.pageOption.currentPage-1,
                         pageSize:this.pageOption.pageSize,
                         asc:1,
-                        sortEle:"name"
+                        sortEle:"name",
+                        type:this.activeName,
                     },
                     async:false,
                     success: (res) => {
@@ -328,11 +334,11 @@ var userDataServer = Vue.extend(
 
                             }else{
                                 let data = res.data
-                                this.dataItems = data.content
+                                this.dataMethods = data.content
                                 this.pageOption.total = data.total
                                 setTimeout(()=>{
                                     this.loading = false
-                                },150)
+                                },125)
                             }
                         }
                     },
@@ -357,17 +363,46 @@ var userDataServer = Vue.extend(
             },
 
             bindDataItem(item){
+                dataSets.push(this.configNodeData.dataSet)
+                let data={
+                    serverId:this.configNodeData.id,
+                    name:this.configNodeData.name,
+                    token:this.configNodeData.token,
+                    type:'Data',
+                    item:item.oid
+                }
+                axios.post("/dataServer/bindDataItem",
+                    data
+                ).then(
+                    res=>{
+                        let data = res.data
+                        if(data.code==-1){
+                            alert("Please login first!")
+                            window.location.href="/user/login";
+                        }else if(data.code==0) {
+                            if (data.data != null) {
+                                this.configNodeData.bindItems = data.data.bindItems
+                                this.$message({message: 'Succeeded to bind to item', type: 'success'})
+                            } else {
+                                this.$message({message: 'Failed to bind to item', type: 'error'})
+                            }
+                        }
+                    })
+
+            },
+
+            bindDataMethod(item){
                 let dataSets = []
                 dataSets.push(this.configNodeData.dataSet)
                 let data={
                     serverId:this.configNodeData.id,
                     name:this.configNodeData.name,
                     token:this.configNodeData.token,
+                    type:this.activeName,
                     dataSet:dataSets,
-                    type:'Data',
                     item:item.oid
                 }
-                axios.post("/dataServer/bindDataItem",
+                axios.post("/dataServer/bindDataMethod",
                     data
                 ).then(
                     res=>{
@@ -376,32 +411,13 @@ var userDataServer = Vue.extend(
                             alert("Please login first!")
                             window.location.href="/user/login";
                         }else if(data.code==0){
-                            this.configNodeData.bindItems=data.data.bindItems
-                            this.$message({message: 'Bind successfully',type: 'success'})
-                        }
-                    })
+                            if(data.data!=null){
+                                this.configNodeData.bindItems=data.data.bindItems
+                                this.$message({message: 'Succeeded to bind to item',type: 'success'})
+                            }else {
+                                this.$message({message: 'Failed to bind to item',type: 'error'})
+                            }
 
-            },
-
-            bindDataMethod(){
-                let data={
-                    serverId:this.configNodeData.id,
-                    name:this.configNodeData.name,
-                    token:this.configNodeData.token,
-                    type:'Data',
-                    item:item.oid
-                }
-                axios.post("/dataServer/bindDataItem",
-                    data
-                ).then(
-                    res=>{
-                        let data = res.data
-                        if(data.code==-1){
-                            alert("Please login first!")
-                            window.location.href="/user/login";
-                        }else if(data.code==0){
-                            this.configNodeData.bindItems=data.data.bindItems
-                            this.$message({message: 'Bind successfully',type: 'success'})
                         }
                     })
             },
@@ -414,23 +430,66 @@ var userDataServer = Vue.extend(
                 }
             },
 
-            unbindDataItemClick (){
-
-
-            },
-
-            unbindDataItem(){
-
+            unbindItemClick (item){
+                this.unbindConfirmDialog = true
 
             },
 
-            unbindDataMethodClick (){
+            unbindDataItem(item){
+                let data={
+                    serverId:this.configNodeData.id,
+                    name:this.configNodeData.name,
+                    token:this.configNodeData.token,
+                    type:this.activeName,
+                    item:item.oid
+                }
+                axios.post("/dataServer/unbindDataItem",
+                    data
+                ).then(
+                    res=>{
+                        let data = res.data
+                        if(data.code==-1){
+                            alert("Please login first!")
+                            window.location.href="/user/login";
+                        }else if(data.code==0){
+                            if(data.data!=null){
+                                this.configNodeData.bindItems=data.data.bindItems
+                                this.$message({message: 'Succeeded to unbind from item',type: 'success'})
+                            }else {
+                                this.$message({message: 'Failed to unbind from item',type: 'error'})
+                            }
 
+                        }
+                    })
 
             },
 
-            unbindDataMethod(){
+            unbindDataMethod(item){
+                let data={
+                    serverId:this.configNodeData.id,
+                    name:this.configNodeData.name,
+                    token:this.configNodeData.token,
+                    type:this.activeName,
+                    item:item.oid
+                }
+                axios.post("/dataServer/unbindDataMethod",
+                    data
+                ).then(
+                    res=>{
+                        let data = res.data
+                        if(data.code==-1){
+                            alert("Please login first!")
+                            window.location.href="/user/login";
+                        }else if(data.code==0){
+                            if(data.data!=null){
+                                this.configNodeData.bindItems=data.data.bindItems
+                                this.$message({message: 'Succeeded to unbind from item',type: 'success'})
+                            }else {
+                                this.$message({message: 'Failed to unbind from item',type: 'error'})
+                            }
 
+                        }
+                    })
 
             },
 

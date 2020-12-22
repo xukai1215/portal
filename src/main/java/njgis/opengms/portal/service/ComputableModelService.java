@@ -418,6 +418,22 @@ public class ComputableModelService {
         }
     }
 
+    public boolean checkDeployed(String md5){
+        String url ="http://" + managerServer + "/GeoModeling/taskNode/getServiceTask/" + md5;
+
+        RestTemplate restTemplate = new RestTemplate();
+        JSONObject result = restTemplate.getForObject(url,JSONObject.class);
+        if(result.getIntValue("code")==-1){
+            throw new MyException("远程服务出错");
+        }
+        if(result.getJSONObject("data")!=null){
+            return true;
+        }else {
+            return false;
+        }
+
+    }
+
     public JsonResult addService(ModelService modelService){
 
         JSONObject userObj = userService.validPassword(modelService.getUserName(),modelService.getPassword(),null);
@@ -794,8 +810,10 @@ public class ComputableModelService {
 
                     JSONObject mdlJson = XmlTool.documentToJSONObject(mdl);
                     JSONObject modelClass = checkMdlJson(mdlJson);
-                    mdlJson.getJSONArray("ModelClass").remove(0);
-                    mdlJson.getJSONArray("ModelClass").add(modelClass);
+                    if(mdlJson.containsKey("ModelClass")){
+                        mdlJson.getJSONArray("ModelClass").remove(0);
+                        mdlJson.getJSONArray("ModelClass").add(modelClass);
+                    }
                     //End
                     computableModel.setMdlJson(mdlJson);
                 }

@@ -409,8 +409,48 @@ var createComputableModel = Vue.extend({
             return flag;
         },
 
+        checkMd5Deployed(){
+            if(this.computableModel.md5=='')
+                return
+            let flag
+            $.ajax({
+                url:"/computableModel/checkDeployed",
+                type:"GET",
+                async:false,
+                data:{
+                    md5:this.computableModel.md5
+                },
+                success:(res) => {
+                    if (res.code != 0)
+                        return
+
+                    if (res.data){
+                        flag = true
+                        this.$message({
+                            message: 'Services of this MD5 have been deployed before!',
+                            type:"success"
+                        });
+                    }else{
+                        this.$alert('No existed service of this MD5, please deploy model in the model container first!', 'Tip', {
+                                 type:"warning",
+                                 confirmButtonText: 'OK',
+                                 callback: ()=>{
+                                     return
+                                 }
+                             }
+                         );
+                        flag = false
+                    }
+                }
+
+            })
+
+            return flag;
+        },
+
         getServiceByMd5Check(){
-            let res = this.getServiceByMd5()
+            // let res = this.getServiceByMd5()
+            let res = this.checkMd5Deployed()
             return res
         },
 
@@ -752,6 +792,10 @@ var createComputableModel = Vue.extend({
                     window.location.href = "/user/userSpace#/models/computablemodel";
                 }, 305)
             }
+        },
+
+        submitEdit(){
+            $(".finish").click()
         },
 
         draftJump(){

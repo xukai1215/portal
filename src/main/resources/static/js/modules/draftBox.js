@@ -278,7 +278,7 @@ Vue.component("draft-box",
             saveDraft(){
                 this.savingDraft=true
                 let content
-                this.$emit('get-content','draft',(val)=>{content=val;console.log(this)})//通过回调return了content
+                this.$emit('get-content','draft',(val)=>{content=val;})//通过回调return了content
                 let obj={
                     content:content,
                     oid:this.draft.oid,

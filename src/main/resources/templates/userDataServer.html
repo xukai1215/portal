@@ -85,9 +85,9 @@
                                     </el-card>
                                 </div>
                                 <div class="col-sm-12 col-md-6 col-lg-8">
-                                    <el-card class="box-card" style="margin-top: 20px;border-top: #8cd1e5 8px solid" v-loading="nodeLoading">
+                                    <el-card class="box-card" style="margin-top: 20px;border-top: #8cd1e5 8px solid" >
                                         <el-tabs v-model="activeName" stretch="stretch" @tab-click="handleClick">
-                                            <el-tab-pane label="Data" name="first" v-loading="loading">
+                                            <el-tab-pane label="Data" name="Data" v-loading="nodeLoading">
                                                 <div  v-if="dataNode.status==1">
                                                     <el-table
                                                             :data="dataNode.data">
@@ -115,7 +115,7 @@
                                                     <h5 style="font-style: italic;text-align: center;">Node Offline</h5>
                                                 </div>
                                             </el-tab-pane>
-                                            <el-tab-pane label="Processing" name="second" v-loading="loading">
+                                            <el-tab-pane label="Processing" name="Processing" v-loading="nodeLoading">
                                                 <div  v-if="dataNode.status==1">
                                                     <el-table
                                                             :data="dataNode.processing">
@@ -141,7 +141,7 @@
                                                     <h5 style="font-style: italic">Node Offline</h5>
                                                 </div>
                                             </el-tab-pane>
-                                            <el-tab-pane label="Visualization" name="third" v-loading="loading">
+                                            <el-tab-pane label="Visualization" name="Visualization" v-loading="nodeLoading">
                                                 <div  v-if="dataNode.status==1">
                                                     <el-table
                                                             :data="dataNode.visualization">
@@ -159,7 +159,7 @@
                                                                 label="Option">
                                                             <template slot-scope="scope">
 <!--                                                                <el-button size="mini" round @click="download(scope.row)" style="margin-right: 2px"><span><i class="fa fa-arrow-down"></i></span>Download</el-button>-->
-                                                                <el-button size="mini" round type="success" @click="bindDataItem(1,scope.row)">Bind Item</el-button>
+                                                                <el-button size="mini" round type="success" @click="bindDataMethodList(scope.row)">Bind Item</el-button>
                                                             </template>
                                                         </el-table-column>
                                                     </el-table>
@@ -182,7 +182,7 @@
         </div>
         <el-dialog title="Bind DataItem" :visible.sync="dataItemBindDialog" width="50%">
             <span slot="footer" class="dialog-footer">
-                <el-table
+                <el-table v-loading="loading"
                         :data="dataItems">
                      <el-table-column
                              prop="name"
@@ -207,7 +207,7 @@
                                         round
                                         style="margin-right: 2px"
                                         v-if="isBinded(scope.row)"
-                             @click="unbindDataItemClick(scope.row)">
+                             @click="unbindDataItem(scope.row)">
                                  Unbind
                              </el-button>
                              <el-button size="mini" round type="success" v-else
@@ -216,7 +216,7 @@
                      </el-table-column>
                 </el-table>
                 <el-pagination style="text-align: center;margin-top:20px"
-                               @current-change="handlePageChange(1)"
+                               @current-change="(page)=>handlePageChange(page,1)"
                                :current-page="pageOption.currentPage"
                                layout="total, prev, pager, next, jumper"
                                :page-size="6"
@@ -228,7 +228,7 @@
         </el-dialog>
         <el-dialog title="Bind Data Method" :visible.sync="dataMethodBindDialog" width="50%">
             <span slot="footer" class="dialog-footer">
-                <el-table
+                <el-table v-loading="loading"
                         :data="dataMethods">
                      <el-table-column
                              prop="name"
@@ -253,16 +253,16 @@
                                         round
                                         style="margin-right: 2px"
                                         v-if="isBinded(scope.row)"
-                                        @click="unbindDataItemClick(scope.row)">
+                                        @click="unbindDataMethod(scope.row)">
                                  Unbind
-                             </el-button>
+                             </el-button>bindDataMethod
                              <el-button size="mini" round type="success" v-else
-                                        @click="bindDataItem(scope.row)">Bind</el-button>
+                                        @click="bindDataMethod(scope.row)">Bind</el-button>
                          </template>
                      </el-table-column>
                 </el-table>
                 <el-pagination style="text-align: center;margin-top:20px"
-                               @current-change="handlePageChange(2)"
+                               @current-change="(page)=>handlePageChange(page,2)"
                                :current-page="pageOption.currentPage"
                                layout="total, prev, pager, next, jumper"
                                :page-size="6"
@@ -272,13 +272,13 @@
                 <el-button @click="dataItemBindDialog=false" style="margin-right: 15px" size="medium">Cancel</el-button>
             </span>
         </el-dialog>
-        <el-dialog :visible.sync="unbindConfirmDialog">
-            <div>Confirm to unbind from this item?</div>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="unbindConfirmDialog = false">Cancel</el-button>
-                <el-button type="primary" @click="unbindDataItem">Confirm</el-button>
-            </span>
-        </el-dialog>
+<!--        <el-dialog :visible.sync="unbindConfirmDialog">-->
+<!--            <div>Confirm to unbind from this item?</div>-->
+<!--            <span slot="footer" class="dialog-footer">-->
+<!--                <el-button @click="unbindConfirmDialog = false">Cancel</el-button>-->
+<!--                <el-button type="primary" @click="unbindItem">Confirm</el-button>-->
+<!--            </span>-->
+<!--        </el-dialog>-->
     </div>
 </template>
 </body>

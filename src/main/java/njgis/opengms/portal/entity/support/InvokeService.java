@@ -32,4 +32,8 @@ public class InvokeService {
     String cacheUrl;//调用成功后可直接缓存供下次调用，此为用测试数据的结果 记录上次cache
 
     Boolean isPortal;//门户新建的还是绑定的
+
+    public InvokeService(Boolean isPortal){
+        this.isPortal = isPortal;
+    }
 }

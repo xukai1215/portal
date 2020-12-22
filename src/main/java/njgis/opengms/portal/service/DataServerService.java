@@ -139,7 +139,12 @@ public class DataServerService {
         JSONArray j_nodes = new JSONArray();
 
         String url = baseUrl + "?token=" + URLEncoder.encode(token) + "&type=" + type;
-        String xml = MyHttpUtils.GET(url, "utf-8", null);
+        String xml = null;
+        try{
+            xml = MyHttpUtils.GET(url, "utf-8", null);
+        }catch (Exception e){
+            return null;
+        }
         JSONObject jsonObject = XmlTool.xml2Json(xml);
         JSONArray j_processings = new JSONArray();
         JSONArray result = new JSONArray();
@@ -228,39 +233,82 @@ public class DataServerService {
         return result;
     }
 
-    public DataNodeContent updataDataNodeContent(DataNodeContentDTO dataNodeContentDTO,String userName){
+    public JSONObject pageAllDataAppicationChecked(int page,int pageSize,int asc,String sortEle,String method,String userName){
+        Sort sort = new Sort(asc==1 ? Sort.Direction.ASC : Sort.Direction.DESC, sortEle);
+        Pageable pageable = PageRequest.of(page, pageSize, sort);
+
+        Page<DataApplication> dataApplicationPage = dataApplicationDao.findAllByMethod(pageable,method);
+
+        List<DataApplication> dataApplicationList = dataApplicationPage.getContent();
+        JSONArray array = new JSONArray();
+
+        for(int i=0;i<dataApplicationList.size();i++){
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("oid",dataApplicationList.get(i).getOid());
+            jsonObject.put("name",dataApplicationList.get(i).getName());
+            jsonObject.put("createDate",dataApplicationList.get(i).getCreateTime());
+
+            User user = userDao.findFirstByOid(dataApplicationList.get(i).getAuthor());
+
+            jsonObject.put("contributor",user.getName());
+            jsonObject.put("contributorId",user.getUserId());
+
+            array.add(jsonObject);
+        }
+
+        JSONObject result = new JSONObject();
+        result.put("content",array);
+        result.put("total",dataApplicationPage.getTotalElements());
+
+        return result;
+    }
+
+    public DataNodeContent updataDataNodeContent(DataNodeContentDTO dataNodeContentDTO,String userName,boolean add){
         String dataNodeContentId = dataNodeContentDTO.getServerId();
         String dataNodeToken = dataNodeContentDTO.getToken();
 
         DataNodeContent dataNodeContent = dataNodeContentDao.findAllByServerIdAndToken(dataNodeContentId,dataNodeToken);
+        String itemId = dataNodeContentDTO.getItem();
         if(dataNodeContent!=null){
             List<String> bindedItems = dataNodeContent.getBindItems();
-            bindedItems.add(dataNodeContentDTO.getItem());
+            if(!bindedItems.contains(itemId)&&add){
+                bindedItems.add(itemId);
+            }else if (bindedItems.contains(itemId)&&!add){
+                bindedItems.remove(itemId);
+            }
+            dataNodeContent.setBindItems(bindedItems);
             return dataNodeContentDao.save(dataNodeContent);
 
 
-        }else{
+        }else if(add){
             dataNodeContent = new DataNodeContent();
             dataNodeContent.setServerId(dataNodeContentDTO.getServerId());
             dataNodeContent.setName(dataNodeContentDTO.getName());
             dataNodeContent.setToken(dataNodeContentDTO.getToken());
             dataNodeContent.setUserId(userName);
             dataNodeContent.setType(dataNodeContentDTO.getType());
+
+            List<String> bindedItems = new ArrayList<>();
+            bindedItems.add(itemId);
+
             return dataNodeContentDao.insert(dataNodeContent);
-
-
         }
+
+        return null;
     }
 
     public DataNodeContent bindDataItem(DataNodeContentDTO dataNodeContentDTO, String userName){
         String dataNodeContentId = dataNodeContentDTO.getServerId();
         String dataNodeToken = dataNodeContentDTO.getToken();
 
-        DataNodeContent dataNodeContent = updataDataNodeContent(dataNodeContentDTO,userName);
+        DataNodeContent dataNodeContent = updataDataNodeContent(dataNodeContentDTO,userName,true);
 
         DataItem item = dataItemDao.findFirstById(dataNodeContentDTO.getItem());
 
-        InvokeService invokeService = new InvokeService();
+        if(item==null){
+            return null;
+        }
+        InvokeService invokeService = new InvokeService(false);
         invokeService.setServiceId(dataNodeContentDTO.getServerId());
         invokeService.setName(dataNodeContentDTO.getName());
         invokeService.setToken(dataNodeContentDTO.getToken());
@@ -277,28 +325,84 @@ public class DataServerService {
         return dataNodeContent;
     }
 
+    public DataNodeContent unbindDataItem(DataNodeContentDTO dataNodeContentDTO, String userName){
+        String dataNodeContentId = dataNodeContentDTO.getServerId();
+        String dataNodeToken = dataNodeContentDTO.getToken();
+
+        DataNodeContent dataNodeContent = updataDataNodeContent(dataNodeContentDTO,userName,false);
+
+        DataItem item = dataItemDao.findFirstById(dataNodeContentDTO.getItem());
+
+        List<InvokeService> invokeServices = item.getInvokeServices();
+
+        if(invokeServices!=null){
+            for(int i=invokeServices.size()-1;i>=0;i--){
+                if(invokeServices.get(i).getServiceId().equals(dataNodeContentDTO.getServerId())){
+                    invokeServices.remove(invokeServices.get(i));
+                    break;
+                }
+            }
+        }
+
+        item.setInvokeServices(invokeServices);
+        dataItemDao.save(item);
+
+        return dataNodeContent;
+    }
+
     public DataNodeContent bindDataMethod(DataNodeContentDTO dataNodeContentDTO, String userName){
         String dataNodeContentId = dataNodeContentDTO.getServerId();
         String dataNodeToken = dataNodeContentDTO.getToken();
 
-        DataNodeContent dataNodeContent = updataDataNodeContent(dataNodeContentDTO,userName);
+        DataNodeContent dataNodeContent = updataDataNodeContent(dataNodeContentDTO,userName,true);
 
-        DataApplication dataApplication = dataApplicationDao.findFirstById(dataNodeContentDTO.getItem());
+        DataApplication dataApplication = dataApplicationDao.findFirstByOid(dataNodeContentDTO.getItem());
 
-        InvokeService invokeService = new InvokeService();
+        InvokeService invokeService = new InvokeService(false);
         invokeService.setServiceId(dataNodeContentDTO.getServerId());
         invokeService.setName(dataNodeContentDTO.getName());
         invokeService.setToken(dataNodeContentDTO.getToken());
-        invokeService.setDataSet(dataNodeContentDTO.getDataSet());
+        invokeService.setDataIds(dataNodeContentDTO.getDataSet());
+        invokeService.setMethod(dataNodeContentDTO.getType());
+        invokeService.setParams(dataNodeContentDTO.getType());
         List<InvokeService> invokeServices = dataApplication.getInvokeServices();
         if(invokeServices==null){
             invokeServices = new ArrayList<>();
         }
-        if( invokeServices.contains(invokeService)){
+        if(!invokeServices.contains(invokeService)){
             invokeServices.add(invokeService);
         }
         dataApplication.setInvokeServices(invokeServices);
 
+        dataApplicationDao.save(dataApplication);
+
+        return dataNodeContent;
+    }
+
+    public DataNodeContent unbindDataMethod(DataNodeContentDTO dataNodeContentDTO, String userName){
+        String dataNodeContentId = dataNodeContentDTO.getServerId();
+        String dataNodeToken = dataNodeContentDTO.getToken();
+
+        DataNodeContent dataNodeContent = updataDataNodeContent(dataNodeContentDTO,userName,false);
+
+        DataApplication dataApplication = dataApplicationDao.findFirstByOid(dataNodeContentDTO.getItem());
+
+        if(dataApplication==null){
+            return null;
+        }
+
+        List<InvokeService> invokeServices = dataApplication.getInvokeServices();
+
+        if(invokeServices!=null){
+            for(int i=invokeServices.size()-1;i>=0;i--){
+                if(invokeServices.get(i).getServiceId().equals(dataNodeContentDTO.getServerId())){
+                    invokeServices.remove(invokeServices.get(i));
+                    break;
+                }
+            }
+        }
+
+        dataApplication.setInvokeServices(invokeServices);
         dataApplicationDao.save(dataApplication);
 
         return dataNodeContent;
