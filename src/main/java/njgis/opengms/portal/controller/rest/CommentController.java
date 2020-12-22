@@ -214,6 +214,7 @@ public class CommentController {
         User user=userDao.findFirstByOid(userOid);
         JSONObject author=new JSONObject();
         author.put("oid",userOid);
+        author.put("userId",user.getUserId());
         author.put("name",user.getName());
         author.put("img",user.getImage().trim().equals("")?"":htmlLoadPath+user.getImage());
 

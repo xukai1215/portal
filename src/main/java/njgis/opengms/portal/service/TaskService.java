@@ -5,18 +5,10 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.AbstractTask.AsyncTask;
 import njgis.opengms.portal.bean.JsonResult;
-import njgis.opengms.portal.dao.ComputableModelDao;
-import njgis.opengms.portal.dao.DataItemDao;
-import njgis.opengms.portal.dao.IntegratedTaskDao;
-import njgis.opengms.portal.dao.TaskDao;
-import njgis.opengms.portal.dao.UserDao;
+import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.dto.task.ResultDataDTO;
 import njgis.opengms.portal.dto.task.TestDataUploadDTO;
 import njgis.opengms.portal.dto.task.UploadDataDTO;
-import njgis.opengms.portal.entity.ComputableModel;
-import njgis.opengms.portal.entity.DataItem;
-import njgis.opengms.portal.entity.Task;
-import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.entity.intergrate.DataProcessing;
 import njgis.opengms.portal.entity.intergrate.Model;
@@ -27,6 +19,7 @@ import njgis.opengms.portal.utils.MyHttpUtils;
 import njgis.opengms.portal.utils.ResultUtils;
 import njgis.opengms.portal.utils.Utils;
 import njgis.opengms.portal.utils.XmlTool;
+import org.apache.http.entity.ContentType;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -40,10 +33,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.*;
@@ -623,11 +620,11 @@ public class TaskService {
         String testDataPath = uploadDataDTO.getFilePath();
         String url = "http://" + dataContainerIpAndPort + "/data";
         //拼凑form表单
-        HashMap<String, String> params = new HashMap<>();
-        params.put("name", uploadDataDTO.getEvent());
-        params.put("userId", userName);
-        params.put("serverNode", "china");
-        params.put("origination", "portal");
+        MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
+        params.add("name", uploadDataDTO.getEvent());
+        params.add("userId", userName);
+        params.add("serverNode", "china");
+        params.add("origination", "portal");
 
         //拼凑file表单
         List<String> filePaths=new ArrayList<>();
@@ -664,31 +661,26 @@ public class TaskService {
             filePaths.add(testDataPath);
             filePaths.add(configPath);
 
-//            File dataFile=new File(testDataPath);
-//            InputStream dataStream = new FileInputStream(dataFile);
-//            ZipStreamEntity zipStreamEntity1=new ZipStreamEntity(dataFile.getName(),dataStream);
-//
-//            InputStream configStream = new FileInputStream(configFile);
-//            ZipStreamEntity zipStreamEntity2=new ZipStreamEntity(configFile.getName(),configStream);
-//
-//            List<ZipStreamEntity> zipStreamEntityList=new ArrayList<>();
-//            zipStreamEntityList.add(zipStreamEntity1);
-//            zipStreamEntityList.add(zipStreamEntity2);
-//
-//            String dataName=dataFile.getName().substring(0,dataFile.getName().lastIndexOf("."));
-//            InputStream zipInputStream = ZipUtils.listStreamToZipStream(zipStreamEntityList,dataName);
-//            zipStreamEntity=new ZipStreamEntity(dataName,zipInputStream);
-
-
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
 
-        String result;
+        JSONObject result;
+
         try {
-            result = MyHttpUtils.upload(url, filePaths, params);
+            for(int i=0;i<filePaths.size();i++){
+                File uploadFile = new File(filePaths.get(i));
+                FileInputStream fileInputStream = new FileInputStream(uploadFile);
+                // MockMultipartFile(String name, @Nullable String originalFilename, @Nullable String contentType, InputStream contentStream)
+                // 其中originalFilename,String contentType 旧名字，类型  可为空
+                // ContentType.APPLICATION_OCTET_STREAM.toString() 需要使用HttpClient的包
+                MultipartFile multipartFile = new MockMultipartFile(uploadFile.getName(),uploadFile.getName(),ContentType.APPLICATION_OCTET_STREAM.toString(),fileInputStream);
+
+                params.add("datafile", multipartFile.getResource());
+            }
+            result = MyHttpUtils.uploadDataToDataServer(dataContainerIpAndPort,params);
         } catch (Exception e) {
             result = null;
         }
@@ -696,8 +688,8 @@ public class TaskService {
             resultDataDTO.setUrl("");
             resultDataDTO.setTag("");
         } else {
-            JSONObject res = JSON.parseObject(result);
-            if (res.getIntValue("code") != 0) {
+            JSONObject res = result;
+            if (res.getIntValue("code") != 1) {
                 resultDataDTO.setUrl("");
                 resultDataDTO.setTag("");
                 resultDataDTO.setSuffix("");

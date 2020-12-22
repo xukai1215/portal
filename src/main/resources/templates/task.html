@@ -77,8 +77,8 @@
 <body>
 <div id="app" v-cloakz>
     <div th:replace="fragments/navbar :: unlog"></div>
-    <div style="height:700px;" v-loading="true" v-if="initializing"></div>
-    <div class="taskMain" :style="{'visibility':initializing==true?'hidden':'visible'}">
+    <div style="height:800px;" element-loading-text="Loading..." v-loading="true" v-if="initializing"></div>
+    <div v-cloak class="taskMain" :style="{'visibility':initializing==true?'hidden':'visible'}">
         <el-row type="flex" justify="space-around">
             <el-col :span="5" role="modelIntro" style="min-width: 220px" id="modelSider">
                 <div id="introContainer" class="slider scrollbar">
@@ -1307,7 +1307,7 @@
         </el-row>
 
     </div>
-    <div th:replace="fragments/footer :: footer"></div>
+    <div th:replace="fragments/footer :: footer-mini"></div>
 </div>
 <template th:replace="modules/userDataSpaceModule :: userDataSpaceModule"></template>
 </body>

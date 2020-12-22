@@ -91,10 +91,13 @@
                                                     <div class="step-tab-panel col-md-offset-1" id="step1">
                                                         <div class="form-group cl-md-6">
                                                             <label class="control-label col-lg-2 col-md-3 col-md-offset-1">
-                                                                <span class="xing">* </span>Bind Data
+                                                                <span class="xing">* </span>Bind Test Data
                                                             </label>
                                                             <div class="input-group col-md-5">
-                                                                <el-button type="primary" @click="openDataSpace()" style="margin-right:10px">Bind</el-button>
+                                                                <el-button type="primary" @click="openDataSpace()" style="margin-right:10px;display: inline-block">Bind</el-button>
+                                                                <div v-for="(item,index) in selectedFile" style="display: inline-block;padding-left: 5px;">
+                                                                    <el-tag type="success">{{item.label}}.{{item.suffix}}</el-tag>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                         <div class="form-group cl-md-6">
@@ -145,13 +148,13 @@
                                                             </label>
                                                             <div class="input-group col-md-5">
                                                                 <el-radio-group v-model="dataApplication.status" size="medium">
-                                                                    <el-tooltip popper-class="fontsize-15" effect="light" content="Can be retrieved, shared and edited." placement="top">
+                                                                    <el-tooltip popper-class="fontsize-15" effect="light" content="This item can be retrieved, shared and edited." placement="top">
                                                                         <el-radio-button label="Public"></el-radio-button>
                                                                     </el-tooltip>
-                                                                    <el-tooltip popper-class="fontsize-15" class="item" effect="light" content="Can be retrieved and shared, can ONLY be edited by creator." placement="top">
+                                                                    <el-tooltip popper-class="fontsize-15" class="item" effect="light" content="This item can be retrieved and shared, can ONLY be edited by creator." placement="top">
                                                                         <el-radio-button label="Discoverable"></el-radio-button>
                                                                     </el-tooltip>
-                                                                    <el-tooltip popper-class="fontsize-15" class="item" effect="light" content="Can NOT be retrieved and shared, can ONLY be edited by creator." placement="top">
+                                                                    <el-tooltip popper-class="fontsize-15" class="item" effect="light" content="This item can NOT be retrieved and shared, can ONLY be edited by creator." placement="top">
                                                                         <el-radio-button label="Private"></el-radio-button>
                                                                     </el-tooltip>
                                                                 </el-radio-group>

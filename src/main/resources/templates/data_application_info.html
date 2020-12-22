@@ -152,8 +152,12 @@
             <div id="Authorship0" class="detail_block minScreen"
                  th:if="${dataApplicationInfo.authorship!=null&&#lists.size(dataApplicationInfo.authorship)!=0}">
                 <div class="block_head">
-                    <div class="head_text" style="padding-left: 10px;">
+                    <div class="head_text" style="padding-left: 10px;padding-right: 15px;display: inline-flex">
                         <h4>Authorship</h4>
+                        <el-tooltip popper-class="fontsize-15" effect="light"
+                                    content="We deeply understand that a model may be attributed to the efforts of a team. If all author information is not listed here, please click the feedback below."
+                                    placement="top"><i class="fa fa-question-circle-o" aria-hidden="true"
+                                                       style="margin-top:4px;"></i></el-tooltip>
                     </div>
                 </div>
                 <div class="block_content text-center" style="padding-left:10px">
@@ -426,7 +430,7 @@
 <!--                </div>-->
 <!--                <div class="block_content" style="margin-bottom:10px;">-->
 
-<!--                    &lt;!&ndash;<el-tag type="success"  v-for="iter in dataCategory" @click="clickDataItemInfo(iter.id)" style="margin-left: 10px;font-weight: bold;color: #3396ef"> {{iter.cateContent}}</el-tag>&ndash;&gt;-->
+                    <!--<el-tag type="success"  v-for="iter in dataCategory" @click="clickDataItemInfo(iter.id)" style="margin-left: 10px;font-weight: bold;color: #3396ef"> {{iter.cateContent}}</el-tag>-->
 
 <!--                    <el-tag type="success" th:each="classS:${classifications}" th:text="${classS}"-->
 <!--                            style="margin: 0 10px 10px 0;font-weight: bold;color: #3396ef"></el-tag>-->

@@ -45,6 +45,7 @@
 
 
     <script src="/static/js/common/md5.js"></script>
+    <script src="/static/js/common/sha256.js"></script>
     <script src="/static/js/common/jquery-3.3.1.js"></script>
     <script type="text/javascript" src="/static/jquery-ui-1.12.1/jquery-ui.min.js"></script>
     <script src="/static/js/common/jquery.rotate.min.js"></script>
@@ -164,6 +165,25 @@
         }
         .top350Dialog .el-dialog{
             top:350px
+        }
+
+        /*分类样式*/
+        .el-tree > .el-tree-node > .el-tree-node__content {
+            font-weight: bold;
+        }
+
+        .el-tree > .el-tree-node > .el-tree-node__children > .el-tree-node > .el-tree-node__content {
+            font-style: italic;
+        }
+
+
+        .el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content {
+            background-color: #d9edf7;
+        }
+
+        #tree_select .el-tree-node{
+            background-color: aliceblue;
+            margin-bottom: 5px;
         }
     </style>
 </head>

@@ -274,7 +274,7 @@ public class ModelItemRestController {
             String searchText = modelItemFindDTO.getSearchText();
             //List<String> classifications=modelItemFindDTO.getClassifications();
             //默认以viewCount排序
-            Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
+            Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
             Pageable pageable = PageRequest.of(page, pageSize, sort);
 
             Classification classification;

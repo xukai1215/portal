@@ -23,7 +23,7 @@ new Vue({
             ruleForm: {
                 account: '',
                 password: '',
-                password_md5: "",
+                password_encrypt: "",
                 remember: false
             },
             rules: {
@@ -68,12 +68,16 @@ new Vue({
             this.$refs[formName].resetFields();
         },
         login() {
-            this.ruleForm.password_md5=hex_md5(this.ruleForm.password);
+            this.ruleForm.password_encrypt=hex_sha256(hex_md5(this.ruleForm.password));
+            let data = {
+                "account":this.ruleForm.account,
+                "password":this.ruleForm.password_encrypt,
+            }
             $.ajax({
                 url: '/user/in',
                 type: 'post',
                 // data对象中的属性名要和服务端控制器的参数名一致 login(name, password)
-                data: this.ruleForm,
+                data: data,
                 // dataType : 'json',
                 success: (result) => {
                     if (this.ruleForm.remember) {

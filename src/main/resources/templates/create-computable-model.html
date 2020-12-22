@@ -102,6 +102,28 @@
                                                             <label data-original-title="Tooltip on top"
                                                                    class="control-label col-lg-2 col-md-3 col-md-offset-2 tooltips"
                                                                    data-toggle="tooltip" data-placement="top" title="">
+                                                                <span class="xing">* </span>Status
+                                                            </label>
+                                                            <div class="input-group col-md-5">
+                                                                <el-radio-group v-model="computableModel.status" size="medium">
+                                                                    <el-tooltip popper-class="fontsize-15" effect="light" content="This item can be retrieved, shared and edited." placement="top">
+                                                                        <el-radio-button label="Public"></el-radio-button>
+                                                                    </el-tooltip>
+                                                                    <el-tooltip popper-class="fontsize-15" class="item" effect="light" content="This item can be retrieved and shared, can ONLY be edited by creator." placement="top">
+                                                                        <el-radio-button label="Discoverable"></el-radio-button>
+                                                                    </el-tooltip>
+                                                                    <el-tooltip popper-class="fontsize-15" class="item" effect="light" content="This item can NOT be retrieved and shared, can ONLY be edited by creator." placement="top">
+                                                                        <el-radio-button label="Private"></el-radio-button>
+                                                                    </el-tooltip>
+
+                                                                </el-radio-group>
+
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label data-original-title="Tooltip on top"
+                                                                   class="control-label col-lg-2 col-md-3 col-md-offset-2 tooltips"
+                                                                   data-toggle="tooltip" data-placement="top" title="">
                                                                 <span class="xing">* </span>Bind Model Item
                                                             </label>
                                                             <div class="input-group col-md-5">
@@ -111,28 +133,6 @@
                                                             </div>
                                                         </div>
 
-                                                        <div class="form-group">
-                                                            <label data-original-title="Tooltip on top"
-                                                                   class="control-label col-lg-2 col-md-3 col-md-offset-2 tooltips"
-                                                                   data-toggle="tooltip" data-placement="top" title="">
-                                                                <span class="xing">* </span>Status
-                                                            </label>
-                                                            <div class="input-group col-md-5">
-                                                                <el-radio-group v-model="computableModel.status" size="medium">
-                                                                    <el-tooltip popper-class="fontsize-15" effect="light" content="Can be retrieved, shared and edited." placement="top">
-                                                                        <el-radio-button label="Public"></el-radio-button>
-                                                                    </el-tooltip>
-                                                                    <el-tooltip popper-class="fontsize-15" class="item" effect="light" content="Can be retrieved and shared, can ONLY be edited by creator." placement="top">
-                                                                        <el-radio-button label="Discoverable"></el-radio-button>
-                                                                    </el-tooltip>
-                                                                    <el-tooltip popper-class="fontsize-15" class="item" effect="light" content="Can NOT be retrieved and shared, can ONLY be edited by creator." placement="top">
-                                                                        <el-radio-button label="Private"></el-radio-button>
-                                                                    </el-tooltip>
-
-                                                                </el-radio-group>
-
-                                                            </div>
-                                                        </div>
 
                                                         <div class="form-group">
                                                             <label class="control-label col-lg-2 col-md-3 col-md-offset-2">
@@ -160,17 +160,30 @@
                                                             </label>
                                                             <div class="input-group col-md-5" style="padding:5px 0;font-size:20px">
 
-                                                                <el-radio-group v-model="computableModel.contentType">
-                                                                    <el-tooltip class="item" effect="dark" content="For model that haven't been deployed" placement="top-start">
-                                                                        <el-radio label="Package" >OpenGMS Model-Service Package</el-radio>
+                                                                <el-radio-group v-model="computableModel.contentType" @change="contentTypeChange">
+                                                                    <el-tooltip class="item" effect="light" content="Using a OpenGMS Model-Service Package to create model service." placement="right">
+                                                                        <el-radio style="margin-bottom:10px;" label="Package">OpenGMS Model-Service Package</el-radio>
                                                                     </el-tooltip>
-                                                                    <el-tooltip class="item" effect="dark" content="For model that is already deployed" placement="top-start">
-                                                                        <el-radio label="md5">MD5</el-radio>
+                                                                    <br/>
+                                                                    <el-tooltip class="item" effect="light" content="Using a deployed OpenGMS Model-Service Package's MD5 to create model service" placement="right">
+                                                                        <el-radio style="margin-bottom:10px;" label="MD5">MD5</el-radio>
                                                                     </el-tooltip>
-                                                                    <el-radio label="Code">Source Code</el-radio>
-                                                                    <el-radio label="Library">Executable Library</el-radio>
-                                                                    <el-radio label="Service">Third-party Web-Service Link</el-radio>
-                                                                    <el-radio label="Link">Downloadable Link</el-radio>
+                                                                    <br/>
+                                                                    <el-tooltip class="item" effect="light" content="I have the model's source code." placement="right">
+                                                                        <el-radio style="margin-bottom:10px;" label="Code">Source Code</el-radio>
+                                                                    </el-tooltip>
+                                                                    <br/>
+                                                                    <el-tooltip class="item" effect="light" content="I have the model's executable library." placement="right">
+                                                                        <el-radio style="margin-bottom:10px;" label="Library">Executable Library</el-radio>
+                                                                    </el-tooltip>
+                                                                    <br/>
+                                                                    <el-tooltip class="item" effect="light" content="The model have been deployed at third-party website as a service." placement="right">
+                                                                        <el-radio style="margin-bottom:10px;" label="Service">Third-party Web-Service Link</el-radio>
+                                                                    </el-tooltip>
+                                                                    <br/>
+                                                                    <el-tooltip class="item" effect="light" content="The model can be downloaded at third-party website." placement="right">
+                                                                        <el-radio style="margin-bottom:10px;" label="Link">Downloadable Link</el-radio>
+                                                                    </el-tooltip>
                                                                 </el-radio-group>
 
                                                                 <!--<label style="margin-right: 20px; font-size: 20px">-->
@@ -213,7 +226,7 @@
                                                                        class="control-label col-md-4 col-md-offset-2">Please
                                                                     enter computable model's URL:</label>
                                                                 <div class="col-sm-8 col-md-offset-2">
-                                                                    <textarea id="URL_text" class="form-control"
+                                                                    <textarea id="URL_text" class="form-control" placeholder="( http://www.example.com/model )"
                                                                               v-model="computableModel.url"></textarea>
                                                                 </div>
                                                             </div>
