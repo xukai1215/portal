@@ -11,7 +11,7 @@ new Vue({
             activeIndex: '2',
             queryType: 'normal',
             searchText: '',
-            classifications1: ["652bf1f8-2f3e-4f93-b0dc-f66505090873"],
+            classifications1: [],
             classifications2: [],
             classifications3: [],
 
@@ -20,7 +20,7 @@ new Vue({
             pageOption: {
                 paginationShow:false,
                 progressBar: true,
-                sortAsc: false,
+                sortAsc: true,
                 currentPage: 1,
                 pageSize: 10,
 
@@ -699,7 +699,7 @@ new Vue({
         },
         search() {
             this.switchInit();
-            this.setUrl("/modelItem/repository")
+            this.setUrl("/modelItem/repository1")
             this.pageOption.currentPage = 1;
             this.classifications1=["all"];
             this.$refs.tree1.setCurrentKey(null);
@@ -711,7 +711,7 @@ new Vue({
             this.switchInit();
             let data=this.$refs.tree1.getCurrentNode();
             if(data!=null) {
-                // this.setUrl("/modelItem/repository?category=" + data.oid + "&page=" + val);
+                // this.setUrl("/modelItem/repository1?category=" + data.oid + "&page=" + val);
             }
             this.pageOption.currentPage = val;
 
@@ -722,7 +722,7 @@ new Vue({
         handleCurrentChange(data) {
 
             this.switchInit();
-            // this.setUrl("/modelItem/repository?category="+data.oid);
+            // this.setUrl("/modelItem/repository1?category="+data.oid);
             // this.pageOption.searchResult=[];
             this.pageOption.total=0;
             this.pageOption.paginationShow=false;
@@ -739,7 +739,7 @@ new Vue({
         handleCurrentChange2(data) {
 
             this.switchInit();
-            // this.setUrl("/modelItem/repository?category2="+data.oid);
+            // this.setUrl("/modelItem/repository1?category2="+data.oid);
             // this.pageOption.searchResult=[];
             this.pageOption.total=0;
             this.pageOption.paginationShow=false;
@@ -1015,7 +1015,7 @@ new Vue({
             this.pageOption.searchResult=[];
             this.pageOption.paginationShow=false;
 
-            this.setUrl("/modelItem/repository")
+            this.setUrl("/modelItem/repository1")
             this.queryType = "advanced";
             $(".searcherPanel").css("display", "none");
             $(".advancedSearch").css("display", "block");

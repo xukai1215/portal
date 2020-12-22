@@ -46,12 +46,6 @@ public class DispatchingRequestController {
                                @RequestParam("origination")String origination
 
     ) throws IOException {
-        String url="http://"+ dataContainerIpAndPort +"/configData";
-
-//        JSONObject j=JSONObject.parseObject(MyHttpUtils.POSTMultiPartFileToDataServer(url,"utf-8",file,uploadName,userName,serverNode,origination));
-
-        RestTemplate restTemplate = new RestTemplate();
-
         MultiValueMap<String, Object> part = new LinkedMultiValueMap<>();
 
         for(int i=0;i<files.length;i++)
@@ -61,14 +55,7 @@ public class DispatchingRequestController {
         part.add("serverNode", serverNode);
         part.add("origination", origination);
 
-        JSONObject jsonObject = restTemplate.postForObject(url, part, JSONObject.class);
-
-        part=null;
-        files=null;
-        if(jsonObject.getIntValue("code")==-1){
-            throw new MyException("远程服务出错");
-        }
-        return jsonObject;
+        return MyHttpUtils.uploadDataToDataServer(dataContainerIpAndPort,part);
 
     }
 

@@ -215,12 +215,18 @@
                     <strong v-if="pageOption.progressBar" style="float: right;">Loading... </strong>
                     <strong v-if="!pageOption.progressBar" style="float: right;">{{pageOption.total}} items</strong></span><br> <span></span> <span></span>
                 </div>
+                <el-pagination style="text-align: center;margin-top:20px" v-if="pageOption.paginationShow && pageOption.searchResult.length>0"
+                               @current-change="handlePageChange"
+                               :current-page="pageOption.currentPage"
+                               layout="total, prev, pager, next, jumper"
+                               :total="pageOption.total">
+                </el-pagination>
 
                 <div class="modelPanel" v-loading="pageOption.progressBar">
                     <div class="content-body">
                         <div v-cloak class="list-item" v-for="(modelItem,key) in pageOption.searchResult">
                             <div class="detail_title">
-                                <el-button style="padding:7px;" class="pull-right" type="primary" icon="el-icon-edit" @click="getClassifications(modelItem)" circle></el-button>
+                                <!--<el-button style="padding:7px;" class="pull-right" type="primary" icon="el-icon-edit" @click="getClassifications(modelItem)" circle></el-button>-->
                                 <el-tooltip popper-class="fontsize-15" effect="light" :content="modelItem.status" placement="left">
                                     <i v-if="modelItem.status=='Public'" class="el-icon-unlock public fontsize-24 pull-right"></i>
                                     <i v-if="modelItem.status=='Discoverable'" class="el-icon-unlock discoverable fontsize-24 pull-right"></i>
@@ -298,7 +304,7 @@
                     <el-pagination style="text-align: center;margin-top:20px" v-if="pageOption.paginationShow && pageOption.searchResult.length>0"
                                    @current-change="handlePageChange"
                                    :current-page="pageOption.currentPage"
-                                   layout="total, prev, pager, next"
+                                   layout="total, prev, pager, next, jumper"
                                    :total="pageOption.total">
                     </el-pagination>
                 </div>

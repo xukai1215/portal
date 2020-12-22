@@ -503,8 +503,6 @@ var info=new Vue({
                 children: 'children',
                 label: 'label'
             },
-
-            activeName_dialog:''
         }
     },
     methods: {
@@ -913,7 +911,8 @@ var info=new Vue({
                         let href = window.location.href;
                         let hrefs = href.split('/');
                         let oid = hrefs[hrefs.length - 1].split("#")[0];
-                        window.location.href = "/user/userSpace#/model/manageModelItem/"+oid;
+                        window.open("/user/userSpace#/model/manageModelItem/"+oid);
+                        // window.location.href = "/user/userSpace#/model/manageModelItem/"+oid;
                         // this.editDialogOpen()
 
 
@@ -1262,6 +1261,7 @@ var info=new Vue({
         search(scope) {
             let data;
             if(scope=="all"){
+                // this.pageOption2.currentPage = 1;
                 data = {
                     asc: this.pageOption2.sortAsc,
                     page: this.pageOption2.currentPage-1,
@@ -1271,6 +1271,7 @@ var info=new Vue({
                     classifications: ["all"],
                 }
             }else {
+                // this.pageOption.currentPage = 1;
                 data = {
                     asc: this.pageOption.sortAsc,
                     page: this.pageOption.currentPage-1,
@@ -1696,16 +1697,7 @@ var info=new Vue({
             }
 
         });
-        //
-        // $(document).on("click", ".detail-toggle", function () {
-        //     if ($(this).text() == "[Collapse]") {
-        //         $(this).text("[Expand]");
-        //     }
-        //     else {
-        //         $(this).text("[Collapse]")
-        //     }
-        //
-        // })
+
 
         $('html, body').animate({scrollTop: 0}, 'slow');
 
@@ -1745,6 +1737,30 @@ var info=new Vue({
             });
         }
 
+        let panes = $(".el-tab-pane")
+        for(i=0;i<4;i++){
+            let list_size = panes.eq(i).children("div").children(".list_panel").length;
+            if(list_size>0){
+                this.activeName = panes[i].id.replace("pane-","");
+                break;
+            }
+        }
+
+        for(i=3;i<5;i++){
+            let list_size = panes.eq(i).children("div").children(".list_panel").length;
+            if(list_size>0){
+                this.activeName1 = panes[i].id.replace("pane-","");
+                break;
+            }
+        }
+
+        for(i=5;i<9;i++){
+            let list_size = panes.eq(i).children("div").children(".list_panel").length;
+            if(list_size>0){
+                this.activeName2 = panes[i].id.replace("pane-","");
+                break;
+            }
+        }
     }
 })
 

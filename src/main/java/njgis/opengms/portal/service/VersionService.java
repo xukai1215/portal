@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.entity.support.AuthorInfo;
+import njgis.opengms.portal.entity.support.Localization;
 import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.ResultUtils;
 import njgis.opengms.portal.utils.deCode;
@@ -159,7 +160,10 @@ public class VersionService {
         JSONArray classResult1=new JSONArray();
 
         List<String> classifications1 = modelItemVersion.getClassifications();
-        for(int i=0;i<classifications.size();i++){
+        if(classifications1==null){
+            classifications1 = new ArrayList<>();
+        }
+        for(int i=0;i<classifications1.size();i++){
 
             JSONArray array=new JSONArray();
             String classId=classifications1.get(i);
@@ -203,107 +207,55 @@ public class VersionService {
         }
 
         //详情页面
-        String detailResult;
-        String model_detailDesc=modelInfo.getDetail();
-        int num=model_detailDesc.indexOf("upload/document/");
-        if(num==-1||num>20){
-            detailResult=model_detailDesc;
-        }
-        else {
-            if(model_detailDesc.indexOf("/")==0){
-                model_detailDesc.substring(1);
-            }
-            //model_detailDesc = model_detailDesc.length() > 0 ? model_detailDesc.substring(1) : model_detailDesc;
-            String filePath = resourcePath.substring(0,resourcePath.length()-7) +"/" + model_detailDesc;
-            try {
-                filePath = java.net.URLDecoder.decode(filePath, "utf-8");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-            if (model_detailDesc.length() > 0) {
-                File file = new File(filePath);
-                if (file.exists()) {
-                    StringBuilder detail = new StringBuilder();
-                    try {
-                        FileInputStream fileInputStream = new FileInputStream(file);
-                        InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, "UTF-8");
-                        BufferedReader br = new BufferedReader(inputStreamReader);
-                        String line;
-                        while ((line = br.readLine()) != null) {
-                            line = line.replaceAll("<h1", "<h1 style='font-size:16px;margin-top:0'");
-                            line = line.replaceAll("<h2", "<h2 style='font-size:16px;margin-top:0'");
-                            line = line.replaceAll("<h3", "<h3 style='font-size:16px;margin-top:0'");
-                            line = line.replaceAll("<p", "<p style='font-size:14px;text-indent:2em'");
-                            detail.append(line);
-                        }
-                        br.close();
-                        inputStreamReader.close();
-                        fileInputStream.close();
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    detailResult = detail.toString();
-                } else {
-                    detailResult = model_detailDesc;
+        String detailResult = "";
+        List<Localization> localizationList = modelInfo.getLocalizationList();
+        //先找中英文描述
+        for(Localization localization:localizationList){
+            String local = localization.getLocalCode();
+            if(local.equals("en")||local.equals("zh")||local.contains("en-")||local.contains("zh-")){
+                String localDesc = localization.getDescription();
+                if(localDesc!=null&&!localDesc.equals("")) {
+//                    detailLanguage = localization.getLocalName();
+                    detailResult = localization.getDescription();
+                    break;
                 }
-            } else {
-                detailResult = model_detailDesc;
+            }
+        }
+        //如果没有中英文，则使用其他语言描述
+        if(detailResult.equals("")){
+            for(Localization localization:localizationList){
+                String localDesc = localization.getDescription();
+                if(localDesc!=null&&!localDesc.equals("")) {
+//                    detailLanguage = localization.getLocalName();
+                    detailResult = localization.getDescription();
+                    break;
+                }
             }
         }
 
-        String detailResult1;
-        String model_detailDesc1=modelItemVersion.getDetail();
-        int num1=model_detailDesc1.indexOf("upload/document/");
-        if(num1==-1||num1>20){
-            detailResult1=model_detailDesc1;
-        }
-        else {
-            if(model_detailDesc1.indexOf("/")==0){
-                model_detailDesc1.substring(1);
-            }
-            //model_detailDesc1 = model_detailDesc1.length() > 0 ? model_detailDesc1.substring(1) : model_detailDesc1;
-            String filePath = resourcePath.substring(0,resourcePath.length()-7) +"/" + model_detailDesc1;
-            try {
-                filePath = java.net.URLDecoder.decode(filePath, "utf-8");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-            if (model_detailDesc1.length() > 0) {
-                File file = new File(filePath);
-                if (file.exists()) {
-                    StringBuilder detail = new StringBuilder();
-                    try {
-                        FileInputStream fileInputStream = new FileInputStream(file);
-                        InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, "UTF-8");
-                        BufferedReader br = new BufferedReader(inputStreamReader);
-                        String line;
-                        while ((line = br.readLine()) != null) {
-                            line = line.replaceAll("<h1", "<h1 style='font-size:16px;margin-top:0'");
-                            line = line.replaceAll("<h2", "<h2 style='font-size:16px;margin-top:0'");
-                            line = line.replaceAll("<h3", "<h3 style='font-size:16px;margin-top:0'");
-                            line = line.replaceAll("<p", "<p style='font-size:14px;text-indent:2em'");
-                            detail.append(line);
-                        }
-                        br.close();
-                        inputStreamReader.close();
-                        fileInputStream.close();
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    detailResult1 = detail.toString();
-                } else {
-                    detailResult1 = model_detailDesc1;
+        String detailResult1 = "";
+        List<Localization> localizationList1 = modelItemVersion.getLocalizationList();
+        //先找中英文描述
+        for(Localization localization:localizationList1){
+            String local = localization.getLocalCode();
+            if(local.equals("en")||local.equals("zh")||local.contains("en-")||local.contains("zh-")){
+                String localDesc = localization.getDescription();
+                if(localDesc!=null&&!localDesc.equals("")) {
+//                    detailLanguage = localization.getLocalName();
+                    detailResult1 = localization.getDescription();
+                    break;
                 }
-            } else {
-                detailResult1 = model_detailDesc1;
+            }
+        }
+        //如果没有中英文，则使用其他语言描述
+        if(detailResult.equals("")){
+            for(Localization localization:localizationList1){
+                String localDesc = localization.getDescription();
+                if(localDesc!=null&&!localDesc.equals("")) {
+//                    detailLanguage = localization.getLocalName();
+                    detailResult1 = localization.getDescription();
+                    break;
+                }
             }
         }
 

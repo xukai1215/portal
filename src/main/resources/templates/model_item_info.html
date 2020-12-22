@@ -24,6 +24,7 @@
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css"/>
 
+
     <style>
 
         .blockEdit{
@@ -70,7 +71,11 @@
         }
 
         .el-tabs__item .el-badge__content {
-            margin-left: 5px;
+
+            background-color: #409EFF;
+        }
+
+        .gray{
             background-color: #bbbbbb;
         }
 
@@ -201,8 +206,13 @@
             <div id="Authorship0" class="detail_block minScreen"
                  >
                 <div class="block_head">
-                    <div class="head_text" style="padding-left: 10px;">
+                    <div class="head_text" style="padding-left: 10px;padding-right: 15px;display: inline-flex">
                         <h4>Authorship</h4>
+                        <el-tooltip popper-class="fontsize-15" effect="light"
+                                    content="We deeply understand that a model may be attributed to the efforts of a team. If all author information is not listed here, please click the feedback below."
+                                    placement="top">
+                            <i class="fa fa-question-circle-o" aria-hidden="true" style="margin-top:4px;"></i>
+                        </el-tooltip>
                     </div>
                 </div>
                 <div class="block_content text-center" style="padding-left:10px" >
@@ -244,30 +254,30 @@
                 </div>
             </div>
 
-            <!--<div id="classification" class="detail_block">-->
-                <!--<div class="block_head">-->
-                    <!--<div class="head_text">-->
-                        <!--<h4>Classification(s)</h4>-->
-                    <!--</div>-->
+            <div id="classification" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Classification(s)</h4>
+                    </div>
                     <!--<span class="blockEdit">-->
                         <!--<el-button type="primary" icon="el-icon-edit" @click="getClassifications" circle></el-button>-->
                     <!--</span>-->
 
-                <!--</div>-->
-                <!--<div class="block_content" style="margin-top:20px;">-->
-                    <!--<div th:each="classS:${classifications}">-->
-                        <!--<span style="font-size:24px;margin-right: 8px">●</span>-->
-                        <!--<el-breadcrumb separator-class="el-icon-arrow-right">-->
-                            <!--<el-breadcrumb-item th:each="class:${classS}" th:text="${class.name}"-->
-                                                <!---->
-                                                <!--:to="{ path: '/' }">Earth-->
-                                <!--System Classification-->
-                            <!--</el-breadcrumb-item>-->
-                        <!--</el-breadcrumb>-->
-                    <!--</div>-->
+                </div>
+                <div class="block_content" style="margin-top:20px;">
+                    <div th:each="classS:${classifications}">
+                        <span style="font-size:24px;margin-right: 8px">●</span>
+                        <el-breadcrumb separator-class="el-icon-arrow-right">
+                            <el-breadcrumb-item th:each="class:${classS}" th:text="${class.name}"
 
-                <!--</div>-->
-            <!--</div>-->
+                                                :to="{ path: '/' }">Earth
+                                System Classification
+                            </el-breadcrumb-item>
+                        </el-breadcrumb>
+                    </div>
+
+                </div>
+            </div>
 
             <div id="classification2" class="detail_block">
                 <div class="block_head">
@@ -345,7 +355,7 @@
                         <div slot="label">
                             <!--<el-button v-if="activeName=='Computable Model'" type="primary" icon="el-icon-edit" size="mini" circle></el-button>-->
                             Computable Model List
-                            <span class="el-badge__content el-badge__content--undefined"
+                            <span class="el-badge__content el-badge__content--undefined" th:style="@{(${#lists.size(computableModels)==0} ? 'background-color: #bbbbbb' : '')}"
                                   th:text="${#lists.size(computableModels)}">
                             </span>
 
@@ -403,7 +413,7 @@
                     </el-tab-pane>
                     <el-tab-pane name="Conceptual Model">
                         <div slot="label">Conceptual-schematic Model List
-                            <span class="el-badge__content el-badge__content--undefined"
+                            <span class="el-badge__content el-badge__content--undefined" th:style="@{(${#lists.size(conceptualModels)==0} ? 'background-color: #bbbbbb' : '')}"
                                   th:text="${#lists.size(conceptualModels)}">
                             </span>
                         </div>
@@ -443,7 +453,7 @@
                     </el-tab-pane>
                     <el-tab-pane name="Logical Model">
                         <div slot="label">Logical-schematic Model List
-                            <span class="el-badge__content el-badge__content--undefined"
+                            <span class="el-badge__content el-badge__content--undefined" th:style="@{(${#lists.size(logicalModels)==0} ? 'background-color: #bbbbbb' : '')}"
                                   th:text="${#lists.size(logicalModels)}">
                             </span>
                         </div>
@@ -493,7 +503,7 @@
                 <el-tabs class="block_content" v-model="activeName1" type="border-card" stretch="true">
                     <el-tab-pane name="Model Item">
                         <div slot="label">Model Item
-                            <span class="el-badge__content el-badge__content--undefined"
+                            <span class="el-badge__content el-badge__content--undefined" th:style="@{(${#lists.size(modelItems)==0} ? 'background-color: #bbbbbb' : '')}"
                                   th:text="${#lists.size(modelItems)}">
                             </span>
                         </div>
@@ -537,7 +547,7 @@
                     </el-tab-pane>
                     <el-tab-pane name="Data Item">
                         <div slot="label">Data Item
-                            <span class="el-badge__content el-badge__content--undefined"
+                            <span class="el-badge__content el-badge__content--undefined" th:style="@{(${#lists.size(dataItems)==0} ? 'background-color: #bbbbbb' : '')}"
                                   th:text="${#lists.size(dataItems)}">
                             </span>
                         </div>
@@ -585,7 +595,7 @@
                 <el-tabs class="block_content" v-model="activeName2" type="border-card" stretch="true">
                     <el-tab-pane name="Concept & Semantic">
                         <div slot="label">Concept & Semantic
-                            <span class="el-badge__content el-badge__content--undefined"
+                            <span class="el-badge__content el-badge__content--undefined" th:style="@{(${#lists.size(concepts)==0} ? 'background-color: #bbbbbb' : '')}"
                                   th:text="${#lists.size(concepts)}">
                             </span>
                         </div>
@@ -624,7 +634,7 @@
                     </el-tab-pane>
                     <el-tab-pane name="Spatial Reference">
                         <div slot="label">Spatial Reference
-                            <span class="el-badge__content el-badge__content--undefined"
+                            <span class="el-badge__content el-badge__content--undefined" th:style="@{(${#lists.size(spatialReferences)==0} ? 'background-color: #bbbbbb' : '')}"
                                   th:text="${#lists.size(spatialReferences)}">
                             </span>
                         </div>
@@ -663,7 +673,7 @@
                     </el-tab-pane>
                     <el-tab-pane name="Data Template">
                         <div slot="label">Data Template
-                            <span class="el-badge__content el-badge__content--undefined"
+                            <span class="el-badge__content el-badge__content--undefined" th:style="@{(${#lists.size(templates)==0} ? 'background-color: #bbbbbb' : '')}"
                                   th:text="${#lists.size(templates)}">
                             </span>
                         </div>
@@ -675,7 +685,7 @@
                                 <div class="info" style="margin-top:0px;">
                                     <a th:href="'/repository/template/'+${model.oid}"
                                        th:text="${model.name}">Ground Water Flow System</a>
-                                    <p style="margin-top: 0px" th:text="${model.type}+' | '+${model.description}">ANN-CA
+                                    <p style="margin-top: 0px" th:text="${model.description}">ANN-CA
                                         uses the artificial
                                         neural network method to extract
                                         land use change rules in the study area, and then applies the rules to
@@ -701,7 +711,7 @@
                     </el-tab-pane>
                     <el-tab-pane name="Unit & Metric">
                         <div slot="label">Unit & Metric
-                            <span class="el-badge__content el-badge__content--undefined"
+                            <span class="el-badge__content el-badge__content--undefined" th:style="@{(${#lists.size(units)==0} ? 'background-color: #bbbbbb' : '')}"
                                   th:text="${#lists.size(units)}">
                             </span>
                         </div>
@@ -894,6 +904,7 @@
 
 
                 </div>
+
             </div>
 
             <div id="comments" class="detail_block">

@@ -61,14 +61,11 @@ new Vue({
             activeIndex: '7',
             //register form
             ruleForm2: {
-                userName:'',
                 email:'',
                 // code:'1234',
-                password: '',
                 pwd: '',
                 checkPass: '',
                 name:'',
-                orgs:[],
                 org:''
             },
             rules2: {
@@ -143,13 +140,20 @@ new Vue({
         register(){
 
             this.ruleForm2.userName=this.ruleForm2.email;
-            this.ruleForm2.password=hex_md5(this.ruleForm2.pwd);
+            this.ruleForm2.password=hex_sha256(hex_md5(this.ruleForm2.pwd));
+
+            let data = {
+                "email": this.ruleForm2.email,
+                "password": hex_sha256(hex_md5(this.ruleForm2.pwd)),
+                "name": this.ruleForm2.name,
+                "org": this.ruleForm2.org,
+            };
 
             $.ajax({
                 url : '/user/add',
                 type : 'post',
                 // data对象中的属性名要和服务端控制器的参数名一致 login(name, password)
-                data : this.ruleForm2,
+                data : data,
 
                 success : (result)=> {
                     if(result.data==1) {
