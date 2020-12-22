@@ -55,28 +55,28 @@ var createDataApplication = Vue.extend({
             socket:"",
 
             dataApplication_oid:"",
-            treeData: [{
-                id: 1,
-                label: 'All Folder',
-                children: [{
-                    id: 4,
-                    label: '二级 1-1',
-                    children: [{
-                        id: 9,
-                        label: '三级 1-1-1'
-                    }, {
-                        id: 10,
-                        label: '三级 1-1-2'
-                    }]
-                }]
-            }],
-            categoryTree: [],
-            defaultProps: {
-                children: 'children',
-                label: 'label'
-            },
-            cls: [],//分类的id队列
-            clsStr: '',//分类的label队列
+            // treeData: [{
+            //     id: 1,
+            //     label: 'All Folder',
+            //     children: [{
+            //         id: 4,
+            //         label: '二级 1-1',
+            //         children: [{
+            //             id: 9,
+            //             label: '三级 1-1-1'
+            //         }, {
+            //             id: 10,
+            //             label: '三级 1-1-2'
+            //         }]
+            //     }]
+            // }],
+            // categoryTree: [],
+            // defaultProps: {
+            //     children: 'children',
+            //     label: 'label'
+            // },
+            // cls: [],//分类的id队列
+            // clsStr: '',//分类的label队列
 
             selectedFile:[],
             userDataList:[],
