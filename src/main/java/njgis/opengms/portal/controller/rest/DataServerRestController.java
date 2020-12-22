@@ -63,7 +63,7 @@ public class DataServerRestController {
         }else{
             JSONObject jsonObject = dataServerService.getUserNode(userName);
             if(jsonObject.isEmpty()){
-                return ResultUtils.error(-1,"err");
+                return ResultUtils.success("offline");
             }else {
                 return ResultUtils.success(jsonObject);
             }

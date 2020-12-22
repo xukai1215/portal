@@ -427,12 +427,26 @@
 
     <el-dialog title="Select Data From My Data Space" append-to-body :visible.sync="userDataSpaceVisible" ref="userDataSpace"  width="68%"
                class="noScroll centerDialog">
-        <user-data
-                @com-selectfile="selectDataspaceFile"
-                @com-removefile="removeDataspaceFile"
-                single-choice
-                ref="userDataSpace" style="height: 505px;">
-        </user-data>
+        <el-tabs v-model="activeName" @tab-click="handleClick">
+            <el-tab-pane label="User Data Space" name="first">
+                <user-data
+                        @com-selectfile="selectDataspaceFile"
+                        @com-removefile="removeDataspaceFile"
+                        single-choice
+                        ref="userDataSpace" style="height: 505px;">
+                </user-data>
+            </el-tab-pane>
+            <el-tab-pane label="配置管理" name="second">
+
+            </el-tab-pane>
+            <el-tab-pane label="角色管理" name="third">
+
+            </el-tab-pane>
+            <el-tab-pane label="定时任务补偿" name="fourth">
+
+            </el-tab-pane>
+        </el-tabs>
+
         <span slot="footer" class="dialog-footer">
        <el-button @click="userDataSpaceVisible = false">Cancel</el-button>
       <el-button type="primary" @click="selectFromDataSpace">Confirm</el-button>
