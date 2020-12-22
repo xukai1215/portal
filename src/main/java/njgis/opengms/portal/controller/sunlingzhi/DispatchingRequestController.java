@@ -6,6 +6,7 @@ import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.MyHttpUtils;
 import njgis.opengms.portal.utils.ResultUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.*;
@@ -230,6 +231,30 @@ public class DispatchingRequestController {
 
     }
 
+    @RequestMapping(value = "/batchdelete",method = RequestMethod.DELETE)
+    public JsonResult batchDelete(@RequestParam("ids") String[] ids){
+        String idstr = StringUtils.join(ids, ",");;
+        String url="http://"+ dataContainerIpAndPort +"/batchData?oids="+idstr;
+        RestTemplate restTemplate = new RestTemplate();
+//        restTemplate.delete(url);
+        Map<String,String> a=new HashMap<>();
+
+        MyHttpUtils myHttpUtils = new MyHttpUtils();
+        String delete = null;
+        try{
+            delete = myHttpUtils.DELETE(url, "UTF-8", a);
+            JSONObject json = JSONObject.parseObject(delete);
+            int code = json.getInteger("code");
+            if(code == 1){
+                return ResultUtils.success(json.getString("message"));
+            }
+        }catch (IOException e){
+            e.printStackTrace();
+            return ResultUtils.error(-1,"delete failed");
+        }
+
+        return ResultUtils.error(-1,delete);
+    }
 
     @RequestMapping (value="/download",method = RequestMethod.GET)
     ResponseEntity<byte[]> download(@RequestParam("url") String url){

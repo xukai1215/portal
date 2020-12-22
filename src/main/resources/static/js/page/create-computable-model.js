@@ -169,6 +169,8 @@ var createComputableModel = Vue.extend({
 
             ],
 
+            currentStep:0,
+
         }
     },
     methods: {
@@ -484,8 +486,48 @@ var createComputableModel = Vue.extend({
             return flag;
         },
 
+        checkMd5Deployed(){
+            if(this.computableModel.md5=='')
+                return
+            let flag
+            $.ajax({
+                url:"/computableModel/checkDeployed",
+                type:"GET",
+                async:false,
+                data:{
+                    md5:this.computableModel.md5
+                },
+                success:(res) => {
+                    if (res.code != 0)
+                        return
+
+                    if (res.data){
+                        flag = true
+                        this.$message({
+                            message: 'Services of this MD5 have been deployed before!',
+                            type:"success"
+                        });
+                    }else{
+                        this.$alert('No existed service of this MD5, please deploy model in the model container first!', 'Tip', {
+                                 type:"warning",
+                                 confirmButtonText: 'OK',
+                                 callback: ()=>{
+                                     return
+                                 }
+                             }
+                         );
+                        flag = false
+                    }
+                }
+
+            })
+
+            return flag;
+        },
+
         getServiceByMd5Check(){
-            let res = this.getServiceByMd5()
+            // let res = this.getServiceByMd5()
+            let res = this.checkMd5Deployed()
             return res
         },
 
@@ -602,13 +644,20 @@ var createComputableModel = Vue.extend({
             if(basicInfo.resourceJson!=null)
                 this.resources=basicInfo.resourceJson;
 
-            let modelItem = await this.getBindModelInfo(basicInfo.relateModelItem)
+            let modelItem = {
+                name:'',
+                oid:''
+            }
+            if(basicInfo.relateModelItem!=null&&basicInfo.relateModelItem!=undefined){
+                modelItem = await this.getBindModelInfo(basicInfo.relateModelItem)
+            }
 
             this.computableModel.bindModelItem=modelItem.name;
             this.computableModel.bindOid=modelItem.oid;
             this.computableModel.status=basicInfo.status;
             this.computableModel.md5=basicInfo.md5;
             this.computableModel.mdl=basicInfo.mdl;
+            this.computableModel.url=basicInfo.url;
 
             this.computableModel.contentType = basicInfo.contentType;
 
@@ -818,8 +867,12 @@ var createComputableModel = Vue.extend({
             }else{
                 setTimeout(() => {
                     window.location.href = "/user/userSpace#/models/computablemodel";
-                }, 905)
+                }, 305)
             }
+        },
+
+        submitEdit(){
+            $(".finish").click()
         },
 
         draftJump(){
@@ -1112,7 +1165,7 @@ var createComputableModel = Vue.extend({
         });
 
 
-        $(".finish").click(()=>{
+        $(".finish").on('click',()=>{
             this.formData=new FormData();
 
             if(this.computableModel.bindModelItem==""){

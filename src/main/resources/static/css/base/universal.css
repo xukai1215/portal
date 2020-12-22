@@ -149,6 +149,19 @@ dt{
     color:red;
 }
 
+.centerDialog .el-dialog{
+    position: relative !important;
+    top:auto;
+    left: auto;
+    transform: none;
+}
+
+.centerDialog.el-dialog__wrapper{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .el-dialog{
     display: flex;
     flex-direction: column;

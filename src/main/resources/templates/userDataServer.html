@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/XSL/Transform">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<template id="userDataServer" th:fragment="userDataServer">
+    <div class="innerShadowCol">
+        <div class="page-content clearfix scrollbar el-col-lg-21 el-col-md-20 pageContent acrylicBack"
+             style="margin-left: 240px;padding-bottom: 100px"
+             :style="{'height':ScreenMinHeight,'min-height':ScreenMinHeight,'max-height':ScreenMaxHeight}"
+             id="pageContent">
+            <!--            <div class="titleContainer"><h4>My Space</h4></div>-->
+            <div class="flexColContainer mainContent" style="padding:20px 10px;max-width: 1120px">
+                <section role="description" class="flexCol flexCenter contentSection">
+                    <h3>Data Server Node</h3>
+                    <h5 style="text-align: center">OpenGMS Data Server dataNode </h5>
+
+                </section>
+                <section class="flexRowContainer flexWrap " style="max-width: 1050px">
+                    <div class="page-content-wrap dataNode-fluid">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="panel-default">
+                                    <div class="panel-body" style="height: 61px;">
+                                        <div class="form-horizontal">
+                                            <div class="form-group">
+                                                <div class="" style="float: right;margin-right: 15px">
+                                                    <a>
+                                                        <button class="btn btn-info" @click="refreshDataNode()">
+                                                            <i class="fa fa-refresh"></i>Refresh
+                                                        </button>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="page-content-wrap dataNode-fluid" style="margin-top:-10px;">
+
+                            <div class="row">
+
+                                <div class="col-sm-12 col-md-6 col-lg-4">
+                                    <el-card class="box-card serverCard" >
+                                        <div class="content">
+                                            <h4>
+                                                My data server node
+                                            </h4>
+                                            <div class="clearfix"
+                                                 style="margin-top:10px">
+                                                <div class="serverStatus pull-left"
+                                                     v-if="dataNode.status">
+                                                    <span style="background: #6FCE7F;display:inline-block;width:10px;height:10px;border-radius: 50%;"></span>
+                                                    Running
+                                                </div>
+                                                <div class="serverStatus pull-left"
+                                                     v-else>
+                                                    <span style="background: #929994;display:inline-block;width:10px;height:10px;border-radius: 50%;"></span>
+                                                    Offline
+                                                </div>
+                                            </div>
+<!--                                            <div class="btn btn-info btn-round btn-noShadow" style="text-transform: lowercase;font-size: 14px;float: right;margin: 15px 5px" @click="getNodeAllContents()">-->
+<!--                                                check details-->
+<!--                                            </div>-->
+<!--                                            <div class="clearfix">-->
+<!--                                                <div class="pull-left">-->
+
+<!--                                                    <p style="margin-bottom:5px">{{dataNode.hardware.platform}} {{dataNode.hardware.version}}</p>-->
+<!--                                                    <p>{{dataNode.hardware.cpu_Core}} Core - {{dataNode.hardware.totalMemory}} RAM - {{dataNode.hardware.diskAll}} Hard Disk</p>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                            <div class="clearfix" style="margin-top:10px">-->
+<!--                                                <div class="serverStatus pull-left">-->
+<!--                                                    <span style="background: #6FCE7F;display:inline-block;width:10px;height:10px;border-radius: 50%;"></span>-->
+<!--                                                    Running-->
+<!--                                                </div>-->
+<!--                                                <div class="serverIp pull-right">-->
+<!--                                                    {{dataNode.ip}}-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+                                        </div>
+                                    </el-card>
+                                </div>
+                                <div class="col-sm-12 col-md-6 col-lg-8">
+                                    <el-card class="box-card" style="margin-top: 20px;border-top: #8cd1e5 8px solid" >
+                                        <el-tabs v-model="activeName" stretch="stretch" @tab-click="handleClick">
+                                            <el-tab-pane label="Data" name="Data" v-loading="nodeLoading">
+                                                <div  v-if="dataNode.status==1">
+                                                    <el-table
+                                                            :data="dataNode.data">
+                                                        <el-table-column
+                                                                prop="name"
+                                                                label="Name"
+                                                                width="290">
+                                                        </el-table-column>
+                                                        <el-table-column
+                                                                prop="date"
+                                                                label="Date"
+                                                                width="160">
+                                                        </el-table-column>
+                                                        <el-table-column
+                                                                label="Option">
+                                                            <template slot-scope="scope">
+<!--                                                                <el-button size="mini" round @click="download(scope.row)" style="margin-right: 2px"><span><i class="fa fa-arrow-down"></i></span>Download</el-button>-->
+                                                                <el-button size="mini" round type="success" @click="bindDataItemList(scope.row)">Bind Item</el-button>
+                                                            </template>
+                                                        </el-table-column>
+                                                    </el-table>
+
+                                                </div>
+                                                <div v-else>
+                                                    <h5 style="font-style: italic;text-align: center;">Node Offline</h5>
+                                                </div>
+                                            </el-tab-pane>
+                                            <el-tab-pane label="Processing" name="Processing" v-loading="nodeLoading">
+                                                <div  v-if="dataNode.status==1">
+                                                    <el-table
+                                                            :data="dataNode.processing">
+                                                        <el-table-column
+                                                                prop="name"
+                                                                label="Name"
+                                                                width="290">
+                                                        </el-table-column>
+                                                        <el-table-column
+                                                                prop="date"
+                                                                label="Date"
+                                                                width="160">
+                                                        </el-table-column>
+                                                        <el-table-column
+                                                                label="Option">
+                                                            <template slot-scope="scope">
+                                                                <el-button size="mini" round type="success" @click="bindDataMethodList(scope.row)">Bind Item</el-button>
+                                                            </template>
+                                                        </el-table-column>
+                                                    </el-table>
+                                                </div>
+                                                <div v-else>
+                                                    <h5 style="font-style: italic">Node Offline</h5>
+                                                </div>
+                                            </el-tab-pane>
+                                            <el-tab-pane label="Visualization" name="Visualization" v-loading="nodeLoading">
+                                                <div  v-if="dataNode.status==1">
+                                                    <el-table
+                                                            :data="dataNode.visualization">
+                                                        <el-table-column
+                                                                prop="name"
+                                                                label="Name"
+                                                                width="290">
+                                                        </el-table-column>
+                                                        <el-table-column
+                                                                prop="date"
+                                                                label="Date"
+                                                                width="160">
+                                                        </el-table-column>
+                                                        <el-table-column
+                                                                label="Option">
+                                                            <template slot-scope="scope">
+<!--                                                                <el-button size="mini" round @click="download(scope.row)" style="margin-right: 2px"><span><i class="fa fa-arrow-down"></i></span>Download</el-button>-->
+                                                                <el-button size="mini" round type="success" @click="bindDataMethodList(scope.row)">Bind Item</el-button>
+                                                            </template>
+                                                        </el-table-column>
+                                                    </el-table>
+                                                </div>
+                                                <div v-else>
+                                                    <h5 style="font-style: italic">Node Offline</h5>
+                                                </div>
+                                            </el-tab-pane>
+                                        </el-tabs>
+                                    </el-card>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+        </div>
+        <el-dialog title="Bind DataItem" :visible.sync="dataItemBindDialog" width="50%">
+            <span slot="footer" class="dialog-footer">
+                <el-table v-loading="loading"
+                        :data="dataItems">
+                     <el-table-column
+                             prop="name"
+                             label="Name"
+                             width="320">
+                          <template slot-scope="props">
+                                    <a :href="'/dataItem/'+props.row.oid" target="_blank">{{props.row.name}}</a>
+                          </template>
+                     </el-table-column>
+                     <el-table-column
+                             label="Contributor">
+                          <template slot-scope="props">
+                                    <a :href="'/profile/'+props.row.contributorId" target="_blank">{{props.row.contributor}}</a>
+                          </template>
+                     </el-table-column>
+                     <el-table-column
+                             label="Option">
+                         <template slot-scope="scope">
+                             <el-button size="mini"
+                                        type="primary"
+                                        plain
+                                        round
+                                        style="margin-right: 2px"
+                                        v-if="isBinded(scope.row)"
+                             @click="unbindDataItem(scope.row)">
+                                 Unbind
+                             </el-button>
+                             <el-button size="mini" round type="success" v-else
+                                        @click="bindDataItem(scope.row)">Bind</el-button>
+                         </template>
+                     </el-table-column>
+                </el-table>
+                <el-pagination style="text-align: center;margin-top:20px"
+                               @current-change="(page)=>handlePageChange(page,1)"
+                               :current-page="pageOption.currentPage"
+                               layout="total, prev, pager, next, jumper"
+                               :page-size="6"
+                               :total="pageOption.total">
+                        </el-pagination>
+                <!--                <el-button @click="bindDataItem()" size="medium" type="danger">Confirm</el-button>-->
+                <el-button @click="dataItemBindDialog=false" style="margin-right: 15px" size="medium">Cancel</el-button>
+            </span>
+        </el-dialog>
+        <el-dialog title="Bind Data Method" :visible.sync="dataMethodBindDialog" width="50%">
+            <span slot="footer" class="dialog-footer">
+                <el-table v-loading="loading"
+                        :data="dataMethods">
+                     <el-table-column
+                             prop="name"
+                             label="Name"
+                             width="320">
+                          <template slot-scope="props">
+                                    <a :href="'/dataApplication/'+props.row.oid" target="_blank">{{props.row.name}}</a>
+                          </template>
+                     </el-table-column>
+                     <el-table-column
+                             label="Contributor">
+                          <template slot-scope="props">
+                                    <a :href="'/profile/'+props.row.contributorId" target="_blank">{{props.row.contributor}}</a>
+                          </template>
+                     </el-table-column>
+                     <el-table-column
+                             label="Option">
+                         <template slot-scope="scope">
+                             <el-button size="mini"
+                                        type="primary"
+                                        plain
+                                        round
+                                        style="margin-right: 2px"
+                                        v-if="isBinded(scope.row)"
+                                        @click="unbindDataMethod(scope.row)">
+                                 Unbind
+                             </el-button>bindDataMethod
+                             <el-button size="mini" round type="success" v-else
+                                        @click="bindDataMethod(scope.row)">Bind</el-button>
+                         </template>
+                     </el-table-column>
+                </el-table>
+                <el-pagination style="text-align: center;margin-top:20px"
+                               @current-change="(page)=>handlePageChange(page,2)"
+                               :current-page="pageOption.currentPage"
+                               layout="total, prev, pager, next, jumper"
+                               :page-size="6"
+                               :total="pageOption.total">
+                        </el-pagination>
+                <!--                <el-button @click="bindDataItem()" size="medium" type="danger">Confirm</el-button>-->
+                <el-button @click="dataItemBindDialog=false" style="margin-right: 15px" size="medium">Cancel</el-button>
+            </span>
+        </el-dialog>
+<!--        <el-dialog :visible.sync="unbindConfirmDialog">-->
+<!--            <div>Confirm to unbind from this item?</div>-->
+<!--            <span slot="footer" class="dialog-footer">-->
+<!--                <el-button @click="unbindConfirmDialog = false">Cancel</el-button>-->
+<!--                <el-button type="primary" @click="unbindItem">Confirm</el-button>-->
+<!--            </span>-->
+<!--        </el-dialog>-->
+    </div>
+</template>
+</body>
+<script src="/static/js/page/userDataServer.js"></script>
+</html>

@@ -535,7 +535,7 @@ var createTemplate = Vue.extend({
             }else{
                 setTimeout(() => {
                     window.location.href = "/user/userSpace#/communities/dataTemplate";
-                }, 905)
+                }, 305)
             }
         },
 

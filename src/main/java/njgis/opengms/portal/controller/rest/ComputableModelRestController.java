@@ -100,7 +100,9 @@ public class ComputableModelRestController {
             return ResultUtils.error(-2,"未登录");
         }
         JSONObject result=computableModelService.insert(files,jsonObject,uid);
-        userService.computableModelPlusPlus(uid);
+        if(result.getInteger("code")==1){
+            userService.computableModelPlusPlus(uid);
+        }
 
         return ResultUtils.success(result);
     }
@@ -416,6 +418,19 @@ public class ComputableModelRestController {
         String userId=computableModel.getAuthor();
         User user=userService.getByUid(userId);
         return ResultUtils.success(user.getOid());
+
+    }
+
+    //检查md5是否有对应部署的模型
+    @RequestMapping (value = "/checkDeployed", method = RequestMethod.GET)
+    public JsonResult checkDeployed(@RequestParam(value="md5") String md5,HttpServletRequest request){
+        HttpSession session=request.getSession();
+        if(session.getAttribute("uid")==null){
+            return ResultUtils.error(-1,"no login");
+        }else{
+            Boolean deployed = computableModelService.checkDeployed(md5);
+            return ResultUtils.success(deployed);
+        }
 
     }
 

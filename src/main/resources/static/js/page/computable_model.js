@@ -338,6 +338,7 @@ new Vue({
             this.selectModelServerDialog = true
         },
 
+        //Todo,手动选择服务器部署还有问题
         selectModelServer(container){
             if(!container.status){
                 this.$message({

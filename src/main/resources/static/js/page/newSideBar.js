@@ -42,8 +42,8 @@ Vue.component('headSideBar', {
             handler(to, from) {
                 //通过路由判断条目高亮显示,
                 console.log(to.path)
-                let path = to.path
-                if(path === '/')
+                let path = to.path.split('/')[1]
+                if(path === '')
                     this.curIndex = 1
                 else if(path.indexOf('model') != -1)
                     this.curIndex = 2

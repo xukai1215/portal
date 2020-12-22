@@ -105,7 +105,7 @@
                         <!--<div th:utext="'&nbsp&nbsp'+${modelInfo.shareCount}">&nbsp&nbsp37</div>-->
                         <span th:if="${modelInfo.contentType=='Package'}">
                             <button th:unless="${modelInfo.deploy==true}" class="btn btn-lg btn-info" type="button"
-                                    @click="deployModel()">Deploy
+                                    @click="dialogVisible = true">Deploy
                             </button>
                         </span>
 <!--                        -->
@@ -686,7 +686,7 @@
         <edit-computable-model-module :model-edit-oid="modelOid"></edit-computable-model-module>
     </el-dialog>
 
-    <el-dialog title="select model server" center :visible.sync="selectModelServerDialog">
+    <el-dialog title="Select Model Server" center :visible.sync="selectModelServerDialog">
         <div style="flex: 1.5;margin-left: 5px">
             <p style="text-align: center;font-style: italic;color: #999999">We have provided several servers of different platforms for model deploying.</p>
             <p style="text-align: center;font-style: italic;color: #999999">If you want to deploy this model only on your model server, please change its content type to 'md5' in your space.</p>

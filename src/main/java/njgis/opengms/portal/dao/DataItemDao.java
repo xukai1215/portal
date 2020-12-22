@@ -3,7 +3,6 @@ package njgis.opengms.portal.dao;
 import njgis.opengms.portal.dto.dataItem.DataItemResultDTO;
 import njgis.opengms.portal.entity.DataItem;
 import njgis.opengms.portal.entity.Item;
-import njgis.opengms.portal.entity.Template;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -32,6 +31,8 @@ public interface DataItemDao extends MongoRepository<DataItem,String> {
     Page<DataItem> findByAuthorAndNameContainsAndStatusIn(Pageable pageable, String author, String name, List<String> status);
 
     Page<DataItemResultDTO> findByClassificationsIn(Pageable pageable,List<String> cate);
+
+    Page<DataItem> findAll(Pageable pageable);
 
     //test
     Page<DataItem>  findByClassificationsIsIn(Pageable pageable,String classification);

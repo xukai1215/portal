@@ -219,7 +219,7 @@ public class LogicalModelService {
                 logicalModel.setOid(UUID.randomUUID().toString());
                 logicalModel.setStatus(jsonObject.getString("status"));
                 logicalModel.setName(jsonObject.getString("name"));
-                logicalModel.setRelateModelItem(jsonObject.getString("bindOid"));
+                logicalModel.setRelateModelItem(jsonObject.getString("relatedModelItem"));
                 logicalModel.setDescription(jsonObject.getString("description"));
                 logicalModel.setContentType(jsonObject.getString("contentType"));
                 logicalModel.setDetail(jsonObject.getString("detail"));

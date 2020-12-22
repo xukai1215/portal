@@ -185,7 +185,14 @@ var createConceptualModel = Vue.extend({
         async insertInfo(basicInfo){
             this.resources=basicInfo.resourceJson==undefined?[]:basicInfo.resourceJson;
 
-            let modelItem = await this.getBindModelInfo(basicInfo.relatedModelItem)
+            let modelItem = {
+                name:'',
+                oid:''
+            }
+
+            if(basicInfo.relateModelItem!=null&&basicInfo.relateModelItem!=undefined){
+                modelItem = await this.getBindModelInfo(basicInfo.relateModelItem)
+            }
             this.conceptualModel.bindModelItem=modelItem.name;
             this.conceptualModel.bindOid=modelItem.oid;
 
@@ -412,7 +419,7 @@ var createConceptualModel = Vue.extend({
             }else{
                 setTimeout(() => {
                     window.location.href = "/user/userSpace#/models/conceptualmodel";
-                }, 905)
+                }, 305)
             }
         },
 

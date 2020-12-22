@@ -238,7 +238,7 @@
                                                                     Please insert the MD5 of the openGMS wrapper package:</label>
                                                                 <div class="col-sm-8 col-md-offset-2">
                                                                     <el-input id="MD5_text" v-model="computableModel.md5" @change="inputMd5" @keyup.enter="getServiceByMd5">
-                                                                        <el-button slot="append" @click="getServiceByMd5">Check Duplicate</el-button>
+                                                                        <el-button slot="append" @click="checkMd5Deployed">Check Deployed</el-button>
                                                                     </el-input>
                                                                 </div>
                                                             </div>
@@ -480,6 +480,9 @@
                                                     </div>
                                                 </div>
                                                 <div class="step-footer text-right">
+<!--                                                    <button class="btn btn-danger prev" @click="cancelEditClick()" style="">-->
+<!--                                                        Exit and save draft-->
+<!--                                                    </button>-->
                                                     <button class="btn btn-danger prev" @click="cancelEditClick()" style="">
                                                         Exit
                                                     </button>
@@ -490,7 +493,10 @@
                                                     </button>
                                                     <button class="btn btn-primary next" data-direction="next">Next
                                                     </button>
-                                                    <button class="btn btn-success finish" data-direction="finish">
+                                                    <button v-if="editType=='modify'" @click="submitEdit" class="btn btn-success finish" data-direction="next" >
+                                                        Submit Edit
+                                                    </button>
+                                                    <button v-show="editType=='create'" class="btn btn-success finish" data-direction="finish">
                                                         Finish
                                                     </button>
                                                 </div>
