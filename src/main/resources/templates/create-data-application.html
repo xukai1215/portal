@@ -91,10 +91,13 @@
                                                     <div class="step-tab-panel col-md-offset-1" id="step1">
                                                         <div class="form-group cl-md-6">
                                                             <label class="control-label col-lg-2 col-md-3 col-md-offset-1">
-                                                                <span class="xing">* </span>Bind Data
+                                                                <span class="xing">* </span>Bind Test Data
                                                             </label>
                                                             <div class="input-group col-md-5">
-                                                                <el-button type="primary" @click="openDataSpace()" style="margin-right:10px">Bind</el-button>
+                                                                <el-button type="primary" @click="openDataSpace()" style="margin-right:10px;display: inline-block">Bind</el-button>
+                                                                <div v-for="(item,index) in selectedFile" style="display: inline-block;padding-left: 5px;">
+                                                                    <el-tag type="success">{{item.label}}.{{item.suffix}}</el-tag>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                         <div class="form-group cl-md-6">

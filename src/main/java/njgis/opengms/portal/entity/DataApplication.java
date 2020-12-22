@@ -59,7 +59,7 @@ public class DataApplication {
     String lastModifier;
 
     List<InvokeService> invokeServices;
-    String method; // processing visualization
+    String method; // Conversion Processing Visualization
 //    String method;
 
     List<TestData> testData;//存储testData的id
