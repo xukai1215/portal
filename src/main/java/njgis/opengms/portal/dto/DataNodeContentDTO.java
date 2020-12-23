@@ -17,7 +17,6 @@ public class DataNodeContentDTO {
     String name;
     String token;
     List<String> dataSet;//分布式节点的数据信息
-    JSONObject serviceDetail;//服务详情
     //portal
     String userId;
     String type;

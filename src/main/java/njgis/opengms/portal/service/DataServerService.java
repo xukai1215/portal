@@ -57,6 +57,9 @@ public class DataServerService {
     @Value("${dataServerManager}")
     private String dataServerManager;
 
+    @Value(value = "Conversion,Processing")
+    private List<String> dataProcessing;
+
     public String getNodeData(String token, String id,String userId) throws IOException, URISyntaxException, DocumentException {
         DataNodeContent dataNodeContent = new DataNodeContent();
         String dataUrl = null;
@@ -195,6 +198,7 @@ public class DataServerService {
 
             if(dataNodeContent!=null){
                 dataNodeContent.setChecked(1);
+                dataNodeContentDao.save(dataNodeContent);
                 j_process.put("bindItems",dataNodeContent.getBindItems());
             }
             result.add(j_process);
@@ -248,7 +252,12 @@ public class DataServerService {
         Sort sort = new Sort(asc==1 ? Sort.Direction.ASC : Sort.Direction.DESC, sortEle);
         Pageable pageable = PageRequest.of(page, pageSize, sort);
 
-        Page<DataApplication> dataApplicationPage = dataApplicationDao.findAllByMethod(pageable,method);
+        Page<DataApplication> dataApplicationPage = Page.empty();
+        if(method.equals("Processing")){
+            dataApplicationPage = dataApplicationDao.findAllByMethodIn(pageable,dataProcessing);
+        }else{
+            dataApplicationPage = dataApplicationDao.findAllByMethod(pageable,method);
+        }
 
         List<DataApplication> dataApplicationList = dataApplicationPage.getContent();
         JSONArray array = new JSONArray();
@@ -301,6 +310,7 @@ public class DataServerService {
 
             List<String> bindedItems = new ArrayList<>();
             bindedItems.add(itemId);
+            dataNodeContent.setBindItems(bindedItems);
 
             return dataNodeContentDao.insert(dataNodeContent);
         }
@@ -375,7 +385,6 @@ public class DataServerService {
         invokeService.setToken(dataNodeContentDTO.getToken());
         invokeService.setDataIds(dataNodeContentDTO.getDataSet());
         invokeService.setMethod(dataNodeContentDTO.getType());
-        invokeService.setServiceDetail(dataNodeContentDTO.getServiceDetail());
         List<InvokeService> invokeServices = dataApplication.getInvokeServices();
         if(invokeServices==null){
             invokeServices = new ArrayList<>();

@@ -402,7 +402,6 @@ var userDataServer = Vue.extend(
                     type:this.activeName,
                     dataSet:dataSets,
                     item:item.oid,
-                    serviceDetail:this.configNodeData.metaDetail
                 }
                 axios.post("/dataServer/bindDataMethod",
                     data
