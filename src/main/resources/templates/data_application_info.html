@@ -132,7 +132,7 @@
                         </div>
                         <div class="el-col">
                             <div class="pull-left" style="display: block;margin-left: 15px;">
-                                <a th:href="'/profile/'+${user.userId}"><h4 th:text="${user.name}" style="padding: 0;">Tom
+                                <a th:href="'/profile/'+${user.name}"><h4 th:text="${user.name}" style="padding: 0;">Tom
                                     Marvolo Riddle</h4></a>
                             </div>
                         </div>
@@ -301,15 +301,26 @@
                      <el-table :data="methodsData" style="width: 100%">
                             <el-table-column prop="name" label="name"></el-table-column>
                             <el-table-column prop="method" label="method type"></el-table-column>
+<!--                            <el-table-column prop="serviceId" label = "suiyi" style="display: none"></el-table-column>-->
                             <el-table-column label="operation">
                                 <template slot-scope="scope">
-                                    <a :href="gotoTask()">
-                                        <button type="button" class="btn btn-lg btn-success">Invoke
-                                        </button>
-                                    </a>
+                                    <el-button @click = "gotoTask($event)" type="success" class="invokeBtn">
+                                        Invoke
+                                    </el-button>
                                 </template>
                             </el-table-column>
-                        </el-table>
+                             <el-table-column
+                                     prop="isPortal"
+                                     label="From Portal"
+                                     width="100"
+                                    >
+                                 <template slot-scope="scope">
+                                     <el-tag
+                                             :type="scope.row.isPortal === 'true' ? 'primary' : 'success'"
+                                             disable-transitions>{{scope.row.isPortal}}</el-tag>
+                                 </template>
+                             </el-table-column>
+                     </el-table>
                 </div>
 <!--                    </el-tab-pane>-->
 <!--                    <el-tab-pane label="Behavior" name="Behavior">-->
@@ -454,7 +465,7 @@
                         </div>
                         <div class="el-col">
                             <div class="pull-left" style="display: block;margin-left: 15px;">
-                                <a th:href="'/profile/'+${user.userId}"><h4 th:text="${user.name}" style="padding: 0;">Tom
+                                <a th:href="'/profile/'+${user.name}"><h4 th:text="${user.name}" style="padding: 0;">Tom
                                     Marvolo Riddle</h4></a>
                             </div>
                         </div>

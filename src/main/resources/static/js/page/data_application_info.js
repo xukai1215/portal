@@ -48,6 +48,8 @@ var data_application_info = new Vue({
             modelOid:'',
 
             methodsData:new Array(),
+            userId:'',
+            dataApplicationId:'',
         }
     },
     methods: {
@@ -507,11 +509,25 @@ var data_application_info = new Vue({
                 }
             }).catch(function (err) {console.log(err)})
         },
-        gotoTask(){
-            let str = window.location.href.split('/')
-            let oid = str[str.length-1]
-            return "/dataApplication/task/"+oid
-        }
+        gotoTask(event){
+            let refLink=$(".invokeBtn");
+            for(let i=0;i<refLink.length;i++){
+                if(event.currentTarget===refLink[i]){
+                    console.log(this.methodsData[i].serviceId);
+                    window.location.href = "/dataApplication/task/" + '/' + this.dataApplicationId + '/' + this.methodsData[i].serviceId;
+                }
+            }
+            // let str = window.location.href.split('/')
+            // let oid = str[str.length-1]
+            // return "/dataApplication/task/"+oid
+        },
+        // filterTag(value, row) {
+        //     return row.tag === value;
+        // },
+        // filterHandler(value, row, column) {
+        //     const property = column['property'];
+        //     return row[property] === value;
+        // },
 
         // showMxGraph(){
         //     $("#ModelShow").show();
@@ -529,6 +545,8 @@ var data_application_info = new Vue({
         // 表格
     },
     mounted(){
+        let str = window.location.href.split('/');
+        this.dataApplicationId = str[str.length-1];
 
         // this.setSession("history", window.location.href);
         axios.get("/user/load")

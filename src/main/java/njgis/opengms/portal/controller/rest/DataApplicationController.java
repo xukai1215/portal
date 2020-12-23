@@ -295,7 +295,7 @@ public class DataApplicationController {
 //        }
 //        String reqUsrId = session.getAttribute("uid").toString();
         String reqUsrId = "33";//门户测试时注释掉
-        String token = "fcky/35Rezr+Kyazr8SRWA==";
+        String token = "fcky/35Rezr+Kyazr8SRWA==";//需要存起来，拿token
         token = URLEncoder.encode(token, "UTF-8");
 
         for (InvokeService invokeService : invokeServices){
@@ -336,12 +336,12 @@ public class DataApplicationController {
     }
 
     @LoginRequired
-    @RequestMapping(value = "/task/{id}", method = RequestMethod.GET)
-    ModelAndView getTask(@PathVariable("id") String id) {
-
+    @RequestMapping(value = "/task/{aid}/{sid}", method = RequestMethod.GET)
+    ModelAndView getTask(@PathVariable String aid,@PathVariable String sid){
         ModelAndView modelAndView = new ModelAndView();
-
         modelAndView.setViewName("data_application_task");
+
+
 
         return modelAndView;
     }
@@ -350,41 +350,56 @@ public class DataApplicationController {
      * 获取xml以及paremeter
      * @return
      */
-    @RequestMapping(value = "/getParemeter/{oid}", method = RequestMethod.GET)
-    public JsonResult getParemeter(@PathVariable(value = "oid") String oid) throws IOException, DocumentException {
+    @RequestMapping(value = "/getParemeter/{aid}/{sid}", method = RequestMethod.GET)
+    public JsonResult getParemeter(@PathVariable String aid, @PathVariable String sid) throws IOException, DocumentException {
         JsonResult jsonResult = new JsonResult();
-        DataApplication dataApplication = dataApplicationDao.findFirstByOid(oid);
-        String packagePath = dataApplication.getPackagePath();
-        File file = new File(packagePath);
-        File[] files = file.listFiles();
-        String fileName = null;
-        JSONObject jsonObject = new JSONObject();
-        for (File file1:files){
-            fileName = file1.getName();
-            if (file1.getName().substring(file1.getName().lastIndexOf(".")).equals(".xml")){
-                //解析xml文件
-                if (!file1.exists()){
-                    return null;
-                }
-                FileInputStream inputStream = new FileInputStream(file1);
-                int length = inputStream.available();
-                byte bytes[] = new byte[length];
-                inputStream.read(bytes);
-                inputStream.close();
-                String xml = new String(bytes, StandardCharsets.UTF_8);
-
-                //解析xml  利用Iterator获取xml的各种子节点
-                Document document = DocumentHelper.parseText(xml);
-                Element root = document.getRootElement();
-                ArrayList<String> parameters = new ArrayList<>();
-                List<Element> pas =  root.element("Parameter").elements();
-                for (Element e : pas){
-                    log.info(e.attributeValue("name"));
-                    parameters.add(e.attributeValue("name"));
-                }
-                jsonObject.put("parameters", parameters);
-                jsonObject.put("xml",xml);
+        DataApplication dataApplication = dataApplicationDao.findFirstByOid(aid);
+        //先取到service信息
+        InvokeService invokeService = new InvokeService();
+        List<InvokeService> invokeServices = dataApplication.getInvokeServices();
+        for (InvokeService invokeService1 : invokeServices){
+            if (invokeService1.getServiceId().equals(sid)){
+                invokeService = invokeService1;
                 break;
+            }
+        }
+        JSONObject jsonObject = new JSONObject();
+        if (!invokeService.getIsPortal()){
+            String xml = invokeService.getParams();
+            dataApplicationService.parseXML(jsonObject,xml);
+        }else {
+            String packagePath = dataApplication.getPackagePath();
+            File file = new File(packagePath);
+            File[] files = file.listFiles();
+            String fileName = null;
+            for (File file1 : files) {
+                fileName = file1.getName();
+                if (file1.getName().substring(file1.getName().lastIndexOf(".")).equals(".xml")) {
+                    //解析xml文件
+                    if (!file1.exists()) {
+                        return null;
+                    }
+                    FileInputStream inputStream = new FileInputStream(file1);
+                    int length = inputStream.available();
+                    byte bytes[] = new byte[length];
+                    inputStream.read(bytes);
+                    inputStream.close();
+                    String xml = new String(bytes, StandardCharsets.UTF_8);
+                    dataApplicationService.parseXML(jsonObject,xml);
+//
+//                    //解析xml  利用Iterator获取xml的各种子节点
+//                    Document document = DocumentHelper.parseText(xml);
+//                    Element root = document.getRootElement();
+//                    ArrayList<String> parameters = new ArrayList<>();
+//                    List<Element> pas = root.element("Parameter").elements();
+//                    for (Element e : pas) {
+//                        log.info(e.attributeValue("name"));
+//                        parameters.add(e.attributeValue("name"));
+//                    }
+//                    jsonObject.put("parameters", parameters);
+//                    jsonObject.put("xml", xml);
+                    break;
+                }
             }
         }
         jsonResult.setData(jsonObject);
@@ -394,5 +409,33 @@ public class DataApplicationController {
         return jsonResult;
     }
 
+    /**
+     * 获取服务的相关信息
+     * @param aid 数据应用id
+     * @param sid 服务id
+     * @return
+     */
+    @RequestMapping(value = "/getServiceInfo/{aid}/{sid}", method = RequestMethod.GET)
+    public JsonResult getServiceInfo(@PathVariable String aid,@PathVariable String sid){
+        JsonResult jsonResult = new JsonResult();
+        DataApplication dataApplication = dataApplicationDao.findFirstByOid(aid);
+        if(dataApplication == null){
+            jsonResult.setMsg("err");
+            jsonResult.setCode(-1);
+            return jsonResult;
+        }
+        JSONObject jsonObject = new JSONObject();
 
+        List<InvokeService> invokeServices = dataApplication.getInvokeServices();
+        for (InvokeService invokeService1:invokeServices){
+            if(invokeService1.getServiceId().equals(sid)){
+                jsonObject.put("service", invokeService1);
+                break;
+            }
+        }
+        jsonObject.put("application", dataApplication);
+
+        jsonResult.setData(jsonObject);
+        return jsonResult;
+    }
 }

@@ -806,7 +806,12 @@ public class DataItemService {
         int page = dataItemFindDTO.getPage() - 1;
         int pageSize = dataItemFindDTO.getPageSize();
         String searchText = dataItemFindDTO.getSearchText();
+
         String tabType= dataItemFindDTO.getTabType();
+        String dataType = dataItemFindDTO.getDataType();
+        if (dataType!=null && dataType.equals("all")){
+            tabType = "all";
+        }
         String pattern1 = "hub";
         Pattern p1 = Pattern.compile(pattern1);
         Matcher m1 = p1.matcher(tabType);
