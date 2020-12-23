@@ -6,7 +6,6 @@ let vue = new Vue({
             invokeService:'',
             user:'',
             applicationOid:'',
-            radioStyle: "Classic",
             testStep:{
                 state:{
                     name:1,
@@ -22,7 +21,9 @@ let vue = new Vue({
             parameter:'',
             loading:false,
             resultData:'',
-            outPutData:''
+            outPutData:'',
+            serviceId:'',
+            isPortal:''
 
         }
     },
@@ -73,7 +74,7 @@ let vue = new Vue({
             let that = this;
             let formData = new FormData();
             formData.append("dataApplicationId", this.applicationOid);
-            formData.append("serviceId",this.invokeService[0].serviceId);
+            formData.append("serviceId",this.serviceId);
             formData.append("params",this.parameter);
 
             $.ajax({
@@ -96,26 +97,31 @@ let vue = new Vue({
             window.location.href = this.resultData.cacheUrl;
         }
     },
-    async mounted(){
+    mounted(){
+        let that = this;
 
-        let that = this
-        await axios.get("/user/getUserInfo")
+        let str = window.location.href.split('/')
+        //将dataApplicationOid与serviceId切出来
+        this.applicationOid = str[str.length-2];
+        this.serviceId = str[str.length-1]
+
+        axios.get("/user/getUserInfo")
             .then((res) => {
                 if (res.status === 200) {
                     that.user = res.data.data.userInfo
                 }
 
             })
-        let str = window.location.href.split('/')
-        this.applicationOid = str[str.length-1]
-        await axios.get("/dataApplication/getApplication/" + this.applicationOid).then((res) => {
+
+        axios.get("/dataApplication/getServiceInfo/" + this.applicationOid + '/' + this.serviceId).then((res) => {
             if (res.status === 200) {
-                that.applicationInfo = res.data.data
-                that.testData = res.data.data.testData;
-                that.invokeService = res.data.data.invokeServices;
+                that.applicationInfo = res.data.data.application;
+                that.testData = res.data.data.application.testData;
+                that.invokeService = res.data.data.service;
+                that.isPortal = that.invokeService.isPortal;
             }
         })
-        await axios.get("/dataApplication/getParemeter/" + this.applicationOid).then((res) => {
+        axios.get("/dataApplication/getParemeter/" + this.applicationOid +'/' + this.serviceId).then((res) => {
             if (res.status === 200) {
                 that.parameters = res.data.data.parameters;
                 that.xml = res.data.data.xml;

@@ -119,26 +119,26 @@
                         <p style="font-size: 18px;margin-bottom: 0;margin-left:10px">Configure Execution</p>
 
                         <div style="position:absolute;right:0">
-                            <span style="margin-right:10px">Show style:</span>
-                            <el-radio-group v-model="radioStyle">
-                                <el-radio-button id="classic" label="Classic"></el-radio-button>
-                                <el-radio-button id="semantics" label="Semantics"></el-radio-button>
-                                <el-radio-button id="workFlow" label="Work flow"></el-radio-button>
-                            </el-radio-group>
+                            <span style="margin-right:10px">Origin: </span>
+<!--                            <el-radio-group v-model="radioStyle">-->
+                            <el-tag v-if="invokeService.isPortal === true" class="classic" label="Portal">Portal</el-tag>
+                            <el-tag v-if="invokeService.isPortal != true" class="classic" label="Others">Others</el-tag>
+<!--                            </el-radio-group>-->
                         </div>
                     </el-row>
                 </el-row>
-                <el-row v-if="radioStyle=='Classic'">
-                    <el-row type="flex" class="state-container" v-for="(state,index) in testStep"
-                            :key="index"
-                            justify="start" style="flex-wrap:wrap">
-                        <div class="leftContainer">
-                            <div class="modelState">
-                                <p class="state-name"> {{state.name}}</p>
-                                <p class="state-desc"> {{state.desc}}</p>
-                            </div>
-                        </div>
-                        <div class="dataContainer">
+<!--                <el-row v-if="radioStyle=='Classic'">-->
+<!--                    <el-row type="flex" class="state-container" v-for="(state,index) in testStep"-->
+<!--                            :key="index"-->
+<!--                            justify="start" style="flex-wrap:wrap">-->
+<!--                        <div class="leftContainer">-->
+<!--                            <div class="modelState">-->
+<!--                                -->
+<!--&lt;!&ndash;                                <p class="state-name"> {{state.name}}</p>&ndash;&gt;-->
+<!--&lt;!&ndash;                                <p class="state-desc"> {{state.desc}}</p>&ndash;&gt;-->
+<!--                            </div>-->
+<!--                        </div>-->
+                        <div class="dataContainer" style="width: 100%">
                             <div class="_params-group">
                                 <el-row class="_title">Input</el-row>
                                 <div class="_items">
@@ -237,8 +237,8 @@
                             </div>
                         </div>
                         </div>
-                    </el-row>
-                </el-row>
+<!--                    </el-row>-->
+<!--                </el-row>-->
             </div>
         </div>
     </div>
