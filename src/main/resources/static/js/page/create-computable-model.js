@@ -1131,7 +1131,7 @@ var createComputableModel = Vue.extend({
                         }else {
                             return true
                         }
-                    }else if(this.computableModel.contentType=="md5"&&newIndex==2){
+                    }else if(this.computableModel.contentType.toLowerCase()=="md5"&&newIndex==2){
                         if(this.computableModel.md5!=''&&this.computableModel.mdl!=''){
                             if(this.customAddMd5)
                                 return true

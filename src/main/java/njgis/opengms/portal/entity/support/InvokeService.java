@@ -1,5 +1,6 @@
 package njgis.opengms.portal.entity.support;
 
+import com.alibaba.fastjson.JSONObject;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,7 +25,7 @@ public class InvokeService {
     String name;//服务名称
 
     List<String> dataIds;
-    String params;//例如南京市,北京市
+    JSONObject serviceDetail;
 
     //List<TestData> dataSet;//分布式节点的数据信息
     String method;//Conversion Processing Visualization
