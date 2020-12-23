@@ -462,6 +462,7 @@ var createTheme = Vue.extend({
                 sortType: "default",
                 classifications: ["all"],
                 dataType:"all",
+                tabType:"all",
             };
             let url, contentType;
             switch (this.relateType) {
@@ -475,6 +476,8 @@ var createTheme = Vue.extend({
                         category: '',
                         searchText: this.relateSearch,
                         dataType:"all",
+                        tabType:"all",
+
                     }
                     data=JSON.stringify(data);
                     contentType = "application/json";

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -31,6 +32,8 @@ public class InvokeService {
 
     String cacheUrl;//调用成功后可直接缓存供下次调用，此为用测试数据的结果 记录上次cache
 
+//    Boolean isPortal = false;//门户新建的还是绑定的
+    Date time;
     Boolean isPortal;//门户新建的还是绑定的
 
     public InvokeService(Boolean isPortal){
