@@ -803,7 +803,7 @@ public class ComputableModelService {
 
                     Utils.deleteDirectory(destDirPath);
                 }
-                else if(jsonObject.getString("contentType").equals("md5")){
+                else if(jsonObject.getString("contentType").toLowerCase().equals("md5")){
                     String mdl = jsonObject.getString("mdl");
                     computableModel.setMdl(jsonObject.getString("mdl"));
                     md5 = jsonObject.getString("md5");
@@ -984,15 +984,17 @@ public class ComputableModelService {
                     e.printStackTrace();
                     result.put("code", -2);
                 }
-            }else if(contentType.equals("md5")){
+            }else if(contentType.toLowerCase().equals("md5")){
                 String mdl = jsonObject.getString("mdl");
                 computableModel.setMdl(mdl);
                 String md5 = jsonObject.getString("md5");
                 computableModel.setMd5(md5);
                 JSONObject mdlJson = XmlTool.documentToJSONObject(mdl);
                 JSONObject modelClass = checkMdlJson(mdlJson);
-                mdlJson.getJSONArray("ModelClass").remove(0);
-                mdlJson.getJSONArray("ModelClass").add(modelClass);
+                if(mdlJson.containsKey("ModelClass")){
+                    mdlJson.getJSONArray("ModelClass").remove(0);
+                    mdlJson.getJSONArray("ModelClass").add(modelClass);
+                }
                 //End
                 computableModel.setMdlJson(mdlJson);
 

@@ -63,6 +63,7 @@ var userDataServer = Vue.extend(
                 dataMethods:[],
 
                 configNodeData:{
+                    bindItems:[]
                 },
 
                 unbindConfirmDialog:false,
@@ -363,7 +364,7 @@ var userDataServer = Vue.extend(
             },
 
             bindDataItem(item){
-                dataSets.push(this.configNodeData.dataSet)
+                // dataSets.push(this.configNodeData.dataSet)
                 let data={
                     serverId:this.configNodeData.id,
                     name:this.configNodeData.name,
@@ -381,7 +382,7 @@ var userDataServer = Vue.extend(
                             window.location.href="/user/login";
                         }else if(data.code==0) {
                             if (data.data != null) {
-                                this.configNodeData.bindItems = data.data.bindItems
+                                Vue.set(this.configNodeData,'bindItems',data.data.bindItems)
                                 this.$message({message: 'Succeeded to bind to item', type: 'success'})
                             } else {
                                 this.$message({message: 'Failed to bind to item', type: 'error'})
@@ -400,7 +401,8 @@ var userDataServer = Vue.extend(
                     token:this.configNodeData.token,
                     type:this.activeName,
                     dataSet:dataSets,
-                    item:item.oid
+                    item:item.oid,
+                    serviceDetail:this.configNodeData.metaDetail
                 }
                 axios.post("/dataServer/bindDataMethod",
                     data

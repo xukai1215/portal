@@ -18,13 +18,17 @@ import njgis.opengms.portal.entity.support.InvokeService;
 import njgis.opengms.portal.utils.MyHttpUtils;
 import njgis.opengms.portal.utils.ResultUtils;
 import njgis.opengms.portal.utils.XmlTool;
+import org.dom4j.Document;
 import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -89,9 +93,13 @@ public class DataServerService {
         User user = userDao.findFirstByUserName(userName);
 
         String token = user.getDataNodeToken();
+        HttpComponentsClientHttpRequestFactory httpRequestFactory = new HttpComponentsClientHttpRequestFactory();
+        httpRequestFactory.setConnectionRequestTimeout(6000);
+        httpRequestFactory.setConnectTimeout(6000);
+        httpRequestFactory.setReadTimeout(6000);
         if(token!=null){//如果已经存过token，则直接去缓存里找，测试是否在线即可
             String checkUrl = "http://" + dataServerManager+"state?token="+URLEncoder.encode(token);
-            RestTemplate restTemplate = new RestTemplate();
+            RestTemplate restTemplate = new RestTemplate(httpRequestFactory);
             JSONObject result = restTemplate.getForObject(checkUrl,JSONObject.class);
             if(result.getString("message").equals("online")){
                 userNode.put("token",token);
@@ -102,13 +110,15 @@ public class DataServerService {
         //没有存过token或token不在线，则可能是第一次连或token失效，获取所有id并筛选,更新用户的token
         String url = "http://" + dataServerManager+"/onlineNodes";
 
-        RestTemplate restTemplate = new RestTemplate();
+        RestTemplate restTemplate = new RestTemplate(httpRequestFactory);
         String xml = restTemplate.getForObject(url,String.class);
 
         if(xml.equals("err")){
             JSONObject json = new JSONObject();
             return json;
         }
+
+
 
         JSONObject jsonObject = XmlTool.xml2Json(xml);
 
@@ -145,6 +155,7 @@ public class DataServerService {
         }catch (Exception e){
             return null;
         }
+
         JSONObject jsonObject = XmlTool.xml2Json(xml);
         JSONArray j_processings = new JSONArray();
         JSONArray result = new JSONArray();
@@ -364,7 +375,7 @@ public class DataServerService {
         invokeService.setToken(dataNodeContentDTO.getToken());
         invokeService.setDataIds(dataNodeContentDTO.getDataSet());
         invokeService.setMethod(dataNodeContentDTO.getType());
-        invokeService.setParams(dataNodeContentDTO.getType());
+        invokeService.setServiceDetail(dataNodeContentDTO.getServiceDetail());
         List<InvokeService> invokeServices = dataApplication.getInvokeServices();
         if(invokeServices==null){
             invokeServices = new ArrayList<>();
