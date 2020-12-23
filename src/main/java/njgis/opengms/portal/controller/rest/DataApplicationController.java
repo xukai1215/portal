@@ -365,8 +365,8 @@ public class DataApplicationController {
         }
         JSONObject jsonObject = new JSONObject();
         if (!invokeService.getIsPortal()){
-            String xml = invokeService.getParams();
-            dataApplicationService.parseXML(jsonObject,xml);
+//            String xml = invokeService.getParams();
+//            dataApplicationService.parseXML(jsonObject,xml);
         }else {
             String packagePath = dataApplication.getPackagePath();
             File file = new File(packagePath);
