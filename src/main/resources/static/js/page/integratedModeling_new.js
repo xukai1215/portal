@@ -2634,7 +2634,7 @@ var vue = new Vue({
                     dataItem.eventName = input.eventName
                     dataItem.name = input.name
                     dataItem.eventType = input.eventType
-                    dataItem.optional = input.eventType
+                    dataItem.optional = input.optional
                     dataItem.response = input.response
                     dataItem.value = input.response
 
@@ -2963,7 +2963,7 @@ var vue = new Vue({
         }, // arguments: [H,S,L]!!!
 
         getBottomBorder(dataItem){
-            if(dataItem.response){
+            if(dataItem.eventType==='response'){
                 if(!dataItem.optional){
                     return '#fc7c7c'
                 }else {

@@ -334,6 +334,7 @@ public class DataServerService {
         invokeService.setServiceId(dataNodeContentDTO.getServerId());
         invokeService.setName(dataNodeContentDTO.getName());
         invokeService.setToken(dataNodeContentDTO.getToken());
+        invokeService.setContributor(userName);
         List<InvokeService> invokeServices = item.getInvokeServices();
         if(invokeServices==null){
             invokeServices = new ArrayList<>();
@@ -386,6 +387,7 @@ public class DataServerService {
         invokeService.setToken(dataNodeContentDTO.getToken());
         invokeService.setDataIds(dataNodeContentDTO.getDataSet());
         invokeService.setMethod(dataNodeContentDTO.getType());
+        invokeService.setContributor(userName);
         List<InvokeService> invokeServices = dataApplication.getInvokeServices();
         if(invokeServices==null){
             invokeServices = new ArrayList<>();
