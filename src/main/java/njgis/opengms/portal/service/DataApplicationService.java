@@ -2,63 +2,43 @@ package njgis.opengms.portal.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.google.gson.JsonObject;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.extern.slf4j.Slf4j;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.dto.dataApplication.DataApplicationDTO;
 import njgis.opengms.portal.dto.dataApplication.DataApplicationFindDTO;
 import njgis.opengms.portal.entity.*;
-import njgis.opengms.portal.entity.support.AuthorInfo;
-import njgis.opengms.portal.entity.support.InvokeService;
-import njgis.opengms.portal.entity.support.MetaData;
-import njgis.opengms.portal.entity.support.TestData;
+import njgis.opengms.portal.entity.support.*;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.Utils;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.PutMethod;
-import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.dom4j.Document;
-import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.*;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.client.RequestCallback;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-import springfox.documentation.spring.web.json.Json;
-import sun.security.krb5.internal.ccache.Tag;
 
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import static njgis.opengms.portal.utils.DataApplicationUtil.deleteFolder;
 import static njgis.opengms.portal.utils.DataApplicationUtil.zipUncompress;
-import static njgis.opengms.portal.utils.Utils.deleteFile;
 import static njgis.opengms.portal.utils.Utils.saveFiles;
 
 /**
@@ -97,10 +77,10 @@ public class DataApplicationService {
     private String htmlLoadPath;
 
 
-    public ModelAndView getPage(String id){
+    public ModelAndView getPage(String id){     //根据oid得到页面
         try {
             DataApplication dataApplication = dataApplicationDao.findFirstByOid(id);
-//            List<String> classifications = dataApplication.getClassifications();
+            List<String> classifications = dataApplication.getClassifications();
 
             //时间
             Date date = dataApplication.getCreateTime();
@@ -152,17 +132,17 @@ public class DataApplicationService {
 
             modelAndView.setViewName("data_application_info");
 
-//            List<String> categories = classifications;
-//            List<String> classificationName = new ArrayList<>();
-//
-//            for (String category: categories){
-//                DataCategorys categorys = dataCategorysDao.findFirstById(category);
-//                String name = categorys.getCategory();
-//                classificationName.add(name);
-//            }
+            List<String> categories = classifications;
+            List<String> classificationName = new ArrayList<>();
+            // 重新改分类了
+            // for (String category: categories){
+            //     DataCategorys categorys = dataCategorysDao.findFirstById(category);
+            //     String name = categorys.getCategory();
+            //     classificationName.add(name);
+            // }
 
             modelAndView.addObject("dataApplicationInfo", dataApplication);
-//            modelAndView.addObject("classifications", classificationName);
+            modelAndView.addObject("classifications", classificationName);
             modelAndView.addObject("date", dateResult);
             modelAndView.addObject("year", calendar.get(Calendar.YEAR));
             modelAndView.addObject("user", userJson);
@@ -241,14 +221,15 @@ public class DataApplicationService {
             List<String> categories = classifications;
             List<String> classificationName = new ArrayList<>();
 
-            for (String category: categories){
-                DataCategorys categorys = dataCategorysDao.findFirstById(category);
-                String name = categorys.getCategory();
-                classificationName.add(name);
-            }
+            // 因为分类改为三类了，所以注释掉了
+            // for (String category: categories){
+            //     DataCategorys categorys = dataCategorysDao.findFirstById(category);
+            //     String name = categorys.getCategory();
+            //     classificationName.add(name);
+            // }
 
             modelAndView.addObject("dataApplicationInfo", dataApplication);
-//            modelAndView.addObject("classifications", classificationName);
+            modelAndView.addObject("classifications", classificationName);
             modelAndView.addObject("date", dateResult);
             modelAndView.addObject("year", calendar.get(Calendar.YEAR));
             modelAndView.addObject("user", userJson);
@@ -266,7 +247,36 @@ public class DataApplicationService {
             throw new MyException(e.getMessage());
         }
     }
+    public DataApplication recordViewCount(DataApplication item){     // 记录访问次数
+        Date now = new Date();
+        DailyViewCount newViewCount = new DailyViewCount(now, 1);
 
+        List<DailyViewCount> dailyViewCountList=item.getDailyViewCount();
+        if(dailyViewCountList==null){
+            List<DailyViewCount> newList=new ArrayList<>();
+            newList.add(newViewCount);
+            dailyViewCountList=newList;
+        }
+        else if(dailyViewCountList.size()>0) {
+            DailyViewCount dailyViewCount = dailyViewCountList.get(dailyViewCountList.size() - 1);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+            if (sdf.format(dailyViewCount.getDate()).equals(sdf.format(now))) {
+                dailyViewCount.setCount(dailyViewCount.getCount() + 1);
+                dailyViewCountList.set(dailyViewCountList.size() - 1, dailyViewCount);
+            } else {
+                dailyViewCountList.add(newViewCount);
+            }
+        }
+        else{
+            dailyViewCountList.add(newViewCount);
+        }
+
+        item.setDailyViewCount(dailyViewCountList);
+        item.setViewCount(item.getViewCount()+1);
+
+        return item;
+    }
     /**
      * 新建一个application条目，并部署部署包
      * @param files 上传的包
@@ -303,7 +313,6 @@ public class DataApplicationService {
                 invokeService.setServiceId(UUID.randomUUID().toString());//
                 invokeService.setMethod(dataApplication.getMethod());
                 invokeService.setName(dataApplication.getName());
-                invokeService.setToken("fcky/35Rezr+Kyazr8SRWA==");
                 invokeService.setIsPortal(true);
                 List<InvokeService> invokeServices = new ArrayList<>();
                 invokeServices.add(invokeService);
@@ -781,7 +790,13 @@ public class DataApplicationService {
 
     public JSONObject searchApplication(DataApplicationFindDTO dataApplicationFindDTO){
         Pageable pageable = PageRequest.of(dataApplicationFindDTO.getPage()-1, dataApplicationFindDTO.getPageSize(), new Sort(dataApplicationFindDTO.getAsc()? Sort.Direction.ASC: Sort.Direction.DESC,dataApplicationFindDTO.getSortField()));
-        Page<DataApplication> dataApplicationPage =selectMethodByNameAndMethod(dataApplicationFindDTO.getSearchText(),dataApplicationFindDTO.getMethod(),pageable);
+        Page<DataApplication> dataApplicationPage;
+        try {
+            dataApplicationPage = selectMethodByNameAndMethod(dataApplicationFindDTO.getSearchText(),dataApplicationFindDTO.getMethod(),pageable);
+        } catch (MyException err) {
+            System.out.println(err);
+            return null;
+        }
         List<DataApplication> dataApplications = dataApplicationPage.getContent();
 
         JSONArray jsonArray = new JSONArray();
@@ -805,6 +820,8 @@ public class DataApplicationService {
             jsonObject.put("type",dataApplication.getType());
             jsonObject.put("status",dataApplication.getStatus());
             jsonObject.put("oid",dataApplication.getOid());
+            jsonObject.put("viewCount",dataApplication.getViewCount());
+            jsonObject.put("dailyViewCount",dataApplication.getDailyViewCount());
             jsonArray.add(jsonObject);
         }
         JSONArray users = new JSONArray();
@@ -974,18 +991,4 @@ public class DataApplicationService {
     //
     //     return  res;
     // }
-
-    public void parseXML(JSONObject jsonObject, String xml) throws DocumentException {
-        //解析xml  利用Iterator获取xml的各种子节点
-        Document document = DocumentHelper.parseText(xml);
-        Element root = document.getRootElement();
-        ArrayList<String> parameters = new ArrayList<>();
-        List<Element> pas = root.element("Parameter").elements();
-        for (Element e : pas) {
-            log.info(e.attributeValue("name"));
-            parameters.add(e.attributeValue("name"));
-        }
-        jsonObject.put("parameters", parameters);
-        jsonObject.put("xml", xml);
-    }
 }

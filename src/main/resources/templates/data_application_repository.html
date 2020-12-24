@@ -41,13 +41,6 @@
         .el-collapse-item__header{
             font-size: 14px;
         }
-        .el-card__header{
-            padding-bottom: 0px;
-        }
-        .el-card__body{
-            height: 280px;
-            padding-top: 0px;
-        }
     </style>
 
 </head>
@@ -68,14 +61,14 @@
             </div>
             <div class="el-col el-col-6 minScreen_maxWidth" style="margin-top:29px;">
                 <el-card class="box-card categoryList">
-                    <div slot="header" class="clearfix text-center" style="border-bottom: 1px solid #eaeaea;height: 80px;padding-bottom: 0px">
+                    <div slot="header" class="clearfix text-center" style="border-bottom: 1px solid #eaeaea;height: 70px;padding: 0px;display: flex;flex-direction: column;justify-content: center">
                         <span style="font-size: large;">Data Categories</span>
                     </div>
                      <div class="el-card__header;" style="padding-top: 0px">
-                         <div role="button"  tabindex="0" class="el-collapse-item__header" @click="chooseCate('conversion')" style="font-size: medium;height: 75px;border-bottom: 1px solid #eaeaea;">Conversion</div>
-                         <div role="button"  tabindex="0" class="el-collapse-item__header" @click="chooseCate('processing')" style="font-size: medium;height: 75px;border-bottom: 1px solid #eaeaea;">Processing</div>
-                         <div role="button"  tabindex="0" class="el-collapse-item__header" @click="chooseCate('visualization')" style="font-size: medium;height: 75px;border-bottom: 1px solid #eaeaea;">Visualization</div>
-                         <div role="button"  tabindex="0" class="el-collapse-item__header" @click="chooseCate('all')" style="font-size: medium;height: 75px;border-bottom: 1px solid #eaeaea;">All</div>
+                         <div role="button"  tabindex="0" class="el-collapse-item__header" @click="chooseCate('Conversion')" style="font-size: medium;height: 60px;border-bottom: 1px solid #eaeaea;">Conversion</div>
+                         <div role="button"  tabindex="0" class="el-collapse-item__header" @click="chooseCate('Processing')" style="font-size: medium;height: 60px;border-bottom: 1px solid #eaeaea;">Processing</div>
+                         <div role="button"  tabindex="0" class="el-collapse-item__header" @click="chooseCate('Visualization')" style="font-size: medium;height: 60px;border-bottom: 1px solid #eaeaea;">Visualization</div>
+                         <div role="button"  tabindex="0" class="el-collapse-item__header" @click="chooseCate('all')" style="font-size: medium;height: 60px;border-bottom: 1px solid #eaeaea;">All</div>
                      </div>
                 </el-card>
             </div>

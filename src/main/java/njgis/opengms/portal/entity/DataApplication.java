@@ -3,6 +3,7 @@ package njgis.opengms.portal.entity;
 import com.alibaba.fastjson.JSONArray;
 import lombok.Data;
 import njgis.opengms.portal.entity.support.AuthorInfo;
+import njgis.opengms.portal.entity.support.DailyViewCount;
 import njgis.opengms.portal.entity.support.InvokeService;
 import njgis.opengms.portal.entity.support.TestData;
 import org.springframework.data.annotation.Id;
@@ -61,8 +62,14 @@ public class DataApplication {
 
     List<InvokeService> invokeServices;
     String method; // Conversion Processing Visualization
-//    String method;
 
     List<TestData> testData;//存储testData的id
     String packagePath;//存储部署包的路径
+
+    //statistic
+    int shareCount = 0;
+    int viewCount = 0;
+    int thumbsUpCount = 0;
+
+    List<DailyViewCount> dailyViewCount = new ArrayList<>();
 }

@@ -23,8 +23,6 @@ public interface DataApplicationDao extends MongoRepository<DataApplication, Str
     Page<DataApplication> findByAuthorAndNameContainsAndType(Pageable pageable, String author, String name, String type);
     Page<DataApplication> findByNameLike(Pageable pageable,String name);
 
-    Page<DataApplication> findAll(Pageable pageable);
-
     Page<DataApplication> findAllByMethod(Pageable pageable,String method);
 
     Page<DataApplication> findAllByMethodIn(Pageable pageable,List<String> method);
@@ -37,7 +35,9 @@ public interface DataApplicationDao extends MongoRepository<DataApplication, Str
 
     Page<DataApplication> findByMethodLikeIgnoreCaseAndNameLike(String method,String name,Pageable pageable);
 
-    Page<DataApplication> findByMethodLikeIgnoreCase(String method,Pageable pageable);
+    Page<DataApplication> findByMethodLike(String method, Pageable pageable);
+    Page<DataApplication> findByMethodLikeIgnoreCase(String method, Pageable pageable);
+
     Page<DataApplication> findByMethod(String method,Pageable pageable);
 
     Page<DataApplication> findByNameLike(String name,Pageable pageable);
