@@ -20,7 +20,9 @@ import java.util.List;
 @NoArgsConstructor
 public class InvokeService {
     String serviceId;//pcsId
-//    String reqUsrOid;//调用时需要的用户
+    String reqUsrOid;//调用时需要的用户
+
+    String contributor;//贡献者
 
     String token;//寻找节点
     String name;//服务名称

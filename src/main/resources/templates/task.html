@@ -75,7 +75,7 @@
     </style>
 </head>
 <body>
-<div id="app" v-cloakz>
+<div id="app" v-cloak>
     <div th:replace="fragments/navbar :: unlog"></div>
     <div style="height:800px;" element-loading-text="Loading..." v-loading="true" v-if="initializing"></div>
     <div v-cloak class="taskMain" :style="{'visibility':initializing==true?'hidden':'visible'}">

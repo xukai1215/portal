@@ -86,7 +86,7 @@
                                 </div>
                                 <div class="col-sm-12 col-md-6 col-lg-8">
                                     <el-card class="box-card" style="margin-top: 20px;border-top: #8cd1e5 8px solid" >
-                                        <el-tabs v-model="activeName" stretch="stretch" @tab-click="handleClick">
+                                        <el-tabs v-model="activeName" stretch="stretch" @tab-click="handleClick" style="min-height: 105px">
                                             <el-tab-pane label="Data" name="Data" v-loading="nodeLoading">
                                                 <div  v-if="dataNode.status==1">
                                                     <el-table

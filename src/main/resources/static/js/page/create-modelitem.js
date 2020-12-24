@@ -1780,8 +1780,8 @@ var createModelItem = Vue.extend({
                         loading.close();
                         userspace.fullscreenLoading = false;
                         if (result.code === 0) {
+                            this.deleteDraft()
                             if(result.data.method==="update") {
-                                this.deleteDraft()
                                 this.$confirm('<div style=\'font-size: 18px\'>Update model item successfully!</div>', 'Tip', {
                                     dangerouslyUseHTMLString: true,
                                     confirmButtonText: 'View',
