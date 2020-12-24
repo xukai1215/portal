@@ -766,7 +766,8 @@ var vue = new Vue({
             this.pageOption2.currentPage = val;
             this.search2();
         },
-        edit_theme() {
+        edit_theme(defaultActive) {
+                this.editThemeActive = defaultActive
                 this.dialogVisible3 = true;
                 this.log_theme++;
                 if (this.log_theme == 1) {

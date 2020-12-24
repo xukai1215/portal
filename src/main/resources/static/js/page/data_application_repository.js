@@ -69,12 +69,13 @@ var data_items = new Vue({
         //文本检索
         search(){
             this.searchText=$('#searchBox').val();
-            this.findDto.searchText = this.searchText;
             this.loading=true;
             var that=this
             that.progressBar=true
             if(this.searchText.length!=0){
-                this.findDto.searchText=this.searchText;
+                this.findDto.searchText=this.searchText
+            } else {
+                this.findDto.searchText = ''
             }
             this.getData()
         },

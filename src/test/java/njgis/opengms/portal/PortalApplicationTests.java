@@ -1,9 +1,12 @@
 package njgis.opengms.portal;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.ip2location.IP2Location;
 import com.ip2location.IPResult;
+import njgis.opengms.portal.bean.JsonResult;
+import njgis.opengms.portal.controller.rest.DataApplicationController;
 import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.dto.modelItem.ModelItemResultDTO;
 import njgis.opengms.portal.entity.*;
@@ -3541,4 +3544,19 @@ public class PortalApplicationTests {
 //        }
 //    }
 
+    @Autowired
+    DataApplicationDao dataApplicationDao;
+
+    @Test
+    public void findAll() {
+        Page<DataApplication> list = dataApplicationDao.findAll(PageRequest.of(0, 10, new Sort(Sort.Direction.ASC,"createTime")));
+        System.out.println(JSON.toJSON(list.getContent().size()));
+    }
+
+    @Autowired
+    DataApplicationController dataApplicationController;
+    @Test
+    public void testDataApplication() {
+
+    }
 }

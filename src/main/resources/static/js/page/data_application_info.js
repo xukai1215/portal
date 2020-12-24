@@ -5,6 +5,8 @@ var data_application_info = new Vue({
     },
     data: function () {
         return {
+            userId:'',      // 不能删，html页面有用
+            viewCount:'',
             activeIndex:'3-3',
             activeName: 'AttributeSet',
 
@@ -47,7 +49,7 @@ var data_application_info = new Vue({
             editComputableModelDialog:false,
             modelOid:'',
 
-            methodsData:new Array(),
+            methodsData:'',
             userId:'',
             dataApplicationId:'',
         }
@@ -497,15 +499,10 @@ var data_application_info = new Vue({
             let that = this
             axios.get('/dataApplication/getApplication/' + oid).then((res) => {
                 if(res.status === 200) {
-                    // let temp = res.data.data.invokeServices
-                    //
-                    // temp['key'] = 'name'
-                    // temp['val'] = res.data.data.name;
-                    // let temp1 = {}
-                    // temp1['key'] = 'method'
-                    // temp1['val'] = res.data.data.method
-                    that.methodsData = res.data.data.invokeServices
-                    // that.methodsData.push(temp1)
+                    if(res.data.data.invokeServices) {
+                        that.methodsData = res.data.data.invokeServices
+                    }
+                    that.viewCount = res.data.data.viewCount
                 }
             }).catch(function (err) {console.log(err)})
         },
@@ -574,7 +571,7 @@ var data_application_info = new Vue({
         });
 
         let qrcodes = document.getElementsByClassName("qrcode");
-        for(i=0;i<qrcodes.length;i++) {
+        for(let i=0;i<qrcodes.length;i++) {
             new QRCode(document.getElementsByClassName("qrcode")[i], {
                 text: window.location.href,
                 width: 200,

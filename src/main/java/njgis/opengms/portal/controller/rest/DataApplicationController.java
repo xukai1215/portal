@@ -193,6 +193,8 @@ public class DataApplicationController {
     @RequestMapping(value = "/getApplication/{oid}",method = RequestMethod.GET)     // 根据oid拿到条目的所有信息
     public JsonResult getApplicationByOid(@PathVariable("oid") String oid) {
         DataApplication dataApplication = dataApplicationDao.findFirstByOid(oid);
+        dataApplication = dataApplicationService.recordViewCount(dataApplication);
+        dataApplicationDao.save(dataApplication);
         return ResultUtils.success(JSONObject.toJSON(dataApplication));
     }
 
@@ -385,7 +387,7 @@ public class DataApplicationController {
                     inputStream.read(bytes);
                     inputStream.close();
                     String xml = new String(bytes, StandardCharsets.UTF_8);
-                    dataApplicationService.parseXML(jsonObject,xml);
+                    // dataApplicationService.parseXML(jsonObject,xml);
 //
 //                    //解析xml  利用Iterator获取xml的各种子节点
 //                    Document document = DocumentHelper.parseText(xml);
