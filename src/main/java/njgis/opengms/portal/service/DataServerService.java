@@ -218,11 +218,11 @@ public class DataServerService {
         return result;
     }
 
-    public JSONObject pageAllDataItemChecked(int page,int pageSize,int asc,String sortEle,String userName){
+    public JSONObject pageDataItemChecked(int page,int pageSize,int asc,String sortEle,String searchText,String userName){
         Sort sort = new Sort(asc==1 ? Sort.Direction.ASC : Sort.Direction.DESC, sortEle);
         Pageable pageable = PageRequest.of(page, pageSize, sort);
 
-        Page<DataItem> dataItemResultDTOPage = dataItemDao.findAll(pageable);
+        Page<DataItem> dataItemResultDTOPage = dataItemDao.findAllByNameContainsIgnoreCase(pageable,searchText);
 
         List<DataItem> dataItemList = dataItemResultDTOPage.getContent();
         JSONArray array = new JSONArray();
@@ -248,15 +248,15 @@ public class DataServerService {
         return result;
     }
 
-    public JSONObject pageAllDataAppicationChecked(int page,int pageSize,int asc,String sortEle,String method,String userName){
+    public JSONObject pageDataAppicationChecked(int page,int pageSize,int asc,String sortEle,String method,String searchText,String userName){
         Sort sort = new Sort(asc==1 ? Sort.Direction.ASC : Sort.Direction.DESC, sortEle);
         Pageable pageable = PageRequest.of(page, pageSize, sort);
 
         Page<DataApplication> dataApplicationPage = Page.empty();
         if(method.equals("Processing")){
-            dataApplicationPage = dataApplicationDao.findAllByMethodIn(pageable,dataProcessing);
+            dataApplicationPage = dataApplicationDao.findAllByMethodInAndNameContainsIgnoreCase(pageable,dataProcessing,searchText);
         }else{
-            dataApplicationPage = dataApplicationDao.findAllByMethod(pageable,method);
+            dataApplicationPage = dataApplicationDao.findAllByMethodAndNameContainsIgnoreCase(pageable,method,searchText);
         }
 
         List<DataApplication> dataApplicationList = dataApplicationPage.getContent();
@@ -266,6 +266,7 @@ public class DataServerService {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("oid",dataApplicationList.get(i).getOid());
             jsonObject.put("name",dataApplicationList.get(i).getName());
+            jsonObject.put("method",dataApplicationList.get(i).getMethod());
             jsonObject.put("createDate",dataApplicationList.get(i).getCreateTime());
 
             User user = userDao.findFirstByOid(dataApplicationList.get(i).getAuthor());

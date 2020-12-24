@@ -74,9 +74,8 @@ var userDataServer = Vue.extend(
                     sortAsc: false,
                     currentPage: 1,
                     pageSize: 5,
-
+                    searchText: '',
                     total: 11,
-                    searchResult: [],
                 },
 
                 unbindConfirmDialog:false,
@@ -278,16 +277,25 @@ var userDataServer = Vue.extend(
                 }
             },
 
+            searchDataItem(){
+                this.listDataItem()
+            },
+
+            searchDataMethod(){
+                this.listDataMethod()
+            },
+
             listDataItem(){
                 this.loading = true
                 $.ajax({
                     type: "GET",
-                    url: "/dataServer/pageAllDataItemChecked",
+                    url: "/dataServer/pageDataItemChecked",
                     data:{
                         page:this.pageOption.currentPage-1,
                         pageSize:this.pageOption.pageSize,
                         asc:1,
-                        sortEle:"name"
+                        sortEle:"name",
+                        searchText: this.pageOption.searchText
                     },
                     async:false,
                     success: (res) => {
@@ -317,13 +325,14 @@ var userDataServer = Vue.extend(
                 this.loading = true
                 $.ajax({
                     type: "GET",
-                    url: "/dataServer/pageAllDataAppicationChecked",
+                    url: "/dataServer/pageDataAppicationChecked",
                     data:{
                         page:this.pageOption.currentPage-1,
                         pageSize:this.pageOption.pageSize,
                         asc:1,
                         sortEle:"name",
                         type:this.activeName,
+                        searchText: this.pageOption.searchText
                     },
                     async:false,
                     success: (res) => {
@@ -352,7 +361,8 @@ var userDataServer = Vue.extend(
             bindDataItemList(data){
                 this.dataItemBindDialog = true
                 this.configNodeData = data
-                // this.pageOption.currentPage = 1
+                this.pageOption.currentPage = 1
+                this.pageOption.searchText = ''
                 this.listDataItem()
             },
 
@@ -360,6 +370,7 @@ var userDataServer = Vue.extend(
                 this.dataMethodBindDialog = true
                 this.configNodeData = method
                 this.pageOption.currentPage = 1
+                this.pageOption.searchText = ''
                 this.listDataMethod()
             },
 
