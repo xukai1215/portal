@@ -187,6 +187,9 @@
 
         </div>
         <el-dialog title="Bind DataItem" :visible.sync="dataItemBindDialog" width="50%">
+            <el-input placeholder="Data item name..." v-model="pageOption.searchText" class="input-with-select"  @keyup.enter.native="searchDataItem()">
+                <el-button slot="append" icon="el-icon-search" @click="searchDataItem()"></el-button>
+            </el-input>
             <span slot="footer" class="dialog-footer">
                 <el-table v-loading="loading"
                         :data="dataItems">
@@ -225,7 +228,7 @@
                                @current-change="(page)=>handlePageChange(page,1)"
                                :current-page="pageOption.currentPage"
                                layout="total, prev, pager, next, jumper"
-                               :page-size="6"
+                               :page-size="pageOption.pageSize"
                                :total="pageOption.total">
                         </el-pagination>
                 <!--                <el-button @click="bindDataItem()" size="medium" type="danger">Confirm</el-button>-->
@@ -233,13 +236,16 @@
             </span>
         </el-dialog>
         <el-dialog title="Bind Data Method" :visible.sync="dataMethodBindDialog" width="50%">
+            <el-input placeholder="Data method name..." v-model="pageOption.searchText" class="input-with-select"  @keyup.enter.native="searchDataMethod()">
+                <el-button slot="append" icon="el-icon-search" @click="searchDataMethod()"></el-button>
+            </el-input>
             <span slot="footer" class="dialog-footer">
                 <el-table v-loading="loading"
                         :data="dataMethods">
                      <el-table-column
                              prop="name"
                              label="Name"
-                             width="320">
+                             width="300">
                           <template slot-scope="props">
                                     <a :href="'/dataApplication/'+props.row.oid" target="_blank">{{props.row.name}}</a>
                           </template>
@@ -249,6 +255,12 @@
                           <template slot-scope="props">
                                     <a :href="'/profile/'+props.row.contributorId" target="_blank">{{props.row.contributor}}</a>
                           </template>
+                     </el-table-column>
+                     <el-table-column
+                            label="Method">
+                         <template slot-scope="props">
+                             <el-tag>{{props.row.method}}</el-tag>
+                         </template>
                      </el-table-column>
                      <el-table-column
                              label="Option">
@@ -261,7 +273,7 @@
                                         v-if="isBinded(scope.row)"
                                         @click="unbindDataMethod(scope.row)">
                                  Unbind
-                             </el-button>bindDataMethod
+                             </el-button>
                              <el-button size="mini" round type="success" v-else
                                         @click="bindDataMethod(scope.row)">Bind</el-button>
                          </template>
@@ -271,7 +283,7 @@
                                @current-change="(page)=>handlePageChange(page,2)"
                                :current-page="pageOption.currentPage"
                                layout="total, prev, pager, next, jumper"
-                               :page-size="6"
+                               :page-size="pageOption.pageSize"
                                :total="pageOption.total">
                         </el-pagination>
                 <!--                <el-button @click="bindDataItem()" size="medium" type="danger">Confirm</el-button>-->

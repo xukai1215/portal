@@ -136,11 +136,12 @@ public class DataServerRestController {
         }
     }
 
-    @RequestMapping(value = "/pageAllDataItemChecked", method = RequestMethod.GET)
+    @RequestMapping(value = "/pageDataItemChecked", method = RequestMethod.GET)
     public JsonResult pageAllDataItemChecked(@RequestParam(value = "page") int page,
                               @RequestParam(value = "pageSize") int pageSize,
                               @RequestParam(value="asc") int asc,
                               @RequestParam(value="sortEle") String sortEle,
+                              @RequestParam(value="searchText") String searchText,
                               HttpServletRequest request
     ){
         HttpSession session = request.getSession();
@@ -149,16 +150,16 @@ public class DataServerRestController {
         }
         else{
             String userId = session.getAttribute("uid").toString();
-            return ResultUtils.success(dataServerService.pageAllDataItemChecked(page,pageSize,asc,sortEle,userId));
+            return ResultUtils.success(dataServerService.pageDataItemChecked(page,pageSize,asc,sortEle,searchText,userId));
         }
     }
 
-    @RequestMapping(value = "/pageAllDataAppicationChecked", method = RequestMethod.GET)
+    @RequestMapping(value = "/pageDataAppicationChecked", method = RequestMethod.GET)
     public JsonResult pageAllDataAppicationChecked(@RequestParam(value = "page") int page,
                               @RequestParam(value = "pageSize") int pageSize,
                               @RequestParam(value="asc") int asc,
                               @RequestParam(value="sortEle") String sortEle,
-                              @RequestParam(value="type") String type,
+                              @RequestParam(value="type") String type, @RequestParam(value="searchText") String searchText,
                               HttpServletRequest request
     ){
         HttpSession session = request.getSession();
@@ -167,7 +168,7 @@ public class DataServerRestController {
         }
         else{
             String userId = session.getAttribute("uid").toString();
-            return ResultUtils.success(dataServerService.pageAllDataAppicationChecked(page,pageSize,asc,sortEle,type,userId));
+            return ResultUtils.success(dataServerService.pageDataAppicationChecked(page,pageSize,asc,sortEle,type,searchText,userId));
         }
     }
 
