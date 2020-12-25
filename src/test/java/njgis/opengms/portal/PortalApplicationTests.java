@@ -20,6 +20,7 @@ import njgis.opengms.portal.utils.Utils;
 import njgis.opengms.portal.utils.XmlTool;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.tomcat.jni.Local;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -255,6 +256,42 @@ public class PortalApplicationTests {
             }
         }
     }
+    @Test
+    public void correctName(){
+        int num1=0;
+        int num2=0;
+        List<Unit> unitList=unitDao.findByAuthor("njgis");
+        Iterator<Unit> unitIterator=unitList.iterator();
+        System.out.println(unitList.size()+"\n");
+        while(unitIterator.hasNext()){
+            Unit unit=unitIterator.next();
+            if(unit.getName().indexOf("_")==-1){
+                ++num1;
+                String pre=unit.getName().substring(0,1).toUpperCase();
+                String back=unit.getName().substring(1).toLowerCase();
+                unit.setName(pre.concat(back));
+
+            }
+            else{
+                ++num2;
+                String fina = "";
+                String[] strarr=unit.getName().split("_");
+                for(int i=0;i<strarr.length;++i){
+                    String pre=strarr[i].substring(0,1).toUpperCase();
+                    String back=strarr[i].substring(1).toLowerCase();
+                    strarr[i]=pre.concat(back);
+                    fina+=strarr[i];
+                }
+                unit.setName(fina);
+            }
+            unitDao.save(unit);
+            System.out.println(unit.getName());
+        }
+        System.out.println(num1);
+        System.out.println(num2);
+        System.out.println(num1+num2);
+    }
+
 
 
 
@@ -1170,7 +1207,7 @@ public class PortalApplicationTests {
             List<Item> computableModelList = computableModelDao.findAllByAuthor(user.getUserName());
             List<Item> conceptList = conceptDao.findByAuthor(user.getUserName());
             List<Item> spatialReferenceList = spatialReferenceDao.findByAuthor(user.getUserName());
-            List<Item> unitList = unitDao.findByAuthor(user.getUserName());
+//            List<Item> unitList = unitDao.findByAuthor(user.getUserName());
             List<Item> templateList = templateDao.findByAuthor(user.getUserName());
             List<Theme> themeList = themeDao.findByAuthor(user.getUserName());
 
@@ -1181,7 +1218,7 @@ public class PortalApplicationTests {
             user.setComputableModels(computableModelList.size());
             user.setConcepts(conceptList.size());
             user.setSpatials(spatialReferenceList.size());
-            user.setUnits(unitList.size());
+//            user.setUnits(unitList.size());
             user.setTemplates(templateList.size());
             user.setThemes(themeList.size());
 
@@ -1892,7 +1929,7 @@ public class PortalApplicationTests {
                     itemList = templateDao.findByAuthor(author);
                     break;
                 case "unit & metric":
-                    itemList = unitDao.findByAuthor(author);
+//                    itemList = unitDao.findByAuthor(author);
                     break;
 
 

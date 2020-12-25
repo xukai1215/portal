@@ -1367,7 +1367,7 @@ public class UserService {
                     itemType = ItemTypeEnum.Template;
                     break;
                 case "unit & metric":
-                    itemList = unitDao.findByAuthor(author);
+//                    itemList = unitDao.findByAuthor(author);
                     itemType = ItemTypeEnum.Unit;
                     break;
 
