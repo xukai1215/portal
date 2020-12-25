@@ -138,4 +138,58 @@ public class XmlTool {
         }
         return false;
     }
+
+//    public static String json2Xml(String jsonString) throws DocumentException {
+//        StringReader input = new StringReader(jsonString);
+//        StringWriter output = new StringWriter();
+//        JsonXMLConfig config = new JsonXMLConfigBuilder().multiplePI(false).repairingNamespaces(false).build();
+//        try {
+//            XMLEventReader reader = new JsonXMLInputFactory(config).createXMLEventReader(input);
+//            XMLEventWriter writer = XMLOutputFactory.newInstance().createXMLEventWriter(output);
+//            writer = new PrettyXMLEventWriter(writer);
+//            writer.add(reader);
+//            reader.close();
+//            writer.close();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        } finally {
+//            try {
+//                output.close();
+//                input.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        // remove <?xml version="1.0" encoding="UTF-8"?>
+//        if (output.toString().length() >= 38) {
+//            return output.toString().substring(39);
+//        }
+//        return output.toString();
+//    }
+//
+//    public static String jsonToXML(String jsonStr,String rootName) {
+//        StringBuffer sb = new StringBuffer();
+//        String xmlStr = "";
+//        net.sf.json.JSONObject json = net.sf.json.JSONObject.fromObject(jsonStr);
+//        XMLSerializer xmlSerializer = new XMLSerializer();
+//        xmlSerializer.setRootName(rootName);
+//        xmlSerializer.setTypeHintsEnabled(false);
+//        String xml = xmlSerializer.write(json);
+//        xml = xml.replace("<o>", "").replace("</o>", "");
+//        xml = xml.replace("<e>", "").replace("</e>", "");
+//        xml = xml.replaceAll("\r\n", "").concat("\r\n");
+//        Document document;
+//
+//        try {
+//            document = DocumentHelper.parseText(xml);
+//            xmlStr = document.getRootElement().asXML();
+//        } catch (DocumentException e) {
+//            e.printStackTrace();
+//        }
+//        sb.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>")
+//                .append(xmlStr);
+//        return sb.toString();
+//
+//    }
 }
+

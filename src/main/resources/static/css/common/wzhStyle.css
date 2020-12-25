@@ -23,7 +23,9 @@ a{
 .darkSide{
     color: #ededed;
 }
-
+.el-dropdown.minWidDrop {
+    min-width: 110px;
+}
 .wzhSectionContainer{
     position: relative;
     height: 550px;
@@ -35,6 +37,11 @@ a{
 .w50h100{
     width: 50%;
     height: 100%;
+}
+
+.wzhModalForm{
+    padding: 0 15px;
+    margin-bottom: 10px;
 }
 
 .wzhSectionContainer .leftPart {
@@ -889,6 +896,10 @@ h1.h_lite,h2.h_lite,h3.h_lite,h4.h_lite,span.h_lite{
     transition: .3s;
 }
 
+.mini-searchButton{
+    display: none;
+}
+
 @media only screen and (min-width:1150px) {
     .wzhSectionContainer .imgContainerW100{
         display: none;
@@ -947,5 +958,13 @@ h1.h_lite,h2.h_lite,h3.h_lite,h4.h_lite,span.h_lite{
     .phoneCenter{
         text-align: center;
         justify-content: center;
+    }
+
+    .mini-searchButton{
+        display: table-cell;
+    }
+
+    .common-searchButton{
+        display: none;
     }
 }

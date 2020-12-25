@@ -13,6 +13,7 @@ var createComputableModel = Vue.extend({
                 description: "",
                 contentType: "Package",
                 url: "",
+                modelserUrl:'',
                 isAuthor: true,
                 author: {
                     name: "",
@@ -20,6 +21,7 @@ var createComputableModel = Vue.extend({
                     email: "",
                 },
                 md5:"",
+                mdl:"",
                 deploy:false
             },
 
@@ -69,9 +71,186 @@ var createComputableModel = Vue.extend({
             draftOid:'',
 
             startDraft:0,
+
+            exisedServiceDialog:false,
+
+            exisedServices:[],
+
+            customAddMd5:false,
+
+            publicModelContainerList: [{
+                ip: '172.21.213.105',
+                port:8060,
+                geoInfo: {
+                    city: "Nanjing",
+                    countryCode: "CN",
+                    countryName: "China",
+                    latitude: "32.0617",
+                    longitude: "118.7778",
+                    region: "Jiangsu",
+                },
+                hardware: {
+                    cpu_Core: 8,
+                    diskAll: "300G",
+                    diskAvailable: "280G",
+                    platform: "Windows",
+                    system: "Windows Server",
+                    totalMemory: "8G",
+                    version: "2012",
+                },
+                status: true
+            },
+                {
+                    ip: '172.21.212.78',
+                    port:8060,
+                    geoInfo: {
+                        city: "Nanjing",
+                        countryCode: "CN",
+                        countryName: "China",
+                        latitude: "32.0617",
+                        longitude: "118.7778",
+                        region: "Jiangsu",
+                    },
+                    hardware: {
+                        cpu_Core: 4,
+                        diskAll: "400G",
+                        diskAvailable: "387G",
+                        platform: "Windows",
+                        system: "Windows Server",
+                        totalMemory: "8G",
+                        version: "2012",
+                    },
+                    status: false
+                },
+                {
+                    ip: '172.21.213.50',
+                    port:8060,
+                    geoInfo: {
+                        city: "Nanjing",
+                        countryCode: "CN",
+                        countryName: "China",
+                        latitude: "32.0617",
+                        longitude: "118.7778",
+                        region: "Jiangsu",
+                    },
+                    hardware: {
+                        cpu_Core: 8,
+                        diskAll: "120G",
+                        diskAvailable: "75G",
+                        platform: "Linux",
+                        system: "CentOS",
+                        totalMemory: "4G",
+                        version: "7",
+                    },
+                    status: false
+                },
+                {
+                    ip: '172.21.213.50',
+                    port:8060,
+                    geoInfo: {
+                        city: "Nanjing",
+                        countryCode: "CN",
+                        countryName: "China",
+                        latitude: "32.0617",
+                        longitude: "118.7778",
+                        region: "Jiangsu",
+                    },
+                    hardware: {
+                        cpu_Core: 8,
+                        diskAll: "120G",
+                        diskAvailable: "75G",
+                        platform: "Linux",
+                        system: "Ubuntu",
+                        totalMemory: "4G",
+                        version: "7",
+                    },
+                    status: false
+                }
+
+            ],
+
+            currentStep:0,
+
         }
     },
     methods: {
+        singleFileInputBindEvent(){
+            $("#file").on("change", ()=> {
+                this.fileArray=[];
+                this.resources=[];
+                let files=$("#file")[0].files;
+                let file=files[0];
+
+
+                let res={};
+                res.name=file.name;
+                res.path="";
+                let names=res.name.split('.');
+                res.suffix=names[names.length-1];
+                res.size=file.size;
+                res.lastModified=file.lastModified;
+                res.type=file.type;
+
+                if(res.suffix!=='zip'){
+                    this.$message({
+                        message: 'Please select a zip file!',
+                        type: 'error',
+                        offset: 70,
+                    });
+                }else{
+                    this.fileArray.push(file);
+                    this.resources.push(res);
+                }
+
+                //清空
+                document.getElementById("file").value='';
+
+            });
+        },
+        multiFileInputBindEvent(){
+            $("#file_multi").on("change", ()=> {
+                let files=$("#file_multi")[0].files;
+                for(i=0;i<files.length;i++){
+                    let file=files[i];
+
+                    let res={};
+                    res.name=file.name;
+                    res.path="";
+                    let names=res.name.split('.');
+                    res.suffix=names[names.length-1];
+                    res.size=file.size;
+                    res.lastModified=file.lastModified;
+                    res.type=file.type;
+                    let exist = false;
+                    for(j=0;j<this.fileArray.length;j++) {
+                        let fileExist = this.fileArray[j];
+                        if(fileExist.name==file.name&&fileExist.lastModified == file.lastModified&&fileExist.size == file.size && fileExist.type == file.type){
+                            exist = true;
+                            break;
+                        }
+                    }
+                    if(!exist){
+                        this.fileArray.push(file);
+                        this.resources.push(res);
+                    }
+                }
+
+
+                //清空
+                let file=document.getElementById("file_multi");
+                file.value='';
+            });
+        },
+        contentTypeChange(type){
+            this.fileArray=[];
+            this.resources=[];
+            if(type==="Package"){
+                this.singleFileInputBindEvent();
+            }else if(type==="Code"||type==="Library"){
+                this.multiFileInputBindEvent();
+            }
+
+        },
         selectModelItem(index,info){
             console.log(info);
             this.computableModel.bindModelItem = info.name;
@@ -244,6 +423,127 @@ var createComputableModel = Vue.extend({
         close: function () {
             console.log("socket已经关闭")
         },
+        formatDate(value,callback) {
+            const date = new Date(value);
+            y = date.getFullYear();
+            M = date.getMonth() + 1;
+            d = date.getDate();
+            H = date.getHours();
+            m = date.getMinutes();
+            s = date.getSeconds();
+            if (M < 10) {
+                M = '0' + M;
+            }
+            if (d < 10) {
+                d = '0' + d;
+            }
+            if (H < 10) {
+                H = '0' + H;
+            }
+            if (m < 10) {
+                m = '0' + m;
+            }
+            if (s < 10) {
+                s = '0' + s;
+            }
+
+            const t = y + '-' + M + '-' + d + ' ' + H + ':' + m + ':' + s;
+            if(callback == null||callback == undefined)
+                return t;
+            else
+                callback(t);
+        },
+        getServiceByMd5(){
+            this.exisedServices = []
+            if(this.computableModel.md5=='')
+                return
+            let flag
+            $.ajax({
+                url:"/computableModel/findAllByMd5",
+                type:"GET",
+                async:false,
+                data:{
+                    md5:this.computableModel.md5
+                },
+                success:(res) => {
+                    if (res.code != 0)
+                        return
+
+                    if (res.data.length != 0){
+                        this.exisedServiceDialog = true
+                        this.exisedServices = res.data
+                        flag = false
+                    }else{
+                        this.$message({
+                            message: 'No existed service of this MD5',
+                        });
+                        flag = true
+                    }
+                }
+
+            })
+
+            return flag;
+        },
+
+        checkMd5Deployed(){
+            if(this.computableModel.md5=='')
+                return
+            let flag
+            $.ajax({
+                url:"/computableModel/checkDeployed",
+                type:"GET",
+                async:false,
+                data:{
+                    md5:this.computableModel.md5
+                },
+                success:(res) => {
+                    if (res.code != 0)
+                        return
+
+                    if (res.data){
+                        flag = true
+                        this.$message({
+                            message: 'Services of this MD5 have been deployed before!',
+                            type:"success"
+                        });
+                    }else{
+                        this.$alert('No existed service of this MD5, please deploy model in the model container first!', 'Tip', {
+                                 type:"warning",
+                                 confirmButtonText: 'OK',
+                                 callback: ()=>{
+                                     return
+                                 }
+                             }
+                         );
+                        flag = false
+                    }
+                }
+
+            })
+
+            return flag;
+        },
+
+        getServiceByMd5Check(){
+            // let res = this.getServiceByMd5()
+            let res = this.checkMd5Deployed()
+            return res
+        },
+
+        cancelMd5(){
+            this.computableModel.md5 = ''
+            this.exisedServiceDialog = false
+        },
+        inputMd5(){
+            this.customAddMd5 = false
+        },
+
+        addMd5(){
+            this.exisedServiceDialog = false
+            this.customAddMd5 = true
+            $(".next").click()
+        },
 
         getMessageNum(computableModel_oid){
             this.message_num_socket = 0;//初始化消息数目
@@ -321,13 +621,43 @@ var createComputableModel = Vue.extend({
             })
         },
 
-        insertInfo(basicInfo){
+        async getBindModelInfo(modelOid){
+            let data = null
+            await axios.get('/modelItem/searchByOid',{
+                params:{
+                    oid:modelOid
+                }
+            }).then(
+                res=>{
+                    if(res.data.code!=-1){
+                        data = res.data.data
+                    }else{
+
+                    }
+                }
+            )
+
+            return data
+        },
+
+        async insertInfo(basicInfo){
             if(basicInfo.resourceJson!=null)
                 this.resources=basicInfo.resourceJson;
 
-            this.computableModel.bindModelItem=basicInfo.relateModelItemName;
-            this.computableModel.bindOid=basicInfo.relateModelItem;
+            let modelItem = {
+                name:'',
+                oid:''
+            }
+            if(basicInfo.relateModelItem!=null&&basicInfo.relateModelItem!=undefined){
+                modelItem = await this.getBindModelInfo(basicInfo.relateModelItem)
+            }
+
+            this.computableModel.bindModelItem=modelItem.name;
+            this.computableModel.bindOid=modelItem.oid;
             this.computableModel.status=basicInfo.status;
+            this.computableModel.md5=basicInfo.md5;
+            this.computableModel.mdl=basicInfo.mdl;
+            this.computableModel.url=basicInfo.url;
 
             this.computableModel.contentType = basicInfo.contentType;
 
@@ -417,13 +747,15 @@ var createComputableModel = Vue.extend({
         getItemContent(trigger,callBack){
             let itemObj = {}
 
-            itemObj.bindModelItem = this.computableModel.bindModelItem
+            itemObj.relateModelItem = this.computableModel.bindOid
             itemObj.status = this.computableModel.status
             itemObj.name = this.computableModel.name
             itemObj.description = this.computableModel.description
             itemObj.contentType = this.computableModel.contentType
             itemObj.url = this.computableModel.url
+            itemObj.modelserUrl = this.computableModel.modelserUrl
             itemObj.md5 = this.computableModel.md5
+            itemObj.mdl = this.computableModel.mdl
 
             itemObj.isAuthor=$("input[name='author_confirm']:checked").val();
 
@@ -441,7 +773,39 @@ var createComputableModel = Vue.extend({
             return itemObj;
         },
 
+        selectModelServer(container){
+            if(!container.status){
+                this.$message({
+                    message: 'Server Offline!',
+                    offset: 70,
+                });
+                return
+            }
+            if(this.computableModel.modelserUrl.split(':')[0] == container.ip){//如果选中则取消选择
+                this.computableModel.modelserUrl = ''
+                this.$message({
+                    message: 'Cancel select server!',
+                    offset: 70,
+                });
+            }else{
+                this.computableModel.modelserUrl = container.ip + ':' +container.port
+                this.$message({
+                    message: 'Succeed to select server!',
+                    type:'success',
+                    offset: 70,
+                });
+            }
+        },
+
         //draft
+        getDraft(){
+            return this.$refs.draftBox.getDraft();
+        },
+
+        insertDraft(draftContent){
+            this.insertInfo(draftContent)
+        },
+
         onInputName(){
             console.log(1)
             if(this.toCreate==1){
@@ -496,25 +860,25 @@ var createComputableModel = Vue.extend({
         initDraft(editType,backUrl,oidFrom,oid){
             this.$refs.draftBox.initDraft(editType,backUrl,oidFrom,oid)
         },
+
+        cancelEditClick(){
+            if(this.getDraft()!=null){
+                this.$refs.draftBox.cancelDraftDialog=true
+            }else{
+                setTimeout(() => {
+                    window.location.href = "/user/userSpace#/models/computablemodel";
+                }, 305)
+            }
+        },
+
+        submitEdit(){
+            $(".finish").click()
+        },
+
+        draftJump(){
+            window.location.href = '/user/userSpace#/models/computablemodel';
+        },
         ///
-
-        getServiceByMd5(){
-
-            $.ajax({
-                url:"/task/getServiceByMd5/" + this.computableModel.md5,
-                success:function (res) {
-                    if (res.code != 0)
-                        return
-
-                    if (res.data == null){
-                        console.log("Don't find a Service by this MD5!")
-                    }
-
-                    console.log(data)
-                }
-
-            })
-        }
     },
     mounted() {
         let that = this;
@@ -602,71 +966,9 @@ var createComputableModel = Vue.extend({
             //this.getModels();
         });
 
+        this.singleFileInputBindEvent();
+        this.multiFileInputBindEvent();
 
-        $("#file").change(()=> {
-            this.fileArray=[];
-            this.resources=[];
-            let files=$("#file")[0].files;
-            let file=files[0];
-
-
-            let res={};
-            res.name=file.name;
-            res.path="";
-            let names=res.name.split('.');
-            res.suffix=names[names.length-1];
-            res.size=file.size;
-            res.lastModified=file.lastModified;
-            res.type=file.type;
-
-            if(res.suffix!=='zip'){
-                this.$message({
-                    message: 'Please select a zip file!',
-                    type: 'error',
-                    offset: 70,
-                });
-            }else{
-                this.fileArray.push(file);
-                this.resources.push(res);
-            }
-
-            //清空
-            document.getElementById("file").value='';
-
-        });
-
-        $("#file_multi").change(()=> {
-            let files=$("#file_multi")[0].files;
-            for(i=0;i<files.length;i++){
-                let file=files[i];
-
-                let res={};
-                res.name=file.name;
-                res.path="";
-                let names=res.name.split('.');
-                res.suffix=names[names.length-1];
-                res.size=file.size;
-                res.lastModified=file.lastModified;
-                res.type=file.type;
-                let exist = false;
-                for(j=0;j<this.fileArray.length;j++) {
-                    let fileExist = this.fileArray[j];
-                    if(fileExist.name==file.name&&fileExist.lastModified == file.lastModified&&fileExist.size == file.size && fileExist.type == file.type){
-                        exist = true;
-                        break;
-                    }
-                }
-                if(!exist){
-                    this.fileArray.push(file);
-                    this.resources.push(res);
-                }
-            }
-
-
-            //清空
-            let file=document.getElementById("file_multi");
-            file.value='';
-        });
 
         $.ajax({
             type: "GET",
@@ -722,10 +1024,11 @@ var createComputableModel = Vue.extend({
 
             initTinymce('textarea#computableModelText')
 
-            this.loadMatchedCreateDraft();
             if(this.draft.oid!=''&&this.draft.oid!=null&&typeof (this.draft.oid)!="undefined"){
                 // this.loadDraftByOid()
                 this.initDraft('create','/user/userSpace#/models/modelitem','draft',this.draft.oid)
+            }else{
+                this.loadMatchedCreateDraft();
             }
         }
         else {
@@ -791,6 +1094,8 @@ var createComputableModel = Vue.extend({
                         return false;
                     }
                     else {
+                        if(this.draft.oid!='')
+                            this.createDraft();
                         return true;
                     }
                 }
@@ -803,7 +1108,17 @@ var createComputableModel = Vue.extend({
                                 offset: 70,
                             });
                             return false;
+                        }else{
+                            return true;
                         }
+                        // if(this.computableModel.contentType=="Package"&&this.computableModel.modelserUrl==''){
+                        //     new Vue().$message({
+                        //         message: 'Please select a model server!',
+                        //         type: 'warning',
+                        //         offset: 70,
+                        //     });
+                        //     return false;
+                        // }
                     }
                     if(this.computableModel.contentType=="Service"||this.computableModel.contentType=="Link"){
                         if(this.computableModel.url==""){
@@ -813,8 +1128,30 @@ var createComputableModel = Vue.extend({
                                 offset: 70,
                             });
                             return false;
+                        }else {
+                            return true
                         }
-                    }else{
+                    }else if(this.computableModel.contentType.toLowerCase()=="md5"&&newIndex==2){
+                        if(this.computableModel.md5!=''&&this.computableModel.mdl!=''){
+                            if(this.customAddMd5)
+                                return true
+                            return  this.getServiceByMd5Check()
+                        }else if(this.computableModel.md5==''){
+                            new Vue().$message({
+                                message: 'Please enter md5!',
+                                type: 'warning',
+                                offset: 70,
+                            });
+                            return false
+                        }else if(this.computableModel.mdl==''){
+                            new Vue().$message({
+                                message: 'Please enter mdl!',
+                                type: 'warning',
+                                offset: 70,
+                            });
+                            return false
+                        }
+                    } else{
                         if(this.draft.oid!='')
                             this.createDraft();
                         return true;
@@ -828,7 +1165,7 @@ var createComputableModel = Vue.extend({
         });
 
 
-        $(".finish").click(()=>{
+        $(".finish").on('click',()=>{
             this.formData=new FormData();
 
             if(this.computableModel.bindModelItem==""){
@@ -883,6 +1220,7 @@ var createComputableModel = Vue.extend({
                     // $(".uploading").css("display", "none");
                     switch (res.data.code) {
                         case 1:
+                            this.deleteDraft()
                             this.$confirm('<div style=\'font-size: 18px\'>Create computable model successfully!</div>', 'Tip', {
                                 dangerouslyUseHTMLString: true,
                                 confirmButtonText: 'View',
@@ -968,6 +1306,7 @@ var createComputableModel = Vue.extend({
                                     }
                                 });
                             case 1:
+                                this.deleteDraft()
                                 this.$confirm('<div style=\'font-size: 18px\'>Update computable model successfully!</div>', 'Tip', {
                                     dangerouslyUseHTMLString: true,
                                     confirmButtonText: 'View',

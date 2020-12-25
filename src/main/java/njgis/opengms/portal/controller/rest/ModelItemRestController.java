@@ -274,7 +274,7 @@ public class ModelItemRestController {
             String searchText = modelItemFindDTO.getSearchText();
             //List<String> classifications=modelItemFindDTO.getClassifications();
             //默认以viewCount排序
-            Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
+            Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
             Pageable pageable = PageRequest.of(page, pageSize, sort);
 
             Classification classification;
@@ -534,6 +534,17 @@ public class ModelItemRestController {
         JSONObject result = statisticsService.getDailyViewAndInvokeTimes(modelItem,computableModelList,30,null);
 
         return ResultUtils.success(result);
+    }
+
+    @RequestMapping(value="/searchByOid",method=RequestMethod.GET)
+    public JsonResult searchByOid(@RequestParam(value="oid") String oid, HttpServletRequest httpServletRequest) throws IOException, DocumentException {
+//        HttpSession session=httpServletRequest.getSession();
+
+//        if(session.getAttribute("oid")==null){
+//            return ResultUtils.error(-1,"no login");
+//        }
+//        String userOid=session.getAttribute("oid").toString();
+        return ResultUtils.success(modelItemService.getByOid(oid));
     }
 
     @RequestMapping(value="/searchByDOI",method=RequestMethod.POST)

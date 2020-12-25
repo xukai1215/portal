@@ -1595,7 +1595,7 @@
 <!--                                                            :rounded="false"></avatar>-->
 
                                                     <img v-if="modelItem.image==''" src="/static/img/model/model.png" style="width:120px;height: 120px;">
-                                                    <img v-if="modelItem.image!=''" :src="'/static/'+modelItem.image" onerror=src="/static/img/model/model.png"
+                                                    <img v-if="modelItem.image!=''" :src="'/static'+modelItem.image" onerror=src="/static/img/model/model.png"
                                                          style="width:120px;height: 120px;">
 
                                                 </a>
@@ -1686,7 +1686,7 @@
                                                 <a class="img" :href="'/modelItem/'+ modelItem.oid" target="_blank">
 <!--                                                    <avatar v-if="dataItem.image==''||dataItem.image==null"  :username="dataItem.name" :size="120"-->
 <!--                                                            :rounded="false"></avatar>-->
-                                                    <img v-if="dataItem.image!=''&&dataItem.image!=null" :src="'/static/'+dataItem.image" onerror=src="../static/img/model/myData.png"
+                                                    <img v-if="dataItem.image!=''&&dataItem.image!=null" :src="'/static'+dataItem.image" onerror=src="../static/img/model/myData.png"
                                                          style="width:120px;height: 120px;">
                                                     <img v-else src="../static/img/model/myData.png"
                                                          style="width:120px;height: 120px;">
@@ -1778,7 +1778,7 @@
 <!--                                                    <avatar v-if="conceptualModel.image==''||conceptualModel.image==null" :username="conceptualModel.name" :size="120"-->
 <!--                                                            :rounded="false"></avatar>-->
 
-                                                    <img v-if="conceptualModel.image!=''&&conceptualModel.image!=null" :src="'/static/'+conceptualModel.image" onerror=src="../static/img/model/conceptual.png"
+                                                    <img v-if="conceptualModel.image!=''&&conceptualModel.image!=null" :src="'/static'+conceptualModel.image" onerror=src="../static/img/model/conceptual.png"
                                                          style="width:120px;height: 120px;">
                                                     <img v-else src="../static/img/model/conceptual.png"
                                                          style="width:120px;height: 120px;">
@@ -1871,7 +1871,7 @@
 <!--                                                    <avatar v-if="logicalModel.image==''||logicalModel.image==null" :username="logicalModel.name" :size="120"-->
 <!--                                                            :rounded="false"></avatar>-->
 
-                                                    <img v-if="logicalModel.image!=''&&logicalModel.image!=null" :src="'/static/'+logicalModel.image" onerror=src="../static/img/model/logical.png"
+                                                    <img v-if="logicalModel.image!=''&&logicalModel.image!=null" :src="'/static'+logicalModel.image" onerror=src="../static/img/model/logical.png"
                                                          style="width:120px;height: 120px;">
                                                     <img v-else src="../static/img/model/logical.png"
                                                          style="width:120px;height: 120px;">
@@ -1962,7 +1962,7 @@
 <!--                                                    <avatar v-if="computableModel.image==''||computableModel.image==null" :username="computableModel.name" :size="120"-->
 <!--                                                            :rounded="false"></avatar>-->
 
-                                                    <img v-if="computableModel.image!=''&&computableModel.image!=null" :src="'/static/'+computableModel.image" onerror=src="/static/img/model/calcModel.png"
+                                                    <img v-if="computableModel.image!=''&&computableModel.image!=null" :src="'/static'+computableModel.image" onerror=src="/static/img/model/calcModel.png"
                                                          style="width:120px;height: 120px;">
                                                     <img v-else src="../static/img/model/calcModel.png"
                                                          style="width:120px;height: 120px;">

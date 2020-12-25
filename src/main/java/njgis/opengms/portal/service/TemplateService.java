@@ -33,7 +33,7 @@ public class TemplateService {
 
     public JSONObject getTemplatesByUserId(String oid, TemplateFindDTO templateFindDTO, String loadUser) {
 
-        String userId = userService.getByOid(oid).getUserName();
+        String userId = userService.getByUserId(oid).getUserName();
         boolean asc=templateFindDTO.getAsc();
         String sortElement=templateFindDTO.getSortElement();
         int page=templateFindDTO.getPage();

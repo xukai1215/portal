@@ -281,7 +281,7 @@ var userDataSpace = Vue.extend(
                         .then(res=> {
                             let json=res.data;
                             if(json.code==-1){
-                                alert("Please login first!")
+                                this.$alert("Please login first!")
                                 window.sessionStorage.setItem("history", window.location.href);
                                 window.location.href="/user/login"
                             }
@@ -358,11 +358,12 @@ var userDataSpace = Vue.extend(
             },
 
             getFilePackage(){
+                this.managerloading = true
                 axios.get("/user/getFolderAndFile",{})
                     .then(res=> {
                         let json=res.data;
                         if(json.code==-1){
-                            alert("Please login first!")
+                            this.$alert("Please login first!")
                             window.sessionStorage.setItem("history", window.location.href);
                             window.location.href="/user/login"
                         }
@@ -370,6 +371,9 @@ var userDataSpace = Vue.extend(
                             this.myFile=res.data.data[0].children;
                             console.log(this.myFile)
                             this.myFileShown=this.myFile;
+                            setTimeout(()=>{
+                                this.managerloading = false
+                            },55)
                         }
 
 
@@ -430,7 +434,7 @@ var userDataSpace = Vue.extend(
             // },
 
             refreshPackage(index,pathList){
-
+                this.searchContentShown = ''
                 let paths = []
                 if(index==1){//刷新所显示的文件
                     let i = this.pathShown.length - 1;
@@ -454,6 +458,7 @@ var userDataSpace = Vue.extend(
                     }
                 }
 
+                this.managerloading = true
                 $.ajax({
                     type: "GET",
                     url: "/user/getFileByPath",
@@ -472,7 +477,10 @@ var userDataSpace = Vue.extend(
                             if(this.myFileShown.length>0)
                                 this.fatherIndex = this.myFileShown[0].father
                             this.refreshChild(this.myFile);
-                            console.log(this.myFileShown)
+
+                            setTimeout(()=>{
+                                this.managerloading = false
+                            },125)
                         }
                     }
 
@@ -1011,16 +1019,18 @@ var userDataSpace = Vue.extend(
 
                 let sourceId = new Array()
 
-                for (let i = 0; i < this.downloadDataSet.length; i++) {
-                    sourceId.push(this.getSourceId(this.downloadDataSet[i].url))
-                    // console.log(sourceId)
-                }
+
 
 
                 if (this.downloadDataSet.length > 0) {
+                    let ids = []
+                    for(let i=0;i<this.downloadDataSet.length;i++){
+                        let urls = this.downloadDataSet[i].url.split("/")
+                        ids.push(urls[urls.length-1])
+                    }
+                    let idstr = ids.toString();
 
-                    const keys = sourceId.map(_ => `sourceStoreId=${_}`).join('&');
-                    let url = "http://221.226.60.2:8082/data?uid=" + keys;
+                    let url = "http://221.226.60.2:8082/batchData?oids=" + idstr;
                     window.open(url)
                     // let link = document.createElement('a');
                     // link.style.display = 'none';
@@ -1116,10 +1126,10 @@ var userDataSpace = Vue.extend(
 
 
             right_download(){
-                let id=this.rightTargetItem.url.split('=')[1]
+                let url=this.rightTargetItem.url
                 //下载接口
-                if(id!=undefined) {
-                    window.open( 'http://221.226.60.2:8082/data?uid='+id);
+                if(url!=undefined) {
+                    window.open( url);
                 }
                 else{
                     this.$message.error("No data can be downloaded.");
@@ -1152,11 +1162,28 @@ var userDataSpace = Vue.extend(
                 })
             },
 
+            //批量删除数据容器记录
+            delete_batchData_dataManager(ids){
+                axios.delete("/dispatchRequest/batchdelete", {
+                    params: {
+                        ids: ids
+                    },
+                    paramsSerializer: params => {
+                        return qs.stringify(params, { indices: false })
+                    }
+                }).then((res) => {
+                    if(res.code == 0){
+                        // console.log('suc')
+                    }
+                    // if (res.data.msg === "成功") {
+
+                    // }
+
+                })
+            },
+
             deleteAll(){
                 const h = this.$createElement;
-                if(this.rightTargetItem.package==false){
-                    var sourceId=this.getSourceId(this.rightTargetItem.url)
-                }
 
                 this.$msgbox({
                     title: ' ',
@@ -1174,8 +1201,6 @@ var userDataSpace = Vue.extend(
                     beforeClose: (action, instance, done) => {
 
                         if (action === 'confirm') {
-                            if(this.rightTargetItem.package==false)
-                                this.delete_data_dataManager(sourceId)
                             instance.confirmButtonLoading = true;
                             instance.confirmButtonText = 'deleting...';
                             setTimeout(() => {
@@ -1192,8 +1217,16 @@ var userDataSpace = Vue.extend(
                                             window.sessionStorage.setItem("history", window.location.href);
                                             window.location.href = "/user/login"
                                         } else {
-                                            for(let i=0;i<data.length;i++)
+                                            for(let i=0;i<data.length;i++){
+
                                                 this.deleteInfront(data[i],this.myFile)
+                                            }
+                                            let ids=[]
+                                            for(let i=0;i<this.downloadDataSet.length;i++){
+                                                let urls = this.downloadDataSet[i].url.split("/")
+                                                ids.push(urls[urls.length-1])
+                                            }
+                                            this.delete_batchData_dataManager(ids)
 
                                             this.downloadDataSet=[];
                                             this.downloadDataSetName=[];
@@ -1386,7 +1419,7 @@ var userDataSpace = Vue.extend(
                             this.fileSearchResult=json.data.data;
                             this.myFileShown=this.fileSearchResult
                             this.searchContentShown=this.searchContent
-                            this.pathShown=[];
+                            // this.pathShown=[];
                         }
                     })
 
@@ -1495,7 +1528,7 @@ var userDataSpace = Vue.extend(
                         this.uploadProgress = progressEvent.loaded / progressEvent.total * 100 | 0;  //百分比
                     }
                 }).then((res)=> {
-                    if(res.data.code==0){
+                    if(res.data.code==1){
                         let data=res.data.data;
                         if(this.uploadFiles.length==1){
                             let index=this.uploadFiles[0].name.lastIndexOf(".")
@@ -1504,6 +1537,8 @@ var userDataSpace = Vue.extend(
                         else{
                             data.suffix="zip";
                         }
+
+                        data.file_name = this.uploadName
                         data.label=data.file_name;
                         data.file_name+="."+data.suffix;
                         data.upload=true;
@@ -1521,7 +1556,7 @@ var userDataSpace = Vue.extend(
                         }
                         this.uploadLoading=false;
                         // this.uploadDialogVisible=false;
-                        this.remoteMethod("");
+                        this.remoteMethod("none");
                         this.$refs.upload.clearFiles();
 
 

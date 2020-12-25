@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/XSL/Transform">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<template id="userDraftBox" th:fragment="userDraftBox">
+    <div class="innerShadowCol">
+
+        <!--el-dialog放在这一层-->
+        <div  class="page-content clearfix scrollbar el-col-lg-21 el-col-md-20 pageContent acrylicBack"
+              style="margin-left: 240px;padding-bottom: 100px"
+              :style="{'height':ScreenMinHeight,'min-height':ScreenMinHeight,'max-height':ScreenMaxHeight}"
+              id="pageContent">
+            <!--            <div class="titleContainer"><h4>My Space</h4></div>-->
+            <div class="flexColContainer mainContent" style="padding:20px 10px;max-width: 1120px">
+                <section role="description" class="flexCenter contentSection"
+                         style="max-width: 1050px">
+                    <div class="flexRowContainer flexColCenter" style="margin-bottom: 20px">
+<!--                        <i class="ms-Icon ms-Icon&#45;&#45;EditNote"-->
+<!--                           style="margin-top: 7px;font-size: 40px;color: #05c4ff;"></i>-->
+                        <h3 style="margin-left: 10px">Draft Box</h3>
+
+                    </div>
+                    <!--                        <h5>You can manager your model and data here</h5>-->
+
+                </section>
+
+                <el-card id="draftBoxContainer">
+                    <el-tabs v-model="activeName" stretch="stretch">
+                        <el-tab-pane label="Model Item" name="first">
+                            <el-card>
+                                <div class="block">
+                                    <div class="flexJustStart flexAlignCenter">
+                                        Sort by time:
+                                        <el-button size="mini" type="primary" plain @click="changeSort" style=";margin-left: 5px;padding: 5px 6px;">
+                                            <i v-if="!asc" class="fa fa-sort-numeric-desc" style="font-size: 14px"></i>
+                                            <i v-else class="fa fa-sort-numeric-asc" style="font-size: 14px"></i>
+                                        </el-button>
+                                    </div>
+                                    <div class="no-mess icon-th-list overview" style="color: #ccc;font-size: 16px;margin: 20px;text-align: center;display: none;">
+                                        <span style="margin-left: 5px;    font-family: 'Microsoft YaHei';">This page is temporarily empty</span>
+                                    </div>
+                                    <div v-if="await" class="progress-cover progress-cover-primary" style="margin: 40px 0;">
+                                        <div class="progress progress-medium fluent-position">
+                                            <span class="progress-span"></span>
+                                            <span class="progress-span"></span>
+                                            <span class="progress-span"></span>
+                                            <span class="progress-span"></span>
+                                            <span class="progress-span"></span>
+                                        </div>
+                                    </div>
+                                    <section v-if="modelItemDraftList.create.length>0||modelItemDraftList.edit.length>0">
+                                        <div class="flexCenter">
+                                            <div class="innerBorder" style="margin-left: 11px;width: calc(50% - 70px);"></div>
+                                            <h4 style="flex: 1;text-align: center;text-wrap: none">Model Item</h4>
+                                            <div class="innerBorder" style="margin-right: 11px;width: calc(50% - 70px);"></div>
+                                        </div>
+                                        <div v-if="modelItemDraftList.create.length>0">
+                                            <div class="flexAlignCenter">
+                                                <div class="wzhCreate wzhBigDot" style="margin-right: 10px"></div>
+                                                <h5>Create</h5>
+                                            </div>
+                                            <el-row :gutter="20">
+                                                <el-col :span="cardSpan" v-for="draft in modelItemDraftList.create" style="margin-bottom: 20px">
+
+                                                    <el-card class="grid-content bg-purple flexCenter draftCard" >
+                                                        <div class="flexRow flexAlignStrench draftCardText">
+                                                            <div style="width: 125px"><p>Create Item:</p></div>
+                                                            <div><b class="twoLine" style="max-width: 120px">{{draft.content.name}}</b></div>
+                                                        </div>
+                                                        <div class="flexRow flexAlignStrench">
+                                                            <div style="width: 125px"><p>Last Modify time:</p></div>
+                                                            <div><b>{{formatDateChild(draft.lastModifyTime)}}</b></div>
+                                                        </div>
+                                                        <div class="flexAlignCenter dropMask">
+                                                            <div class="flexCol flexCenter" style="width: 50%" @click="viewDraftDetail(draft)">
+                                                                <i class="ms-Icon ms-Icon--View"></i>
+                                                                <p>View Details</p>
+                                                            </div>
+                                                            <div class="innerBorderCol"></div>
+                                                            <div class="flexCol flexCenter" style="width: 50%" @click="continueToEdit(0,draft)">
+                                                                <i class="ms-Icon ms-Icon--PenWorkspace"></i>
+                                                                <p>Continue Editing</p>
+                                                            </div>
+                                                        </div>
+                                                    </el-card>
+                                                </el-col>
+                                            </el-row>
+                                        </div>
+                                        <div v-if="modelItemDraftList.edit.length>0">
+                                            <div class="flexAlignCenter">
+                                                <div class="wzhCreate wzhBigDot" style="margin-right: 10px;border: 3px solid #a4ddff"></div>
+                                                <h5>Edit</h5>
+                                            </div>
+                                            <el-row :gutter="20">
+
+                                                <el-col :span="cardSpan" v-for="draft in modelItemDraftList.edit" style="margin-bottom: 20px">
+
+                                                    <el-card class="grid-content bg-purple flexCenter draftCard">
+                                                        <div class="flexRow flexAlignStrench draftCardText">
+                                                            <div style="width: 125px"><p>Create Item:</p></div>
+                                                            <div><b class="twoLine" style="max-width: 120px">{{draft.content.name}}</b></div>
+                                                        </div>
+                                                        <div class="flexRow flexAlignStrench">
+                                                            <div style="width: 125px"><p>Last Modify time:</p></div>
+                                                            <div><b>{{formatDateChild(draft.lastModifyTime)}}</b></div>
+                                                        </div>
+                                                        <div class="flexAlignCenter dropMask">
+                                                            <div class="flexCol flexCenter" style="width: 50%" @click="viewDraftDetail(draft)">
+                                                                <i class="ms-Icon ms-Icon--View"></i>
+                                                                <p>View Details</p>
+                                                            </div>
+                                                            <div class="innerBorderCol"></div>
+                                                            <div class="flexCol flexCenter" style="width: 50%" @click="continueToEdit(1,draft)">
+                                                                <i class="ms-Icon ms-Icon--PenWorkspace"></i>
+                                                                <p>Continue Editing</p>
+                                                            </div>
+                                                        </div>
+                                                    </el-card>
+                                                </el-col>
+                                            </el-row>
+                                        </div>
+                                    </section>
+
+                                    <section v-if="conceptualModelDraftList.create.length>0||conceptualModelDraftList.edit.length>0">
+                                        <div class="flexCenter">
+                                            <div class="innerBorder" style="margin-left: 11px;width: calc(50% - 70px);"></div>
+                                            <h4 style="flex: 1;text-align: center;text-wrap: none">Conceptual Model</h4>
+                                            <div class="innerBorder" style="margin-right: 11px;width: calc(50% - 70px);"></div>
+                                        </div>
+                                        <div v-if="conceptualModelDraftList.create.length>0">
+                                            <div class="flexAlignCenter">
+                                                <div class="wzhCreate wzhBigDot" style="margin-right: 10px"></div>
+                                                <h5>Create</h5>
+                                            </div>
+                                            <el-row :gutter="20">
+                                                <el-col :span="cardSpan" v-for="draft in conceptualModelDraftList.create" style="margin-bottom: 20px">
+
+                                                    <el-card class="grid-content bg-purple flexCenter draftCard" >
+                                                        <div class="flexRow flexAlignStrench draftCardText">
+                                                            <div style="width: 125px"><p>Create Item:</p></div>
+                                                            <div><b class="twoLine" style="max-width: 120px">{{draft.content.name}}</b></div>
+                                                        </div>
+                                                        <div class="flexRow flexAlignStrench">
+                                                            <div style="width: 125px"><p>Last Modify time:</p></div>
+                                                            <div><b>{{formatDateChild(draft.lastModifyTime)}}</b></div>
+                                                        </div>
+                                                        <div class="flexAlignCenter dropMask">
+                                                            <div class="flexCol flexCenter" style="width: 50%" @click="viewDraftDetail(draft)">
+                                                                <i class="ms-Icon ms-Icon--View"></i>
+                                                                <p>View Details</p>
+                                                            </div>
+                                                            <div class="innerBorderCol"></div>
+                                                            <div class="flexCol flexCenter" style="width: 50%" @click="continueToEdit(0,draft)">
+                                                                <i class="ms-Icon ms-Icon--PenWorkspace"></i>
+                                                                <p>Continue Editing</p>
+                                                            </div>
+                                                        </div>
+                                                    </el-card>
+                                                </el-col>
+                                            </el-row>
+                                        </div>
+                                        <div v-if="conceptualModelDraftList.edit.length>0">
+                                            <div class="flexAlignCenter">
+                                                <div class="wzhCreate wzhBigDot" style="margin-right: 10px;border: 3px solid #a4ddff"></div>
+                                                <h5>Edit</h5>
+                                            </div>
+                                            <el-row :gutter="20">
+
+                                                <el-col :span="cardSpan" v-for="draft in conceptualModelDraftList.edit" style="margin-bottom: 20px">
+
+                                                    <el-card class="grid-content bg-purple flexCenter draftCard">
+                                                        <div class="flexRow flexAlignStrench draftCardText">
+                                                            <div style="width: 125px"><p>Create Item:</p></div>
+                                                            <div><b class="twoLine" style="max-width: 120px">{{draft.content.name}}</b></div>
+                                                        </div>
+                                                        <div class="flexRow flexAlignStrench">
+                                                            <div style="width: 125px"><p>Last Modify time:</p></div>
+                                                            <div><b>{{formatDateChild(draft.lastModifyTime)}}</b></div>
+                                                        </div>
+                                                        <div class="flexAlignCenter dropMask">
+                                                            <div class="flexCol flexCenter" style="width: 50%" @click="viewDraftDetail(draft)">
+                                                                <i class="ms-Icon ms-Icon--View"></i>
+                                                                <p>View Details</p>
+                                                            </div>
+                                                            <div class="innerBorderCol"></div>
+                                                            <div class="flexCol flexCenter" style="width: 50%" @click="continueToEdit(1,draft)">
+                                                                <i class="ms-Icon ms-Icon--PenWorkspace"></i>
+                                                                <p>Continue Editing</p>
+                                                            </div>
+                                                        </div>
+                                                    </el-card>
+                                                </el-col>
+                                            </el-row>
+                                        </div>
+                                    </section>
+
+                                    <section v-if="logicalModelDraftList.create.length>0||logicalModelDraftList.edit.length>0">
+                                        <div class="flexCenter">
+                                            <div class="innerBorder" style="margin-left: 11px;width: calc(50% - 70px);"></div>
+                                            <h4 style="flex: 1;text-align: center;text-wrap: none">Logical Model</h4>
+                                            <div class="innerBorder" style="margin-right: 11px;width: calc(50% - 70px);"></div>
+                                        </div>
+                                        <div v-if="logicalModelDraftList.create.length>0">
+                                            <div class="flexAlignCenter">
+                                                <div class="wzhCreate wzhBigDot" style="margin-right: 10px"></div>
+                                                <h5>Create</h5>
+                                            </div>
+                                            <el-row :gutter="20">
+                                                <el-col :span="cardSpan" v-for="draft in logicalModelDraftList.create" style="margin-bottom: 20px">
+
+                                                    <el-card class="grid-content bg-purple flexCenter draftCard" >
+                                                        <div class="flexRow flexAlignStrench draftCardText">
+                                                            <div style="width: 125px"><p>Create Item:</p></div>
+                                                            <div><b class="twoLine" style="max-width: 120px">{{draft.content.name}}</b></div>
+                                                        </div>
+                                                        <div class="flexRow flexAlignStrench">
+                                                            <div style="width: 125px"><p>Last Modify time:</p></div>
+                                                            <div><b>{{formatDateChild(draft.lastModifyTime)}}</b></div>
+                                                        </div>
+                                                        <div class="flexAlignCenter dropMask">
+                                                            <div class="flexCol flexCenter" style="width: 50%" @click="viewDraftDetail(draft)">
+                                                                <i class="ms-Icon ms-Icon--View"></i>
+                                                                <p>View Details</p>
+                                                            </div>
+                                                            <div class="innerBorderCol"></div>
+                                                            <div class="flexCol flexCenter" style="width: 50%" @click="continueToEdit(0,draft)">
+                                                                <i class="ms-Icon ms-Icon--PenWorkspace"></i>
+                                                                <p>Continue Editing</p>
+                                                            </div>
+                                                        </div>
+                                                    </el-card>
+                                                </el-col>
+                                            </el-row>
+                                        </div>
+                                        <div v-if="logicalModelDraftList.edit.length>0">
+                                            <div class="flexAlignCenter">
+                                                <div class="wzhCreate wzhBigDot" style="margin-right: 10px;border: 3px solid #a4ddff"></div>
+                                                <h5>Edit</h5>
+                                            </div>
+                                            <el-row :gutter="20">
+
+                                                <el-col :span="cardSpan" v-for="draft in logicalModelDraftList.edit" style="margin-bottom: 20px">
+
+                                                    <el-card class="grid-content bg-purple flexCenter draftCard">
+                                                        <div class="flexRow flexAlignStrench draftCardText">
+                                                            <div style="width: 125px"><p>Create Item:</p></div>
+                                                            <div><b class="twoLine" style="max-width: 120px">{{draft.content.name}}</b></div>
+                                                        </div>
+                                                        <div class="flexRow flexAlignStrench">
+                                                            <div style="width: 125px"><p>Last Modify time:</p></div>
+                                                            <div><b>{{formatDateChild(draft.lastModifyTime)}}</b></div>
+                                                        </div>
+                                                        <div class="flexAlignCenter dropMask">
+                                                            <div class="flexCol flexCenter" style="width: 50%" @click="viewDraftDetail(draft)">
+                                                                <i class="ms-Icon ms-Icon--View"></i>
+                                                                <p>View Details</p>
+                                                            </div>
+                                                            <div class="innerBorderCol"></div>
+                                                            <div class="flexCol flexCenter" style="width: 50%" @click="continueToEdit(1,draft)">
+                                                                <i class="ms-Icon ms-Icon--PenWorkspace"></i>
+                                                                <p>Continue Editing</p>
+                                                            </div>
+                                                        </div>
+                                                    </el-card>
+                                                </el-col>
+                                            </el-row>
+                                        </div>
+                                    </section>
+
+                                    <section v-if="computableModelDraftList.create.length>0||computableModelDraftList.edit.length>0">
+                                        <div class="flexCenter">
+                                            <div class="innerBorder" style="margin-left: 11px;width: calc(50% - 70px);"></div>
+                                            <h4 style="flex: 1;text-align: center;text-wrap: none">Computable Model</h4>
+                                            <div class="innerBorder" style="margin-right: 11px;width: calc(50% - 70px);"></div>
+                                        </div>
+                                        <div v-if="computableModelDraftList.create.length>0">
+                                            <div class="flexAlignCenter">
+                                                <div class="wzhCreate wzhBigDot" style="margin-right: 10px"></div>
+                                                <h5>Create</h5>
+                                            </div>
+                                            <el-row :gutter="20">
+                                                <el-col :span="cardSpan" v-for="draft in computableModelDraftList.create" style="margin-bottom: 20px">
+
+                                                    <el-card class="grid-content bg-purple flexCenter draftCard" >
+                                                        <div class="flexRow flexAlignStrench draftCardText">
+                                                            <div style="width: 125px"><p>Create Item:</p></div>
+                                                            <div><b class="twoLine" style="max-width: 120px">{{draft.content.name}}</b></div>
+                                                        </div>
+                                                        <div class="flexRow flexAlignStrench">
+                                                            <div style="width: 125px"><p>Last Modify time:</p></div>
+                                                            <div><b>{{formatDateChild(draft.lastModifyTime)}}</b></div>
+                                                        </div>
+                                                        <div class="flexAlignCenter dropMask">
+                                                            <div class="flexCol flexCenter" style="width: 50%" @click="viewDraftDetail(draft)">
+                                                                <i class="ms-Icon ms-Icon--View"></i>
+                                                                <p>View Details</p>
+                                                            </div>
+                                                            <div class="innerBorderCol"></div>
+                                                            <div class="flexCol flexCenter" style="width: 50%" @click="continueToEdit(0,draft)">
+                                                                <i class="ms-Icon ms-Icon--PenWorkspace"></i>
+                                                                <p>Continue Editing</p>
+                                                            </div>
+                                                        </div>
+                                                    </el-card>
+                                                </el-col>
+                                            </el-row>
+                                        </div>
+                                        <div v-if="computableModelDraftList.edit.length>0">
+                                            <div class="flexAlignCenter">
+                                                <div class="wzhCreate wzhBigDot" style="margin-right: 10px;border: 3px solid #a4ddff"></div>
+                                                <h5>Edit</h5>
+                                            </div>
+                                            <el-row :gutter="20">
+
+                                                <el-col :span="cardSpan" v-for="draft in computableModelDraftList.edit" style="margin-bottom: 20px">
+
+                                                    <el-card class="grid-content bg-purple flexCenter draftCard">
+                                                        <div class="flexRow flexAlignStrench draftCardText">
+                                                            <div style="width: 125px"><p>Create Item:</p></div>
+                                                            <div><b class="twoLine" style="max-width: 120px">{{draft.content.name}}</b></div>
+                                                        </div>
+                                                        <div class="flexRow flexAlignStrench">
+                                                            <div style="width: 125px"><p>Last Modify time:</p></div>
+                                                            <div><b>{{formatDateChild(draft.lastModifyTime)}}</b></div>
+                                                        </div>
+                                                        <div class="flexAlignCenter dropMask">
+                                                            <div class="flexCol flexCenter" style="width: 50%" @click="viewDraftDetail(draft)">
+                                                                <i class="ms-Icon ms-Icon--View"></i>
+                                                                <p>View Details</p>
+                                                            </div>
+                                                            <div class="innerBorderCol"></div>
+                                                            <div class="flexCol flexCenter" style="width: 50%" @click="continueToEdit(1,draft)">
+                                                                <i class="ms-Icon ms-Icon--PenWorkspace"></i>
+                                                                <p>Continue Editing</p>
+                                                            </div>
+                                                        </div>
+                                                    </el-card>
+                                                </el-col>
+                                            </el-row>
+                                        </div>
+                                    </section>
+
+
+                                </div>
+                            </el-card>
+                        </el-tab-pane>
+                        <el-tab-pane label="Data Item" name="second">
+                            <div slot="label">
+                                Data Item
+                            </div>
+
+                            <el-tabs type="border-card"  stretch="stretch">
+
+                            </el-tabs>
+
+                        </el-tab-pane>
+                        <el-tab-pane label="Community" name="third">
+                            <el-card>
+                                <div class="block">
+                                    <div class="flexJustStart flexAlignCenter">
+                                        Sort by time:
+                                        <el-button size="mini" type="primary" plain @click="changeSort" style=";margin-left: 5px;padding: 5px 6px;">
+                                            <i v-if="!asc" class="fa fa-sort-numeric-desc" style="font-size: 14px"></i>
+                                            <i v-else class="fa fa-sort-numeric-asc" style="font-size: 14px"></i>
+                                        </el-button>
+                                    </div>
+                                    <div class="no-mess icon-th-list overview" style="color: #ccc;font-size: 16px;margin: 20px;text-align: center;display: none;">
+                                        <span style="margin-left: 5px;    font-family: 'Microsoft YaHei';">This page is temporarily empty</span>
+                                    </div>
+                                    <div v-if="await" class="progress-cover progress-cover-primary" style="margin: 40px 0;">
+                                        <div class="progress progress-medium fluent-position">
+                                            <span class="progress-span"></span>
+                                            <span class="progress-span"></span>
+                                            <span class="progress-span"></span>
+                                            <span class="progress-span"></span>
+                                            <span class="progress-span"></span>
+                                        </div>
+                                    </div>
+                                    <section v-if="conceptDraftList.create.length>0||conceptDraftList.edit.length>0">
+                                        <div class="flexCenter">
+                                            <div class="innerBorder" style="margin-left: 11px;width: calc(50% - 70px);"></div>
+                                            <h4 style="flex: 1;text-align: center;text-wrap: none">Concept</h4>
+                                            <div class="innerBorder" style="margin-right: 11px;width: calc(50% - 70px);"></div>
+                                        </div>
+                                        <div v-if="conceptDraftList.create.length>0">
+                                            <div class="flexAlignCenter">
+                                                <div class="wzhCreate wzhBigDot" style="margin-right: 10px"></div>
+                                                <h5>Create</h5>
+                                            </div>
+                                            <el-row :gutter="20">
+                                                <el-col :span="cardSpan" v-for="draft in conceptDraftList.create" style="margin-bottom: 20px">
+
+                                                    <el-card class="grid-content bg-purple flexCenter draftCard" >
+                                                        <div class="flexRow flexAlignStrench draftCardText">
+                                                            <div style="width: 125px"><p>Create Item:</p></div>
+                                                            <div><b class="twoLine" style="max-width: 120px">{{draft.content.name}}</b></div>
+                                                        </div>
+                                                        <div class="flexRow flexAlignStrench">
+                                                            <div style="width: 125px"><p>Last Modify time:</p></div>
+                                                            <div><b>{{formatDateChild(draft.lastModifyTime)}}</b></div>
+                                                        </div>
+                                                        <div class="flexAlignCenter dropMask">
+                                                            <div class="flexCol flexCenter" style="width: 50%" @click="viewDraftDetail(draft)">
+                                                                <i class="ms-Icon ms-Icon--View"></i>
+                                                                <p>View Details</p>
+                                                            </div>
+                                                            <div class="innerBorderCol"></div>
+                                                            <div class="flexCol flexCenter" style="width: 50%" @click="continueToEdit(0,draft)">
+                                                                <i class="ms-Icon ms-Icon--PenWorkspace"></i>
+                                                                <p>Continue Editing</p>
+                                                            </div>
+                                                        </div>
+                                                    </el-card>
+                                                </el-col>
+                                            </el-row>
+                                        </div>
+                                        <div v-if="conceptDraftList.edit.length>0">
+                                            <div class="flexAlignCenter">
+                                                <div class="wzhCreate wzhBigDot" style="margin-right: 10px;border: 3px solid #a4ddff"></div>
+                                                <h5>Edit</h5>
+                                            </div>
+                                            <el-row :gutter="20">
+
+                                                <el-col :span="cardSpan" v-for="draft in conceptDraftList.edit" style="margin-bottom: 20px">
+
+                                                    <el-card class="grid-content bg-purple flexCenter draftCard">
+                                                        <div class="flexRow flexAlignStrench draftCardText">
+                                                            <div style="width: 125px"><p>Create Item:</p></div>
+                                                            <div><b class="twoLine" style="max-width: 120px">{{draft.content.name}}</b></div>
+                                                        </div>
+                                                        <div class="flexRow flexAlignStrench">
+                                                            <div style="width: 125px"><p>Last Modify time:</p></div>
+                                                            <div><b>{{formatDateChild(draft.lastModifyTime)}}</b></div>
+                                                        </div>
+                                                        <div class="flexAlignCenter dropMask">
+                                                            <div class="flexCol flexCenter" style="width: 50%" @click="viewDraftDetail(draft)">
+                                                                <i class="ms-Icon ms-Icon--View"></i>
+                                                                <p>View Details</p>
+                                                            </div>
+                                                            <div class="innerBorderCol"></div>
+                                                            <div class="flexCol flexCenter" style="width: 50%" @click="continueToEdit(1,draft)">
+                                                                <i class="ms-Icon ms-Icon--PenWorkspace"></i>
+                                                                <p>Continue Editing</p>
+                                                            </div>
+                                                        </div>
+                                                    </el-card>
+                                                </el-col>
+                                            </el-row>
+                                        </div>
+                                    </section>
+
+                                    <section v-if="spatialDraftList.create.length>0||spatialDraftList.edit.length>0">
+                                        <div class="flexCenter">
+                                            <div class="innerBorder" style="margin-left: 11px;width: calc(50% - 70px);"></div>
+                                            <h4 style="flex: 1;text-align: center;text-wrap: none">Spatial Reference</h4>
+                                            <div class="innerBorder" style="margin-right: 11px;width: calc(50% - 70px);"></div>
+                                        </div>
+                                        <div v-if="spatialDraftList.create.length>0">
+                                            <div class="flexAlignCenter">
+                                                <div class="wzhCreate wzhBigDot" style="margin-right: 10px"></div>
+                                                <h5>Create</h5>
+                                            </div>
+                                            <el-row :gutter="20">
+                                                <el-col :span="cardSpan" v-for="draft in spatialDraftList.create" style="margin-bottom: 20px">
+
+                                                    <el-card class="grid-content bg-purple flexCenter draftCard" >
+                                                        <div class="flexRow flexAlignStrench draftCardText">
+                                                            <div style="width: 125px"><p>Create Item:</p></div>
+                                                            <div><b class="twoLine" style="max-width: 120px">{{draft.content.name}}</b></div>
+                                                        </div>
+                                                        <div class="flexRow flexAlignStrench">
+                                                            <div style="width: 125px"><p>Last Modify time:</p></div>
+                                                            <div><b>{{formatDateChild(draft.lastModifyTime)}}</b></div>
+                                                        </div>
+                                                        <div class="flexAlignCenter dropMask">
+                                                            <div class="flexCol flexCenter" style="width: 50%" @click="viewDraftDetail(draft)">
+                                                                <i class="ms-Icon ms-Icon--View"></i>
+                                                                <p>View Details</p>
+                                                            </div>
+                                                            <div class="innerBorderCol"></div>
+                                                            <div class="flexCol flexCenter" style="width: 50%" @click="continueToEdit(0,draft)">
+                                                                <i class="ms-Icon ms-Icon--PenWorkspace"></i>
+                                                                <p>Continue Editing</p>
+                                                            </div>
+                                                        </div>
+                                                    </el-card>
+                                                </el-col>
+                                            </el-row>
+                                        </div>
+                                        <div v-if="spatialDraftList.edit.length>0">
+                                            <div class="flexAlignCenter">
+                                                <div class="wzhCreate wzhBigDot" style="margin-right: 10px;border: 3px solid #a4ddff"></div>
+                                                <h5>Edit</h5>
+                                            </div>
+                                            <el-row :gutter="20">
+
+                                                <el-col :span="cardSpan" v-for="draft in spatialDraftList.edit" style="margin-bottom: 20px">
+
+                                                    <el-card class="grid-content bg-purple flexCenter draftCard">
+                                                        <div class="flexRow flexAlignStrench draftCardText">
+                                                            <div style="width: 125px"><p>Create Item:</p></div>
+                                                            <div><b class="twoLine" style="max-width: 120px">{{draft.content.name}}</b></div>
+                                                        </div>
+                                                        <div class="flexRow flexAlignStrench">
+                                                            <div style="width: 125px"><p>Last Modify time:</p></div>
+                                                            <div><b>{{formatDateChild(draft.lastModifyTime)}}</b></div>
+                                                        </div>
+                                                        <div class="flexAlignCenter dropMask">
+                                                            <div class="flexCol flexCenter" style="width: 50%" @click="viewDraftDetail(draft)">
+                                                                <i class="ms-Icon ms-Icon--View"></i>
+                                                                <p>View Details</p>
+                                                            </div>
+                                                            <div class="innerBorderCol"></div>
+                                                            <div class="flexCol flexCenter" style="width: 50%" @click="continueToEdit(1,draft)">
+                                                                <i class="ms-Icon ms-Icon--PenWorkspace"></i>
+                                                                <p>Continue Editing</p>
+                                                            </div>
+                                                        </div>
+                                                    </el-card>
+                                                </el-col>
+                                            </el-row>
+                                        </div>
+                                    </section>
+
+                                    <section v-if="templateDraftList.create.length>0||templateDraftList.edit.length>0">
+                                        <div class="flexCenter">
+                                            <div class="innerBorder" style="margin-left: 11px;width: calc(50% - 70px);"></div>
+                                            <h4 style="flex: 1;text-align: center;text-wrap: none">Template</h4>
+                                            <div class="innerBorder" style="margin-right: 11px;width: calc(50% - 70px);"></div>
+                                        </div>
+                                        <div v-if="templateDraftList.create.length>0">
+                                            <div class="flexAlignCenter">
+                                                <div class="wzhCreate wzhBigDot" style="margin-right: 10px"></div>
+                                                <h5>Create</h5>
+                                            </div>
+                                            <el-row :gutter="20">
+                                                <el-col :span="cardSpan" v-for="draft in templateDraftList.create" style="margin-bottom: 20px">
+
+                                                    <el-card class="grid-content bg-purple flexCenter draftCard" >
+                                                        <div class="flexRow flexAlignStrench draftCardText">
+                                                            <div style="width: 125px"><p>Create Item:</p></div>
+                                                            <div><b class="twoLine" style="max-width: 120px">{{draft.content.name}}</b></div>
+                                                        </div>
+                                                        <div class="flexRow flexAlignStrench">
+                                                            <div style="width: 125px"><p>Last Modify time:</p></div>
+                                                            <div><b>{{formatDateChild(draft.lastModifyTime)}}</b></div>
+                                                        </div>
+                                                        <div class="flexAlignCenter dropMask">
+                                                            <div class="flexCol flexCenter" style="width: 50%" @click="viewDraftDetail(draft)">
+                                                                <i class="ms-Icon ms-Icon--View"></i>
+                                                                <p>View Details</p>
+                                                            </div>
+                                                            <div class="innerBorderCol"></div>
+                                                            <div class="flexCol flexCenter" style="width: 50%" @click="continueToEdit(0,draft)">
+                                                                <i class="ms-Icon ms-Icon--PenWorkspace"></i>
+                                                                <p>Continue Editing</p>
+                                                            </div>
+                                                        </div>
+                                                    </el-card>
+                                                </el-col>
+                                            </el-row>
+                                        </div>
+                                        <div v-if="templateDraftList.edit.length>0">
+                                            <div class="flexAlignCenter">
+                                                <div class="wzhCreate wzhBigDot" style="margin-right: 10px;border: 3px solid #a4ddff"></div>
+                                                <h5>Edit</h5>
+                                            </div>
+                                            <el-row :gutter="20">
+
+                                                <el-col :span="cardSpan" v-for="draft in templateDraftList.edit" style="margin-bottom: 20px">
+
+                                                    <el-card class="grid-content bg-purple flexCenter draftCard">
+                                                        <div class="flexRow flexAlignStrench draftCardText">
+                                                            <div style="width: 125px"><p>Create Item:</p></div>
+                                                            <div><b class="twoLine" style="max-width: 120px">{{draft.content.name}}</b></div>
+                                                        </div>
+                                                        <div class="flexRow flexAlignStrench">
+                                                            <div style="width: 125px"><p>Last Modify time:</p></div>
+                                                            <div><b>{{formatDateChild(draft.lastModifyTime)}}</b></div>
+                                                        </div>
+                                                        <div class="flexAlignCenter dropMask">
+                                                            <div class="flexCol flexCenter" style="width: 50%" @click="viewDraftDetail(draft)">
+                                                                <i class="ms-Icon ms-Icon--View"></i>
+                                                                <p>View Details</p>
+                                                            </div>
+                                                            <div class="innerBorderCol"></div>
+                                                            <div class="flexCol flexCenter" style="width: 50%" @click="continueToEdit(1,draft)">
+                                                                <i class="ms-Icon ms-Icon--PenWorkspace"></i>
+                                                                <p>Continue Editing</p>
+                                                            </div>
+                                                        </div>
+                                                    </el-card>
+                                                </el-col>
+                                            </el-row>
+                                        </div>
+                                    </section>
+
+                                    <section v-if="unitDraftList.create.length>0||unitDraftList.edit.length>0">
+                                        <div class="flexCenter">
+                                            <div class="innerBorder" style="margin-left: 11px;width: calc(50% - 70px);"></div>
+                                            <h4 style="flex: 1;text-align: center;text-wrap: none">Unit</h4>
+                                            <div class="innerBorder" style="margin-right: 11px;width: calc(50% - 70px);"></div>
+                                        </div>
+                                        <div v-if="unitDraftList.create.length>0">
+                                            <div class="flexAlignCenter">
+                                                <div class="wzhCreate wzhBigDot" style="margin-right: 10px"></div>
+                                                <h5>Create</h5>
+                                            </div>
+                                            <el-row :gutter="20">
+                                                <el-col :span="cardSpan" v-for="draft in unitDraftList.create" style="margin-bottom: 20px">
+
+                                                    <el-card class="grid-content bg-purple flexCenter draftCard" >
+                                                        <div class="flexRow flexAlignStrench draftCardText">
+                                                            <div style="width: 125px"><p>Create Item:</p></div>
+                                                            <div><b class="twoLine" style="max-width: 120px">{{draft.content.name}}</b></div>
+                                                        </div>
+                                                        <div class="flexRow flexAlignStrench">
+                                                            <div style="width: 125px"><p>Last Modify time:</p></div>
+                                                            <div><b>{{formatDateChild(draft.lastModifyTime)}}</b></div>
+                                                        </div>
+                                                        <div class="flexAlignCenter dropMask">
+                                                            <div class="flexCol flexCenter" style="width: 50%" @click="viewDraftDetail(draft)">
+                                                                <i class="ms-Icon ms-Icon--View"></i>
+                                                                <p>View Details</p>
+                                                            </div>
+                                                            <div class="innerBorderCol"></div>
+                                                            <div class="flexCol flexCenter" style="width: 50%" @click="continueToEdit(0,draft)">
+                                                                <i class="ms-Icon ms-Icon--PenWorkspace"></i>
+                                                                <p>Continue Editing</p>
+                                                            </div>
+                                                        </div>
+                                                    </el-card>
+                                                </el-col>
+                                            </el-row>
+                                        </div>
+                                        <div v-if="unitDraftList.edit.length>0">
+                                            <div class="flexAlignCenter">
+                                                <div class="wzhCreate wzhBigDot" style="margin-right: 10px;border: 3px solid #a4ddff"></div>
+                                                <h5>Edit</h5>
+                                            </div>
+                                            <el-row :gutter="20">
+
+                                                <el-col :span="cardSpan" v-for="draft in unitDraftList.edit" style="margin-bottom: 20px">
+
+                                                    <el-card class="grid-content bg-purple flexCenter draftCard">
+                                                        <div class="flexRow flexAlignStrench draftCardText">
+                                                            <div style="width: 125px"><p>Create Item:</p></div>
+                                                            <div><b class="twoLine" style="max-width: 120px">{{draft.content.name}}</b></div>
+                                                        </div>
+                                                        <div class="flexRow flexAlignStrench">
+                                                            <div style="width: 125px"><p>Last Modify time:</p></div>
+                                                            <div><b>{{formatDateChild(draft.lastModifyTime)}}</b></div>
+                                                        </div>
+                                                        <div class="flexAlignCenter dropMask">
+                                                            <div class="flexCol flexCenter" style="width: 50%" @click="viewDraftDetail(draft)">
+                                                                <i class="ms-Icon ms-Icon--View"></i>
+                                                                <p>View Details</p>
+                                                            </div>
+                                                            <div class="innerBorderCol"></div>
+                                                            <div class="flexCol flexCenter" style="width: 50%" @click="continueToEdit(1,draft)">
+                                                                <i class="ms-Icon ms-Icon--PenWorkspace"></i>
+                                                                <p>Continue Editing</p>
+                                                            </div>
+                                                        </div>
+                                                    </el-card>
+                                                </el-col>
+                                            </el-row>
+                                        </div>
+                                    </section>
+
+
+                                </div>
+                            </el-card>
+                        </el-tab-pane>
+                    </el-tabs>
+                </el-card>
+            </div>
+
+
+        </div>
+        <el-dialog title="Draft Details" :visible.sync="draftDetailDialog" width="40%">
+            <div class="flexRow flexAlignStrench draftDetailText">
+                <div style="width: 125px"><p>Classifications:</p></div>
+                <div style="flex: 1;max-width: 625px" class="flexRow flexWrap">
+                   <b v-for="ele in clsStr" >{{ele}}</b>
+                </div>
+            </div>
+            <div class="flexRow flexAlignStrench draftDetailText">
+                <div style="width: 125px"><p>Status:</p></div>
+                <div style="flex: 1"><b>{{draftShow.content.status}}</b></div>
+            </div>
+            <div class="flexRow flexAlignStrench draftDetailText">
+                <div style="width: 125px"><p>Name:</p></div>
+                <div style="flex: 1"><b>{{draftShow.content.name}}</b></div>
+            </div>
+            <div class="flexRow flexAlignStrench draftDetailText">
+                <div style="width: 125px"><p>overview:</p></div>
+                <div style="flex: 1"><b>{{draftShow.content.overview}}</b></div>
+            </div>
+            <div class="flexRow flexAlignStrench draftDetailText">
+                <div style="width: 125px"><p>Keywords:</p></div>
+                <div style="flex: 1"><b v-for="ele in draftShow.content.keywords">{{ele}}</b></div>
+            </div>
+            <div class="flexRow flexAlignStrench draftDetailText">
+                <div style="width: 125px"><p>Decription:</p></div>
+                <div style="flex: 1"><b>{{draftShow.content.detail}}</b></div>
+            </div>
+            <div class="flexRow flexAlignStrench draftDetailText">
+                <div style="width: 125px"><p>Authorship:</p></div>
+                <div style="flex: 1;max-width: 625px" class="flexRow flexWrap">
+                    <b v-for="ele in draftShow.content.authorship">{{ele.name}}</b>
+                </div>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="deleteDraftClick(draftShow.oid)" size="medium" type="danger">Delete</el-button>
+                <el-button @click="draftDetailDialog=false" type="primary" style="margin-right: 15px" size="medium">OK</el-button>
+            </span>
+        </el-dialog>
+    </div>
+</template>
+</body>
+<script src="/static/js/page/userDraftBox.js"></script>
+</html>

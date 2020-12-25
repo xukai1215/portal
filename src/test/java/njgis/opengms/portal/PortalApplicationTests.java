@@ -1,9 +1,12 @@
 package njgis.opengms.portal;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.ip2location.IP2Location;
 import com.ip2location.IPResult;
+import njgis.opengms.portal.bean.JsonResult;
+import njgis.opengms.portal.controller.rest.DataApplicationController;
 import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.dto.modelItem.ModelItemResultDTO;
 import njgis.opengms.portal.entity.*;
@@ -15,6 +18,7 @@ import njgis.opengms.portal.utils.MyFileUtils;
 import njgis.opengms.portal.utils.Object.ChartOption;
 import njgis.opengms.portal.utils.Utils;
 import njgis.opengms.portal.utils.XmlTool;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -32,11 +36,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.ClassUtils;
-import org.springframework.util.DigestUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.*;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -130,6 +132,7 @@ public class PortalApplicationTests {
 
 
 
+
     @Test
     public void changeSpatialRef(){
         List<SpatialReference> spatialReferenceList = spatialReferenceDao.findAll();
@@ -164,6 +167,37 @@ public class PortalApplicationTests {
             conceptDao.save(concept);
 
         }
+    }
+
+    @Test
+    public void localizationFull(){
+        List<ModelItem> modelitemList = modelItemDao.findAll();
+        for(ModelItem modelItem : modelitemList){
+            List<Localization> localizationList = modelItem.getLocalizationList();
+            for(int i=0;i<localizationList.size();i++){
+                Localization localization = localizationList.get(i);
+                if(localization.getLocalCode()==null){
+                    if(localization.getDescription()!=null){
+                        String localCode = "en-US";
+                        String localName = "English (United States)";
+                        for(int j = 0;j<localization.getDescription().length();j++){
+                            if(isChinese(localization.getDescription().charAt(j))){
+                                localCode = "zh-CN";
+                                localName = "Chinese (Simplified)";
+                                break;
+                            }
+                        }
+                        localization.setLocalCode(localCode);
+                        localization.setLocalName(localName);
+                        localizationList.set(i,localization);
+                        modelItem.setLocalizationList(localizationList);
+                        modelItemDao.save(modelItem);
+                    }
+                }
+
+            }
+        }
+
     }
 
     @Test
@@ -1756,7 +1790,7 @@ public class PortalApplicationTests {
         List<User> userList = userDao.findAll();
         for (User user : userList) {
             String password = user.getPassword();
-            user.setPassword(DigestUtils.md5DigestAsHex(password.getBytes()));
+//            user.setPassword(DigestUtils.md5DigestAsHex(password.getBytes()));
             userDao.save(user);
         }
 //        User user=userDao.findFirstByUserName("xukai");
@@ -1918,24 +1952,28 @@ public class PortalApplicationTests {
     public void extractDetailImage() {
         List<ModelItem> modelItemList = modelItemDao.findAll();
         for (int i = 0; i < modelItemList.size(); i++) {
+
             ModelItem modelItem = modelItemList.get(i);//modelItemDao.findFirstByName("城市综合实力指数");
-            String detail = modelItem.getDetail();
-            if (detail != null) {
-                int startIndex = 0, endIndex = 0, index = 0;
-                while (detail.indexOf("src=\"data:im", startIndex) != -1) {
-                    int Start = detail.indexOf("src=\"data:im", startIndex) + 5;
-                    int typeStart = detail.indexOf("/", Start) + 1;
-                    int typeEnd = detail.indexOf(";", typeStart);
-                    String type = detail.substring(typeStart, typeEnd);
-                    startIndex = typeEnd + 8;
-                    endIndex = detail.indexOf("\"", startIndex);
-                    String imgStr = detail.substring(startIndex, endIndex);
+//            ModelItem modelItem = modelItemDao.findFirstByName("AVHRR图像大气影响校正模型");
+            List<Localization> localizationList = modelItem.getLocalizationList();
+            if(localizationList!=null) {
+                String detail = localizationList.get(0).getDescription();
+                if (detail != null) {
+                    int startIndex = 0, endIndex = 0, index = 0;
+                    while (detail.indexOf("src=\"data:im", startIndex) != -1) {
+                        int Start = detail.indexOf("src=\"data:im", startIndex) + 5;
+                        int typeStart = detail.indexOf("/", Start) + 1;
+                        int typeEnd = detail.indexOf(";", typeStart);
+                        String type = detail.substring(typeStart, typeEnd);
+                        startIndex = typeEnd + 8;
+                        endIndex = detail.indexOf("\"", startIndex);
+                        String imgStr = detail.substring(startIndex, endIndex);
 
-                    String imageName = "/detailImage/" + modelItem.getOid() + "/" + modelItem.getOid() + "_" + (index++) + "." + type;
-                    Utils.base64StrToImage(imgStr, "D:/upload_1111" + imageName);
+                        String imageName = "/detailImage/" + modelItem.getOid() + "/" + modelItem.getOid() + "_" + (index++) + "." + type;
+                        Utils.base64StrToImage(imgStr, "D:/upload" + imageName);
 
-                    detail = detail.substring(0, Start) + "/static" + imageName + detail.substring(endIndex, detail.length());
-                }
+                        detail = detail.substring(0, Start) + "/static" + imageName + detail.substring(endIndex, detail.length());
+                    }
 //            ModelItem modelItem1=new ModelItem();
 //            BeanUtils.copyProperties(modelItem,modelItem1);
 //            modelItem1.setId(UUID.randomUUID().toString());
@@ -1944,8 +1982,10 @@ public class PortalApplicationTests {
 //            modelItem1.setDetail(detail);
 //            modelItem1.setCreateTime(new Date());
 //            modelItemDao.insert(modelItem1);
-                modelItem.setDetail(detail);
-                modelItemDao.save(modelItem);
+                    localizationList.get(0).setDescription(detail);
+                    modelItem.setLocalizationList(localizationList);
+                    modelItemDao.save(modelItem);
+                }
             }
             Utils.count();
         }
@@ -3152,6 +3192,19 @@ public class PortalApplicationTests {
     }
 
     @Test
+    public void getMdlJson() throws DocumentException {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "http://172.21.212.85:8060/modelser/json/5f6424fe91bf101cfc1c7ddc";
+        String modelInfo_mc = restTemplate.getForObject(url,String.class);
+        JSONObject j_modelInfo = JSONObject.parseObject(modelInfo_mc);
+        String mdlJson = j_modelInfo.getJSONObject("data").getString("ms_xml");
+//        String mdlJson_xml = XmlTool.json2Xml(mdlJson.substring(0,mdlJson.length()));
+//        mdlJson_xml = XmlTool.jsonToXML(mdlJson,"");
+        String xml = mdlJson.replaceAll("<\\$>","").replaceAll("</\\$>","");
+        JSONObject jsonObject = JSONObject.parseObject(xml);
+    }
+
+    @Test
     public void changeCharset() {
         ComputableModel computableModel = computableModelDao.findFirstByOid("f02abeb9-cf97-42af-aa9e-f4ed408b3526");
         String mdl = computableModel.getMdl();
@@ -3204,6 +3257,8 @@ public class PortalApplicationTests {
             return false;
         }
     }
+
+
 //
 //    @Test
 //    public void changeSpatialIndex(){
@@ -3268,4 +3323,19 @@ public class PortalApplicationTests {
 //        }
 //    }
 
+    @Autowired
+    DataApplicationDao dataApplicationDao;
+
+    @Test
+    public void findAll() {
+        Page<DataApplication> list = dataApplicationDao.findAll(PageRequest.of(0, 10, new Sort(Sort.Direction.ASC,"createTime")));
+        System.out.println(JSON.toJSON(list.getContent().size()));
+    }
+
+    @Autowired
+    DataApplicationController dataApplicationController;
+    @Test
+    public void testDataApplication() {
+
+    }
 }

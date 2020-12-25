@@ -61,7 +61,6 @@
                 <div class="detail_title">
 
                     <h2 th:utext="${info.name}" style="display: inline-block;margin-right:15px;"></h2>
-
                     <div class="pull-right">
                         <el-tooltip popper-class="fontsize-15" content="Edit" effect="light" placement="top">
                             <a href="javascript:void(0);" th:if="${info.status=='Public'&&history!=true&&info.lock!=true}" class='fa fa-pencil fa-2x' aria-hidden='true' @click="edit"></a>
@@ -254,7 +253,7 @@
 
             </div>
 
-            <div id="description" class="detail_block">
+            <div id="description" th:if="${#lists.size(info.localizationList)>0}" class="detail_block">
                 <div class="block_head">
                     <div class="head_text">
                         <h4>Detailed Description</h4>

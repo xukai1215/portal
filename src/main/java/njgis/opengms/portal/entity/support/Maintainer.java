@@ -17,4 +17,5 @@ public class Maintainer {
     String oid;
     String name;
     String id;
+    String image;
 }

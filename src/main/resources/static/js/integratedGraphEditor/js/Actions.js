@@ -222,12 +222,16 @@ Actions.prototype.init = function()
 				for(let i = 0;i<cells.length;i++) {
 					if (cells[i].edge == false && cells[i].md5 != undefined) {
 						window.parent.deleteModel(cells[i].frontId, cells[i].md5)
-					} else if (cells[i].style.indexOf('operator')) {
-						window.parent.deleteGeneralList(cells[i].frontId, 'operator')
-					} else if(cells[i].style.indexOf('condition')){
+					}else if(cells[i].type=='modelService'&&cells[i].type=='dataService'){
+						// window.parent.deleteDataProcessing(cells[i].frontId, cells[i].name,cells[i].md5)
+					} else if (cells[i].style.indexOf('operation')!=-1) {
+						window.parent.deleteDataProcessing(cells[i].frontId, cells[i].name,cells[i].md5)
+					} else if(cells[i].style.indexOf('condition')!=-1){
 						window.parent.deleteGeneralList(cells[i].frontId, 'condition')
 					} else if(cells[i].edge==true){
 						window.parent.deleteDataLink(cells[i])
+					} else if(cells[i].eid!=undefined){
+						window.parent.deleteDataItem(cells[i].eid,cells[i].frontId)
 					}
 
 				}

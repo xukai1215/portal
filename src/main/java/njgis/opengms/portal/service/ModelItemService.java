@@ -530,14 +530,19 @@ public class ModelItemService {
 //        modelItem.setDetail(Utils.saveBase64Image(modelItemAddDTO.getDetail(),modelItem.getOid(),resourcePath,htmlLoadPath));
 
         String path="/modelItem/" + UUID.randomUUID().toString() + ".jpg";
-        String[] strs=modelItemAddDTO.getUploadImage().split(",");
-        if(strs.length>1) {
-            String imgStr = modelItemAddDTO.getUploadImage().split(",")[1];
-            Utils.base64StrToImage(imgStr, resourcePath + path);
-            modelItem.setImage(path);
-        }
-        else {
-            modelItem.setImage("");
+
+        if(modelItemAddDTO.getUploadImage()!=null){
+            String[] strs=modelItemAddDTO.getUploadImage().split(",");
+            if(strs.length>1) {
+                String imgStr = modelItemAddDTO.getUploadImage().split(",")[1];
+                Utils.base64StrToImage(imgStr, resourcePath + path);
+                modelItem.setImage(path);
+            }
+            else {
+                modelItem.setImage("");
+            }
+        }else{
+            modelItem.setImage(null);
         }
 
         ModelItemRelate modelItemRelate=new ModelItemRelate();
@@ -1134,7 +1139,7 @@ public class ModelItemService {
         String sortElement=modelItemFindDTO.getSortElement();
         Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, sortElement);
         Pageable pageable = PageRequest.of(page, pageSize, sort);
-        User user=userDao.findFirstByOid(oid);
+        User user=userDao.findFirstByUserId(oid);
         Page<ModelItemResultDTO> modelItemPage = Page.empty();
 
 //        if(loadUser == null||!loadUser.equals(oid)){

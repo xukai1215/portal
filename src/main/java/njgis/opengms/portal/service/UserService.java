@@ -13,6 +13,7 @@ import njgis.opengms.portal.utils.ChartUtils;
 import njgis.opengms.portal.utils.MyMailUtils;
 import njgis.opengms.portal.utils.Object.ChartOption;
 import njgis.opengms.portal.utils.Utils;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,7 +22,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
-import org.springframework.util.DigestUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -1448,7 +1448,8 @@ public class UserService {
 
             User user = userDao.findFirstByEmail(email);
             if (user != null) {
-                user.setPassword(DigestUtils.md5DigestAsHex(password.getBytes()));
+
+                user.setPassword(DigestUtils.sha256Hex(DigestUtils.md5(password.getBytes())));
                 userDao.save(user);
                 String subject = "OpenGMS Portal Password Reset";
                 String content = "Hello " + user.getName() + ":<br/>" +
@@ -1890,8 +1891,8 @@ public class UserService {
         return result;
     }
 
-    public JSONObject getUserInfoByOid(String oid) {
-        User user = userDao.findFirstByOid(oid);
+    public JSONObject getUserInfoByUserId(String userId) {
+        User user = userDao.findFirstByUserId(userId);
         String userName = user.getUserName();
         JSONObject result = new JSONObject();
         result.put("userInfo", getUser(userName));
@@ -2258,7 +2259,7 @@ public class UserService {
         for (int i = 0; i < files.size(); i++) {
 
             String fileName = files.get(i).get("file_name").toString();
-            String url = "http://" + dataContainerIpAndPort + "/data?uid=" + files.get(i).get("source_store_id").toString();
+            String url = "http://" + dataContainerIpAndPort + "/data/" + files.get(i).get("source_store_id").toString();
             String[] a = fileName.split("\\.");
             String name = files.get(i).get("label").toString();
             String suffix = files.get(i).get("suffix").toString();

@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Model Item Repository | OpenGMS</title>
+    <meta name="keywords" content="opengms, geographic model, geo-analysis model"/>
+    <meta name="description" content="OpenGMS supports sharing your resources in geographic modeling and simulation. Also, this platform provides a community for collaboration works among researchers in various disciplines. Through the sharing and collaboration works, this platform contributes to building resource libraries, leaving them for the next generation, and ultimately advance in knowledge."/>
+    <script src="/static/js/common/vue.min.js"></script>
+    <script src="/static/js/common/vue-avatar.min.js"></script>
+    <script src="/static/element-ui/index.js"></script>
+
+    <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
+
+    <link rel="stylesheet" href="/static/css/base/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/base/style.css">
+    <link rel="stylesheet" href="/static/css/base/universal.css">
+    <link rel="stylesheet" href="/static/css/base/list.css">
+    <link rel="stylesheet" href="/static/css/base/tree.css">
+    <link rel="stylesheet" href="/static/css/other/bootstrap-select.css">
+    <link rel="stylesheet" href="/static/css/page/model_items.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css" />
+    <link rel="stylesheet" href="/static/driver/driver.min.css" />
+    <style>
+
+        .el-radio-button--small .el-radio-button__inner{
+            font-size: 14px;
+        }
+
+        .detail_option{
+            margin-top: -7px;
+        }
+
+        .minScreen_hide {
+            display: inline-block;
+        }
+
+        @media only screen and (max-width: 700px){
+
+            .detail_option{
+                margin-top: 0;
+            }
+
+            .minScreen_hide {
+                display: none;
+            }
+
+        }
+
+    </style>
+</head>
+<body>
+<div id="app" v-cloak>
+    <div th:replace="fragments/navbar :: unlog"></div>
+
+    <div class="clearfix" style="margin-bottom: 40px;">
+        <div class="guide" title="guide" @click="showDriver"></div>
+        <div class="mainContent">
+
+            <div class="el-row">
+                <h2 class="main-title">Model Item Repository</h2>
+                <!--<el-button type="primary">All</el-button>-->
+                <!--<el-button @click="window.location.href='/modelItem/repository1'">1</el-button>-->
+                <!--<el-button @click="window.location.href='/modelItem/repository2'">2</el-button>-->
+                <h4 class="sub-title">The repository of models (include tools, algorithms, packages, et al.)</h4>
+                <button id="contributeBtn" class="btn btn-success btn-lg" style="font-size: 15px;margin:10px;" @click="contribute()">+ Contribute</button>
+                <hr>
+            </div>
+            <div class="el-col el-col-6 minScreen_maxWidth" style="margin-top:29px;">
+
+                <el-card class="box-card categoryList" style="position:relative">
+                    <div slot="header" class="clearfix text-center">
+                        <span style="font-size: 20px;color:#444">Model Classifications</span>
+                    </div>
+
+                    <el-tree
+                            id="tree1"
+                            ref="tree1"
+                            :data="treeData"
+                            :highlight-current="true"
+                            node-key="id"
+                            :default-expanded-keys="[1,64]"
+                            :current-node-key="1"
+                            @current-change="handleCurrentChange"
+                            :props="defaultProps">
+                    </el-tree>
+
+                </el-card>
+
+                <el-card class="box-card categoryList" style="position:relative">
+                    <div slot="header" class="clearfix text-center">
+                        <span style="font-size: 20px;color:#444">Model Classifications</span>
+                    </div>
+
+                    <el-tree
+                            id="tree3"
+                            ref="tree3"
+                            :data="treeData2"
+                            :highlight-current="true"
+                            node-key="id"
+                            :default-expanded-keys="[1,14,19,24]"
+
+                            @current-change="handleCurrentChange2"
+                            :props="defaultProps">
+                    </el-tree>
+
+                </el-card>
+            </div>
+            <div class="el-col el-col-18 minScreen_maxWidth">
+                <div class="searcherPanel">
+                    <div class="searcherInputPanel" @keydown.enter="search()">
+                        <input id="searchBox" type="text" placeholder="Model Item Name..." v-model="searchText">
+                        <button @click="search()"><i class="glyphicon glyphicon-search"></i> Search</button>
+                        <!--<a id="expend" href="javascript:void(0)" class="fa fa-angle-double-down fa-3x"-->
+                        <!--aria-hidden="true"></a>-->
+                    </div>
+                </div>
+
+                <div class="advancedSearch" style="margin-top:30px;position:relative;min-height:1px;display: none;">
+                    <div class="criteriaPanel">
+                        <div class="lines">
+                            <div class="line">
+                            <span class="tools col-md-1 pull-left" style="padding:0px">
+                                 <a class="fa fa-plus" style="" href="javascript:;"></a>
+                                 <a class="fa fa-minus" style="" href="javascript:;"></a>
+                            </span>
+
+                                <div class="input-group col-md-5 pull-left">
+                                    <div class="input-group-btn">
+                                        <button type="button" class="btn btn-default dropdown-toggle prop"
+                                                data-toggle="dropdown">Model Name<span class="caret"></span></button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="propName" href="javascript:void(0);">Model Name</a></li>
+                                            <li><a class="propName" href="javascript:void(0);">Keyword</a></li>
+                                            <li><a class="propName" href="javascript:void(0);">Overview</a></li>
+                                            <li><a class="propName" href="javascript:void(0);">Description</a></li>
+                                            <li><a class="propName" href="javascript:void(0);">Provider</a></li>
+                                            <li><a class="propName" href="javascript:void(0);">Reference</a></li>
+                                        </ul>
+                                    </div>
+                                    <input type="text" class="form-control value">
+                                </div>
+                                <div class="input-group col-md-1 pull-left">
+                                    <select class="form-control connect">
+                                        <option>AND</option>
+                                        <option>OR</option>
+                                        <option>NOT</option>
+                                    </select>
+                                </div>
+                                <div class="input-group col-md-5 pull-left">
+                                    <input type="text" class="form-control value">
+                                </div>
+
+                            </div>
+                            <div class="line">
+                                <div class="input-group col-md-1 pull-left">
+                                    <select class="form-control connect">
+                                        <option>AND</option>
+                                        <option>OR</option>
+                                        <option>NOT</option>
+                                    </select>
+
+                                </div>
+                                <div class="input-group col-md-5 pull-left">
+                                    <div class="input-group-btn">
+                                        <button type="button" class="btn btn-default dropdown-toggle prop"
+                                                data-toggle="dropdown">Keyword<span class="caret"></span></button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="propName" href="javascript:void(0);">Model Name</a></li>
+                                            <li><a class="propName" href="javascript:void(0);">Keyword</a></li>
+                                            <li><a class="propName" href="javascript:void(0);">Overview</a></li>
+                                            <li><a class="propName" href="javascript:void(0);">Description</a></li>
+                                            <li><a class="propName" href="javascript:void(0);">Provider</a></li>
+                                            <li><a class="propName" href="javascript:void(0);">Reference</a></li>
+                                        </ul>
+                                    </div>
+                                    <input type="text" class="form-control value">
+                                </div>
+                                <div class="input-group col-md-1 pull-left">
+                                    <select class="form-control connect">
+                                        <option>AND</option>
+                                        <option>OR</option>
+                                        <option>NOT</option>
+                                    </select>
+                                </div>
+                                <div class="input-group col-md-5 pull-left">
+
+                                    <input type="text" class="form-control value">
+                                </div>
+                            </div>
+                        </div>
+                        <span style="font-weight: bold;">Advanced Search with Multiple Query Conditions </span>
+                        <div class="line pull-right">
+
+                            <a id="drawback" href="javascript:void(0)" class="fa fa-angle-double-up fa-3x"
+                               style="display:inline-block"></a>
+                            <button id="query" class=""
+                                    style="display: inline-block;margin-top:-18px;margin-right:4px;height:34px;"
+                                    type="button" @click="search()">
+                                <i class="glyphicon glyphicon-search"></i>
+                                Search
+                            </button>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="progressPanel">
+                    <span class="barControl">
+                        <div class="barContro_space">
+                            <span class="progress_line" :class="{active:pageOption.progressBar}"></span>
+                        </div>
+                    </span>
+                </div>
+
+                <div id="curClassBar" role="alert" class="alert alert-info" style="margin-bottom: 2px;">
+                    <strong class="minScreen_curClass">Current Classification: {{currentClass}} </strong>
+                    <strong v-if="pageOption.progressBar" style="float: right;">Loading... </strong>
+                    <strong v-if="!pageOption.progressBar" style="float: right;">{{pageOption.total}} items</strong>
+
+
+                </div>
+
+
+                <div class="modelPanel" v-loading="pageOption.progressBar">
+                    <div style="margin:10px 0" v-if="pageOption.searchResult.length>0">
+                        <div style="float:left;margin: 4px 0 4px 15px;">
+                            <span style="font-weight: bold;margin-right:5px;">Sorted By:</span>
+                            <el-dropdown trigger="click" @command="changeSortField" style="cursor:pointer;">
+                            <span class="el-dropdown-link">
+                                {{sortTypeName}}<i class="el-icon-arrow-down el-icon--right"></i>
+                            </span>
+                                <el-dropdown-menu slot="dropdown">
+                                    <el-dropdown-item command="View Count">View Count</el-dropdown-item>
+                                    <el-dropdown-item command="Name">Name</el-dropdown-item>
+                                    <el-dropdown-item command="Create Time">Create Time</el-dropdown-item>
+
+                                </el-dropdown-menu>
+                            </el-dropdown>
+                            <el-dropdown trigger="click" @command="changeSortOrder" style="cursor:pointer;">
+                            <span class="el-dropdown-link">
+                                {{sortOrder}}<i class="el-icon-arrow-down el-icon--right"></i>
+                            </span>
+                                <el-dropdown-menu slot="dropdown">
+                                    <el-dropdown-item command="Asc.">Asc.</el-dropdown-item>
+                                    <el-dropdown-item command="Desc.">Desc.</el-dropdown-item>
+                                </el-dropdown-menu>
+                            </el-dropdown>
+                        </div>
+                        <el-pagination style="text-align: right;"
+                                       @current-change="handlePageChange"
+                                       :current-page="pageOption.currentPage"
+                                       :pager-count="5"
+                                       layout="prev, pager, next"
+                                       :total="pageOption.total">
+                        </el-pagination>
+                    </div>
+                    <div class="content-body">
+                        <div v-cloak class="list-item" v-for="(modelItem,key) in pageOption.searchResult">
+                            <div class="detail_title">
+                                <el-tooltip popper-class="fontsize-15" effect="light" :content="modelItem.status" placement="left">
+                                    <i v-if="modelItem.status=='Public'" class="el-icon-unlock public fontsize-24 pull-right"></i>
+                                    <i v-if="modelItem.status=='Discoverable'" class="el-icon-unlock discoverable fontsize-24 pull-right"></i>
+                                </el-tooltip>
+                                <a :class="modelItem.viewCount>500?'hot':''" :href="'/modelItem/'+ modelItem.oid"
+                                   target="_blank">{{modelItem.name}}&nbsp&nbsp</a>
+                            </div>
+                            <div :style="{'display':statistic[key]!='Overview'?'none':'block'}">
+
+                                <div class="detail_overview">
+                                    <a class="img" :href="'/modelItem/'+ modelItem.oid" target="_blank">
+
+                                        <img v-if="modelItem.image==''" src="/static/img/model/model.png" style="width:90px;height: 90px;">
+                                        <img v-if="modelItem.image!=''" :src="modelItem.image"
+                                             style="width:90px;height: 90px;">
+
+                                    </a>
+
+                                    <div class="info">
+                                        <p :style="{'-webkit-line-clamp':(modelItem.keywords.length>0?2:4)}">{{modelItem.description}}</p>
+                                        <div class="tags" v-if="modelItem.keywords.length>0">
+                                            <span class="badge badge-info" v-for="keyword in modelItem.keywords">{{keyword.toUpperCase()}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div :style="{'height':statistic[key]!='Overview'?'200px':'0','visibility':statistic[key]!='Overview'?'visible':'hidden'}">
+                                <div :id="'chart'+key" style="height: 200px"></div>
+                            </div>
+                            <hr>
+                            <div class="detail_bottom">
+                                <div style="display:inline-block;float: left;">
+                                    <a :href="'/profile/'+ pageOption.users[key].userId">
+                                        <img :src="pageOption.users[key].image==''?'/static/img/icon/default.png':pageOption.users[key].image"
+                                             class="round_icon"
+                                             style="margin-top:-5px;width:30px;height: 30px;display: inline-block;">
+                                    </a>
+
+                                    <a :href="'/profile/'+ pageOption.users[key].userId" target="_blank"
+                                       style="display: inline-block;margin-left: 5px;"><h4>
+                                        {{pageOption.users[key].name}}</h4></a>
+
+                                    <h4 class="screen_view">
+                                        contributed at {{modelItem.createTime.substring(0,10)}} </h4>
+                                    <h4 class="mobile_view">
+                                        {{modelItem.createTime.substring(0,10)}} </h4>
+                                </div>
+                                <div class="detail_option">
+                                    <div class="minScreen_hide">
+                                        <el-radio-group v-model="statistic[key]" size="small" @change="switchChange(key)">
+                                            <el-radio-button label="Overview"></el-radio-button>
+                                            <el-radio-button label="Statistics"></el-radio-button>
+                                        </el-radio-group>
+                                    </div>
+                                    <a class="fa fa-eye" aria-hidden="true"></a>&nbsp&nbsp{{modelItem.viewCount}}
+                                    <!--<a href="javascript:void(0)" class="fa fa-thumbs-o-up" aria-hidden="true"></a>&nbsp&nbsp{{modelItem.thumbsUpCount}}-->
+                                </div>
+                                <br>
+                            </div>
+                        </div>
+                        <div v-if="pageOption.searchResult.length==0" class="list-item" style="
+                                font-size: 26px;
+                                font-style: italic;
+                                text-align: center;
+                                font-weight: 100;
+                                padding-top: 60px;
+                                padding-bottom: 61px;
+                            ">
+                            <span v-if="pageOption.progressBar">&nbsp;</span>
+                            <span v-if="!pageOption.progressBar">No Result</span>
+                        </div>
+                    </div>
+
+
+                    <el-pagination style="text-align: center;margin-top:20px" v-if="pageOption.paginationShow && pageOption.searchResult.length>0"
+                                   @current-change="handlePageChange"
+                                   :current-page="pageOption.currentPage"
+                                   layout="total, prev, pager, next, jumper"
+                                   :total="pageOption.total">
+                    </el-pagination>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <el-dialog title="Edit Classification" :visible.sync="editClassification" width="65%">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label for="parentNode2"
+                       class="col-sm-2 control-label"><span class="xing">* </span>Classifications</label>
+                <div class="col-sm-10">
+                                                                            <textarea class="form-control"
+                                                                                      id="parentNode2"
+                                                                                      v-model="clsStr"
+                                                                                      readonly></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label for="parentNode"
+                       class="col-sm-2 control-label"><span class="xing">* </span>Classifications2</label>
+                <div class="col-sm-10">
+                                                                            <textarea class="form-control"
+                                                                                      id="parentNode"
+                                                                                      v-model="clsStr2"
+                                                                                      readonly></textarea>
+                </div>
+            </div>
+        </div>
+        <el-card style="width:50%;float:left;">
+            <div slot="header" class="clearfix text-center">
+                <span style="font-size: 20px;color:#444">Model Classifications 1</span>
+            </div>
+            <el-tree style="height: 260px;overflow: auto"
+                     class="wzhScrollbar"
+                     id="tree12"
+                     ref="tree12"
+                     :data="treeData"
+                     show-checkbox
+                     node-key="id"
+                     :default-expanded-keys="[1,64]"
+
+                     @check-change="handleCheckChange12"
+                     :props="defaultProps">
+            </el-tree>
+        </el-card>
+        <el-card style="width:50%;">
+            <div slot="header" class="clearfix text-center">
+                <span style="font-size: 20px;color:#444">Model Classifications 2</span>
+            </div>
+            <el-tree style="height: 260px;overflow: auto"
+                     class="wzhScrollbar"
+                     id="tree14"
+                     ref="tree14"
+                     :data="treeData2"
+                     show-checkbox
+                     node-key="id"
+                     :default-expanded-keys="[1,14,19,24]"
+
+                     @check-change="handleCheckChange14"
+                     :props="defaultProps">
+            </el-tree>
+        </el-card>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="editClassification = false">Cancel</el-button>
+            <el-button type="primary" @click="submitClassifications">Submit</el-button>
+        </span>
+    </el-dialog>
+
+    <div th:replace="fragments/footer :: footer"></div>
+
+</div>
+
+</body>
+
+<script src="/static/js/common/jquery-3.3.1.min.js"></script>
+
+<script src="/static/js/common/axios.min.js"></script>
+<script src="/static/js/common/bootstrap.js"></script>
+<script src="/static/js/common/bootstrap-select.js"></script>
+<script src="/static/js/common/echarts.min.js"></script>
+<script src="/static/driver/driver.min.js"></script>
+<script src="/static/js/page/model_items.js"></script>
+<script src="/static/js/common/loadUser.js"></script>
+<script src="/static/element-ui/umd/locale/en.js"></script>
+<script src="/static/js/common/navbar.js"></script>
+
+</html>

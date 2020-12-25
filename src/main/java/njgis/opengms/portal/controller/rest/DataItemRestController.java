@@ -2,18 +2,14 @@ package njgis.opengms.portal.controller.rest;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.google.gson.JsonObject;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dao.*;
-import njgis.opengms.portal.dto.DataCategorysAddDTO;
 import njgis.opengms.portal.dto.categorys.CategoryAddDTO;
 import njgis.opengms.portal.dto.dataItem.DataItemAddDTO;
 import njgis.opengms.portal.dto.dataItem.DataItemFindDTO;
 import njgis.opengms.portal.dto.dataItem.DataItemResultDTO;
 import njgis.opengms.portal.dto.dataItem.DataItemUpdateDTO;
-import njgis.opengms.portal.dto.theme.ThemeUpdateDTO;
 import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.entity.support.AuthorInfo;
 import njgis.opengms.portal.exception.MyException;
@@ -23,14 +19,10 @@ import njgis.opengms.portal.service.ModelItemService;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
 import njgis.opengms.portal.utils.Utils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
-import org.omg.PortableInterceptor.USER_EXCEPTION;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -47,18 +39,14 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
-import springfox.documentation.spring.web.json.Json;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.websocket.server.PathParam;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.sql.SQLTransactionRollbackException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -286,6 +274,7 @@ public class DataItemRestController {
             User user = userDao.findFirstByOid(dataItemResultDTOPageable.getContent().get(i).getAuthor());
             userJson.put("name", user.getName());
             userJson.put("oid", user.getOid());
+            userJson.put("userId", user.getUserId());
             String img = user.getImage();
             userJson.put("image", img.equals("") ? "" : htmlLoadPath + user.getImage());
             users.add(userJson);
@@ -1226,21 +1215,15 @@ public class DataItemRestController {
         }
 
 
+
         //解析xml  利用Iterator获取xml的各种子节点
         Document document = DocumentHelper.parseText(xml);
-        Element employees = document.getRootElement();
-        int count = 0;
+        Element root = document.getRootElement();
         ArrayList<String> parameters = new ArrayList<>();
-        for (Iterator i = employees.elementIterator(); i.hasNext(); ) {
-            Element employee = (Element) i.next();
-            count++;
-            if (count != 3){
-                continue;
-            }
-            for (Iterator j = employee.elementIterator(); j.hasNext(); ) {
-                Element node = (Element) j.next();
-                parameters.add(node.attribute(0).getValue());
-            }
+        List<Element> pas =  root.element("Parameter").elements();
+        for (Element e : pas){
+            log.info(e.attributeValue("name"));
+            parameters.add(e.attributeValue("name"));
         }
         jsonObject.put("parameters", parameters);
         jsonObject.put("code", 0);
@@ -2119,6 +2102,7 @@ public class DataItemRestController {
             dataHubsDao.save(dataHubs1);
         }
     }
+
 
 
 }

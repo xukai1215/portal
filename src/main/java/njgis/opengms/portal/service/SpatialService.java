@@ -37,9 +37,9 @@ public class SpatialService {
     @Value(value = "Public,Discoverable")
     private List<String> itemStatusVisible;
 
-    public JSONObject getSpatialsByUserId(String oid, SpatialFindDTO spatialFIndDTO,String loadUser) {
+    public JSONObject getSpatialsByUserId(String userId, SpatialFindDTO spatialFIndDTO,String loadUser) {
 
-        String uid=userService.getByOid(oid).getUserName();
+        String userName=userService.getByUserId(userId).getUserName();
         boolean asc=spatialFIndDTO.getAsc();
         String sortElement=spatialFIndDTO.getSortElement();
         int page=spatialFIndDTO.getPage();
@@ -51,7 +51,7 @@ public class SpatialService {
 
         Page<SpatialResultDTO> spatials = Page.empty();
 //        if(loadUser == null||!loadUser.equals(oid)) {
-            spatials = spatialReferenceDao.findByAuthor(uid, pageable);
+            spatials = spatialReferenceDao.findByAuthor(userName, pageable);
 //        }else{
 //            spatials = spatialReferenceDao.findByAuthor(uid, pageable);
 //        }

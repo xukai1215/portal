@@ -25,8 +25,8 @@ public class LabService {
     @Autowired
     UserService userService;
 
-    public JSONObject findBylabName(String oid){
-        User user=userDao.findFirstByOid(oid);
+    public JSONObject findBylabName(String userId){
+        User user=userDao.findFirstByUserId(userId);
         JSONObject result=new JSONObject();
         UserLab userLab=user.getLab();
         if(userLab.getName()=="") {

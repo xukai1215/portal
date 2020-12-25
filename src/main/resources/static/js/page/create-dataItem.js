@@ -430,6 +430,12 @@ var createDataItem = Vue.extend({
             this.$set(this.itemInfo,'image' , '')
             console.log(this.itemInfo.image)
         },
+        openDataSpace(){
+            this.dialogVisible = true;
+            this.$nextTick(()=>{
+                this.$refs.userDataSpace.getFilePackage();
+            })
+        }
     },
     mounted() {
         //初始化的时候吧curIndex传给父组件，来控制bar的高亮显示

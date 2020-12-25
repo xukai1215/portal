@@ -146,10 +146,11 @@ Vue.component("draft-box",
 
             loadMatchedCreateDraft(){
                 this.loadCreateDraft()
+                // this.matchedCreateDraftDialog=true
             },
 
             loadCreateDraft(){//
-                this.matchedCreateDraft={}
+                this.matchedCreateDraft=[]
                 axios.get('/draft/getCreateDraftByUserByType',{
                     params:{
                         itemType:this.itemType,
@@ -263,14 +264,21 @@ Vue.component("draft-box",
             cancelEdit() {
                 this.deleteDraft()
                 setTimeout(() => {
-                    this.$emit('draftJump')
-                }, 808)
+                    this.$emit('draft-jump')
+                }, 608)
+            },
+
+            saveEdit(){
+                this.saveDraft()
+                setTimeout(() => {
+                    this.$emit('draft-jump')
+                }, 608)
             },
 
             saveDraft(){
                 this.savingDraft=true
                 let content
-                this.$emit('get-content','draft',(val)=>{content=val;console.log(this)})//通过回调return了content
+                this.$emit('get-content','draft',(val)=>{content=val;})//通过回调return了content
                 let obj={
                     content:content,
                     oid:this.draft.oid,
@@ -280,7 +288,7 @@ Vue.component("draft-box",
                 ).then(
                     res=>{
                         if(res.data.code==0){
-                            this.$message({message: 'Save successfully',type: 'success'})
+                            this.$message({message: 'Save draft successfully',type: 'success'})
                         }
                         setTimeout(()=>{
                             this.savingDraft=false
@@ -302,8 +310,34 @@ Vue.component("draft-box",
                 this.$emit('insert-draft',draft.content)
             },
 
+            getDraft(){
+                if(this.draft.oid!=''&&this.draft.oid!=undefined&&this.draft.oid!=null){
+                    return this.draft
+                }else{
+                    return null
+                }
+            },
+
             deleteDraft(){
                 axios.delete('/draft/deleteByOid?oid='+this.draft.oid)
+            },
+
+            deleteSelected(index,oid){
+                axios.delete('/draft/deleteByOid?oid='+oid).then(
+                    (res)=>{
+                        let data = res.data
+                        if(data.code==0){
+                            if(data.data=='del suc'){
+                                this.$message({message: 'Delete successfully',type: 'success'})
+                                if(index==1){
+                                    this.loadMatchedCreateDraft()
+                                }else if(index==2){
+                                    this.loadDraft()
+                                }
+                            }
+                        }
+                    }
+                )
             },
 
             checkItem(item){

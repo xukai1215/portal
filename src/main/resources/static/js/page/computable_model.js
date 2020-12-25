@@ -6,6 +6,7 @@ new Vue({
             activeName: 'AttributeSet',
 
             useroid:"",
+            userId:"",
             userImg:"",
             //comment
             commentText: "",
@@ -44,7 +45,102 @@ new Vue({
             editComputableModelDialog:false,
             modelOid:'',
 
+            selectModelServerDialog:false,
+
             rightMenuShow:false,
+
+            modelServerUrl:'',
+
+            publicModelContainerList: [{
+                ip: '172.21.213.105',
+                port:8060,
+                geoInfo: {
+                    city: "Nanjing",
+                    countryCode: "CN",
+                    countryName: "China",
+                    latitude: "32.0617",
+                    longitude: "118.7778",
+                    region: "Jiangsu",
+                },
+                hardware: {
+                    cpu_Core: 8,
+                    diskAll: "300G",
+                    diskAvailable: "280G",
+                    platform: "Windows",
+                    system: "Windows Server",
+                    totalMemory: "8G",
+                    version: "2012",
+                },
+                status: true
+            },
+                {
+                    ip: '172.21.212.78',
+                    port:8060,
+                    geoInfo: {
+                        city: "Nanjing",
+                        countryCode: "CN",
+                        countryName: "China",
+                        latitude: "32.0617",
+                        longitude: "118.7778",
+                        region: "Jiangsu",
+                    },
+                    hardware: {
+                        cpu_Core: 4,
+                        diskAll: "400G",
+                        diskAvailable: "387G",
+                        platform: "Windows",
+                        system: "Windows Server",
+                        totalMemory: "8G",
+                        version: "2012",
+                    },
+                    status: false
+                },
+                {
+                    ip: '172.21.213.50',
+                    port:8060,
+                    geoInfo: {
+                        city: "Nanjing",
+                        countryCode: "CN",
+                        countryName: "China",
+                        latitude: "32.0617",
+                        longitude: "118.7778",
+                        region: "Jiangsu",
+                    },
+                    hardware: {
+                        cpu_Core: 8,
+                        diskAll: "120G",
+                        diskAvailable: "75G",
+                        platform: "Linux",
+                        system: "CentOS",
+                        totalMemory: "4G",
+                        version: "7",
+                    },
+                    status: false
+                },
+                {
+                    ip: '172.21.213.50',
+                    port:8060,
+                    geoInfo: {
+                        city: "Nanjing",
+                        countryCode: "CN",
+                        countryName: "China",
+                        latitude: "32.0617",
+                        longitude: "118.7778",
+                        region: "Jiangsu",
+                    },
+                    hardware: {
+                        cpu_Core: 8,
+                        diskAll: "120G",
+                        diskAvailable: "75G",
+                        platform: "Linux",
+                        system: "Ubuntu",
+                        totalMemory: "4G",
+                        version: "7",
+                    },
+                    status: false
+                }
+
+            ],
         }
     },
     methods: {
@@ -114,7 +210,6 @@ new Vue({
                 url: "/comment/delete",
                 async: true,
                 type: "POST",
-
 
                 data: {
                     oid:oid,
@@ -239,6 +334,35 @@ new Vue({
             window.sessionStorage.setItem(name, value);
         },
 
+        deployModel(){
+            this.selectModelServerDialog = true
+        },
+
+        //Todo,手动选择服务器部署还有问题
+        selectModelServer(container){
+            if(!container.status){
+                this.$message({
+                    message: 'Server Offline!',
+                    offset: 70,
+                });
+                return
+            }
+            if(this.modelServerUrl.split(':')[0] == container.ip){//如果选中则取消选择
+                this.modelServerUrl = ''
+                this.$message({
+                    message: 'Cancel server select !',
+                    offset: 70,
+                });
+            }else{
+                this.modelServerUrl = container.ip + ':' +container.port
+                this.$message({
+                    message: 'Succeed to select server !',
+                    type:'success',
+                    offset: 70,
+                });
+            }
+        },
+
         deploy(){
             this.contentBeforeDeploy=false;
             this.contentDeploying=true;
@@ -246,12 +370,21 @@ new Vue({
 
             const hrefs=window.location.href.split("/");
             const oid=hrefs[hrefs.length-1];
-            console.log(oid)
+            let formData = new FormData()
+            formData.append('id',oid)
+            formData.append('modelServer',this.modelServerUrl)
+            // formData.append('modelServer',this.modelServerUrl)
             $.ajax({
                 type: "POST",
-                url: "/computableModel/deploy/"+oid,
-                data: {},
+                url: "/computableModel/deploy",
+                // data: JSON.stringify({
+                //     id:oid,
+                //     modelServer:this.modelServerUrl,
+                // }),
+                data:formData,
                 async: true,
+                contentType: false,
+                processData: false,
                 success: (json) => {
                     setTimeout(() => {
                         this.contentDeploying = false;
@@ -266,6 +399,7 @@ new Vue({
                 }
             })
         },
+
         invoke(){
             const href=window.location.href;
 
@@ -522,6 +656,7 @@ new Vue({
                 if (res.status == 200) {
                     if (res.data.oid != '') {
                         this.useroid = res.data.oid;
+                        this.userId = res.data.userId;
                         this.userImg = res.data.image;
                     }
 

@@ -200,8 +200,6 @@ var createModelItem = Vue.extend({
 
         itemName:'',
 
-        editType:'',
-
         draft:{
             oid:'',
         },
@@ -273,246 +271,87 @@ var createModelItem = Vue.extend({
                     selected: true,
                 }
             ],
-            languageList: [
-                {value: 'af', label: 'Afrikaans'},
-                {value: 'af-ZA', label: 'Afrikaans (South Africa)'},
-                {value: 'sq', label: 'Albanian'},
-                {value: 'sq-AL', label: 'Albanian (Albania)'},
-                {value: 'ar', label: 'Arabic'},
-                {value: 'ar-DZ', label: 'Arabic (Algeria)'},
-                {value: 'ar-BH', label: 'Arabic (Bahrain)'},
-                {value: 'ar-EG', label: 'Arabic (Egypt)'},
-                {value: 'ar-IQ', label: 'Arabic (Iraq)'},
-                {value: 'ar-JO', label: 'Arabic (Jordan)'},
-                {value: 'ar-KW', label: 'Arabic (Kuwait)'},
-                {value: 'ar-LB', label: 'Arabic (Lebanon)'},
-                {value: 'ar-LY', label: 'Arabic (Libya)'},
-                {value: 'ar-MA', label: 'Arabic (Morocco)'},
-                {value: 'ar-OM', label: 'Arabic (Oman)'},
-                {value: 'ar-QA', label: 'Arabic (Qatar)'},
-                {value: 'ar-SA', label: 'Arabic (Saudi Arabia)'},
-                {value: 'ar-SY', label: 'Arabic (Syria)'},
-                {value: 'ar-TN', label: 'Arabic (Tunisia)'},
-                {value: 'ar-AE', label: 'Arabic (U.A.E.)'},
-                {value: 'ar-YE', label: 'Arabic (Yemen)'},
-                {value: 'hy', label: 'Armenian'},
-                {value: 'hy-AM', label: 'Armenian (Armenia)'},
-                {value: 'az-AZ', label: 'Azeri (Cyrillic) (Azerbaijan)'},
-                {value: 'az', label: 'Azeri (Latin)'},
-                {value: 'az-AZ', label: 'Azeri (Latin) (Azerbaijan)'},
-                {value: 'eu', label: 'Basque'},
-                {value: 'eu-ES', label: 'Basque (Spain)'},
-                {value: 'be', label: 'Belarusian'},
-                {value: 'be-BY', label: 'Belarusian (Belarus)'},
-                {value: 'bs-BA', label: 'Bosnian (Bosnia and Herzegovina)'},
-                {value: 'bg', label: 'Bulgarian'},
-                {value: 'bg-BG', label: 'Bulgarian (Bulgaria)'},
-                {value: 'ca', label: 'Catalan'},
-                {value: 'ca-ES', label: 'Catalan (Spain)'},
-                {value: 'zh', label: 'Chinese'},
-                {value: 'zh-HK', label: 'Chinese (Hong Kong)'},
-                {value: 'zh-MO', label: 'Chinese (Macau)'},
-                {value: 'zh-CN', label: 'Chinese (Simplified)'},
-                {value: 'zh-SG', label: 'Chinese (Singapore)'},
-                {value: 'zh-TW', label: 'Chinese (Traditional)'},
-                {value: 'hr', label: 'Croatian'},
-                {value: 'hr-BA', label: 'Croatian (Bosnia and Herzegovina)'},
-                {value: 'hr-HR', label: 'Croatian (Croatia)'},
-                {value: 'cs', label: 'Czech'},
-                {value: 'cs-CZ', label: 'Czech (Czech Republic)'},
-                {value: 'da', label: 'Danish'},
-                {value: 'da-DK', label: 'Danish (Denmark)'},
-                {value: 'dv', label: 'Divehi'},
-                {value: 'dv-MV', label: 'Divehi (Maldives)'},
-                {value: 'nl', label: 'Dutch'},
-                {value: 'nl-BE', label: 'Dutch (Belgium)'},
-                {value: 'nl-NL', label: 'Dutch (Netherlands)'},
-                {value: 'en', label: 'English'},
-                {value: 'en-AU', label: 'English (Australia)'},
-                {value: 'en-BZ', label: 'English (Belize)'},
-                {value: 'en-CA', label: 'English (Canada)'},
-                {value: 'en-CB', label: 'English (Caribbean)'},
-                {value: 'en-IE', label: 'English (Ireland)'},
-                {value: 'en-JM', label: 'English (Jamaica)'},
-                {value: 'en-NZ', label: 'English (New Zealand)'},
-                {value: 'en-PH', label: 'English (Republic of the Philippines)'},
-                {value: 'en-ZA', label: 'English (South Africa)'},
-                {value: 'en-TT', label: 'English (Trinidad and Tobago)'},
-                {value: 'en-GB', label: 'English (United Kingdom)'},
-                {value: 'en-US', label: 'English (United States)'},
-                {value: 'en-ZW', label: 'English (Zimbabwe)'},
-                {value: 'eo', label: 'Esperanto'},
-                {value: 'et', label: 'Estonian'},
-                {value: 'et-EE', label: 'Estonian (Estonia)'},
-                {value: 'mk', label: 'FYRO Macedonian'},
-                {value: 'mk-MK', label: 'FYRO Macedonian (Former Yugoslav Republic of Macedonia)'},
-                {value: 'fo', label: 'Faroese'},
-                {value: 'fo-FO', label: 'Faroese (Faroe Islands)'},
-                {value: 'fa', label: 'Farsi'},
-                {value: 'fa-IR', label: 'Farsi (Iran)'},
-                {value: 'fi', label: 'Finnish'},
-                {value: 'fi-FI', label: 'Finnish (Finland)'},
-                {value: 'fr', label: 'French'},
-                {value: 'fr-BE', label: 'French (Belgium)'},
-                {value: 'fr-CA', label: 'French (Canada)'},
-                {value: 'fr-FR', label: 'French (France)'},
-                {value: 'fr-LU', label: 'French (Luxembourg)'},
-                {value: 'fr-MC', label: 'French (Principality of Monaco)'},
-                {value: 'fr-CH', label: 'French (Switzerland)'},
-                {value: 'gl', label: 'Galician'},
-                {value: 'gl-ES', label: 'Galician (Spain)'},
-                {value: 'ka', label: 'Georgian'},
-                {value: 'ka-GE', label: 'Georgian (Georgia)'},
-                {value: 'de', label: 'German'},
-                {value: 'de-AT', label: 'German (Austria)'},
-                {value: 'de-DE', label: 'German (Germany)'},
-                {value: 'de-LI', label: 'German (Liechtenstein)'},
-                {value: 'de-LU', label: 'German (Luxembourg)'},
-                {value: 'de-CH', label: 'German (Switzerland)'},
-                {value: 'el', label: 'Greek'},
-                {value: 'el-GR', label: 'Greek (Greece)'},
-                {value: 'gu', label: 'Gujarati'},
-                {value: 'gu-IN', label: 'Gujarati (India)'},
-                {value: 'he', label: 'Hebrew'},
-                {value: 'he-IL', label: 'Hebrew (Israel)'},
-                {value: 'hi', label: 'Hindi'},
-                {value: 'hi-IN', label: 'Hindi (India)'},
-                {value: 'hu', label: 'Hungarian'},
-                {value: 'hu-HU', label: 'Hungarian (Hungary)'},
-                {value: 'is', label: 'Icelandic'},
-                {value: 'is-IS', label: 'Icelandic (Iceland)'},
-                {value: 'id', label: 'Indonesian'},
-                {value: 'id-ID', label: 'Indonesian (Indonesia)'},
-                {value: 'it', label: 'Italian'},
-                {value: 'it-IT', label: 'Italian (Italy)'},
-                {value: 'it-CH', label: 'Italian (Switzerland)'},
-                {value: 'ja', label: 'Japanese'},
-                {value: 'ja-JP', label: 'Japanese (Japan)'},
-                {value: 'kn', label: 'Kannada'},
-                {value: 'kn-IN', label: 'Kannada (India)'},
-                {value: 'kk', label: 'Kazakh'},
-                {value: 'kk-KZ', label: 'Kazakh (Kazakhstan)'},
-                {value: 'kok', label: 'Konkani'},
-                {value: 'kok-IN', label: 'Konkani (India)'},
-                {value: 'ko', label: 'Korean'},
-                {value: 'ko-KR', label: 'Korean (Korea)'},
-                {value: 'ky', label: 'Kyrgyz'},
-                {value: 'ky-KG', label: 'Kyrgyz (Kyrgyzstan)'},
-                {value: 'lv', label: 'Latvian'},
-                {value: 'lv-LV', label: 'Latvian (Latvia)'},
-                {value: 'lt', label: 'Lithuanian'},
-                {value: 'lt-LT', label: 'Lithuanian (Lithuania)'},
-                {value: 'ms', label: 'Malay'},
-                {value: 'ms-BN', label: 'Malay (Brunei Darussalam)'},
-                {value: 'ms-MY', label: 'Malay (Malaysia)'},
-                {value: 'mt', label: 'Maltese'},
-                {value: 'mt-MT', label: 'Maltese (Malta)'},
-                {value: 'mi', label: 'Maori'},
-                {value: 'mi-NZ', label: 'Maori (New Zealand)'},
-                {value: 'mr', label: 'Marathi'},
-                {value: 'mr-IN', label: 'Marathi (India)'},
-                {value: 'mn', label: 'Mongolian'},
-                {value: 'mn-MN', label: 'Mongolian (Mongolia)'},
-                {value: 'ns', label: 'Northern Sotho'},
-                {value: 'ns-ZA', label: 'Northern Sotho (South Africa)'},
-                {value: 'nb', label: 'Norwegian (Bokm?l)'},
-                {value: 'nb-NO', label: 'Norwegian (Bokm?l) (Norway)'},
-                {value: 'nn-NO', label: 'Norwegian (Nynorsk) (Norway)'},
-                {value: 'ps', label: 'Pashto'},
-                {value: 'ps-AR', label: 'Pashto (Afghanistan)'},
-                {value: 'pl', label: 'Polish'},
-                {value: 'pl-PL', label: 'Polish (Poland)'},
-                {value: 'pt', label: 'Portuguese'},
-                {value: 'pt-BR', label: 'Portuguese (Brazil)'},
-                {value: 'pt-PT', label: 'Portuguese (Portugal)'},
-                {value: 'pa', label: 'Punjabi'},
-                {value: 'pa-IN', label: 'Punjabi (India)'},
-                {value: 'qu', label: 'Quechua'},
-                {value: 'qu-BO', label: 'Quechua (Bolivia)'},
-                {value: 'qu-EC', label: 'Quechua (Ecuador)'},
-                {value: 'qu-PE', label: 'Quechua (Peru)'},
-                {value: 'ro', label: 'Romanian'},
-                {value: 'ro-RO', label: 'Romanian (Romania)'},
-                {value: 'ru', label: 'Russian'},
-                {value: 'ru-RU', label: 'Russian (Russia)'},
-                {value: 'se-FI', label: 'Sami (Inari) (Finland)'},
-                {value: 'se-NO', label: 'Sami (Lule) (Norway)'},
-                {value: 'se-SE', label: 'Sami (Lule) (Sweden)'},
-                {value: 'se', label: 'Sami (Northern)'},
-                {value: 'se-FI', label: 'Sami (Northern) (Finland)'},
-                {value: 'se-NO', label: 'Sami (Northern) (Norway)'},
-                {value: 'se-SE', label: 'Sami (Northern) (Sweden)'},
-                {value: 'se-FI', label: 'Sami (Skolt) (Finland)'},
-                {value: 'se-NO', label: 'Sami (Southern) (Norway)'},
-                {value: 'se-SE', label: 'Sami (Southern) (Sweden)'},
-                {value: 'sa', label: 'Sanskrit'},
-                {value: 'sa-IN', label: 'Sanskrit (India)'},
-                {value: 'sr-BA', label: 'Serbian (Cyrillic) (Bosnia and Herzegovina)'},
-                {value: 'sr-SP', label: 'Serbian (Cyrillic) (Serbia and Montenegro)'},
-                {value: 'sr-BA', label: 'Serbian (Latin) (Bosnia and Herzegovina)'},
-                {value: 'sr-SP', label: 'Serbian (Latin) (Serbia and Montenegro)'},
-                {value: 'sk', label: 'Slovak'},
-                {value: 'sk-SK', label: 'Slovak (Slovakia)'},
-                {value: 'sl', label: 'Slovenian'},
-                {value: 'sl-SI', label: 'Slovenian (Slovenia)'},
-                {value: 'es', label: 'Spanish'},
-                {value: 'es-AR', label: 'Spanish (Argentina)'},
-                {value: 'es-BO', label: 'Spanish (Bolivia)'},
-                {value: 'es-ES', label: 'Spanish (Castilian)'},
-                {value: 'es-CL', label: 'Spanish (Chile)'},
-                {value: 'es-CO', label: 'Spanish (Colombia)'},
-                {value: 'es-CR', label: 'Spanish (Costa Rica)'},
-                {value: 'es-DO', label: 'Spanish (Dominican Republic)'},
-                {value: 'es-EC', label: 'Spanish (Ecuador)'},
-                {value: 'es-SV', label: 'Spanish (El Salvador)'},
-                {value: 'es-GT', label: 'Spanish (Guatemala)'},
-                {value: 'es-HN', label: 'Spanish (Honduras)'},
-                {value: 'es-MX', label: 'Spanish (Mexico)'},
-                {value: 'es-NI', label: 'Spanish (Nicaragua)'},
-                {value: 'es-PA', label: 'Spanish (Panama)'},
-                {value: 'es-PY', label: 'Spanish (Paraguay)'},
-                {value: 'es-PE', label: 'Spanish (Peru)'},
-                {value: 'es-PR', label: 'Spanish (Puerto Rico)'},
-                {value: 'es-ES', label: 'Spanish (Spain)'},
-                {value: 'es-UY', label: 'Spanish (Uruguay)'},
-                {value: 'es-VE', label: 'Spanish (Venezuela)'},
-                {value: 'sw', label: 'Swahili'},
-                {value: 'sw-KE', label: 'Swahili (Kenya)'},
-                {value: 'sv', label: 'Swedish'},
-                {value: 'sv-FI', label: 'Swedish (Finland)'},
-                {value: 'sv-SE', label: 'Swedish (Sweden)'},
-                {value: 'syr', label: 'Syriac'},
-                {value: 'syr-SY', label: 'Syriac (Syria)'},
-                {value: 'tl', label: 'Tagalog'},
-                {value: 'tl-PH', label: 'Tagalog (Philippines)'},
-                {value: 'ta', label: 'Tamil'},
-                {value: 'ta-IN', label: 'Tamil (India)'},
-                {value: 'tt', label: 'Tatar'},
-                {value: 'tt-RU', label: 'Tatar (Russia)'},
-                {value: 'te', label: 'Telugu'},
-                {value: 'te-IN', label: 'Telugu (India)'},
-                {value: 'th', label: 'Thai'},
-                {value: 'th-TH', label: 'Thai (Thailand)'},
-                {value: 'ts', label: 'Tsonga'},
-                {value: 'tn', label: 'Tswana'},
-                {value: 'tn-ZA', label: 'Tswana (South Africa)'},
-                {value: 'tr', label: 'Turkish'},
-                {value: 'tr-TR', label: 'Turkish (Turkey)'},
-                {value: 'uk', label: 'Ukrainian'},
-                {value: 'uk-UA', label: 'Ukrainian (Ukraine)'},
-                {value: 'ur', label: 'Urdu'},
-                {value: 'ur-PK', label: 'Urdu (Islamic Republic of Pakistan)'},
-                {value: 'uz-UZ', label: 'Uzbek (Cyrillic) (Uzbekistan)'},
-                {value: 'uz', label: 'Uzbek (Latin)'},
-                {value: 'uz-UZ', label: 'Uzbek (Latin) (Uzbekistan)'},
-                {value: 'vi', label: 'Vietnamese'},
-                {value: 'vi-VN', label: 'Vietnamese (Viet Nam)'},
-                {value: 'cy', label: 'Welsh'},
-                {value: 'cy-GB', label: 'Welsh (United Kingdom)'},
-                {value: 'xh', label: 'Xhosa'},
-                {value: 'xh-ZA', label: 'Xhosa (South Africa)'},
-                {value: 'zu', label: 'Zulu'},
-                {value: 'zu-ZA', label: 'Zulu (South Africa)'},
+            languageList:[
+                { value: 'af', label: 'Afrikaans' },
+                { value: 'sq', label: 'Albanian' },
+                { value: 'ar', label: 'Arabic' },
+                { value: 'hy', label: 'Armenian' },
+                { value: 'az', label: 'Azeri' },
+                { value: 'eu', label: 'Basque' },
+                { value: 'be', label: 'Belarusian' },
+                { value: 'bg', label: 'Bulgarian' },
+                { value: 'ca', label: 'Catalan' },
+                { value: 'zh', label: 'Chinese' },
+                { value: 'hr', label: 'Croatian' },
+                { value: 'cs', label: 'Czech' },
+                { value: 'da', label: 'Danish' },
+                { value: 'dv', label: 'Divehi' },
+                { value: 'nl', label: 'Dutch' },
+                { value: 'en', label: 'English' },
+                { value: 'eo', label: 'Esperanto' },
+                { value: 'et', label: 'Estonian' },
+                { value: 'mk', label: 'FYRO Macedonian' },
+                { value: 'fo', label: 'Faroese' },
+                { value: 'fa', label: 'Farsi' },
+                { value: 'fi', label: 'Finnish' },
+                { value: 'fr', label: 'French' },
+                { value: 'gl', label: 'Galician' },
+                { value: 'ka', label: 'Georgian' },
+                { value: 'de', label: 'German' },
+                { value: 'el', label: 'Greek' },
+                { value: 'gu', label: 'Gujarati' },
+                { value: 'he', label: 'Hebrew' },
+                { value: 'hi', label: 'Hindi' },
+                { value: 'hu', label: 'Hungarian' },
+                { value: 'is', label: 'Icelandic' },
+                { value: 'id', label: 'Indonesian' },
+                { value: 'it', label: 'Italian' },
+                { value: 'ja', label: 'Japanese' },
+                { value: 'kn', label: 'Kannada' },
+                { value: 'kk', label: 'Kazakh' },
+                { value: 'kok', label: 'Konkani' },
+                { value: 'ko', label: 'Korean' },
+                { value: 'ky', label: 'Kyrgyz' },
+                { value: 'lv', label: 'Latvian' },
+                { value: 'lt', label: 'Lithuanian' },
+                { value: 'ms', label: 'Malay' },
+                { value: 'mt', label: 'Maltese' },
+                { value: 'mi', label: 'Maori' },
+                { value: 'mr', label: 'Marathi' },
+                { value: 'mn', label: 'Mongolian' },
+                { value: 'ns', label: 'Northern Sotho' },
+                { value: 'nb', label: 'Norwegian' },
+                { value: 'ps', label: 'Pashto' },
+                { value: 'pl', label: 'Polish' },
+                { value: 'pt', label: 'Portuguese' },
+                { value: 'pa', label: 'Punjabi' },
+                { value: 'qu', label: 'Quechua' },
+                { value: 'ro', label: 'Romanian' },
+                { value: 'ru', label: 'Russian' },
+                { value: 'se', label: 'Sami' },
+                { value: 'sa', label: 'Sanskrit' },
+                { value: 'sr', label: 'Serbian' },
+                { value: 'sk', label: 'Slovak' },
+                { value: 'sl', label: 'Slovenian' },
+                { value: 'es', label: 'Spanish' },
+                { value: 'sw', label: 'Swahili' },
+                { value: 'sv', label: 'Swedish' },
+                { value: 'syr', label: 'Syriac' },
+                { value: 'tl', label: 'Tagalog' },
+                { value: 'ta', label: 'Tamil' },
+                { value: 'tt', label: 'Tatar' },
+                { value: 'te', label: 'Telugu' },
+                { value: 'th', label: 'Thai' },
+                { value: 'ts', label: 'Tsonga' },
+                { value: 'tn', label: 'Tswana' },
+                { value: 'tr', label: 'Turkish' },
+                { value: 'uk', label: 'Ukrainian' },
+                { value: 'ur', label: 'Urdu' },
+                { value: 'uz', label: 'Uzbek' },
+                { value: 'vi', label: 'Vietnamese' },
+                { value: 'cy', label: 'Welsh' },
+                { value: 'xh', label: 'Xhosa' },
+                { value: 'zu', label: 'Zulu' },
             ],
 
             dynamicTable:{},
@@ -821,10 +660,6 @@ var createModelItem = Vue.extend({
             this.$refs.draftBox.loadMatchedCreateDraft()
         },
 
-        insertDraft(){
-
-        },
-
         getMatchedNode(oids){
             this.getMatchedNode_DIGUI(this.treeData_part1,oids);
             this.getMatchedNode_DIGUI(this.treeData_part2,oids);
@@ -847,6 +682,14 @@ var createModelItem = Vue.extend({
                     }
                 }
             }
+        },
+
+        getDraft(){
+            return this.$refs.draftBox.getDraft();
+        },
+
+        insertDraft(draftContent){
+            this.insertInfo(draftContent)
         },
 
         insertInfo(basicInfo){
@@ -990,25 +833,13 @@ var createModelItem = Vue.extend({
         },
 
         cancelEditClick(){
-            if(this.draft.oid!=''&&this.draft.oid!=null){
+            if(this.getDraft()!=null){
                 this.$refs.draftBox.cancelDraftDialog=true
             }else{
                 setTimeout(() => {
                     window.location.href = "/user/userSpace#/models/modelitem";
-                }, 905)
+                }, 305)
             }
-            // this.$confirm('You have a draft about this Item, do you want to save the latest version of it? If not, this draft will be deleted.', 'Tips', {
-            //     confirmButtonText: 'Yes',
-            //     cancelButtonText: 'No',
-            //     type: 'warning'
-            // }).then(() => {
-            //     this.saveDraft()
-            // }).catch(() => {
-            //     this.deleteDraft()
-            //     setTimeout(()=>{
-            //         window.location.href = "/user/userSpace#/models/modelitem";
-            //     },905)
-            // });
         },
 
         draftJump(){
@@ -1016,7 +847,7 @@ var createModelItem = Vue.extend({
         },
 
         deleteDraft(){
-            this.$refs.draftBox.deleteDraft(this.draft.oid)
+            this.$refs.draftBox.deleteDraft()//draft的oid在draftbox组件里存储了
         },
 
         initDraft(editType,backUrl,oidFrom,oid){
@@ -1184,9 +1015,9 @@ var createModelItem = Vue.extend({
                 $("#refLink").val(this.articleToBack.link);
                 if ($("#refAuthor").nextAll().length == 0) {//如果不存在tageditor,则创建一个
                     Vue.nextTick(() => {
-                        $("#refAuthor").tagEditor({
-                            forceLowercase: false
-                        })
+                        // $("#refAuthor").tagEditor({
+                        //     forceLowercase: false
+                        // })
                         $('#refAuthor').tagEditor('destroy');
                         $('#refAuthor').tagEditor({
                             initialTags: this.articleToBack.authors,
@@ -1409,8 +1240,6 @@ var createModelItem = Vue.extend({
                     }
                 }
             })
-
-
         },
 
         imgFile() {
@@ -1418,7 +1247,6 @@ var createModelItem = Vue.extend({
         },
 
         preImg() {
-
 
             var file = $('#imgOne').get(0).files[0];
             //创建用来读取此文件的对象
@@ -1433,7 +1261,6 @@ var createModelItem = Vue.extend({
                 this.itemInfo.image = e.target.result
             }
 
-
         },
 
         getClassificationDesc(name){
@@ -1445,6 +1272,7 @@ var createModelItem = Vue.extend({
             }
             return desc;
         },
+
         getChildrenDesc(children, name){
             let i = 0;
             for(;i<children.length;i++){
@@ -1609,10 +1437,6 @@ var createModelItem = Vue.extend({
             // $("#title").text("Create Model Item")
             $("#subRteTitle").text("/Create Model Item");
 
-            $('#aliasInput').tagEditor({
-                forceLowercase: false
-            });
-
             let interval = setInterval(function () {
                 initTinymce('textarea#singleDescription');
                 clearInterval(interval);
@@ -1622,10 +1446,11 @@ var createModelItem = Vue.extend({
             this.$set(this.languageAdd.local, "label", "English (United States)");
             initTinymce('textarea#modelItemText');
 
-            this.loadMatchedCreateDraft();
             if(this.draft.oid!=''&&this.draft.oid!=null&&typeof (this.draft.oid)!="undefined"){
                 // this.loadDraftByOid()
                 this.initDraft('create','/user/userSpace#/models/modelitem','draft',this.draft.oid)
+            }else{
+                this.loadMatchedCreateDraft();
             }
 
         }
@@ -1893,9 +1718,9 @@ var createModelItem = Vue.extend({
                     data: formData,
                     success: (result)=> {
                         userspace.fullscreenLoading=false;
-                        // loading.close();
+                        loading.close();
                         if (result.code == 0) {
-
+                            this.deleteDraft()
                             this.$confirm('<div style=\'font-size: 18px\'>Create model item successfully!</div>', 'Tip', {
                                 dangerouslyUseHTMLString: true,
                                 confirmButtonText: 'View',
@@ -1952,9 +1777,10 @@ var createModelItem = Vue.extend({
 
                     success: (result)=> {
                         // setTimeout(()=>{loading.close();},1000)
-                        // loading.close()
+                        loading.close();
                         userspace.fullscreenLoading = false;
                         if (result.code === 0) {
+                            this.deleteDraft()
                             if(result.data.method==="update") {
                                 this.$confirm('<div style=\'font-size: 18px\'>Update model item successfully!</div>', 'Tip', {
                                     dangerouslyUseHTMLString: true,
@@ -2015,7 +1841,6 @@ var createModelItem = Vue.extend({
                 })
             }
 
-            this.deleteDraft()
         });
 
         // $(".prev").click(()=>{

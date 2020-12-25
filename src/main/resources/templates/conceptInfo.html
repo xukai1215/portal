@@ -186,7 +186,7 @@
                 </div>
             </div>
 
-            <div id="description" class="detail_block">
+            <div id="description" th:if="${#lists.size(info.localizationList)>0}" class="detail_block">
                 <div class="block_head">
                     <div class="head_text">
                         <h4>Detailed Description</h4>
@@ -406,7 +406,7 @@
                 <br/>
                 <el-select v-model="localization.language" placeholder="Please select language" style="width:315px;">
                     <el-option
-                            v-for="item in languages"
+                            v-for="item in languageList"
                             :key="item.value"
                             :label="item.label"
                             :value="item">

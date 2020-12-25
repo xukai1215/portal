@@ -128,7 +128,7 @@ public class ThemeRestController {
 
         List<Maintainer> maintainers = new ArrayList<>();
         Maintainer maintainer = new Maintainer();
-        maintainer.setName(session.getAttribute("name").toString());
+//        maintainer.setName(session.getAttribute("name").toString());
         maintainer.setId(session.getAttribute("oid").toString());
         maintainers.add(maintainer);
         themeAddDTO.setMaintainer(maintainers);
@@ -689,5 +689,17 @@ public class ThemeRestController {
         User user = userDao.findFirstByOid(userOid);
         Integer messageNum = user.getMessageNum();
         return messageNum;
+    }
+
+    @RequestMapping(value = "/getMaintainer/{themeOid}", method = RequestMethod.GET)
+    public List<Maintainer> getMaintainer(@PathVariable(value = "themeOid") String themeOid){
+        List<Maintainer> maintainers = themeDao.findFirstByOid(themeOid).getMaintainer();
+        User user;
+        for(Maintainer maintainer:maintainers){
+            user = userDao.findFirstByOid(maintainer.getId());
+            maintainer.setImage(user.getImage());
+            maintainer.setName(user.getName());
+        }
+        return maintainers;
     }
 }

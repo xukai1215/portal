@@ -14,7 +14,7 @@
         <div v-if="editType=='create'&&!savingDraft" class="flexJustStart flexAlignCenter" style="margin:15px 15px 0 0;color: rgb(6,91,186)">
             <button class="btn btn-noShadow btn-round" @click="loadDraftListClick"><p style="margin: 0;color: rgb(6,91,186)">Load draft</p></button>
         </div>
-        <el-dialog title="Load Draft" :visible.sync="draftListDialog" append-to-body>
+        <el-dialog title="Load Draft" center :visible.sync="draftListDialog" append-to-body>
             <div v-loading="draftLoading">
                 <!--                        <div class="flexRow flexJustCenter" style="margin-top: 12px; margin-left: 10px;">-->
                 <!--                            <div class="flexRow flexColCenter" style="width: 50%;mini-width:250px">-->
@@ -27,6 +27,7 @@
                     <el-table-column
                             label="Type"
                             prop="editType"
+                            width="100"
                     >
                     </el-table-column>
                     <el-table-column
@@ -46,10 +47,11 @@
                     </el-table-column>
                     <el-table-column
                             label="Option"
-                            width="180"
+                            width="185"
                     >
                         <template slot-scope="scope">
-                            <el-button size="mini" round type="success" @click="loadDraftClick(scope.row)">Load</el-button>
+                            <el-button size="mini" round type="success" @click="loadDraftClick(scope.row)" style="margin-right: 2px"><span><i class="fa fa-arrow-down"></i></span>Load</el-button>
+                            <el-button size="mini" round type="danger" @click="deleteSelected(2,scope.row.oid)">Delete</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -63,14 +65,15 @@
 
             </div>
         </el-dialog>
-        <el-dialog title="Creating Draft" :visible.sync="matchedCreateDraftDialog" center append-to-body width="40%">
-            <p style="text-align: center">You saved creating drafts about this kind of item before, you can select one to continue.</p>
+        <el-dialog title="Start to Create" :visible.sync="matchedCreateDraftDialog" center append-to-body width="42%">
+            <p style="text-align: center">You have drafts about this kind of item, you can select one to continue.</p>
             <div class="wzhScrollbar" style="max-height: 500px;">
                 <el-table style="padding-left:10px "
                           :data="matchedCreateDraft">
                     <el-table-column
                             label="Item name"
                             prop="content.name"
+                            width="185"
                     >
                         <!--                            <template slot-scope="scope">-->
                         <!--                                <span v-if="scope.row.editType=='create'">{{ scope.row.content.name}}</span>-->
@@ -86,10 +89,11 @@
                     </el-table-column>
                     <el-table-column
                             label="Option"
-                            width="160"
+                            width="185"
                     >
                         <template slot-scope="scope">
-                            <el-button size="mini" round type="success" @click="loadDraftClick(scope.row)">Load</el-button>
+                            <el-button size="mini" round type="success" @click="loadDraftClick(scope.row)" style="margin-right: 2px"><span><i class="fa fa-arrow-down"></i></span>Load</el-button>
+                            <el-button size="mini" round type="danger" @click="deleteSelected(1,scope.row.oid)">Delete</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -104,13 +108,13 @@
             <div class="el-message-box__content">
                 <div class="el-message-box__status el-icon-warning"></div>
                 <div class="el-message-box__message">
-                    <p style="word-break: break-word;">You have a draft about this Item, do you want to save the latest version of it? If not, this draft will be deleted.</p>
+                    <p style="word-break: break-word;">You have a <span style="font-weight: 600;">draft</span>  about this Item, do you want to <span style="font-weight: 600;color: #44972e">save</span> the latest version of it? If not, this draft will be deleted.</p>
                 </div>
             </div>
             <span slot="footer" class="dialog-footer">
                         <el-button size="small" @click="cancelDraftDialog = false" style="float: left">Cancel</el-button>
-                        <el-button size="small" @click="cancelEdit">No</el-button>
-                        <el-button size="small" type="primary" @click="saveDraft">Yes</el-button>
+                        <el-button size="small" @click="cancelEdit">Exit</el-button>
+                        <el-button size="small" type="primary" @click="saveEdit">Exit and save draft</el-button>
                     </span>
         </el-dialog>
     </div>

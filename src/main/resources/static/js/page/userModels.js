@@ -47,7 +47,7 @@ var modelItem = Vue.extend({
                 'logicalmodel':'logicalModel',
                 'computablemodel':'computableModel'
             }
-            window.location.href='/'+urls[a]+'/'+oid
+            window.open('/'+urls[a]+'/'+oid)
         },
 
         getType(){
@@ -519,7 +519,7 @@ var userModels = Vue.extend(
                     'computablemodel':'/user/userSpace#/model/manageComputableModel/'+oid,
                 }
                 this.setSession('editId', oid)
-                window.location.href=urls[a]
+                window.open(urls[a])
             },
 
             deleteItem(index,oid) {

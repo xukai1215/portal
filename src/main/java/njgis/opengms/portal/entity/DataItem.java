@@ -4,12 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import njgis.opengms.portal.entity.support.DataItemMeta;
-import njgis.opengms.portal.entity.support.DataMeta;
-import njgis.opengms.portal.entity.support.FileMeta;
-import njgis.opengms.portal.entity.support.FileMetaUser;
+import njgis.opengms.portal.entity.support.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -52,6 +50,8 @@ public class DataItem extends Item{
     String date;
     String dataUrl;
     String ip;
+
+    List<InvokeService> invokeServices;
 
     List<RelatedProcessing> relatedProcessings;
     List<RelatedVisualization> relatedVisualizations;

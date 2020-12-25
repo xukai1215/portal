@@ -30,8 +30,8 @@ public class UnitService {
     @Value(value = "Public,Discoverable")
     private List<String> itemStatusVisible;
 
-    public JSONObject getUnitsByUserId(String oid, UnitFindDTO unitFindDTO,String loadUser) {
-        String userId=userService.getByOid(oid).getUserName();
+    public JSONObject getUnitsByUserId(String userId, UnitFindDTO unitFindDTO,String loadUser) {
+        String userName=userService.getByUserId(userId).getUserName();
         boolean asc=unitFindDTO.getAsc();
         String sortElement=unitFindDTO.getSortElement();
         int page=unitFindDTO.getPage();
@@ -43,7 +43,7 @@ public class UnitService {
 
         Page<UnitResultDTO> units = Page.empty();
 //        if(loadUser == null||!loadUser.equals(oid)) {
-            units = unitDao.findByAuthorAndStatusIn(userId,itemStatusVisible, pageable);
+            units = unitDao.findByAuthorAndStatusIn(userName,itemStatusVisible, pageable);
 //        }else{
 //            units = unitDao.findByAuthor(userId, pageable);
 //        }

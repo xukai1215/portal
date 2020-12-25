@@ -769,7 +769,7 @@ OGMSDiagram.prototype.loadJSON = function(strjson){
     cell['state'] = {id: -1,name:'Start',description:'The beginning of this model!'};
     this.states.push(cell);
 
-    for (var i = 0; i < jsBahavior.states.length; i++){
+    for (var i = 0;jsBahavior.states!=undefined&&i < jsBahavior.states.length; i++){
         var v_cell = this.graph.insertVertex(parent, null, jsBahavior.states[i].name, 20 + i*120, 20, 150, 50, this.roundedStyle);
         v_cell['state'] = {
             id : jsBahavior.states[i].id,

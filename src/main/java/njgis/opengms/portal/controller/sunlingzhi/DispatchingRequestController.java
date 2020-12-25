@@ -6,6 +6,7 @@ import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.MyHttpUtils;
 import njgis.opengms.portal.utils.ResultUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.*;
@@ -46,29 +47,16 @@ public class DispatchingRequestController {
                                @RequestParam("origination")String origination
 
     ) throws IOException {
-        String url="http://"+ dataContainerIpAndPort +"/data";
-
-//        JSONObject j=JSONObject.parseObject(MyHttpUtils.POSTMultiPartFileToDataServer(url,"utf-8",file,uploadName,userName,serverNode,origination));
-
-        RestTemplate restTemplate = new RestTemplate();
-
         MultiValueMap<String, Object> part = new LinkedMultiValueMap<>();
 
         for(int i=0;i<files.length;i++)
-            part.add("ogmsdata", files[i].getResource());
+            part.add("datafile", files[i].getResource());
         part.add("name", uploadName);
         part.add("userId", userName);
         part.add("serverNode", serverNode);
         part.add("origination", origination);
 
-        JSONObject jsonObject = restTemplate.postForObject(url, part, JSONObject.class);
-
-        part=null;
-        files=null;
-        if(jsonObject.getIntValue("code")==-1){
-            throw new MyException("远程服务出错");
-        }
-        return jsonObject;
+        return MyHttpUtils.uploadDataToDataServer(dataContainerIpAndPort,part);
 
     }
 
@@ -243,6 +231,30 @@ public class DispatchingRequestController {
 
     }
 
+    @RequestMapping(value = "/batchdelete",method = RequestMethod.DELETE)
+    public JsonResult batchDelete(@RequestParam("ids") String[] ids){
+        String idstr = StringUtils.join(ids, ",");;
+        String url="http://"+ dataContainerIpAndPort +"/batchData?oids="+idstr;
+        RestTemplate restTemplate = new RestTemplate();
+//        restTemplate.delete(url);
+        Map<String,String> a=new HashMap<>();
+
+        MyHttpUtils myHttpUtils = new MyHttpUtils();
+        String delete = null;
+        try{
+            delete = myHttpUtils.DELETE(url, "UTF-8", a);
+            JSONObject json = JSONObject.parseObject(delete);
+            int code = json.getInteger("code");
+            if(code == 1){
+                return ResultUtils.success(json.getString("message"));
+            }
+        }catch (IOException e){
+            e.printStackTrace();
+            return ResultUtils.error(-1,"delete failed");
+        }
+
+        return ResultUtils.error(-1,delete);
+    }
 
     @RequestMapping (value="/download",method = RequestMethod.GET)
     ResponseEntity<byte[]> download(@RequestParam("url") String url){

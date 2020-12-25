@@ -63,9 +63,9 @@ public class ConceptService {
 
     }
 
-    public JSONObject getConceptsByUserId(String oid, ConceptFindDTO conceptFindDTO, String loadUser) {
+    public JSONObject getConceptsByUserId(String userId, ConceptFindDTO conceptFindDTO, String loadUser) {
 
-        String userId=userService.getByOid(oid).getUserName();
+        String userName=userService.getByUserId(userId).getUserName();
 
         boolean asc=conceptFindDTO.getAsc();
         String sortElement=conceptFindDTO.getSortElement();
@@ -79,7 +79,7 @@ public class ConceptService {
         Page<ConceptResultDTO> concepts = Page.empty();
 
 //        if(loadUser == null||!loadUser.equals(oid)) {
-            concepts = conceptDao.findByAuthorAndStatusIn(userId, itemStatusVisible, pageable);
+            concepts = conceptDao.findByAuthorAndStatusIn(userName, itemStatusVisible, pageable);
 //        }else{
 //            concepts = conceptDao.findByAuthor(userId, pageable);
 //        }

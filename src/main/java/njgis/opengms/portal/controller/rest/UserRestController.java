@@ -140,6 +140,7 @@ public class UserRestController {
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public JsonResult addUser(UserAddDTO user) throws Exception {
+        user.setUserName(user.getEmail());
         int code = userService.addUser(user);
         return ResultUtils.success(code);
     }
@@ -209,7 +210,7 @@ public class UserRestController {
 
     @RequestMapping(value = "/in", method = RequestMethod.POST)
     public String login(@RequestParam(value = "account") String account,
-                        @RequestParam(value = "password_md5") String password,
+                        @RequestParam(value = "password") String password,
                         HttpServletRequest request) {
 
         System.out.println("in");
@@ -321,15 +322,17 @@ public class UserRestController {
 
             String oid = session.getAttribute("oid").toString();
             int result = userService.changePass(oid, oldPass, newPass);
-            session.removeAttribute("uid");
-            session.removeAttribute("oid");
-            session.removeAttribute("name");
+            if(result == 1) {
+                session.removeAttribute("uid");
+                session.removeAttribute("oid");
+                session.removeAttribute("name");
+            }
 
             return ResultUtils.success(result);
         }
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)            // 明明根据userId来写的，坑啊（有_id,oid,userID)
     public ModelAndView getUserPage(@PathVariable("id") String id, HttpServletRequest req) {
         ModelAndView modelAndView = new ModelAndView();
         HttpSession session = req.getSession();
@@ -409,7 +412,7 @@ public class UserRestController {
 
     @RequestMapping(value = "/getUserInfoInUserPage", method = RequestMethod.GET)
     public JsonResult getUserInfoInUserPage(@RequestParam(value = "oid") String oid) {
-        JSONObject result = userService.getUserInfoByOid(oid);
+        JSONObject result = userService.getUserInfoByUserId(oid);
         System.out.println("/getUserInfoInUserPage" + result);
         return ResultUtils.success(result);
 
@@ -751,8 +754,6 @@ public class UserRestController {
             @RequestBody UploadUserFileDTO uploadUserFileDTO
             , HttpServletRequest httpServletRequest) {
 
-        System.out.print(uploadUserFileDTO.getFiles());
-        System.out.print(uploadUserFileDTO.getPaths());
         List<Map> fileArray = uploadUserFileDTO.getFiles();
         List<String> paths = uploadUserFileDTO.getPaths();
 

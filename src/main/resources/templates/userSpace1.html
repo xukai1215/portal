@@ -43,7 +43,9 @@
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/wzhFlexContainer.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/module/editImage.css"/>
 
+
     <script src="/static/js/common/md5.js"></script>
+    <script src="/static/js/common/sha256.js"></script>
     <script src="/static/js/common/jquery-3.3.1.js"></script>
     <script type="text/javascript" src="/static/jquery-ui-1.12.1/jquery-ui.min.js"></script>
     <script src="/static/js/common/jquery.rotate.min.js"></script>
@@ -74,6 +76,7 @@
     <script src="/static/js/common/vue-router.js"></script>
     <script src="/static/js/common/vue-avatar.min.js"></script>
     <script src="/static/js/common/vue-cropper.min.js"></script>
+    <script src="/static/js/utils/qs.js"></script>
     <script src="/static/element-ui/index.js"></script>
     <script src="/static/element-ui/umd/locale/en.js"></script>
     <script src="/static/js/common/echarts.min.js"></script>
@@ -163,8 +166,26 @@
         .top350Dialog .el-dialog{
             top:350px
         }
+
+        /*分类样式*/
+        .el-tree > .el-tree-node > .el-tree-node__content {
+            font-weight: bold;
+        }
+
+        .el-tree > .el-tree-node > .el-tree-node__children > .el-tree-node > .el-tree-node__content {
+            font-style: italic;
+        }
+
+
+        .el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content {
+            background-color: #d9edf7;
+        }
+
+        #tree_select .el-tree-node{
+            background-color: aliceblue;
+            margin-bottom: 5px;
+        }
     </style>
-    <!--<script src="/static/js/page/user_space.js"></script>-->
 </head>
 
 <body>
@@ -247,6 +268,12 @@
 <!--userServer组件-->
 <template th:replace="userServer :: userServer"></template>
 <script src="/static/js/page/userServer.js"></script>
+<!--userModelServer组件-->
+<template th:replace="userModelServer :: userModelServer"></template>
+<script src="/static/js/page/userModelServer.js"></script>
+<!--userDataServer组件-->
+<template th:replace="userDataServer :: userDataServer"></template>
+<script src="/static/js/page/userDataServer.js"></script>
 <!--userTask组件-->
 <template th:replace="userTask :: userTask"></template>
 <script src="/static/js/page/userspaceTask.js"></script>
@@ -283,7 +310,7 @@
 <script src="/static/js/page/feedBack.js"></script>
 <!--draftBox组件-->
 <template th:replace="userDraftBox :: userDraftBox"></template>
-<script src="/static/js/page/userDraftbox.js"></script>
+<script src="/static/js/page/userDraftBox.js"></script>
 <!--notice组件-->
 <template th:replace="message_confirm :: notice"></template>
 <script src="/static/js/page/message_confirm.js"></script>

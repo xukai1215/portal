@@ -16,7 +16,9 @@ public class GdalUtilRestController {
 
     @RequestMapping(value="/transformSpactialRef",method = RequestMethod.POST)
     public double[] transformSpactialRef(@RequestBody Map<String,String> transformInfo){
+        System.out.println(">>>>>>>>>>>>gdal");
         try{
+            System.out.println(">>>>>>>>>>>>gdal start");
             String inputRefName = transformInfo.get("inputRefName");
             double inputRefX = Double.parseDouble(transformInfo.get("inputRefX"));
             double inputRefY = Double.parseDouble(transformInfo.get("inputRefY"));
@@ -28,7 +30,7 @@ public class GdalUtilRestController {
             SpatialReference outputRef = new SpatialReference();
 
             gdal.AllRegister();
-
+            System.out.println(">>>>>>>>>>>>gdal ready");
             gdal.SetConfigOption("PROJ_LIB","portal/proj.db");
             int refCode = 0;
 

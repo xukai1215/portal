@@ -66,8 +66,10 @@
                                     id="subRteTitle"></span></h3>
                         </div>
                         <draft-box ref="draftBox"
-                                   @insert-draft="insertInfo"
+                                   @insert-draft="insertDraft"
+                                   @get-draft="getDraft"
                                    @get-content="getItemContent"
+                                   @draft-jump="draftJump"
                                    :item-type="'template'"></draft-box>
                     </section>
 
@@ -137,13 +139,13 @@
                                                                                        class="col-sm-2 control-label"><span class="xing">* </span>Status</label>
                                                                                 <div class="col-sm-10">
                                                                                     <el-radio-group v-model="status" size="medium">
-                                                                                        <el-tooltip popper-class="fontsize-15" effect="light" content="Can be retrieved, shared and edited." placement="top">
+                                                                                        <el-tooltip popper-class="fontsize-15" effect="light" content="This item can be retrieved, shared and edited." placement="top">
                                                                                             <el-radio-button label="Public"></el-radio-button>
                                                                                         </el-tooltip>
-                                                                                        <el-tooltip popper-class="fontsize-15" class="item" effect="light" content="Can be retrieved and shared, can ONLY be edited by creator." placement="top">
+                                                                                        <el-tooltip popper-class="fontsize-15" class="item" effect="light" content="This item can be retrieved and shared, can ONLY be edited by creator." placement="top">
                                                                                             <el-radio-button label="Discoverable"></el-radio-button>
                                                                                         </el-tooltip>
-                                                                                        <el-tooltip popper-class="fontsize-15" class="item" effect="light" content="Can NOT be retrieved and shared, can ONLY be edited by creator." placement="top">
+                                                                                        <el-tooltip popper-class="fontsize-15" class="item" effect="light" content="This item can NOT be retrieved and shared, can ONLY be edited by creator." placement="top">
                                                                                             <el-radio-button label="Private"></el-radio-button>
                                                                                         </el-tooltip>
 
@@ -240,7 +242,7 @@
                                                                     </div>
                                                                     <div style="margin-bottom:10px;">
                                                                         <div><b>Template Name :</b> </div>
-                                                                        <el-input v-model="currentLocalization.name" placeholder="Please enter concept's name in your selected language"></el-input>
+                                                                        <el-input v-model="currentLocalization.name" placeholder="Please enter the item's name in your selected language"></el-input>
                                                                     </div>
                                                                     <div style="margin-bottom:10px;">
                                                                         <div><b>Description :</b> </div>
@@ -300,7 +302,7 @@
                                                                     <el-card style="width: 70%;">
                                                                         <div slot="header" class="clearfix">
                                                                             <span>Template Name : </span>
-                                                                            <el-input v-model="currentLocalization.name" placeholder="Please enter concept's localized name"></el-input>
+                                                                            <el-input v-model="currentLocalization.name" placeholder="Please enter the item's localized name"></el-input>
 
                                                                         </div>
                                                                         <textarea id="conceptText" style="float:left">
@@ -314,6 +316,12 @@
                                                         </div>
 
                                                         <div class="step-footer text-right">
+                                                            <button class="btn btn-danger prev" @click="cancelEditClick()" style="">
+                                                                Exit
+                                                            </button>
+                                                            <div class="innerBorderCol btn btn-warning"
+                                                                 style="padding: 0;margin: 0 10px;height: 20px;background-color: #cccccc !important;cursor: auto">
+                                                            </div>
                                                             <button class="btn btn-warning prev" data-direction="prev">
                                                                 Previous
                                                             </button>

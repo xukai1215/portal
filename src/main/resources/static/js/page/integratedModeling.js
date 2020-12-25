@@ -173,6 +173,14 @@ var vue = new Vue({
         },
 
         editCase:-1,
+
+        dataLines:['Default'],
+
+        dataItemList:[],
+
+        dataColorPool:{},
+
+        activeName:'first',
     },
 
     computed:{
@@ -305,9 +313,12 @@ var vue = new Vue({
                     for (var k = 0; k < state.event.length; k++) {
                         var event = state.event[k];
                         event.stateName = state.name;
+                        event.name = event.eventName;
                         if (event.eventType == "response") {
+                            event.response = true
                             inputData.push(event);
                         } else {
+                            event.response = false
                             outputData.push(event);
                         }
                     }
@@ -334,7 +345,7 @@ var vue = new Vue({
                 }
             }
             for(let i=0;i<this.dataProcessings.length;i++){
-                if(this.dataProcessings[i].type == 'modelService'&&this.dataProcessings[i].id == id){
+                if(this.dataProcessings[i].id === id){
                     return [i,this.dataProcessings[i]]
                 }
             }
@@ -434,7 +445,7 @@ var vue = new Vue({
 
             this.configModelAction = model;
 
-            for (var j = 0; j < this.configModelAction.inputData.length; j++) {
+            for (var j = 0; j < this.configModelAction.inputData.length&& this.configModelAction.type!="dataService"; j++) {
                 var event = this.configModelAction.inputData[j];
                 var nodes = event.data[0].nodes;
                 let refName = event.data[0].text.toLowerCase();
@@ -489,6 +500,7 @@ var vue = new Vue({
         },
 
         dataCellConfig(inputCell){
+            this.configEvent = []
             for(let modelAction of this.modelActions){
                 if(modelAction.id==inputCell.frontId){
                     for(let input of modelAction.inputData){
@@ -499,6 +511,22 @@ var vue = new Vue({
                     }
                 }
             }
+
+            if(this.configEvent.length == 0){
+                for(let dataProcessing of this.dataProcessings){
+                    if(dataProcessing.id==inputCell.frontId){
+                        for(let input of dataProcessing.inputData){
+                            if(input.name === inputCell.value){
+                                this.configEvent[0] = input
+                                this.configEvent[0].eventName = input.name
+                                this.configEvent[0].eventDesc = input.description
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
             this.eventConfigDialog = true
         },
 
@@ -812,55 +840,56 @@ var vue = new Vue({
 
 
             //modelAction标签
-            xml += "\t<ModelActions>\n";
-            for (let i = 0; i < this.modelActions.length; i++) {
-                xml += "\t\t<ModelAction id='" + this.modelActions[i].id + "' name='" + this.modelActions[i].name + "' description='" + this.modelActions[i].description + "' model='" + this.modelActions[i].md5
-                    + "' step ='" + this.modelActions[i].step + "' iterationNum='" + this.modelActions[i].iterationNum + "'>\n" +
-                    "\t\t\t<Inputs>\n";
-                for (let j = 0; j < this.modelActions[i].inputData.length; j++) {
-                    if ((this.modelActions[i].inputData[j].value != "" && this.modelActions[i].inputData[j].value != undefined)
-                        || (this.modelActions[i].inputData[j].link != "" && this.modelActions[i].inputData[j].link != undefined)) {
-                        xml += "\t\t\t\t<DataConfiguration id='" + this.modelActions[i].inputData[j].eventId +"' state='" + this.modelActions[i].inputData[j].stateName + "' event='" + this.modelActions[i].inputData[j].eventName + "'>\n"
+            if(this.modelActions.length>0) {
+                xml += "\t<ModelActions>\n";
+                for (let i = 0; i < this.modelActions.length; i++) {
+                    xml += "\t\t<ModelAction id='" + this.modelActions[i].id + "' name='" + this.modelActions[i].name + "' description='" + this.modelActions[i].description + "' model='" + this.modelActions[i].md5
+                        + "' step ='" + this.modelActions[i].step + "' iterationNum='" + this.modelActions[i].iterationNum + "'>\n" +
+                        "\t\t\t<Inputs>\n";
+                    for (let j = 0; j < this.modelActions[i].inputData.length; j++) {
+                        if ((this.modelActions[i].inputData[j].value != "" && this.modelActions[i].inputData[j].value != undefined)
+                            || (this.modelActions[i].inputData[j].link != "" && this.modelActions[i].inputData[j].link != undefined)) {
+                            xml += "\t\t\t\t<DataConfiguration id='" + this.modelActions[i].inputData[j].eventId + "' state='" + this.modelActions[i].inputData[j].stateName + "' event='" + this.modelActions[i].inputData[j].eventName + "'>\n"
 
-                        xml += "\t\t\t\t\t<Data"
-                        if (this.modelActions[i].inputData[j].value != undefined && this.modelActions[i].inputData[j].value != '') {
-                            xml += " value='" + this.modelActions[i].inputData[j].value + "'"
-                            this.modelActions[i].inputData[j].type = 'url'
-                        }
-                        if (this.modelActions[i].inputData[j].link != undefined && this.modelActions[i].inputData[j].link != '') {
-                            xml += " link='" + this.modelActions[i].inputData[j].link + "'"
-                            if(this.modelActions[i].inputData[j].type == ''){
-                                this.modelActions[i].inputData[j].type = 'link'
-                            }else if(this.modelActions[i].inputData[j].type == 'url'){
-                                this.modelActions[i].inputData[j].type = 'mixed'
+                            xml += "\t\t\t\t\t<Data"
+                            if (this.modelActions[i].inputData[j].value != undefined && this.modelActions[i].inputData[j].value != '') {
+                                xml += " value='" + this.modelActions[i].inputData[j].value + "'"
+                                this.modelActions[i].inputData[j].type = 'url'
                             }
+                            if (this.modelActions[i].inputData[j].link != undefined && this.modelActions[i].inputData[j].link != '') {
+                                xml += " link='" + this.modelActions[i].inputData[j].link + "'"
+                                if (this.modelActions[i].inputData[j].type == '') {
+                                    this.modelActions[i].inputData[j].type = 'link'
+                                } else if (this.modelActions[i].inputData[j].type == 'url') {
+                                    this.modelActions[i].inputData[j].type = 'mixed'
+                                }
 
-                            // let fromAction = this.findTargetByOutputId(this.modelActions,this.modelActions[i].inputData[j].link)
-                            // let dataLink = {
-                            //     inputEvent: this.modelActions[i].inputData[j].eventId,
-                            //     outputEvent: this.modelActions[i].inputData[j].link
-                            // }  //to
-                            // dataLinks.push(dataLink)
+                                // let fromAction = this.findTargetByOutputId(this.modelActions,this.modelActions[i].inputData[j].link)
+                                // let dataLink = {
+                                //     inputEvent: this.modelActions[i].inputData[j].eventId,
+                                //     outputEvent: this.modelActions[i].inputData[j].link
+                                // }  //to
+                                // dataLinks.push(dataLink)
+                            }
+                            xml += " type='" + this.modelActions[i].inputData[j].type + "'/>\n";
+                            xml += "\t\t\t\t</DataConfiguration>\n"
+                        } else if (this.modelActions[i].inputData[j].optional == false && type === 'execute') {
+                            this.$alert('Please check input of the model action ' + this.modelActions[i].name)
+                            return;
                         }
-                        xml += " type='" + this.modelActions[i].inputData[j].type + "'/>\n";
-                        xml += "\t\t\t\t</DataConfiguration>\n"
-                    } else if(this.modelActions[i].inputData[j].optional==false&&type === 'execute'){
-                        this.$alert('Please check input of the model action '+this.modelActions[i].name)
-                        return;
                     }
+                    xml += "\t\t\t</Inputs>\n" +
+                        "\t\t\t<Outputs>\n";
+                    for (var k = 0; k < this.modelActions[i].outputData.length; k++) {
+                        this.modelActions[i].outputData[k].url = ''
+                        xml += "\t\t\t\t<DataConfiguration id='" + this.modelActions[i].outputData[k].eventId + "' state='" + this.modelActions[i].outputData[k].stateName +
+                            "' event='" + this.modelActions[i].outputData[k].eventName + "'/>\n";
+                    }
+                    xml += "\t\t\t</Outputs>\n" +
+                        "\t\t</ModelAction>\n";
                 }
-                xml += "\t\t\t</Inputs>\n" +
-                    "\t\t\t<Outputs>\n";
-                for (var k = 0; k < this.modelActions[i].outputData.length; k++) {
-                    this.modelActions[i].outputData[k].url=''
-                    xml += "\t\t\t\t<DataConfiguration id='" + this.modelActions[i].outputData[k].eventId + "' state='" + this.modelActions[i].outputData[k].stateName +
-                        "' event='" + this.modelActions[i].outputData[k].eventName + "'/>\n";
-                }
-                xml += "\t\t\t</Outputs>\n" +
-                    "\t\t</ModelAction>\n";
+                xml += "\t</ModelActions>\n";
             }
-            xml += "\t</ModelActions>\n";
-
             //dataProcessing标签
             if(this.dataProcessings.length>0){
                 xml += "\t<DataProcessings>\n";
@@ -872,7 +901,7 @@ var vue = new Vue({
                         for (let j = 0; j < this.dataProcessings[i].inputData.length; j++) {
                             if ((this.dataProcessings[i].inputData[j].value != "" && this.dataProcessings[i].inputData[j].value != undefined)
                                 || (this.dataProcessings[i].inputData[j].link != "" && this.dataProcessings[i].inputData[j].link != undefined)) {
-                                xml += "\t\t\t\t<DataConfiguration id='" +`${this.dataProcessings[i].type=='modelService'?`${this.dataProcessings[i].inputData[j].eventId}`:`${this.dataProcessings[i].inputData[j].id}`}`
+                                xml += "\t\t\t\t<DataConfiguration id='" +this.dataProcessings[i].inputData[j].eventId
                                 if(this.dataProcessings[i].type==='modelService'){
                                     xml += "' state='" + this.dataProcessings[i].inputData[j].stateName + "' event='" + this.dataProcessings[i].inputData[j].eventName
                                 }
@@ -962,12 +991,12 @@ var vue = new Vue({
         executeNew() {
             this.executeVisible = false;
 
-            if (this.models.length < 1) {
-                this.$alert('Please select  at least one model.', {
-                    confirmButtonText: 'OK',
-                })
-                return
-            }
+            // if (this.models.length < 1) {
+            //     this.$alert('Please select  at least one model.', {
+            //         confirmButtonText: 'OK',
+            //     })
+            //     return
+            // }
 
             this.$notify.info({
                 title: 'Start Executing !',
@@ -988,12 +1017,6 @@ var vue = new Vue({
             // if(this.models===this.savedModels&&this.modelActions===this.savedModelActions){
             //     xml = this.savedXML
             // } else {
-            if (this.models.length < 1) {
-                this.$alert('Please select at least one model.', {
-                    confirmButtonText: 'OK',
-                })
-                return
-            }
 
 
             var xml = this.generateXml('execute');
@@ -1017,6 +1040,7 @@ var vue = new Vue({
                     var formData = new FormData();
                     formData.append("file", file);
                     formData.append("name", this.taskName);
+                    formData.append("taskOid", this.currentTaskOid);
 
                     var _this = this;
 
@@ -1065,6 +1089,7 @@ var vue = new Vue({
                     let taskInfo = obj.data.taskInfo
 
                     this.updateMxgraphNode(taskInfo.modelActionList)
+                    this.updateMxgraphNode(taskInfo.dataProcessingList)
                     this.updateTaskoutput(taskInfo)
                     if (status == 0) {
                         console.log(status);
@@ -1170,7 +1195,7 @@ var vue = new Vue({
             this.iframeWindow.unFoldMultiOutput(modelAction,outputData)
         },
 
-        updateMxgraphNode(modelActionList){
+        updateMxgraphNode(actionList){
             // let style={
             //     'waiting':'rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#0073e8;fillColor=#d9edf7;',
             //     'running':'rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#449d44;fillColor=#ffd058;',
@@ -1179,11 +1204,11 @@ var vue = new Vue({
             // }
 
             let flashFlag = 0
-            for(let modelAction of modelActionList.waiting){
+            for(let action of actionList.waiting){
                 clearInterval(this.flashInterval)
-                this.iframeWindow.setNodeStyle(modelAction.id,'waiting')//这个方法在integratedModelEditor.html里面
+                this.iframeWindow.setNodeStyle(action.id,'waiting')//这个方法在integratedModelEditor.html里面
             }
-            for(let modelAction of modelActionList.running){
+            for(let action of actionList.running){
                 clearInterval(this.flashInterval)
                 // this.flashInterval = setInterval(()=>{
                 //     if(flashFlag==0){
@@ -1194,16 +1219,17 @@ var vue = new Vue({
                 //         flashFlag = 0
                 //     }
                 // },1000)
-                this.iframeWindow.setNodeStyle(modelAction.id,'running')
+                this.iframeWindow.setNodeStyle(action.id,'running')
             }
-            for(let modelAction of modelActionList.completed){
+            for(let action of actionList.completed){
                 clearInterval(this.flashInterval)
-                this.iframeWindow.setNodeStyle(modelAction.id,'completed')
+                this.iframeWindow.setNodeStyle(action.id,'completed')
             }
-            for(let modelAction of modelActionList.failed){
+            for(let action of actionList.failed){
                 clearInterval(this.flashInterval)
-                this.iframeWindow.setNodeStyle(modelAction.id,'failed')
+                this.iframeWindow.setNodeStyle(action.id,'failed')
             }
+
             // this.iframeWindow.setNodeStyle('5cdd64e328e8a2097412d5f8',style['completed'])
         },
 
@@ -1674,6 +1700,10 @@ var vue = new Vue({
         openUserDataSpace(event) {
             this.currentEvent = event;
             this.userDataSpaceVisible = true;
+
+            this.$nextTick(()=>{
+                this.$refs.userDataSpace.getFilePackage();
+            })
         },
         // selectInputData(data) {
         //     this.currentEvent.value = data.url;
@@ -2111,8 +2141,33 @@ var vue = new Vue({
             }
         },
 
-        deleteDataProcessing(){
+        deleteDataProcessingClick(dataProcessing){
+            this.iframeWindow.removeTargetCell(dataProcessing);
+            this.deleteDataProcessing(dataProcessing.id,dataProcessing.name ,dataProcessing.md5)
+        },
 
+        deleteDataProcessing(dataProcessingId,name,md5){
+            let tag = md5==undefined?name:md5;
+            let tagName = md5==undefined?'name':'md5';
+
+            for(let i=this.dataProcessings.length-1;i>=0;i--){//从尾部开始寻找，在目标之后的模型任务step都要-1
+                if(this.dataProcessings[i][tagName]===tag&&this.dataProcessings[i].id === dataProcessingId){
+                    this.dataProcessings.splice(i,1)
+                    break
+                }else{
+                    this.dataProcessings[i].step--
+                }
+            }
+            for(let i=this.processingTools.length-1;i>=0;i--){//从尾部开始寻找，如果该模型对应的action只有一个则删除
+                if(this.processingTools[i][tagName]===tag){
+                    if(this.processingTools[i].actionNum>1){
+                        this.processingTools[i].actionNum--
+                    }else{
+                        this.processingTools.splice(i,1)
+                    }
+                    break
+                }
+            }
         },
 
         /*
@@ -2188,24 +2243,24 @@ var vue = new Vue({
 
             if(inputItem instanceof Array){
                 for(let input of inputItem){
-                    input.id = this.generateGUID()
+                    input.eventId = this.generateGUID()
                     input.response = true
                     dataProcessAction.inputData.push(input)
                 }
             } else {
-                inputItem.id = this.generateGUID()
+                inputItem.eventId = this.generateGUID()
                 inputItem.response = true
                 dataProcessAction.inputData.push(inputItem)
             }
 
             if(outputItem instanceof Array){
                 for(let input of outputItem){
-                    output.id = this.generateGUID()
+                    output.eventId = this.generateGUID()
                     output.response = false
                     dataProcessAction.outputData.push(output)
                 }
             } else {
-                outputItem.id = this.generateGUID()
+                outputItem.eventId = this.generateGUID()
                 outputItem.response = false
                 dataProcessAction.outputData.push(outputItem)
             }
@@ -2444,7 +2499,55 @@ var vue = new Vue({
                 }
             }
             return true
-        }
+        },
+
+        dragIntoDataItem(dataItemCell){
+            let targetActionInfo = this.findTargetModelAction(dataItemCell.frontId)
+
+            let targetAction = targetActionInfo[1]
+
+            if(targetAction.md5!=undefined){
+                for(let input of targetAction.inputData){
+                    if(input.eventId == dataItemCell.eid){
+                        this.dataItemList.push(input)
+                        break
+                    }
+                }
+
+                for(let output of targetAction.outputData){
+                    if(output.eventId == dataItemCell.eid){
+                        this.dataItemList.push(output)
+                        break
+                    }
+                }
+            }
+        },
+
+        addColorPool(id){
+            let color = this.color16();
+
+            while(object.values(this.dataColorPool).indexOf(color)!=-1){
+                color = this.color16();
+            }
+
+            this.dataColorPool[id]=color;
+        },
+
+        getColor(id){
+            return this.dataColorPool[id];
+        },
+
+        color16(){//十六进制颜色随机
+            let r = Math.floor(Math.random()*256);
+            let g = Math.floor(Math.random()*256);
+            let b = Math.floor(Math.random()*256);
+            let color = '#'+r.toString(16)+g.toString(16)+b.toString(16);
+            return color;
+        },
+
+        handleClick(){
+            
+        },
     },
 
     mounted() {
@@ -2595,6 +2698,7 @@ var vue = new Vue({
 
         window.refreshConditionLink = this.refreshConditionLink;
         window.refreshConditionInfo = this.refreshConditionInfo;
+        window.dragIntoDataItem = this.dragIntoDataItem;
         //aaa
     }
 

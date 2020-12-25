@@ -114,6 +114,7 @@
 
                 </div>
 
+                <div class="detail_option"><a aria-hidden="true" class="fa fa-eye md-opjjpmhoiojifppkkcdabiobhakljdgm_doc"></a>&nbsp;&nbsp;<span>{{viewCount}}</span></div>
             </div>
 
             <div id="Contributor0" class="detail_block minScreen">
@@ -132,7 +133,7 @@
                         </div>
                         <div class="el-col">
                             <div class="pull-left" style="display: block;margin-left: 15px;">
-                                <a th:href="'/profile/'+${user.userId}"><h4 th:text="${user.name}" style="padding: 0;">Tom
+                                <a th:href="'/profile/'+${user.name}"><h4 th:text="${user.name}" style="padding: 0;">Tom
                                     Marvolo Riddle</h4></a>
                             </div>
                         </div>
@@ -152,8 +153,12 @@
             <div id="Authorship0" class="detail_block minScreen"
                  th:if="${dataApplicationInfo.authorship!=null&&#lists.size(dataApplicationInfo.authorship)!=0}">
                 <div class="block_head">
-                    <div class="head_text" style="padding-left: 10px;">
+                    <div class="head_text" style="padding-left: 10px;padding-right: 15px;display: inline-flex">
                         <h4>Authorship</h4>
+                        <el-tooltip popper-class="fontsize-15" effect="light"
+                                    content="We deeply understand that a model may be attributed to the efforts of a team. If all author information is not listed here, please click the feedback below."
+                                    placement="top"><i class="fa fa-question-circle-o" aria-hidden="true"
+                                                       style="margin-top:4px;"></i></el-tooltip>
                     </div>
                 </div>
                 <div class="block_content text-center" style="padding-left:10px">
@@ -182,8 +187,26 @@
                 </div>
             </div>
 
+            <div id="description" class="detail_block" th:if="${dataApplicationInfo.detail!=null&&dataApplicationInfo.detail!=''}">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Detailed Description</h4>
+                    </div>
+                </div>
+                <div class="block_content">
+                    <div th:utext="${dataApplicationInfo.detail}" id="detail" class="detailIntroducePanel">
+                    </div>
+                </div>
+                <div class="fullPaper text-center hide">
+                    <a id="fullPaper" style="cursor:pointer;font-size:16px;">View Full Content<i
+                            class="fa fa-angle-down"
+                            style="margin-left: 10px;color:red;font-weight: bold"
+                            aria-hidden="true"></i></a>
+                </div>
+            </div>
+
             <div id="Resource" class="detail_block" style="padding: 10px 20px 0 0;"
-                 th:if="${(dataApplicationInfo.contentType=='Code'||dataApplicationInfo.contentType=='Library')&&(dataApplicationInfo.resources!=null&&#lists.size(dataApplicationInfo.resources)>0)}">
+                 th:if="${(dataApplicationInfo.contentType=='Code'||dataApplicationInfo.contentType=='Library'||dataApplicationInfo.contentType=='Package')&&(dataApplicationInfo.resources!=null&&#lists.size(dataApplicationInfo.resources)>0)}">
                 <div class="block_head">
                     <div class="head_text">
                         <h4>Resource</h4>
@@ -251,6 +274,71 @@
                 </div>
             </div>
 
+            <div id="invoke" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Service Instance</h4>
+                    </div>
+                </div>
+<!--                <el-tabs class="block_content" v-model="activeName" type="border-card" stretch="true">-->
+<!--                    <el-tab-pane label="AttributeSet" name="AttributeSet">-->
+<!--                        <table class="table table-bordered text-center" v-for="item in methodsData">-->
+<!--                            <colgroup>-->
+<!--                                <col class="col1" style="width: 40%">-->
+<!--                                <col class="col2">-->
+<!--                            </colgroup>-->
+<!--                            <tbody>-->
+<!--                            <tr>-->
+<!--                                <td style="font-weight: bold;">{{item.key}}</td>-->
+<!--                                <td colspan="2">{{item.val}}</td>-->
+<!--                            </tr>-->
+<!--                            </tbody>-->
+<!--                        </table>-->
+<!--                        <a :href="gotoTask()">-->
+<!--                            <button type="button" class="btn btn-lg btn-success" style="margin-left: 80%">Invoke-->
+<!--                            </button>-->
+<!--                        </a>-->
+                <div style="padding: 30px;margin-left:20px">
+                     <el-table :data="methodsData" style="width: 100%">
+                            <el-table-column prop="name" label="name"></el-table-column>
+                            <el-table-column prop="method" label="method type"></el-table-column>
+<!--                            <el-table-column prop="serviceId" label = "suiyi" style="display: none"></el-table-column>-->
+                            <el-table-column label="operation">
+                                <template slot-scope="scope">
+                                    <el-button @click = "gotoTask($event)" type="success" class="invokeBtn">
+                                        Invoke
+                                    </el-button>
+                                </template>
+                            </el-table-column>
+                             <el-table-column
+                                     prop="isPortal"
+                                     label="From Portal"
+                                     width="100"
+                                    >
+                                 <template slot-scope="scope">
+                                     <el-tag
+                                             :type="scope.row.isPortal === 'true' ? 'primary' : 'success'"
+                                             disable-transitions>{{scope.row.isPortal}}</el-tag>
+                                 </template>
+                             </el-table-column>
+                     </el-table>
+                </div>
+<!--                    </el-tab-pane>-->
+<!--                    <el-tab-pane label="Behavior" name="Behavior">-->
+<!--&lt;!&ndash;                        <el-button style="position: absolute; z-index: 900" @click=""> Show Detail&ndash;&gt;-->
+<!--&lt;!&ndash;                        </el-button>&ndash;&gt;-->
+
+<!--                    </el-tab-pane>-->
+<!--                    <el-tab-pane label="Runtime" name="Runtime">-->
+<!--                        <table id="runtime_table" class="table table-bordered text-center">-->
+
+
+<!--                            </tbody>-->
+<!--                        </table>-->
+<!--                    </el-tab-pane>-->
+<!--                </el-tabs>-->
+            </div>
+
             <div id="link" class="detail_block"
                  th:if="${dataApplicationInfo.contentType=='Link'||(dataApplicationInfo.contentType=='Service')}">
                 <div class="block_head">
@@ -264,24 +352,6 @@
                             https://geomodeling.njnu.edu.cn/conceptualmodel/4e028983-c8c0-4d98-86cd-85fc16a00d21
                         </a>
                     </div>
-                </div>
-            </div>
-
-            <div id="description" class="detail_block" th:if="${dataApplicationInfo.detail!=null&&dataApplicationInfo.detail!=''}">
-                <div class="block_head">
-                    <div class="head_text">
-                        <h4>Detailed Description</h4>
-                    </div>
-                </div>
-                <div class="block_content">
-                    <div th:utext="${dataApplicationInfo.detail}" id="detail" class="detailIntroducePanel">
-                    </div>
-                </div>
-                <div class="fullPaper text-center hide">
-                    <a id="fullPaper" style="cursor:pointer;font-size:16px;">View Full Content<i
-                            class="fa fa-angle-down"
-                            style="margin-left: 10px;color:red;font-weight: bold"
-                            aria-hidden="true"></i></a>
                 </div>
             </div>
 
@@ -307,6 +377,19 @@
                     </div>
                     <div id="copy" class="btn btn-info">
                         Copy
+                    </div>
+                </div>
+            </div>
+
+            <div id="copyright" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Copyright and Disclaimer</h4>
+                    </div>
+                </div>
+                <div class="block_content">
+                    <div class="copyright_text">
+                        All copyrights of a material (model, data, article, etc.) in the OpenGMS fully belong to its author/developer/designer (or any other wording about the owner). The OpenGMS takes every care to avoid copyright infringement, contributor(s) should carefully employ materials from other sources and give proper citations.
                     </div>
                 </div>
             </div>
@@ -351,21 +434,21 @@
             </div>
         </div>
         <div class="right-panel el-col" style="border-left: #d2d2d2 solid 1px;margin-left:-1px">
-            <div id="classification0" class="detail_block">
-                <div class="block_head">
-                    <div class="head_text">
-                        <h4>Category Tags</h4>
-                    </div>
-                </div>
-                <div class="block_content" style="margin-bottom:10px;">
+<!--            <div id="classification0" class="detail_block">-->
+<!--                <div class="block_head">-->
+<!--                    <div class="head_text">-->
+<!--                        <h4>Category Tags</h4>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="block_content" style="margin-bottom:10px;">-->
 
                     <!--<el-tag type="success"  v-for="iter in dataCategory" @click="clickDataItemInfo(iter.id)" style="margin-left: 10px;font-weight: bold;color: #3396ef"> {{iter.cateContent}}</el-tag>-->
 
-                    <el-tag type="success" th:each="classS:${classifications}" th:text="${classS}"
-                            style="margin: 0 10px 10px 0;font-weight: bold;color: #3396ef"></el-tag>
+<!--                    <el-tag type="success" th:each="classS:${classifications}" th:text="${classS}"-->
+<!--                            style="margin: 0 10px 10px 0;font-weight: bold;color: #3396ef"></el-tag>-->
 
-                </div>
-            </div>
+<!--                </div>-->
+<!--            </div>-->
 
             <div id="Contributor" class="detail_block">
                 <div class="block_head">
@@ -383,7 +466,7 @@
                         </div>
                         <div class="el-col">
                             <div class="pull-left" style="display: block;margin-left: 15px;">
-                                <a th:href="'/profile/'+${user.userId}"><h4 th:text="${user.name}" style="padding: 0;">Tom
+                                <a th:href="'/profile/'+${user.name}"><h4 th:text="${user.name}" style="padding: 0;">Tom
                                     Marvolo Riddle</h4></a>
                             </div>
                         </div>

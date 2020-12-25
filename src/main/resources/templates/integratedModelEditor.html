@@ -48,6 +48,9 @@
     // var searchTermsComputableModel = null;
     var hasSearchedTermsComputableModel = [];
     // var allComputableModel = parent.allComputableModel;
+
+
+
   </script>
 
   <script type="text/javascript">var language = "en";</script>
@@ -184,6 +187,21 @@
   var currentModels = [];
   var currentXml = '';
 
+  var DY_STYLE={
+    'waiting':'rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#5bbbf2;fillColor=#5bbbf2;',
+    'waitingInput':'rounded=0;shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#f46161;fillColor=#aadcf8;',
+    'waitingOutput':'rounded=0;shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#449d44;fillColor=#aadcf8;',
+    'running':'rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#f8d478;fillColor=#ffd058;',
+    'runningInput':'rounded=0;shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#f46161;fillColor=#ffd058;',
+    'runningOutput':'rounded=0;shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#5ac323;fillColor=#ffd058;',
+    'completed':'rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#EEFFEE;fillColor=#7ad34e;',
+    'completedInput':'rounded=0;shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#449d44;fillColor=#9aee71;',
+    'completedOutput':'rounded=0;shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#449d44;fillColor=#9aee71;',
+    'failed':'rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#ede2e2;fillColor=#ef6b6b;',
+    'failedInput':'rounded=0;shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#f46161;fillColor=#ef6b6b;',
+    'failedOutput':'rounded=0;shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#5ac323;fillColor=#ef6b6b;',
+  }
+
   function getCXml() {
     return ui.editor.getGraphXml().outerHTML;
   }
@@ -196,20 +214,7 @@
   }
 
   function setNodeStyle(frontId,status) {
-    let style={
-      'waiting':'rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#0073e8;fillColor=#d9edf7;',
-      'waitingInput':'rounded=0;shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#a4000b;fillColor=none;',
-      'waitingOutput':'rounded=0;shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#449d44;fillColor=none;',
-      'running':'rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#449d44;fillColor=#f8d478;',
-      'runningInput':'rounded=0;shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#a4000b;fillColor=#f8d478;',
-      'runningOutput':'rounded=0;shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#449d44;fillColor=#f8d478;',
-      'completed':'rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#449d44;fillColor=#EEFFEE;',
-      'completedInput':'rounded=0;shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#449d44;fillColor=#EEFFEE;',
-      'completedOutput':'rounded=0;shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#449d44;fillColor=#EEFFEE;',
-      'failed':'rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#a94442;fillColor=#ede2e2;',
-      'failedInput':'rounded=0;shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#a4000b;fillColor=#ffd058;',
-      'failedOutput':'rounded=0;shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#449d44;fillColor=#ffd058;',
-    }
+
     var cells = graph.getModel().cells;
     var models = graph.getModel();
     for (let i in cells) {
@@ -217,16 +222,16 @@
         // let style = cells[i].getStyle()
         // console.log(style)
         if(cells[i].md5!=undefined){
-          cells[i].setStyle(style[status])
+          cells[i].setStyle(DY_STYLE[status])
 
         }else if(cells[i].response==0){
-          cells[i].setStyle(style[status+'Output'])
+          cells[i].setStyle(DY_STYLE[status+'Output'])
         }else if(cells[i].response==1){
-          cells[i].setStyle(style[status+'Input'])
+          cells[i].setStyle(DY_STYLE[status+'Input'])
         }
 
         if(status==='completed'){
-          setLinkStyle(cells[i],cells,'shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#449d44;fillColor=none;')
+          setLinkStyle(cells[i],cells,'shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#f46161;fillColor=#9aee71;')
         }
         graph.refresh(cells[i])
       }

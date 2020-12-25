@@ -5,6 +5,8 @@ var data_application_info = new Vue({
     },
     data: function () {
         return {
+            userId:'',      // 不能删，html页面有用
+            viewCount:'',
             activeIndex:'3-3',
             activeName: 'AttributeSet',
 
@@ -46,6 +48,10 @@ var data_application_info = new Vue({
             mDiagram: null,
             editComputableModelDialog:false,
             modelOid:'',
+
+            methodsData:'',
+            userId:'',
+            dataApplicationId:'',
         }
     },
     methods: {
@@ -487,6 +493,39 @@ var data_application_info = new Vue({
             }
         },
 
+        getApplication(){
+            let str = window.location.href.split('/')
+            let oid = str[str.length-1]
+            let that = this
+            axios.get('/dataApplication/getApplication/' + oid).then((res) => {
+                if(res.status === 200) {
+                    if(res.data.data.invokeServices) {
+                        that.methodsData = res.data.data.invokeServices
+                    }
+                    that.viewCount = res.data.data.viewCount
+                }
+            }).catch(function (err) {console.log(err)})
+        },
+        gotoTask(event){
+            let refLink=$(".invokeBtn");
+            for(let i=0;i<refLink.length;i++){
+                if(event.currentTarget===refLink[i]){
+                    console.log(this.methodsData[i].serviceId);
+                    window.location.href = "/dataApplication/task/" + '/' + this.dataApplicationId + '/' + this.methodsData[i].serviceId;
+                }
+            }
+            // let str = window.location.href.split('/')
+            // let oid = str[str.length-1]
+            // return "/dataApplication/task/"+oid
+        },
+        // filterTag(value, row) {
+        //     return row.tag === value;
+        // },
+        // filterHandler(value, row, column) {
+        //     const property = column['property'];
+        //     return row[property] === value;
+        // },
+
         // showMxGraph(){
         //     $("#ModelShow").show();
         //
@@ -499,8 +538,12 @@ var data_application_info = new Vue({
         //     $("#ModelShow").hide();
         //     document.body.style.overflowY="auto";
         // }
+
+        // 表格
     },
     mounted(){
+        let str = window.location.href.split('/');
+        this.dataApplicationId = str[str.length-1];
 
         // this.setSession("history", window.location.href);
         axios.get("/user/load")
@@ -513,7 +556,8 @@ var data_application_info = new Vue({
 
                 }
             })
-        this.getComments();
+        this.getComments()
+        this.getApplication()
 
         $(document).on('mouseover mouseout','.flexRowSpaceBetween',function(e){
 
@@ -527,7 +571,7 @@ var data_application_info = new Vue({
         });
 
         let qrcodes = document.getElementsByClassName("qrcode");
-        for(i=0;i<qrcodes.length;i++) {
+        for(let i=0;i<qrcodes.length;i++) {
             new QRCode(document.getElementsByClassName("qrcode")[i], {
                 text: window.location.href,
                 width: 200,
