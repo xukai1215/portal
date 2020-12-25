@@ -120,11 +120,15 @@ public class PortalApplicationTests {
 
 
 
+
+
     @Value("${resourcePath}")
     private String resourcePath;
 
     @Value("${managerServerIpAndPort}")
     private String managerServerIpAndPort;
+
+
 
     @Test
     public void changeSpatialRef(){
@@ -136,6 +140,7 @@ public class PortalApplicationTests {
             spatialReferenceDao.save(spatialReference);
         }
     }
+
 
     @Test
     public void changeConceptLocalization(){
@@ -217,115 +222,138 @@ public class PortalApplicationTests {
         }
     }
 
-    @Test
-    public void addUnitFromConversion(){
-        List<UnitConversion> unitConversionList=unitConversionDao.findAll();
-        Iterator<UnitConversion> unitConversionIterator=unitConversionList.iterator();
-        int num=0;
-        while (unitConversionIterator.hasNext()){
-            UnitConversion unitConversion=unitConversionIterator.next();
-            Unit unit=new Unit();
 
-            //type
-//            unit.setType("Derivation");
-//            if(Array.getLength(unitConversion.getBaseDimensions())<2){
-//                unit.setType("Basic");
-//            }
-            //tag
-//            String classification=unitConversion.getClassifications().get(0);
-//            UnitClassification unitClassification=unitClassificationDao.findFirstByOid(classification);
-//            unit.setTag(unitClassification.getNameEn());
-            //xml
-            //expression
 
-            //classifications-第一个是分类unitclassification，第二个是转换unitconversion
-           List<String> classificationList=new ArrayList<>();
-           List<String> unitclassi=unitConversion.getClassifications();
-           if(unitclassi!=null&&unitclassi.size()>0)
-               classificationList.add(unitclassi.get(0));
+    public void singleUnitToUnit(String name,SingleUnit singleUnit,UnitConversion unitConversion){
+        Unit unit=new Unit();
 
-           classificationList.add(unitConversion.getOid());
-           unit.setClassifications(classificationList);
+        unit.setClassifications(unitConversion.getClassifications());
+        unit.setConversionId(unitConversion.getOid());
+        unit.setOid(UUID.randomUUID().toString());
+        unit.setName(name);
 
-            //oid
-            unit.setOid(UUID.randomUUID().toString());
-            //name
-            unit.setName(unitConversion.getName());
-            //list alias
-            List<String> alias=new ArrayList<>();
-            alias.add(unitConversion.getName().toUpperCase());
-            unit.setAlias(alias);
+        List<String> alias=new ArrayList<>();
+        alias.add(singleUnit.getPluralName().toUpperCase());
+        unit.setAlias(alias);
 
-            //description
+        if(singleUnit.getXmlDocRemarks()!=null)
+        {
+            unit.setDescription(singleUnit.getXmlDocRemarks());
+        }
+        else{
             unit.setDescription(unitConversion.getXmlDoc());
-            //author
-            unit.setAuthor("XiaoYu He");
+        }
 
-            //data
-            unit.setCreateTime(new Date());
-            unit.setLastModifyTime(new Date());
 
-            //status
-            unit.setStatus("Public");
-            List<Localization> localizationList=new ArrayList<>();
-            Localization localization=new Localization();
-            localization.setLocalCode("zh-CN");
-            localization.setLocalName("Chinese (Simplified)");
-            localization.setName("");
-            localization.setDescription("");
-            localizationList.add(localization);
+        unit.setAuthor("1274316792@qq.com");
 
-            Localization localization1=new Localization();
-            localization1.setLocalCode("en-US");
-            localization1.setLocalName("English (United States)");
-            localization1.setName(unitConversion.getName());
-            localization1.setDescription(unitConversion.getXmlDoc());
-            localizationList.add(localization1);
-            unit.setLocalizationList(localizationList);
+        unit.setCreateTime(new Date());
+        unit.setLastModifyTime(new Date());
+        unit.setStatus("Public");
 
-            //lock
-            unit.setLock(false);
+        //set localization
+        List<Localization> localizationList=new ArrayList<>();
 
-            //authorship
-            unit.setAuthorship(null);
 
-            //sharecount、viewcount、thumbscount、dailyviewcount
-            unit.setShareCount(0);
-            unit.setViewCount(0);
-            unit.setThumbsUpCount(0);
-            unit.setDailyViewCount(null);
 
-            ++num;
-            unitDao.save(unit);
+        Map maplocal=(HashMap)singleUnit.getLocalization().get(0);
 
-         }
+        Localization localization=new Localization();
+        localization.setLocalCode("en-US");
+        localization.setLocalName("English (United States)");
+        localization.setName(maplocal.get("Abbreviations").toString());
+        if(singleUnit.getXmlDocRemarks()!=null){
+            localization.setDescription(singleUnit.getXmlDocRemarks());
+        }
+        else{
+           localization.setDescription(unitConversion.getXmlDoc());
+        }
+        localizationList.add(localization);
+        unit.setLocalizationList(localizationList);
 
+        //lock
+        unit.setLock(false);
+
+        //authorship
+        unit.setAuthorship(null);
+
+        //sharecount、viewcount、thumbscount、dailyviewcount
+        unit.setShareCount(0);
+        unit.setViewCount(0);
+        unit.setThumbsUpCount(0);
+        unit.setDailyViewCount(null);
+
+        System.out.println(unit);
+
+        unitDao.save(unit);
+    }
+
+
+    @Test
+    public void renewUnitFromOld(){
+        //修正分类
+        List<Unit> unitList=unitDao.findAll();
+        Iterator<Unit> unitIterator=unitList.iterator();
+        int num=0;
+        while(unitIterator.hasNext()){
+            Unit unit = unitIterator.next();
+            List<String> classifications=unit.getClassifications();
+            if(classifications.size()>1){
+                ++num;
+                unit.setConversionId(classifications.get(1));
+                List<String> newClassi=new ArrayList<>();
+                newClassi.add(classifications.get(0));
+                unit.setClassifications(newClassi);
+                unitDao.save(unit);
+            }
+            System.out.println(unit+"\n");
+
+        }
+        System.out.println(num);
+    }
+
+    @Test
+    public void renewUnitList(){
+        List<UnitConversion> unitConversions=unitConversionDao.findAll();
+        Iterator<UnitConversion> unitConversionIterator=unitConversions.iterator();
+        int num=0;
+        while(unitConversionIterator.hasNext()){
+            UnitConversion unitConversion=unitConversionIterator.next();
+            List<Object> units=unitConversion.getUnits();
+            for(Object sunit : units){
+                Map mapu= (HashMap) sunit;
+
+                SingleUnit singleUnit=new SingleUnit();
+                singleUnit.setSingularName(mapu.get("SingularName").toString());
+                singleUnit.setPluralName(mapu.get("PluralName").toString());
+                singleUnit.setBaseUnits(mapu.get("BaseUnits"));
+                singleUnit.setFromUnitToBaseFunc(mapu.get("FromUnitToBaseFunc").toString());
+                singleUnit.setFromBaseToUnitFunc(mapu.get("FromBaseToUnitFunc").toString());
+                singleUnit.setPrefixes((List<String>) mapu.get("Prefixes"));
+                singleUnit.setLocalization((List<Object>) mapu.get("Localization"));
+
+                if(mapu.get("XmlDocRemarks")!=null)
+                    singleUnit.setXmlDocRemarks(mapu.get("XmlDocRemarks").toString());
+
+                singleUnitToUnit(singleUnit.getSingularName(),singleUnit,unitConversion);
+                ++num;
+
+                if(singleUnit.getPrefixes()!=null){
+                    List<String> prefixes=singleUnit.getPrefixes();
+                    for(String pre : prefixes){
+                        String preName=pre+singleUnit.getSingularName();
+                        singleUnitToUnit(preName,singleUnit,unitConversion);
+                        ++num;
+                    }
+                }
+            }
+        }
         System.out.println(num);
 
     }
 
-    @Test
-    public void unitCorrection(){
-        List<Unit> unitList=unitDao.findAll();
-        Iterator<Unit> unitIterator=unitList.iterator();
-        int num=0;
-        while (unitIterator.hasNext()){
-            Unit unit=unitIterator.next();
-            if(unit.getClassifications().size()>1)
-            {
-                List<String> newClassification=new ArrayList<>();
-                List<String> oldClassification=unit.getClassifications();
-                newClassification.add(oldClassification.get(0));
-                unit.setClassifications(newClassification);
-//                System.out.println(unit.getOid());
-//                num++;
-                unitDao.save(unit);
-            }
 
 
-
-        }
-    }
 
     @Test
     public void unitCorrectionName(){

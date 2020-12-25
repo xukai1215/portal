@@ -4,8 +4,16 @@ new Vue({
         'avatar': VueAvatar.Avatar
     },
     data: {
+        //unitconversion
+        oid_cvt: window.oidcvt,
+        unitname: window.infoname,
+        unitdata:{},
+        unitPrearr:[],
+        ipt1value:"",
+        unitSlct:[],
+        slct1Value:"",
+        slct2Value:"",
         activeIndex: '8-1',
-
         useroid: "",
         userImg: "",
         //comment
@@ -315,6 +323,173 @@ new Vue({
         }],
     },
     methods: {
+        select_prebase(value, loc, x, tag) {
+            //选择转换前后的单位
+            if (tag == 1)
+                return this.pre_base(value, loc, x)
+            else {
+                //alert(loc)
+                return this.base_pre(value, loc, x)
+            }
+        },
+
+        base_pre(value, loc, x) {
+            //转换前缀to base unit
+            var pre = value.substring(0, loc)
+            switch (pre) {
+                case "Nano":
+                    return x / 1e-9
+                case "Micro":
+                    return x / 1e-6
+                case "Milli":
+                    return x / 1e-3
+                case "Centi":
+                    return x / 1e-2
+                case "Deci":
+                    return x / 1e-1
+                case "Hecto":
+                    return x / 1e2
+                case "Kilo":
+                    return x / 1e3
+                case "Mega":
+                    return x / 1e6
+                case "Yocto":
+                    return x / 1e-24
+                case "Zepto":
+                    return x / 1e-21
+                case "Atto":
+                    return x / 1e-18
+                case "Femto":
+                    return x / 1e-15
+                case "Pico":
+                    return x / 1e-12
+                case "Deca":
+                    return x / 1e1
+                case "Giga":
+                    return x / 1e9
+                case "Tera":
+                    return x / 1e12
+                case "Peta":
+                    return x / 1e15
+                case "Exa":
+                    return x / 1e18
+                case "Zetta":
+                    return x / 1e21
+                case "Yotta":
+                    return x / 1e24
+
+            }
+
+        },
+
+        pre_base(value, loc, x) {
+            //转换unit to 前缀
+            var pre = value.substring(0, loc)
+            switch (pre) {
+                case "Nano":
+                    return x * 1e-9
+                case "Micro":
+                    return x * 1e-6
+                case "Milli":
+                    return x * 1e-3
+                case "Centi":
+                    return x * 1e-2
+                case "Deci":
+                    return x * 1e-1
+                case "Hecto":
+                    return x * 1e2
+                case "Kilo":
+                    return x * 1e3
+                case "Mega":
+                    return x * 1e6
+                case "Yocto":
+                    return x * 1e-24
+                case "Zepto":
+                    return x * 1e-21
+                case "Atto":
+                    return x * 1e-18
+                case "Femto":
+                    return x * 1e-15
+                case "Pico":
+                    return x * 1e-12
+                case "Deca":
+                    return x * 1e1
+                case "Giga":
+                    return x * 1e9
+                case "Tera":
+                    return x * 1e12
+                case "Peta":
+                    return x * 1e15
+                case "Exa":
+                    return x * 1e18
+                case "Zetta":
+                    return x * 1e21
+                case "Yotta":
+                    return x * 1e24
+            }
+        },
+
+        // 处理带有前缀的单位
+        prefunc(value, x, tag) {
+            var loc;
+            var field;
+            for (field in this.unitPrearr) {
+                loc = value.search(this.unitPrearr[field]);
+                if (loc != -1 && loc != 0) {
+                    return this.select_prebase(value, loc, x, tag);
+                }
+            }
+            return x;
+        },
+        async cvtclick(){
+
+            var slct1_value = this.slct1Value
+            var slct2_value = this.slct2Value
+            var cvt_value = this.ipt1value
+
+            //用户未选择单位类型
+            if (slct1_value == 'select the unit' || slct2_value == 'select the unit')
+                this.$alert("Please select the unit you want to convert!");
+
+            else if(""===cvt_value)
+                this.$alert("Please input a correct value!");
+            else {
+                //转换单位类型相同
+                if (slct1_value == slct2_value)
+                    document.getElementById("ipt2").value = cvt_value
+                else {
+
+                    var x = cvt_value
+                    var field
+
+
+                    //处理带有前缀的单位
+                    x = this.prefunc(slct1_value, x, 1)
+                    //unit to base
+                    for (field in this.unitdata.Units) {
+                        if (this.unitdata.Units[field].SingularName == slct1_value) {
+                            x = eval(this.unitdata.Units[field].FromUnitToBaseFunc)
+                            break
+                        }
+                    }
+
+                    //处理带有前缀的单位
+                    x = this.prefunc(slct2_value, x, 2)
+
+
+                    //base to result
+                    for (field in this.unitdata.Units) {
+                        if (this.unitdata.Units[field].SingularName == slct2_value) {
+                            x = eval(this.unitdata.Units[field].FromBaseToUnitFunc)
+                            break
+                        }
+                    }
+                    document.getElementById("ipt2").value = x
+                }
+            } //else
+
+        },
+
         getLanguageList(){
             $.get("/static/languageList.json").success((content)=>{
                 this.languageList = content;
@@ -1154,8 +1329,53 @@ new Vue({
         setSession(name, value) {
             window.sessionStorage.setItem(name, value);
         },
+
+
     },
     mounted() {
+
+        let that=this;
+        var prearr=new Array();
+        if(this.oid_cvt!=null){
+            $("#transform").show();
+        }
+        if(this.oid_cvt!="") {
+
+            $.get("/repository/getUnitConvertInfo/" + this.oid_cvt, function (result) {
+                that.unitdata = result;
+                adddata(that.unitdata);
+            });
+
+            if(this.unitname.indexOf('_')!=-1)
+            {
+                this.unitname=this.unitname.replace(/_/,'');
+            }
+        }
+
+        function adddata(data) {
+            var item;
+            $.each(data.Units, function (i, field) {
+                //加入singularname
+                if (typeof (field['Prefixes']) == "object")
+                    prearr.push(field.SingularName);
+
+                item={value:field.SingularName,
+                          label:field.SingularName}
+                that.unitSlct.push(item)
+
+                //加入有前缀的singularname
+                if (field['Prefixes']) {
+                    $.each(field['Prefixes'], function (tmp, field1) {
+                        item={value:field1+field.SingularName,
+                            label:field1+field.SingularName};
+                        that.unitSlct.push(item)
+                    })
+                }//if
+            })//each
+            that.unitPrearr=prearr;
+            that.slct1Value=that.unitname
+        }
+
         this.setSession("history", window.location.href);
         $.get("/user/load", {}, (result) => {
             let res=result;
@@ -1187,6 +1407,8 @@ new Vue({
         this.outputCoordinate.name = window.spatialRfInPage.name
         this.outputCoordinate.wkt = window.spatialRfInPage.wkt
         this.wktTransfer(this.outputCoordinate,this.outputCoordinate.wkt)
+
+
     }
 
 
