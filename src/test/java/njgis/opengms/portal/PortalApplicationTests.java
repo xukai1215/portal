@@ -20,6 +20,7 @@ import njgis.opengms.portal.utils.Utils;
 import njgis.opengms.portal.utils.XmlTool;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.tomcat.jni.Local;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -122,6 +123,8 @@ public class PortalApplicationTests {
 
 
 
+
+
     @Value("${resourcePath}")
     private String resourcePath;
 
@@ -129,254 +132,7 @@ public class PortalApplicationTests {
     private String managerServerIpAndPort;
 
 
-    @Test
-    public void passwordsha256(){
-        try {
-            for (User user : userDao.findAll()) {
-                user.setPassword(DigestUtils.sha256Hex(user.getPassword()));
-                userDao.save(user);
-            }
-        } catch (Exception e){
 
-        }
-    }
-
-    @Test
-    public void changeModelItemClassification(){
-        List<ModelItem> modelItemList = modelItemDao.findAll();
-        for(ModelItem modelItem:modelItemList){
-            String author = modelItem.getAuthor();
-            List<String> cls = modelItem.getClassifications();
-            List<String> cls2 = modelItem.getClassifications2();
-            if(author.equals("wzh")&&cls2==null&&cls.contains("12b11f3e-8d6e-48c9-bf3a-f9fb5c5e0dd4")&&cls.size()==1){
-                List<String> newCls = new ArrayList<>();
-                newCls.add("75aee2b7-b39a-4cd0-9223-3b7ce755e457");
-                modelItem.setClassifications2(newCls);
-                modelItemDao.save(modelItem);
-            }
-            if(author.equals("wzh")&&cls2==null&&cls.contains("ea1f9c14-9bdb-4da6-b728-a9853620e95f")&&cls.size()==1){
-                List<String> newCls = new ArrayList<>();
-                newCls.add("75aee2b7-b39a-4cd0-9223-3b7ce755e457");
-                modelItem.setClassifications2(newCls);
-                modelItemDao.save(modelItem);
-            }
-        }
-    }
-
-    @Test
-    public void changeSongJComputableName(){
-        List<ComputableModel> computableModelList = computableModelDao.findAll();
-        for(ComputableModel computableModel:computableModelList){
-            if(computableModel.getAuthor().equals("SongJ")) {
-                String name = computableModel.getName();
-                computableModel.setName(name.replaceAll("_", " "));
-                computableModelDao.save(computableModel);
-            }
-        }
-    }
-
-    @Test
-    public void addClassification2(){
-        List<ModelItem> modelItemList = modelItemDao.findAll();
-        for(ModelItem modelItem : modelItemList){
-            if(modelItem.getAuthor().equals("SongJ")){
-                List<String> cls = new ArrayList<>();
-                cls.add("afa99af9-4224-4fac-a81f-47a7fb663dba");
-                modelItem.setClassifications2(cls);
-                String name = modelItem.getName();
-                name = name.replaceAll("_"," ");
-                modelItem.setName(name);
-                modelItemDao.save(modelItem);
-            }
-        }
-    }
-
-    @Test
-    public void parseXML(){
-        String xml = "\t<ModelClass>\n" +
-                "\t\t<$>\n" +
-                "\t\t\t<name>Game_of_life</name>\n" +
-                "\t\t\t<uid>0c6cbbc0-a72b-417f-b51e-2a339281fc8f</uid>\n" +
-                "\t\t\t<type>SimpleCalculation</type>\n" +
-                "\t\t</$>\n" +
-                "\t\t<AttributeSet>\n" +
-                "\t\t\t<Categories>\n" +
-                "\t\t\t\t<Category>\n" +
-                "\t\t\t\t\t<$>\n" +
-                "\t\t\t\t\t\t<principle>SimpleCalculation</principle>\n" +
-                "\t\t\t\t\t\t<path></path>\n" +
-                "\t\t\t\t\t</$>\n" +
-                "\t\t\t\t</Category>\n" +
-                "\t\t\t</Categories>\n" +
-                "\t\t\t<LocalAttributes>\n" +
-                "\t\t\t\t<LocalAttribute>\n" +
-                "\t\t\t\t\t<$>\n" +
-                "\t\t\t\t\t\t<local>EN_US</local>\n" +
-                "\t\t\t\t\t\t<localName>Game_of_life</localName>\n" +
-                "\t\t\t\t\t\t<wiki></wiki>\n" +
-                "\t\t\t\t\t</$>\n" +
-                "\t\t\t\t\t<Keywords>Game_of_life</Keywords>\n" +
-                "\t\t\t\t\t<Abstract></Abstract>\n" +
-                "\t\t\t\t</LocalAttribute>\n" +
-                "\t\t\t</LocalAttributes>\n" +
-                "\t\t</AttributeSet>\n" +
-                "\t\t<Behavior>\n" +
-                "\t\t\t<RelatedDatasets>\n" +
-                "\t\t\t\t<DatasetItem>\n" +
-                "\t\t\t\t\t<$>\n" +
-                "\t\t\t\t\t\t<name>TXT</name>\n" +
-                "\t\t\t\t\t\t<type>internal</type>\n" +
-                "\t\t\t\t\t\t<description>SAGA Type:Grid</description>\n" +
-                "\t\t\t\t\t</$>\n" +
-                "\t\t\t\t\t<UdxDeclaration>\n" +
-                "\t\t\t\t\t\t<$>\n" +
-                "\t\t\t\t\t\t\t<name></name>\n" +
-                "\t\t\t\t\t\t\t<description></description>\n" +
-                "\t\t\t\t\t\t</$>\n" +
-                "\t\t\t\t\t\t<UdxNode>\n" +
-                "\t\t\t\t\t\t\t\t\t\t\t\t\t \n" +
-                "\t\t\t\t\t\t\t\t\t\t\t</UdxNode>\n" +
-                "\t\t\t\t\t\t<SemanticAttachment>\n" +
-                "\t\t\t\t\t\t\t<Concepts></Concepts>\n" +
-                "\t\t\t\t\t\t\t<SpatialRefs></SpatialRefs>\n" +
-                "\t\t\t\t\t\t\t<Units></Units>\n" +
-                "\t\t\t\t\t\t\t<DataTemplates></DataTemplates>\n" +
-                "\t\t\t\t\t\t</SemanticAttachment>\n" +
-                "\t\t\t\t\t</UdxDeclaration>\n" +
-                "\t\t\t\t</DatasetItem>\n" +
-                "\t\t\t</RelatedDatasets>\n" +
-                "\t\t\t<StateGroup>\n" +
-                "\t\t\t\t<States>\n" +
-                "\t\t\t\t\t<State>\n" +
-                "\t\t\t\t\t\t<$>\n" +
-                "\t\t\t\t\t\t\t<id>2c4f6083-e17e-4ffd-94bd-ee5a09a04ff3</id>\n" +
-                "\t\t\t\t\t\t\t<name>Run</name>\n" +
-                "\t\t\t\t\t\t\t<type>basic</type>\n" +
-                "\t\t\t\t\t\t\t<description>Start Run</description>\n" +
-                "\t\t\t\t\t\t</$>\n" +
-                "\t\t\t\t\t\t<Event>\n" +
-                "\t\t\t\t\t\t\t<$>\n" +
-                "\t\t\t\t\t\t\t\t<name>original_life_map</name>\n" +
-                "\t\t\t\t\t\t\t\t<type>response</type>\n" +
-                "\t\t\t\t\t\t\t\t<description>original life map.</description>\n" +
-                "\t\t\t\t\t\t\t\t<optional>false</optional>\n" +
-                "\t\t\t\t\t\t\t</$>\n" +
-                "\t\t\t\t\t\t\t<ResponseParameter>\n" +
-                "\t\t\t\t\t\t\t\t<$>\n" +
-                "\t\t\t\t\t\t\t\t\t<datasetReference>TXT</datasetReference>\n" +
-                "\t\t\t\t\t\t\t\t\t<description></description>\n" +
-                "\t\t\t\t\t\t\t\t</$>\n" +
-                "\t\t\t\t\t\t\t</ResponseParameter>\n" +
-                "\t\t\t\t\t\t</Event>\n" +
-                "\t\t\t\t\t\t<Event>\n" +
-                "\t\t\t\t\t\t\t<$>\n" +
-                "\t\t\t\t\t\t\t\t<name>generated_life_map</name>\n" +
-                "\t\t\t\t\t\t\t\t<type>noresponse</type>\n" +
-                "\t\t\t\t\t\t\t\t<description>result of life map.</description>\n" +
-                "\t\t\t\t\t\t\t\t<optional>false</optional>\n" +
-                "\t\t\t\t\t\t\t</$>\n" +
-                "\t\t\t\t\t\t\t<DispatchParameter>\n" +
-                "\t\t\t\t\t\t\t\t<$>\n" +
-                "\t\t\t\t\t\t\t\t\t<datasetReference>TXT</datasetReference>\n" +
-                "\t\t\t\t\t\t\t\t\t<description></description>\n" +
-                "\t\t\t\t\t\t\t\t</$>\n" +
-                "\t\t\t\t\t\t\t</DispatchParameter>\n" +
-                "\t\t\t\t\t\t</Event>\n" +
-                "\t\t\t\t\t</State>\n" +
-                "\t\t\t\t</States>\n" +
-                "\t\t\t\t<StateTransitions></StateTransitions>\n" +
-                "\t\t\t</StateGroup>\n" +
-                "\t\t</Behavior>\n" +
-                "\t\t<Runtime>\n" +
-                "\t\t\t<$>\n" +
-                "\t\t\t\t<name>Game_of_life</name>\n" +
-                "\t\t\t\t<version>1.0</version>\n" +
-                "\t\t\t\t<baseDir></baseDir>\n" +
-                "\t\t\t\t<entry>encapsulateGoF.py</entry>\n" +
-                "\t\t\t</$>\n" +
-                "\t\t\t<HardwareConfigures>\n" +
-                "\t\t\t\t<Add>\n" +
-                "\t\t\t\t\t<$>\n" +
-                "\t\t\t\t\t\t<key>cpu core numble</key>\n" +
-                "\t\t\t\t\t\t<value>[2,infinite)</value>\n" +
-                "\t\t\t\t\t</$>\n" +
-                "\t\t\t\t</Add>\n" +
-                "\t\t\t\t<Add>\n" +
-                "\t\t\t\t\t<$>\n" +
-                "\t\t\t\t\t\t<key>disk avail size</key>\n" +
-                "\t\t\t\t\t\t<value>[50GB,infinite)</value>\n" +
-                "\t\t\t\t\t</$>\n" +
-                "\t\t\t\t</Add>\n" +
-                "\t\t\t\t<Add>\n" +
-                "\t\t\t\t\t<$>\n" +
-                "\t\t\t\t\t\t<key>cpu frequency</key>\n" +
-                "\t\t\t\t\t\t<value>[2.2GHz,infinite)</value>\n" +
-                "\t\t\t\t\t</$>\n" +
-                "\t\t\t\t</Add>\n" +
-                "\t\t\t\t<Add>\n" +
-                "\t\t\t\t\t<$>\n" +
-                "\t\t\t\t\t\t<key>memory size</key>\n" +
-                "\t\t\t\t\t\t<value>[2GB,infinite)</value>\n" +
-                "\t\t\t\t\t</$>\n" +
-                "\t\t\t\t</Add>\n" +
-                "\t\t\t</HardwareConfigures>\n" +
-                "\t\t\t<SoftwareConfigures>\n" +
-                "\t\t\t\t<Add>\n" +
-                "\t\t\t\t\t<$>\n" +
-                "\t\t\t\t\t\t<key>VC++ Runtime</key>\n" +
-                "\t\t\t\t\t\t<platform>x64</platform>\n" +
-                "\t\t\t\t\t\t<value>default</value>\n" +
-                "\t\t\t\t\t</$>\n" +
-                "\t\t\t\t</Add>\n" +
-                "\t\t\t\t<Add>\n" +
-                "\t\t\t\t\t<$>\n" +
-                "\t\t\t\t\t\t<key>Operating System</key>\n" +
-                "\t\t\t\t\t\t<platform>x64</platform>\n" +
-                "\t\t\t\t\t\t<value>linux</value>\n" +
-                "\t\t\t\t\t</$>\n" +
-                "\t\t\t\t</Add>\n" +
-                "\t\t\t</SoftwareConfigures>\n" +
-                "\t\t\t<Assemblies>\n" +
-                "\t\t\t\t<Assembly>\n" +
-                "\t\t\t\t\t<$>\n" +
-                "\t\t\t\t\t\t<name>GDALRasterMapping.exe</name>\n" +
-                "\t\t\t\t\t\t<path>$(DataMappingPath)\\GDALRasterMapping\\</path>\n" +
-                "\t\t\t\t\t</$>\n" +
-                "\t\t\t\t</Assembly>\n" +
-                "\t\t\t\t<Assembly>\n" +
-                "\t\t\t\t\t<$>\n" +
-                "\t\t\t\t\t\t<name>OGRVectorMapping.exe</name>\n" +
-                "\t\t\t\t\t\t<path>$(DataMappingPath)\\OGRVectorMapping\\</path>\n" +
-                "\t\t\t\t\t</$>\n" +
-                "\t\t\t\t</Assembly>\n" +
-                "\t\t\t</Assemblies>\n" +
-                "\t\t\t<SupportiveResources></SupportiveResources>\n" +
-                "\t\t</Runtime>\n" +
-                "\t</ModelClass>\n" +
-                "\t\n";
-        xml = xml.replaceAll("<\\$>","").replaceAll("</\\$>","");
-        JSONObject jsonObject = XmlTool.documentToJSONObject(xml);
-        int a = 1;
-    }
-
-    @Test
-    public void changeUnitAlias(){
-        List<Unit> unitList = unitDao.findAll();
-        for(int i = 0;i<unitList.size();i++){
-            Unit unit = unitList.get(i);
-            List<Localization> localizationList = unit.getLocalizationList();
-            for(int j = 0;j<localizationList.size();j++){
-                Localization localization = localizationList.get(j);
-                if(localization.getLocalCode().equals("zh-CN")){
-                    List<String> alias = new ArrayList<>();
-                    alias.add(localization.getName());
-                    unit.setAlias(alias);
-                    unitDao.save(unit);
-                    break;
-                }
-            }
-        }
-    }
 
     @Test
     public void changeSpatialRef(){
@@ -388,6 +144,7 @@ public class PortalApplicationTests {
             spatialReferenceDao.save(spatialReference);
         }
     }
+
 
     @Test
     public void changeConceptLocalization(){
@@ -499,116 +256,175 @@ public class PortalApplicationTests {
             }
         }
     }
+    @Test
+    public void correctName(){
+        int num1=0;
+        int num2=0;
+        List<Unit> unitList=unitDao.findByAuthor("njgis");
+        Iterator<Unit> unitIterator=unitList.iterator();
+        System.out.println(unitList.size()+"\n");
+        while(unitIterator.hasNext()){
+            Unit unit=unitIterator.next();
+            if(unit.getName().indexOf("_")==-1){
+                ++num1;
+                String pre=unit.getName().substring(0,1).toUpperCase();
+                String back=unit.getName().substring(1).toLowerCase();
+                unit.setName(pre.concat(back));
+
+            }
+            else{
+                ++num2;
+                String fina = "";
+                String[] strarr=unit.getName().split("_");
+                for(int i=0;i<strarr.length;++i){
+                    String pre=strarr[i].substring(0,1).toUpperCase();
+                    String back=strarr[i].substring(1).toLowerCase();
+                    strarr[i]=pre.concat(back);
+                    fina+=strarr[i];
+                }
+                unit.setName(fina);
+            }
+            unitDao.save(unit);
+            System.out.println(unit.getName());
+        }
+        System.out.println(num1);
+        System.out.println(num2);
+        System.out.println(num1+num2);
+    }
+
+
+
+
+    public void singleUnitToUnit(String name,SingleUnit singleUnit,UnitConversion unitConversion){
+        Unit unit=new Unit();
+
+        unit.setClassifications(unitConversion.getClassifications());
+        unit.setConversionId(unitConversion.getOid());
+        unit.setOid(UUID.randomUUID().toString());
+        unit.setName(name);
+
+        List<String> alias=new ArrayList<>();
+        alias.add(singleUnit.getPluralName().toUpperCase());
+        unit.setAlias(alias);
+
+        if(singleUnit.getXmlDocRemarks()!=null)
+        {
+            unit.setDescription(singleUnit.getXmlDocRemarks());
+        }
+        else{
+            unit.setDescription(unitConversion.getXmlDoc());
+        }
+
+
+        unit.setAuthor("1274316792@qq.com");
+
+        unit.setCreateTime(new Date());
+        unit.setLastModifyTime(new Date());
+        unit.setStatus("Public");
+
+        //set localization
+        List<Localization> localizationList=new ArrayList<>();
+
+
+
+        Map maplocal=(HashMap)singleUnit.getLocalization().get(0);
+
+        Localization localization=new Localization();
+        localization.setLocalCode("en-US");
+        localization.setLocalName("English (United States)");
+        localization.setName(maplocal.get("Abbreviations").toString());
+        if(singleUnit.getXmlDocRemarks()!=null){
+            localization.setDescription(singleUnit.getXmlDocRemarks());
+        }
+        else{
+           localization.setDescription(unitConversion.getXmlDoc());
+        }
+        localizationList.add(localization);
+        unit.setLocalizationList(localizationList);
+
+        //lock
+        unit.setLock(false);
+
+        //authorship
+        unit.setAuthorship(null);
+
+        //sharecount、viewcount、thumbscount、dailyviewcount
+        unit.setShareCount(0);
+        unit.setViewCount(0);
+        unit.setThumbsUpCount(0);
+        unit.setDailyViewCount(null);
+
+        System.out.println(unit);
+
+        unitDao.save(unit);
+    }
+
 
     @Test
-    public void addUnitFromConversion(){
-        List<UnitConversion> unitConversionList=unitConversionDao.findAll();
-        Iterator<UnitConversion> unitConversionIterator=unitConversionList.iterator();
+    public void renewUnitFromOld(){
+        //修正分类
+        List<Unit> unitList=unitDao.findAll();
+        Iterator<Unit> unitIterator=unitList.iterator();
         int num=0;
-        while (unitConversionIterator.hasNext()){
+        while(unitIterator.hasNext()){
+            Unit unit = unitIterator.next();
+            List<String> classifications=unit.getClassifications();
+            if(classifications.size()>1){
+                ++num;
+                unit.setConversionId(classifications.get(1));
+                List<String> newClassi=new ArrayList<>();
+                newClassi.add(classifications.get(0));
+                unit.setClassifications(newClassi);
+                unitDao.save(unit);
+            }
+            System.out.println(unit+"\n");
+
+        }
+        System.out.println(num);
+    }
+
+    @Test
+    public void renewUnitList(){
+        List<UnitConversion> unitConversions=unitConversionDao.findAll();
+        Iterator<UnitConversion> unitConversionIterator=unitConversions.iterator();
+        int num=0;
+        while(unitConversionIterator.hasNext()){
             UnitConversion unitConversion=unitConversionIterator.next();
-            Unit unit=new Unit();
+            List<Object> units=unitConversion.getUnits();
+            for(Object sunit : units){
+                Map mapu= (HashMap) sunit;
 
-            //type
-//            unit.setType("Derivation");
-//            if(Array.getLength(unitConversion.getBaseDimensions())<2){
-//                unit.setType("Basic");
-//            }
-            //tag
-//            String classification=unitConversion.getClassifications().get(0);
-//            UnitClassification unitClassification=unitClassificationDao.findFirstByOid(classification);
-//            unit.setTag(unitClassification.getNameEn());
-            //xml
-            //expression
+                SingleUnit singleUnit=new SingleUnit();
+                singleUnit.setSingularName(mapu.get("SingularName").toString());
+                singleUnit.setPluralName(mapu.get("PluralName").toString());
+                singleUnit.setBaseUnits(mapu.get("BaseUnits"));
+                singleUnit.setFromUnitToBaseFunc(mapu.get("FromUnitToBaseFunc").toString());
+                singleUnit.setFromBaseToUnitFunc(mapu.get("FromBaseToUnitFunc").toString());
+                singleUnit.setPrefixes((List<String>) mapu.get("Prefixes"));
+                singleUnit.setLocalization((List<Object>) mapu.get("Localization"));
 
-            //classifications-第一个是分类unitclassification，第二个是转换unitconversion
-           List<String> classificationList=new ArrayList<>();
-           List<String> unitclassi=unitConversion.getClassifications();
-           if(unitclassi!=null&&unitclassi.size()>0)
-               classificationList.add(unitclassi.get(0));
+                if(mapu.get("XmlDocRemarks")!=null)
+                    singleUnit.setXmlDocRemarks(mapu.get("XmlDocRemarks").toString());
 
-           classificationList.add(unitConversion.getOid());
-           unit.setClassifications(classificationList);
+                singleUnitToUnit(singleUnit.getSingularName(),singleUnit,unitConversion);
+                ++num;
 
-            //oid
-            unit.setOid(UUID.randomUUID().toString());
-            //name
-            unit.setName(unitConversion.getName());
-            //list alias
-            List<String> alias=new ArrayList<>();
-            alias.add(unitConversion.getName().toUpperCase());
-            unit.setAlias(alias);
-
-            //description
-            unit.setDescription(unitConversion.getXmlDoc());
-            //author
-            unit.setAuthor("XiaoYu He");
-
-            //data
-            unit.setCreateTime(new Date());
-            unit.setLastModifyTime(new Date());
-
-            //status
-            unit.setStatus("Public");
-            List<Localization> localizationList=new ArrayList<>();
-            Localization localization=new Localization();
-            localization.setLocalCode("zh-CN");
-            localization.setLocalName("Chinese (Simplified)");
-            localization.setName("");
-            localization.setDescription("");
-            localizationList.add(localization);
-
-            Localization localization1=new Localization();
-            localization1.setLocalCode("en-US");
-            localization1.setLocalName("English (United States)");
-            localization1.setName(unitConversion.getName());
-            localization1.setDescription(unitConversion.getXmlDoc());
-            localizationList.add(localization1);
-            unit.setLocalizationList(localizationList);
-
-            //lock
-            unit.setLock(false);
-
-            //authorship
-            unit.setAuthorship(null);
-
-            //sharecount、viewcount、thumbscount、dailyviewcount
-            unit.setShareCount(0);
-            unit.setViewCount(0);
-            unit.setThumbsUpCount(0);
-            unit.setDailyViewCount(null);
-
-            ++num;
-            unitDao.save(unit);
-
-         }
-
+                if(singleUnit.getPrefixes()!=null){
+                    List<String> prefixes=singleUnit.getPrefixes();
+                    for(String pre : prefixes){
+                        String preName=pre+singleUnit.getSingularName();
+                        singleUnitToUnit(preName,singleUnit,unitConversion);
+                        ++num;
+                    }
+                }
+            }
+        }
         System.out.println(num);
 
     }
 
-    @Test
-    public void unitCorrection(){
-        List<Unit> unitList=unitDao.findAll();
-        Iterator<Unit> unitIterator=unitList.iterator();
-        int num=0;
-        while (unitIterator.hasNext()){
-            Unit unit=unitIterator.next();
-            if(unit.getClassifications().size()>1)
-            {
-                List<String> newClassification=new ArrayList<>();
-                List<String> oldClassification=unit.getClassifications();
-                newClassification.add(oldClassification.get(0));
-                unit.setClassifications(newClassification);
-//                System.out.println(unit.getOid());
-//                num++;
-                unitDao.save(unit);
-            }
 
 
-
-        }
-    }
 
     @Test
     public void unitCorrectionName(){
@@ -1391,7 +1207,7 @@ public class PortalApplicationTests {
             List<Item> computableModelList = computableModelDao.findAllByAuthor(user.getUserName());
             List<Item> conceptList = conceptDao.findByAuthor(user.getUserName());
             List<Item> spatialReferenceList = spatialReferenceDao.findByAuthor(user.getUserName());
-            List<Item> unitList = unitDao.findByAuthor(user.getUserName());
+//            List<Item> unitList = unitDao.findByAuthor(user.getUserName());
             List<Item> templateList = templateDao.findByAuthor(user.getUserName());
             List<Theme> themeList = themeDao.findByAuthor(user.getUserName());
 
@@ -1402,7 +1218,7 @@ public class PortalApplicationTests {
             user.setComputableModels(computableModelList.size());
             user.setConcepts(conceptList.size());
             user.setSpatials(spatialReferenceList.size());
-            user.setUnits(unitList.size());
+//            user.setUnits(unitList.size());
             user.setTemplates(templateList.size());
             user.setThemes(themeList.size());
 
@@ -2113,7 +1929,7 @@ public class PortalApplicationTests {
                     itemList = templateDao.findByAuthor(author);
                     break;
                 case "unit & metric":
-                    itemList = unitDao.findByAuthor(author);
+//                    itemList = unitDao.findByAuthor(author);
                     break;
 
 

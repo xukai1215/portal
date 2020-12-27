@@ -1342,7 +1342,7 @@ public class RepositoryService {
         JSONArray classResult = new JSONArray();
 
         List<String> classifications = unit.getClassifications();
-        for(int i=0;i<1;i++){
+        for(int i=0;i<classifications.size();i++){
             array.clear();
             String classId=classifications.get(i);
             classification=unitClassificationDao.findFirstByOid(classId);
@@ -1408,10 +1408,8 @@ public class RepositoryService {
 
         String lastModifyTime=sdf.format(unit.getLastModifyTime());
 
-        if(classifications.size()>1){
-            modelAndView.addObject("oid_cvt",classifications.get(1));
-        }
 
+        modelAndView.addObject("oid_cvt",unit.getConversionId());
         modelAndView.addObject("info", unit);
         modelAndView.addObject("classifications", classResult);
         modelAndView.addObject("image", htmlLoadPath+unit.getImage());

@@ -17,6 +17,7 @@ public class Unit extends Item {
     String type;
     String parentId;
     String xml;
+    String conversionId;
 //    String name_EN;
 //    String name_ZH;
 //    String description_EN;
