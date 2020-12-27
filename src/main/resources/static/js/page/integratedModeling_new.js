@@ -189,6 +189,18 @@ var vue = new Vue({
         mxgraphExpand:0,
 
         currentView:'All Items',
+
+        dataFromActive:'dataSpace',
+
+        dataNode:{
+            baseInfo:{},
+            data:[],
+            // processing: [],
+            // visualization: [],
+            status:0,
+        },
+
+        nodeLoading:false,
     },
 
     computed:{
@@ -213,6 +225,36 @@ var vue = new Vue({
     },
 
     methods: {
+        formatDate(value,callback) {
+            const date = new Date(value);
+            y = date.getFullYear();
+            M = date.getMonth() + 1;
+            d = date.getDate();
+            H = date.getHours();
+            m = date.getMinutes();
+            s = date.getSeconds();
+            if (M < 10) {
+                M = '0' + M;
+            }
+            if (d < 10) {
+                d = '0' + d;
+            }
+            if (H < 10) {
+                H = '0' + H;
+            }
+            if (m < 10) {
+                m = '0' + m;
+            }
+            if (s < 10) {
+                s = '0' + s;
+            }
+
+            const t = y + '-' + M + '-' + d + ' ' + H + ':' + m + ':' + s;
+            if(callback == null||callback == undefined)
+                return t;
+            else
+                callback(t);
+        },
 
         expandMxgraph(){
             if(this.mxgraphExpand==0){
@@ -524,6 +566,85 @@ var vue = new Vue({
             }
             $('#datainput' + this.currentEvent.dataId).removeClass("spinner");
             this.userDataSpaceVisible = false;
+        },
+
+        refreshDataNode(){
+            this.getDataServer()
+        },
+
+        getDataServer() {
+            this.nodeLoading=true
+            this.dataNode.status = 0
+            $.ajax({
+                type: "GET",
+                url: "/dataServer/getUserNodes",
+                async: true,
+                success: (res) => {
+                    if (res.code == -1) {
+                        this.$alert("If you want to use this functon, please login first and make your data server online!")
+                        // window.location.href="/user/login";
+                    } else {
+                        if(res.data == undefined||Object.keys(res.data).length == 0||res.data=='offline'){
+                            this.dataNode.status = 0
+                            this.nodeLoading=false
+                        }else{
+                            this.dataNode.baseInfo=res.data
+                            this.dataNode.status = 1
+                            this.getNodeContent(this.dataNode.baseInfo.token,"Data")
+                            this.nodeLoading=false
+                        }
+                    }
+                },
+                error:res=>{
+                    this.nodeLoading=false
+                }
+            })
+        },
+
+        getNodeContent(token,type){
+            let data
+            this.nodeLoading=true
+            $.ajax({
+                type: "GET",
+                url: "/dataServer/getNodeContentCheck",
+                data:{
+                    token:token,
+                    type:type,
+                },
+                async:false,
+                success: (res) => {
+                    if (res.code == -1) {
+                        // this.$alert("Please login first!")
+                        // window.location.href="/user/login";
+                    } else {
+                        if(res.data == undefined){
+
+                        }else{
+                            data = res.data
+                            this.dataNode[type.toLowerCase()] = data
+                            setTimeout(()=>{
+                                this.nodeLoading = false
+                            },150)
+                        }
+                    }
+                },
+                error:res=>{
+                    this.nodeLoading = false
+                }
+            })
+
+        },
+
+        selectDataFromDataServer(data){
+
+        },
+
+        changeDataFrom(tab){
+            if(tab.name=='dataServer'){
+                this.getDataServer()
+            }else if(tab.name=='dataItem'){
+
+            }
         },
 
         iterationConfig(){
