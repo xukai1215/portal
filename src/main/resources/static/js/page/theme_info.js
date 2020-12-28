@@ -217,6 +217,11 @@ var vue = new Vue({
         }
     },
     methods: {
+        // 图片加载失败的回调
+        errorHandler(){
+            return true
+        },
+
         //获取message_confirm页面
         getmessagepage() {
             console.log("ok");

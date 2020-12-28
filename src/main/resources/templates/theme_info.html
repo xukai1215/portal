@@ -154,7 +154,7 @@
                                 <h3>
                                     <span>Theme Info</span>
                                     <!--<el-button class="editicon" type="primary" @click="edit_theme_info" icon="el-icon-edit" circle style="display: none"></el-button>-->
-                                    <el-button class="editicon" type="primary" @click="edit_theme('1')" icon="el-icon-edit"></el-button>
+                                    <el-button class="editicon" type="primary" @click="edit_theme('0')" icon="el-icon-edit"></el-button>
                                     <!--<a href="javascript:void(0)" class='fa fa-pencil fa-2x' aria-hidden='true' @click="edit_theme_info"></a>-->
                                 </h3>
                             </div>
@@ -165,7 +165,7 @@
                             <div class="title text-center">
                                 <h3>
                                     <span>Models</span>
-                                    <el-button class="editicon" type="primary" @click="edit_theme('2')" icon="el-icon-edit"></el-button>
+                                    <el-button class="editicon" type="primary" @click="edit_theme('1')" icon="el-icon-edit"></el-button>
                                 </h3>
                             </div>
                             <div th:each="modelClass,index:${modelClassInfos}" class="model_card">
@@ -249,7 +249,6 @@
                             <div class="title text-center">
                                 <h3>
                                     <span>Maintainers</span>
-                                    <el-button class="editicon" type="primary" @click="edit_theme" icon="el-icon-edit"></el-button>
                                 </h3>
                             </div>
                             <div id="maintainers">
@@ -257,14 +256,18 @@
                                     <!--<el-row type="center" class="row-bg" id="content2">-->
                                     <div v-for="(item, index) in maintainer" :key="index">
                                         <el-col :span="8" style="padding:10px;height:350px;width:230px">
-                                            <el-card :body-style="{ padding: '0px' }" target="_blank">
-                                                <a :href="'/profile/'+item.name"><img :src="'/static' + item.image" class="image" /></a>
-                                                <div style="padding: 14px;">
-                                                    <p style="text-align: center;">{{ item.name }}</p>
-<!--                                                    <div class="bottom clearfix">-->
-<!--                                                        <el-button type="text" class="button">Detail</el-button>-->
-<!--                                                    </div>-->
-                                                </div>
+                                            <el-card :body-style="{ padding: '0px' }" target="_blank" style="height: 40px">
+                                                <el-avatar :size="40" src="'/static' + item.image" @error="errorHandler" style="float: left">
+                                                    <img src="/static/img/icon/default.png"/>
+                                                </el-avatar>
+                                                <div style="height:40px;display:flex;align-items:center;text-align: left;vertical-align: middle;margin-left: 50px">{{ item.name }}</div>
+<!--                                                <a :href="'/profile/'+item.name"><img :src="'/static' + item.image" class="image" /></a>-->
+<!--                                                <div style="display: inline-block;width: 55%">-->
+<!--                                                    -->
+<!--&lt;!&ndash;                                                    <div class="bottom clearfix">&ndash;&gt;-->
+<!--&lt;!&ndash;                                                        <el-button type="text" class="button">Detail</el-button>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                    </div>&ndash;&gt;-->
+<!--                                                </div>-->
                                             </el-card>
                                         </el-col>
                                     </div>
@@ -303,10 +306,10 @@
             :before-close="handleClose">
         <div style="height: 80%;">
         <el-steps :active="editThemeActive" finish-status="success" align-center>
-            <el-step class="editThemeStep" title="Theme Info"></el-step>
-            <el-step class="editThemeStep" title="Models"></el-step>
-            <el-step class="editThemeStep" title="Data"></el-step>
-            <el-step class="editThemeStep" title="Applications"></el-step>
+            <el-step class="editThemeStep" @click.native="edit_theme('0')" title="Theme Info"></el-step>
+            <el-step class="editThemeStep" @click.native="edit_theme('1')" title="Models"></el-step>
+            <el-step class="editThemeStep" @click.native="edit_theme('2')" title="Data"></el-step>
+            <el-step class="editThemeStep" @click.native="edit_theme('3')" title="Applications"></el-step>
         </el-steps>
         <el-card :style="{display:(editThemeActive==0?'block':'none')}" shadow="never">
             <div id="RepositoryParentsPanel">

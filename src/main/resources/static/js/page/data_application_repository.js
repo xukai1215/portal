@@ -23,7 +23,7 @@ var data_items = new Vue({
                 searchText:''
             },
             list:new Array(),
-            method:'all',
+            method:'Conversion',
             users:[],
             classlist:[],
             datacount: '',
@@ -91,7 +91,15 @@ var data_items = new Vue({
         getclasslist(val){
             this.classlist=val;
         },
-        chooseCate(item){
+        changeCateColor(){
+            let eles = $('#classification').find('div')
+            for(let i=0;i<eles.length;++i) {
+                $(eles[i]).css('background-color','#fff')
+            }
+        },
+        chooseCate(item, event){
+            this.changeCateColor()
+            $(event.target).css('background-color','#d9edf7')
             this.findDto.page=1
             this.method = item
             this.findDto.method = item==='all'?'':item      // all 赋值未空进行查询
