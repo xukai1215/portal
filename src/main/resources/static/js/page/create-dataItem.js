@@ -435,7 +435,7 @@ var createDataItem = Vue.extend({
             this.$nextTick(()=>{
                 this.$refs.userDataSpace.getFilePackage();
             })
-        }
+        },
     },
     mounted() {
         //初始化的时候吧curIndex传给父组件，来控制bar的高亮显示
@@ -503,7 +503,7 @@ var createDataItem = Vue.extend({
 
                 if (currentIndex === 0) {
                     if (stepDirection === "forward") {
-                        if ($("#dataname").val().length == 0 || that.clsStr.length == 0 || $("#keywords").tagEditor('getTags')[0].tags.length == 0) {
+                        if ($("#dataname").val().length == 0 || that.clsStr.length == 0) {
                             new Vue().$message({
                                 message: 'Please complete data information!',
                                 type: 'warning',

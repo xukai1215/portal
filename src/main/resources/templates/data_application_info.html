@@ -280,30 +280,12 @@
                         <h4>Service Instance</h4>
                     </div>
                 </div>
-<!--                <el-tabs class="block_content" v-model="activeName" type="border-card" stretch="true">-->
-<!--                    <el-tab-pane label="AttributeSet" name="AttributeSet">-->
-<!--                        <table class="table table-bordered text-center" v-for="item in methodsData">-->
-<!--                            <colgroup>-->
-<!--                                <col class="col1" style="width: 40%">-->
-<!--                                <col class="col2">-->
-<!--                            </colgroup>-->
-<!--                            <tbody>-->
-<!--                            <tr>-->
-<!--                                <td style="font-weight: bold;">{{item.key}}</td>-->
-<!--                                <td colspan="2">{{item.val}}</td>-->
-<!--                            </tr>-->
-<!--                            </tbody>-->
-<!--                        </table>-->
-<!--                        <a :href="gotoTask()">-->
-<!--                            <button type="button" class="btn btn-lg btn-success" style="margin-left: 80%">Invoke-->
-<!--                            </button>-->
-<!--                        </a>-->
                 <div style="padding: 30px;margin-left:20px">
                      <el-table :data="methodsData" style="width: 100%">
-                            <el-table-column prop="name" label="name"></el-table-column>
-                            <el-table-column prop="method" label="method type"></el-table-column>
+                            <el-table-column prop="name" label="Name"></el-table-column>
+                            <el-table-column prop="method" label="Method Type"></el-table-column>
 <!--                            <el-table-column prop="serviceId" label = "suiyi" style="display: none"></el-table-column>-->
-                            <el-table-column label="operation">
+                            <el-table-column label="Operation">
                                 <template slot-scope="scope">
                                     <el-button @click = "gotoTask($event)" type="success" class="invokeBtn">
                                         Invoke
@@ -317,26 +299,19 @@
                                     >
                                  <template slot-scope="scope">
                                      <el-tag
-                                             :type="scope.row.isPortal === 'true' ? 'primary' : 'success'"
+                                             :type="scope.row.isPortal === true ? 'success' : 'info'"
                                              disable-transitions>{{scope.row.isPortal}}</el-tag>
                                  </template>
                              </el-table-column>
+<!--                             <el-table-column prop="onlineStatus" label="Online Status">-->
+<!--                                 <template slot-scope="scope">-->
+<!--                                     <el-tag-->
+<!--                                             :type="scope.row.onlineStatus === 'online' ? 'success' : 'danger'"-->
+<!--                                             disable-transitions>{{scope.row.onlineStatus}}</el-tag>-->
+<!--                                 </template>-->
+<!--                             </el-table-column>-->
                      </el-table>
                 </div>
-<!--                    </el-tab-pane>-->
-<!--                    <el-tab-pane label="Behavior" name="Behavior">-->
-<!--&lt;!&ndash;                        <el-button style="position: absolute; z-index: 900" @click=""> Show Detail&ndash;&gt;-->
-<!--&lt;!&ndash;                        </el-button>&ndash;&gt;-->
-
-<!--                    </el-tab-pane>-->
-<!--                    <el-tab-pane label="Runtime" name="Runtime">-->
-<!--                        <table id="runtime_table" class="table table-bordered text-center">-->
-
-
-<!--                            </tbody>-->
-<!--                        </table>-->
-<!--                    </el-tab-pane>-->
-<!--                </el-tabs>-->
             </div>
 
             <div id="link" class="detail_block"
@@ -364,14 +339,14 @@
                 <div class="block_content">
                     <div id="cite-text" class="width:100%">
                         <span th:if="${authorship!=''}"
-                              th:text="${authorship}+' ('+${year}+'). '+${dataApplicationInfo.name}+', Computable Model, OpenGMS, '"></span>
+                              th:text="${authorship}+' ('+${year}+'). '+${dataApplicationInfo.name}+', Data Application, OpenGMS, '"></span>
                         <span th:if="${authorship==''}"
-                              th:text="${user.name}+' ('+${year}+'). '+${dataApplicationInfo.name}+', Computable Model, OpenGMS, '">
+                              th:text="${user.name}+' ('+${year}+'). '+${dataApplicationInfo.name}+', Data Application, OpenGMS, '">
                             Tom Marvolo Riddle.(2018).Integrated stand growth model data,
                             </span>
                         <a style="word-break:break-all;"
-                           th:href="'https://geomodeling.njnu.edu.cn/computableModel/'+${dataApplicationInfo.oid}"
-                           th:text="'https://geomodeling.njnu.edu.cn/computableModel/'+${dataApplicationInfo.oid}">
+                           th:href="'https://geomodeling.njnu.edu.cn/dataApplication/'+${dataApplicationInfo.oid}"
+                           th:text="'https://geomodeling.njnu.edu.cn/dataApplication/'+${dataApplicationInfo.oid}">
                             https://geomodeling.njnu.edu.cn/computableModel/4e028983-c8c0-4d98-86cd-85fc16a00d21
                         </a>
                     </div>
@@ -434,27 +409,16 @@
             </div>
         </div>
         <div class="right-panel el-col" style="border-left: #d2d2d2 solid 1px;margin-left:-1px">
-<!--            <div id="classification0" class="detail_block">-->
-<!--                <div class="block_head">-->
-<!--                    <div class="head_text">-->
-<!--                        <h4>Category Tags</h4>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="block_content" style="margin-bottom:10px;">-->
-
-                    <!--<el-tag type="success"  v-for="iter in dataCategory" @click="clickDataItemInfo(iter.id)" style="margin-left: 10px;font-weight: bold;color: #3396ef"> {{iter.cateContent}}</el-tag>-->
-
-<!--                    <el-tag type="success" th:each="classS:${classifications}" th:text="${classS}"-->
-<!--                            style="margin: 0 10px 10px 0;font-weight: bold;color: #3396ef"></el-tag>-->
-
-<!--                </div>-->
-<!--            </div>-->
-
             <div id="Contributor" class="detail_block">
                 <div class="block_head">
-                    <div class="head_text" style="padding-left: 10px;">
+                    <div class="head_text" style="padding-left: 10px;padding-right: 15px;display: inline-flex">
                         <h4 th:if="${history!=true}">Contributor</h4>
                         <h4 th:if="${history==true}">Modifier</h4>
+                        <el-tooltip popper-class="fontsize-15" effect="light"
+                                    content="Contributor is the person who contributes the item to OpenGMS, may not be the author of the item."
+                                    placement="top">
+                            <i class="fa fa-question-circle-o" aria-hidden="true" style="margin-top:4px;"></i>
+                        </el-tooltip>
                     </div>
                 </div>
                 <div class="block_content">
@@ -484,10 +448,15 @@
             </div>
 
             <div id="Authorship" class="detail_block"
-                 th:if="${dataApplicationInfo.authorship!=null&&#lists.size(dataApplicationInfo.authorship)!=0}">
+                 >
                 <div class="block_head">
-                    <div class="head_text" style="padding-left: 10px;">
+                    <div class="head_text" style="padding-left: 10px;padding-right: 15px;display: inline-flex">
                         <h4>Authorship</h4>
+                        <el-tooltip popper-class="fontsize-15" effect="light"
+                                    content="We deeply understand that a model may be attributed to the efforts of a team. If all author information is not listed here, please click the feedback below."
+                                    placement="top">
+                            <i class="fa fa-question-circle-o" aria-hidden="true" style="margin-top:4px;"></i>
+                        </el-tooltip>
                     </div>
                 </div>
                 <div class="block_content text-center" style="padding-left:10px">
@@ -512,6 +481,17 @@
                                 </dl>
                             </div>
                         </div>
+                    </div>
+                    <div th:if="${dataApplicationInfo.authorship==null||#lists.size(dataApplicationInfo.authorship)==0}">
+                        <el-tag type="info">Authorship is unclear, you can <a href="javascript:void(0)" @click=""
+                                                                              style="text-decoration: underline">claim</a>
+                            the item.
+                        </el-tag>
+                    </div>
+                    <div th:if="${#lists.size(dataApplicationInfo.authorship)>0}">
+                        <el-tag type="info">Is authorship not correct? <a href="javascript:void(0)" @click=""
+                                                                          style="text-decoration: underline">Feed
+                            back</a></el-tag>
                     </div>
                 </div>
             </div>
@@ -561,15 +541,7 @@
     <div th:replace="fragments/footer :: footer"></div>
 
 </div>
-<!--<template th:replace="fragments/editComputableModelModule :: editComputableModelModule"></template>-->
-
 </body>
-
-<!--<script th:inline="javascript">-->
-<!--    var Behavior = [[${behavior}]];-->
-<!--    console.log([[${mdlJson}]])-->
-<!--</script>-->
-
 <script src="/static/js/common/jquery-3.3.1.min.js"></script>
 <script type="text/javascript" src="/static/js/common/jquery.tag-editor.js"></script>
 <script type="text/javascript" src="/static/js/common/jquery-steps.js"></script>

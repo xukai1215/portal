@@ -2,6 +2,8 @@ package njgis.opengms.portal.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.sun.deploy.net.HttpUtils;
+import java.net.URLEncoder;
 import njgis.opengms.portal.dao.DataApplicationDao;
 import njgis.opengms.portal.dao.DataItemDao;
 import njgis.opengms.portal.dao.DataNodeContentDao;
@@ -69,7 +71,7 @@ public class DataServerService {
             }
         }
 
-        String url = "http://"+ dataServerManager +"/fileObtain" + "?token=" + URLEncoder.encode(token) + "&id=" + id;;
+        String url = "http://"+ dataServerManager +"/fileObtain" + "?token=" + URLEncoder.encode(token) + "&id=" + id;
         String xml = MyHttpUtils.GET(url,"UTF-8",null);
 
         dataUrl = XmlTool.xml2Json(xml).getString("url");

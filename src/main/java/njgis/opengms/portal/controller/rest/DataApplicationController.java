@@ -1,5 +1,6 @@
 package njgis.opengms.portal.controller.rest;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,8 @@ import njgis.opengms.portal.dto.dataApplication.DataApplicationFindDTO;
 import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.entity.support.InvokeService;
 import njgis.opengms.portal.entity.support.Maintainer;
+import njgis.opengms.portal.entity.support.TestData;
+import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.service.DataApplicationService;
 import njgis.opengms.portal.service.DataItemService;
 import njgis.opengms.portal.service.UserService;
@@ -31,6 +34,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
@@ -48,8 +53,11 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+
+import static njgis.opengms.portal.utils.Tools.JsonToXml;
 
 
 /**
@@ -81,6 +89,9 @@ public class DataApplicationController {
     // 模仿Thematic写的data_application_center,没有写后台
     @Autowired
     ThemeDao themeDao;
+
+    @Value("${dataServerManager}")
+    private String dataServerManager;
 
     @RequestMapping(value = "/center",method = RequestMethod.GET)
     public ModelAndView getThematic() {
@@ -191,10 +202,23 @@ public class DataApplicationController {
     }
 
     @RequestMapping(value = "/getApplication/{oid}",method = RequestMethod.GET)     // 根据oid拿到条目的所有信息
-    public JsonResult getApplicationByOid(@PathVariable("oid") String oid) {
+    public JsonResult getApplicationByOid(@PathVariable("oid") String oid) throws UnsupportedEncodingException {
         DataApplication dataApplication = dataApplicationDao.findFirstByOid(oid);
         dataApplication = dataApplicationService.recordViewCount(dataApplication);
         dataApplicationDao.save(dataApplication);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("dataApplication", dataApplication);
+        List<InvokeService> invokeServices = dataApplication.getInvokeServices();
+        for (InvokeService invokeService:invokeServices){
+            String token = invokeService.getToken();
+            boolean isOnline = dataApplicationService.isOnline(token);
+            if(isOnline){
+                invokeService.setOnlineStatus("online");
+            }else {
+                invokeService.setOnlineStatus("offline");
+            }
+        }
+
         return ResultUtils.success(JSONObject.toJSON(dataApplication));
     }
 
@@ -215,6 +239,7 @@ public class DataApplicationController {
     ){
         return ResultUtils.success(dataApplicationService.searchDataByUserId(userOid,page,pagesize,asc,searchText,type));
     }
+
 
     @RequestMapping (value="/getInfo/{oid}",method = RequestMethod.GET)
     public JsonResult getInfo(@PathVariable ("oid") String oid){
@@ -275,82 +300,154 @@ public class DataApplicationController {
 //    }
 
 
+    /**
+     * 获取application信息
+     * @param dataApplicationFindDTO DTO
+     * @return application 信息
+     */
     @RequestMapping(value = "/methods/getApplication",method = RequestMethod.POST)
     JsonResult getApplication(@RequestBody DataApplicationFindDTO dataApplicationFindDTO){
         return  ResultUtils.success(dataApplicationService.searchApplication(dataApplicationFindDTO));
     }
 
+    /**
+     * 调用服务
+     * @param dataApplicationId dataApplicationId
+     * @param serviceId serviceId
+     * @param params 调用所需的参数
+     * @param request request
+     * @return invokeService
+     * @throws UnsupportedEncodingException UnsupportedEncodingException
+     * @throws MalformedURLException MalformedURLException
+     * @throws DocumentException DocumentException
+     */
     @RequestMapping(value = "/invokeMethod", method = RequestMethod.POST)
     JsonResult invokeMethod(@RequestParam(value = "dataApplicationId") String dataApplicationId,
                             @RequestParam(value = "serviceId") String serviceId,
                             @RequestParam(value = "params") String params,
+                            @RequestParam(value = "dataType") String dataType,
+                            @RequestParam(value = "selectData",  required = false) String selectData,
                             HttpServletRequest request) throws UnsupportedEncodingException, MalformedURLException, DocumentException {
         JsonResult jsonResult = new JsonResult();
         DataApplication dataApplication = dataApplicationDao.findFirstByOid(dataApplicationId);
         List<InvokeService> invokeServices = dataApplication.getInvokeServices();
-        String url = "http://111.229.14.128:8898/extPcs?dataId=";//invoke接口
-
         //门户测试解绑
-//        HttpSession session=request.getSession();
-//        if(session.getAttribute("uid")==null){
-//            return ResultUtils.error(-1,"no login");
-//        }
-//        String reqUsrId = session.getAttribute("uid").toString();
-        String reqUsrId = "33";//门户测试时注释掉
-        String token = "fcky/35Rezr+Kyazr8SRWA==";//需要存起来，拿token
-        token = URLEncoder.encode(token, "UTF-8");
+        HttpSession session=request.getSession();
+        if(session.getAttribute("uid")==null){
+            return ResultUtils.error(-1,"no login");
+        }
+        String reqUsrId = session.getAttribute("uid").toString();
+        //String reqUsrId = "33";//门户测试时注释掉
 
-        for (InvokeService invokeService : invokeServices){
-            if(invokeService.getServiceId().equals(serviceId)){
-                List<String> dataIds = invokeService.getDataIds();
-                url += dataIds.get(0);
-                url += ("&params=" + params);
-                url += ("&name=" + invokeService.getName());
-                url += ("&token=" + token);//token注意要加密  注意此处使用门户节点的token，目前先用我的token代替
-                url += ("&reqUsrOid=" + reqUsrId);
-                url += ("&pcsId=" + serviceId);
-                log.info(url);
-
-                //调用url
-                RestTemplate restTemplate = new RestTemplate();
-
-                String response = restTemplate.getForObject(url,String.class);
-                log.info(response + "");
-
-                //解析xml，获取下载链接
-                //将string串读取为xml
-                Document configXML = DocumentHelper.parseText(response);
-                //获取根元素
-                Element root = configXML.getRootElement();
-                String urlRes = root.element("uid").getText();
-
-                invokeService.setCacheUrl(urlRes);
-                jsonResult.setData(invokeService);
+        InvokeService invokeService = null;
+        for (InvokeService invokeService1 : invokeServices){
+            if(invokeService1.getServiceId().equals(serviceId)){
+                invokeService = invokeService1;
                 break;
             }
         }
+        //三种接口都需要的参数
+        String token = invokeService.getToken();//需要存起来，拿token
+        token = URLEncoder.encode(token, "UTF-8");
+
+        String response = null;
+        //具体invoke,获取结果数据
+        String url = null;
+        String urlRes = null;
+
+        if(dataType.equals("testData")){
+            //数据为测试数据
+            url = "http://111.229.14.128:8898/extPcs?dataId=";//invoke接口
+            List<String> dataIds = invokeService.getDataIds();
+            url += dataIds.get(0);
+            url += ("&params=" + params);
+            url += ("&name=" + invokeService.getName());
+            url += ("&token=" + token);//token注意要加密  注意此处使用门户节点的token，目前先用我的token代替
+            url += ("&reqUsrOid=" + reqUsrId);
+            url += ("&pcsId=" + serviceId);
+        }else if (dataType.equals("uploadData")){
+            //数据为上传到数据容器的数据
+            String contDtId = null;
+            if(selectData!=null) {
+                JSONArray jsonArray = JSONArray.parseArray(selectData);
+                log.info(jsonArray.get(0).toString());
+                JSONObject select = jsonArray.getJSONObject(0);
+                contDtId = select.getString("url").split("uid=")[1];
+                log.info(contDtId);
+            }
+            url = "http://111.229.14.128:8898/invokeDistributedPcs?token=" + token;
+            url += ("&pcsId=" + serviceId);
+            url += ("&params=" + params);
+            url += ("&contDtId=" + contDtId);
+        }else {
+            //数据为可下载数据的url  此调用为post
+            String downloadLink = null;
+            if(selectData!=null) {
+                JSONArray jsonArray = JSONArray.parseArray(selectData);
+                log.info(jsonArray.get(0).toString());
+                JSONObject select = jsonArray.getJSONObject(0);
+                downloadLink = select.getString("url");
+                log.info(downloadLink);
+            }
+            url="http://111.229.14.128:8898/invokeUrlDataPcs";
+
+            MultiValueMap<String, Object> part = new LinkedMultiValueMap<>();
+
+
+            part.add("token", token);
+            part.add("pcsId", serviceId);
+            part.add("url", downloadLink);
+            part.add("params", params);
+
+            RestTemplate restTemplate = new RestTemplate();
+
+            response = restTemplate.postForObject(url, part, String.class);
+//            urlRes = jsonObject.split("<uid>")[1];
+//            urlRes = urlRes.split("</uid>")[0];
+//            log.info(urlRes);
+        }
+        if(!dataType.equals("linkData")){
+            log.info(url);
+            //调用url
+            RestTemplate restTemplate = new RestTemplate();
+            response = restTemplate.getForObject(url,String.class);
+        }
+        log.info(response + "");
+        //解析xml，获取下载链接
+        //将string串读取为xml
+        Document configXML = DocumentHelper.parseText(response);
+        //获取根元素
+        Element root = configXML.getRootElement();
+        urlRes = root.element("uid").getText();
+
+
+        invokeService.setCacheUrl(urlRes);
+        jsonResult.setData(invokeService);
+
         dataApplication.setInvokeServices(invokeServices);
         dataApplicationDao.save(dataApplication);
         jsonResult.setMsg("suc");
         jsonResult.setCode(0);
-//        jsonResult.setData(in);
         return jsonResult;
     }
 
+    /**
+     * 展示task页面
+     * @param aid applicationId
+     * @param sid serviceId
+     * @return
+     */
     @LoginRequired
-    @RequestMapping(value = "/task/{aid}/{sid}", method = RequestMethod.GET)
-    ModelAndView getTask(@PathVariable String aid,@PathVariable String sid){
+    @RequestMapping(value = "/task/{aid}/{sid}/{token}", method = RequestMethod.GET)
+    ModelAndView getTask(@PathVariable String aid,@PathVariable String sid,@PathVariable String token){
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("data_application_task");
-
-
-
         return modelAndView;
     }
 
     /**
      * 获取xml以及paremeter
-     * @return
+     * @return 所需的xml以及运行参数
      */
     @RequestMapping(value = "/getParemeter/{aid}/{sid}", method = RequestMethod.GET)
     public JsonResult getParemeter(@PathVariable String aid, @PathVariable String sid) throws IOException, DocumentException {
@@ -367,8 +464,22 @@ public class DataApplicationController {
         }
         JSONObject jsonObject = new JSONObject();
         if (!invokeService.getIsPortal()){
-//            String xml = invokeService.getParams();
-//            dataApplicationService.parseXML(jsonObject,xml);
+            String token = invokeService.getToken();//需要存起来，拿token
+            token = URLEncoder.encode(token, "UTF-8");
+            String url = "http://" + dataServerManager + "/capability?id=" + invokeService.getServiceId();
+            url += ("&type=" + invokeService.getMethod());
+            url += ("&token=" + token);
+            log.info(url);
+
+            //调用url
+            RestTemplate restTemplate = new RestTemplate();
+
+            String response = restTemplate.getForObject(url,String.class);
+            Document document = DocumentHelper.parseText(response);
+            Element root = document.getRootElement();
+            String xml = root.element("metaDetail").element("Method").asXML();
+            log.info(xml);
+            dataApplicationService.parseXML(jsonObject,xml);
         }else {
             String packagePath = dataApplication.getPackagePath();
             File file = new File(packagePath);
@@ -387,19 +498,7 @@ public class DataApplicationController {
                     inputStream.read(bytes);
                     inputStream.close();
                     String xml = new String(bytes, StandardCharsets.UTF_8);
-                    // dataApplicationService.parseXML(jsonObject,xml);
-//
-//                    //解析xml  利用Iterator获取xml的各种子节点
-//                    Document document = DocumentHelper.parseText(xml);
-//                    Element root = document.getRootElement();
-//                    ArrayList<String> parameters = new ArrayList<>();
-//                    List<Element> pas = root.element("Parameter").elements();
-//                    for (Element e : pas) {
-//                        log.info(e.attributeValue("name"));
-//                        parameters.add(e.attributeValue("name"));
-//                    }
-//                    jsonObject.put("parameters", parameters);
-//                    jsonObject.put("xml", xml);
+                     dataApplicationService.parseXML(jsonObject,xml);
                     break;
                 }
             }
@@ -418,7 +517,7 @@ public class DataApplicationController {
      * @return
      */
     @RequestMapping(value = "/getServiceInfo/{aid}/{sid}", method = RequestMethod.GET)
-    public JsonResult getServiceInfo(@PathVariable String aid,@PathVariable String sid){
+    public JsonResult getServiceInfo(@PathVariable String aid,@PathVariable String sid) throws UnsupportedEncodingException {
         JsonResult jsonResult = new JsonResult();
         DataApplication dataApplication = dataApplicationDao.findFirstByOid(aid);
         if(dataApplication == null){
@@ -432,12 +531,76 @@ public class DataApplicationController {
         for (InvokeService invokeService1:invokeServices){
             if(invokeService1.getServiceId().equals(sid)){
                 jsonObject.put("service", invokeService1);
+                String token = invokeService1.getToken();
+                jsonObject.put("onlineStatus", dataApplicationService.isOnline(token));
                 break;
             }
         }
         jsonObject.put("application", dataApplication);
 
+
         jsonResult.setData(jsonObject);
+        return jsonResult;
+    }
+
+    /**
+     * data_application_info页面获取节点在线状态
+     * @param token 服务token
+     * @return 在线状态
+     */
+    @RequestMapping(value = "/getOnlineStatus",method = RequestMethod.POST)
+    public JsonResult getOnlineStatus(@RequestParam(value = "token") List<String> token) throws UnsupportedEncodingException {
+        JsonResult jsonResult = new JsonResult();
+        String[] status = new String[token.size()];//java 数组有序
+        int i=0;
+        for (String token1:token) {
+            boolean isOnline = dataApplicationService.isOnline(token1);
+            if(isOnline){
+                status[i++] = "online";
+            }else {
+                status[i++] = "offline";
+            }
+        }
+        jsonResult.setData(status);
+        return jsonResult;
+    }
+
+    /**
+     * 上传测试数据
+     * @param files 上传的文件
+     * @param uploadName 上传的文件名称
+     * @param userName userName
+     * @param serverNode serveNode
+     * @param origination origination
+     * @return 数据可下载的oid
+     */
+    @RequestMapping(value = "/uploadData", method = RequestMethod.POST)
+    public JsonResult uploadData(@RequestParam("ogmsdata") MultipartFile[] files,
+                                 @RequestParam("name")String uploadName,
+                                 @RequestParam("userId")String userName,
+                                 @RequestParam("serverNode")String serverNode,
+                                 @RequestParam("origination")String origination){
+        JsonResult jsonResult = new JsonResult();
+        MultiValueMap<String, Object> part = new LinkedMultiValueMap<>();
+
+        for(int i=0;i<files.length;i++)
+            part.add("ogmsdata", files[i].getResource());
+        part.add("name", uploadName);
+        part.add("userId", userName);
+        part.add("serverNode", serverNode);
+        part.add("origination", origination);
+        String url="http://"+ "111.229.14.128:8899/data";
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        JSONObject jsonObject = restTemplate.postForObject(url, part, JSONObject.class);
+
+        if(jsonObject.getIntValue("code") == -1){
+            throw new MyException("远程服务出错");
+        }
+
+        jsonResult.setData(jsonObject);
+        log.info(jsonObject+"");
         return jsonResult;
     }
 }
