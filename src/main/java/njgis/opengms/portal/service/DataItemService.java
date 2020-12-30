@@ -735,7 +735,7 @@ public class DataItemService {
         }
 
 
-        Sort sort = new Sort(dataItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
+        Sort sort = new Sort(dataItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, dataItemFindDTO.getSortField());
 
         Page pageResult = new PageImpl(flist, new PageRequest(dataItemFindDTO.getPage(), dataItemFindDTO.getPageSize(), sort), result.size());
 
@@ -885,7 +885,7 @@ public class DataItemService {
 
         JSONObject result = new JSONObject();
         result.put("list", dataItems);
-        result.put("total", count);
+        result.put("total", dataItemPage.getTotalElements());
         result.put("pages", dataItemPage.getTotalPages());
         result.put("users", users);
 

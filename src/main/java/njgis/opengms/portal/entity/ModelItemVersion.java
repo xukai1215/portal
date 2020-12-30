@@ -25,7 +25,7 @@ public class ModelItemVersion extends Version {
     int readStatus;
 
     Long verNumber;//版本号
-    int verStatus;//版本状态
+    int verStatus;//版本状态 0:待审核 -1:被拒绝 2:通过 1:原始版本
 
     List<String> classifications;//
     List<String> classifications2;//

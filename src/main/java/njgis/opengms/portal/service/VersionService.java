@@ -20,7 +20,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -110,6 +109,9 @@ public class VersionService {
 
     @Autowired
     DataCategorysDao dataCategorysDao;
+
+    @Autowired
+    CommonService commonService;
 
 
     @Value("${resourcePath}")
@@ -298,83 +300,59 @@ public class VersionService {
     public ModelAndView getModelItemHistoryPage(String id){
         //条目信息
         ModelItemVersion modelItemVersion=modelItemVersionDao.findFirstByOid(id);
+
         //类
-        JSONArray classResult=new JSONArray();
-
-        List<String> classifications = modelItemVersion.getClassifications();
-        for(int i=0;i<classifications.size();i++){
-
-            JSONArray array=new JSONArray();
-            String classId=classifications.get(i);
-
-            do{
-                Classification classification=classificationService.getByOid(classId);
-                array.add(classification.getNameEn());
-                classId=classification.getParentId();
-            }while(classId!=null);
-
-            JSONArray array1=new JSONArray();
-            for(int j=array.size()-1;j>=0;j--){
-                array1.add(array.getString(j));
-            }
-
-            classResult.add(array1);
-
+        JSONArray classResult = new JSONArray();
+        if(modelItemVersion.getClassifications()!=null) {
+            classResult = commonService.getClassifications(modelItemVersion.getClassifications());
         }
-        System.out.println(classResult);
+        JSONArray class2Result = new JSONArray();
+        if(modelItemVersion.getClassifications2()!=null) {
+            class2Result = commonService.getClassifications2(modelItemVersion.getClassifications2());
+        }
 
         //详情页面
-        String detailResult;
-        String model_detailDesc=modelItemVersion.getDetail();
-        int num=model_detailDesc.indexOf("upload/document/");
-        if(num==-1||num>20){
-            detailResult=model_detailDesc;
-        }
-        else {
-            if(model_detailDesc.indexOf("/")==0){
-                model_detailDesc.substring(1);
-            }
-            //model_detailDesc = model_detailDesc.length() > 0 ? model_detailDesc.substring(1) : model_detailDesc;
-            String filePath = resourcePath.substring(0,resourcePath.length()-7) +"/" + model_detailDesc;
-            try {
-                filePath = java.net.URLDecoder.decode(filePath, "utf-8");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-            if (model_detailDesc.length() > 0) {
-                File file = new File(filePath);
-                if (file.exists()) {
-                    StringBuilder detail = new StringBuilder();
-                    try {
-                        FileInputStream fileInputStream = new FileInputStream(file);
-                        InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, "UTF-8");
-                        BufferedReader br = new BufferedReader(inputStreamReader);
-                        String line;
-                        while ((line = br.readLine()) != null) {
-                            line = line.replaceAll("<h1", "<h1 style='font-size:16px;margin-top:0'");
-                            line = line.replaceAll("<h2", "<h2 style='font-size:16px;margin-top:0'");
-                            line = line.replaceAll("<h3", "<h3 style='font-size:16px;margin-top:0'");
-                            line = line.replaceAll("<p", "<p style='font-size:14px;text-indent:2em'");
-                            detail.append(line);
-                        }
-                        br.close();
-                        inputStreamReader.close();
-                        fileInputStream.close();
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    detailResult = detail.toString();
-                } else {
-                    detailResult = model_detailDesc;
+//        String detailResult;
+//        String model_detailDesc=modelInfo.getDetail();
+//        detailResult = commonService.getDetail(model_detailDesc);
+
+        //排序
+        List<Localization> locals = modelItemVersion.getLocalizationList();
+        Collections.sort(locals);
+
+        String detailResult = "";
+        String detailLanguage = "";
+        //先找中英文描述
+        for(Localization localization:locals){
+            String local = localization.getLocalCode();
+            if(local.equals("en")||local.equals("zh")||local.contains("en-")||local.contains("zh-")){
+                String localDesc = localization.getDescription();
+                if(localDesc!=null&&!localDesc.equals("")) {
+                    detailLanguage = localization.getLocalName();
+                    detailResult = localization.getDescription();
+                    break;
                 }
-            } else {
-                detailResult = model_detailDesc;
             }
         }
+        //如果没有中英文，则使用其他语言描述
+        if(detailResult.equals("")){
+            for(Localization localization:locals){
+                String localDesc = localization.getDescription();
+                if(localDesc!=null&&!localDesc.equals("")) {
+                    detailLanguage = localization.getLocalName();
+                    detailResult = localization.getDescription();
+                    break;
+                }
+            }
+        }
+
+        //语言列表
+        List<String> languageList = new ArrayList<>();
+        for(Localization local:locals){
+            languageList.add(local.getLocalName());
+        }
+
+
 
         //时间
         Date date=modelItemVersion.getModifyTime();
@@ -402,15 +380,19 @@ public class VersionService {
 
 
         ModelAndView modelAndView=new ModelAndView();
-        modelAndView.setViewName("history/modelItemHistory");
+        modelAndView.setViewName("model_item_info");
         modelAndView.addObject("modelInfo",modelItemVersion);
         modelAndView.addObject("metaKeywords",meta_keywords);
         modelAndView.addObject("classifications",classResult);
+        modelAndView.addObject("classifications2", class2Result);
+        modelAndView.addObject("detailLanguage",detailLanguage);
+        modelAndView.addObject("languageList", languageList);
         modelAndView.addObject("detail",detailResult);
         modelAndView.addObject("date",dateResult);
         modelAndView.addObject("year",calendar.get(Calendar.YEAR));
         modelAndView.addObject("user", userJson);
         modelAndView.addObject("references", JSONArray.parseArray(JSON.toJSONString(modelItemVersion.getReferences())));
+        modelAndView.addObject("history",true);
 
         return modelAndView;
     }

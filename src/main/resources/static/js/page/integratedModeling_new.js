@@ -1783,7 +1783,7 @@ var vue = new Vue({
                                 success: (result) => {
                                     if (result.code == 0) {
 
-                                        this.currentEvent.value = "http://" + ipAndPort + "/data?uid=" + result.data.sourceStoreId;
+                                        this.currentEvent.value = "http://" + ipAndPort + "/data/" + result.data.sourceStoreId;
                                         this.currentEvent.fileName = result.data.fileName;
                                         this.currentEvent.suffix = result.data.suffix;
 
@@ -3149,7 +3149,7 @@ var vue = new Vue({
                                 success: (result) => {
                                     if (result.code == 0) {
 
-                                        this.currentEvent.value = "http://" + ipAndPort + "/data?uid=" + result.data.sourceStoreId;
+                                        this.currentEvent.value = "http://" + ipAndPort + "/data/" + result.data.sourceStoreId;
                                         this.currentEvent.fileName = result.data.fileName;
                                         this.currentEvent.suffix = result.data.suffix;
 

@@ -1231,7 +1231,7 @@ public class ComputableModelService {
 
         int page = modelItemFindDTO.getPage();
         int pageSize = modelItemFindDTO.getPageSize();
-        Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
+        Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, modelItemFindDTO.getSortField());
         Pageable pageable = PageRequest.of(page, pageSize, sort);
         User user = userDao.findFirstByUserId(userId);
         Page<ComputableModel> modelItemPage = Page.empty();
@@ -1259,7 +1259,7 @@ public class ComputableModelService {
         String searchText = modelItemFindDTO.getSearchText();
         //List<String> classifications=modelItemFindDTO.getClassifications();
         //默认以viewCount排序
-        Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
+        Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, modelItemFindDTO.getSortField());
         Pageable pageable = PageRequest.of(page, pageSize, sort);
 
         Page<ComputableModel> computableModelPage;
@@ -1293,7 +1293,7 @@ public class ComputableModelService {
         String searchText = modelItemFindDTO.getSearchText();
         //List<String> classifications=modelItemFindDTO.getClassifications();
         //默认以viewCount排序
-        Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
+        Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, modelItemFindDTO.getSortField());
         Pageable pageable = PageRequest.of(page, pageSize, sort);
 
         Page<ComputableModel> computableModelPage;

@@ -6,6 +6,7 @@ import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.dto.version.VersionDTO;
 import njgis.opengms.portal.entity.*;
+import njgis.opengms.portal.entity.support.Localization;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.service.VersionService;
 import njgis.opengms.portal.utils.ResultUtils;
@@ -151,7 +152,7 @@ public class VersionRestController {
                     jsonObject.put("oid", modelItemVersion.getOid());
                     User user = userService.getByUid(modelItemVersion.getModifier());
                     jsonObject.put("userName", user.getName());
-                    jsonObject.put("userOid", user.getOid());
+                    jsonObject.put("userId", user.getUserId());
 
                     resultList.add(jsonObject);
                 }
@@ -176,7 +177,7 @@ public class VersionRestController {
                     jsonObject.put("oid", conceptualModelVersion.getOid());
                     User user = userService.getByUid(conceptualModelVersion.getModifier());
                     jsonObject.put("userName", user.getName());
-                    jsonObject.put("userOid", user.getOid());
+                    jsonObject.put("userId", user.getUserId());
 
                     resultList.add(jsonObject);
                 }
@@ -200,7 +201,7 @@ public class VersionRestController {
                     jsonObject.put("oid", logicalModelVersion.getOid());
                     User user = userService.getByUid(logicalModelVersion.getModifier());
                     jsonObject.put("userName", user.getName());
-                    jsonObject.put("userOid", user.getOid());
+                    jsonObject.put("userId", user.getUserId());
 
                     resultList.add(jsonObject);
                 }
@@ -224,7 +225,7 @@ public class VersionRestController {
                     jsonObject.put("oid", computableModelVersion.getOid());
                     User user = userService.getByUid(computableModelVersion.getModifier());
                     jsonObject.put("userName", user.getName());
-                    jsonObject.put("userOid", user.getOid());
+                    jsonObject.put("userId", user.getUserId());
 
                     resultList.add(jsonObject);
                 }
@@ -248,7 +249,7 @@ public class VersionRestController {
                     jsonObject.put("oid", conceptVersion.getOid());
                     User user = userService.getByUid(conceptVersion.getModifier());
                     jsonObject.put("userName", user.getName());
-                    jsonObject.put("userOid", user.getOid());
+                    jsonObject.put("userId", user.getUserId());
 
                     resultList.add(jsonObject);
                 }
@@ -272,7 +273,7 @@ public class VersionRestController {
                     jsonObject.put("oid", templateVersion.getOid());
                     User user = userService.getByUid(templateVersion.getModifier());
                     jsonObject.put("userName", user.getName());
-                    jsonObject.put("userOid", user.getOid());
+                    jsonObject.put("userId", user.getUserId());
 
                     resultList.add(jsonObject);
                 }
@@ -296,7 +297,7 @@ public class VersionRestController {
                     jsonObject.put("oid", spatialReferenceVersion.getOid());
                     User user = userService.getByUid(spatialReferenceVersion.getModifier());
                     jsonObject.put("userName", user.getName());
-                    jsonObject.put("userOid", user.getOid());
+                    jsonObject.put("userId", user.getUserId());
 
                     resultList.add(jsonObject);
                 }
@@ -320,7 +321,7 @@ public class VersionRestController {
                     jsonObject.put("oid", unitVersion.getOid());
                     User user = userService.getByUid(unitVersion.getModifier());
                     jsonObject.put("userName", user.getName());
-                    jsonObject.put("userOid", user.getOid());
+                    jsonObject.put("userId", user.getUserId());
 
                     resultList.add(jsonObject);
                 }
@@ -1812,6 +1813,19 @@ public class VersionRestController {
         }
 
         return ResultUtils.success(result);
+    }
+
+    @RequestMapping(value = "/languageDetail/modelItem", method = RequestMethod.GET)
+    JsonResult getModelDetailByLanguage(@RequestParam(value="oid") String oid, @RequestParam(value="language") String language){
+
+        ModelItemVersion modelItemVersion = modelItemVersionDao.findFirstByOid(oid);
+        List<Localization> localizationList = modelItemVersion.getLocalizationList();
+        for(Localization localization : localizationList){
+            if(localization.getLocalName().equals(language)){
+                return ResultUtils.success(localization.getDescription());
+            }
+        }
+        return ResultUtils.error(-1,"language does not exist in this model item.");
     }
 
     @RequestMapping(value = "/modelItem/{id}", method = RequestMethod.GET)

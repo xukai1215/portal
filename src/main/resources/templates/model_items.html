@@ -65,8 +65,10 @@
 <div id="app" v-cloak>
     <div th:replace="fragments/navbar :: unlog"></div>
 
+
     <div class="clearfix" style="margin-bottom: 40px;">
         <div class="guide" title="guide" @click="showDriver"></div>
+        <el-backtop target="#app"></el-backtop>
         <div class="mainContent">
 
             <div class="el-row">
@@ -104,17 +106,29 @@
                 <span style="font-size: 20px;color:#444">Model Classifications</span>
                 </div>
 
-                <el-tree
-                    id="tree3"
-                    ref="tree3"
-                    :data="treeData2"
-                    :highlight-current="true"
-                    node-key="id"
-                    :default-expanded-keys="[1,9,30,14,19,24]"
-                    :current-node-key="24"
-                    @current-change="handleCurrentChange2"
-                    :props="defaultProps">
-                </el-tree>
+                    <el-tree v-if="queryType=='normal'"
+                        id="treeNew"
+                        ref="treeNew"
+                        :data="treeData2"
+                        :highlight-current="true"
+                        node-key="id"
+                        :default-expanded-keys="[1,9,30,14,19,24]"
+                        :current-node-key="24"
+                        @current-change="handleCurrentChange2"
+                        :props="defaultProps">
+                    </el-tree>
+
+                    <el-tree v-if="queryType=='advanced'"
+                            id="treeAdvance"
+                            ref="treeAdvance"
+                            :data="treeData2"
+                            :highlight-current="true"
+                            node-key="id"
+                            :default-expanded-keys="[1,9,30,14,19,24]"
+                             @check-change="handleCheckChange"
+                            :show-checkbox="true"
+                            :props="defaultProps">
+                    </el-tree>
 
                 </el-card>
             </div>
@@ -124,82 +138,43 @@
                         <input id="searchBox" type="text" placeholder="Model Item Name..." v-model="searchText">
                         <button @click="search()"><i class="glyphicon glyphicon-search"></i> Search</button>
                         <!--<a id="expend" href="javascript:void(0)" class="fa fa-angle-double-down fa-3x"-->
-                           <!--aria-hidden="true"></a>-->
+                           <!--aria-hidden="true" ></a>-->
                     </div>
                 </div>
 
                 <div class="advancedSearch" style="margin-top:30px;position:relative;min-height:1px;display: none;">
                     <div class="criteriaPanel">
                         <div class="lines">
-                            <div class="line">
-                            <span class="tools col-md-1 pull-left" style="padding:0px">
-                                 <a class="fa fa-plus" style="" href="javascript:;"></a>
-                                 <a class="fa fa-minus" style="" href="javascript:;"></a>
-                            </span>
-
-                                <div class="input-group col-md-5 pull-left">
-                                    <div class="input-group-btn">
-                                        <button type="button" class="btn btn-default dropdown-toggle prop"
-                                                data-toggle="dropdown">Model Name<span class="caret"></span></button>
-                                        <ul class="dropdown-menu">
-                                            <li><a class="propName" href="javascript:void(0);">Model Name</a></li>
-                                            <li><a class="propName" href="javascript:void(0);">Keyword</a></li>
-                                            <li><a class="propName" href="javascript:void(0);">Overview</a></li>
-                                            <li><a class="propName" href="javascript:void(0);">Description</a></li>
-                                            <li><a class="propName" href="javascript:void(0);">Provider</a></li>
-                                            <li><a class="propName" href="javascript:void(0);">Reference</a></li>
-                                        </ul>
-                                    </div>
-                                    <input type="text" class="form-control value">
+                            <section v-for="(condition, index) in queryConditions" style="margin-bottom:10px;padding-left:80px;padding-right:36px;">
+                                <div style="width:80px;margin-left:-80px;float:left;">
+                                    <el-select v-if="index > 0" v-model="condition.connector" placeholder="Connector">
+                                        <el-option
+                                                v-for="con in connectors"
+                                                :key="con"
+                                                :label="con"
+                                                :value="con">
+                                        </el-option>
+                                    </el-select>
+                                    <el-button v-if="index === 0" type="success" @click="conditionAppend">+ Add</el-button>
                                 </div>
-                                <div class="input-group col-md-1 pull-left">
-                                    <select class="form-control connect">
-                                        <option>AND</option>
-                                        <option>OR</option>
-                                        <option>NOT</option>
-                                    </select>
+                                <div style="width:100%;display:inline-block;padding:0 10px;">
+                                    <el-input v-model="condition.content">
+                                        <el-select v-model="condition.queryField" slot="prepend" style="width:120px;">
+                                            <el-option
+                                                    v-for="qf in queryFields"
+                                                    :key="qf"
+                                                    :label="qf"
+                                                    :value="qf">
+                                            </el-option>
+                                        </el-select>
+                                    </el-input>
                                 </div>
-                                <div class="input-group col-md-5 pull-left">
-                                    <input type="text" class="form-control value">
+                                <div style="width:36px;margin-right:-36px;margin-top:2px;display:inline-block;float:right;">
+                                    <el-button v-if="index > 0" style="padding:10px;" type="danger" icon="el-icon-close" plain></el-button>
                                 </div>
 
-                            </div>
-                            <div class="line">
-                                <div class="input-group col-md-1 pull-left">
-                                    <select class="form-control connect">
-                                        <option>AND</option>
-                                        <option>OR</option>
-                                        <option>NOT</option>
-                                    </select>
+                            </section>
 
-                                </div>
-                                <div class="input-group col-md-5 pull-left">
-                                    <div class="input-group-btn">
-                                        <button type="button" class="btn btn-default dropdown-toggle prop"
-                                                data-toggle="dropdown">Keyword<span class="caret"></span></button>
-                                        <ul class="dropdown-menu">
-                                            <li><a class="propName" href="javascript:void(0);">Model Name</a></li>
-                                            <li><a class="propName" href="javascript:void(0);">Keyword</a></li>
-                                            <li><a class="propName" href="javascript:void(0);">Overview</a></li>
-                                            <li><a class="propName" href="javascript:void(0);">Description</a></li>
-                                            <li><a class="propName" href="javascript:void(0);">Provider</a></li>
-                                            <li><a class="propName" href="javascript:void(0);">Reference</a></li>
-                                        </ul>
-                                    </div>
-                                    <input type="text" class="form-control value">
-                                </div>
-                                <div class="input-group col-md-1 pull-left">
-                                    <select class="form-control connect">
-                                        <option>AND</option>
-                                        <option>OR</option>
-                                        <option>NOT</option>
-                                    </select>
-                                </div>
-                                <div class="input-group col-md-5 pull-left">
-
-                                    <input type="text" class="form-control value">
-                                </div>
-                            </div>
                         </div>
                         <span style="vertical-align: -webkit-baseline-middle;font-weight: bold;">Advanced Search with Multiple Query Conditions </span>
                         <div class="line pull-right">

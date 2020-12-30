@@ -88,6 +88,9 @@
                     prop="userName"
                     label="Modifier"
                     >
+                <template slot-scope="scope">
+                    <a :href="'/profile/'+scope.row.userId" target="_blank">{{scope.row.userName}}</a>
+                </template>
             </el-table-column>
 
             <el-table-column

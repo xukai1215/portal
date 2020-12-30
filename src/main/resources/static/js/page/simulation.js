@@ -719,7 +719,7 @@ var vue = new Vue({
                             data.file_name += "." + data.suffix;
 
                             if (event == null) {
-                                this.$set(this.eventChoosing, 'url', "http://" + ipAndPort + "/data?uid=" + data.source_store_id);
+                                this.$set(this.eventChoosing, 'url', "http://" + ipAndPort + "/data/" + data.source_store_id);
                                 this.$set(this.eventChoosing, 'tag', data.label)
                                 this.$set(this.eventChoosing, 'suffix', data.suffix)
 
@@ -732,7 +732,7 @@ var vue = new Vue({
                                 $("#download_" + this.eventChoosing.eventId).css("display", "block");
                             } else {
 
-                                this.$set(event, 'url', "http://" + ipAndPort + "/data?uid=" + data.source_store_id);
+                                this.$set(event, 'url', "http://" + ipAndPort + "/data/" + data.source_store_id);
                                 this.$set(event, 'tag', data.label)
                                 this.$set(event, 'suffix', data.suffix)
 

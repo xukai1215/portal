@@ -8,7 +8,6 @@
     <title>Create Computable Model | OpenGMS</title>
 
 
-
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/base/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/font-awesome/css/font-awesome.min.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/fabric/fabric.min.css"/>
@@ -20,7 +19,7 @@
     <link rel="stylesheet" href="/static/css/components/file-manager.css">
     <link rel="stylesheet" href="/static/css/other/page.css">
 
-<!--    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/page/create-conceptual-model.css"/>-->
+    <!--    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/page/create-conceptual-model.css"/>-->
     <link rel="stylesheet" type="text/css" media="screen" href="/static/element-ui/theme-chalk/index.css"/>
     <link rel="stylesheet" href="/static/css/base/universal.css">
     <link rel="stylesheet" type="text/css" href="/static/css/page/user_space.css">
@@ -64,7 +63,8 @@
                              style="max-width: 100%;margin: 15px 10px;">
                         <div class="flexRowContainer flexColCenter" style="margin-left: 18px">
                             <img class="square_40" style="margin-top: 10px" src="../../../static/img/model/model.png">
-                            <h3 style="margin-left: 10px"><a class="itemTitle" href="/user/userSpace#/model">Model </a><span
+                            <h3 style="margin-left: 10px"><a class="itemTitle"
+                                                             href="/user/userSpace#/model">Model </a><span
                                     id="subRteTitle"></span></h3>
                         </div>
                         <draft-box ref="draftBox"
@@ -105,15 +105,28 @@
                                                                 <span class="xing">* </span>Status
                                                             </label>
                                                             <div class="input-group col-md-5">
-                                                                <el-radio-group v-model="computableModel.status" size="medium">
-                                                                    <el-tooltip popper-class="fontsize-15" effect="light" content="This item can be retrieved, shared and edited." placement="top">
-                                                                        <el-radio-button label="Public"></el-radio-button>
+                                                                <el-radio-group v-model="computableModel.status"
+                                                                                size="medium">
+                                                                    <el-tooltip popper-class="fontsize-15"
+                                                                                effect="light"
+                                                                                content="This item can be retrieved, shared and edited."
+                                                                                placement="top">
+                                                                        <el-radio-button
+                                                                                label="Public"></el-radio-button>
                                                                     </el-tooltip>
-                                                                    <el-tooltip popper-class="fontsize-15" class="item" effect="light" content="This item can be retrieved and shared, can ONLY be edited by creator." placement="top">
-                                                                        <el-radio-button label="Discoverable"></el-radio-button>
+                                                                    <el-tooltip popper-class="fontsize-15" class="item"
+                                                                                effect="light"
+                                                                                content="This item can be retrieved and shared, can ONLY be edited by creator."
+                                                                                placement="top">
+                                                                        <el-radio-button
+                                                                                label="Discoverable"></el-radio-button>
                                                                     </el-tooltip>
-                                                                    <el-tooltip popper-class="fontsize-15" class="item" effect="light" content="This item can NOT be retrieved and shared, can ONLY be edited by creator." placement="top">
-                                                                        <el-radio-button label="Private"></el-radio-button>
+                                                                    <el-tooltip popper-class="fontsize-15" class="item"
+                                                                                effect="light"
+                                                                                content="This item can NOT be retrieved and shared, can ONLY be edited by creator."
+                                                                                placement="top">
+                                                                        <el-radio-button
+                                                                                label="Private"></el-radio-button>
                                                                     </el-tooltip>
 
                                                                 </el-radio-group>
@@ -128,7 +141,9 @@
                                                             </label>
                                                             <div class="input-group col-md-5">
 
-                                                                <el-button type="primary" @click="openModelItemDialog()" style="margin-right:10px">Select</el-button>
+                                                                <el-button type="primary" @click="openModelItemDialog()"
+                                                                           style="margin-right:10px">Select
+                                                                </el-button>
                                                                 {{computableModel.bindModelItem}}
                                                             </div>
                                                         </div>
@@ -140,7 +155,8 @@
                                                             </label>
                                                             <div class="input-group col-md-5">
                                                                 <input type="text" class="form-control"
-                                                                       v-model="computableModel.name" @input="onInputName">
+                                                                       v-model="computableModel.name"
+                                                                       @input="onInputName">
                                                             </div>
                                                         </div>
 
@@ -158,61 +174,89 @@
                                                             <label class="control-label col-lg-2 col-md-3 col-md-offset-2">
                                                                 <span class="xing">* </span>Content Type
                                                             </label>
-                                                            <div class="input-group col-md-5" style="padding:5px 0;font-size:20px">
+                                                            <div class="input-group col-md-5"
+                                                                 style="padding:5px 0;font-size:20px">
 
-                                                                <el-radio-group v-model="computableModel.contentType" @change="contentTypeChange">
-                                                                    <el-tooltip class="item" effect="light" content="Using a OpenGMS Model-Service Package to create model service." placement="right">
-                                                                        <el-radio style="margin-bottom:10px;" label="Package">OpenGMS Model-Service Package</el-radio>
+                                                                <el-radio-group v-model="computableModel.contentType"
+                                                                                @change="contentTypeChange">
+                                                                    <el-tooltip class="item" effect="light"
+                                                                                content="Using a OpenGMS Model-Service Package to create model service."
+                                                                                placement="right">
+                                                                        <el-radio style="margin-bottom:10px;"
+                                                                                  label="Package">OpenGMS Model-Service
+                                                                            Package
+                                                                        </el-radio>
                                                                     </el-tooltip>
                                                                     <br/>
-                                                                    <el-tooltip class="item" effect="light" content="Using a deployed OpenGMS Model-Service Package's MD5 to create model service" placement="right">
-                                                                        <el-radio style="margin-bottom:10px;" label="MD5">MD5</el-radio>
+                                                                    <el-tooltip class="item" effect="light"
+                                                                                content="Using a deployed OpenGMS Model-Service Package's MD5 to create model service"
+                                                                                placement="right">
+                                                                        <el-radio style="margin-bottom:10px;"
+                                                                                  label="MD5">MD5
+                                                                        </el-radio>
                                                                     </el-tooltip>
                                                                     <br/>
-                                                                    <el-tooltip class="item" effect="light" content="I have the model's source code." placement="right">
-                                                                        <el-radio style="margin-bottom:10px;" label="Code">Source Code</el-radio>
+                                                                    <el-tooltip class="item" effect="light"
+                                                                                content="I have the model's source code."
+                                                                                placement="right">
+                                                                        <el-radio style="margin-bottom:10px;"
+                                                                                  label="Code">Source Code
+                                                                        </el-radio>
                                                                     </el-tooltip>
                                                                     <br/>
-                                                                    <el-tooltip class="item" effect="light" content="I have the model's executable library." placement="right">
-                                                                        <el-radio style="margin-bottom:10px;" label="Library">Executable Library</el-radio>
+                                                                    <el-tooltip class="item" effect="light"
+                                                                                content="I have the model's executable library."
+                                                                                placement="right">
+                                                                        <el-radio style="margin-bottom:10px;"
+                                                                                  label="Library">Executable Library
+                                                                        </el-radio>
                                                                     </el-tooltip>
                                                                     <br/>
-                                                                    <el-tooltip class="item" effect="light" content="The model have been deployed at third-party website as a service." placement="right">
-                                                                        <el-radio style="margin-bottom:10px;" label="Service">Third-party Web-Service Link</el-radio>
+                                                                    <el-tooltip class="item" effect="light"
+                                                                                content="The model have been deployed at third-party website as a service."
+                                                                                placement="right">
+                                                                        <el-radio style="margin-bottom:10px;"
+                                                                                  label="Service">Third-party
+                                                                            Web-Service Link
+                                                                        </el-radio>
                                                                     </el-tooltip>
                                                                     <br/>
-                                                                    <el-tooltip class="item" effect="light" content="The model can be downloaded at third-party website." placement="right">
-                                                                        <el-radio style="margin-bottom:10px;" label="Link">Downloadable Link</el-radio>
+                                                                    <el-tooltip class="item" effect="light"
+                                                                                content="The model can be downloaded at third-party website."
+                                                                                placement="right">
+                                                                        <el-radio style="margin-bottom:10px;"
+                                                                                  label="Link">Downloadable Link
+                                                                        </el-radio>
                                                                     </el-tooltip>
                                                                 </el-radio-group>
 
                                                                 <!--<label style="margin-right: 20px; font-size: 20px">-->
-                                                                    <!--<input type="radio" name="ContentType"-->
-                                                                           <!--value="Package"-->
-                                                                           <!--checked="checked"/>-->
-                                                                    <!--<label style="float:left; margin-left: 5px;">Model Service Package</label>-->
+                                                                <!--<input type="radio" name="ContentType"-->
+                                                                <!--value="Package"-->
+                                                                <!--checked="checked"/>-->
+                                                                <!--<label style="float:left; margin-left: 5px;">Model Service Package</label>-->
                                                                 <!--</label>-->
                                                                 <!--<label style="margin-right: 20px; font-size: 20px">-->
-                                                                    <!--<input type="radio" name="ContentType"-->
-                                                                           <!--value="Code"/>-->
-                                                                    <!--<label style="float:left; margin-left: 5px;">Source Code</label>-->
+                                                                <!--<input type="radio" name="ContentType"-->
+                                                                <!--value="Code"/>-->
+                                                                <!--<label style="float:left; margin-left: 5px;">Source Code</label>-->
                                                                 <!--</label>-->
                                                                 <!--<label style="margin-right: 20px; font-size: 20px">-->
-                                                                    <!--<input type="radio" name="ContentType"-->
-                                                                           <!--value="Library"/>-->
-                                                                    <!--<label style="float:left; margin-left: 5px;">Library</label>-->
+                                                                <!--<input type="radio" name="ContentType"-->
+                                                                <!--value="Library"/>-->
+                                                                <!--<label style="float:left; margin-left: 5px;">Library</label>-->
                                                                 <!--</label>-->
                                                                 <!--<br/>-->
 
                                                                 <!--<label style="margin-right: 20px; font-size: 20px">-->
-                                                                    <!--<input type="radio" name="ContentType"-->
-                                                                           <!--value="Service"/>-->
-                                                                    <!--<label style="float:left; margin-left: 5px;">Service URL</label>-->
+                                                                <!--<input type="radio" name="ContentType"-->
+                                                                <!--value="Service"/>-->
+                                                                <!--<label style="float:left; margin-left: 5px;">Service URL</label>-->
                                                                 <!--</label>-->
                                                                 <!--<label style="margin-right: 20px; font-size: 20px">-->
-                                                                    <!--<input type="radio" name="ContentType"-->
-                                                                           <!--value="Link"/>-->
-                                                                    <!--<label style="float:left; margin-left: 5px;">Link</label>-->
+                                                                <!--<input type="radio" name="ContentType"-->
+                                                                <!--value="Link"/>-->
+                                                                <!--<label style="float:left; margin-left: 5px;">Link</label>-->
                                                                 <!--</label>-->
                                                             </div>
                                                         </div>
@@ -220,32 +264,48 @@
                                                     </div>
                                                     <div class="step-tab-panel" id="step2">
                                                         <div id="URL" class="clearfix"
-                                                             style="margin-top:50px" v-if="computableModel.contentType=='Link'||computableModel.contentType=='Service'">
+                                                             style="margin-top:50px"
+                                                             v-if="computableModel.contentType=='Link'||computableModel.contentType=='Service'">
                                                             <div class="form-group">
                                                                 <label for="URL_text"
                                                                        class="control-label col-md-4 col-md-offset-2">Please
                                                                     enter computable model's URL:</label>
                                                                 <div class="col-sm-8 col-md-offset-2">
-                                                                    <textarea id="URL_text" class="form-control" placeholder="( http://www.example.com/model )"
+                                                                    <textarea id="URL_text" class="form-control"
+                                                                              placeholder="( http://www.example.com/model )"
                                                                               v-model="computableModel.url"></textarea>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="clearfix" style="margin-top:50px" v-if="computableModel.contentType=='MD5'">
+                                                        <div id="MD5" class="clearfix" style="margin-top:50px"
+                                                             v-if="computableModel.contentType=='MD5'">
                                                             <div class="form-group">
-                                                                <label class="control-label col-md-4 col-md-offset-2" style="padding: 10px 15px;">
-                                                                    Please insert the MD5 of the openGMS wrapper package:</label>
+                                                                <label class="control-label col-md-4 col-md-offset-2"
+                                                                       style="padding: 10px 15px;">
+                                                                    Please insert the MD5 of the openGMS wrapper
+                                                                    package:</label>
                                                                 <div class="col-sm-8 col-md-offset-2">
-                                                                    <el-input id="MD5_text" v-model="computableModel.md5" @change="inputMd5" @keyup.enter="getServiceByMd5">
-                                                                        <el-button slot="append" @click="checkMd5Deployed">Check Deployed</el-button>
+                                                                    <el-input id="MD5_text"
+                                                                              v-model="computableModel.md5"
+                                                                              @change="inputMd5"
+                                                                              @keyup.enter="getServiceByMd5">
+                                                                        <el-button slot="append"
+                                                                                   @click="checkMd5Deployed">Check
+                                                                            Deployed
+                                                                        </el-button>
                                                                     </el-input>
                                                                 </div>
                                                             </div>
                                                             <div class="form-group">
-                                                                <label class="control-label col-md-4 col-md-offset-2" style="padding: 10px 15px;">
-                                                                    Please insert the MDL of the openGMS wrapper package:</label>
+                                                                <label class="control-label col-md-4 col-md-offset-2"
+                                                                       style="padding: 10px 15px;">
+                                                                    Please insert the MDL of the openGMS wrapper
+                                                                    package:</label>
                                                                 <div class="col-sm-8 col-md-offset-2">
-                                                                    <el-input id="MD5_text" type="textarea" :rows="3" v-model="computableModel.mdl" @change="inputMd5" @keyup.enter="getServiceByMd5">
+                                                                    <el-input id="MD5_text" type="textarea" :rows="3"
+                                                                              v-model="computableModel.mdl"
+                                                                              @change="inputMd5"
+                                                                              @keyup.enter="getServiceByMd5">
                                                                     </el-input>
                                                                 </div>
                                                             </div>
@@ -321,53 +381,53 @@
                                                                 <input id="file_multi" type="file"
                                                                        style="display: none;" multiple="multiple"/>
                                                             </div>
-<!--                                                            <div style="flex: 1.5;margin-left: 5px">-->
-<!--                                                                <el-card class="wzhScrollbar"-->
-<!--                                                                         style="margin-top: 60px;height: 340px;min-width: 400px">-->
-<!--                                                                    <div class="col-sm-12 col-md-6 col-lg-6"-->
-<!--                                                                         v-if="publicModelContainerList.length!=0"-->
-<!--                                                                         v-for="(container,index) in publicModelContainerList">-->
-<!--                                                                        <el-card class="box-card serverCard"-->
-<!--                                                                                 :class="container.status?'cursorPointer':''"-->
-<!--                                                                                 :style="container.ip==computableModel.modelserUrl.split(':')[0]?'border-top:8px solid #36c94f':''"-->
-<!--                                                                                 @click.native="selectModelServer(container)"-->
-<!--                                                                        >-->
-<!--                                                                            <div class="content">-->
-<!--                                                                                <div class="clearfix">-->
-<!--                                                                                    <div class="pull-left">-->
-<!--                                                                                        <h4>-->
-<!--                                                                                            {{container.hardware.hostName}}-->
+                                                            <!--                                                            <div style="flex: 1.5;margin-left: 5px">-->
+                                                            <!--                                                                <el-card class="wzhScrollbar"-->
+                                                            <!--                                                                         style="margin-top: 60px;height: 340px;min-width: 400px">-->
+                                                            <!--                                                                    <div class="col-sm-12 col-md-6 col-lg-6"-->
+                                                            <!--                                                                         v-if="publicModelContainerList.length!=0"-->
+                                                            <!--                                                                         v-for="(container,index) in publicModelContainerList">-->
+                                                            <!--                                                                        <el-card class="box-card serverCard"-->
+                                                            <!--                                                                                 :class="container.status?'cursorPointer':''"-->
+                                                            <!--                                                                                 :style="container.ip==computableModel.modelserUrl.split(':')[0]?'border-top:8px solid #36c94f':''"-->
+                                                            <!--                                                                                 @click.native="selectModelServer(container)"-->
+                                                            <!--                                                                        >-->
+                                                            <!--                                                                            <div class="content">-->
+                                                            <!--                                                                                <div class="clearfix">-->
+                                                            <!--                                                                                    <div class="pull-left">-->
+                                                            <!--                                                                                        <h4>-->
+                                                            <!--                                                                                            {{container.hardware.hostName}}-->
 
-<!--                                                                                        </h4>-->
-<!--                                                                                        <p style="margin-bottom:5px">-->
-<!--                                                                                            {{container.hardware.system}}-->
-<!--                                                                                            {{container.hardware.version}}</p>-->
-<!--                                                                                        <p>{{container.hardware.cpu_Core}}-->
-<!--                                                                                            Core - -->
-<!--                                                                                            {{container.hardware.totalMemory}}-->
-<!--                                                                                            RAM - -->
-<!--                                                                                            {{container.hardware.diskAll}}-->
-<!--                                                                                            Hard Disk</p>-->
-<!--                                                                                    </div>-->
-<!--                                                                                </div>-->
-<!--                                                                                <div class="clearfix"-->
-<!--                                                                                     style="margin-top:10px">-->
-<!--                                                                                    <div class="serverStatus pull-left"-->
-<!--                                                                                         v-if="container.status">-->
-<!--                                                                                        <span style="background: #6FCE7F;display:inline-block;width:10px;height:10px;border-radius: 50%;"></span>-->
-<!--                                                                                        Running-->
-<!--                                                                                    </div>-->
-<!--                                                                                    <div class="serverStatus pull-left"-->
-<!--                                                                                         v-else>-->
-<!--                                                                                        <span style="background: #929994;display:inline-block;width:10px;height:10px;border-radius: 50%;"></span>-->
-<!--                                                                                        Offline-->
-<!--                                                                                    </div>-->
-<!--                                                                                </div>-->
-<!--                                                                            </div>-->
-<!--                                                                        </el-card>-->
-<!--                                                                    </div>-->
-<!--                                                                </el-card>-->
-<!--                                                            </div>-->
+                                                            <!--                                                                                        </h4>-->
+                                                            <!--                                                                                        <p style="margin-bottom:5px">-->
+                                                            <!--                                                                                            {{container.hardware.system}}-->
+                                                            <!--                                                                                            {{container.hardware.version}}</p>-->
+                                                            <!--                                                                                        <p>{{container.hardware.cpu_Core}}-->
+                                                            <!--                                                                                            Core - -->
+                                                            <!--                                                                                            {{container.hardware.totalMemory}}-->
+                                                            <!--                                                                                            RAM - -->
+                                                            <!--                                                                                            {{container.hardware.diskAll}}-->
+                                                            <!--                                                                                            Hard Disk</p>-->
+                                                            <!--                                                                                    </div>-->
+                                                            <!--                                                                                </div>-->
+                                                            <!--                                                                                <div class="clearfix"-->
+                                                            <!--                                                                                     style="margin-top:10px">-->
+                                                            <!--                                                                                    <div class="serverStatus pull-left"-->
+                                                            <!--                                                                                         v-if="container.status">-->
+                                                            <!--                                                                                        <span style="background: #6FCE7F;display:inline-block;width:10px;height:10px;border-radius: 50%;"></span>-->
+                                                            <!--                                                                                        Running-->
+                                                            <!--                                                                                    </div>-->
+                                                            <!--                                                                                    <div class="serverStatus pull-left"-->
+                                                            <!--                                                                                         v-else>-->
+                                                            <!--                                                                                        <span style="background: #929994;display:inline-block;width:10px;height:10px;border-radius: 50%;"></span>-->
+                                                            <!--                                                                                        Offline-->
+                                                            <!--                                                                                    </div>-->
+                                                            <!--                                                                                </div>-->
+                                                            <!--                                                                            </div>-->
+                                                            <!--                                                                        </el-card>-->
+                                                            <!--                                                                    </div>-->
+                                                            <!--                                                                </el-card>-->
+                                                            <!--                                                            </div>-->
                                                         </div>
                                                     </div>
                                                     <div class="step-tab-panel" id="step3">
@@ -479,10 +539,11 @@
                                                     </div>
                                                 </div>
                                                 <div class="step-footer text-right">
-<!--                                                    <button class="btn btn-danger prev" @click="cancelEditClick()" style="">-->
-<!--                                                        Exit and save draft-->
-<!--                                                    </button>-->
-                                                    <button class="btn btn-danger prev" @click="cancelEditClick()" style="">
+                                                    <!--                                                    <button class="btn btn-danger prev" @click="cancelEditClick()" style="">-->
+                                                    <!--                                                        Exit and save draft-->
+                                                    <!--                                                    </button>-->
+                                                    <button class="btn btn-danger prev" @click="cancelEditClick()"
+                                                            style="">
                                                         Exit
                                                     </button>
                                                     <div class="innerBorderCol btn btn-warning"
@@ -492,10 +553,12 @@
                                                     </button>
                                                     <button class="btn btn-primary next" data-direction="next">Next
                                                     </button>
-                                                    <button v-if="editType=='modify'" @click="submitEdit" class="btn btn-success finish" data-direction="next" >
+                                                    <button v-if="editType=='modify'" @click="submitEdit"
+                                                            class="btn btn-success finish" data-direction="next">
                                                         Submit Edit
                                                     </button>
-                                                    <button v-show="editType=='create'" class="btn btn-success finish" data-direction="finish">
+                                                    <button v-show="editType=='create'" class="btn btn-success finish"
+                                                            data-direction="finish">
                                                         Finish
                                                     </button>
                                                 </div>
@@ -520,59 +583,64 @@
                         </div>
                     </div>
                 </div>
-                <el-dialog :visible.sync="bindModelItemDialogVisible" title="Bind Model Item"  width="50%"
+                <el-dialog :visible.sync="bindModelItemDialogVisible" title="Bind Model Item" width="50%"
                            top="40px">
-                        <el-input placeholder="Model item name..." v-model="pageOption.searchText" class="input-with-select"  @keyup.enter.native="searchModelItem()">
-                            <el-button slot="append" icon="el-icon-search" @click="searchModelItem()"></el-button>
-                        </el-input>
-                        <el-table
-                                :data="pageOption.searchResult"
-                                style="margin-top:17px;"
-                        >
-                            <el-table-column type="expand">
-                                <template slot-scope="props">
-                                    <el-form label-position="left" inline class="demo-table-expand">
-                                        <el-form-item label="Overview">
-                                            <span>{{ props.row.description }}</span>
-                                        </el-form-item>
 
-                                    </el-form>
-                                </template>
-                            </el-table-column>
-                            <el-table-column
-                                    label="Name">
-                                <template slot-scope="props">
-                                    <a :href="'/modelItem/'+props.row.oid" target="_blank">{{props.row.name}}</a>
-                                </template>
-                            </el-table-column>
-                            <el-table-column label="Contributor">
-                                <template slot-scope="props">
-                                    <a :href="'/profile/'+props.row.author_name" target="_blank">{{props.row.author_name}}</a>
-                                </template>
-                            </el-table-column>
-                            <el-table-column fixed="right" label="Operation" width="100">
-                                <template slot-scope="scope">
-                                    <el-button
-                                            size="mini"
-                                            type="success"
-                                            @click="selectModelItem(scope.$index, scope.row)">Choose
-                                    </el-button>
 
-                                </template>
-                            </el-table-column>
-                        </el-table>
-                        <el-pagination style="text-align: center;margin-top:20px"
-                                       @current-change="handlePageChange"
-                                       :current-page="pageOption.currentPage"
-                                       layout="total, prev, pager, next, jumper"
-                                       :page-size="6"
-                                       :total="pageOption.total">
-                        </el-pagination>
+                    <el-input placeholder="Model item name..." v-model="pageOption.searchText" class="input-with-select"
+                              @keyup.enter.native="searchModelItem()">
+                        <el-button slot="append" icon="el-icon-search" @click="searchModelItem()"></el-button>
+                    </el-input>
+                    <el-table
+                            :data="pageOption.searchResult"
+                            style="margin-top:17px;"
+                    >
+                        <el-table-column type="expand">
+                            <template slot-scope="props">
+                                <el-form label-position="left" inline class="demo-table-expand">
+                                    <el-form-item label="Overview">
+                                        <span>{{ props.row.description }}</span>
+                                    </el-form-item>
+
+                                </el-form>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                label="Name">
+                            <template slot-scope="props">
+                                <a :href="'/modelItem/'+props.row.oid" target="_blank">{{props.row.name}}</a>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="Contributor">
+                            <template slot-scope="props">
+                                <a :href="'/profile/'+props.row.author_name"
+                                   target="_blank">{{props.row.author_name}}</a>
+                            </template>
+                        </el-table-column>
+                        <el-table-column fixed="right" label="Operation" width="100">
+                            <template slot-scope="scope">
+                                <el-button
+                                        size="mini"
+                                        type="success"
+                                        @click="selectModelItem(scope.$index, scope.row)">Choose
+                                </el-button>
+
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <el-pagination style="text-align: center;margin-top:20px"
+                                   @current-change="handlePageChange"
+                                   :current-page="pageOption.currentPage"
+                                   layout="total, prev, pager, next, jumper"
+                                   :page-size="6"
+                                   :total="pageOption.total">
+                    </el-pagination>
 
                 </el-dialog>
 
                 <el-dialog :visible.sync="exisedServiceDialog" title="Existed services" center width="50%">
-                    <p style="text-align: center">There exist computable models of this md5 on OpenGMS platform, do you still want to add a new one?</p>
+                    <p style="text-align: center">There exist computable models of this md5 on OpenGMS platform, do you
+                        still want to add a new one?</p>
                     <div class="wzhScrollbar" style="max-height: 500px;">
                         <el-table style="padding-left:10px "
                                   :data="exisedServices">
@@ -603,16 +671,29 @@
 
                     <span slot="footer" class="dialog-footer">
                             <el-button style="float: right" size="small" @click="cancelMd5">Cancel</el-button>
-                            <el-button style="float: right;margin-right: 5px" size="small" type="primary" @click="addMd5">Yes, add new one</el-button>
+                            <el-button style="float: right;margin-right: 5px" size="small" type="primary"
+                                       @click="addMd5">Yes, add new one</el-button>
+                    </span>
+                </el-dialog>
+
+                <el-dialog
+                        title="Data Select"
+                        :visible.sync="dataDialogVisible"
+                        width="80%"
+                        :before-close="handleClose">
+                    <user-data @com-selectfile="selectDataspaceFile" ref="userDataSpace" style="height: 505px;"></user-data>
+                    <span slot="footer" class="dialog-footer">
+                      <el-button @click="dataDialogVisible = false">Cancel</el-button>
+                      <el-button type="primary" @click="dataDialogVisible = false">Confirm</el-button>
                     </span>
                 </el-dialog>
             </div>
 
         </template>
 
-        </div>
     </div>
 </div>
+<template th:replace="modules/userDataSpaceModule :: userDataSpaceModule"></template>
 </body>
 
 <script src="/static/js/common/jquery-3.3.1.min.js"></script>
@@ -628,6 +709,8 @@
 
 <script th:replace="fragments/newSideBar :: headSideBar"></script>
 <script th:replace="fragments/newSideBar :: sideBarComponent"></script>
+
 <script src="/static/js/page/create-computable-model.js"></script>
+<script src="/static/js/modules/userDataSpaceModule.js"></script>
 
 </html>

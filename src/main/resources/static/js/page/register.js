@@ -139,9 +139,6 @@ new Vue({
 
         register(){
 
-            this.ruleForm2.userName=this.ruleForm2.email;
-            this.ruleForm2.password=hex_sha256(hex_md5(this.ruleForm2.pwd));
-
             let data = {
                 "email": this.ruleForm2.email,
                 "password": hex_sha256(hex_md5(this.ruleForm2.pwd)),
