@@ -34,6 +34,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
@@ -51,6 +53,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -473,7 +476,13 @@ public class DataApplicationController {
 
             //调用url
             RestTemplate restTemplate = new RestTemplate();
-
+            List<HttpMessageConverter<?>> httpMessageConverters = restTemplate.getMessageConverters();
+            httpMessageConverters.stream().forEach(httpMessageConverter -> {
+                if(httpMessageConverter instanceof StringHttpMessageConverter){
+                    StringHttpMessageConverter messageConverter = (StringHttpMessageConverter) httpMessageConverter;
+                    messageConverter.setDefaultCharset(Charset.forName("UTF-8"));
+                }
+            });
             String response = restTemplate.getForObject(url,String.class);
             Document document = DocumentHelper.parseText(response);
             Element root = document.getRootElement();
