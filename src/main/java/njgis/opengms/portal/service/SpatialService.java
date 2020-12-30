@@ -65,7 +65,7 @@ public class SpatialService {
     }
 
     public JSONObject searchByTitleByOid(SpatialFindDTO spatialFindDTO, String oid, String loadUser){
-        String userName=userDao.findFirstByOid(oid).getUserName();
+        String userName=userDao.findFirstByUserId(oid).getUserName();
         int page=spatialFindDTO.getPage();
         int pageSize = spatialFindDTO.getPageSize();
         String sortElement=spatialFindDTO.getSortElement();

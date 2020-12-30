@@ -93,7 +93,7 @@ public class ConceptService {
     }
 
     public JSONObject searchByTitleByOid(ConceptFindDTO conceptFindDTO, String oid,String loadUser){
-        String userName=userDao.findFirstByOid(oid).getUserName();
+        String userName=userDao.findFirstByUserId(oid).getUserName();
         int page=conceptFindDTO.getPage();
         int pageSize = conceptFindDTO.getPageSize();
         String sortElement=conceptFindDTO.getSortElement();

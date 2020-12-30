@@ -164,8 +164,10 @@
                              :data="deployedModel">
                        <el-table-column
                                label="Name"
-                               prop="name"
                        >
+                           <template slot-scope="scope">
+                               <a class="cursorPointer" :href="'/computableModel/'+scope.row.oid">{{scope.row.name}}</a>
+                           </template>
                        </el-table-column>
                        <el-table-column
                                label="Contributor"

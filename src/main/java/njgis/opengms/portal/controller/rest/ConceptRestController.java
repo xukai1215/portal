@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.net.URLDecoder;
 
 @RestController
 @RequestMapping(value="/concept")
@@ -26,6 +27,7 @@ public class ConceptRestController {
         String loadUser = null;
         if(session.getAttribute("oid")!=null)
             loadUser =  session.getAttribute("oid").toString() ;
+        oid= URLDecoder.decode(oid);
         return ResultUtils.success(conceptService.getConceptsByUserId(oid,conceptFindDTO,loadUser));
     }
 
@@ -35,6 +37,7 @@ public class ConceptRestController {
         String loadUser = null;
         if(session.getAttribute("oid")!=null)
             loadUser =  session.getAttribute("oid").toString() ;
+        oid = URLDecoder.decode(oid);
         return ResultUtils.success(conceptService.searchByTitleByOid(conceptFindDTO,oid,loadUser));
     }
 

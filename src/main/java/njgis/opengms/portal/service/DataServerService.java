@@ -28,8 +28,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -38,7 +43,9 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class DataServerService {
@@ -153,6 +160,18 @@ public class DataServerService {
 
         String url = baseUrl + "?token=" + URLEncoder.encode(token) + "&type=" + type;
         String xml = null;
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type","application/json");
+        Map<String,String> mheader = new HashMap<>();
+        mheader.put("Content-Type","application/json");
+
+        HttpEntity<MultiValueMap> requestEntity = new HttpEntity<MultiValueMap>(null, headers);
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<JSONObject> response = restTemplate.exchange(url,HttpMethod.GET, requestEntity, JSONObject.class);
+        JSONObject j_result = response.getBody();
+
+
         try{
             xml = MyHttpUtils.GET(url, "utf-8", null);
         }catch (Exception e){
@@ -330,11 +349,16 @@ public class DataServerService {
         if(item==null){
             return null;
         }
+
+        String serverId = dataNodeContentDTO.getServerId();
+        String token = dataNodeContentDTO.getToken();
+
         InvokeService invokeService = new InvokeService(false);
-        invokeService.setServiceId(dataNodeContentDTO.getServerId());
+        invokeService.setServiceId(serverId);
         invokeService.setName(dataNodeContentDTO.getName());
-        invokeService.setToken(dataNodeContentDTO.getToken());
+        invokeService.setToken(token);
         invokeService.setContributor(userName);
+
         List<InvokeService> invokeServices = item.getInvokeServices();
         if(invokeServices==null){
             invokeServices = new ArrayList<>();
@@ -381,6 +405,10 @@ public class DataServerService {
 
         DataApplication dataApplication = dataApplicationDao.findFirstByOid(dataNodeContentDTO.getItem());
 
+        String serverId = dataNodeContentDTO.getServerId();
+        String token = dataNodeContentDTO.getToken();
+        String type = dataNodeContentDTO.getType();
+
         InvokeService invokeService = new InvokeService(false);
         invokeService.setServiceId(dataNodeContentDTO.getServerId());
         invokeService.setName(dataNodeContentDTO.getName());
@@ -388,6 +416,19 @@ public class DataServerService {
         invokeService.setDataIds(dataNodeContentDTO.getDataSet());
         invokeService.setMethod(dataNodeContentDTO.getType());
         invokeService.setContributor(userName);
+
+        String url = "http://111.229.14.128:8898/capability?"+"id="+serverId+"&token="+URLEncoder.encode(token)+"&type="+type;
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type","application/json");
+        Map<String,String> mheader = new HashMap<>();
+        mheader.put("Content-Type","application/json");
+
+        HttpEntity<MultiValueMap> requestEntity = new HttpEntity<MultiValueMap>(null, headers);
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<JSONObject> response = restTemplate.exchange(url,HttpMethod.GET, requestEntity, JSONObject.class);
+        JSONObject j_result = response.getBody();
+        
+
         List<InvokeService> invokeServices = dataApplication.getInvokeServices();
         if(invokeServices==null){
             invokeServices = new ArrayList<>();

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.net.URLDecoder;
 
 @RestController
 @RequestMapping(value="/spatial")
@@ -26,6 +27,7 @@ public class SpatialRestController {
         String loadUser = null;
         if(session.getAttribute("oid")!=null)
             loadUser =  session.getAttribute("oid").toString() ;
+        oid= URLDecoder.decode(oid);
         return ResultUtils.success(spatialService.getSpatialsByUserId(oid,spatialFindDTO,loadUser));
     }
 
@@ -35,6 +37,7 @@ public class SpatialRestController {
         String loadUser = null;
         if(session.getAttribute("oid")!=null)
             loadUser =  session.getAttribute("oid").toString() ;
+        oid = URLDecoder.decode(oid);
         return ResultUtils.success(spatialService.searchByTitleByOid(spatialFindDTO,oid,loadUser));
     }
 

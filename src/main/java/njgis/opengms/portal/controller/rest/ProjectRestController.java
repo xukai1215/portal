@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.net.URLDecoder;
 
 @RestController
 @RequestMapping(value="/project")
@@ -54,6 +55,7 @@ public class ProjectRestController {
 
     @RequestMapping(value="/listByUserOid",method = RequestMethod.GET)
     JsonResult listByUserOid(ProjectFindDTO projectFindDTO, @RequestParam(value="oid")String oid){
+        oid= URLDecoder.decode(oid);
         return ResultUtils.success(projectService.listByUserOid(projectFindDTO,oid));
     }
 

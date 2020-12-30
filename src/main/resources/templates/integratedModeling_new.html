@@ -47,6 +47,33 @@
         .el-dropdown.minWidDrop .el-button.el-button--primary.el-button--small:not(.el-dropdown__caret-button){
             min-width: 120px;
         }
+        .radius0 .el-input__inner{
+            border-radius: 0;
+            /*border-width: 1px 0px;*/
+        }
+        .radius0 input{
+            background: #ecf5ff;
+        }
+        .w350Drawer .el-drawer{
+            width: 350px !important;
+        }
+        .img{
+            float:left;
+        }
+        .img img {
+            width: 90px;
+            height: 90px;
+        }
+        .detailIntroducePanel{
+            padding: 10px 0 0 0;
+            overflow: hidden;
+        }
+        .comptlModelDetail{
+            width: 100%;
+        }
+        .comptlModelDetail p{
+            margin: 0;
+        }
     </style>
 </head>
 <body class="clearfix">
@@ -83,7 +110,7 @@
 
         <div class="flexRow" style="padding: 5px 5px">
             <div id="MxGraph" ref="mxGraph" class="integratedContained" :class="mxgraphExpand==0?'':'fullScreenMx'" style="flex: 1;">
-                <div class="toolBar flexJustBetween flexAlignCenter" >
+                <div class="toolBar flexJustBetween flexAlignCenter" style="height: 41px">
                     <div class="flexJustStart">
                         <el-button style="margin:5px;font-weight: 700;color: #009900;" size="small" @click="loadLogicalModelClick()">Load Logical Model</el-button>
                         <el-button style="margin:5px;font-weight: 700;color: #009900;" size="small" @click="chooseModelVisible=true">
@@ -129,8 +156,104 @@
                     </div>
 
                 </div>
-                <iframe id="ModelEditor" src="/common/integratedModelEditor"
-                        style="width: 100%;height: calc(100% - 47px);;border:0px;position:relative;margin-right: 10px;"></iframe>
+                <div class="flexAlignStrench" style="height: calc( 100% - 41px)">
+                    <div role="itemSelector" class="flex1" style="width: 210px;">
+                        <el-tabs v-model="itemClassify" @tab-click="changeItem" style="background: #ffffff;height: 100%">
+                            <el-tab-pane label="General" name="general">Data Visulazation</el-tab-pane>
+                            <el-tab-pane label="Model" name="modelItem">
+                                <div class="flexCol flexAlignCenter" style="width: 100%">
+                                    <el-input v-model="searchModelText"
+                                              size="mini"
+                                              placeholder="Search for ..."
+                                              @keyup.enter.native="searchComptbModel"
+                                              style="width: 90%;margin-top: 2px">
+                                        <el-button slot="append" icon="el-icon-search" @click="searchComptbModel"></el-button>
+                                    </el-input>
+                                    <p class="noMargin" style="color: #787878;margin-top: 5px;font-size: 13px;">Classification: {{currentModelClassi.label}}</p>
+                                    <el-button size="mini" type="primary" plain @click="changeModelClassi" round style="width: 90%;margin-top: 3px">Select Classification</el-button>
+<!--                                    <p class="noMargin"-->
+<!--                                       style="font-style: italic;color: #888888;margin-top: 5px;font-size: 13px;">-->
+<!--                                        Click to add to graph.-->
+<!--                                        Right click to view details.</p>-->
+                                    <div class="wzhScrollbar">
+                                        <div class="itemCard flexCenter"
+                                             v-for="(item,key) in computableModelList"
+                                             :key="item.oid" style="padding: 0 25px;" :style="getItemCardBackGround"
+                                            >
+                                            <el-tooltip class="item" effect="dark" :content="item.name"
+                                                        placement="top-start"
+                                            >
+                                                <p class="noMargin twoLine" @click="checkComputableModelDetail(item)">{{item.name}}</p>
+                                            </el-tooltip>
+                                            <div class="circleSmall flexCenter button_blank button_shadow"
+                                                 style="position: absolute;right: 5px;top: 13px"
+                                                 @click.stop ="addModelToMxgraph(item)"
+                                            >
+                                                <i class="fa fa-plus" style="font-size: 13px;color: #52bbf8"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <el-pagination @current-change="handlePageChangeModel"
+                                                   :current-page="pageOption2.currentPage"
+                                                   pager-count="4"
+                                                   small
+                                                   layout="prev, pager, next"
+                                                   :page-size="pageOption2.pageSize"
+                                                   :total="pageOption2.total">
+                                    </el-pagination>
+                                </div>
+
+
+                            </el-tab-pane>
+                            <el-tab-pane label="Data Method" name="dataMethod">
+                                <div class="flexCol flexAlignCenter" style="width: 100%">
+                                    <el-input v-model="searchDataMethodText"
+                                              size="mini"
+                                              placeholder="Search for ..."
+                                              @keyup.enter.native="searchDataMethod"
+                                              style="width: 90%;margin-top: 2px">
+                                        <el-button slot="append" icon="el-icon-search" @click="searchDataMethod"></el-button>
+                                    </el-input>
+                                    <p class="noMargin" style="color: #787878;margin-top: 5px;font-size: 13px;">Classification: {{currentDataMethodClassi.label}}</p>
+                                    <el-button size="mini" type="primary" plain @click="changeDataMethodClassi" round style="width: 90%;margin-top: 3px">Select Classification</el-button>
+<!--                                    <p class="noMargin"-->
+<!--                                       style="font-style: italic;color: #888888;margin-top: 5px;font-size: 13px;">-->
+<!--                                        Click to add to graph.-->
+<!--                                        Right click to view details.</p>-->
+                                    <div class="wzhScrollbar">
+                                        <div class="itemCard flexCenter"
+                                             v-for="(item,key) in dataMethodList"
+                                             :key="item.oid"
+                                             style="padding: 0 25px;background: #5b9ef2"
+                                             :style="getItemCardBackGround"
+                                             @click="checkComputableModelDetail(item)">
+                                            <el-tooltip class="item" effect="dark" :content="item.name"
+                                                        placement="top-start">
+                                                <p class="noMargin twoLine">{{item.name}}</p>
+                                            </el-tooltip>
+                                            <div class="circleSmall flexCenter button_blank button_shadow"
+                                                 @click="addItemToGraph(item)"
+                                                 style="position: absolute;right: 5px;top:13px;">
+                                                <i class="fa fa-plus" style="font-size: 13px;color: #52bbf8"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <el-pagination @current-change="handlePageChangeDataMethod"
+                                                   :current-page="pageOption3.currentPage"
+                                                   pager-count="4"
+                                                   small
+                                                   layout="prev, pager, next"
+                                                   :page-size="pageOption3.pageSize"
+                                                   :total="pageOption3.total">
+                                    </el-pagination>
+                                </div>
+                            </el-tab-pane>
+                        </el-tabs>
+
+                    </div>
+                    <iframe id="ModelEditor" src="/common/integratedModelEditor"
+                            style="width: calc(100% - 220px);height: 100%;;border:0px;position:relative;margin-right: 10px;"></iframe>
+                </div>
             </div>
             <div role="selectedModelContainer" class="integratedContained"
                  style="width:22%;min-width: 200px;max-width: 400px; margin-left: 10px">
@@ -224,7 +347,7 @@
                         </div>
                         <el-pagination style="text-align: center;margin-top:5px"
                                        v-if="integratedTaskList!='login'&&integratedTaskList.length!=0"
-                                       @current-change="handlePageChange"
+                                       @Choose Computable Modelscurrent-change="handlePageChange"
                                        :current-page="pageOption.currentPage"
                                        layout="total, prev, pager, next, jumper"
                                        :page-size="6"
@@ -267,6 +390,50 @@
         <input id="uploadInputData" type="file" style="display:none"/>
 
     </div>
+
+    <el-drawer
+            title="Model Classification"
+            :visible.sync="modelClassiDrawer"
+            size="305px"
+            direction="ltr">
+
+        <el-tree style="max-height: 70vh;overflow: auto"
+                 class="wzhScrollbar"
+                 id="tree1"
+                 ref="tree1"
+                 :data="treeData2"
+                 :highlight-current="true"
+                 node-key="id"
+                 :default-expanded-keys="[1,9,30,14,19,24]"
+                 :expand-on-click-node="false"
+                 :current-node-key="24"
+                 @current-change="handleCurrentChange1"
+                 :props="defaultProps">
+        </el-tree>
+        <el-button @click="confirmModelCls" size="small" type="primary" style="float: right;margin-right: 20px;margin-top: 20px">Confirm</el-button>
+    </el-drawer>
+
+    <el-drawer
+            title="Data Method Classification"
+            :visible.sync="dataMethodClassiDrawer"
+            size="305px"
+            direction="ltr">
+
+        <el-tree style="max-height: 70vh;overflow: auto"
+                 class="wzhScrollbar"
+                 id="tree2"
+                 ref="tree2"
+                 :data="treeData3"
+                 :highlight-current="true"
+                 node-key="id"
+                 :default-expanded-keys="[1,9,30,14,19,24]"
+                 :expand-on-click-node="false"
+                 :current-node-key="24"
+                 @current-change="handleCurrentChange2"
+                 :props="defaultProps">
+        </el-tree>
+        <el-button @click="confirmDataMethodCls" size="small" type="primary" style="float: right;margin-right: 20px;margin-top: 20px">Confirm</el-button>
+    </el-drawer>
 
     <el-dialog title="Input Data Configuration" :visible.sync="configVisible" ref="userDataSpace" width="65%">
         <el-tabs>
@@ -769,7 +936,7 @@
         <div v-loading="loading">
             <div class="flexRow flexJustCenter" style="margin-top: 12px; margin-left: 10px;">
                 <div class="flexRow flexColCenter" style="width: 50%;mini-width:250px">
-                    <input placeholder="Search for ..." class="noBorderInput miniInput">
+                    <input placeholder="Search for ..."  class="noBorderInput miniInput">
                 </div>
                 <i class="fa fa-search cursorPointer" style="font-size: 18px;"></i>
             </div>
@@ -913,6 +1080,37 @@
             <el-button type="primary" size="small" v-if="editCase==-1 " @click="addConditionCaseConfirm(caseConfig)">Add</el-button>
             <el-button type="primary" size="small" v-else @click="editConditionConfirm(caseConfig)">Edit</el-button>
         </div>
+    </el-dialog>
+
+    <el-dialog :title="detailComptbModel.name" :visible.sync="computableModelDetailDialog" width="40%">
+        <div class="flexJustStart">
+            <div class="img">
+                <img :src="(detailComptbModel.image==''||detailComptbModel.image==null)?'/static/img/model/calcModel.png':'/static/img'+detailComptbModel.image">
+            </div>
+            <div class="comptlModelDetail" style="padding: 10px 15px">
+                <p class="noMargin" style="min-height: 50px">{{detailComptbModel.description}}</p>
+                <p v-if="detailComptbModel.detail!=undefined&&detailComptbModel.detail!=''"
+                   class="noMargin"
+                   style="font-weight: 600;margin-top: 10px"
+                >Detailed:</p>
+                <div v-if="detailComptbModel.detail!=undefined&&detailComptbModel.detail!=''"
+                     id="detail" v-html="detailComptbModel.detail">
+                </div>
+                <p  style="margin-top: 10px"><span style="font-weight: 600">Contributor: </span>
+                    <a :href="'/profile/' + detailComptbModel.authorId">{{detailComptbModel.authorName}}</a></p>
+
+            </div>
+
+        </div>
+        <p class="cursorPointer text-center" style="margin-top: 10px">
+            <a style="font-style: italic;text-decoration: underline" @click="window.open('/computableModel/' + detailComptbModel.oid)" >view in computable model page</a>
+        </p>
+        <div slot="footer" class="dialog-footer">
+
+            <el-button type="primary" size="small" @click="addModelToMxgraph(detailComptbModel)">Add to Graph</el-button>
+            <el-button type="primary" plain size="small" @click="computableModelDetailDialog=false">Close</el-button>
+        </div>
+
     </el-dialog>
 
     <div th:replace="fragments/footer :: footer-mini"></div>

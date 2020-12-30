@@ -9,6 +9,9 @@ Vue.component("user-data",
             singleChoice: {
                 type: Boolean,
                 default: false
+            },
+            lazy:{
+
             }
         },
         data() {

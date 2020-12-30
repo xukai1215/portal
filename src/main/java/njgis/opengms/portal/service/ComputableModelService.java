@@ -2,6 +2,7 @@ package njgis.opengms.portal.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.gson.JsonObject;
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
@@ -679,6 +680,10 @@ public class ComputableModelService {
                 computableModel.setDescription(jsonObject.getString("description"));
                 computableModel.setContentType(jsonObject.getString("contentType"));
                 computableModel.setUrl(jsonObject.getString("url"));
+
+                ModelItem relateModelItem = modelItemDao.findFirstByOid(jsonObject.getString("relateModelItem"));
+                computableModel.setClassifications(relateModelItem.getClassifications2());
+
                 String md5 = null;
                 if (jsonObject.getString("contentType").equals("Package")) {
                     String filePath = path + resources.get(0);
@@ -1008,6 +1013,9 @@ public class ComputableModelService {
             computableModel.setDescription(jsonObject.getString("description"));
             computableModel.setContentType(jsonObject.getString("contentType"));
             computableModel.setUrl(jsonObject.getString("url"));
+
+            ModelItem relateModelItem = modelItemDao.findFirstByOid(jsonObject.getString("relateModelItem"));
+            computableModel.setClassifications(relateModelItem.getClassifications2());
 
             JSONArray jsonArray = jsonObject.getJSONArray("authorship");
             List<AuthorInfo> authorship = new ArrayList<>();
@@ -1472,7 +1480,7 @@ public class ComputableModelService {
 
 
     public JSONObject searchByTitleByOid(ComputableModelFindDTO computableModelFindDTO, String oid,String loadUser){
-        String userName=userDao.findFirstByOid(oid).getUserName();
+        String userName=userDao.findFirstByUserId(oid).getUserName();
         int page=computableModelFindDTO.getPage();
         int pageSize = computableModelFindDTO.getPageSize();
         String sortElement=computableModelFindDTO.getSortElement();
@@ -1606,6 +1614,48 @@ public class ComputableModelService {
         return jsonObject;
     }
 
+    public JSONObject pageByClassi(int asc, int page, int pageSize, String sortEle, String searchText, String classification){
+        Sort sort = new Sort(asc==1?Sort.Direction.ASC:Sort.Direction.DESC,sortEle);
+
+        Pageable pageable = PageRequest.of(page,pageSize,sort);
+
+        Page<ComputableModel> computableModelPage = Page.empty();
+        if(classification.equals("all")){
+            computableModelPage = computableModelDao.findByNameContainsIgnoreCaseAndDeploy(searchText,true,pageable);
+        }else{
+            List<String> classifications = new ArrayList<>();
+            classifications.add(classification);
+            computableModelPage = computableModelDao.findAllByClassificationsInAndNameLikeIgnoreCaseAndDeploy(classifications,searchText,true,pageable);
+        }
+
+        List<ComputableModel> computableModelResult = computableModelPage.getContent();
+        JSONArray j_comptblModelArray = new JSONArray();
+        if(computableModelPage.getTotalElements()>0){
+            for(ComputableModel computableModel:computableModelResult){
+                if(computableModel.getMdl()!=null){
+                    try {
+                        computableModel.setMdlJson(convertMdl(computableModel.getMdl()));
+                    }catch (Exception e){
+
+                    }
+                }
+                String userName = computableModel.getAuthor();
+                User user = userDao.findFirstByUserName(userName);
+                JSONObject j_comptblModel = (JSONObject) JSONObject.toJSON(computableModel);
+                j_comptblModel.put("authorName",user.getName());
+                j_comptblModel.put("authorId",user.getUserId());
+                j_comptblModelArray.add(j_comptblModel);
+            }
+        }
+
+
+        JSONObject result = new JSONObject();
+        result.put("content",j_comptblModelArray);
+        result.put("total",computableModelPage.getTotalElements());
+
+        return result;
+
+    }
 
 
 }

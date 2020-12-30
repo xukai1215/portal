@@ -3529,7 +3529,7 @@ Sidebar.prototype.addComputabelModel = function (computableModelList, expand) {
   for (var j = 0; j < computableModelList.size; j++) {
     var model = computableModelList.content[j];
     var modelName = model.name;
-    var a = this.createStateVertexTemplate('rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#5bbbf2;fillColor=#5bbbf2;', 210, 50, modelName, model.description, null, null, modelName, model);
+    var a = this.createStateVertexTemplate('rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#5bbbf2;fillColor=#5bbbf2;', 200, 50, modelName, model.description, null, null, modelName, model);
     div.appendChild(a);
   }
 
@@ -3592,7 +3592,7 @@ Sidebar.prototype.addComputabelModelPage = function (computableModelList, div) {
   for (var i = 0; i < computableModelList.numberOfElements; i++) {
     var model = computableModelList.content[i];
     var modelName = model.name;
-    var a = this.createStateVertexTemplate('rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#5bbbf2;fillColor=#5bbbf2;', 210, 50, modelName, model.description, null, null, modelName, model);
+    var a = this.createStateVertexTemplate('rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#5bbbf2;fillColor=#5bbbf2;', 200, 50, modelName, model.description, null, null, modelName, model);
     div.appendChild(a);
   }
 };
@@ -3772,7 +3772,7 @@ Sidebar.prototype.addModelToGraph = function (model) {
 
   hasSearchedTermsComputableModel.push(model)
   var pt = graph.getFreeInsertPoint();
-  var cell = graph.insertVertex(parent, null, model.name, pt.x, pt.y, 210, 50, "rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#5bbbf2;fillColor=#5bbbf2");
+  var cell = graph.insertVertex(parent, null, model.name, pt.x, pt.y, 200, 50, "rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#5bbbf2;fillColor=#5bbbf2");
 
   cell.frontId = model.id;
   cell.name = model.name;

@@ -47,6 +47,8 @@ public interface ComputableModelDao extends MongoRepository<ComputableModel,Stri
 
     Page<ComputableModel> findByNameContains(String name,Pageable pageable);
 
+    Page<ComputableModel> findByNameContainsIgnoreCase(String name,Pageable pageable);
+
     List<ComputableModel> findByNameContainsIgnoreCaseAndContentType(String name, String contentType);
 
     Page<ComputableModel> findByAuthorAndStatusNotLike(String author,String statusNotLike, Pageable pageable);
@@ -88,6 +90,10 @@ public interface ComputableModelDao extends MongoRepository<ComputableModel,Stri
     Page<ComputableModel> findAllByDeployAndStatusIn(boolean deploy,List<String> status, Pageable pageable);
 
     Page<ComputableModel> findAllByDeployAndStatusInAndNameLikeIgnoreCase(boolean deploy,List<String> status,String name, Pageable pageable);
+
+    Page<ComputableModel> findAllByClassificationsInAndNameLikeIgnoreCase(List<String> classifications,String name, Pageable pageable);
+
+    Page<ComputableModel> findAllByClassificationsInAndNameLikeIgnoreCaseAndDeploy(List<String> classifications,String name,boolean deploy, Pageable pageable);
 
     Page<ComputableModel> findByNameContainsIgnoreCaseAndDeploy(String name, boolean deploy, Pageable pageable);
 }

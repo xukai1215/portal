@@ -99,6 +99,24 @@ var vue = new Vue({
             searchResult: [],
         },
 
+        pageOption2: {
+            progressBar: true,
+            sortAsc: false,
+            currentPage: 1,
+            pageSize: 8,
+            total: 1,
+            searchResult: [],
+        },
+
+        pageOption3: {
+            progressBar: true,
+            sortAsc: false,
+            currentPage: 1,
+            pageSize: 8,
+            total: 1,
+            searchResult: [],
+        },
+
         inSearch:0,
 
         taskConfigStatus:1,
@@ -201,6 +219,150 @@ var vue = new Vue({
         },
 
         nodeLoading:false,
+
+        itemClassify: 'general',
+
+        searchModelText:'',
+        searchDataMethodText:'',
+
+        computableModelList:[],
+
+        dataMethodList:[],
+
+        treeData2:[
+            {
+                "id":111,
+                "label":"All",
+                "oid":"all"
+            },
+            {"children": [{
+                    "children": [{
+                        "id": 2,
+                        "label": "Land regions",
+                        "oid": "a24cba2b-9ce1-44de-ac68-8ec36a535d0e"
+                    }, {"id": 3, "label": "Ocean regions", "oid": "75aee2b7-b39a-4cd0-9223-3b7ce755e457"}, {
+                        "id": 4,
+                        "label": "Frozen regions",
+                        "oid": "1bf4f381-6bd8-4716-91ab-5a56e51bd2f9"
+                    }, {"id": 5, "label": "Atmospheric regions", "oid": "8f4d4fca-4d09-49b4-b6f7-5021bc57d0e5"}, {
+                        "id": 6,
+                        "label": "Space-earth regions",
+                        "oid": "d33a1ebe-b2f5-4ed3-9c76-78cfb61c23ee"
+                    }, {"id": 7, "label": "Solid-earth regions", "oid": "d3ba6e0b-78ec-4fe8-9985-4d5708f28e3e"}
+                    ], "id": 1, "label": "Natural-perspective", "oid": "6b2c8632-964a-4a65-a6c5-c360b2b515f0"
+                }, {
+                    "children": [{
+                        "id": 10,
+                        "label": "Development activities",
+                        "oid": "808e74a4-41c6-4558-a850-4daec1f199df"
+                    }, {"id": 11, "label": "Social activities", "oid": "40534cf8-039a-4a0a-8db9-7c9bff484190"}, {
+                        "id": 12,
+                        "label": "Economic activities",
+                        "oid": "cf9cd106-b873-4a8a-9336-dd72398fc769"
+                    }],
+                    "id": 9,
+                    "label": "Human-perspective",
+                    "oid": "77e7482c-1844-4bc3-ae37-cb09b61572da"
+                },{"id":30,
+                    "label":"Integrated-perspective",
+                    "oid":"396cc739-ef33-4332-8d5d-9a67c89567c7",
+                    "children":[{
+                        "id": 31,
+                        "label": "Global scale",
+                        "oid": "14130969-fda6-41ea-aa32-0af43104840b"
+                    }, {
+                        "id": 32,
+                        "label": "Regional scale",
+                        "oid": "e56c1254-70b8-4ff4-b461-b8fa3039944e"
+                    }]}], "id": 24, "label": "Application-focused categories", "oid": "9f7816be-c6e3-44b6-addf-98251e3d2e19"},
+
+            {"children": [{
+                    "children": [{
+                        "id": 15,
+                        "label": "Geoinformation analysis",
+                        "oid": "afa99af9-4224-4fac-a81f-47a7fb663dba"
+                    }, {
+                        "id": 16,
+                        "label": "Remote sensing analysis",
+                        "oid": "f20411a5-2f55-4ee9-9590-c2ec826b8bd5"
+                    }, {
+                        "id": 17,
+                        "label": "Geostatistical analysis",
+                        "oid": "1c876281-a032-4575-8eba-f1a8fb4560d8"
+                    }, {"id": 18, "label": "Intelligent computation analysis", "oid": "c6fcc899-8ca4-4269-a21e-a39d38c034a6"}],
+                    "id": 14,
+                    "label": "Data-perspective",
+                    "oid": "4785308f-b2ef-4193-a74b-b9fe025cbc5e"
+                }, {
+                    "children": [{
+                        "id": 20,
+                        "label": "Physical process calculation",
+                        "oid": "1d564d0f-51c6-40ca-bd75-3f9489ccf1d6"
+                    }, {
+                        "id": 21,
+                        "label": "Chemical process calculation",
+                        "oid": "63266a14-d7f9-44cb-8204-c877eaddcaa1"
+                    }, {
+                        "id": 22,
+                        "label": "Biological process calculation",
+                        "oid": "6d1efa2c-830d-4546-b759-c66806c4facc"
+                    }, {"id": 23, "label": "Human-activity calculation", "oid": "6952d5b2-cb0f-4ba7-96fd-5761dd566344"}],
+                    "id": 19,
+                    "label": "Process-perspective",
+                    "oid": "746887cf-d490-4080-9754-1dc389986cf2"
+                }], "id": 25, "label": "Method-focused categories", "oid": "5f74872a-196c-4889-a7b8-9c9b04e30718"}],
+
+        treeData3:[
+            {
+                "id":111,
+                "label":"All",
+                "oid":"all"
+            },
+            {
+                "id":2,
+                "label":"Conversion",
+                "oid":"Conversion"
+            },
+            {
+                "id":3,
+                "label":"Processing",
+                "oid":"Processing"
+            },
+            {
+                "id":4,
+                "label":"Visualization",
+                "oid":"Visualization"
+            },
+        ],
+
+        defaultProps: {
+            children: 'children',
+            label: 'label'
+        },
+        cls:[],
+        clsStr:'',
+        modelClassiDrawer:false,
+        dataMethodClassiDrawer:false,
+
+        direction: 'ttb',
+
+        currentModelClassi: {
+            id:111,
+            oid:'all',
+            label:'All'
+        },
+
+        currentDataMethodClassi: {
+            id:111,
+            oid:'all',
+            label:'All'
+        },
+
+        computableModelDetailDialog:false,
+
+        detailComptbModel:{
+
+        }
     },
 
     computed:{
@@ -318,11 +480,124 @@ var vue = new Vue({
                 modelEditor.ui.sidebar.addModelToGraph(modelAction)//把这个模型action加入画布
             }
 
-            clearSelection();//清除子组件中的选择
         },
+
+        addModelToMxgraph(model){
+            var modelEditor = $("#ModelEditor")[0].contentWindow;
+            if(model==undefined){
+                model = this.detailComptbModel
+            }
+
+            let modelAction = this.addModeltoList(model)
+            modelEditor.ui.sidebar.addModelToGraph(modelAction)//把这个模型action加入画布
+        },
+
+        addDataMethodToMxgraph(dataMethod){
+            var modelEditor = $("#ModelEditor")[0].contentWindow;
+
+            let dataMethodAction = this.addDataMethodToList(dataMethod)
+            modelEditor.ui.sidebar.addModelToGraph(dataMethodAction)//把这个模型action加入画布
+        },
+
+        addDataMethodToList(dataMethod){
+            let dataProcessing = this.checkDataService(dataMethod)
+            dataProcessing.id=this.generateGUID();
+
+            this.addDataProcessingToDataProcessingList(dataProcessing,this.dataProcessings);
+
+            this.addProcessingTools(dataMethod,this.processingTools);
+
+        },
+
+        checkDataService(dataPDataService){
+            let dataProcessAction = {
+                inputData:[],
+                outputData:[],
+            }
+            let methodDetail = dataPDataService.metaDetail.Method
+            let inputItem = methodDetail.Input.Item;
+            let outputItem = methodDetail.Output.Item;
+
+            // dataProcessAction.iterationNum=1//迭代次数,默认为1
+            dataProcessAction.description=''
+            dataProcessAction.name=dataPDataService.name
+            dataProcessAction.service=dataPDataService.id
+            dataProcessAction.token=dataPDataService.token
+            dataProcessAction.param=''
+            dataProcessAction.type='dataService'
+
+            if(inputItem instanceof Array){
+                for(let input of inputItem){
+                    input.eventId = this.generateGUID()
+                    input.response = true
+                    dataProcessAction.inputData.push(input)
+                }
+            } else {
+                inputItem.eventId = this.generateGUID()
+                inputItem.response = true
+                dataProcessAction.inputData.push(inputItem)
+            }
+
+            if(outputItem instanceof Array){
+                for(let input of outputItem){
+                    output.eventId = this.generateGUID()
+                    output.response = false
+                    dataProcessAction.outputData.push(output)
+                }
+            } else {
+                outputItem.eventId = this.generateGUID()
+                outputItem.response = false
+                dataProcessAction.outputData.push(outputItem)
+            }
+
+            return dataProcessAction
+        },
+
+        addDataProcessingToDataProcessingList(dataProcessing,dataProcessingList){
+            for(let ele of dataProcessingList){//一样的模型order不同
+                if(dataProcessing.md5===ele.md5){
+                    dataProcessing.order = ele.order+1
+                }else{
+                    dataProcessing.order = 1
+                }
+            }
+
+            modelActionList.push(modelAction)
+        },
+
+        addProcessingTools(tool,toolList){
+            for(let ele of toolList){
+                if(ele.type === tool.type && ele.service === tool.service){
+                    ele.actionNum++
+                    return
+                }
+            }
+            let a={
+                name:tool.name,
+                source:'internal',
+                service:tool.serviceId,
+                description:tool.description,
+                param:tool.param,
+            }
+
+            a.actionNum=1
+            toolList.push(a)
+        },
+
+        addDataProcessing(dataProcess,dataProcessings){
+            dataProcess.order = 1
+            for(ele of dataProcessings){
+                if(ele.type == dataProcess.type && ele.service === dataProcess.service) {
+                    dataProcess.order = ele.order + 1
+                }
+            }
+            dataProcessings.push(dataProcess)
+        },
+
 
         /**
          * 把目标模型加入到model队列和modelAction队列
+         * editby: hhjoy
          * @param model
          */
         addModeltoList(model){
@@ -2461,83 +2736,6 @@ var vue = new Vue({
             this.dataProcessingLoadDialog = false
         },
 
-        checkDataService(dataPDataService){
-            let dataProcessAction = {
-                inputData:[],
-                outputData:[],
-            }
-            let methodDetail = dataPDataService.metaDetail.Method
-            let inputItem = methodDetail.Input.Item;
-            let outputItem = methodDetail.Output.Item;
-
-            // dataProcessAction.iterationNum=1//迭代次数,默认为1
-            dataProcessAction.description=''
-            dataProcessAction.name=dataPDataService.name
-            dataProcessAction.service=dataPDataService.id
-            dataProcessAction.token=dataPDataService.token
-            dataProcessAction.param=''
-            dataProcessAction.type='dataService'
-
-            if(inputItem instanceof Array){
-                for(let input of inputItem){
-                    input.eventId = this.generateGUID()
-                    input.response = true
-                    dataProcessAction.inputData.push(input)
-                }
-            } else {
-                inputItem.eventId = this.generateGUID()
-                inputItem.response = true
-                dataProcessAction.inputData.push(inputItem)
-            }
-
-            if(outputItem instanceof Array){
-                for(let input of outputItem){
-                    output.eventId = this.generateGUID()
-                    output.response = false
-                    dataProcessAction.outputData.push(output)
-                }
-            } else {
-                outputItem.eventId = this.generateGUID()
-                outputItem.response = false
-                dataProcessAction.outputData.push(outputItem)
-            }
-
-            return dataProcessAction
-        },
-
-        addProcessingTools(tool,toolList){
-            for(let ele of toolList){
-                if(ele.type === tool.type && ele.service === tool.service){
-                    ele.actionNum++
-                    return
-                }
-            }
-            let a={
-                name:tool.name,
-                source:'internal',
-                type:tool.type,
-                service:tool.service,
-                description:tool.description,
-                param:tool.param,
-            }
-
-            if(a.type=='dataService'){
-                a.token=tool.token
-            }
-            a.actionNum=1
-            toolList.push(a)
-        },
-
-        addDataProcessing(dataProcess,dataProcessings){
-            dataProcess.order = 1
-            for(ele of dataProcessings){
-                if(ele.type == dataProcess.type && ele.service === dataProcess.service) {
-                    dataProcess.order = ele.order + 1
-                }
-            }
-            dataProcessings.push(dataProcess)
-        },
-
         configCondition(cell){
             this.conditionConfigDialog = true
             for(let condition of this.conditions){
@@ -3095,7 +3293,167 @@ var vue = new Vue({
             }
         },
 
+        changeItem(tab) {
+            this.itemClassify = tab.name;
+            this.getItemList(this.itemClassify)
+        },
 
+        getItemList(item,classi) {
+            let name = 'tasks'
+            this.itemLoad = true
+            this.isInSearch = 0;
+
+            let funcs={
+                'modelItem':this.getModelItemList,
+                'dataMethod':this.getDataMethodList,
+            }
+            let fun = funcs[item]
+            fun()
+
+        },
+
+        handlePageChangeModel(page){
+            this.pageOption2.currentPage = page
+            this.getModelItemList(this.currentModelClassi.oid)
+        },
+
+        searchComptbModel(){
+            this.pageOption2.currentPage = 1
+            this.currentModelClassi = {
+                id:111,
+                oid:'all',
+                label:'All'
+
+            }
+            this.getModelItemList(this.currentModelClassi.oid)
+        },
+
+        getModelItemList(classi){
+            if(classi == undefined||classi === ''){
+                classi = 'all'
+            }
+            axios.get("/computableModel/pageByClassi", {
+                    params: {
+                        asc: 0,
+                        page: this.pageOption2.currentPage - 1,
+                        size: this.pageOption2.pageSize,
+                        sortEle:'createTime',
+                        searchText:this.searchModelText,
+                        classification: classi,
+                    }
+                }
+                ,).then(
+                res => {
+                    if (res.data.code != 0) {
+                        alert("Please login first!");
+                        window.location.href = "/user/login";
+                    } else {
+                        let data = res.data.data
+                        this.computableModelList = data.content
+                        this.pageOption2.total = data.total
+                    }
+                }
+            )
+
+        },
+
+        handleCurrentChange1(data) {
+            // this.pageOption.searchResult=[];
+            this.pageOption2.total=0;
+            this.pageOption2.currentPage=1;
+            this.searchModelText="";
+            this.currentModelClassi.id=data.id
+            this.currentModelClassi.oid=data.oid
+            this.currentModelClassi.label=data.label
+
+
+        },
+
+        changeModelClassi(){
+
+            this.modelClassiDrawer = true
+            this.$nextTick(()=>{
+                this.$refs.tree1.setCurrentKey(this.currentModelClassi.id)
+            })
+        },
+
+        confirmModelCls(){
+            this.modelClassiDrawer = false
+            this.getModelItemList( this.currentModelClassi.oid);
+        },
+
+        checkComputableModelDetail(item){
+            this.computableModelDetailDialog = true
+            this.detailComptbModel = item
+        },
+
+        handleCurrentChange2(data) {
+            // this.pageOption.searchResult=[];
+            this.pageOption3.total=0;
+            this.pageOption3.currentPage=1;
+            this.searchDataMethodText="";
+            this.currentDataMethodClassi.oid=data.oid
+            this.currentDataMethodClassi.label=data.label
+            this.getDataMethodList(data.oid);
+        },
+
+        handlePageChangeDataMethod(page){
+            this.pageOption3.currentPage = page
+            this.getDataMethodList(this.currentDataMethodClassi.oid)
+        },
+
+        searchDataMethod(){
+            this.pageOption3.currentPage = 1
+            this.currentDataMethodClassi = {
+                id:1,
+                oid:'all',
+                label:'All'
+
+            }
+            this.$refs.tree2.setCheckedKeys(1,true)
+            this.getDataMethodList(this.currentDataMethodClassi.oid)
+        },
+
+        getDataMethodList(classi){
+            if(classi == undefined||classi === ''){
+                classi = 'all'
+            }
+            classi=classi==='all'?'':classi
+            let data = {
+                page:this.pageOption3.currentPage,
+                pageSize:this.pageOption3.pageSize,
+                asc:0,
+                searchText:this.searchDataMethodText,
+                sortTypeName:'createTime',
+                method:classi
+            }
+            axios.post("/dataApplication/methods/getApplication",data)
+                .then((res)=>{
+                    setTimeout(()=>{
+                        this.dataMethodList=res.data.data.list;
+                        this.pageOption3.total=res.data.data.total;
+                    },100)
+                });
+
+        },
+
+
+        changeDataMethodClassi(){
+            this.dataMethodClassiDrawer = true
+            this.$nextTick(()=>{
+                this.$refs.tree2.setCurrentKey(this.currentDataMethodClassi.id)
+            })
+        },
+
+        confirmDataMethodCls(){
+            this.dataMethodClassiDrawer = false
+            this.getModelItemList( this.currentDataMethodClassi.oid);
+        },
+
+
+        getItemCardBackGround(){
+
+        },
     },
 
     mounted() {
@@ -3224,6 +3582,7 @@ var vue = new Vue({
             }
         }, 500);
 
+        this.getModelItemList('all')
         // window.selectInputData = this.selectInputData;
         window.generateGUID = this.generateGUID;
 

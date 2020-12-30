@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URLDecoder;
+
 @RestController
 @RequestMapping(value="/lab")
 public class LabRestController {
@@ -17,6 +19,7 @@ public class LabRestController {
 
     @RequestMapping(value="/findByName",method = RequestMethod.GET)
     JsonResult findByLabName(String oid){
+        oid= URLDecoder.decode(oid);
         JSONObject result=labService.findBylabName(oid);
         if(result.get("lab")=="null")
             return ResultUtils.error(-1,"lab is null");

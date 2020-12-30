@@ -900,6 +900,52 @@ h1.h_lite,h2.h_lite,h3.h_lite,h4.h_lite,span.h_lite{
     display: none;
 }
 
+.circleMiddle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    box-sizing: border-box;
+    border: 3px solid rgb(5, 176, 255);
+    background: white;
+    color: rgb(5, 176, 255);
+    cursor: pointer;
+    transition: .3s;
+}
+
+.circleMiddle:hover {
+    background: rgb(5, 176, 255);
+    color: rgb(248, 249, 250);
+    box-shadow: 0 1px 3px 0 rgba(60, 64, 67, 0.302), 0 3px 5px 3px rgba(60, 64, 67, 0.192);
+}
+
+.circleSmall{
+    width: 23px;
+    height: 23px;
+    border-radius: 50%;
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.button_shadow{
+    box-shadow: 0 1px 3px 0 rgba(60, 64, 67, 0.302), 0 3px 5px 3px rgba(60, 64, 67, 0.192);
+}
+
+.button_suc{
+    background-color: #66c157;
+    color: #fafafa;
+
+}
+
+.button_blank{
+    background-color: #fcfcfc;
+
+}
+
+.button_suc:focus{
+    background-color: #2c6622;
+}
+
 @media only screen and (min-width:1150px) {
     .wzhSectionContainer .imgContainerW100{
         display: none;

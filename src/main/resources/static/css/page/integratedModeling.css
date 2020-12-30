@@ -78,3 +78,13 @@
     border-bottom: 1px solid #c4c4c4;
     padding: 2px ;
 }
+
+.itemCard{
+    width: 200px;
+    height: 50px;
+    margin: 15px 5px;
+    cursor: pointer;
+    background-color:#5bbbf2 ;
+    border-radius: 8px;
+    position: relative;
+}

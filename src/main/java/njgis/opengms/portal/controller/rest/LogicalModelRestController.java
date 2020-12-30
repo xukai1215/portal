@@ -28,6 +28,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.text.ParseException;
 import java.util.List;
 
@@ -113,6 +114,7 @@ public class LogicalModelRestController {
         String loadUser = null;
         if(session.getAttribute("oid")!=null)
             loadUser =  session.getAttribute("oid").toString() ;
+        oid= URLDecoder.decode(oid);
         return ResultUtils.success(logicalModelService.listByUserOid(modelItemFindDTO,oid,loadUser));
     }
 
@@ -189,6 +191,7 @@ public class LogicalModelRestController {
         String loadUser = null;
         if(session.getAttribute("oid")!=null)
             loadUser =  session.getAttribute("oid").toString() ;
+        oid = URLDecoder.decode(oid);
         return ResultUtils.success(logicalModelService.searchByTitleByOid(logicalModelFindDTO,oid,loadUser));
     }
 

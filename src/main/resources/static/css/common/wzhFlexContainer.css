@@ -70,3 +70,9 @@
 .flexWrap{
     flex-wrap: wrap;
 }
+
+/*flex element*/
+.flex1{
+    flex: 1;
+}
+

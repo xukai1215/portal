@@ -1634,7 +1634,7 @@ public class ModelItemService {
     }
 
     public JSONObject searchByTitleByOid(ModelItemFindDTO modelItemFindDTO, String oid ,String loadUser){
-        String userName=userDao.findFirstByOid(oid).getUserName();
+        String userName=userDao.findFirstByUserId(oid).getUserName();
         int page=modelItemFindDTO.getPage();
         int pageSize = modelItemFindDTO.getPageSize();
         String sortElement=modelItemFindDTO.getSortElement();

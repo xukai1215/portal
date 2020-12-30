@@ -57,7 +57,7 @@ public class TemplateService {
     }
 
     public JSONObject searchByTitleByOid(TemplateFindDTO templateFindDTO, String oid,String loadUser){
-        String userName=userDao.findFirstByOid(oid).getUserName();
+        String userName=userDao.findFirstByUserId(oid).getUserName();
         int page=templateFindDTO.getPage();
         int pageSize = templateFindDTO.getPageSize();
         String sortElement=templateFindDTO.getSortElement();

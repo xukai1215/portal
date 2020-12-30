@@ -39,6 +39,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -377,7 +378,7 @@ public class ModelItemRestController {
         String loadUser = null;
         if(session.getAttribute("oid")!=null)
             loadUser =  session.getAttribute("oid").toString() ;
-
+        oid= URLDecoder.decode(oid);
         return ResultUtils.success(modelItemService.listByUserOid(modelItemFindDTO,oid,loadUser));
     }
 
@@ -499,7 +500,7 @@ public class ModelItemRestController {
         String loadUser = null;
         if(session.getAttribute("oid")!=null)
             loadUser =  session.getAttribute("oid").toString() ;
-
+        oid = URLDecoder.decode(oid);
         return ResultUtils.success(modelItemService.searchByTitleByOid(modelItemFindDTO,oid,loadUser));
     }
 

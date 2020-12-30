@@ -57,7 +57,7 @@ public class UnitService {
     }
 
     public JSONObject searchByTitleByOid(UnitFindDTO unitFindDTO, String oid,String loadUser){
-        String userName=userDao.findFirstByOid(oid).getUserName();
+        String userName=userDao.findFirstByUserId(oid).getUserName();
         int page=unitFindDTO.getPage();
         int pageSize = unitFindDTO.getPageSize();
         String sortElement = unitFindDTO.getSortElement();
