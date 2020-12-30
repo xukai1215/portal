@@ -142,7 +142,7 @@
                                                             <!--<small id="nameHelp" class="form-text text-muted">Please input the name of the data which you are ready to upload.<font color="red">*Not Empty</font></small>-->
 
                                                             <!--keywords-->
-                                                            <label for="keywords"><span class="star">* </span>Keywords:</label><br>
+                                                            <label for="keywords">Keywords:</label><br>
                                                             <!--<div class="bootstrap-tagsinput" >-->
                                                             <input type="text"  id="keywords" placeholder="input key words.."
                                                                    required="required" style="border-radius: 4px;"/><br>
@@ -196,7 +196,7 @@
                                                     <div id="Resource" v-if="dataItemAddDTO.dataType=='File'">
                                                         <label for="classification">You can select some data from you
                                                             data space:</label><br><br>
-                                                        <el-button type="primary" @click="dialogVisible = true">+ Add
+                                                        <el-button type="primary" @click="openDataSpace()">+ Add
                                                         </el-button>
                                                         <el-button type="danger" @click="removeFile()">- Remove
                                                         </el-button>
@@ -214,9 +214,11 @@
                                                             <div @click="resClick"
                                                                  v-for="(resource, index) in selectedFile">
                                                                 <!--</el-row>-->
-                                                                <el-card style="width:10%" :key="index"
+                                                                <el-card style="width:10%"
+                                                                         :key="index"
                                                                          :align="index"
-                                                                         :title="resource.label" class="dataitemisol"
+                                                                         :title="resource.label"
+                                                                         class="dataitemisol"
                                                                          shadow="never">
 
                                                                     <el-row>
@@ -231,7 +233,7 @@
                                                                         <el-col :span="2">&nbsp</el-col>
                                                                         <el-col :span="20">
 
-                                                                            <p style="word-wrap: break-word;word-break: break-all;text-align: center">{{resource.name}}.{{resource.suffix}}</p>
+                                                                            <p style="word-wrap: break-word;word-break: break-all;text-align: center">{{resource.label}}.{{resource.suffix}}</p>
                                                                         </el-col>
                                                                         <el-col :span="2">&nbsp</el-col>
 

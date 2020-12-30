@@ -1,5 +1,6 @@
 package njgis.opengms.portal.service;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
@@ -13,32 +14,45 @@ import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.Utils;
 import org.dom4j.Document;
+import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.*;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.client.RequestCallback;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import springfox.documentation.spring.web.json.Json;
+import sun.security.krb5.internal.ccache.Tag;
 
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import static njgis.opengms.portal.utils.DataApplicationUtil.deleteFolder;
 import static njgis.opengms.portal.utils.DataApplicationUtil.zipUncompress;
+import static njgis.opengms.portal.utils.Utils.deleteFile;
 import static njgis.opengms.portal.utils.Utils.saveFiles;
 
 /**
@@ -75,6 +89,9 @@ public class DataApplicationService {
 
     @Value("${htmlLoadPath}")
     private String htmlLoadPath;
+
+    @Value("${dataServerManager}")
+    private String dataServerManager;
 
 
     public ModelAndView getPage(String id){     //根据oid得到页面
@@ -313,6 +330,8 @@ public class DataApplicationService {
                 invokeService.setServiceId(UUID.randomUUID().toString());//
                 invokeService.setMethod(dataApplication.getMethod());
                 invokeService.setName(dataApplication.getName());
+                invokeService.setToken("POMaXlYttteoEeV7GrO8Ww==");
+                invokeService.setContributor("Portal");
                 invokeService.setIsPortal(true);
                 List<InvokeService> invokeServices = new ArrayList<>();
                 invokeServices.add(invokeService);
@@ -780,7 +799,7 @@ public class DataApplicationService {
         if(name.equals("") && method.equals("")){
             return dataApplicationDao.findAll(pageable);
         }else if(name.equals("") && !method.equals("")){
-            return dataApplicationDao.findByMethodLikeIgnoreCase(method,pageable);
+            return dataApplicationDao.findAllByMethodLikeIgnoreCase(method,pageable);
         }else if(!name.equals("") && method.equals("")){
             return dataApplicationDao.findByNameLike(name,pageable);
         } else{
@@ -991,4 +1010,44 @@ public class DataApplicationService {
     //
     //     return  res;
     // }
+
+    public void parseXML(JSONObject jsonObject, String xml) throws DocumentException {
+        //解析xml  利用Iterator获取xml的各种子节点
+        Document document = DocumentHelper.parseText(xml);
+        Element root = document.getRootElement();
+        ArrayList<String> parameters = new ArrayList<>();
+        List<Element> pas = root.element("Parameter").elements();
+        for (Element e : pas) {
+            log.info(e.attributeValue("name"));
+            parameters.add(e.attributeValue("name"));
+        }
+        jsonObject.put("parameters", parameters);
+        jsonObject.put("xml", xml);
+    }
+
+    /**
+     * 判断token是否在线
+     * @param token token值
+     * @return 是否在线，在线为true，离线为false
+     * @throws UnsupportedEncodingException 抛出异常
+     */
+    public Boolean isOnline(String token) throws UnsupportedEncodingException {
+        token = URLEncoder.encode(token, "UTF-8");
+        String url = "http://" + dataServerManager + "/state?token=" + token;
+        log.info(url);
+
+        //调用url
+        RestTemplate restTemplate = new RestTemplate();
+
+        String response = restTemplate.getForObject(url,String.class);
+        JSONObject jsonObject = JSON.parseObject(response);
+
+        if(jsonObject.getString("code").equals("0")){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+
 }

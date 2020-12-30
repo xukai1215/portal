@@ -38,6 +38,7 @@ public class InvokeService {
 //    Boolean isPortal = false;//门户新建的还是绑定的
     Date time;
     Boolean isPortal;//门户新建的还是绑定的
+    String onlineStatus;// online offline
 
     public InvokeService(Boolean isPortal){
         this.isPortal = isPortal;
