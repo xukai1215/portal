@@ -187,8 +187,8 @@ var userDataServer = Vue.extend(
                     type: "GET",
                     url: "/dataServer/getNodeContentCheck",
                     data:{
-                       token:token,
-                       type:type,
+                        token:token,
+                        type:type,
                     },
                     async:false,
                     success: (res) => {
