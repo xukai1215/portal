@@ -11,9 +11,9 @@ new Vue({
             activeIndex: '2',
             queryType: 'normal',
             searchText: '',
-            classifications1: ["652bf1f8-2f3e-4f93-b0dc-f66505090873"],
-            classifications2: [],//advance
-            classifications3: ["9f7816be-c6e3-44b6-addf-98251e3d2e19"],
+            classifications_old: ["652bf1f8-2f3e-4f93-b0dc-f66505090873"],
+            classifications_advance: [],//advance
+            classifications_new: ["9f7816be-c6e3-44b6-addf-98251e3d2e19"],
 
             currentClass:"Application-focused categories",
 
@@ -410,9 +410,32 @@ new Vue({
             sortTypeName:"View Count",
             sortFieldName:"viewCount",
             sortOrder:"Desc.",
+
+            advancedMode:false,
+
+            connectors:["AND","OR","NOT"],
+            queryFields:["Name","Keyword","Overview","Detail","Contributor"],
+            queryConditions:[{
+                connector:"AND",
+                queryField:"Name",
+                content:"",
+            },{
+                connector:"AND",
+                queryField:"Keyword",
+                content:"",
+            }],
         }
     },
     methods: {
+        //高级搜索
+        conditionAppend(){
+            this.queryConditions.add({
+                connector:"AND",
+                queryField:"Name",
+                content:"",
+            });
+        },
+
         changeSortField(ele){
             this.sortTypeName = ele;
             let field = ele.replace(" ","").replace(ele[0],ele[0].toLowerCase());
@@ -719,8 +742,10 @@ new Vue({
             this.switchInit();
             this.setUrl("/modelItem/repository")
             this.pageOption.currentPage = 1;
-            this.classifications3=["all"];
-            this.$refs.tree3.setCurrentKey(null);
+            this.classifications_new=["all"];
+            if(this.queryType=='normal') {
+                this.$refs.treeNew.setCurrentKey(null);
+            }
             this.currentClass="ALL"
             this.classType = 2;
             this.getModels(this.classType);
@@ -728,7 +753,7 @@ new Vue({
         //页码change
         handlePageChange(val) {
             this.switchInit();
-            let data=this.$refs.tree3.getCurrentNode();
+            let data=this.$refs.treeNew.getCurrentNode();
             if(data!=null) {
                 this.setUrl("/modelItem/repository?category=" + data.oid + "&page=" + val);
             }
@@ -748,7 +773,7 @@ new Vue({
             this.currentClass=data.label;
             let classes = [];
             classes.push(data.oid);
-            this.classifications1 = classes;
+            this.classifications_old = classes;
             //this.getChildren(data.children)
             this.pageOption.currentPage=1;
             this.searchText="";
@@ -766,7 +791,7 @@ new Vue({
             this.currentClass=data.label;
             let classes = [];
             classes.push(data.oid);
-            this.classifications3 = classes;
+            this.classifications_new = classes;
             //this.getChildren(data.children)
             this.pageOption.currentPage=1;
             this.searchText="";
@@ -778,7 +803,7 @@ new Vue({
             if (children != null) {
                 for (let i = 0; i < children.length; i++) {
                     let child = children[i];
-                    this.classifications1.push(child.oid);
+                    this.classifications_old.push(child.oid);
                     this.getChildren(child.children);
                 }
             }
@@ -787,13 +812,13 @@ new Vue({
             this.switchInit();
             // this.pageOption.searchResult=[];
             this.pageOption.paginationShow=false;
-            let checkedNodes = this.$refs.tree2.getCheckedNodes()
+            let checkedNodes = this.$refs.treeAdvance.getCheckedNodes()
             let classes = [];
             for (let i = 0; i < checkedNodes.length; i++) {
                 classes.push(checkedNodes[i].oid);
             }
-            this.classifications2 = classes;
-            console.log(this.classifications2);
+            this.classifications_advance = classes;
+            console.log(this.classifications_advance);
             this.pageOption.currentPage=1;
             this.getModels();
         },
@@ -810,38 +835,17 @@ new Vue({
                 case "normal":
                     data.searchText = this.searchText.trim();
                     if(classType==2) {
-                        data.classifications = this.classifications3.length == 0 ? ["all"] : this.classifications3;
+                        data.classifications = this.classifications_new.length == 0 ? ["all"] : this.classifications_new;
                         data.classType=classType;
                     }else{
-                        data.classifications = this.classifications1.length == 0 ? ["all"] : this.classifications1;
+                        data.classifications = this.classifications_old.length == 0 ? ["all"] : this.classifications_old;
                         data.classType=1;
                     }
 
                     break;
                 case "advanced":
-                    var connects = $(".connect");
-                    var props = $(".prop");
-                    var values = $(".value");
-
-                    var connect_arr = new Array();
-                    var prop_arr = new Array();
-                    var value_arr = new Array();
-
-                    for (i = 0; i < props.length; i++) {
-                        prop_arr.push(props.eq(i).text().trim())
-                    }
-                    for (i = 0; i < values.length; i++) {
-                        value_arr.push(values.eq(i).val().trim() == "" ? " " : values.eq(i).val().trim());
-                    }
-                    for (i = 0; i < connects.length; i++) {
-                        connect_arr.push(connects.eq(i).val().trim())
-                    }
-
-                    data.connects = connect_arr;
-                    data.props = prop_arr;
-                    data.values = value_arr;
-
-                    data.classifications = this.classifications2.length == 0 ? ["all"] : this.classifications2
+                    data.conditions = JSON.stringify(this.queryConditions);
+                    data.classifications = this.classifications_advance.length == 0 ? ["all"] : this.classifications_advance;
 
                     break;
             }
@@ -910,6 +914,16 @@ new Vue({
                 });
                 this.stepsConfig = [
                     {
+                        "element" : ".categoryList",
+                        "popover" : {
+                            "title" : "Model Classifications",
+                            "description" : "Here you can view the models by category.",
+                            "position" : "right",
+                            "prevBtnText": "previous",
+                            "nextBtnText": "next"
+                        }
+                    },
+                    {
                         "element": ".searcherInputPanel",
                         "popover": {
                             "title": "Search",
@@ -917,16 +931,7 @@ new Vue({
                             "position": "bottom-right",
                         }
                     },
-                    {
-                        "element" : ".categoryList",
-                        "popover" : {
-                            "title" : "Model classifications",
-                            "description" : "Here you can view the models by category.",
-                            "position" : "right",
-                            "prevBtnText": "previous",
-                            "nextBtnText": "next"
-                        }
-                    },
+
                     {
                         "element" : "#contributeBtn",
                         "popover" : {
@@ -954,11 +959,11 @@ new Vue({
         console.log(category,page)
 
         if(category!=null) {
-            this.classifications3=[];
-            this.classifications3.push(category);
+            this.classifications_new=[];
+            this.classifications_new.push(category);
             for(i=0;i<this.treeData2.length;i++){
                 if(category==this.treeData2[i].oid){
-                    this.$refs.tree3.setCurrentKey(this.treeData2[i].id);
+                    this.$refs.treeNew.setCurrentKey(this.treeData2[i].id);
                     this.currentClass=this.treeData2[i].label;
                     break;
                 }
@@ -968,7 +973,7 @@ new Vue({
                     for(j=0;j<children.length;j++){
                         if(category==children[j].oid){
                             find=true;
-                            this.$refs.tree3.setCurrentKey(children[j].id);
+                            this.$refs.treeNew.setCurrentKey(children[j].id);
                             this.currentClass=children[j].label;
                             $(".el-tree-node__expand-icon").eq(i).click();
                             break;
@@ -979,7 +984,7 @@ new Vue({
                                 for (k = 0; k < childrens.length; k++) {
                                     if (category == childrens[k].oid) {
                                         find = true;
-                                        this.$refs.tree3.setCurrentKey(childrens[k].id);
+                                        this.$refs.treeNew.setCurrentKey(childrens[k].id);
                                         this.currentClass = childrens[k].label;
                                         $(".el-tree-node__expand-icon").eq(1).click();
                                         var index=j+2;
@@ -1014,24 +1019,6 @@ new Vue({
 
         this.getModels(this.classType);
 
-        // if(category!=null||page!=null){
-        //     this.getModels();
-        // }
-        // else{
-        //
-        //         this.currentClass="Hydrosphere";
-        //         this.pageOption.total = 258;
-        //         this.pageOption.pages = 26;
-        //         this.pageOption.searchResult=[{"oid":"3f6857ba-c2d2-4e27-b220-6e5367803a12","name":"SWAT_Model","image":"","description":"The Soil & Water Assessment Tool is a small watershed to river basin-scale model used to simulate the quality and quantity of surface and ground water and predict the environmental impact of land use, land management practices, and climate change. SWAT is widely used in assessing soil erosion prevention and control, non-point source pollution control and regional management in watersheds.","author":"njgis","status":"public","keywords":["SWAT","Hydrology"],"createTime":"2018-06-13T06:19:16.079+0000","viewCount":2147},{"oid":"29c36489-6039-467d-9561-6d0b600d7d05","name":"TaiHu_Fvcom","image":"","description":"FVCOM is a prognostic, unstructured-grid, finite-volume, free-surface, 3-D primitive equation coastal ocean circulation model developed by UMASSD-WHOI joint efforts.","author":"njgis","status":"public","keywords":["Fvcome","TaiHu","Hydrology"],"createTime":"2018-06-21T09:12:23.784+0000","viewCount":716},{"oid":"5738ef7c-a5ac-46b5-a347-3c823f71b3a7","name":"FVCOM","image":"/static/modelItem/552bbfcb-9001-4b8b-b941-65e99cec0b9e.jpg","description":"FVCOM is a prognostic, unstructured-grid, finite-volume, free-surface, 3-D primitive equation coastal ocean circulation model developed by UMASSD-WHOI joint efforts.","author":"njgis","status":"public","keywords":["Fvcom"],"createTime":"2018-07-07T14:22:20.671+0000","viewCount":609},{"oid":"75fd5cca-0bfc-480b-a354-42a826739a02","name":"DCBAH","image":"","description":"DCBAH模型是一个以栅格为模拟单元的分布式水文模型，模型以VC++6.0为开发工具，集成的GIS平台为MapObjects 2.1。 ","author":"KingW","status":"public","keywords":["DCBAH","Hydrology"],"createTime":"2018-09-25T07:03:53.742+0000","viewCount":501},{"oid":"b3a88af1-3568-4219-99c4-aa8fbce3227d","name":"SWMM","image":"/static/modelItem/f9212425-210d-4b92-b0ef-59bcff0e62a9.jpg","description":"The EPA Storm Water Management Model (SWMM) is a dynamic rainfall-runoff simulation model used for single event or long-term (continuous) simulation of runoff quantity and quality from primarily urban areas(EPA SWMM Help).","author":"njgis","status":"public","keywords":["Strom","Water","Hydrology"],"createTime":"2018-10-15T03:23:36.150+0000","viewCount":496},{"oid":"b38ae888-629c-4ef3-a97e-984133f622a9","name":"Groundwater model of fractured karst aquifer","image":"","description":"地下水数值模型是刻画、表征和再现地下水系统的一种有效工具和常用手段，它能够模拟地下水系统特征，以及解决在复杂水文地质条件和地下水开发利用条件下的地下水资源评价问题。","author":"luyuchen","status":"public","keywords":["Groundwater","Hydrology"],"createTime":"2018-09-10T06:11:22.750+0000","viewCount":450},{"oid":"7c6b2b63-8e63-4928-947b-bf4530aa04b8","name":"BDS","image":"","description":"系统实现了在线可视化建模，需求方案的可定制，计算成果在线查询分析、动态显示的等功能。","author":"njgis","status":"public","keywords":["Hydrology"],"createTime":"2018-01-02T10:15:37.411+0000","viewCount":416},{"oid":"f1539402-d6d4-4b6d-a3a4-f332568f51bc","name":"SEIMS","image":"","description":"The Spatially Explicit Integrated Modeling System (SEIMS), is an integrated, modular, parallelized, fully-distributed watershed modeling and scenario analysis system.","author":"SongJ","status":"public","keywords":["SEIMS","SWAT","Water","BMPs","scenario analysis"],"createTime":"2018-08-11T09:41:46.393+0000","viewCount":386},{"oid":"2101af9f-f26d-49ed-8faa-9f017ed2b62f","name":"Yangtze Estuary&Hangzhou Bay Model","image":"","description":"This model uses FVCOM to simulate the surface of Yangtze Estuary-Hangzhou Bay.","author":"wxc627684875","status":"public","keywords":["Yangtze Estuary","Hangzhou Bay"],"createTime":"2018-08-14T07:12:41.256+0000","viewCount":384},{"oid":"ac980fc8-bf6a-4753-905f-d517fb9dd439","name":"Jiangsu Coastal Storm Surge Mathematical Model","image":"","description":"This model uses Adcirc model to simulate the storm surge along the coast of Jiangsu province.","author":"wxc627684875","status":"public","keywords":["Jiangsu Province","Storm Surge"],"createTime":"2018-08-13T12:15:06.311+0000","viewCount":378}];
-        //         this.pageOption.users=[{"image":"/static/user/c4e82487-a828-497a-b549-f814ecccc8b7.jpg","name":"NNU_Group","oid":"42"},{"image":"/static/user/c4e82487-a828-497a-b549-f814ecccc8b7.jpg","name":"NNU_Group","oid":"42"},{"image":"/static/user/c4e82487-a828-497a-b549-f814ecccc8b7.jpg","name":"NNU_Group","oid":"42"},{"image":"/static/user/c4e82487-a828-497a-b549-f814ecccc8b7.jpg","name":"NNU_Group","oid":"42"},{"image":"","name":"KingW","oid":"3"},{"image":"","name":"芦宇辰","oid":"11"},{"image":"/static/user/c4e82487-a828-497a-b549-f814ecccc8b7.jpg","name":"NNU_Group","oid":"42"},{"image":"/static/user/ffcd99e4-68e2-4c3c-b9cb-a1dae632b263.jpg","name":"WangXinchang","oid":"49"},{"image":"/static/user/ffcd99e4-68e2-4c3c-b9cb-a1dae632b263.jpg","name":"WangXinchang","oid":"49"},{"image":"","name":"songjie","oid":"25"}];
-        //         this.pageOption.progressBar = false;
-        //         this.pageOption.paginationShow=true;
-        //
-        // }
-
-
-
-
         //expend
         $("#expend").click(() => {
             this.pageOption.searchResult=[];
@@ -1041,8 +1028,6 @@ new Vue({
             this.queryType = "advanced";
             $(".searcherPanel").css("display", "none");
             $(".advancedSearch").css("display", "block");
-            $("#tree1").css("display", "none");
-            $("#tree2").css("display", "block");
             // if($(".el-checkbox__input").eq(1).hasClass("is-checked")==true){
             //     this.getModels();
             // }
@@ -1059,8 +1044,6 @@ new Vue({
             this.queryType = "normal";
             $(".searcherPanel").css("display", "block");
             $(".advancedSearch").css("display", "none");
-            $("#tree2").css("display", "none");
-            $("#tree1").css("display", "block");
             this.getModels();
             $("#curClassBar").show();
         })
@@ -1154,11 +1137,11 @@ new Vue({
             }
         });
 
-        if(document.cookie.indexOf("modelRep=1")==-1){
+        // if(document.cookie.indexOf("modelRep=1")==-1){
             this.showDriver();
             var t=new Date(new Date().getTime()+1000*60*60*24*60);
             document.cookie="modelRep=1; expires="+t.toGMTString();
-        }
+        // }
 
     }
 })

@@ -435,12 +435,12 @@ public class ModelItemRestController {
     @RequestMapping (value="/advance",method = RequestMethod.POST)
     JsonResult advanced(ModelItemFindDTO modelItemFindDTO,
                         @RequestParam(value="classifications[]") List<String> classes,
-                        @RequestParam(value="connects[]") List<String> connects,
-                        @RequestParam(value="props[]") List<String> props,
-                        @RequestParam(value="values[]") List<String> values){
+                        @RequestParam(value="conditions") String conditions){
         try {
-            return ResultUtils.success(modelItemService.query(modelItemFindDTO, connects, props, values, classes));
-        }catch (ParseException e){
+            JSONArray queryConditions = JSONArray.parseArray(conditions);
+            return ResultUtils.success(modelItemService.advancedQuery(modelItemFindDTO,queryConditions,classes));
+
+        }catch (Exception e){
             return ResultUtils.error(-1,"error");
         }
     }

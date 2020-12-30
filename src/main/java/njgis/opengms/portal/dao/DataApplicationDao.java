@@ -38,6 +38,7 @@ public interface DataApplicationDao extends MongoRepository<DataApplication, Str
     Page<DataApplication> findByMethodLike(String method, Pageable pageable);
     Page<DataApplication> findByMethodLikeIgnoreCase(String method, Pageable pageable);
 
+    Page<DataApplication> findAllByMethodLikeIgnoreCase(String method,Pageable pageable);
     Page<DataApplication> findByMethod(String method,Pageable pageable);
 
     Page<DataApplication> findByNameLike(String name,Pageable pageable);

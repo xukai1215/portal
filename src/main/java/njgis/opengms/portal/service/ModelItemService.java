@@ -588,6 +588,24 @@ public class ModelItemService {
         String authorUserName = author;
         if(!modelItem.isLock()) {
             if (author.equals(uid)) {
+
+                List<String> versions = modelItem.getVersions();
+                if (versions == null || versions.size() == 0) {
+                    ModelItemVersion modelItemVersionOri = new ModelItemVersion();
+                    BeanUtils.copyProperties(modelItem, modelItemVersionOri, "id");
+                    modelItemVersionOri.setOid(UUID.randomUUID().toString());
+                    modelItemVersionOri.setOriginOid(modelItem.getOid());
+                    modelItemVersionOri.setVerNumber((long) 0);
+                    modelItemVersionOri.setVerStatus(2);
+                    modelItemVersionOri.setModifier(modelItem.getAuthor());
+                    modelItemVersionOri.setModifyTime(modelItem.getCreateTime());
+                    modelItemVersionDao.insert(modelItemVersionOri);
+
+                    versions = new ArrayList<>();
+                    versions.add(modelItemVersionOri.getOid());
+                    modelItem.setVersions(versions);
+                }
+
                 BeanUtils.copyProperties(modelItemUpdateDTO, modelItem);
                 //判断是否为新图片
                 String uploadImage = modelItemUpdateDTO.getUploadImage();
@@ -602,8 +620,26 @@ public class ModelItemService {
                     Utils.base64StrToImage(imgStr, resourcePath + path);
                     modelItem.setImage(path);
                 }
-                modelItem.setLastModifyTime(new Date());
+                Date curDate = new Date();
+                modelItem.setLastModifyTime(curDate);
+                modelItem.setLastModifier(author);
                 modelItem.setDetail(Utils.saveBase64Image(modelItemUpdateDTO.getDetail(),modelItem.getOid(),resourcePath,htmlLoadPath));
+
+                ModelItemVersion modelItemVersion = new ModelItemVersion();
+                BeanUtils.copyProperties(modelItem,modelItemVersion,"id");
+                modelItemVersion.setOriginOid(modelItem.getOid());
+                modelItemVersion.setOid(UUID.randomUUID().toString());
+                modelItemVersion.setModifier(author);
+                modelItemVersion.setModifyTime(curDate);
+                modelItemVersion.setVerNumber(curDate.getTime());
+                modelItemVersion.setVerStatus(2);
+                modelItemVersion.setCreator(author);
+                modelItemVersionDao.insert(modelItemVersion);
+
+
+                versions.add(modelItemVersion.getOid());
+                modelItem.setVersions(versions);
+
                 modelItemDao.save(modelItem);
 
                 JSONObject result = new JSONObject();
@@ -918,6 +954,7 @@ public class ModelItemService {
             modelItemJson.put("oid", modelItemNew.getOid());
             modelItemJson.put("description", modelItemNew.getDescription());
             modelItemJson.put("image", modelItemNew.getImage().equals("") ? null : htmlLoadPath + modelItemNew.getImage());
+            modelItemJson.put("relation", modelItem.getModelRelationList().get(i).getRelation().getText());
             modelItemArray.add(modelItemJson);
         }
 
@@ -1432,7 +1469,54 @@ public class ModelItemService {
 
     }
 
+    @Autowired
+    private ModelItemDao modelItemRepository;
+
+    public JSONObject advancedQuery(ModelItemFindDTO modelItemFindDTO,JSONArray queryConditions,List<String> classes){
+
+        Pageable pageable = new PageRequest(modelItemFindDTO.getPage(),modelItemFindDTO.getPageSize());
+
+//        List<ModelItem> modelItemList = modelItemRepository.findAll(new Specification<ModelItem>(){
+//            @Override
+//            public Predicate toPredicate(Root<ModelItem> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder cb){
+//                List<Predicate> predicates = new ArrayList<>();
+//                predicates.add(cb.like(root.get("name").as(String.class), "%SWAT%"));
+////                    if (user.getUserId() != null && !user.getUserId().equals("")) {
+////                            predicates.add(cb.like(root.get("userId").as(String.class), "%" + user.getUserId() + "%"));
+////                        }
+////                    if (user.getUserName() != null && !user.getUserName().equals("")) {
+////                            predicates.add(cb.like(root.get("userName").as(String.class), "%" + user.getUserName() + "%"));
+////                        }
+////                    if (user.getGender() != null && !user.getGender().equals("")) {
+////                            predicates.add(cb.like(root.get("gender").as(String.class), "%" + user.getGender() + "%"));
+////                        }
+////                    if (user.getAge() != null && !user.getAge().equals("")) {
+////                            predicates.add(cb.like(root.get("age").as(String.class), "%" + user.getAge() + "%"));
+////                        }
+////                    if (StringUtils.isNotBlank(params.getGradeName())) {
+////                            Join<Grade, User> join = root.join("grade", JoinType.LEFT);
+////                            list.add(cb.equal(join.get("gradeName"), params.getGradeName()));
+////                        }
+////                    //根据schoolName 查询user
+////                    if (StringUtils.isNotBlank(params.getSchoolName())) {
+////                            Join<School, User> join = root.join("grade", JoinType.LEFT);
+////                            list.add(cb.equal(join.get("school").get("schoolName"), params.getSchoolName()));
+////                        }
+//                    Predicate[] pre = new Predicate[predicates.size()];
+//                    criteriaQuery.where(predicates.toArray(pre));
+//                    return cb.and(predicates.toArray(pre));
+//                }
+//
+//        }, pageable);
+
+
+        return new JSONObject();
+
+    }
+
     public JSONObject query(ModelItemFindDTO modelItemFindDTO,List<String> connects, List<String> props, List<String> values, List<String> nodeID) throws ParseException {
+//        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+//        cb.not
 
         ModelDao modelDao=new ModelDao();
 

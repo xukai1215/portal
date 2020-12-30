@@ -343,7 +343,7 @@ public class TaskService {
         User user = userDao.findFirstByUserName(modelInfo.getAuthor());
         JSONObject userJson = new JSONObject();
         userJson.put("compute_model_user_name", user.getName());
-        userJson.put("compute_model_user_oid", user.getOid());
+        userJson.put("compute_model_userId", user.getUserId());
         userJson.put("userName", userName);
         JSONObject taskInfo = new JSONObject();
         JSONObject dxInfo = new JSONObject();
@@ -695,7 +695,7 @@ public class TaskService {
                 resultDataDTO.setSuffix("");
             } else {
                 JSONObject data = res.getJSONObject("data");
-                String data_url = "http://"+dataContainerIpAndPort+"/data?uid="+data.getString("source_store_id");
+                String data_url = "http://"+dataContainerIpAndPort+"/data/"+data.getString("source_store_id");
                 String tag = data.getString("file_name");
                 String[] paths=testDataPath.split("\\.");
                 String suffix = paths[paths.length-1];

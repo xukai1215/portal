@@ -113,8 +113,8 @@ var createTemplate = Vue.extend({
             },
             localizationList:[
                 {
-                    localCode:"en-US",
-                    localName:"English (United States)",
+                    localCode:"en",
+                    localName:"English",
                     name:"",
                     description:"",
                     selected:true,
@@ -710,8 +710,8 @@ var createTemplate = Vue.extend({
                 clearInterval(interval);
             },500);
 
-            this.$set(this.languageAdd.local,"value","en-US");
-            this.$set(this.languageAdd.local,"label","English (United States)");
+            this.$set(this.languageAdd.local,"value","en");
+            this.$set(this.languageAdd.local,"label","English");
 
             if(this.draft.oid!=''&&this.draft.oid!=null&&typeof (this.draft.oid)!="undefined"){
                 // this.loadDraftByOid()
@@ -790,9 +790,14 @@ var createTemplate = Vue.extend({
                     } else {
                         return true;
                     }
-                } else {
-                    return true;
                 }
+
+                if(this.currentLocalization.name === ""){
+                    this.currentLocalization.name = $("#nameInput").val();
+                }
+
+                return true;
+
             }
         });
 
@@ -806,8 +811,13 @@ var createTemplate = Vue.extend({
             success: (data) => {
                 console.log(data);
                 if (data.oid == "") {
-                    alert("Please login");
-                    window.location.href = "/user/login";
+                    this.$alert('Please login first!', 'Error', {
+                        type: "error",
+                        confirmButtonText: 'OK',
+                        callback: action => {
+                            window.location.href = "/user/login";
+                        }
+                    });
                 }
                 else {
                     this.userId = data.oid;

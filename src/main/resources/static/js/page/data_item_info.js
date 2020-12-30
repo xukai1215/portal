@@ -1316,8 +1316,13 @@ var  data_item_info = new Vue({
                         that.mseeageByWebSocket("distributed")
 
                     }else if(json.code==-1){
-                        alert("Please login first!");
-                        window.location.href="/user/login";
+                        this.$alert('Please login first!', 'Error', {
+                            type:"error",
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                window.location.href="/user/login";
+                            }
+                        });
                     }else if (json.code = "1"){
                         that.loading = false;
                         // $(".connect").hide();
@@ -1359,8 +1364,13 @@ var  data_item_info = new Vue({
                         this.xml = json.xml;
                         this.parameters = json.parameters
                     }else if(json.code==-1) {
-                        alert("Please login first!");
-                        window.location.href = "/user/login";
+                        this.$alert('Please login first!', 'Error', {
+                            type:"error",
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                window.location.href="/user/login";
+                            }
+                        });
                     }
                 }
 
@@ -1394,8 +1404,13 @@ var  data_item_info = new Vue({
                         this.xml = json.xml;
                         this.parameters = json.parameters
                     }else if(json.code==-1) {
-                        alert("Please login first!");
-                        window.location.href = "/user/login";
+                        this.$alert('Please login first!', 'Error', {
+                            type:"error",
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                window.location.href="/user/login";
+                            }
+                        });
                     }
                 }
             })
@@ -1510,7 +1525,7 @@ var  data_item_info = new Vue({
                             that.loading = false;
                         }
 
-                        window.location.href = "http://111.229.14.128:8899/data?uid="+ r.id;
+                        window.location.href = "http://111.229.14.128:8899/data/"+ r.id;
 
                         return
                     }

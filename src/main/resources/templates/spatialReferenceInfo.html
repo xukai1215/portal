@@ -66,7 +66,7 @@
 <body>
 <div id="app">
     <div th:replace="fragments/navbar :: unlog"></div>
-    <div class="clearfix" style="margin:40px 0px;height: auto;">
+    <div class="clearfix" style="padding:40px 0px;height: auto;position: relative;">
 
         <div class="left-panel el-col">
             <div class="detail">
@@ -108,7 +108,7 @@
                     <div th:if="${history!=true}" class="detail_option">
                         <!--<a href="javascript:void(0)" class="fa fa-share-square-o" aria-hidden="true"></a>-->
                         <!--<div th:utext="'&nbsp&nbsp'+${modelInfo.shareCount}">&nbsp&nbsp37</div>-->
-                        <a href="javascript:void(0)" class="fa fa-eye" aria-hidden="true"></a>
+                        <a class="fa fa-eye" aria-hidden="true"></a>
                         <div th:utext="'&nbsp&nbsp'+${info.viewCount}">&nbsp&nbsp341</div>
                     </div>
                 </div>
@@ -298,7 +298,7 @@
             <div id="cite" class="detail_block">
                 <div class="block_head">
                     <div class="head_text">
-                        <h4>How to cite</h4>
+                        <h4>How to Cite</h4>
                     </div>
                 </div>
                 <div class="block_content">
@@ -465,7 +465,7 @@
         </div>
 
         <div th:if="${history==true}"
-             style="pointer-events:none;position: absolute;top:62px;bottom: 0;left: 0;right: 0;background-image: url('/static/img/historyBackground.png')"></div>
+             style="pointer-events:none;position: absolute;top:0;bottom: 0;left: 0;right: 0;background-image: url('/static/img/historyBackground.png')"></div>
 
     </div>
 

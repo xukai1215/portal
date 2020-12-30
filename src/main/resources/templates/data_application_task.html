@@ -24,6 +24,7 @@
     <!--    <link rel="stylesheet" href="../static/css/components/file-manager.css">-->
     <link rel="stylesheet" href="/static/haha/css/style.css">
     <link rel="stylesheet" href="/static/css/page/user_space_out.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/page/user_space.css">
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css"/>
     <style>
@@ -75,7 +76,7 @@
     </style>
 </head>
 <body>
-<div id="app" v-cloakz>
+<div id="app" v-cloak>
     <div th:replace="fragments/navbar :: unlog"></div>
     <div style="height: 700px">
     <div class="el-col el-col-5" role="applicationIntro" id="applicationSider" style="min-width: 220px">
@@ -86,18 +87,18 @@
                     <!--<img src="/static/haha/img/default.png">-->
                 </div>
                 <div>
-                    <h3 class="model_title"> {{applicationInfo.name}}</h3>
+                    <h3 class="model_title"> {{invokeService.name}}</h3>
                     <span>Contributed by <span style="cursor: pointer; font-size: 2rem;"
-                                               @click="goPersonCenter(user.oid)">{{user.name}}</span></span>
+                                               @click="goPersonCenter(user.oid)">{{invokeService.contributor}}</span></span>
                     <br>
                 </div>
             </div>
             <div class="btn-list">
-                <el-button plain type="primary" style="min-width: 120px">
+                <el-button plain type="primary" style="min-width: 120px" @click="loadDataVisible = true">
                     Load data
                 </el-button>
 
-                <el-button plain type="primary" style="min-width: 121px" @click="dialogVisible = true">
+                <el-button plain type="primary" style="min-width: 121px" @click="invokeDialog = true">
                     <i class="fa fa-hand-spock-o"></i>&nbsp;Invoke
                 </el-button>
             </div>
@@ -146,21 +147,23 @@
                                         <el-col :span="11" class="_event-desc">
                                                         <span class="event-name">
                                                             <span style="color:red">*</span>
-                                                            test
+                                                            Input Data
                                                         </span>
-                                                        <span>
-                                                            <el-tag type="info" :disable-transitions="true">
-                                                                Data Type:
-                                                                <a style="text-decoration: underline"
-                                                                   target="_blank">shp</a>
-                                                            </el-tag>
-                                                        </span>
+<!--                                                        <span>-->
+<!--                                                            <el-tag type="info" :disable-transitions="true">-->
+<!--                                                                Data Type:-->
+<!--                                                                <a style="text-decoration: underline"-->
+<!--                                                                   target="_blank">shp</a>-->
+<!--                                                            </el-tag>-->
+<!--                                                        </span>-->
                                         </el-col>
                                         <div>
                                             <el-col :span="6" :offset="1">
                                                 <!--:value="modelInEvent.tag"-->
-                                                <el-input class="model-input" v-model="input" >
-                                                </el-input>
+                                                <div v-for="(item,index) in selectData">
+                                                    <el-input class="model-input" v-model="item.name">
+                                                    </el-input>
+                                                </div>
                                             </el-col>
 
                                             <el-col :span="6">
@@ -169,7 +172,7 @@
                                                         <i class="fa fa-folder-open"></i>
                                                     </el-button>
 
-                                                    <el-button plain round type="warning" @click="downLoadTestData()">
+                                                    <el-button plain round type="warning" @click="downLoadInfoTestData($event)" class="downloadInfoBtn">
                                                         <i class="fa fa-download"></i>
                                                     </el-button>
 
@@ -181,8 +184,8 @@
                                         </div>
                                     </el-row>
                                     <el-row>
-                                        <p title="Input stars_dbf, .dbf file stores the attribute information" class="event-desc">
-                                            Input stars_dbf, .dbf file stores the attribute information
+                                        <p title="Input data can be used to run data processing services" class="event-desc">
+                                            Input data, can be used to run data processing services
                                         </p>
                                     </el-row>
                                 </div>
@@ -195,15 +198,15 @@
                                     <el-col :span="11" class="_event-desc">
                                                         <span class="event-name">
                                                             <span style="color:red">*</span>
-                                                            test
+                                                            Output Data
                                                         </span>
-                                        <span>
-                                                            <el-tag type="info" :disable-transitions="true">
-                                                                Data Type:
-                                                                <a style="text-decoration: underline"
-                                                                   target="_blank">shp</a>
-                                                            </el-tag>
-                                                        </span>
+<!--                                        <span>-->
+<!--                                                            <el-tag type="info" :disable-transitions="true">-->
+<!--                                                                Data Type:-->
+<!--                                                                <a style="text-decoration: underline"-->
+<!--                                                                   target="_blank">shp</a>-->
+<!--                                                            </el-tag>-->
+<!--                                                        </span>-->
                                     </el-col>
                                     <div>
                                         <el-col :span="6" :offset="1">
@@ -230,8 +233,8 @@
                                     </div>
                                 </el-row>
                                 <el-row>
-                                    <p title="Input stars_dbf, .dbf file stores the attribute information" class="event-desc">
-                                        Input stars_dbf, .dbf file stores the attribute information
+                                    <p title="Output data, data processing service running result file" class="event-desc">
+                                        Output data, data processing service running result file
                                     </p>
                                 </el-row>
                             </div>
@@ -243,27 +246,13 @@
         </div>
     </div>
 
-    <!--<el-dialog :visible.sync="loadDataVisible" title="Load Data" class="wzhDialog"-->
-    <!--           style="height: 915px !important;">-->
-    <!--    <el-tag class="flexRowSpaceBetween"-->
-    <!--            style="margin-bottom:10px;height:auto;padding: 5px 0;justify-content: space-around;align-items: baseline">-->
-    <!--        <h4 style="font-style: italic;">There is a dataset for you to test this model. </h4>-->
-    <!--        <el-button type="primary" @click="loadTest">Load Test Dataset</el-button>-->
-    <!--    </el-tag>-->
-
-    <!--    <div slot="footer" class="dialog-footer">-->
-    <!--        <el-button>cancel</el-button>-->
-    <!--    </div>-->
-
-    <!--</el-dialog>-->
     </div>
     <div th:replace="fragments/footer :: footer"></div>
     <el-dialog
             v-loading="loading"
         title="Invoke"
-        :visible.sync="dialogVisible"
-        width="80%"
-        :before-close="handleClose">
+        :visible.sync="invokeDialog"
+        width="80%">
     <el-card>
         <div class="" style="display: inline-block;width: 60%;">
             <p style="font-weight: 600">XML description of visualization:</p><br>
@@ -271,19 +260,90 @@
         </div>
         <div class="" style="display: inline-block;float: right;width: 35%">
             <p style="font-weight: 600">Parameters to be filled in:</p><br>
-            <div class="" v-for = "(para,i) in parameters">
+            <div class="" v-for = "(para,i) in parameters" v-if="parameters.length != 0">
                 <p>{{para}}</p>
                 <input type="text" autocomplete="off" v-model="parameter" placeholder="Please enter the content" :id ="para" class="el-input__inner">
             </div>
         </div>
     </el-card>
-    <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">Cancel</el-button>
+        <span slot="footer" class="dialog-footer">
+        <el-button @click="invokeDialog = false">Cancel</el-button>
         <el-button type="primary" @click = "invokeNow()">Invoke Now</el-button>
     </span>
-</el-dialog>
+    </el-dialog>
+
+    <el-dialog
+            title="Load Data"
+            :visible.sync="loadDataVisible"
+            width="80%">
+        <el-tabs v-model="activeName" @tab-click="handleClick"  stretch="true">
+            <el-tab-pane label="Test Data" name="first">
+    <!--            Test Data Table-->
+                <el-table
+                        :data="testData"
+                        style="width: 100%"
+                        fit="true">
+                    <el-table-column
+                            prop="name"
+                            label="Data Name">
+                    </el-table-column>
+                    <el-table-column label="Download">
+                        <template slot-scope="scope">
+                            <el-button @click = "downloadTestData($event)" type="success" class="downloadBtn">
+                                Download
+                            </el-button>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="Operation" prop="loadStatus">
+                        <template slot-scope="scope">
+                            <el-button @click = "selectTestData($event)" type="success" class="SelectTestData" v-if="scope.row.loadStatus != 'true'">
+                                Load Test Data
+                            </el-button>
+                            <el-button type="info" v-if="scope.row.loadStatus === 'true'">
+                                Loaded
+                            </el-button>
+    <!--                        <el-button @click = "" type="info"  v-if="currUrl.length!=0">-->
+    <!--                            Selected-->
+    <!--                        </el-button>-->
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </el-tab-pane>
+<!--            <el-tab-pane label="Upload Data" name="second">-->
+<!--                <div class="form-group flexColContainer">-->
+<!--                    <label style="margin-right:5px;font-size: 1.4rem">Name :</label>-->
+<!--                    <el-input v-model="uploadName" placeholder="Dataset name"></el-input>-->
+<!--                </div>-->
+<!--                <el-upload-->
+<!--                        class="upload-demo"-->
+<!--                        multiple="true"-->
+<!--                        ref="upload"-->
+<!--                        :on-change="uploadChange"-->
+<!--                        :auto-upload="false">-->
+<!--                    <el-button id="uploadFile" slot="trigger" size="small"-->
+<!--                               type="primary">Select Data-->
+<!--                    </el-button>-->
+<!--                </el-upload>-->
+<!--                <el-button type="success" @click="submitUpload" style="float: right">Upload Data</el-button>-->
+<!--            </el-tab-pane>-->
+            <el-tab-pane label="Use Data Space" name="second">
+                <user-data
+                        @com-selectfile="selectDataspaceFile"
+                        @com-removefile="removeDataspaceFile"
+                        single-choice
+                        ref="userDataSpace" style="height: 505px;">
+                </user-data>
+            </el-tab-pane>
+        </el-tabs>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="loadDataVisible = false">Cancel</el-button>
+        </span>
+    </el-dialog>
+<!--    <template th:replace="modules/userDataSpaceModule :: userDataSpaceModule"></template>-->
+<!--    <script src="/static/js/modules/userDataSpaceModule.js"></script>-->
 </div>
 <template th:replace="modules/userDataSpaceModule :: userDataSpaceModule"></template>
+<script src="/static/js/modules/userDataSpaceModule.js"></script>
 </body>
 
 
@@ -294,29 +354,17 @@
 
 <script src="/static/js/mxGraph/js/mxClient.js"></script>
 <script src="/static/js/mxGraph/js/ogmsDiagram.js"></script>
-
-<!--<script src="/static/js/common/knockout-3.4.2.js"></script>-->
 <script src="/static/js/common/jquery-3.3.1.min.js"></script>
 <script src="/static/js/common/loadUser.js"></script>
 <script src="/static/js/common/clipboard.min.js"></script>
-<!--<script src="/static/js/common/jquery.gritter.min.js"></script>-->
-<!--<script src="/static/js/common/lodash.js"></script>-->
 <script src="/static/js/common/bootstrap.js"></script>
 <script src="/static/js/common/bootstrap-treeview.js"></script>
-<!--<script src="/static/js/common/bootstrap-treeview.js"></script>-->
-
-<!--<script type="text/javascript">-->
-<!--mxBasePath = '/static/MxGraph/'-->
-<!--</script>-->
-<!--<script type="text/javascript" src="/static/MxGraph/js/mxClient.js"></script>-->
-<!--<script type="text/javascript" src="/static/js/common/computableEditorTest.js"></script>-->
 <script src="/static/js/common/fileinput.js"></script>
 <script src="/static/js/common/loadUser.js"></script>
 <script src="/static/js/common/axios.min.js"></script>
 <script type="text/javascript" src="/static/js/common/jquery.tag-editor.js"></script>
 <script src="/static/js/common/bootstrap-tagsinput.js"></script>
-<!--<script src="https://unpkg.com/element-ui/lib/index.js"></script>-->
-<script src="/static/js/modules/userDataSpaceModule.js"></script>
+<!--<script src="/static/js/modules/userDataSpaceModule.js"></script>-->
 <script src="/static/js/page/data_application_task.js"></script>
 <script src="/static/element-ui/umd/locale/en.js"></script>
 <script src="/static/js/common/navbar.js"></script>

@@ -45,7 +45,7 @@
 <div id="app">
     <div th:replace="fragments/navbar :: unlog"></div>
 
-    <div class="clearfix" style="margin:40px 0px;height: auto;">
+    <div class="clearfix" style="padding:40px 0px;height: auto;position: relative;">
 
         <div class="left-panel el-col">
             <div class="detail">
@@ -108,11 +108,27 @@
                                     @click="dialogVisible = true">Deploy
                             </button>
                         </span>
-<!--                        -->
-                        <button th:if="${modelInfo.deploy==true||modelInfo.contentType=='MD5'}" class="btn btn-lg btn-success" type="button"
+
+                        <button th:if="${modelInfo.deploy==true||modelInfo.contentType=='MD5'}" class="btn btn-lg btn-success" type="button" style="font-size: 18px;vertical-align: initial;margin-right:10px;"
                                 @click="invoke()">Invoke
                         </button>
-                        <a href="javascript:void(0)" class="fa fa-eye " aria-hidden="true"></a>
+
+                        <el-tooltip th:if="${modelInfo.verify}"
+                                    popper-class="fontsize-15"
+                                    effect="light"
+                                    content="This model has been verified, it can be invoked successfully."
+                                    placement="top">
+                            <span style="font-size: 16px;cursor: help;"><li class="fa fa-check-square-o" style="color:forestgreen"></li> verified</span>
+                        </el-tooltip>
+                        <el-tooltip th:if="${!modelInfo.verify}"
+                                    popper-class="fontsize-15"
+                                    effect="light"
+                                    content="This model is contributed by users, we're not sure if it works."
+                                    placement="top">
+                            <span style="font-size: 16px;cursor: help;"><li class="fa fa-users" style="color:#339fff"></li> volunteer</span>
+                        </el-tooltip>
+
+                        <a class="fa fa-eye " aria-hidden="true"></a>
                         <div th:utext="'&nbsp&nbsp'+${modelInfo.viewCount}">&nbsp&nbsp341</div>
 
                     </div>
@@ -127,7 +143,7 @@
                         <h4 th:if="${history!=true}">Contributor</h4>
                         <h4 th:if="${history==true}">Modifier</h4>
                         <el-tooltip popper-class="fontsize-15" effect="light" content="Contributor is the person who contributes the item to OpenGMS, may not be the author of the item." placement="top">
-                            <i class="fa fa-question-circle-o" aria-hidden="true" style="margin-top:4px;"></i>
+                            <i class="fa fa-question-circle-o" aria-hidden="true" style="margin-top:4px;cursor:help;"></i>
                         </el-tooltip>
                     </div>
                 </div>
@@ -449,7 +465,7 @@
             <div id="cite" class="detail_block">
                 <div class="block_head">
                     <div class="head_text">
-                        <h4>How to cite</h4>
+                        <h4>How to Cite</h4>
                     </div>
                 </div>
                 <div class="block_content">
@@ -539,7 +555,7 @@
                         <h4 th:if="${history!=true}">Contributor</h4>
                         <h4 th:if="${history==true}">Modifier</h4>
                         <el-tooltip popper-class="fontsize-15" effect="light" content="Contributor is the person who contributes the item to OpenGMS, may not be the author of the item." placement="top">
-                            <i class="fa fa-question-circle-o" aria-hidden="true" style="margin-top:4px;"></i>
+                            <i class="fa fa-question-circle-o" aria-hidden="true" style="margin-top:4px;cursor:help;"></i>
                         </el-tooltip>
                     </div>
                 </div>
@@ -572,7 +588,7 @@
             <div id="Authorship" class="detail_block"
                  th:if="${modelInfo.authorship!=null&&#lists.size(modelInfo.authorship)!=0}">
                 <div class="block_head">
-                    <div class="head_text" style="padding-left: 10px;padding-right: 15px;display: inline-flex">                         <h4>Authorship</h4>                         <el-tooltip popper-class="fontsize-15" effect="light"                                     content="We deeply understand that a model may be attributed to the efforts of a team. If all author information is not listed here, please click the feedback below."                                     placement="top">                             <i class="fa fa-question-circle-o" aria-hidden="true" style="margin-top:4px;"></i>                         </el-tooltip>                     </div>
+                    <div class="head_text" style="padding-left: 10px;padding-right: 15px;display: inline-flex">                         <h4>Authorship</h4>                         <el-tooltip popper-class="fontsize-15" effect="light"                                     content="We deeply understand that a model may be attributed to the efforts of a team. If all author information is not listed here, please click the feedback below."                                     placement="top">                             <i class="fa fa-question-circle-o" aria-hidden="true" style="margin-top:4px;cursor:help;"></i>                         </el-tooltip>                     </div>
                 </div>
                 <div class="block_content text-center" style="padding-left:10px">
 
@@ -646,7 +662,7 @@
         </div>
 
         <div th:if="${history==true}"
-             style="pointer-events:none;position: absolute;top:62px;bottom: 0;left: 0;right: 0;background-image: url('/static/img/historyBackground.png')"></div>
+             style="pointer-events:none;position: absolute;top:0;bottom: 0;left: 0;right: 0;background-image: url('/static/img/historyBackground.png')"></div>
 
     </div>
     <div v-cloak id="ModelShow" style="display: none;">

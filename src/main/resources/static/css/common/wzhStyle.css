@@ -402,8 +402,8 @@ h1.h_lite,h2.h_lite,h3.h_lite,h4.h_lite,span.h_lite{
 }
 
 .detail{
-    margin: 10px 0 5px 0;
-    margin-bottom: 20px;
+    /*margin: 10px 0 5px 0;*/
+    /*margin-bottom: 20px;*/
     background-color: #fff;
     /*padding: 15px 30px 15px;*/
     min-height: 200px;

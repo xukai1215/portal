@@ -36,7 +36,7 @@
             border:none;
         }
         a:hover{
-        text-decoration: none;!important;
+            text-decoration: none;!important;
         }
 
         input.spinner {
@@ -57,6 +57,11 @@
             padding-right: 0px;
             padding-left: 0px;
         }
+
+        .tox .tox-silver-sink .tox-tinymce-aux {
+            z-index: 2004;
+            background-color: cyan;
+        }
     </style>
 </head>
 <body class="scrollbar">
@@ -68,77 +73,77 @@
                 <div class="row">
                     <!--左侧菜单栏-->
                     <el-card id="subcard" style="min-width: 60px">
-                                <div class="logoPanel">
-                                </div>
-                                <div slot="header" class="clearfix text-center headerImg" style="position: relative;">
-                                    <img th:src="'/static'+${info.image}" id="header_image" style="height: 76.5px">
-                                    <div>
-                                        <a class="themename_item" th:utext="${info.themename}" style="font-size: 24px;color:#444"></a>
-                                        <el-input type="text" v-model="form.name" id="edit_themename" class="edit_themename" th:value="${info.themename}" style="display: none"></el-input>
-                                        <!--<el-button class="edit_themename_button editicon" type="primary"  @click="edit_theme_name" icon="el-icon-edit" circle  style="display: none"></el-button>-->
-                                    </div>
-                                </div>
-                                <!--<el-radio-group v-model="isCollapse" style="margin-bottom: 20px;">-->
-                                <!--<el-radio-group v-model="isCollapse" style="margin-bottom: 20px;">-->
-                                    <!--<el-radio-button :label="false">展开</el-radio-button>-->
-                                    <!--<el-radio-button :label="true">收起</el-radio-button>-->
-                                <!--</el-radio-group>-->
-                                <el-menu
-                                        :default-active="defaultActive"
-                                        ref="menu"
-                                        class="el-menu-vertical-demo"
-                                        @select=""
-                                        active-text-color="#409EFF"
-                                        :collapse="isCollapse"
-                                        :collapse-transition = "false"
-                                        style=" position: absolute;top: 150px; bottom: 0px; left: 0; right: 0;
-                                        overflow-x: hidden; overflow-y: auto; margin-bottom: 62px;">
-                                   <el-menu-item index="1" th:onclick="'javascript:show(\'detailinfo'+'\',\'BasicInfoPanel\',\'detailIntroducePanel\')'">
-                                       <i class="el-icon-info"></i>
-                                       <span slot="title">Theme Info</span>
-                                   </el-menu-item>
-                                   <el-submenu th:if="${#arrays.length(modelClassInfos)}" index="2" class="model">
-                                       <template slot="title">
-                                           <i class="el-icon-menu"></i>
-                                           <span slot="title">Models</span>
-                                       </template>
-                                       <div  th:each="modelClass,index:${modelClassInfos}" class="modelmenu">
-                                           <el-menu-item th:index="'2-'+${index.index}" th:onclick="'javascript:show(\'modelClass'+${index.index}+'\',\'model\',\'block\')'">
-                                               <span slot="title"  th:utext="${modelClass.name}" ></span>
-                                           </el-menu-item>
-                                       </div>
-                                       <div v-for ="(item, index) in modelClassInfos" class="sub_modelmenu">
-                                           <el-menu-item index="'2-'+index.index" @click="show('sub_modelClass'+index,'model')">
-                                               <span slot="title">{{item.mcname}}</span>
-                                           </el-menu-item>
-                                       </div>
-                                   </el-submenu>
-                                    <el-submenu th:if="${#arrays.length(dataClassInfos)}" index="3">
-                                        <template slot="title">
-                                            <i class="el-icon-coin"></i>
-                                            <span slot="title">Data</span>
-                                        </template>
-                                        <div th:each="dataClass,index:${dataClassInfos}" class="datamenu">
-                                            <el-menu-item th:index="'3-'+${index.index}" th:onclick="'javascript:show(\'dataClass'+${index.index}+'\',\'data\')'" >
-                                                <span th:utext="${dataClass.name}"></span>
-                                            </el-menu-item>
-                                        </div>
-                                        <div v-for="(item, index) in dataClassInfos" class="sub_datamenu">
-                                            <el-menu-item index="'3-'+index" @click="show('sub_dataClass'+index,'data')">
-                                                <span slot="title">{{item.dcname}}</span>
-                                            </el-menu-item>
-                                        </div>
-                                    </el-submenu>
-                                    <el-menu-item th:if="${#arrays.length(applications)}" index="4" th:onclick="'javascript:show(\'application\',\'applicationPanel\')'">
-                                        <i class="el-icon-bangzhu"></i>
-                                        <span slot="title"  id="applications1">Applications</span>
+                        <div class="logoPanel">
+                        </div>
+                        <div slot="header" class="clearfix text-center headerImg" style="position: relative;">
+                            <img th:src="'/static'+${info.image}" id="header_image" style="border-radius: unset">
+                            <div>
+                                <a class="themename_item" th:utext="${info.themename}" style="font-size: 24px;color:#444"></a>
+                                <el-input type="text" v-model="form.name" id="edit_themename" class="edit_themename" th:value="${info.themename}" style="display: none"></el-input>
+                                <!--<el-button class="edit_themename_button editicon" type="primary"  @click="edit_theme_name" icon="el-icon-edit" circle  style="display: none"></el-button>-->
+                            </div>
+                        </div>
+                        <!--<el-radio-group v-model="isCollapse" style="margin-bottom: 20px;">-->
+                        <!--<el-radio-group v-model="isCollapse" style="margin-bottom: 20px;">-->
+                        <!--<el-radio-button :label="false">展开</el-radio-button>-->
+                        <!--<el-radio-button :label="true">收起</el-radio-button>-->
+                        <!--</el-radio-group>-->
+                        <el-menu
+                                :default-active="defaultActive"
+                                ref="menu"
+                                class="el-menu-vertical-demo"
+                                @select=""
+                                active-text-color="#409EFF"
+                                :collapse="isCollapse"
+                                :collapse-transition = "false"
+                                style="overflow-x: hidden; overflow-y: auto; margin-bottom: 62px;">
+                            <el-menu-item index="1" th:onclick="'javascript:show(\'detailinfo'+'\',\'BasicInfoPanel\',\'detailIntroducePanel\')'">
+                                <i class="el-icon-info"></i>
+                                <span slot="title">Theme Info</span>
+                            </el-menu-item>
+                            <el-submenu th:if="${#arrays.length(modelClassInfos)}" index="2" class="model">
+                                <template slot="title">
+                                    <i class="el-icon-menu"></i>
+                                    <span slot="title">Models</span>
+                                </template>
+                                <div  th:each="modelClass,index:${modelClassInfos}" class="modelmenu">
+                                    <el-menu-item th:index="'2-'+${index.index}" th:onclick="'javascript:show(\'modelClass'+${index.index}+'\',\'model\',\'block\')'">
+                                        <span slot="title"  th:utext="${modelClass.name}" ></span>
                                     </el-menu-item>
-                                    <el-menu-item index="5" th:onclick="'javascript:show(\'maintainers1\',\'maintainerPanel\')'">
-                                        <i class="el-icon-s-custom"></i>
-                                        <span slot="title" id="maintainer">Maintainers</span>
+                                </div>
+                                <div v-for ="(item, index) in modelClassInfos" class="sub_modelmenu">
+                                    <el-menu-item index="'2-'+index.index" @click="show('sub_modelClass'+index,'model')">
+                                        <span slot="title">{{item.mcname}}</span>
                                     </el-menu-item>
-                               </el-menu>
-                            </el-card>
+                                </div>
+                            </el-submenu>
+                            <el-submenu th:if="${#arrays.length(dataClassInfos)}" index="3">
+                                <template slot="title">
+                                    <i class="el-icon-coin"></i>
+                                    <span slot="title">Data</span>
+                                </template>
+                                <div th:each="dataClass,index:${dataClassInfos}" class="datamenu">
+                                    <el-menu-item th:index="'3-'+${index.index}" th:onclick="'javascript:show(\'dataClass'+${index.index}+'\',\'data\')'" >
+                                        <span th:utext="${dataClass.name}"></span>
+                                    </el-menu-item>
+                                </div>
+                                <div v-for="(item, index) in dataClassInfos" class="sub_datamenu">
+                                    <el-menu-item index="'3-'+index" @click="show('sub_dataClass'+index,'data')">
+                                        <span slot="title">{{item.dcname}}</span>
+                                    </el-menu-item>
+                                </div>
+                            </el-submenu>
+                            <el-menu-item th:if="${#arrays.length(applications)}" index="4" th:onclick="'javascript:show(\'application\',\'applicationPanel\')'">
+                                <i class="el-icon-bangzhu"></i>
+                                <span slot="title"  id="applications1">Applications</span>
+                            </el-menu-item>
+                            <el-menu-item index="5" th:onclick="'javascript:show(\'maintainers1\',\'maintainerPanel\')'">
+                                <i class="el-icon-s-custom"></i>
+                                <span slot="title" id="maintainer">Maintainers</span>
+                            </el-menu-item>
+                        </el-menu>
+                        <el-button id="controlEditButton" type="primary" style="position:absolute;left: 20px;top:750px" @click="controlEdit">Enable editing</el-button>
+                    </el-card>
                     <!--左侧菜单栏 END-->
                     <div class="col-sm-10" style="overflow: auto;padding:10px 10px;" id="right_content">
                         <div class="infoPanel container-fluid" id="BasicInfoPanel">
@@ -154,7 +159,7 @@
                                 <h3>
                                     <span>Theme Info</span>
                                     <!--<el-button class="editicon" type="primary" @click="edit_theme_info" icon="el-icon-edit" circle style="display: none"></el-button>-->
-                                    <el-button class="editicon" type="primary" @click="edit_theme('1')" icon="el-icon-edit"></el-button>
+                                    <el-button class="editicon" type="primary" @click="edit_theme('0')" icon="el-icon-edit" style="display: none"></el-button>
                                     <!--<a href="javascript:void(0)" class='fa fa-pencil fa-2x' aria-hidden='true' @click="edit_theme_info"></a>-->
                                 </h3>
                             </div>
@@ -165,7 +170,7 @@
                             <div class="title text-center">
                                 <h3>
                                     <span>Models</span>
-                                    <el-button class="editicon" type="primary" @click="edit_theme('2')" icon="el-icon-edit"></el-button>
+                                    <el-button class="editicon" type="primary" @click="edit_theme('1')" icon="el-icon-edit" style="display: none"></el-button>
                                 </h3>
                             </div>
                             <div th:each="modelClass,index:${modelClassInfos}" class="model_card">
@@ -173,18 +178,18 @@
                                     <el-row type="center"id="content">
                                         <div th:each="item:${modelClass.content}" class="col-md-2" id="model_col">
                                             <a th:href="'https://geomodeling.njnu.edu.cn/modelItem/'+${item.oid}" target = "_blank">
-                                            <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width: 100%;height: 220px" id="model_card">
+                                                <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width: 100%;height: 220px" id="model_card">
                                                     <!--<img src="/static/img/thematic_center/thumb.png" class="image" id="model_image">-->
-                                                 <div th:unless="${item.image}!=''" style="text-align: center;justify-content: center">
-                                                     <img src="/static/img/model/model.png" style="width:160px;height: 160px;">
-                                                 </div>
-                                                <div th:if="${item.image!=''}">
-                                                    <img th:src="'/static'+${item.image}" class="image" style="height: 180px!important;width: 180px!important;">
-                                                </div>
-                                                <div style="text-align: center;justify-content: center">
-                                                    <span th:text="${item.name}" class="model_name" style="-webkit-line-clamp: 2;"></span>
-                                                </div>
-                                            </el-card>
+                                                    <div th:unless="${item.image}!=''" style="text-align: center;justify-content: center">
+                                                        <img src="/static/img/model/model.png" style="width:160px;height: 160px;">
+                                                    </div>
+                                                    <div th:if="${item.image!=''}">
+                                                        <img th:src="'/static'+${item.image}" class="image" style="height: 180px!important;width: 180px!important;">
+                                                    </div>
+                                                    <div style="text-align: center;justify-content: center">
+                                                        <span th:text="${item.name}" class="model_name" style="-webkit-line-clamp: 2; height: 40px;max-width: 150px;margin: 0 auto; word-break:break-all;"></span>
+                                                    </div>
+                                                </el-card>
                                             </a>
                                         </div>
                                     </el-row>
@@ -203,15 +208,15 @@
                                     <el-row type="center" class="row-bg" id="content1">
                                         <div th:each="item:${dataClass.content}" style="margin:20px 10px 0 10px;float: left" id="model_col2">
                                             <a th:href="'https://geomodeling.njnu.edu.cn/dataItem/'+${item.oid}" target = "_blank">
-                                            <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:180px;height: 250px">
-                                                <div style="padding: 10px">
-                                                    <img src="/static/img/model/myData.png" style="width:160px;height: 160px;">
-                                                </div>
+                                                <el-card :body-style="{ padding: '0px'}" shadow="hover" style="width:180px;height: 250px">
+                                                    <div style="padding: 10px">
+                                                        <img src="/static/img/model/myData.png" style="width:160px;height: 160px;">
+                                                    </div>
 
-                                                <div style="padding: 14px;">
-                                                    <span th:text="${item.name}" class="data_name" style="-webkit-line-clamp: 2;"></span>
-                                                </div>
-                                            </el-card>
+                                                    <div style="padding: 14px;">
+                                                        <span th:text="${item.name}" class="data_name" style="-webkit-line-clamp: 2;"></span>
+                                                    </div>
+                                                </el-card>
                                             </a>
                                         </div>
                                     </el-row>
@@ -224,7 +229,7 @@
                             <div class="title text-center">
                                 <h3>
                                     <span>Applications</span>
-                                    <el-button class="editicon" type="primary" @click="edit_theme('3')" icon="el-icon-edit"></el-button>
+                                    <el-button class="editicon" type="primary" @click="edit_theme('3')" icon="el-icon-edit" style="display: none"></el-button>
                                 </h3>
                             </div>
                             <div id="applications">
@@ -249,7 +254,6 @@
                             <div class="title text-center">
                                 <h3>
                                     <span>Maintainers</span>
-                                    <el-button class="editicon" type="primary" @click="edit_theme" icon="el-icon-edit"></el-button>
                                 </h3>
                             </div>
                             <div id="maintainers">
@@ -257,44 +261,55 @@
                                     <!--<el-row type="center" class="row-bg" id="content2">-->
                                     <div v-for="(item, index) in maintainer" :key="index">
                                         <el-col :span="8" style="padding:10px;height:350px;width:230px">
-                                            <el-card :body-style="{ padding: '0px' }" target="_blank">
-                                                <a :href="'/profile/'+item.name"><img :src="'/static' + item.image" class="image" /></a>
-                                                <div style="padding: 14px;">
+                                            <div class="el-card__body" style="padding: 0px;">
+                                                <a :href="'/profile/' + item.name" class="md-opjjpmhoiojifppkkcdabiobhakljdgm_doc">
+                                                    <img :src="'/static/user/'+ item.image" onerror="this.src='/static/img/icon/default.png'; this.onerror='null'" class="image"></a>
+                                                <div style="padding: 14px;background-color: white">
                                                     <p style="text-align: center;">{{ item.name }}</p>
-<!--                                                    <div class="bottom clearfix">-->
-<!--                                                        <el-button type="text" class="button">Detail</el-button>-->
-<!--                                                    </div>-->
                                                 </div>
-                                            </el-card>
+                                            </div>
+                                            <!--                                            <el-card :body-style="{ padding: '0px' }" target="_blank" style="height: 40px">-->
+                                            <!--                                                <el-avatar :size="40" src="'/static' + item.image" @error="errorHandler" style="float: left">-->
+                                            <!--                                                    <img src="/static/img/icon/default.png"/>-->
+                                            <!--                                                </el-avatar>-->
+                                            <!--                                                <div style="height:40px;display:flex;align-items:center;text-align: left;vertical-align: middle;margin-left: 50px">{{ item.name }}</div>-->
+                                            <!--&lt;!&ndash;                                                <a :href="'/profile/'+item.name"><img :src="'/static' + item.image" class="image" /></a>&ndash;&gt;-->
+                                            <!--&lt;!&ndash;                                                <div style="display: inline-block;width: 55%">&ndash;&gt;-->
+                                            <!--&lt;!&ndash;                                                    &ndash;&gt;-->
+                                            <!--&lt;!&ndash;&lt;!&ndash;                                                    <div class="bottom clearfix">&ndash;&gt;&ndash;&gt;-->
+                                            <!--&lt;!&ndash;&lt;!&ndash;                                                        <el-button type="text" class="button">Detail</el-button>&ndash;&gt;&ndash;&gt;-->
+                                            <!--&lt;!&ndash;&lt;!&ndash;                                                    </div>&ndash;&gt;&ndash;&gt;-->
+                                            <!--&lt;!&ndash;                                                </div>&ndash;&gt;-->
+                                            <!--                                            </el-card>-->
                                         </el-col>
                                     </div>
-<!--                                        <el-col th:each="item:${maintainer}" style="margin:20px 20px 0 0;float: left">-->
-<!--                                            <el-card>-->
-<!--                                            <a th:href="'/profile/'+${item.name}" target = "_blank">-->
-<!--                                                    <div  style="margin: 5px;height: 40px;display: flex;justify-content: center;-->
-<!--                                                    align-items: center;padding: 10px;">-->
-<!--                                                        <div class="el-col ">-->
-<!--                                                            <img th:src="${item.image}"-->
-<!--                                                                 class="round_icon" style="width:40px;height: 40px;float:left;">-->
-<!--                                                        </div>-->
-<!--                                                        <div class="el-col">-->
-<!--                                                            <div class="pull-left" style="display: block;margin-left: 15px;">-->
-<!--                                                                <h4  th:text="${item.name}" style="padding: 0;"></h4>-->
-<!--                                                            </div>-->
-<!--                                                        </div>-->
-<!--                                                    </div>-->
-<!--                                                </a>-->
-<!--                                            </el-card>-->
-<!--                                        </el-col>-->
+                                    <!--                                        <el-col th:each="item:${maintainer}" style="margin:20px 20px 0 0;float: left">-->
+                                    <!--                                            <el-card>-->
+                                    <!--                                            <a th:href="'/profile/'+${item.name}" target = "_blank">-->
+                                    <!--                                                    <div  style="margin: 5px;height: 40px;display: flex;justify-content: center;-->
+                                    <!--                                                    align-items: center;padding: 10px;">-->
+                                    <!--                                                        <div class="el-col ">-->
+                                    <!--                                                            <img th:src="${item.image}"-->
+                                    <!--                                                                 class="round_icon" style="width:40px;height: 40px;float:left;">-->
+                                    <!--                                                        </div>-->
+                                    <!--                                                        <div class="el-col">-->
+                                    <!--                                                            <div class="pull-left" style="display: block;margin-left: 15px;">-->
+                                    <!--                                                                <h4  th:text="${item.name}" style="padding: 0;"></h4>-->
+                                    <!--                                                            </div>-->
+                                    <!--                                                        </div>-->
+                                    <!--                                                    </div>-->
+                                    <!--                                                </a>-->
+                                    <!--                                            </el-card>-->
+                                    <!--                                        </el-col>-->
                                     <!--</el-row>-->
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
     <el-dialog
             v-cloak
             title="Edit Theme"
@@ -302,98 +317,253 @@
             width="90%"
             :before-close="handleClose">
         <div style="height: 80%;">
-        <el-steps :active="editThemeActive" finish-status="success" align-center>
-            <el-step class="editThemeStep" title="Theme Info"></el-step>
-            <el-step class="editThemeStep" title="Models"></el-step>
-            <el-step class="editThemeStep" title="Data"></el-step>
-            <el-step class="editThemeStep" title="Applications"></el-step>
-        </el-steps>
-        <el-card :style="{display:(editThemeActive==0?'block':'none')}" shadow="never">
-            <div id="RepositoryParentsPanel">
-                <div class="form-horizontal">
-                    <div class="form-group">
-                        <label for="nameInput"
-                               class="col-sm-2 control-label"
-                               style="width: 110px;font-weight: bold">Theme
-                            Name:</label>
-                        <div style="display: inline-block;">
-                            <input type="text" class="form-control"
-                                   id="nameInput"/>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-horizontal">
-                    <div class="form-group">
-                        <label for="nameInput"
-                               class="col-sm-2 control-label"
-                               style="width: 110px;font-weight: bold">Theme
-                            Image:</label>
-                        <div style="display: inline-block;">
-                            <img id="imgShow" src=""/>
-                            <div id="imgChange" @click="uploadImg" class="cursorPointer" style="width: 72px">
-                                <i class="fa fa-plus fa-5x"></i>
+            <el-steps :active="editThemeActive" finish-status="success" align-center>
+                <el-step class="editThemeStep" @click.native="edit_theme('0')" title="Theme Info"></el-step>
+                <el-step class="editThemeStep" @click.native="edit_theme('1')" title="Models"></el-step>
+                <el-step class="editThemeStep" @click.native="edit_theme('2')" title="Data"></el-step>
+                <el-step class="editThemeStep" @click.native="edit_theme('3')" title="Applications"></el-step>
+            </el-steps>
+            <el-card :style="{display:(editThemeActive==0?'block':'none')}" shadow="never">
+                <div id="RepositoryParentsPanel">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label for="nameInput"
+                                   class="col-sm-2 control-label"
+                                   style="width: 110px;font-weight: bold">Theme
+                                Name:</label>
+                            <div style="display: inline-block;">
+                                <input type="text" class="form-control"
+                                       id="nameInput"/>
                             </div>
-                            <input id="imgFile" type="file"
-                                   style="display: none"
-                                   accept="image/*"/>
+                        </div>
+                    </div>
+
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label for="nameInput"
+                                   class="col-sm-2 control-label"
+                                   style="width: 110px;font-weight: bold">Theme
+                                Image:</label>
+                            <div style="display: inline-block;">
+                                <img id="imgShow" src=""/>
+                                <div id="imgChange" @click="uploadImg" class="cursorPointer" style="width: 72px">
+                                    <i class="fa fa-plus fa-5x"></i>
+                                </div>
+                                <input id="imgFile" type="file"
+                                       style="display: none"
+                                       accept="image/*"/>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div style="height: 22px">
-                <label for="nameInput"
-                       class="col-sm-2 control-label"
-                       style="width: 110px;font-weight: bold">Description:</label>
-            </div>
-            <textarea id="themeText"></textarea>
-        </el-card>
-        <el-card :style="{display:(editThemeActive==1?'block':'none')}" shadow="never">
-            <div class="panel-body">
-                <!--实验tabs-->
-                <el-card>
-                    <el-button type="success"
-                               style="position: absolute;right: 25px;z-index: 999"
-                               @click="modelClass_add()">Add New Category
-                    </el-button>
-                    <el-tabs v-model="editableTabsValue_model"
-                             type="card" editable
-                             @edit="handleTabsEdit_model">
-                        <el-tab-pane
-                                :key="item.name"
-                                v-for="(item, index) in editableTabs_model"
-                                :label="item.title"
-                                :name="item.name"
-                                id="el_model"
-                        >
-                            <div class='model-attr'>
-                                <div>
-                                    <lable class='control-label col-sm-2 text-center'
-                                           style='font-weight: bold;'>
-                                        Category Name:
-                                    </lable>
-                                    <div class='input-group'>
-                                        <input type='text'
-                                               :id="'categorynameModel'+index"
-                                               name="name"
-                                               class='form-control category_name'>
+                <div style="height: 22px">
+                    <label for="nameInput"
+                           class="col-sm-2 control-label"
+                           style="width: 110px;font-weight: bold">Description:</label>
+                </div>
+                <textarea id="themeText"></textarea>
+            </el-card>
+            <el-card :style="{display:(editThemeActive==1?'block':'none')}" shadow="never">
+                <div class="panel-body">
+                    <!--实验tabs-->
+                    <el-card>
+                        <el-button type="success"
+                                   style="position: absolute;right: 25px;z-index: 999"
+                                   @click="modelClass_add()">Add New Category
+                        </el-button>
+                        <el-tabs v-model="editableTabsValue_model"
+                                 type="card" editable
+                                 @edit="handleTabsEdit_model">
+                            <el-tab-pane
+                                    :key="item.name"
+                                    v-for="(item, index) in editableTabs_model"
+                                    :label="item.title"
+                                    :name="item.name"
+                                    id="el_model"
+                            >
+                                <div class='model-attr'>
+                                    <div>
+                                        <lable class='control-label col-sm-2 text-center'
+                                               style='font-weight: bold;'>
+                                            Category Name:
+                                        </lable>
+                                        <div class='input-group'>
+                                            <input type='text'
+                                                   :id="'categorynameModel'+index"
+                                                   name="name"
+                                                   class='form-control category_name'>
+                                        </div>
+                                    </div>
+
+                                    <el-card class="box-card"
+                                             style="width:40%;margin-right: 1%;float: left;"
+                                             id="step1_left">
+                                        <div slot="header"
+                                             class="clearfix">
+                                            <span>Selected Items</span>
+                                        </div>
+                                        <!--<li v-for="site in tableDataarr"></li>-->
+                                        <el-table
+                                                :data="item.tabledata"
+                                                ref="leftTable"
+                                                :max-height="tableMaxHeight">
+                                            <el-table-column
+                                                    type="expand">
+                                                <template
+                                                        slot-scope="props">
+                                                    <el-form
+                                                            label-position="left"
+                                                            inline
+                                                            class="demo-table-expand">
+                                                        <el-form-item
+                                                                label="Contributor">
+                                                            <span>{{ props.row.author }}</span>
+                                                        </el-form-item>
+
+                                                    </el-form>
+                                                </template>
+                                            </el-table-column>
+                                            <el-table-column
+                                                    label="Name">
+                                                <template
+                                                        slot-scope="props">
+                                                    <a :href="'/'+relateType+'/'+props.row.oid"
+                                                       target="_blank">{{props.row.name}}</a>
+                                                </template>
+                                            </el-table-column>
+
+                                            <el-table-column
+                                                    fixed="right"
+                                                    label="Operation"
+                                                    width="100">
+                                                <template
+                                                        slot-scope="scope">
+
+                                                    <el-button
+                                                            size="mini"
+                                                            type="danger"
+                                                            @click="handleDelete1(scope.$index, scope.row)">
+                                                        Delete
+                                                    </el-button>
+                                                </template>
+                                            </el-table-column>
+                                        </el-table>
+                                    </el-card>
+                                    <el-card class="box-card"
+                                             style="width:59%;"
+                                             id="step1_right">
+                                        <el-input
+                                                placeholder="Please enter name..."
+                                                v-model="relateSearch"
+                                                class="input-with-select">
+                                            <el-button slot="append"
+                                                       icon="el-icon-search"
+                                                       @click="search1()"></el-button>
+                                        </el-input>
+                                        <el-table
+                                                :data="pageOption1.searchResult"
+                                                style="margin-top:17px;"
+                                                :max-height="tableMaxHeight">
+                                            <el-table-column
+                                                    type="expand">
+                                                <template
+                                                        slot-scope="props">
+                                                    <el-form
+                                                            label-position="left"
+                                                            inline
+                                                            class="demo-table-expand">
+                                                        <el-form-item
+                                                                label="Detail">
+                                                            <span>{{ props.row.description }}</span>
+                                                        </el-form-item>
+
+                                                    </el-form>
+                                                </template>
+                                            </el-table-column>
+                                            <el-table-column
+                                                    label="Name">
+                                                <template
+                                                        slot-scope="props">
+                                                    <a :href="'/repository/'+relateType+'/'+props.row.oid"
+                                                       target="_blank">{{props.row.name}}</a>
+                                                </template>
+                                            </el-table-column>
+                                            <el-table-column
+                                                    label="Contributor"
+                                                    prop="author">
+                                            </el-table-column>
+                                            <el-table-column
+                                                    fixed="right"
+                                                    label="Operation"
+                                                    width="100">
+                                                <template
+                                                        slot-scope="scope">
+                                                    <el-button
+                                                            size="mini"
+                                                            @click="handleEdit(scope.$index, scope.row)">
+                                                        Add
+                                                    </el-button>
+                                                </template>
+                                            </el-table-column>
+                                        </el-table>
+                                        <el-pagination
+                                                style="text-align: center;margin-top:20px"
+                                                @current-change="handlePageChange1"
+                                                :current-page="pageOption1.currentPage"
+                                                layout="total, prev, pager, next, jumper"
+                                                :page-size="5"
+                                                :total="pageOption1.total">
+                                        </el-pagination>
+                                    </el-card>
+                                </div>
+                            </el-tab-pane>
+                        </el-tabs>
+
+                    </el-card>
+                </div>
+            </el-card>
+            <el-card :style="{display:(editThemeActive==2?'block':'none')}" shadow="never">
+                <div class="panel-body">
+                    <el-card>
+                        <el-button type="success"
+                                   style="position: absolute;right: 25px;z-index: 999"
+                                   @click="dataClass_add()">Add New
+                            Category
+                        </el-button>
+                        <el-tabs v-model="editableTabsValue_data"
+                                 type="card" editable
+                                 @edit="handleTabsEdit_data">
+                            <el-tab-pane
+                                    :key="item.name"
+                                    v-for="(item, index) in editableTabs_data"
+                                    :label="item.title"
+                                    :name="item.name"
+                            >
+                                <div class='data-attr'>
+                                    <div>
+                                        <lable class='control-label col-sm-2 text-center'
+                                               style='font-weight: bold;'>
+                                            Category Name:
+                                        </lable>
+                                        <div class='input-group'>
+                                            <input type='text'
+                                                   :id="'categorynameData'+index"
+                                                   name="name"
+                                                   class='form-control category_name2'>
+                                        </div>
                                     </div>
                                 </div>
-
                                 <el-card class="box-card"
                                          style="width:40%;margin-right: 1%;float: left;"
-                                         id="step1_left">
-                                    <div slot="header"
-                                         class="clearfix">
+                                         id="step2_left">
+                                    <div slot="header" class="clearfix">
                                         <span>Selected Items</span>
                                     </div>
-                                    <!--<li v-for="site in tableDataarr"></li>-->
                                     <el-table
                                             :data="item.tabledata"
                                             ref="leftTable"
                                             :max-height="tableMaxHeight">
-                                        <el-table-column
-                                                type="expand">
+                                        <el-table-column type="expand">
                                             <template
                                                     slot-scope="props">
                                                 <el-form
@@ -417,17 +587,16 @@
                                             </template>
                                         </el-table-column>
 
-                                        <el-table-column
-                                                fixed="right"
-                                                label="Operation"
-                                                width="100">
+                                        <el-table-column fixed="right"
+                                                         label="Operation"
+                                                         width="100">
                                             <template
                                                     slot-scope="scope">
 
                                                 <el-button
                                                         size="mini"
                                                         type="danger"
-                                                        @click="handleDelete1(scope.$index, scope.row)">
+                                                        @click="handleDelete2(scope.$index, scope.row)">
                                                     Delete
                                                 </el-button>
                                             </template>
@@ -436,21 +605,20 @@
                                 </el-card>
                                 <el-card class="box-card"
                                          style="width:59%;"
-                                         id="step1_right">
+                                         id="step2_right">
                                     <el-input
                                             placeholder="Please enter name..."
                                             v-model="relateSearch"
                                             class="input-with-select">
                                         <el-button slot="append"
                                                    icon="el-icon-search"
-                                                   @click="search1()"></el-button>
+                                                   @click="search2()"></el-button>
                                     </el-input>
                                     <el-table
-                                            :data="pageOption1.searchResult"
+                                            :data="pageOption2.searchResult"
                                             style="margin-top:17px;"
                                             :max-height="tableMaxHeight">
-                                        <el-table-column
-                                                type="expand">
+                                        <el-table-column type="expand">
                                             <template
                                                     slot-scope="props">
                                                 <el-form
@@ -477,15 +645,14 @@
                                                 label="Contributor"
                                                 prop="author">
                                         </el-table-column>
-                                        <el-table-column
-                                                fixed="right"
-                                                label="Operation"
-                                                width="100">
+                                        <el-table-column fixed="right"
+                                                         label="Operation"
+                                                         width="100">
                                             <template
                                                     slot-scope="scope">
                                                 <el-button
                                                         size="mini"
-                                                        @click="handleEdit(scope.$index, scope.row)">
+                                                        @click="handleEdit1(scope.$index, scope.row)">
                                                     Add
                                                 </el-button>
                                             </template>
@@ -493,223 +660,71 @@
                                     </el-table>
                                     <el-pagination
                                             style="text-align: center;margin-top:20px"
-                                            @current-change="handlePageChange1"
-                                            :current-page="pageOption1.currentPage"
+                                            @current-change="handlePageChange2"
+                                            :current-page="pageOption2.currentPage"
                                             layout="total, prev, pager, next, jumper"
                                             :page-size="5"
-                                            :total="pageOption1.total">
+                                            :total="pageOption2.total">
                                     </el-pagination>
                                 </el-card>
-                            </div>
-                        </el-tab-pane>
-                    </el-tabs>
-
-                </el-card>
-            </div>
-        </el-card>
-        <el-card :style="{display:(editThemeActive==2?'block':'none')}" shadow="never">
-            <div class="panel-body">
-                <el-card>
-                    <el-button type="success"
-                               style="position: absolute;right: 25px;z-index: 999"
-                               @click="dataClass_add()">Add New
-                        Category
-                    </el-button>
-                    <el-tabs v-model="editableTabsValue_data"
-                             type="card" editable
-                             @edit="handleTabsEdit_data">
-                        <el-tab-pane
-                                :key="item.name"
-                                v-for="(item, index) in editableTabs_data"
-                                :label="item.title"
-                                :name="item.name"
-                        >
-                            <div class='data-attr'>
-                                <div>
-                                    <lable class='control-label col-sm-2 text-center'
-                                           style='font-weight: bold;'>
-                                        Category Name:
-                                    </lable>
-                                    <div class='input-group'>
-                                        <input type='text'
-                                               :id="'categorynameData'+index"
-                                               name="name"
-                                               class='form-control category_name2'>
-                                    </div>
-                                </div>
-                            </div>
-                            <el-card class="box-card"
-                                     style="width:40%;margin-right: 1%;float: left;"
-                                     id="step2_left">
-                                <div slot="header" class="clearfix">
-                                    <span>Selected Items</span>
-                                </div>
-                                <el-table
-                                        :data="item.tabledata"
-                                        ref="leftTable"
-                                        :max-height="tableMaxHeight">
-                                    <el-table-column type="expand">
-                                        <template
-                                                slot-scope="props">
-                                            <el-form
-                                                    label-position="left"
-                                                    inline
-                                                    class="demo-table-expand">
-                                                <el-form-item
-                                                        label="Contributor">
-                                                    <span>{{ props.row.author }}</span>
-                                                </el-form-item>
-
-                                            </el-form>
-                                        </template>
-                                    </el-table-column>
-                                    <el-table-column
-                                            label="Name">
-                                        <template
-                                                slot-scope="props">
-                                            <a :href="'/'+relateType+'/'+props.row.oid"
-                                               target="_blank">{{props.row.name}}</a>
-                                        </template>
-                                    </el-table-column>
-
-                                    <el-table-column fixed="right"
-                                                     label="Operation"
-                                                     width="100">
-                                        <template
-                                                slot-scope="scope">
-
-                                            <el-button
-                                                    size="mini"
-                                                    type="danger"
-                                                    @click="handleDelete2(scope.$index, scope.row)">
-                                                Delete
-                                            </el-button>
-                                        </template>
-                                    </el-table-column>
-                                </el-table>
-                            </el-card>
-                            <el-card class="box-card"
-                                     style="width:59%;"
-                                     id="step2_right">
-                                <el-input
-                                        placeholder="Please enter name..."
-                                        v-model="relateSearch"
-                                        class="input-with-select">
-                                    <el-button slot="append"
-                                               icon="el-icon-search"
-                                               @click="search2()"></el-button>
-                                </el-input>
-                                <el-table
-                                        :data="pageOption2.searchResult"
-                                        style="margin-top:17px;"
-                                        :max-height="tableMaxHeight">
-                                    <el-table-column type="expand">
-                                        <template
-                                                slot-scope="props">
-                                            <el-form
-                                                    label-position="left"
-                                                    inline
-                                                    class="demo-table-expand">
-                                                <el-form-item
-                                                        label="Detail">
-                                                    <span>{{ props.row.description }}</span>
-                                                </el-form-item>
-
-                                            </el-form>
-                                        </template>
-                                    </el-table-column>
-                                    <el-table-column
-                                            label="Name">
-                                        <template
-                                                slot-scope="props">
-                                            <a :href="'/repository/'+relateType+'/'+props.row.oid"
-                                               target="_blank">{{props.row.name}}</a>
-                                        </template>
-                                    </el-table-column>
-                                    <el-table-column
-                                            label="Contributor"
-                                            prop="author">
-                                    </el-table-column>
-                                    <el-table-column fixed="right"
-                                                     label="Operation"
-                                                     width="100">
-                                        <template
-                                                slot-scope="scope">
-                                            <el-button
-                                                    size="mini"
-                                                    @click="handleEdit1(scope.$index, scope.row)">
-                                                Add
-                                            </el-button>
-                                        </template>
-                                    </el-table-column>
-                                </el-table>
-                                <el-pagination
-                                        style="text-align: center;margin-top:20px"
-                                        @current-change="handlePageChange2"
-                                        :current-page="pageOption2.currentPage"
-                                        layout="total, prev, pager, next, jumper"
-                                        :page-size="5"
-                                        :total="pageOption2.total">
-                                </el-pagination>
-                            </el-card>
-                        </el-tab-pane>
-                    </el-tabs>
-                </el-card>
-            </div>
-        </el-card>
-        <el-card :style="{display:(editThemeActive==3?'block':'none')}" shadow="never">
-            <div class="panel-body">
-                <el-card>
-                    <el-button type="success"
-                               style="position: absolute;right: 25px;z-index: 999"
-                               @click="Application_add()">Add New
-                        Application
-                    </el-button>
-                    <el-tabs
-                            v-model="editableTabsValue_applications"
-                            type="card" editable
-                            @edit="handleTabsEdit_applications">
-                        <el-tab-pane
-                                :key="item.name"
-                                v-for="(item, index) in editableTabs_applications"
-                                :label="item.title"
-                                :name="item.name"
-                                id="add_tabs"
-                        >
-                            <div class='user-attr3'>
-                                <div>
-                                    <lable class='control-label col-sm-2 text-center'
-                                           style='font-weight: bold;'>
-                                        Name:
-                                    </lable>
-                                    <div class='input-group'>
-                                        <input type='text'
-                                               :id="'applicationName'+index"
-                                               name="name"
-                                               class='form-control application_name'>
-                                    </div>
-                                </div>
-                                <div style="margin-top:10px">
-                                    <lable class='control-label col-sm-2 text-center'
-                                           style='font-weight: bold;'>
-                                        Link:
-                                    </lable>
-                                    <div class='input-group'>
-                                        <input type='text'
-                                               :id="'applicationLink'+index"
-                                               name="name"
-                                               class='form-control application_link'>
-                                    </div>
-                                </div>
-                                <div style="margin-top:10px">
-                                    <lable class='control-label col-sm-2 text-center'
-                                           style='font-weight: bold;'>
-                                        Image:
-                                    </lable>
+                            </el-tab-pane>
+                        </el-tabs>
+                    </el-card>
+                </div>
+            </el-card>
+            <el-card :style="{display:(editThemeActive==3?'block':'none')}" shadow="never">
+                <div class="panel-body">
+                    <el-card>
+                        <el-button type="success"
+                                   style="position: absolute;right: 25px;z-index: 999"
+                                   @click="Application_add()">Add New
+                            Application
+                        </el-button>
+                        <el-tabs
+                                v-model="editableTabsValue_applications"
+                                type="card" editable
+                                @edit="handleTabsEdit_applications">
+                            <el-tab-pane
+                                    :key="item.name"
+                                    v-for="(item, index) in editableTabs_applications"
+                                    :label="item.title"
+                                    :name="item.name"
+                                    id="add_tabs"
+                            >
+                                <div class='user-attr3'>
                                     <div>
-                                        <img :id="'imgShowApplication'+index"
-                                             class="img_Show1"
-                                             style="
+                                        <lable class='control-label col-sm-2 text-center'
+                                               style='font-weight: bold;'>
+                                            Name:
+                                        </lable>
+                                        <div class='input-group'>
+                                            <input type='text'
+                                                   :id="'applicationName'+index"
+                                                   name="name"
+                                                   class='form-control application_name'>
+                                        </div>
+                                    </div>
+                                    <div style="margin-top:10px">
+                                        <lable class='control-label col-sm-2 text-center'
+                                               style='font-weight: bold;'>
+                                            Link:
+                                        </lable>
+                                        <div class='input-group'>
+                                            <input type='text'
+                                                   :id="'applicationLink'+index"
+                                                   name="name"
+                                                   class='form-control application_link'>
+                                        </div>
+                                    </div>
+                                    <div style="margin-top:10px">
+                                        <lable class='control-label col-sm-2 text-center'
+                                               style='font-weight: bold;'>
+                                            Image:
+                                        </lable>
+                                        <div>
+                                            <img :id="'imgShowApplication'+index"
+                                                 class="img_Show1"
+                                                 style="
                                                                                             border: 1px solid #ccc;
                                                                                             width: 100px;
                                                                                             height: 100px;
@@ -717,11 +732,11 @@
                                                                                             display: none;
                                                                                             float: left;
                                                                                             margin-right: 10px;"
-                                             src=""/>
-                                        <div :id="'imgChangeAppliction'+index"
-                                             @click = "uploadApplicationImg(index)"
-                                             class="imgChange"
-                                             style=" border: 1px solid #ccc;
+                                                 src=""/>
+                                            <div :id="'imgChangeAppliction'+index"
+                                                 @click = "uploadApplicationImg(index)"
+                                                 class="imgChange"
+                                                 style=" border: 1px solid #ccc;
                                                                                             width: 100px;
                                                                                             height: 100px;
                                                                                             text-align: center;
@@ -729,32 +744,32 @@
                                                                                             vertical-align: middle;
                                                                                             color: #ccc;
                                                                                             float: left;">
-                                            <i class="fa fa-plus fa-5x"></i>
+                                                <i class="fa fa-plus fa-5x"></i>
+                                            </div>
+                                            <input :id="'imgFileApplication'+index"
+                                                   class="img_fileApplication"
+                                                   type="file"
+                                                   style="display: none"
+                                                   accept="image/*"/>
                                         </div>
-                                        <input :id="'imgFileApplication'+index"
-                                               class="img_fileApplication"
-                                               type="file"
-                                               style="display: none"
-                                               accept="image/*"/>
                                     </div>
                                 </div>
-                            </div>
-                        </el-tab-pane>
-                    </el-tabs>
-                </el-card>
-            </div>
-        </el-card>
-        <!--<el-button style="margin-top: 12px;" @click="next">Next</el-button>-->
-        <el-button circle icon="el-icon-arrow-left"
-                   :style="{visibility:(editThemeActive>0?'visible':'hidden')}" class="el-button--primary"
-                   style="margin-top: 12px;position: absolute;left:4%;top:55px;"
-                   @click="editThemePre"></el-button>
-        <el-button circle icon="el-icon-arrow-right" v-if="editThemeActive<3" class="el-button--primary"
-                   style="margin-top: 12px;position: absolute;right:4%;top:55px;"
-                   @click="editThemeNext"></el-button>
-        <el-button circle icon="el-icon-check" v-if="editThemeActive>=3" class="el-button--success"
-                   style="margin-top: 12px;position: absolute;right:4%;top:55px;"
-                   @click="editThemeFinish"></el-button>
+                            </el-tab-pane>
+                        </el-tabs>
+                    </el-card>
+                </div>
+            </el-card>
+            <!--<el-button style="margin-top: 12px;" @click="next">Next</el-button>-->
+            <el-button circle icon="el-icon-arrow-left"
+                       :style="{visibility:(editThemeActive>0?'visible':'hidden')}" class="el-button--primary"
+                       style="margin-top: 12px;position: absolute;left:4%;top:55px;"
+                       @click="editThemePre"></el-button>
+            <el-button circle icon="el-icon-arrow-right" v-if="editThemeActive<3" class="el-button--primary"
+                       style="margin-top: 12px;position: absolute;right:4%;top:55px;"
+                       @click="editThemeNext"></el-button>
+            <el-button circle icon="el-icon-check" v-if="editThemeActive>=3" class="el-button--success"
+                       style="margin-top: 12px;position: absolute;right:4%;top:55px;"
+                       @click="editThemeFinish"></el-button>
         </div>
     </el-dialog>
 

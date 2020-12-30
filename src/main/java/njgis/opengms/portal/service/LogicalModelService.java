@@ -438,7 +438,7 @@ public class LogicalModelService {
 
         int page = modelItemFindDTO.getPage();
         int pageSize = modelItemFindDTO.getPageSize();
-        Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
+        Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, modelItemFindDTO.getSortField());
         Pageable pageable = PageRequest.of(page, pageSize, sort);
         User user = userDao.findFirstByUserId(userId);
 
@@ -466,7 +466,7 @@ public class LogicalModelService {
         String searchText = modelItemFindDTO.getSearchText();
         //List<String> classifications=modelItemFindDTO.getClassifications();
         //默认以viewCount排序
-        Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
+        Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, modelItemFindDTO.getSortField());
         Pageable pageable = PageRequest.of(page, pageSize, sort);
 
         Page<LogicalModel> logicalModelPage = null;
@@ -499,7 +499,7 @@ public class LogicalModelService {
         String searchText = modelItemFindDTO.getSearchText();
         //List<String> classifications=modelItemFindDTO.getClassifications();
         //默认以viewCount排序
-        Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "viewCount");
+        Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, modelItemFindDTO.getSortField());
         Pageable pageable = PageRequest.of(page, pageSize, sort);
 
         Page<LogicalModel> logicalModelPage = null;

@@ -38,25 +38,27 @@ var info=new Vue({
             detail:"",
 
 
-            pageOption: {
+            pageOption_my: {
                 paginationShow: false,
                 progressBar: true,
                 sortAsc: false,
                 currentPage: 1,
                 pageSize: 5,
                 relateSearch: "",
-                total: 9999,
+                sortField:"default",
+                total: 99999,
                 searchResult: [],
             },
 
-            pageOption2: {
+            pageOption_all: {
                 paginationShow: false,
                 progressBar: true,
                 sortAsc: false,
                 currentPage: 1,
                 pageSize: 5,
                 relateSearch: "",
-                total: 9999,
+                sortField:"viewCount",
+                total: 99999,
                 searchResult: [],
             },
 
@@ -503,9 +505,236 @@ var info=new Vue({
                 children: 'children',
                 label: 'label'
             },
+
+            modelInfo:{},
+
+            relationPageSize:4,
+
+            modelRelationListShow:true,
+            relatedModelItems:[],
+            relatedModelItemsPage:[],
         }
     },
     methods: {
+
+        handleRelationCurrentChange(page,type){
+            switch(type){
+                case "modelItem":
+                    let start = (page-1)*this.relationPageSize;
+                    let end = page * this.relationPageSize;
+                    this.relatedModelItemsPage = [];
+                    for(i=start;i<this.relatedModelItems.length;i++){
+                        if(i===end) break;
+                        this.relatedModelItemsPage.push(this.relatedModelItems[i]);
+                    }
+                    break;
+            }
+        },
+
+        generateModelRelationGraph(){
+
+            this.modelRelationListShow = false;
+            setTimeout(()=>{
+
+                let object = document.getElementById('modelRelationGraph');
+                let modelRelationGraph = echarts.init(object,'light');
+                modelRelationGraph.showLoading();
+
+                let nodes = [];
+                let links =[];
+
+                let radius = 200;
+                let title = this.modelInfo.name;
+                nodes.push({
+                    name: title,
+                    x: 500,
+                    y: 300,
+                    itemStyle:{
+                        color: 'green',
+                    },
+                    label: {
+                        formatter: title.length > 9 ? title.substring(0,7)+"..." : title,
+                    },
+                    tooltip:{
+                        formatter:"{b}",
+                    },
+                });
+
+                let items = [];
+                for(i = 0;i<this.relatedModelItems.length;i++){
+                    let name = this.relatedModelItems[i].name;
+                    let relation = this.relatedModelItems[i].relation;
+                    items.push({
+                        name: name,
+                        relation: relation
+                    })
+                }
+
+                let dtAngle = 360 / items.length;
+                let curAngle = 0;
+                for(i = 0;i<items.length;i++){
+                    curAngle = curAngle + dtAngle;
+                    let radian = curAngle * 2 * Math.PI / 360;
+                    let dx = Math.cos(radian) * radius;
+                    let dy = Math.sin(radian) * radius;
+
+                    let name = items[i].name;
+                    let formatter = name.length > 9 ? name.substring(0,7)+"..." : name;
+
+                    //加入节点
+                    nodes.push({
+                        name: name,
+                        x: nodes[0].x + dx,
+                        y: nodes[0].y + dy,
+                        label: {
+                            formatter: formatter,
+                        },
+                        tooltip:{
+                            formatter:"{b}",
+                        },
+                    });
+
+                    //加入连线
+                    links.push({
+                        source: 0,
+                        target: i+1,
+                        symbolSize: [5, 10],
+                        label: {
+                            show: true,
+                            formatter: items[i].relation,
+                            fontSize: 12,
+                        },
+                        lineStyle: {
+                            width: 2,
+                            curveness: 0
+                        },
+                        tooltip:{
+                            position: 'inside',
+                            formatter: nodes[0].name + " " + items[i].relation + " " + nodes[i].name,
+                        },
+
+                    });
+                }
+
+                let option = {
+                    title: {
+                        //text: 'Graph 简单示例'
+                    },
+                    tooltip: {},
+                    toolbox: {
+                        feature: {
+
+                            restore: {},
+                            saveAsImage: {}
+                        }
+                    },
+                    animationDurationUpdate: 500,
+                    animationEasingUpdate: 'quinticInOut',
+                    series: [
+                        {
+                            type: 'graph',
+                            layout: 'none',
+                            symbolSize: 100,
+                            roam: true,
+                            label: {
+                                show: true
+                            },
+                            edgeSymbol: ['circle', 'arrow'],
+                            edgeSymbolSize: [4, 10],
+                            edgeLabel: {
+                                fontSize: 20
+                            },
+                            data: [{
+                                name: '节点1',
+                                x: 500,
+                                y: 300,
+                                symbolSize:50,
+                                itemStyle:{
+                                    color: 'blue',
+                                },
+                            }, {
+                                name: '节点2',
+                                x: 800,
+                                y: 300
+                            }, {
+                                name: '节点3',
+                                x: 550,
+                                y: 100
+                            }, {
+                                name: '节点4',
+                                x: 550,
+                                y: 500
+                            }],
+                            // links: [],
+                            links: [{
+                                source: 0,
+                                target: 1,
+                                symbolSize: [5, 20],
+                                label: {
+                                    show: true,
+                                    formatter:"1234",
+                                },
+                                lineStyle: {
+                                    width: 5,
+                                    curveness: 0
+                                }
+                            }, {
+                                source: '节点2',
+                                target: '节点1',
+                                label: {
+                                    show: true
+                                },
+                                lineStyle: {
+                                    curveness: 0.2
+                                }
+                            }, {
+                                source: '节点1',
+                                target: '节点3'
+                            }, {
+                                source: '节点2',
+                                target: '节点3'
+                            }, {
+                                source: '节点2',
+                                target: '节点4'
+                            }, {
+                                source: '节点1',
+                                target: '节点4'
+                            }],
+                            lineStyle: {
+                                opacity: 0.9,
+                                width: 2,
+                                curveness: 0
+                            }
+                        }
+                    ]
+                };
+
+                option.series[0].data = nodes;
+                option.series[0].links = links;
+                console.log(option);
+                modelRelationGraph.setOption(option);
+                modelRelationGraph.hideLoading();
+            },500)
+
+        },
+
+        closeModelRelationGraph(){
+            this.modelRelationListShow = true;
+        },
+
+        relationSortChange(sort){
+            console.log(sort);
+            let order = sort.order==="ascending";
+            let field = sort.column.label.toLowerCase();
+            if(this.activeName_dialog==="my"){
+                this.pageOption_my.sortAsc=order;
+                this.pageOption_my.sortField=field;
+            }else{
+                this.pageOption_all.sortAsc=order;
+                this.pageOption_all.sortField=field;
+            }
+            this.search(this.activeName_dialog);
+        },
 
         getOid(){
             let url = window.location.href;
@@ -520,12 +749,19 @@ var info=new Vue({
         changeDetailLanguage(command){
             this.currentDetailLanguage = command;
             let data = {
-                "oid":this.getOid(),
-                "language":this.currentDetailLanguage
+                "oid": this.getOid(),
+                "language": this.currentDetailLanguage
             };
-            $.get("/modelItem/getDetailByLanguage",data,(result)=>{
-                this.detail = result.data;
-            })
+
+            if(!window.location.href.indexOf("history")) {
+                $.get("/modelItem/getDetailByLanguage", data, (result) => {
+                    this.detail = result.data;
+                })
+            }else{
+                $.get("/version/languageDetail/modelItem", data, (result) => {
+                    this.detail = result.data;
+                })
+            }
         },
 
         handleCheckChange(data, checked, indeterminate) {
@@ -955,12 +1191,13 @@ var info=new Vue({
             window.sessionStorage.setItem(name, value);
         },
         link(event) {
-            let refLink = $(".refLink");
-            for (i = 0; i < refLink.length; i++) {
-                if (event.currentTarget == refLink[i]) {
-                    window.open(this.refTableData[i].links);
-                }
-            }
+            window.open(event);
+            // let refLink = $(".refLink");
+            // for (i = 0; i < refLink.length; i++) {
+            //     if (event.currentTarget == refLink[i]) {
+            //         window.open(this.refTableData[i].links);
+            //     }
+            // }
             //console.log(event.currentTarget);
         },
         jump() {
@@ -1261,23 +1498,23 @@ var info=new Vue({
         search(scope) {
             let data;
             if(scope=="all"){
-                // this.pageOption2.currentPage = 1;
+                // this.pageOption_all.currentPage = 1;
                 data = {
-                    asc: this.pageOption2.sortAsc,
-                    page: this.pageOption2.currentPage-1,
-                    pageSize: this.pageOption2.pageSize,
-                    searchText: this.pageOption2.relateSearch,
-                    sortType: "default",
+                    asc: this.pageOption_all.sortAsc,
+                    page: this.pageOption_all.currentPage-1,
+                    pageSize: this.pageOption_all.pageSize,
+                    searchText: this.pageOption_all.relateSearch,
+                    sortField: this.pageOption_all.sortField,
                     classifications: ["all"],
                 }
             }else {
-                // this.pageOption.currentPage = 1;
+                // this.pageOption_my.currentPage = 1;
                 data = {
-                    asc: this.pageOption.sortAsc,
-                    page: this.pageOption.currentPage-1,
-                    pageSize: this.pageOption.pageSize,
-                    searchText: this.pageOption.relateSearch,
-                    sortType: "default",
+                    asc: this.pageOption_my.sortAsc,
+                    page: this.pageOption_my.currentPage-1,
+                    pageSize: this.pageOption_my.pageSize,
+                    searchText: this.pageOption_my.relateSearch,
+                    sortField: this.pageOption_my.sortField,
                     classifications: ["all"],
                 };
             }
@@ -1296,6 +1533,8 @@ var info=new Vue({
                         classifications: [],
                         category: '',
                         searchText: data.searchText,
+                        tabType: "repository",
+                        sortField: data.sortField,
                     };
                     data = JSON.stringify(data);
                     contentType = "application/json";
@@ -1345,19 +1584,19 @@ var info=new Vue({
                         console.log(data)
 
                         if(scope=="all") {
-                            this.pageOption2.total = data.total;
-                            this.pageOption2.pages = data.pages;
-                            this.pageOption2.searchResult = data.list;
-                            this.pageOption2.users = data.users;
-                            this.pageOption2.progressBar = false;
-                            this.pageOption2.paginationShow = true;
+                            this.pageOption_all.total = data.total;
+                            this.pageOption_all.pages = data.pages;
+                            this.pageOption_all.searchResult = data.list;
+                            this.pageOption_all.users = data.users;
+                            this.pageOption_all.progressBar = false;
+                            this.pageOption_all.paginationShow = true;
                         }else{
-                            this.pageOption.total = data.total;
-                            this.pageOption.pages = data.pages;
-                            this.pageOption.searchResult = data.list;
-                            this.pageOption.users = data.users;
-                            this.pageOption.progressBar = false;
-                            this.pageOption.paginationShow = true;
+                            this.pageOption_my.total = data.total;
+                            this.pageOption_my.pages = data.pages;
+                            this.pageOption_my.searchResult = data.list;
+                            this.pageOption_my.users = data.users;
+                            this.pageOption_my.progressBar = false;
+                            this.pageOption_my.paginationShow = true;
                         }
 
                     }
@@ -1398,9 +1637,9 @@ var info=new Vue({
 
         handlePageChange(val) {
             if(this.activeName_dialog=="my") {
-                this.pageOption.currentPage = val;
+                this.pageOption_my.currentPage = val;
             }else{
-                this.pageOption2.currentPage = val;
+                this.pageOption_all.currentPage = val;
             }
             this.search(this.activeName_dialog);
         },
@@ -1472,14 +1711,11 @@ var info=new Vue({
             let data;
             let contentType;
 
-            if(this.relateType!="modelItem") {
+            if(this.relateType !== "modelItem") {
                 url = "/modelItem/setRelation";
                 this.tableData.forEach(function (item, index) {
                     relateArr.push(item.oid);
                 })
-                if (relateArr.length == 0) {
-                    relateArr.push(null);
-                }
                 data = {
                     oid: oid,
                     type: this.relateType,
@@ -1495,9 +1731,6 @@ var info=new Vue({
                     };
                     relateArr.push(obj);
                 });
-                if (relateArr.length == 0) {
-                    relateArr.push(null);
-                }
                 data = {
                     relations: relateArr,
                 };
@@ -1511,13 +1744,18 @@ var info=new Vue({
                 data: data,
                 contentType:contentType,
                 async: true,
-                success: (jsonArr) => {
+                success: (result) => {
                     this.$alert('Success!', 'Tip', {
                         type:'success',
                         confirmButtonText: 'OK',
                         callback: action => {
                             this.dialogTableVisible = false;
-                            window.location.reload();
+                            if(this.relateType === "modelItem"){
+                                this.relatedModelItems = result.data;
+                                this.generateModelRelationGraph();
+                            }else {
+                                window.location.reload();
+                            }
                         }
                     });
 
@@ -1609,13 +1847,13 @@ var info=new Vue({
                         this.relateTitle = "Link Related "+this.typeName;
                         this.tableData = [];
 
-                        this.pageOption.currentPage = 1;
-                        this.pageOption.searchResult = [];
-                        this.pageOption.relateSearch = "";
+                        this.pageOption_my.currentPage = 1;
+                        this.pageOption_my.searchResult = [];
+                        this.pageOption_my.relateSearch = "";
 
-                        this.pageOption2.currentPage = 1;
-                        this.pageOption2.searchResult = [];
-                        this.pageOption2.relateSearch = "";
+                        this.pageOption_all.currentPage = 1;
+                        this.pageOption_all.searchResult = [];
+                        this.pageOption_all.relateSearch = "";
 
                         this.getRelation();
                         this.search(this.activeName_dialog);
@@ -1635,6 +1873,16 @@ var info=new Vue({
         }
     },
     mounted() {
+
+        this.modelInfo = modelInfo;
+        this.relatedModelItems = modelItemList;
+        this.relatedModelItemsPage = [];
+        for(i=0;i<this.relatedModelItems.length;i++){
+            if(i===this.relationPageSize) break;
+            this.relatedModelItemsPage.push(this.relatedModelItems[i]);
+
+        }
+
 
         let href = window.location.href;
         let hrefs = href.split('/');
@@ -1738,7 +1986,7 @@ var info=new Vue({
         }
 
         let panes = $(".el-tab-pane")
-        for(i=0;i<4;i++){
+        for(i=0;i<3;i++){
             let list_size = panes.eq(i).children("div").children(".list_panel").length;
             if(list_size>0){
                 this.activeName = panes[i].id.replace("pane-","");

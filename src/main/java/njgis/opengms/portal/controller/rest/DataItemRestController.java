@@ -1063,7 +1063,7 @@ public class DataItemRestController {
                        @RequestParam(value = "rId") String  rId){
         JsonResult jsonResult = new JsonResult();
         DataItemNew dataItemNew = dataItemNewDao.findFirstById(dataOid);
-        String dataUrl = "http://111.229.14.128:8899/data?uid="+ rId;
+        String dataUrl = "http://111.229.14.128:8899/data/"+ rId;
         dataItemNew.setDataUrl(dataUrl);
         dataItemNewDao.save(dataItemNew);
         return jsonResult;

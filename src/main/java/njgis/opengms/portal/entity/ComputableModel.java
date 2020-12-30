@@ -32,6 +32,7 @@ public class ComputableModel extends Item {
 
     String md5;
     Boolean deploy;
+    Boolean verify = false;
 //    /**
 //     * user oid
 //     */

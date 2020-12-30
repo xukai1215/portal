@@ -466,8 +466,13 @@ var vue = new Vue({
                 contentType: "application/json",
                 success: (json) => {
                     if (json.code == -1) {
-                        alert("Please login first!")
-                        window.location.href = "/user/login"
+                        this.$alert('Please login first!', 'Error', {
+                            type:"error",
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                window.location.href="/user/login";
+                            }
+                        });
                     } else {
                         let idList = json.data
                         console.log(idList)
@@ -596,9 +601,14 @@ var vue = new Vue({
                     contentType: "application/x-www-form-urlencoded",
                     success: (json) => {
                         if (json.code == -1) {
-                            alert("Please login first!")
-                            window.sessionStorage.setItem("history", window.location.href);
-                            window.location.href = "/user/login"
+                            this.$alert('Please login first!', 'Error', {
+                                type:"error",
+                                confirmButtonText: 'OK',
+                                callback: action => {
+                                    window.sessionStorage.setItem("history", window.location.href);
+                                    window.location.href="/user/login";
+                                }
+                            });
                         }
                         else {
                             newChild = {
@@ -650,8 +660,13 @@ var vue = new Vue({
                 .then(res => {
                     let json = res.data;
                     if (json.code == -1) {
-                        alert("Please login first!")
-                        window.location.href = "/user/login"
+                        this.$alert('Please login first!', 'Error', {
+                            type:"error",
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                window.location.href="/user/login";
+                            }
+                        });
                     }
                     else {
                         this.folderTree = res.data.data;
@@ -717,21 +732,21 @@ var vue = new Vue({
             $.get("/dataManager/dataContainerIpAndPort", (result) => {
                 let ipAndPort = result.data;
                 let formData = new FormData();
-                formData.append("ogmsdata", file);
-                formData.append("ogmsdata", configFile);
+                formData.append("datafile", file);
+                formData.append("datafile", configFile);
                 formData.append("name", event.eventName);
                 formData.append("userId", this.uid);
                 formData.append("serverNode", "china");
                 formData.append("origination", "portal");
                 $.ajax({
                     type: "post",
-                    url: "http://" + ipAndPort + "/data",
+                    url: "http://" + ipAndPort + "/configData",
                     data: formData,
                     async: true,
                     processData: false,
                     contentType: false,
                     success: (res) => {
-                        if (res.code == 0) {
+                        if (res.code === 1) {
                             let data=res.data;
                             // if(this.uploadFiles.length==1){
                             //     data.suffix=this.uploadFiles[0].name.split(".")[1];
@@ -744,8 +759,10 @@ var vue = new Vue({
                             data.label=data.file_name;
                             data.file_name+="."+data.suffix;
 
+                            let dataUrl = "http://" + ipAndPort + "/data/" + data.source_store_id;
+
                             if (event == null) {
-                                this.$set(this.eventChoosing, 'url', "http://" + ipAndPort + "/data?uid=" + data.source_store_id);
+                                this.$set(this.eventChoosing, 'url', dataUrl);
                                 this.$set(this.eventChoosing, 'tag', data.label)
                                 this.$set(this.eventChoosing, 'suffix', data.suffix)
 
@@ -759,7 +776,7 @@ var vue = new Vue({
                             }
                             else {
 
-                                this.$set(event, 'url', "http://" + ipAndPort + "/data?uid=" + data.source_store_id);
+                                this.$set(event, 'url', dataUrl);
                                 this.$set(event, 'tag', data.label)
                                 this.$set(event, 'suffix', data.suffix)
 
@@ -1523,9 +1540,14 @@ var vue = new Vue({
                 .then(res => {
                     let json = res.data;
                     if (json.code == -1) {
-                        alert("Please login first!")
-                        window.sessionStorage.setItem("history", window.location.href);
-                        window.location.href = "/user/login"
+                        this.$alert('Please login first!', 'Error', {
+                            type:"error",
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                window.sessionStorage.setItem("history", window.location.href);
+                                window.location.href="/user/login";
+                            }
+                        });
                     }
                     else {
                         this.myFile = res.data.data[0].children;
@@ -1612,8 +1634,13 @@ var vue = new Vue({
                 contentType: "application/x-www-form-urlencoded",
                 success: (json) => {
                     if (json.code == -1) {
-                        alert("Please login first!")
-                        window.location.href = "/user/login"
+                        this.$alert('Please login first!', 'Error', {
+                            type: "error",
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                window.location.href = "/user/login";
+                            }
+                        });
                     } else {
                         this.myFileShown = json.data.data;
                         this.fatherIndex = this.myFileShown[0].father
@@ -1672,9 +1699,14 @@ var vue = new Vue({
                 }).then((res) => {
                     let json = res.data;
                     if (json.code == -1) {
-                        alert("Please login first!")
-                        window.sessionStorage.setItem("history", window.location.href);
-                        window.location.href = "/user/login"
+                        this.$alert('Please login first!', 'Error', {
+                            type: "error",
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                window.sessionStorage.setItem("history", window.location.href);
+                                window.location.href = "/user/login";
+                            }
+                        });
                     }
                     else {
                         this.fileSearchResult = json.data.data;
@@ -2361,8 +2393,13 @@ var vue = new Vue({
                 success: (json) => {
 
                     if (json.code != 0) {
-                        alert("Please login first!");
-                        window.location.href = "/user/login";
+                        this.$alert('Please login first!', 'Error', {
+                            type: "error",
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                window.location.href = "/user/login";
+                            }
+                        });
                     } else {
                         setTimeout(() => {
                             const data = json.data;

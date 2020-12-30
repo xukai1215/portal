@@ -122,17 +122,211 @@ public class PortalApplicationTests {
 
 
 
-
-
-
     @Value("${resourcePath}")
     private String resourcePath;
 
     @Value("${managerServerIpAndPort}")
     private String managerServerIpAndPort;
 
+    @Test
+    public void changeComputableVerify(){
+        List<ComputableModel> computableModelList = computableModelDao.findAll();
+        for(int i = 0;i<computableModelList.size();i++){
+            ComputableModel computableModel = computableModelList.get(i);
+            if(computableModel.getAuthor().equals("yue@lreis.ac.cn")){
+
+                computableModel.setVerify(true);
+                computableModelDao.save(computableModel);
+
+            }
+        }
+    }
+
+    @Test
+    public void changeLocalization(){
+//        List<ModelItem> modelItemList = modelItemDao.findAll();
+//        for(ModelItem modelItem:modelItemList){
+//            List<Localization> localizationList = modelItem.getLocalizationList();
+//            for(int i = 0;i<localizationList.size();i++){
+//                Localization localization = localizationList.get(i);
+//                if(localization.getLocalCode().equals("en-US")){
+//                    localization.setLocalCode("en");
+//                    localization.setLocalName("English");
+//                    localizationList.set(i,localization);
+//                }
+//                if(localization.getLocalCode().equals("zh-CN")){
+//                    localization.setLocalCode("zh");
+//                    localization.setLocalName("Chinese");
+//                    localizationList.set(i,localization);
+//                }
+//            }
+//            modelItem.setLocalizationList(localizationList);
+//            modelItemDao.save(modelItem);
+//        }
+//        try {
+//            List<Concept> ConceptList = conceptDao.findAll();
+//            for (Concept concept : ConceptList) {
+//                System.out.println(concept.getOid());
+//                List<Localization> localizationList = concept.getLocalizationList();
+//                for (int i = 0; i < localizationList.size(); i++) {
+//                    Localization localization = localizationList.get(i);
+//                    if(localization.getLocalCode()!=null) {
+//                        if (localization.getLocalCode().equals("en-US")) {
+//                            localization.setLocalCode("en");
+//                            localization.setLocalName("English");
+//                            localizationList.set(i, localization);
+//                        }
+//                        if (localization.getLocalCode().equals("zh-CN")) {
+//                            localization.setLocalCode("zh");
+//                            localization.setLocalName("Chinese");
+//                            localizationList.set(i, localization);
+//                        }
+//                    }else{
+//                        localization.setLocalCode("en");
+//                        localization.setLocalName("English");
+//                        for(int j=0;j<localization.getName().length();j++){
+//                            if(isChinese(localization.getName().charAt(j))){
+//                                localization.setLocalCode("zh");
+//                                localization.setLocalName("Chinese");
+//                                break;
+//                            }
+//                        }
+//                        localizationList.set(i,localization);
+//                    }
+//                }
+//                concept.setLocalizationList(localizationList);
+//                conceptDao.save(concept);
+//            }
+//        }catch (Exception e){
+//            System.out.println(e);
+//        }
+
+        try {
+            List<Unit> unitList = unitDao.findAll();
+            for (Unit unit : unitList) {
+                System.out.println(unit.getOid());
+                List<Localization> localizationList = unit.getLocalizationList();
+                for (int i = 0; i < localizationList.size(); i++) {
+                    Localization localization = localizationList.get(i);
+                    if(localization.getLocalCode()!=null) {
+                        if (localization.getLocalCode().equals("en-US")) {
+                            localization.setLocalCode("en");
+                            localization.setLocalName("English");
+                            localizationList.set(i, localization);
+                        }
+                        if (localization.getLocalCode().equals("zh-CN")) {
+                            localization.setLocalCode("zh");
+                            localization.setLocalName("Chinese");
+                            localizationList.set(i, localization);
+                        }
+                    }else{
+                        localization.setLocalCode("en");
+                        localization.setLocalName("English");
+                        for(int j=0;j<localization.getName().length();j++){
+                            if(isChinese(localization.getName().charAt(j))){
+                                localization.setLocalCode("zh");
+                                localization.setLocalName("Chinese");
+                                break;
+                            }
+                        }
+                        localizationList.set(i,localization);
+                    }
+                }
+                unit.setLocalizationList(localizationList);
+                unitDao.save(unit);
+            }
+        }catch (Exception e){
+            System.out.println(e);
+        }
+    }
+
+    @Test
+    public void sha256test(){
+        String password = DigestUtils.sha256Hex(DigestUtils.md5Hex("i6WLddvt"));
+        System.out.println(password);
+    }
+
+    @Test
+    public void printUserEmail(){
+        String emails = "";
+        List<User> userList = userDao.findAll();
+        for(User user:userList){
+            emails += user.getEmail()+";";
+        }
+        System.out.println(emails);
+    }
 
 
+
+    @Test
+    public void changeModelItemClassification(){
+        List<ModelItem> modelItemList = modelItemDao.findAll();
+        for(ModelItem modelItem:modelItemList){
+            String author = modelItem.getAuthor();
+            List<String> cls = modelItem.getClassifications();
+            List<String> cls2 = modelItem.getClassifications2();
+            if(author.equals("wzh")&&cls2==null&&cls.contains("12b11f3e-8d6e-48c9-bf3a-f9fb5c5e0dd4")&&cls.size()==1){
+                List<String> newCls = new ArrayList<>();
+                newCls.add("75aee2b7-b39a-4cd0-9223-3b7ce755e457");
+                modelItem.setClassifications2(newCls);
+                modelItemDao.save(modelItem);
+            }
+            if(author.equals("wzh")&&cls2==null&&cls.contains("ea1f9c14-9bdb-4da6-b728-a9853620e95f")&&cls.size()==1){
+                List<String> newCls = new ArrayList<>();
+                newCls.add("75aee2b7-b39a-4cd0-9223-3b7ce755e457");
+                modelItem.setClassifications2(newCls);
+                modelItemDao.save(modelItem);
+            }
+        }
+    }
+
+    @Test
+    public void changeSongJComputableName(){
+        List<ComputableModel> computableModelList = computableModelDao.findAll();
+        for(ComputableModel computableModel:computableModelList){
+            if(computableModel.getAuthor().equals("SongJ")) {
+                String name = computableModel.getName();
+                computableModel.setName(name.replaceAll("_", " "));
+                computableModelDao.save(computableModel);
+            }
+        }
+    }
+
+    @Test
+    public void addClassification2(){
+        List<ModelItem> modelItemList = modelItemDao.findAll();
+        for(ModelItem modelItem : modelItemList){
+            if(modelItem.getAuthor().equals("SongJ")){
+                List<String> cls = new ArrayList<>();
+                cls.add("afa99af9-4224-4fac-a81f-47a7fb663dba");
+                modelItem.setClassifications2(cls);
+                String name = modelItem.getName();
+                name = name.replaceAll("_"," ");
+                modelItem.setName(name);
+                modelItemDao.save(modelItem);
+            }
+        }
+    }
+
+
+    @Test
+    public void changeUnitAlias(){
+        List<Unit> unitList = unitDao.findAll();
+        for(int i = 0;i<unitList.size();i++){
+            Unit unit = unitList.get(i);
+            List<Localization> localizationList = unit.getLocalizationList();
+            for(int j = 0;j<localizationList.size();j++){
+                Localization localization = localizationList.get(j);
+                if(localization.getLocalCode().equals("zh-CN")){
+                    List<String> alias = new ArrayList<>();
+                    alias.add(localization.getName());
+                    unit.setAlias(alias);
+                    unitDao.save(unit);
+                    break;
+                }
+            }
+        }
+    }
 
     @Test
     public void changeSpatialRef(){
@@ -179,12 +373,12 @@ public class PortalApplicationTests {
                 Localization localization = localizationList.get(i);
                 if(localization.getLocalCode()==null){
                     if(localization.getDescription()!=null){
-                        String localCode = "en-US";
-                        String localName = "English (United States)";
+                        String localCode = "en";
+                        String localName = "English";
                         for(int j = 0;j<localization.getDescription().length();j++){
                             if(isChinese(localization.getDescription().charAt(j))){
-                                localCode = "zh-CN";
-                                localName = "Chinese (Simplified)";
+                                localCode = "zh";
+                                localName = "Chinese";
                                 break;
                             }
                         }
@@ -208,12 +402,12 @@ public class PortalApplicationTests {
         for(ModelItem modelItem : modelItemList){
             Utils.count();
             String detail = modelItem.getDetail();
-            String localCode = "en-US";
-            String localName = "English (United States)";
+            String localCode = "en";
+            String localName = "English";
             for(int i = 0;i<detail.length();i++){
                 if(isChinese(detail.charAt(i))){
-                    localCode = "zh-CN";
-                    localName = "Chinese (Simplified)";
+                    localCode = "zh";
+                    localName = "Chinese";
                     break;
                 }
             }

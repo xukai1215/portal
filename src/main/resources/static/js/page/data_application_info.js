@@ -495,13 +495,35 @@ var data_application_info = new Vue({
 
         getApplication(){
             let str = window.location.href.split('/')
-            let oid = str[str.length-1]
+            let oid = str[str.length-1];
             let that = this
             axios.get('/dataApplication/getApplication/' + oid).then((res) => {
                 if(res.status === 200) {
-                    if(res.data.data.invokeServices) {
-                        that.methodsData = res.data.data.invokeServices
-                    }
+                    that.methodsData = res.data.data.invokeServices;
+                    //处理methodsData
+                    // var token = [];
+                    // for (let i=0;i<that.methodsData.length;i++){
+                    //     token.push(that.methodsData[i].token);
+                    // }
+                    // var res = [];
+                    // token.forEach(function (element, sameElement, set) {
+                    //     res.push(element);
+                    // });
+                    // let formdata = new FormData();
+                    // formdata.append("token", token);
+                    // axios.post('/dataApplication/getOnlineStatus',formdata).then((res) =>{
+                    //     if(res.status === 200){
+                    //         console.log("success");
+                    //         var onlineStatus = res.data.data;
+                    //         for(let i=0;i<that.methodsData.length;i++){
+                    //             that.methodsData[i].onlineStatus = onlineStatus[i];
+                    //         }
+                    //     }
+                    // })
+                    // that.methodsData.push(temp1)
+                    // if(res.data.data.invokeServices) {
+                    //     that.methodsData = res.data.data.invokeServices
+                    // }
                     that.viewCount = res.data.data.viewCount
                 }
             }).catch(function (err) {console.log(err)})
@@ -511,7 +533,16 @@ var data_application_info = new Vue({
             for(let i=0;i<refLink.length;i++){
                 if(event.currentTarget===refLink[i]){
                     console.log(this.methodsData[i].serviceId);
-                    window.location.href = "/dataApplication/task/" + '/' + this.dataApplicationId + '/' + this.methodsData[i].serviceId;
+                    //根据当前节点在线状态链接页面
+                    if (this.methodsData[i].onlineStatus === 'offline'){
+                        this.$message({
+                            message: 'Sorry, Service Offline !',
+                            type: 'error',
+                        })
+                    }else {
+                        window.location.href = "/dataApplication/task/" + this.dataApplicationId + '/'
+                            + this.methodsData[i].serviceId + '/' + encodeURIComponent(encodeURIComponent(this.methodsData[i].token));
+                    }
                 }
             }
             // let str = window.location.href.split('/')
