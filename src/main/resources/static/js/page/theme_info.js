@@ -214,6 +214,8 @@ var vue = new Vue({
             // drawer: false,
             // direction: 'rtl',
             maintainer:[],
+
+            controlEditMark: true,
         }
     },
     methods: {
@@ -770,6 +772,30 @@ var vue = new Vue({
         handlePageChange2(val) {
             this.pageOption2.currentPage = val;
             this.search2();
+        },
+        controlEdit(){
+            let all_button = $('.editicon')
+            let control_button = $('#controlEditButton')
+
+            if(this.controlEditMark) {
+                for(let i = 0;i<all_button.length;++i){
+                    all_button[i].style.display = ''        //置为空就可以显示了
+                }
+
+                control_button[0].style.backgroundColor = '#E6A23C'     // 改变control_button样式
+                control_button[0].style.borderColor = '#E6A23C'
+                control_button[0].children[0].innerHTML = 'Disable editing'
+                this.controlEditMark = false
+            }else {
+                for(let i = 0;i<all_button.length;++i){
+                    all_button[i].style.display = 'none'
+                }
+
+                control_button[0].style.backgroundColor = '#409EFF'
+                control_button[0].style.borderColor = '#409EFF'
+                control_button[0].children[0].innerHTML = 'Enable editing'
+                this.controlEditMark = true
+            }
         },
         edit_theme(defaultActive) {
                 this.editThemeActive = defaultActive
