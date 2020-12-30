@@ -56,11 +56,7 @@ public class CommonService {
     @Value("${resourcePath}")
     private String resourcePath;
 
-
-    @Value("${local.ip}")
-    String ip;
-
-    @Value("${local.port}")
+    @Value("${server.port}")
     String port;
 
     @Value("${spring.mail.username}")
@@ -276,7 +272,7 @@ public class CommonService {
     String getHTML(String type,String oid){
 
         RestTemplate restTemplate = new RestTemplate();
-        String forObject = restTemplate.getForObject("http://"+ip+":"+port+"/"+type+"/"+oid,String.class);
+        String forObject = restTemplate.getForObject("http://localhost:"+port+"/"+type+"/"+oid,String.class);
 
         return forObject;
 

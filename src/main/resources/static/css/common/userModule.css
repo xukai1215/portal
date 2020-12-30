@@ -1583,7 +1583,7 @@ ul.panel-controls > li > .dropdown-menu:before {
 .btn .fa,
 .btn .glyphicon {
     font-size: 14px;
-    margin-right: 5px;
+    /*margin-right: 5px;*/
 }
 
 /*.btn.btn-rounded {*/

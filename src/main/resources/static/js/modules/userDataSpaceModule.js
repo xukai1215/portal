@@ -1009,7 +1009,7 @@ Vue.component("user-data",
                 if (this.downloadDataSet.length > 0) {
 
                     const keys = sourceId.map(_ => `sourceStoreId=${_}`).join('&');
-                    let url = "http://221.226.60.2:8082/data?uid=" + keys;
+                    let url = "http://221.226.60.2:8082/data/" + keys;
                     window.open(url)
                     // let link = document.createElement('a');
                     // link.style.display = 'none';
@@ -1099,7 +1099,7 @@ Vue.component("user-data",
                 let id = this.rightTargetItem.url.split('=')[1]
                 //下载接口
                 if (id != undefined) {
-                    window.open('http://221.226.60.2:8082/data?uid=' + id);
+                    window.open('http://221.226.60.2:8082/data/' + id);
                 } else {
                     this.$message.error("No data can be downloaded.");
                 }

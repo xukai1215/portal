@@ -1,6 +1,5 @@
 package njgis.opengms.portal.service;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.sun.deploy.net.HttpUtils;
@@ -10,19 +9,14 @@ import njgis.opengms.portal.dao.DataItemDao;
 import njgis.opengms.portal.dao.DataNodeContentDao;
 import njgis.opengms.portal.dao.UserDao;
 import njgis.opengms.portal.dto.DataNodeContentDTO;
-import njgis.opengms.portal.dto.dataItem.DataItemResultDTO;
 import njgis.opengms.portal.entity.DataApplication;
 import njgis.opengms.portal.entity.DataItem;
 import njgis.opengms.portal.entity.DataNodeContent;
 import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.entity.support.InvokeService;
 import njgis.opengms.portal.utils.MyHttpUtils;
-import njgis.opengms.portal.utils.ResultUtils;
 import njgis.opengms.portal.utils.XmlTool;
-import org.dom4j.Document;
 import org.dom4j.DocumentException;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;

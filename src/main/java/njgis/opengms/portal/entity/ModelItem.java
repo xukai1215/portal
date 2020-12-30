@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 public class ModelItem extends Item {
 
-    String image;
+    String image = "";
 
     String knowledgeGraph;
 

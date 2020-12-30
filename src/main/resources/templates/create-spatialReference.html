@@ -238,8 +238,17 @@
 
                                                             <div class="step-tab-panel" id="step2">
                                                                 <div v-if="editType=='create'" class="singleLocalization">
-                                                                    <div style="margin-bottom:10px;">
-                                                                        <div><b>Language :</b> (After creating, you can describe the item in different languages by editing)</div>
+                                                                    <div style="margin:15px 0;width:15%;float: left;">
+                                                                        <div>
+                                                                            <b>Language:</b>
+                                                                            <el-tooltip
+                                                                                    popper-class="fontsize-15"
+                                                                                    effect="light"
+                                                                                    content="After creating, you can describe the item in different languages by editing"
+                                                                                    placement="top">
+                                                                                <i class="fa fa-question-circle-o" aria-hidden="true" style="cursor:help;"></i>
+                                                                            </el-tooltip>
+                                                                        </div>
                                                                         <el-select v-model="languageAdd.local" filterable placeholder="Please select language">
                                                                             <el-option
                                                                                     v-for="item in languageList"
@@ -251,9 +260,18 @@
                                                                             </el-option>
                                                                         </el-select>
                                                                     </div>
-                                                                    <div style="margin-bottom:10px;">
-                                                                        <div><b>Spatiotemporal Reference Name :</b> </div>
-                                                                        <el-input v-model="currentLocalization.name" placeholder="Please enter the item's name in your selected language"></el-input>
+                                                                    <div style="margin:15px 0;padding-left:10px;width:85%;float: left;">
+                                                                        <div>
+                                                                            <b>Local Name:</b>
+                                                                            <el-tooltip
+                                                                                    popper-class="fontsize-15"
+                                                                                    effect="light"
+                                                                                    content="A name in localized language should be given"
+                                                                                    placement="top">
+                                                                                <i class="fa fa-question-circle-o" aria-hidden="true" style="cursor:help;"></i>
+                                                                            </el-tooltip>
+                                                                        </div>
+                                                                        <el-input v-model="currentLocalization.name" placeholder="Please enter the model's name in your selected language"></el-input>
                                                                     </div>
                                                                     <div style="margin-bottom:10px;">
                                                                         <div><b>Description :</b> </div>

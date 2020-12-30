@@ -260,12 +260,14 @@ var createModelItem = Vue.extend({
             localIndex: 0,
             languageAdd: {
                 show: false,
-                local: {},
+                local: {
+
+                },
             },
             localizationList: [
                 {
-                    localCode: "en-US",
-                    localName: "English (United States)",
+                    localCode: "en",
+                    localName: "English",
                     name: "",
                     description: "",
                     selected: true,
@@ -777,7 +779,7 @@ var createModelItem = Vue.extend({
             this.itemName=basicInfo.name
             //image
             // if (basicInfo.uploadImage != "") {
-                this.itemInfo.image = basicInfo.uploadImage
+                this.itemInfo.image = basicInfo.image
             // }
             //reference
 
@@ -1442,8 +1444,8 @@ var createModelItem = Vue.extend({
                 clearInterval(interval);
             }, 500);
 
-            this.$set(this.languageAdd.local, "value", "en-US");
-            this.$set(this.languageAdd.local, "label", "English (United States)");
+            this.$set(this.languageAdd.local, "value", "en");
+            this.$set(this.languageAdd.local, "label", "English");
             initTinymce('textarea#modelItemText');
 
             if(this.draft.oid!=''&&this.draft.oid!=null&&typeof (this.draft.oid)!="undefined"){
@@ -1494,7 +1496,7 @@ var createModelItem = Vue.extend({
             },
             onChange: (currentIndex, newIndex, stepDirection) => {
                 if (currentIndex === 0 && stepDirection === "forward") {
-                    if (this.treeData_select.length == 0) {
+                    if (this.treeData_select.length === 0) {
                         new Vue().$message({
                             message: 'Please select at least one classification!',
                             type: 'warning',
@@ -1502,6 +1504,11 @@ var createModelItem = Vue.extend({
                         });
                         return false;
                     }
+
+                    if(this.currentLocalization.name === ""){
+                        this.currentLocalization.name = this.itemName;
+                    }
+
                     return true;
                 }
                 else if (currentIndex === 1 && stepDirection === "forward") {

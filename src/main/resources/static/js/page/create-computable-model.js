@@ -171,6 +171,8 @@ var createComputableModel = Vue.extend({
 
             currentStep:0,
 
+            dataDialogVisible:false,
+
         }
     },
     methods: {
@@ -341,12 +343,28 @@ var createComputableModel = Vue.extend({
             window.sessionStorage.clear();
         },
 
+        selectDataspaceFile(file){
+            console.log(file);
+        },
+
+        handleClose(done) {
+            this.$confirm('Confirm to close?')
+                .then(_ => {
+                    done();
+                })
+                .catch(_ => {
+                });
+        },
+
         addFile(){
-            if(this.computableModel.contentType == "Package"){
-                $("#file").click();
-            }else{
-                $("#file_multi").click();
-            }
+
+            this.dataDialogVisible = true;
+
+            // if(this.computableModel.contentType == "Package"){
+            //     $("#file").click();
+            // }else{
+            //     $("#file_multi").click();
+            // }
 
 
         },

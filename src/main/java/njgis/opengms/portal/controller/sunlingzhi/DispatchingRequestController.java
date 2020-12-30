@@ -266,7 +266,7 @@ public class DispatchingRequestController {
 
     @RequestMapping (value="/downloadBySourceStoreId",method = RequestMethod.GET)
     ResponseEntity<byte[]> downloadById(@RequestParam("sourceStoreId") String sourceStoreId){
-        String url="http://"+dataContainerIpAndPort+"/data?uid="+sourceStoreId;
+        String url="http://"+dataContainerIpAndPort+"/data/"+sourceStoreId;
         RestTemplate restTemplate=new RestTemplate();
         ResponseEntity<byte []> response = restTemplate.exchange(url, HttpMethod.GET,
                 null, byte[].class);

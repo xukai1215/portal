@@ -1449,7 +1449,7 @@ public class UserService {
             User user = userDao.findFirstByEmail(email);
             if (user != null) {
 
-                user.setPassword(DigestUtils.sha256Hex(DigestUtils.md5(password.getBytes())));
+                user.setPassword(DigestUtils.sha256Hex(DigestUtils.md5Hex(password.getBytes())));
                 userDao.save(user);
                 String subject = "OpenGMS Portal Password Reset";
                 String content = "Hello " + user.getName() + ":<br/>" +

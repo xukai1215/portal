@@ -301,7 +301,7 @@ var createConceptualModel = Vue.extend({
             itemObj.resourceJson = this.resources
             itemObj.name = this.conceptualModel.name
             itemObj.description = this.conceptualModel.description
-            itemObj.relatedModelItem = this.conceptualModel.bindOid
+            itemObj.bindOid = this.conceptualModel.bindOid
             itemObj.status = this.conceptualModel.status
             itemObj.contentType=$("input[name='ContentType']:checked").val();
             itemObj.isAuthor=$("input[name='author_confirm']:checked").val();
@@ -622,8 +622,13 @@ var createConceptualModel = Vue.extend({
                     console.log(data);
 
                     if (data.oid == "") {
-                        alert("Please login");
-                        window.location.href = "/user/login";
+                        this.$alert('Please login first!', 'Error', {
+                            type:"error",
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                window.location.href="/user/login";
+                            }
+                        });
                     } else {
                         this.userId = data.oid;
                         this.userName = data.name;
@@ -697,8 +702,13 @@ var createConceptualModel = Vue.extend({
             crossDomain:true,
             success: (data) => {
                 if (data.oid == "") {
-                    alert("Please login");
-                    window.location.href = "/user/login";
+                    this.$alert('Please login first!', 'Error', {
+                        type:"error",
+                        confirmButtonText: 'OK',
+                        callback: action => {
+                            window.location.href="/user/login";
+                        }
+                    });
                 }
                 else{
                     this.userId=data.uid;

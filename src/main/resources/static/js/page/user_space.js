@@ -5000,7 +5000,7 @@ var vue = new Vue({
             let id=this.rightTargetItem.url.split('=')[1]
             //下载接口
             if(id!=undefined) {
-                window.open( 'http://111.229.14.128:8899/data?uid='+id);
+                window.open( 'http://111.229.14.128:8899/data/'+id);
             }
             else{
                 this.$message.error("No data can be downloaded.");
