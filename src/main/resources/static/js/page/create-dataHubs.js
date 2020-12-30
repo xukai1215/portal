@@ -487,7 +487,7 @@ var createDataHubs = Vue.extend({
 
                 if (currentIndex === 0) {
                     if (stepDirection === "forward") {
-                        if ($("#dataname").val().length == 0 || that.clsStr.length == 0 || $("#keywords").tagEditor('getTags')[0].tags.length == 0) {
+                        if ($("#dataname").val().length == 0 || that.clsStr.length == 0) {
                             new Vue().$message({
                                 message: 'Please complete data information!',
                                 type: 'warning',

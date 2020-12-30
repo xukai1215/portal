@@ -142,7 +142,7 @@
                                                             <!--<small id="nameHelp" class="form-text text-muted">Please input the name of the data which you are ready to upload.<font color="red">*Not Empty</font></small>-->
 
                                                             <!--keywords-->
-                                                            <label for="keywords"><span class="star">* </span>Keywords:</label><br>
+                                                            <label for="keywords">Keywords:</label><br>
                                                             <!--<div class="bootstrap-tagsinput" >-->
                                                             <input type="text"  id="keywords" placeholder="input key words.."
                                                                    required="required" style="border-radius: 4px;"/><br>
@@ -174,12 +174,21 @@
                                                 </div>
                                                 <div class="step-tab-panel" id="step22">
                                                     <!--非作者用户编辑，展示作者选择的data，当前用户不是作者时此div可见-->
-                                                    <div id="ResourcesUrl">
-                                                        <label>Please Input Your Resource Url:</label><br><br><br>
-                                                        <input type="text" class="form-control" id="ResourcesUrlText"
-                                                               aria-describedby="emailHelp"
-                                                               placeholder="Please input the url of the data which you are ready to select."
-                                                               required="required"/>
+                                                    <div id="ResourcesUrl" style="margin-top: 60px;margin-bottom: 40px;">
+                                                        <div class="form-group">
+                                                            <label for="ResourcesUrlText"
+                                                                   class="control-label col-md-4 col-md-offset-2" style="margin-bottom: 10px;">Please
+                                                                enter data hub's URL:</label>
+                                                            <div class="col-sm-8 col-md-offset-2">
+                                                                    <textarea id="ResourcesUrlText" class="form-control" placeholder="( http://www.example.com/data )"></textarea>
+                                                            </div>
+                                                        </div>
+<!--                                                        <label>Please Input Your Resource Url:</label><br><br><br>-->
+<!--                                                        <input type="text" class="form-control" id="ResourcesUrlText"-->
+<!--                                                               aria-describedby="emailHelp"-->
+<!--                                                               placeholder="Please input the url of the data which you are ready to select."-->
+<!--                                                               required="required"-->
+<!--                                                               style="width: 50%;"/>-->
                                                     </div>
                                                 </div>
                                                 <div class="step-tab-panel" id="step23">

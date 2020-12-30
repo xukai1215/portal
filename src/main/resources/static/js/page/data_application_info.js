@@ -52,6 +52,7 @@ var data_application_info = new Vue({
             methodsData:'',
             userId:'',
             dataApplicationId:'',
+            addNewDialog:false,
         }
     },
     methods: {
@@ -571,6 +572,18 @@ var data_application_info = new Vue({
         // }
 
         // 表格
+        createService(){
+            if(this.useroid==""||this.useroid==null||this.useroid==undefined){
+                this.$message({
+                    dangerouslyUseHTMLString: true,
+                    message: '<strong>Please <a href="/user/login">log in</a> first.</strong>',
+                    offset: 40,
+                    showClose: true,
+                });
+            }else {
+                window.location.href = "/user/userSpace#/data/createDataApplication";
+            }
+        }
     },
     mounted(){
         let str = window.location.href.split('/');
