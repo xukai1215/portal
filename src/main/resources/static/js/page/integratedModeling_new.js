@@ -21,6 +21,12 @@
 //
 //   }
 //
+//   EditorUI:{1. EditorUi.prototype.hsplitPosition
+//
+//
+//   }
+//
+//
 //   手动连接两个cell: static/js/mxGraph/js/handler/mxConnectionHandler.js mxConnectionHandler.prototype.connect
 //
 //   侧边栏拉入model-cell流程（2020.10.22）：点击，触发format.js中的refresh方法，生成对应元素，没有frontId则先不生成event，同时生成右边栏的文字.
@@ -28,6 +34,9 @@
 //
 //   点击cell触发右侧详情panel生成（2020.10.22）：format refresh-panel.appendChild-各种panel.init
 //
+var dataServerIp = '111.229.14.128:8898'
+
+
 var vue = new Vue({
     el: "#app",
     props: [],
@@ -43,6 +52,7 @@ var vue = new Vue({
         conditions:[],
 
         configVisible: false,
+        configDataPVisible: false,
         executeVisible: false,
         executeDisabled: true,
 
@@ -73,6 +83,7 @@ var vue = new Vue({
         flashInterval:'',
 
         configModelAction:{},
+        configDataProcessing:{},
 
         modelConfigurationVisible:false,
 
@@ -115,6 +126,16 @@ var vue = new Vue({
             pageSize: 8,
             total: 1,
             searchResult: [],
+        },
+
+        pageOptionDataItem: {
+            paginationShow:false,
+            progressBar: true,
+            sortAsc: false,
+            currentPage: 1,
+            pageSize: 5,
+            searchText: '',
+            total: 11,
         },
 
         inSearch:0,
@@ -218,7 +239,7 @@ var vue = new Vue({
             status:0,
         },
 
-        nodeLoading:false,
+        nodeLoading:true,
 
         itemClassify: 'general',
 
@@ -360,9 +381,27 @@ var vue = new Vue({
 
         computableModelDetailDialog:false,
 
+        dataMethodDetailDialog:false,
+
         detailComptbModel:{
 
-        }
+        },
+
+        detailDataMethod:{
+
+        },
+
+        invokeServiceDialog:false,
+
+        configDataMethod: {},
+
+        invokeServiceSelect:{},
+
+        invokeServices:[],
+
+        dataItems:[],
+
+        invokeServiceLoading:false,
     },
 
     computed:{
@@ -482,72 +521,329 @@ var vue = new Vue({
 
         },
 
+
+        changeItem(tab) {
+            this.itemClassify = tab.name;
+            this.getItemList(this.itemClassify)
+        },
+
+        getItemList(item,classi) {
+            let name = 'tasks'
+            this.itemLoad = true
+            this.isInSearch = 0;
+
+            let funcs={
+                'modelItem':this.getModelItemList,
+                'dataMethod':this.getDataMethodList,
+            }
+            let fun = funcs[item]
+            fun()
+
+        },
+
+        handlePageChangeModel(page){
+            this.pageOption2.currentPage = page
+            this.getModelItemList(this.currentModelClassi.oid)
+        },
+
+        searchComptbModel(){
+            this.pageOption2.currentPage = 1
+            this.currentModelClassi = {
+                id:111,
+                oid:'all',
+                label:'All'
+
+            }
+            this.getModelItemList(this.currentModelClassi.oid)
+        },
+
+        getModelItemList(classi){
+            if(classi == undefined||classi === ''){
+                classi = 'all'
+            }
+            axios.get("/computableModel/pageByClassi", {
+                    params: {
+                        asc: 0,
+                        page: this.pageOption2.currentPage - 1,
+                        size: this.pageOption2.pageSize,
+                        sortEle:'createTime',
+                        searchText:this.searchModelText,
+                        classification: classi,
+                    }
+                }
+                ,).then(
+                res => {
+                    if (res.data.code != 0) {
+                        alert("Please login first!");
+                        window.location.href = "/user/login";
+                    } else {
+                        let data = res.data.data
+                        this.computableModelList = data.content
+                        this.pageOption2.total = data.total
+                    }
+                }
+            )
+
+        },
+
+        handleCurrentChange1(data) {
+            // this.pageOption.searchResult=[];
+            this.pageOption2.total=0;
+            this.pageOption2.currentPage=1;
+            this.searchModelText="";
+            this.currentModelClassi.id=data.id
+            this.currentModelClassi.oid=data.oid
+            this.currentModelClassi.label=data.label
+
+
+        },
+
+        changeModelClassi(){
+
+            this.modelClassiDrawer = true
+            this.$nextTick(()=>{
+                this.$refs.tree1.setCurrentKey(this.currentModelClassi.id)
+            })
+        },
+
+        confirmModelCls(){
+            this.modelClassiDrawer = false
+            this.getModelItemList( this.currentModelClassi.oid);
+        },
+
+        checkComputableModelDetail(item){
+            this.computableModelDetailDialog = true
+            this.detailComptbModel = item
+        },
+
+        checkDataMethodDetail(item){
+            this.dataMethodDetailDialog = true
+            this.detailDataMethod = item
+        },
+
+
+        handleCurrentChange2(data) {
+            // this.pageOption.searchResult=[];
+            this.pageOption3.total=0;
+            this.pageOption3.currentPage=1;
+            this.searchDataMethodText="";
+            this.currentDataMethodClassi.oid=data.oid
+            this.currentDataMethodClassi.label=data.label
+            this.getDataMethodList(data.oid);
+        },
+
+        handlePageChangeDataMethod(page){
+            this.pageOption3.currentPage = page
+            this.getDataMethodList(this.currentDataMethodClassi.oid)
+        },
+
+        searchDataMethod(){
+            this.pageOption3.currentPage = 1
+            this.currentDataMethodClassi = {
+                id:111,
+                oid:'all',
+                label:'All'
+
+            }
+            this.getDataMethodList(this.currentDataMethodClassi.oid)
+        },
+
+        getDataMethodList(classi){
+            if(classi == undefined||classi === ''){
+                classi = 'all'
+            }
+            classi=classi==='all'?'':classi
+            let data = {
+                page:this.pageOption3.currentPage,
+                pageSize:this.pageOption3.pageSize,
+                asc:0,
+                searchText:this.searchDataMethodText,
+                sortTypeName:'createTime',
+                method:classi
+            }
+            axios.post("/dataApplication/methods/getApplication",data)
+                .then((res)=>{
+                    setTimeout(()=>{
+                        this.dataMethodList=res.data.data.list;
+                        this.pageOption3.total=res.data.data.total;
+                    },100)
+                });
+
+        },
+
+        changeDataMethodClassi(){
+            this.dataMethodClassiDrawer = true
+            this.$nextTick(()=>{
+                this.$refs.tree2.setCurrentKey(this.currentDataMethodClassi.id)
+            })
+        },
+
+        confirmDataMethodCls(){
+            this.dataMethodClassiDrawer = false
+            this.getModelItemList( this.currentDataMethodClassi.oid);
+        },
+
+
+        getItemCardBackGround(){
+
+        },
+
         addModelToMxgraph(model){
             var modelEditor = $("#ModelEditor")[0].contentWindow;
             if(model==undefined){
                 model = this.detailComptbModel
             }
 
+            this.computableModelDetailDialog = false
+
             let modelAction = this.addModeltoList(model)
             modelEditor.ui.sidebar.addModelToGraph(modelAction)//把这个模型action加入画布
         },
 
         addDataMethodToMxgraph(dataMethod){
-            var modelEditor = $("#ModelEditor")[0].contentWindow;
 
-            let dataMethodAction = this.addDataMethodToList(dataMethod)
-            modelEditor.ui.sidebar.addModelToGraph(dataMethodAction)//把这个模型action加入画布
+
+            this.showInvokeServices(dataMethod)
+            // let dataMethodAction = this.addDataMethodToList(dataMethod)
+            // if(dataMethodAction!='check'){
+            //     modelEditor.ui.sidebar.addDataProcessToGraph(dataMethodAction)//把这个模型action加入画布
+            // }
+        },
+
+        showInvokeServices(dataMethod){
+            this.invokeServiceDialog=true
+            this.configDataMethod=dataMethod
+            if(dataMethod.invokeServices!=null&&dataMethod.invokeServices!=undefined){
+                let invokeServices = dataMethod.invokeServices
+                this.checkDataMethodServicesStatus(invokeServices)
+            }
+        },
+
+        async checkDataMethodServicesStatus(invokeServices){
+            this.invokeServiceLoading = true
+            if(invokeServices.length>0){
+                for(let invokeService of invokeServices){
+                    let status = 0
+                    status = await this.checkNodeContent(invokeService)
+                    if(status == -1){
+                        invokeService.status = status
+                    }
+                }
+
+            }
+            this.invokeServiceLoading = false
         },
 
         addDataMethodToList(dataMethod){
-            let dataProcessing = this.checkDataService(dataMethod)
+            // if(dataMethod.invokeServices!=null&&dataMethod.invokeServices!=undefined&&dataMethod.invokeServices.length>1){
+            //     this.invokeServiceDialog=true
+            //     this.configDataMethod=dataMethod
+            //     return 'check'
+            // }else{
+            //     this.invokeServiceSelect = dataMethod.invokeServices[0]
+            //     let dataProcessing = this.checkDataService(dataMethod)
+            //     dataProcessing.id=this.generateGUID();
+            //     this.addDataProcessingToDataProcessingList(dataProcessing,this.dataProcessings);
+            //
+            //     this.addProcessingTools(dataMethod,this.processingTools);
+            // }
+
+
+
+        },
+
+        async selectInvokeService(invokeService){
+
+            let nodeEle = await this.checkNodeContent(invokeService)
+            if(nodeEle == -1) {
+                this.$confirm('This service is offline, please select another one', 'Tips', {
+                    confirmButtonText: 'Ok',
+                    type: 'warning',
+                }).then(() => {
+                })
+                return
+            }
+            invokeService.metaDetail = nodeEle.metaDetail
+            this.invokeServiceSelect = invokeService
+            this.invokeServiceDialog = false
+            this.addInvokeService();
+        },
+
+        async checkNodeContent(invokeService){
+            let result = null
+
+            await axios.get("/dataServer/checkNodeContent",{
+                params:{
+                    serverId:invokeService.serviceId,
+                    token:invokeService.token,
+                    type:invokeService.method
+                }
+            }).then(
+                res=>{
+                    let data = res.data.data
+                    if(data.content === 'offline') {
+                        result = -1
+                    }else{
+                        result = data.content
+                    }
+                }
+            )
+
+            return result
+        },
+
+        addInvokeService(){
+            let dataProcessing = this.checkDataService(this.configDataMethod,this.invokeServiceSelect)
             dataProcessing.id=this.generateGUID();
 
             this.addDataProcessingToDataProcessingList(dataProcessing,this.dataProcessings);
 
-            this.addProcessingTools(dataMethod,this.processingTools);
+            this.addProcessingTools(this.configDataMethod,this.processingTools);
 
+            var modelEditor = $("#ModelEditor")[0].contentWindow;
+            modelEditor.ui.sidebar.addDataProcessToGraph(dataProcessing)//把这个模型action加入画布
         },
 
-        checkDataService(dataPDataService){
+        checkDataService(dataPDataService,invokeService){
             let dataProcessAction = {
                 inputData:[],
                 outputData:[],
             }
-            let methodDetail = dataPDataService.metaDetail.Method
-            let inputItem = methodDetail.Input.Item;
-            let outputItem = methodDetail.Output.Item;
+            let methodDetail = invokeService.metaDetail
+            let inputItems = methodDetail.Input;
+            let outputItems = methodDetail.Output;
+            let params = methodDetail.Parameter;
 
             // dataProcessAction.iterationNum=1//迭代次数,默认为1
             dataProcessAction.description=''
-            dataProcessAction.name=dataPDataService.name
-            dataProcessAction.service=dataPDataService.id
-            dataProcessAction.token=dataPDataService.token
+            dataProcessAction.name=invokeService.name
+            dataProcessAction.service=invokeService.serverId
+            dataProcessAction.token=invokeService.token
             dataProcessAction.param=''
             dataProcessAction.type='dataService'
 
-            if(inputItem instanceof Array){
-                for(let input of inputItem){
+            if(inputItems instanceof Array){
+                for(let input of inputItems){
                     input.eventId = this.generateGUID()
                     input.response = true
                     dataProcessAction.inputData.push(input)
                 }
             } else {
-                inputItem.eventId = this.generateGUID()
-                inputItem.response = true
-                dataProcessAction.inputData.push(inputItem)
+                inputItems.eventId = this.generateGUID()
+                inputItems.response = true
+                dataProcessAction.inputData.push(inputItems)
             }
 
-            if(outputItem instanceof Array){
-                for(let input of outputItem){
+            if(outputItems instanceof Array){
+                for(let output of outputItems){
                     output.eventId = this.generateGUID()
                     output.response = false
                     dataProcessAction.outputData.push(output)
                 }
             } else {
-                outputItem.eventId = this.generateGUID()
-                outputItem.response = false
-                dataProcessAction.outputData.push(outputItem)
+                outputItems.eventId = this.generateGUID()
+                outputItems.response = false
+                dataProcessAction.outputData.push(outputItems)
             }
 
             return dataProcessAction
@@ -562,7 +858,7 @@ var vue = new Vue({
                 }
             }
 
-            modelActionList.push(modelAction)
+            dataProcessingList.push(dataProcessing)
         },
 
         addProcessingTools(tool,toolList){
@@ -594,6 +890,63 @@ var vue = new Vue({
             dataProcessings.push(dataProcess)
         },
 
+        addStartToMxgraph(){
+            var modelEditor = $("#ModelEditor")[0].contentWindow;
+
+            modelEditor.ui.sidebar.addGeneralCellToGraph('Start',undefined,'start')
+        },
+
+        addCondtionToMxgraph(){
+            let id = this.generateGUID();
+            let condition = {
+                id:id,
+                cases:[]
+            }
+            this.conditions.push(condition)
+            var modelEditor = $("#ModelEditor")[0].contentWindow;
+            modelEditor.ui.sidebar.addGeneralCellToGraph('',condition.id,'condition')
+        },
+
+        addEndToMxgraph(){
+            var modelEditor = $("#ModelEditor")[0].contentWindow;
+            modelEditor.ui.sidebar.addGeneralCellToGraph('End',undefined,'end')
+        },
+
+        listDataItem(){
+            this.loading = true
+            $.ajax({
+                type: "GET",
+                url: "/dataServer/pageDataItemChecked",
+                data:{
+                    page:this.pageOptionDataItem.currentPage-1,
+                    pageSize:this.pageOptionDataItem.pageSize,
+                    asc:1,
+                    sortEle:"name",
+                    searchText: this.pageOptionDataItem.searchText
+                },
+                async:false,
+                success: (res) => {
+                    if (res.code == -1) {
+                        this.$alert("Please login first!")
+                        window.location.href="/user/login";
+                    } else {
+                        if(res.data == undefined){
+
+                        }else{
+                            let data = res.data
+                            this.dataItems = data.content
+                            this.pageOptionDataItem.total = data.total
+                            setTimeout(()=>{
+                                this.loading = false
+                            },125)
+                        }
+                    }
+                },
+                error:res=>{
+                    this.loading = false
+                }
+            })
+        },
 
         /**
          * 把目标模型加入到model队列和modelAction队列
@@ -775,7 +1128,7 @@ var vue = new Vue({
             // }
         },
 
-        dataConfiguration(model) {
+        dataConfigurationModel(model) {
             // var xml = this.iframeWindow.getCXml();
             var mdls = this.modelActions;
 
@@ -818,6 +1171,25 @@ var vue = new Vue({
             }
         },
 
+        dataConfigurationDataP(model) {
+            // var xml = this.iframeWindow.getCXml();
+            var mdls = this.modelActions;
+
+            let mxModels = this.iframeWindow.getModels();
+
+            this.configDataPVisible = true;
+            this.activeName = model.name;
+
+            for(let ele of mxModels){
+                if(ele.frontId===model.id){//id在mxgraph中是frontId
+                    this.mxModelToModel(ele,model)
+                    break;
+                }
+            }
+
+            this.configDataProcessing = model;
+        },
+
         //旧版本数据上传方式
         upload(event) {
             $('#uploadInputData').click();
@@ -833,13 +1205,16 @@ var vue = new Vue({
         },
 
         selectFromDataSpace() {
-            this.currentEvent.value = this.targetFile.url;
-            this.currentEvent.fileName = this.targetFile.label;
-            this.currentEvent.suffix = this.targetFile.suffix;
-            if(this.currentEvent.type==undefined){
-                this.currentEvent.type='url'
+            if(this.dataFromActive == 'dataSpace'){
+                this.currentEvent.value = this.targetFile.url;
+                this.currentEvent.fileName = this.targetFile.label;
+                this.currentEvent.suffix = this.targetFile.suffix;
+                if(this.currentEvent.type==undefined){
+                    this.currentEvent.type='url'
+                }
+                $('#datainput' + this.currentEvent.dataId).removeClass("spinner");
+
             }
-            $('#datainput' + this.currentEvent.dataId).removeClass("spinner");
             this.userDataSpaceVisible = false;
         },
 
@@ -911,14 +1286,19 @@ var vue = new Vue({
         },
 
         selectDataFromDataServer(data){
-
+            let serverId = data.id
+            let token = data.token
+            let url = "http://" + dataServerIp + '?token=' +  encodeURIComponent(token) + '&id=' + serverId
+            this.currentEvent.value = url;
+            this.currentEvent.fileName = 'From server node';
+            this.currentEvent.suffix = '';
         },
 
         changeDataFrom(tab){
             if(tab.name=='dataServer'){
                 this.getDataServer()
             }else if(tab.name=='dataItem'){
-
+                this.listDataItem()
             }
         },
 
@@ -1218,6 +1598,7 @@ var vue = new Vue({
 
         generateXml(type){
 
+            var aaa = this.iframeWindow.getCXml();
             let mxModels = this.iframeWindow.getModels();
 
             for(let model of this.modelActions){
@@ -2262,6 +2643,12 @@ var vue = new Vue({
                 this.searchDeployedModel()
         },
 
+        handlePageChangeDataItem(val) {
+            this.pageOptionDataItem.currentPage = val;
+
+            this.listDataItem()
+        },
+
         listIntegrateTask(){
             axios.get("/task/pageIntegrateTaskByUser",{
                 params:{
@@ -3293,167 +3680,6 @@ var vue = new Vue({
             }
         },
 
-        changeItem(tab) {
-            this.itemClassify = tab.name;
-            this.getItemList(this.itemClassify)
-        },
-
-        getItemList(item,classi) {
-            let name = 'tasks'
-            this.itemLoad = true
-            this.isInSearch = 0;
-
-            let funcs={
-                'modelItem':this.getModelItemList,
-                'dataMethod':this.getDataMethodList,
-            }
-            let fun = funcs[item]
-            fun()
-
-        },
-
-        handlePageChangeModel(page){
-            this.pageOption2.currentPage = page
-            this.getModelItemList(this.currentModelClassi.oid)
-        },
-
-        searchComptbModel(){
-            this.pageOption2.currentPage = 1
-            this.currentModelClassi = {
-                id:111,
-                oid:'all',
-                label:'All'
-
-            }
-            this.getModelItemList(this.currentModelClassi.oid)
-        },
-
-        getModelItemList(classi){
-            if(classi == undefined||classi === ''){
-                classi = 'all'
-            }
-            axios.get("/computableModel/pageByClassi", {
-                    params: {
-                        asc: 0,
-                        page: this.pageOption2.currentPage - 1,
-                        size: this.pageOption2.pageSize,
-                        sortEle:'createTime',
-                        searchText:this.searchModelText,
-                        classification: classi,
-                    }
-                }
-                ,).then(
-                res => {
-                    if (res.data.code != 0) {
-                        alert("Please login first!");
-                        window.location.href = "/user/login";
-                    } else {
-                        let data = res.data.data
-                        this.computableModelList = data.content
-                        this.pageOption2.total = data.total
-                    }
-                }
-            )
-
-        },
-
-        handleCurrentChange1(data) {
-            // this.pageOption.searchResult=[];
-            this.pageOption2.total=0;
-            this.pageOption2.currentPage=1;
-            this.searchModelText="";
-            this.currentModelClassi.id=data.id
-            this.currentModelClassi.oid=data.oid
-            this.currentModelClassi.label=data.label
-
-
-        },
-
-        changeModelClassi(){
-
-            this.modelClassiDrawer = true
-            this.$nextTick(()=>{
-                this.$refs.tree1.setCurrentKey(this.currentModelClassi.id)
-            })
-        },
-
-        confirmModelCls(){
-            this.modelClassiDrawer = false
-            this.getModelItemList( this.currentModelClassi.oid);
-        },
-
-        checkComputableModelDetail(item){
-            this.computableModelDetailDialog = true
-            this.detailComptbModel = item
-        },
-
-        handleCurrentChange2(data) {
-            // this.pageOption.searchResult=[];
-            this.pageOption3.total=0;
-            this.pageOption3.currentPage=1;
-            this.searchDataMethodText="";
-            this.currentDataMethodClassi.oid=data.oid
-            this.currentDataMethodClassi.label=data.label
-            this.getDataMethodList(data.oid);
-        },
-
-        handlePageChangeDataMethod(page){
-            this.pageOption3.currentPage = page
-            this.getDataMethodList(this.currentDataMethodClassi.oid)
-        },
-
-        searchDataMethod(){
-            this.pageOption3.currentPage = 1
-            this.currentDataMethodClassi = {
-                id:1,
-                oid:'all',
-                label:'All'
-
-            }
-            this.$refs.tree2.setCheckedKeys(1,true)
-            this.getDataMethodList(this.currentDataMethodClassi.oid)
-        },
-
-        getDataMethodList(classi){
-            if(classi == undefined||classi === ''){
-                classi = 'all'
-            }
-            classi=classi==='all'?'':classi
-            let data = {
-                page:this.pageOption3.currentPage,
-                pageSize:this.pageOption3.pageSize,
-                asc:0,
-                searchText:this.searchDataMethodText,
-                sortTypeName:'createTime',
-                method:classi
-            }
-            axios.post("/dataApplication/methods/getApplication",data)
-                .then((res)=>{
-                    setTimeout(()=>{
-                        this.dataMethodList=res.data.data.list;
-                        this.pageOption3.total=res.data.data.total;
-                    },100)
-                });
-
-        },
-
-
-        changeDataMethodClassi(){
-            this.dataMethodClassiDrawer = true
-            this.$nextTick(()=>{
-                this.$refs.tree2.setCurrentKey(this.currentDataMethodClassi.id)
-            })
-        },
-
-        confirmDataMethodCls(){
-            this.dataMethodClassiDrawer = false
-            this.getModelItemList( this.currentDataMethodClassi.oid);
-        },
-
-
-        getItemCardBackGround(){
-
-        },
     },
 
     mounted() {

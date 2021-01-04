@@ -807,6 +807,18 @@ public class DataApplicationService {
         }
     }
 
+    public Page<DataApplication> selectMethodByNameAndMethodInvokable(String name, String method,Pageable pageable) {
+        if(name.equals("") && method.equals("")){
+            return dataApplicationDao.findAllByInvokable(pageable,true);
+        }else if(name.equals("") && !method.equals("")){
+            return dataApplicationDao.findAllByMethodLikeIgnoreCaseAndInvokable(method,pageable,true);
+        }else if(!name.equals("") && method.equals("")){
+            return dataApplicationDao.findByNameLikeAndInvokable(name,pageable,true);
+        } else{
+            return dataApplicationDao.findByMethodLikeIgnoreCaseAndNameLikeAndInvokable(method,name,pageable,true);
+        }
+    }
+
     public JSONObject searchApplication(DataApplicationFindDTO dataApplicationFindDTO){
         Pageable pageable = PageRequest.of(dataApplicationFindDTO.getPage()-1, dataApplicationFindDTO.getPageSize(), new Sort(dataApplicationFindDTO.getAsc()? Sort.Direction.ASC: Sort.Direction.DESC,dataApplicationFindDTO.getSortField()));
         Page<DataApplication> dataApplicationPage;
@@ -841,6 +853,9 @@ public class DataApplicationService {
             jsonObject.put("oid",dataApplication.getOid());
             jsonObject.put("viewCount",dataApplication.getViewCount());
             jsonObject.put("dailyViewCount",dataApplication.getDailyViewCount());
+            jsonObject.put("invokeServices",dataApplication.getInvokeServices());
+            jsonObject.put("authorName",user.getName());
+            jsonObject.put("authorId",user.getUserId());
             jsonArray.add(jsonObject);
         }
         JSONArray users = new JSONArray();
@@ -865,6 +880,67 @@ public class DataApplicationService {
         return res;
     }
 
+
+    public JSONObject searchApplicationInvokable(DataApplicationFindDTO dataApplicationFindDTO){
+        Pageable pageable = PageRequest.of(dataApplicationFindDTO.getPage()-1, dataApplicationFindDTO.getPageSize(), new Sort(dataApplicationFindDTO.getAsc()? Sort.Direction.ASC: Sort.Direction.DESC,dataApplicationFindDTO.getSortField()));
+        Page<DataApplication> dataApplicationPage;
+        try {
+            dataApplicationPage = selectMethodByNameAndMethodInvokable(dataApplicationFindDTO.getSearchText(),dataApplicationFindDTO.getMethod(),pageable);
+        } catch (MyException err) {
+            System.out.println(err);
+            return null;
+        }
+        List<DataApplication> dataApplications = dataApplicationPage.getContent();
+
+        JSONArray jsonArray = new JSONArray();
+        for (int i=0;i<dataApplications.size();++i) {
+
+            DataApplication dataApplication = dataApplications.get(i);
+
+            String oid = dataApplication.getAuthor();
+            User user = userDao.findFirstByOid(oid);
+            JSONObject userObject = new JSONObject();
+            userObject.put("id",user.getOid());
+            userObject.put("image",user.getImage().equals("")?"":htmlLoadPath + user.getImage());
+            userObject.put("name",user.getName());
+
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("author",userObject);
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            jsonObject.put("createTime",simpleDateFormat.format(dataApplication.getCreateTime()));
+            jsonObject.put("name",dataApplication.getName());
+            jsonObject.put("description",dataApplication.getDescription());
+            jsonObject.put("type",dataApplication.getType());
+            jsonObject.put("status",dataApplication.getStatus());
+            jsonObject.put("oid",dataApplication.getOid());
+            jsonObject.put("viewCount",dataApplication.getViewCount());
+            jsonObject.put("dailyViewCount",dataApplication.getDailyViewCount());
+            jsonObject.put("invokeServices",dataApplication.getInvokeServices());
+            jsonObject.put("authorName",user.getName());
+            jsonObject.put("authorId",user.getUserId());
+            jsonArray.add(jsonObject);
+        }
+        JSONArray users = new JSONArray();
+        for(int i=0;i<dataApplications.size();++i) {
+            DataApplication dataApplication = dataApplications.get(i);
+            String oid = dataApplication.getAuthor();
+            User user = userDao.findFirstByOid(oid);
+            JSONObject userObj = new JSONObject();
+            userObj.put("userId",user.getUserId());
+            userObj.put("image", user.getImage().equals("") ? "" : htmlLoadPath + user.getImage());
+            userObj.put("name", user.getName());
+            users.add(userObj);
+
+            dataApplications.get(i).setAuthor(user.getName());
+            dataApplications.get(i).setOid(dataApplication.getId());
+        }
+        JSONObject res = new JSONObject();
+        res.put("list",jsonArray);
+        res.put("total",dataApplicationPage.getTotalElements());
+        res.put("users",users);
+
+        return res;
+    }
 
     // public JSONObject searchByName(DataApplicationFindDTO dataApplicationFindDTO,String userOid) {
     //     int page = dataApplicationFindDTO.getPage()-1;

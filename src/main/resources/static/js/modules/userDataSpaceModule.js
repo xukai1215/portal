@@ -335,6 +335,7 @@ Vue.component("user-data",
                         } else {
                             this.myFile = res.data.data[0].children;
                             console.log(this.myFile)
+                            this.pathShown = []
                             this.myFileShown = this.myFile;
                             this.managerloading = false
                         }
@@ -943,7 +944,7 @@ Vue.component("user-data",
 
             cancelMutiSelect(eval) {
                 for (var i = 0; i < this.downloadDataSet.length; i++) {
-                    if (this.downloadDataSet[i] === eval) {
+                    if (this.downloadDataSet[i].id === eval.id) {
                         //删除
                         this.downloadDataSet.splice(i, 1)
                         this.downloadDataSetName.splice(i, 1)
@@ -1351,6 +1352,7 @@ Vue.component("user-data",
 
             keywordsSearch() {
                 if (this.searchContent === "") {
+                    this.searchContentShown = this.searchContent
                     this.getFilePackage()
                 } else {
                     axios.get('/user/keywordsSearch', {
@@ -2302,7 +2304,6 @@ Vue.component("user-data",
                     if (vue_this.rightMenuShow == true)//vue组件命名为userDataSpace
                         vue_this.rightMenuShow = false
                     if (e.currentTarget.className.indexOf('renameContainer') == -1 && vue.renameIndex != '') {
-                        console.log(e.currentTarget.className)
                         vue_this.renameIndex = ''
                     }
                 })

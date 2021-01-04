@@ -2,6 +2,7 @@ package njgis.opengms.portal.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.gson.JsonObject;
 import com.sun.deploy.net.HttpUtils;
 import java.net.URLEncoder;
 import njgis.opengms.portal.dao.DataApplicationDao;
@@ -422,7 +423,6 @@ public class DataServerService {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<JSONObject> response = restTemplate.exchange(url,HttpMethod.GET, requestEntity, JSONObject.class);
         JSONObject j_result = response.getBody();
-        
 
         List<InvokeService> invokeServices = dataApplication.getInvokeServices();
         if(invokeServices==null){
@@ -432,6 +432,7 @@ public class DataServerService {
             invokeServices.add(invokeService);
         }
         dataApplication.setInvokeServices(invokeServices);
+        dataApplication.setInvokable(true);
 
         dataApplicationDao.save(dataApplication);
 
@@ -462,8 +463,45 @@ public class DataServerService {
         }
 
         dataApplication.setInvokeServices(invokeServices);
+        if(invokeServices.size()==0){
+            dataApplication.setInvokable(false);
+        }
         dataApplicationDao.save(dataApplication);
 
         return dataNodeContent;
+    }
+
+    public JSONObject checkNodeContent(String serverId, String token, String type){
+
+        String contentType = type.equals("Visualization")?"Visualization":"Processing";
+
+        String url = "http://"+dataServerManager+"/capability?"+"id="+serverId+"&token="+URLEncoder.encode(token)+"&type="+contentType;
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type","application/json");
+        Map<String,String> mheader = new HashMap<>();
+        mheader.put("Content-Type","application/json");
+
+        HttpEntity<MultiValueMap> requestEntity = new HttpEntity<MultiValueMap>(null, headers);
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<JSONObject> response = restTemplate.exchange(url,HttpMethod.GET, requestEntity, JSONObject.class);
+        JSONObject j_result = response.getBody();
+
+        JSONObject result = new JSONObject();
+
+        try{
+            int code = j_result.getInteger("code");
+            if(code==-1){
+                result.put("content","offline");
+            }else{
+                JSONObject capability = j_result.getJSONObject("Capability");
+                result.put("content",capability.get("data"));
+            }
+
+        }catch (Exception e){
+
+        }
+
+        return result;
+
     }
 }

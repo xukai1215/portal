@@ -106,8 +106,8 @@ Sidebar.prototype.init = function () {
       document.getElementById("general_tab").style.borderBottom = "1px solid #dadce0";
     };
 
-    this.sideHeaderContainer.appendChild(modelTab);
-    this.sideHeaderContainer.appendChild(generalTab);
+    // this.sideHeaderContainer.appendChild(modelTab);
+    // this.sideHeaderContainer.appendChild(generalTab);
 
     this.sideModelContainer = document.createElement("div");
     this.sideModelContainer.style.height = "100%";
@@ -3751,6 +3751,33 @@ Sidebar.prototype.addGeneralPalette2 = function (id, title, stencilFile, style, 
 
 };
 
+Sidebar.prototype.addGeneralCellToGraph = function (text,frontId,type) {
+
+  var graph = this.editorUi.editor.graph;
+
+  var parent = graph.getDefaultParent();
+
+  let style={
+    'start':'shape=mxgraph.flowchart.start;whiteSpace=wrap;html=1;fillColor=#439efc;strokeColor=#000005;strokeWidth=2;fontSize=18;fontFamily=Times New Roman;',
+    'end':'shape=mxgraph.flowchart.end;;whiteSpace=wrap;html=1;fillColor=#ec3f3f;strokeColor=#000005;strokeWidth=2;fontSize=18;fontFamily=Times New Roman;',
+    'condition':'shape=mxgraph.flowchart.condition;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#000005;strokeWidth=2;fontSize=18;fontFamily=Times New Roman;',
+  }
+
+  // var a = this.createStateVertexTemplate('rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#006600;fillColor=#EEFFEE;',
+  //     210, 50, modelName, 'Computable Model', null, null, modelName, model);
+
+  hasSearchedTermsComputableModel.push(model)
+  var pt = graph.getFreeInsertPoint();
+  var cell = graph.insertVertex(parent, null, text, pt.x, pt.y, 100, 60, style[type]);
+
+  if(type == 'condition'){
+    cell.frontId = frontId
+  }
+
+  // ds.drop(graph, evt, null, pt.x, pt.y, true);
+
+}
+
 //自定义创建方法，跳过 addEntry() 这一步，提高加载效率（×），搜索效率
 Sidebar.prototype.createGeoIconTemplate = function (style, width, height, value, title, showLabel, showTitle, allowCellsInserted, iconId) {
   var cells = [new mxCell((value != null) ? value : '', new mxGeometry(0, 0, width, height), style)];
@@ -3772,7 +3799,7 @@ Sidebar.prototype.addModelToGraph = function (model) {
 
   hasSearchedTermsComputableModel.push(model)
   var pt = graph.getFreeInsertPoint();
-  var cell = graph.insertVertex(parent, null, model.name, pt.x, pt.y, 200, 50, "rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#5bbbf2;fillColor=#5bbbf2");
+  var cell = graph.insertVertex(parent, null, model.name, pt.x, pt.y, 200, 50, "rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#5bbbf2;fillColor=#5bbbf2;fontSize=14");
 
   cell.frontId = model.id;
   cell.name = model.name;
@@ -3789,31 +3816,23 @@ Sidebar.prototype.addModelToGraph = function (model) {
 
 }
 
-Sidebar.prototype.addDataProcessCellInfo = function (info) {
+Sidebar.prototype.addDataProcessToGraph = function (info) {
 
   var graph = this.editorUi.editor.graph;
 
   var parent = graph.getDefaultParent();
+  var pt = graph.getFreeInsertPoint();
+  var cell = graph.insertVertex(parent, null, model.name, pt.x, pt.y, 200, 50, "rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#f6aede;fillColor=#f6aede;fontSize=14");
 
   // var a = this.createStateVertexTemplate('rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#006600;fillColor=#EEFFEE;',
   //     210, 50, modelName, 'Computable Model', null, null, modelName, model);
-
-  let cells = graph.getModel().cells;
-  for(let i in cells){
-    if(cells[i].frontId!=undefined&&cells[i].frontId==info.id){
-      cells[i].value = info.name
-      cells[i].name = info.name
-      cells[i].type = info.type
-      cells[i].description = info.description
-      cells[i].service = info.service
-      cells[i].inputData = info.inputData;
-      cells[i].outputData = info.outputData;
-
-      let format = this.editorUi.format//更新信息板中的信息
-      format.refresh()
-      break
-    }
-  }
+  cell.value = info.name
+  cell.name = info.name
+  cell.type = info.type
+  cell.description = info.description
+  cell.frontId = info.id
+  cell.inputData = info.inputData;
+  cell.outputData = info.outputData;
 
   // ds.drop(graph, evt, null, pt.x, pt.y, true);
 }

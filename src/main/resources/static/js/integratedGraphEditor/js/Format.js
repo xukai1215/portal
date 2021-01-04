@@ -528,20 +528,14 @@ Format.prototype.refresh = function()
 			}
 
             addClickHandler(label, div, idx++);
-		}else if(graph.getSelectionModel().cells[0].style.indexOf('operation')!=-1){
+		}else if(graph.getSelectionModel().cells[0].type=='dataService'){
 			mxUtils.write(label, mxResources.get('dataProcess'));
 			label.style.borderLeftWidth = '0px';
 			label.style.fontSize = '16px';
 
 			div.appendChild(label);
-			this.panels.push(new DataProcessingPanel(this, ui, div));
-			if(graph.getSelectionModel().cells[0].inputData != undefined){
-				if(graph.getSelectionModel().cells[0].type == 'modelService') {
-					this.panels.push(new EventPanel(this, ui, div));
-				}else if(graph.getSelectionModel().cells[0].type == 'dataService'){
-					this.panels.push(new DataServicePanel(this, ui, div));
-				}
-			}
+			// this.panels.push(new DataProcessingPanel(this, ui, div));
+			this.panels.push(new DataServicePanel(this, ui, div));
 
 			addClickHandler(label, div, idx++);
 
@@ -6243,26 +6237,6 @@ DataServicePanel.prototype.addParameter = function(div,parameter,cell){
 
 
 	div.style.borderTop = "1px solid #dadce0";
-	return div;
-};
-
-DataServicePanel.prototype.addoutputData = function(div,outputData,cell){
-	var title = this.createTitle("Output Events: ");
-	title.style.paddingBottom = '6px';
-	title.style.fontSize = "14px";
-	title.style.cursor = "default";
-	div.appendChild(title);
-
-	for (var i = 0; i<outputData.length; i++){
-		var event = document.createElement("p");
-		event.style.margin = '0px';
-		div.appendChild(event);
-
-		event = ui.sidebar.createDataServiceEventVertexTemplate('shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#5ac323;fillColor=#aadcf8;', 170, 50, outputData[i].eventName, null, null, null,true,model,false,outputData[i]);
-
-		div.appendChild(event);
-	}
-
 	return div;
 };
 

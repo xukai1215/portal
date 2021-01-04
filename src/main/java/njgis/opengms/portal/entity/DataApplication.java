@@ -61,6 +61,8 @@ public class DataApplication {
     String lastModifier;
 
     List<InvokeService> invokeServices;
+    boolean invokable;//是否绑定了invokeService
+
     String method; // Conversion Processing Visualization
 
     List<TestData> testData;//存储testData的id

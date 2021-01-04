@@ -992,6 +992,7 @@ EditorUi.prototype.sidebarFooterHeight = 0;
  */
 //更改sidebar的宽度
 EditorUi.prototype.hsplitPosition = (screen.width <= 640) ? 118 : 245;
+// EditorUi.prototype.hsplitPosition = (screen.width <= 640) ? 0 : 0;
 
 /**
  * Specifies if animations are allowed in <executeLayout>. Default is true.
@@ -2980,7 +2981,7 @@ EditorUi.prototype.refresh = function(sizeDidChange)
 	this.formatContainer.style.top = tmp + 'px';
 	this.formatContainer.style.width = fw + 'px';
 	this.formatContainer.style.display = (this.format != null) ? '' : 'none';
-	
+
 	this.diagramContainer.style.left = (this.hsplit.parentNode != null) ? (effHsplitPosition + this.splitSize) + 'px' : '0px';
 	this.diagramContainer.style.top = this.sidebarContainer.style.top;
 	this.footerContainer.style.height = this.footerHeight + 'px';
@@ -3080,6 +3081,20 @@ EditorUi.prototype.createDivs = function()
 	this.footerContainer.style.bottom = '0px';
 	this.footerContainer.style.zIndex = mxPopupMenu.prototype.zIndex - 2;
 	this.hsplit.style.width = this.splitSize + 'px';
+	/**
+	 * 2021/01/04
+	 * wzh
+	 * 隐藏侧边
+	 * @type {string}
+	 */
+	// this.hsplit.style.display = 'none';
+	// this.menubarContainer.style.display = 'none';
+	// this.toolbarContainer.style.display = 'none';
+	// this.sidebarContainer.style.display = 'none';
+	// this.footerContainer.style.display = 'none';
+
+
+
 	this.sidebarFooterContainer = this.createSidebarFooterContainer();
 	
 	if (this.sidebarFooterContainer)

@@ -88,3 +88,36 @@
     border-radius: 8px;
     position: relative;
 }
+
+.startCell{
+    cursor: pointer;
+    width: 89px;
+    height: 55px;
+    border-radius: 50%;
+    border:2px solid;
+    background-color: #439efc;
+    font-family: "Times New Roman";
+    font-size: 16px;
+}
+
+.conditionCell{
+    cursor: pointer;
+    width: 54px;
+    height: 54px;
+    transform: rotateZ(45deg)skew(-15deg,-15deg);
+    border:2px solid;
+    background-color: #fff2cc;
+    font-family: "Times New Roman";
+    font-size: 16px;
+}
+
+.endCell{
+    cursor: pointer;
+    width: 89px;
+    height: 54px;
+    border-radius: 99px;
+    border:2px solid;
+    background-color: #ec3f3f;
+    font-family: "Times New Roman";
+    font-size: 16px;
+}
