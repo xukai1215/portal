@@ -50,6 +50,59 @@ var data_items = new Vue({
         }
     },
     methods: {
+        //显示功能引导框
+        showDriver(){
+            if(!this.driver){
+                this.driver = new Driver({
+                    "className": "scope-class",
+                    "allowClose": false,
+                    "opacity" : 0.1,
+                    "prevBtnText": "Previous",
+                    "nextBtnText": "Next"
+                });
+                this.stepsConfig = [
+                    {
+                        "element" : ".categoryList",
+                        "popover" : {
+                            "title" : "Data Categories",
+                            "description" : "You can query data process methods by choosing a category.",
+                            "position" : "right-top",
+                        }
+                    },
+                    {
+                        "element": ".searcherInputPanel",
+                        "popover": {
+                            "title": "Search",
+                            "description": "You can also search data process methods by name.",
+                            "position": "bottom-right",
+                        }
+                    },
+                    {
+                        "element": ".maincontnt",
+                        "popover": {
+                            "title": "Overview",
+                            "description": "Here is query result, you can browse data process methods' overview. Click name to check detail.",
+                            "position": "top",
+                        }
+                    },
+                    {
+                        "element" : "#contributeBtn",
+                        "popover" : {
+                            "title" : "Contribute",
+                            "description" : "You can share your data process methods on OpenGMS, and get a OpenGMS unique identifier!",
+                            "position" : "bottom",
+                        }
+                    }
+                ];
+            }
+
+            if(document.body.clientWidth < 1000){
+                this.stepsConfig[1].popover.position = "top";
+            }
+            this.driver.defineSteps(this.stepsConfig);
+            this.driver.start();
+        },
+
         handleChange(){
 
         },
@@ -179,5 +232,11 @@ var data_items = new Vue({
                 that.userName=res.data.name;
                 that.useroid=res.data.oid;
             })
+
+        if(document.cookie.indexOf("dataRep=1")==-1){
+            this.showDriver();
+            var t=new Date(new Date().getTime()+1000*60*60*24*60);
+            document.cookie="dataRep=1; expires="+t.toGMTString();
+        }
     }
 });

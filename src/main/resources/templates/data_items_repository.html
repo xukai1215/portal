@@ -24,7 +24,7 @@
     <link rel="stylesheet" href="/static/css/base/bootstrap-tagsinput.css">
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css" />
-
+    <link rel="stylesheet" href="/static/driver/driver.min.css"/>
     <style>
         .content-body .list-item:not(:first-child) {
             margin-top: -1px;
@@ -48,14 +48,19 @@
 <div id="data_items" v-cloak>
     <div th:replace="fragments/navbar :: unlog"></div>
 
+    <div th:replace="fragments/backToTop :: backtop-up"></div>
+
     <div class="clearfix" style="margin-bottom: 40px;">
+
+        <div class="guide el-backtop el-icon-question" title="Help" @click="showDriver"></div>
+
         <div class="mainContent">
             <div class="el-row">
                 <div class="data-top">
                     <h2 class="main-title">Data Item Repository</h2>
                     <h4 class="sub-title">The repository of data (one-stop hub with public shared data resources)
                     </h4>
-                    <button class="btn btn-success btn-lg" style="font-size: 15px;margin:10px;" @click="contribute()">+ Contribute</button>
+                    <button id="contributeBtn" class="btn btn-success btn-lg" style="font-size: 15px;margin:10px;" @click="contribute()">+ Contribute</button>
                 </div>
                 <hr>
             </div>
@@ -246,6 +251,7 @@
 <script src="/static/js/common/bootstrap.js"></script>
 <script src="/static/js/common/bootstrap-select.js"></script>
 <script src="/static/js/common/bootstrap-tagsinput.js"></script>
+<script src="/static/driver/driver.min.js"></script>
 <script src="/static/js/page/data_items.js"></script>
 <script  async src="/static/js/common/loadUser.js" ></script>
 <script src="/static/element-ui/umd/locale/en.js"></script>

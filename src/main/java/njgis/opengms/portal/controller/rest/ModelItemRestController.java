@@ -559,5 +559,10 @@ public class ModelItemRestController {
         return ResultUtils.success(modelItemService.getArticleByDOI(DOI,modelOid,userOid));
     }
 
+    @RequestMapping(value="/getKnowledgeGraph",method = RequestMethod.POST)
+    public JsonResult getKnowledgeGraph(@RequestParam(value="oid") String oid){
+        return ResultUtils.success(modelItemService.getKnowledgeGraph(oid));
+    }
+
 
 }

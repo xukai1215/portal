@@ -205,6 +205,28 @@
                     </div>
                 </div>
 
+                <div class="el-col el-col-6 pull-left" style="padding:0 15px 20px 0;">
+                    <el-card slot="header" shadow="hover">
+                        <a href="http://geomodeling.njnu.edu.cn/ChinaBasin/" target="_blank">
+                            <img src="/static/img/thematic_center/ChinaBasin_cj.png" style="width:100%;height: auto;" class="image">
+                        </a>
+                        <div style="text-align: center;padding: 15px 0">
+                            <a href="http://geomodeling.njnu.edu.cn/ChinaBasin/" target="_blank" style="font-size: 20px;font-weight: bold">ChinaBasin</a>
+                        </div>
+                    </el-card>
+                    <div class="el-row author">
+                        <div class="el-col el-col-4 el-col-offset-3">
+                            <img th:src="'/static/img/icon/default.png'"
+                                 class="round_icon" style="width:40px;height: 40px;float:left;">
+                        </div>
+                        <div class="el-col el-col-17" style="display:flex;">
+                            <div class="pull-left" style="display: block;margin:0 auto;">
+                                <a href="../user/42"><h4>NNU_Group</h4></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!--<i >-->
                 <div th:each="theme,index:${themeResult}" th:if="${theme.status!='Private'}" class="el-col el-col-6 pull-left" style="padding:0 15px 20px 0;">
                     <el-card slot="header" shadow="hover">

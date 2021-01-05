@@ -13,9 +13,9 @@ new Vue({
             searchText: '',
             classifications_old: ["652bf1f8-2f3e-4f93-b0dc-f66505090873"],
             classifications_advance: [],//advance
-            classifications_new: ["9f7816be-c6e3-44b6-addf-98251e3d2e19"],
+            classifications_new: [],
 
-            currentClass:"Application-focused categories",
+            currentClass:"",
 
             pageOption: {
                 paginationShow:false,
@@ -414,7 +414,8 @@ new Vue({
             advancedMode:false,
 
             connectors:["AND","OR","NOT"],
-            queryFields:["Name","Keyword","Overview","Detail","Contributor"],
+            queryFields:["Name","Keyword","Content","Contributor"],
+            curQueryField:"Name",
             queryConditions:[{
                 connector:"AND",
                 queryField:"Name",
@@ -424,9 +425,12 @@ new Vue({
                 queryField:"Keyword",
                 content:"",
             }],
+
+            recordHistory:true,
         }
     },
     methods: {
+
         //高级搜索
         conditionAppend(){
             this.queryConditions.add({
@@ -740,7 +744,7 @@ new Vue({
         },
         search() {
             this.switchInit();
-            this.setUrl("/modelItem/repository")
+
             this.pageOption.currentPage = 1;
             this.classifications_new=["all"];
             if(this.queryType=='normal') {
@@ -753,10 +757,6 @@ new Vue({
         //页码change
         handlePageChange(val) {
             this.switchInit();
-            let data=this.$refs.treeNew.getCurrentNode();
-            if(data!=null) {
-                this.setUrl("/modelItem/repository?category=" + data.oid + "&page=" + val);
-            }
             this.pageOption.currentPage = val;
 
             window.scrollTo(0, 0);
@@ -766,7 +766,7 @@ new Vue({
         handleCurrentChange(data) {
 
             this.switchInit();
-            this.setUrl("/modelItem/repository?category="+data.oid);
+
             // this.pageOption.searchResult=[];
             this.pageOption.total=0;
             this.pageOption.paginationShow=false;
@@ -784,7 +784,6 @@ new Vue({
         handleCurrentChange2(data) {
 
             this.switchInit();
-            this.setUrl("/modelItem/repository?category="+data.oid);
             // this.pageOption.searchResult=[];
             this.pageOption.total=0;
             this.pageOption.paginationShow=false;
@@ -823,13 +822,18 @@ new Vue({
             this.getModels();
         },
         getModels(classType) {
+            if(this.recordHistory) {
+                this.setUrl();
+            }else{
+                this.recordHistory = true;
+            }
             this.pageOption.progressBar = true;
             var data = {
                 sortField:this.sortFieldName,
                 asc: this.pageOption.sortAsc,
                 page: this.pageOption.currentPage - 1,
                 pageSize: this.pageOption.pageSize,
-
+                queryField: this.curQueryField,
             };
             switch (this.queryType) {
                 case "normal":
@@ -888,16 +892,28 @@ new Vue({
                 }
             })
         },
-        setUrl(newUrl){
+        setUrl(){
+            let newUrl;
+            if(this.currentClass=="ALL"){
+                newUrl = "/modelItem/repository"+"?searchText="+this.searchText+"&field="+this.curQueryField;
+            }else{
+                newUrl = "/modelItem/repository?category=" + this.$refs.treeNew.getCurrentNode().oid; ;
+            }
+
+            newUrl += "&sortField=" + this.sortFieldName;
+            let sortOrder = this.sortOrder.toLowerCase();
+            newUrl += "&order=" + sortOrder.substring(0, sortOrder.length-1);
+            newUrl += "&page=" + this.pageOption.currentPage;
+
             var stateObject = {};
             var title = "Model Item Repository | OpenGMS";
             history.pushState(stateObject,title,newUrl);
         },
-        GetQueryString(name) {
+        GetQueryString(originStr,paramName) {
 
-            var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+            var reg = new RegExp("(^|&)"+ paramName +"=([^&]*)(&|$)");
 
-            var r = window.location.search.substr(1).match(reg);
+            var r = originStr.substr(1).match(reg);
 
             if(r!=null)return  unescape(r[2]); return null;
 
@@ -909,37 +925,40 @@ new Vue({
                     "className": "scope-class",
                     "allowClose": false,
                     "opacity" : 0.1,
-                    "prevBtnText": "previous",
-                    "nextBtnText": "next"
+                    "prevBtnText": "Previous",
+                    "nextBtnText": "Next"
                 });
                 this.stepsConfig = [
                     {
                         "element" : ".categoryList",
                         "popover" : {
                             "title" : "Model Classifications",
-                            "description" : "Here you can view the models by category.",
-                            "position" : "right",
-                            "prevBtnText": "previous",
-                            "nextBtnText": "next"
+                            "description" : "You can query models by choosing a classification.",
+                            "position" : "right-top",
                         }
                     },
                     {
                         "element": ".searcherInputPanel",
                         "popover": {
                             "title": "Search",
-                            "description": "Here you can search for models by model name.",
+                            "description": "You can also search models by model name.",
                             "position": "bottom-right",
                         }
                     },
-
+                    {
+                        "element": ".modelPanel",
+                        "popover": {
+                            "title": "Overview",
+                            "description": "Here is query result, you can browse models' overview. Click model name to check model detail.",
+                            "position": "top",
+                        }
+                    },
                     {
                         "element" : "#contributeBtn",
                         "popover" : {
                             "title" : "Contribute",
-                            "description" : "Here you can share your model.",
+                            "description" : "You can share your models on OpenGMS, and get a OpenGMS unique identifier!",
                             "position" : "bottom",
-                            "prevBtnText": "previous",
-                            "nextBtnText": "next"
                         }
                     }
                 ];
@@ -950,81 +969,132 @@ new Vue({
             }
             this.driver.defineSteps(this.stepsConfig);
             this.driver.start();
-        }
+        },
+
+        urlSearch(paramStr){
+            let searchText = this.GetQueryString(paramStr, "searchText");
+            let field = this.GetQueryString(paramStr, "field");
+
+            let category=this.GetQueryString(paramStr, "category");
+
+            let sortField = this.GetQueryString(paramStr, "sortField");
+            let order = this.GetQueryString(paramStr, "order");
+            let page=this.GetQueryString(paramStr, "page");
+            console.log(category,page)
+            //按分类查询
+            if(category!=null) {
+                this.searchText="";
+                this.classifications_new=[];
+                this.classifications_new.push(category);
+                for(i=0;i<this.treeData2.length;i++){
+                    if(category==this.treeData2[i].oid){
+                        this.$refs.treeNew.setCurrentKey(this.treeData2[i].id);
+                        this.currentClass=this.treeData2[i].label;
+                        break;
+                    }
+                    else{
+                        let children = this.treeData2[i].children;
+                        let find=false;
+                        for(j=0;j<children.length;j++){
+                            if(category==children[j].oid){
+                                find=true;
+                                this.$refs.treeNew.setCurrentKey(children[j].id);
+                                this.currentClass=children[j].label;
+                                $(".el-tree-node__expand-icon").eq(i).click();
+                                break;
+                            }
+                            else{
+                                let childrens=children[j].children;
+                                if(childrens!=undefined) {
+                                    for (k = 0; k < childrens.length; k++) {
+                                        if (category == childrens[k].oid) {
+                                            find = true;
+                                            this.$refs.treeNew.setCurrentKey(childrens[k].id);
+                                            this.currentClass = childrens[k].label;
+                                            $(".el-tree-node__expand-icon").eq(1).click();
+                                            var index=j+2;
+                                            setTimeout(function(){
+                                                console.log($(".el-tree-node__expand-icon"))
+                                                $(".el-tree-node__expand-icon").eq(index).click();
+                                            },200);
+
+                                            break;
+                                        }
+                                    }
+                                }
+
+                            }
+                        }
+                        if(find){
+                            break;
+                        }
+                    }
+
+                }
+            }
+            // else{
+            //
+            //     // this.$refs.tree1.setCurrentKey(2);
+            //     // //展开分类树第一层
+            //     // $(".el-tree-node__expand-icon").eq(0).click();
+            //     // $(".el-tree-node__expand-icon").eq(1).click();
+            // }
+            //按queryString查询
+            else if(searchText!=null) {
+                this.$refs.treeNew.setCurrentKey(null);
+                this.classifications_new=["all"];
+                this.currentClass="ALL";
+                this.searchText = searchText;
+                this.curQueryField = field;
+            }else{
+                this.$refs.treeNew.setCurrentKey(24);
+                this.classifications_new=[];
+                this.classifications_new.push("9f7816be-c6e3-44b6-addf-98251e3d2e19");
+                this.currentClass="Application-focused categories";
+            }
+
+            //设置页数
+            if(page!=null){
+                this.pageOption.currentPage=page;
+            }else{
+                this.pageOption.currentPage=1;
+            }
+
+            if(sortField!=null){
+                this.sortFieldName = sortField;
+                switch(sortField){
+                    case "viewCount":
+                        this.sortTypeName = "View Count";
+                        break;
+                    case "name":
+                        this.sortTypeName = "Name";
+                        break;
+                    case "createTime":
+                        this.sortTypeName = "Create Time";
+                        break;
+                }
+            }
+
+            if(order!=null){
+                this.sortOrder = order.replace(order[0],order[0].toUpperCase())+".";
+                this.pageOption.sortAsc = this.sortOrder==="Asc.";
+            }
+
+            this.recordHistory = false;
+            //执行查询
+            this.getModels(this.classType);
+        },
     },
     mounted() {
 
-        let category=this.GetQueryString("category");
-        let page=this.GetQueryString("page");
-        console.log(category,page)
+        this.urlSearch(window.location.search);
 
-        if(category!=null) {
-            this.classifications_new=[];
-            this.classifications_new.push(category);
-            for(i=0;i<this.treeData2.length;i++){
-                if(category==this.treeData2[i].oid){
-                    this.$refs.treeNew.setCurrentKey(this.treeData2[i].id);
-                    this.currentClass=this.treeData2[i].label;
-                    break;
-                }
-                else{
-                    let children = this.treeData2[i].children;
-                    let find=false;
-                    for(j=0;j<children.length;j++){
-                        if(category==children[j].oid){
-                            find=true;
-                            this.$refs.treeNew.setCurrentKey(children[j].id);
-                            this.currentClass=children[j].label;
-                            $(".el-tree-node__expand-icon").eq(i).click();
-                            break;
-                        }
-                        else{
-                            let childrens=children[j].children;
-                            if(childrens!=undefined) {
-                                for (k = 0; k < childrens.length; k++) {
-                                    if (category == childrens[k].oid) {
-                                        find = true;
-                                        this.$refs.treeNew.setCurrentKey(childrens[k].id);
-                                        this.currentClass = childrens[k].label;
-                                        $(".el-tree-node__expand-icon").eq(1).click();
-                                        var index=j+2;
-                                        setTimeout(function(){
-                                            console.log($(".el-tree-node__expand-icon"))
-                                            $(".el-tree-node__expand-icon").eq(index).click();
-                                        },200);
-
-                                        break;
-                                    }
-                                }
-                            }
-
-                        }
-                    }
-                    if(find){
-                        break;
-                    }
-                }
-
-            }
-        }
-        else{
-            // this.$refs.tree1.setCurrentKey(2);
-            // //展开分类树第一层
-            // $(".el-tree-node__expand-icon").eq(0).click();
-            // $(".el-tree-node__expand-icon").eq(1).click();
-        }
-        if(page!=null){
-            this.pageOption.currentPage=page;
-        }
-
-        this.getModels(this.classType);
 
         //expend
         $("#expend").click(() => {
             this.pageOption.searchResult=[];
             this.pageOption.paginationShow=false;
 
-            this.setUrl("/modelItem/repository")
             this.queryType = "advanced";
             $(".searcherPanel").css("display", "none");
             $(".advancedSearch").css("display", "block");
@@ -1137,11 +1207,16 @@ new Vue({
             }
         });
 
-        // if(document.cookie.indexOf("modelRep=1")==-1){
+        if(document.cookie.indexOf("modelRep=1")==-1){
             this.showDriver();
             var t=new Date(new Date().getTime()+1000*60*60*24*60);
             document.cookie="modelRep=1; expires="+t.toGMTString();
-        // }
+        }
+
+        window.addEventListener('popstate', (event)=> {
+            this.urlSearch(event.currentTarget.location.search);
+            console.log(event.currentTarget.location.search);
+        })
 
     }
 })

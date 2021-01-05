@@ -19,22 +19,24 @@
     <link rel="stylesheet" href="/static/css/page/model_items.css">
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css" />
-
-    <style>
-
-    </style>
+    <link rel="stylesheet" href="/static/driver/driver.min.css"/>
 </head>
 <body>
 <div id="app" v-cloak>
     <div th:replace="fragments/navbar :: unlog"></div>
 
+    <div th:replace="fragments/backToTop :: backtop-up"></div>
+
     <div class="clearfix" style="margin-bottom: 40px;">
+
+        <div class="guide el-backtop el-icon-question" title="Help" @click="showDriver"></div>
+
         <div class="el-col mainContent">
 
             <div class="el-row">
                 <h2 class="main-title">Unit & Metric Repository</h2>
                 <h4 class="sub-title">The repository of unit and metric.</h4>
-                <button class="btn btn-success btn-lg" style="font-size: 15px;margin:10px;" @click="contribute()">+ Contribute</button>
+                <button id="contributeBtn"  class="btn btn-success btn-lg" style="font-size: 15px;margin:10px;" @click="contribute()">+ Contribute</button>
                 <hr>
             </div>
             <div class="el-col el-col-6 minScreen_maxWidth" style="margin-top:29px;">
@@ -202,6 +204,7 @@
 <script src="/static/js/common/axios.min.js"></script>
 <script src="/static/js/common/bootstrap.js"></script>
 <script src="/static/js/common/bootstrap-select.js"></script>
+<script src="/static/driver/driver.min.js"></script>
 <script src="/static/js/page/unitRepository.js"></script>
 
 <script src="/static/js/common/loadUser.js"></script>

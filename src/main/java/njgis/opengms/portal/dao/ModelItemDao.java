@@ -6,6 +6,7 @@ import njgis.opengms.portal.entity.ModelItem;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
@@ -47,6 +48,15 @@ public interface ModelItemDao extends MongoRepository<ModelItem,String> {
     Page<ModelItemResultDTO> findByNameContainsIgnoreCase(String name,Pageable pageable);
 
     Page<ModelItemResultDTO> findByNameContainsIgnoreCaseAndStatusIn(String name, List<String> status,Pageable pageable);
+
+    @Query("{'keywords':{'$regex': '?0','$options':'i'}, 'status':{$in:?1}}")
+    Page<ModelItemResultDTO> findByKeywordsIgnoreCaseInAndStatusIn(String keyword, List<String> status,Pageable pageable);
+
+//    @Query("{$and:[{$or:[{ 'description':{'$regex':/swat/,'$options':'i'}}, {'localizationList.description': {'$regex':/swat/,'$options':'i'}}]},{'status':{$in:['Private','Public']}}]}")
+    @Query("{$and:[{$or:[{ 'description':{'$regex': '?0','$options':'i'}}, {'localizationList.description': {'$regex': '?0','$options':'i'}}]},{'status':{$in:?1}}]}")
+    Page<ModelItemResultDTO> findByDescriptionContainsIgnoreCaseAndLocalizationDescriptionAndStatusIn(String overview, List<String> status,Pageable pageable);
+
+    Page<ModelItemResultDTO> findByAuthorInAndStatusIn(List<String> authors, List<String> status,Pageable pageable);
 
     Page<ModelItemResultDTO> findByNameContainsIgnoreCaseAndClassifications2IsNotNullAndStatusIn(String name, List<String> status,Pageable pageable);
 

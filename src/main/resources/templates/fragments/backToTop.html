@@ -1,0 +1,55 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="backtop-up">
+    <div class="backtop-up el-backtop el-icon-caret-top" title="Back to Top" onclick="backToTop()">
+
+    </div>
+    <script type="text/javascript">
+        window.onload = function() {
+            window.onscroll = function () {
+
+                if (document.body.scrollTop > 400 || document.documentElement.scrollTop > 400) {
+                    $(".backtop-up").css("visibility", "visible");
+                } else {
+                    $(".backtop-up").css("visibility", "hidden");
+                }
+            };
+        };
+
+        function backToTop() {
+            window.scrollTo(0,0)
+        }
+
+    </script>
+
+</div>
+
+<div th:fragment="backtop-down">
+
+    <div class="backtop-down el-backtop el-icon-caret-top" title="Back to Top" onclick="backToTop()">
+
+    </div>
+
+    <script type="text/javascript">
+        window.onload = function() {
+            window.onscroll = function () {
+
+                if (document.body.scrollTop > 400 || document.documentElement.scrollTop > 400) {
+                    $(".backtop-down").css("visibility", "visible");
+                } else {
+                    $(".backtop-down").css("visibility", "hidden");
+                }
+            };
+        };
+
+        function backToTop() {
+            window.scrollTo(0,0)
+        }
+
+    </script>
+
+</div>
+</body>
+
+</html>

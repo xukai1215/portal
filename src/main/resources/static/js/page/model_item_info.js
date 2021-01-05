@@ -511,8 +511,11 @@ var info=new Vue({
             relationPageSize:4,
 
             modelRelationListShow:true,
+            modelRelationGraphSideBarShow:false,
             relatedModelItems:[],
             relatedModelItemsPage:[],
+            curRelation:{},
+            graphFullScreen: false,
         }
     },
     methods: {
@@ -531,195 +534,343 @@ var info=new Vue({
             }
         },
 
+        closeGraphSideBar(){
+            this.modelRelationGraphSideBarShow = false;
+        },
+
         generateModelRelationGraph(){
-
             this.modelRelationListShow = false;
-            setTimeout(()=>{
 
-                let object = document.getElementById('modelRelationGraph');
-                let modelRelationGraph = echarts.init(object,'light');
-                modelRelationGraph.showLoading();
+            let nodes = [];
+            let links =[];
 
-                let nodes = [];
-                let links =[];
+            $.post("/modelItem/getKnowledgeGraph",{"oid":this.modelInfo.oid},(result)=>{
+                console.log(result);
+                nodes = result.data.nodes;
+                links = result.data.links;
 
-                let radius = 200;
-                let title = this.modelInfo.name;
-                nodes.push({
-                    name: title,
-                    x: 500,
-                    y: 300,
-                    itemStyle:{
-                        color: 'green',
-                    },
-                    label: {
-                        formatter: title.length > 9 ? title.substring(0,7)+"..." : title,
-                    },
-                    tooltip:{
-                        formatter:"{b}",
-                    },
-                });
+                setTimeout(()=>{
 
-                let items = [];
-                for(i = 0;i<this.relatedModelItems.length;i++){
-                    let name = this.relatedModelItems[i].name;
-                    let relation = this.relatedModelItems[i].relation;
-                    items.push({
-                        name: name,
-                        relation: relation
-                    })
-                }
+                    let object = document.getElementById('modelRelationGraph');
+                    let modelRelationGraph = echarts.init(object,'light');
+                    modelRelationGraph.showLoading();
 
-                let dtAngle = 360 / items.length;
-                let curAngle = 0;
-                for(i = 0;i<items.length;i++){
-                    curAngle = curAngle + dtAngle;
-                    let radian = curAngle * 2 * Math.PI / 360;
-                    let dx = Math.cos(radian) * radius;
-                    let dy = Math.sin(radian) * radius;
+                    modelRelationGraph.on("click",(param)=>{
+                        if(param.value !== undefined){
+                            this.curRelation=param.value;
+                            this.modelRelationGraphSideBarShow = true;
+                        }
 
-                    let name = items[i].name;
-                    let formatter = name.length > 9 ? name.substring(0,7)+"..." : name;
+                        console.log(param)
+                    });
 
-                    //加入节点
-                    nodes.push({
-                        name: name,
-                        x: nodes[0].x + dx,
-                        y: nodes[0].y + dy,
+                    let graph_nodes = [];
+                    let graph_links = [];
+
+                    let radius = 200;
+                    let title = this.modelInfo.name;
+                    graph_nodes.push({
+                        name: title,
+                        x: 500,
+                        y: 300,
+                        value: {
+                            style: "node",
+                            type: "model",
+                            name: nodes[0].name,
+                            oid: nodes[0].oid,
+                            img: nodes[0].img,
+                            overview: nodes[0].overview,
+                        },
+                        itemStyle:{
+                            color: 'green',
+                        },
                         label: {
-                            formatter: formatter,
+                            formatter: title.length > 9 ? title.substring(0,7)+"..." : title,
                         },
                         tooltip:{
                             formatter:"{b}",
                         },
                     });
 
-                    //加入连线
-                    links.push({
-                        source: 0,
-                        target: i+1,
-                        symbolSize: [5, 10],
-                        label: {
-                            show: true,
-                            formatter: items[i].relation,
-                            fontSize: 12,
-                        },
-                        lineStyle: {
-                            width: 2,
-                            curveness: 0
-                        },
-                        tooltip:{
-                            position: 'inside',
-                            formatter: nodes[0].name + " " + items[i].relation + " " + nodes[i].name,
-                        },
+                    let dtAngle = 360 / nodes.length;
+                    let curAngle = 0;
+                    //加入节点
+                    for(i = 1;i<nodes.length;i++){
+                        let node = nodes[i];
 
-                    });
-                }
+                        curAngle = curAngle + dtAngle;
+                        let radian = curAngle * 2 * Math.PI / 360;
+                        let dx = Math.cos(radian) * radius;
+                        let dy = Math.sin(radian) * radius;
 
-                let option = {
-                    title: {
-                        //text: 'Graph 简单示例'
-                    },
-                    tooltip: {},
-                    toolbox: {
-                        feature: {
+                        let name = node.name;
+                        let formatter = name.length > 9 ? name.substring(0,7)+"..." : name;
 
-                            restore: {},
-                            saveAsImage: {}
-                        }
-                    },
-                    animationDurationUpdate: 500,
-                    animationEasingUpdate: 'quinticInOut',
-                    series: [
-                        {
-                            type: 'graph',
-                            layout: 'none',
-                            symbolSize: 100,
-                            roam: true,
-                            label: {
-                                show: true
-                            },
-                            edgeSymbol: ['circle', 'arrow'],
-                            edgeSymbolSize: [4, 10],
-                            edgeLabel: {
-                                fontSize: 20
-                            },
-                            data: [{
-                                name: '节点1',
-                                x: 500,
-                                y: 300,
-                                symbolSize:50,
-                                itemStyle:{
-                                    color: 'blue',
+                        //加入节点
+                        if(node.type === "ref"){
+                            graph_nodes.push({
+                                name: node.name,
+                                value: {
+                                    style: "node",
+                                    type: "ref",
+                                    name: node.name,
+                                    author: node.author,
+                                    journal: node.journal,
+                                    link: node.link,
                                 },
-                            }, {
-                                name: '节点2',
-                                x: 800,
-                                y: 300
-                            }, {
-                                name: '节点3',
-                                x: 550,
-                                y: 100
-                            }, {
-                                name: '节点4',
-                                x: 550,
-                                y: 500
-                            }],
-                            // links: [],
-                            links: [{
-                                source: 0,
-                                target: 1,
-                                symbolSize: [5, 20],
+                                x: graph_nodes[0].x + dx,
+                                y: graph_nodes[0].y + dy,
+                                symbolSize: 8,
+                                itemStyle:{
+                                    color: 'skyblue',
+                                },
                                 label: {
-                                    show: true,
-                                    formatter:"1234",
+                                    show: false,
+                                    formatter: formatter,
+                                },
+                                tooltip: {
+                                    formatter: "Reference: {b}",
+                                },
+                            });
+                        }else {
+                            graph_nodes.push({
+                                name: node.name,
+                                value: {
+                                    style: "node",
+                                    type: "model",
+                                    name: node.name,
+                                    oid: node.oid,
+                                    img: node.img,
+                                    overview: node.overview,
+                                },
+                                x: graph_nodes[0].x + dx,
+                                y: graph_nodes[0].y + dy,
+                                // symbolSize: 10,
+                                itemStyle:{
+                                    color: 'orange',
+                                },
+                                label: {
+                                    formatter: formatter,
+                                },
+                                tooltip: {
+                                    formatter: "{b}",
+                                },
+                            });
+                        }
+                    }
+
+                    //加入连线
+                    for(i = 0;i<links.length;i++) {
+                        let link = links[i];
+                        if(link.type === "ref") {
+                            graph_links.push({
+                                source: link.ori,
+                                target: link.tar,
+                                // symbolSize: [5, 10],
+                                label: {
+                                    show: false,
+                                    formatter: link.relation,
+                                    fontSize: 12,
                                 },
                                 lineStyle: {
-                                    width: 5,
+                                    width: 2,
                                     curveness: 0
-                                }
-                            }, {
-                                source: '节点2',
-                                target: '节点1',
+                                },
+                                symbol: ['none', 'none'],
+                                tooltip: {
+                                    show: false,
+                                    position: 'bottom',
+                                    formatter: nodes[link.ori].name + " " + link.relation + " " + nodes[link.tar].name,
+                                },
+
+                            });
+                        }else{
+                            graph_links.push({
+                                source: link.ori,
+                                target: link.tar,
+                                symbolSize: [5, 10],
+                                label: {
+                                    show: true,
+                                    formatter: link.relation,
+                                    fontSize: 12,
+                                },
+                                lineStyle: {
+                                    width: 2,
+                                    curveness: 0
+                                },
+                                tooltip: {
+                                    position: 'bottom',
+                                    formatter: nodes[link.ori].name + " " + link.relation + " " + nodes[link.tar].name,
+                                },
+
+                            });
+                        }
+                    }
+
+                    let option = {
+                        title: {
+                            //text: 'Graph 简单示例'
+                        },
+                        tooltip: {},
+                        toolbox: {
+                            feature: {
+
+                                restore: {},
+                                saveAsImage: {},
+                                myFull: {
+                                    show: true,
+                                    title: 'Full Screen',
+                                    icon: 'path://M432.45,595.444c0,2.177-4.661,6.82-11.305,6.82c-6.475,0-11.306-4.567-11.306-6.82s4.852-6.812,11.306-6.812C427.841,588.632,432.452,593.191,432.45,595.444L432.45,595.444z M421.155,589.876c-3.009,0-5.448,2.495-5.448,5.572s2.439,5.572,5.448,5.572c3.01,0,5.449-2.495,5.449-5.572C426.604,592.371,424.165,589.876,421.155,589.876L421.155,589.876z M421.146,591.891c-1.916,0-3.47,1.589-3.47,3.549c0,1.959,1.554,3.548,3.47,3.548s3.469-1.589,3.469-3.548C424.614,593.479,423.062,591.891,421.146,591.891L421.146,591.891zM421.146,591.891',
+                                    onclick: (e)=>{
+                                        let opts = e.getOption();
+                                        opts.toolbox[0].feature.myFull.show=false;
+                                        opts.toolbox[0].feature.myFullExit.show=true;
+                                        this.graphFullScreen = true;
+                                        setTimeout(()=>{
+                                            let object = document.getElementById('fullScreenGraph');
+                                            let graph = echarts.init(object,'light');
+                                            graph.setOption(opts);
+
+                                            graph.on("click",(param)=>{
+                                                if(param.value !== undefined){
+                                                    this.curRelation=param.value;
+                                                    this.modelRelationGraphSideBarShow = true;
+                                                }
+
+                                                console.log(param)
+                                            });
+
+                                            // opts.toolbox[0].feature.myFull.show=false
+                                            // //window.top表示最顶层iframe  如果在当页面全屏打开 删去window.top即可
+                                            // window.top.layer.open({
+                                            //     title:false,
+                                            //     type:1,
+                                            //     content:'<div class="fullChart" style="height:100%;width:100%;padding:30px 0px"></div>',
+                                            //     success:function(){
+                                            //         var fullchart = echarts.init(window.top.document.getElementById('fullChart'))
+                                            //         fullchart.setOption(opts)
+                                            //     }
+                                            // })
+                                        },300);
+
+                                    }
+                                },
+                                myFullExit: {
+                                    show: false,
+                                    title: 'Exit',
+                                    icon: 'path://M432.45,595.444c0,2.177-4.661,6.82-11.305,6.82c-6.475,0-11.306-4.567-11.306-6.82s4.852-6.812,11.306-6.812C427.841,588.632,432.452,593.191,432.45,595.444L432.45,595.444z M421.155,589.876c-3.009,0-5.448,2.495-5.448,5.572s2.439,5.572,5.448,5.572c3.01,0,5.449-2.495,5.449-5.572C426.604,592.371,424.165,589.876,421.155,589.876L421.155,589.876z M421.146,591.891c-1.916,0-3.47,1.589-3.47,3.549c0,1.959,1.554,3.548,3.47,3.548s3.469-1.589,3.469-3.548C424.614,593.479,423.062,591.891,421.146,591.891L421.146,591.891zM421.146,591.891',
+                                    onclick: (e)=>{
+                                        this.graphFullScreen = false;
+
+                                    }
+                                },
+                            }
+                        },
+                        animationDurationUpdate: 500,
+                        animationEasingUpdate: 'quinticInOut',
+                        series: [
+                            {
+                                type: 'graph',
+                                layout: 'force',
+                                draggable: true,
+                                focusNodeAdjacency:true,
+                                symbolSize: 25,
+                                zoom:4,
+                                roam: true,
+                                force:{
+                                    repulsion:100,
+                                    // edgeLength:[150,200],
+                                    // layoutAnimation:false,
+                                },
                                 label: {
                                     show: true
                                 },
+                                edgeSymbol: ['circle', 'arrow'],
+                                edgeSymbolSize: [4, 10],
+                                edgeLabel: {
+                                    fontSize: 20
+                                },
+                                data: [{
+                                    name: '节点1',
+                                    x: 500,
+                                    y: 300,
+                                    symbolSize:50,
+                                    itemStyle:{
+                                        color: 'blue',
+                                    },
+                                }, {
+                                    name: '节点2',
+                                    x: 800,
+                                    y: 300
+                                }, {
+                                    name: '节点3',
+                                    x: 550,
+                                    y: 100
+                                }, {
+                                    name: '节点4',
+                                    x: 550,
+                                    y: 500
+                                }],
+                                // links: [],
+                                links: [{
+                                    source: 0,
+                                    target: 1,
+                                    symbolSize: [5, 20],
+                                    label: {
+                                        show: true,
+                                        formatter:"1234",
+                                    },
+                                    lineStyle: {
+                                        width: 5,
+                                        curveness: 0
+                                    }
+                                }, {
+                                    source: '节点2',
+                                    target: '节点1',
+                                    label: {
+                                        show: true
+                                    },
+                                    lineStyle: {
+                                        curveness: 0.2
+                                    }
+                                }, {
+                                    source: '节点1',
+                                    target: '节点3'
+                                }, {
+                                    source: '节点2',
+                                    target: '节点3'
+                                }, {
+                                    source: '节点2',
+                                    target: '节点4'
+                                }, {
+                                    source: '节点1',
+                                    target: '节点4'
+                                }],
                                 lineStyle: {
-                                    curveness: 0.2
+                                    opacity: 0.9,
+                                    width: 2,
+                                    curveness: 0
                                 }
-                            }, {
-                                source: '节点1',
-                                target: '节点3'
-                            }, {
-                                source: '节点2',
-                                target: '节点3'
-                            }, {
-                                source: '节点2',
-                                target: '节点4'
-                            }, {
-                                source: '节点1',
-                                target: '节点4'
-                            }],
-                            lineStyle: {
-                                opacity: 0.9,
-                                width: 2,
-                                curveness: 0
                             }
-                        }
-                    ]
-                };
+                        ]
+                    };
 
-                option.series[0].data = nodes;
-                option.series[0].links = links;
-                console.log(option);
-                modelRelationGraph.setOption(option);
-                modelRelationGraph.hideLoading();
-            },500)
+                    option.series[0].data = graph_nodes;
+                    option.series[0].links = graph_links;
+                    console.log(option);
+                    modelRelationGraph.setOption(option);
+                    modelRelationGraph.hideLoading();
+                },300)
+
+            });
+
+
 
         },
 
         closeModelRelationGraph(){
             this.modelRelationListShow = true;
+            this.modelRelationGraphSideBarShow = false;
         },
 
         relationSortChange(sort){
@@ -1494,6 +1645,12 @@ var info=new Vue({
                 })
         },
 
+        searchInit(scope){
+            this.pageOption_all.currentPage = 1;
+            this.pageOption_my.currentPage = 1;
+            this.search(scope);
+        },
+
         //relate search
         search(scope) {
             let data;
@@ -1844,7 +2001,7 @@ var info=new Vue({
                                 this.activeName_dialog = "my";
                                 break;
                         }
-                        this.relateTitle = "Link Related "+this.typeName;
+                        this.relateTitle = "Link Related "+this.typeName+" to "+this.modelInfo.name;
                         this.tableData = [];
 
                         this.pageOption_my.currentPage = 1;
