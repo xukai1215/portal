@@ -3,6 +3,7 @@ package njgis.opengms.portal.dao;
 import njgis.opengms.portal.dto.UserResultDTO;
 import njgis.opengms.portal.entity.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 
 import java.util.List;
 
@@ -23,4 +24,7 @@ public interface UserDao extends MongoRepository<User,String> {
     UserResultDTO findByUserName(String userName);
 
     List<User> findAllByUserIdContains(String userId);
+
+    @Query("{name:{$regex: '?0',$options:'i'}}")
+    List<User> findAllByNameContainsIgnoreCase(String name);
 }

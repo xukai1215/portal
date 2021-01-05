@@ -200,6 +200,76 @@ var vue = new Vue({
         // }
     },
     methods: {
+
+        //显示功能引导框
+        showDriver(){
+            if(!this.driver){
+                this.driver = new Driver({
+                    "className": "scope-class",
+                    "allowClose": false,
+                    "opacity" : 0.1,
+                    "prevBtnText": "Previous",
+                    "nextBtnText": "Next"
+                });
+                this.stepsConfig = [
+                    {
+                        "element" : "#modelSider",
+                        "popover" : {
+                            "title" : "Computable Model Info",
+                            "description" : "Model's brief introduction.",
+                            "position" : "right-center",
+                        }
+                    },
+                    {
+                        "element": ".leftContainer",
+                        "popover": {
+                            "title": "Model State",
+                            "description": "Model's running states.",
+                            "position": "top",
+                        }
+                    },
+                    {
+                        "element": ".dataContainer",
+                        "popover": {
+                            "title": "Model Event",
+                            "description": "Model events in different states. Before invoking model, please load necessary event data",
+                            "position": "top",
+                        }
+                    },
+                    {
+                        "element" : "#showStyle",
+                        "popover" : {
+                            "title" : "Show Style",
+                            "description" : "You can browse model states and events in different style.",
+                            "position" : "bottom",
+                        }
+                    },
+                    {
+                        "element" : "#loadDataBtn",
+                        "popover" : {
+                            "title" : "Load Data",
+                            "description" : "Click this button and check if there is prepared data set.",
+                            "position" : "bottom",
+                        }
+                    },
+                    {
+                        "element" : "#invokeBtn",
+                        "popover" : {
+                            "title" : "Invoke",
+                            "description" : "After loading necessary data, you can invoke this model on the web and get results",
+                            "position" : "bottom",
+                        }
+                    }
+                ];
+            }
+
+            if(document.body.clientWidth < 1000){
+                this.stepsConfig[1].popover.position = "top";
+            }
+            this.driver.defineSteps(this.stepsConfig);
+            this.driver.start();
+        },
+
         uploadRemove(file, fileList) {
 
             this.uploadFiles = fileList;

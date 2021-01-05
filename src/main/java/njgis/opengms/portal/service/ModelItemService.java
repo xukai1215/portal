@@ -1228,27 +1228,58 @@ public class ModelItemService {
         }
 
         Page<ModelItemResultDTO> modelItemPage = null;
-        if(userName==null){
-            if (searchText.equals("")&&classes.get(0).equals("all")) {
-                modelItemPage = modelItemDao.findAllByNameContainsAndStatusIn("",itemStatusVisible,pageable);
-            } else if(!searchText.equals("")&&classes.get(0).equals("all")) {
-                modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndStatusIn(searchText, itemStatusVisible, pageable);
-            } else if(searchText.equals("")&&!classes.get(0).equals("all")){
-                modelItemPage = modelItemDao.findByClassificationsInAndStatusIn(classes, itemStatusVisible, pageable);
-            }else{
-                modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndClassificationsInAndStatusIn(searchText,classes,itemStatusVisible, pageable);
-            }
-        } else {
-            if (searchText.equals("") && classes.get(0).equals("all")) {
-                modelItemPage = modelItemDao.findAllByNameContainsAndAuthorAndStatusIn("", userName, itemStatusVisible, pageable);
-            } else if (!searchText.equals("") && classes.get(0).equals("all")) {
-                modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndAuthorAndStatusIn(searchText, userName, itemStatusVisible, pageable);
-            } else if (searchText.equals("") && !classes.get(0).equals("all")) {
-                modelItemPage = modelItemDao.findByClassificationsInAndAuthorAndStatusIn(classes, userName, itemStatusVisible, pageable);
+
+        if(userName == null) {
+            if (classes.get(0).equals("all")) {
+                switch (modelItemFindDTO.getQueryField()) {
+                    case "Name":
+                        modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndStatusIn(searchText, itemStatusVisible, pageable);
+                        break;
+                    case "Keyword":
+                        modelItemPage = modelItemDao.findByKeywordsIgnoreCaseInAndStatusIn(searchText, itemStatusVisible, pageable);
+                        break;
+                    case "Content":
+                        modelItemPage = modelItemDao.findByDescriptionContainsIgnoreCaseAndLocalizationDescriptionAndStatusIn(searchText, itemStatusVisible, pageable);
+                        break;
+                    case "Contributor":
+                        List<User> userList = userDao.findAllByNameContainsIgnoreCase(searchText);
+                        List<String> userNames = new ArrayList<>();
+                        for(User user:userList){
+                            userNames.add(user.getUserName());
+                        }
+
+                        modelItemPage = modelItemDao.findByAuthorInAndStatusIn(userNames, itemStatusVisible, pageable);
+                        break;
+
+                }
             } else {
-                modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndClassificationsInAndAuthorAndStatusIn(searchText, classes, userName,itemStatusVisible, pageable);
+                modelItemPage = modelItemDao.findByClassificationsInAndStatusIn(classes, itemStatusVisible, pageable);
             }
+        }else{
+            modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndAuthorAndStatusIn(searchText, userName, itemStatusVisible, pageable);
         }
+
+//        if(userName==null){
+//            if (searchText.equals("")&&classes.get(0).equals("all")) {
+//                modelItemPage = modelItemDao.findAllByNameContainsAndStatusIn("",itemStatusVisible,pageable);
+//            } else if(!searchText.equals("")&&classes.get(0).equals("all")) {
+//                modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndStatusIn(searchText, itemStatusVisible, pageable);
+//            } else if(searchText.equals("")&&!classes.get(0).equals("all")){
+//                modelItemPage = modelItemDao.findByClassificationsInAndStatusIn(classes, itemStatusVisible, pageable);
+//            }else{
+//                modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndClassificationsInAndStatusIn(searchText,classes,itemStatusVisible, pageable);
+//            }
+//        } else {
+//            if (searchText.equals("") && classes.get(0).equals("all")) {
+//                modelItemPage = modelItemDao.findAllByNameContainsAndAuthorAndStatusIn("", userName, itemStatusVisible, pageable);
+//            } else if (!searchText.equals("") && classes.get(0).equals("all")) {
+//                modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndAuthorAndStatusIn(searchText, userName, itemStatusVisible, pageable);
+//            } else if (searchText.equals("") && !classes.get(0).equals("all")) {
+//                modelItemPage = modelItemDao.findByClassificationsInAndAuthorAndStatusIn(classes, userName, itemStatusVisible, pageable);
+//            } else {
+//                modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndClassificationsInAndAuthorAndStatusIn(searchText, classes, userName,itemStatusVisible, pageable);
+//            }
+//        }
 
 
         List<ModelItemResultDTO> modelItems = modelItemPage.getContent();
@@ -1312,28 +1343,61 @@ public class ModelItemService {
             }
         }
 
+
+
         Page<ModelItemResultDTO> modelItemPage = null;
-        if (userName == null) {
-            if (searchText.equals("") && classes.get(0).equals("all")) {
-                modelItemPage = modelItemDao.findAllByNameContainsAndClassifications2IsNotNullAndStatusIn("", itemStatusVisible, pageable);
-            } else if (!searchText.equals("") && classes.get(0).equals("all")) {
-                modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndClassifications2IsNotNullAndStatusIn(searchText, itemStatusVisible, pageable);
-            } else if (searchText.equals("") && !classes.get(0).equals("all")) {
+
+        if(userName == null) {
+            if (classes.get(0).equals("all")) {
+                switch (modelItemFindDTO.getQueryField()) {
+                    case "Name":
+                        modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndStatusIn(searchText, itemStatusVisible, pageable);
+                        break;
+                    case "Keyword":
+                        modelItemPage = modelItemDao.findByKeywordsIgnoreCaseInAndStatusIn(searchText, itemStatusVisible, pageable);
+                        break;
+                    case "Content":
+                        modelItemPage = modelItemDao.findByDescriptionContainsIgnoreCaseAndLocalizationDescriptionAndStatusIn(searchText, itemStatusVisible, pageable);
+                        break;
+                    case "Contributor":
+                        List<User> userList = userDao.findAllByNameContainsIgnoreCase(searchText);
+                        List<String> userNames = new ArrayList<>();
+                        for(User user:userList){
+                            userNames.add(user.getUserName());
+                        }
+
+                        modelItemPage = modelItemDao.findByAuthorInAndStatusIn(userNames, itemStatusVisible, pageable);
+                        break;
+
+                }
+            } else {
                 modelItemPage = modelItemDao.findByClassifications2InAndStatusIn(classes, itemStatusVisible, pageable);
-            } else {
-                modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndClassifications2InAndStatusIn(searchText, classes, itemStatusVisible, pageable);
             }
-        } else {
-            if (searchText.equals("") && classes.get(0).equals("all")) {
-                modelItemPage = modelItemDao.findAllByNameContainsAndClassifications2IsNotNullAndAuthorAndStatusIn("", userName, itemStatusVisible, pageable);
-            } else if (!searchText.equals("") && classes.get(0).equals("all")) {
-                modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndClassifications2IsNotNullAndAuthorAndStatusIn(searchText, userName, itemStatusVisible, pageable);
-            } else if (searchText.equals("") && !classes.get(0).equals("all")) {
-                modelItemPage = modelItemDao.findByClassifications2InAndAuthorAndStatusIn(classes, userName, itemStatusVisible, pageable);
-            } else {
-                modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndClassifications2InAndAuthorAndStatusIn(searchText, classes, userName,itemStatusVisible, pageable);
-            }
+        }else{
+            modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndAuthorAndStatusIn(searchText, userName, itemStatusVisible, pageable);
         }
+
+//        if (userName == null) {
+//            if (searchText.equals("") && classes.get(0).equals("all")) {
+//                modelItemPage = modelItemDao.findAllByNameContainsAndClassifications2IsNotNullAndStatusIn("", itemStatusVisible, pageable);
+//            } else if (!searchText.equals("") && classes.get(0).equals("all")) {
+//                modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndClassifications2IsNotNullAndStatusIn(searchText, itemStatusVisible, pageable);
+//            } else if (searchText.equals("") && !classes.get(0).equals("all")) {
+//                modelItemPage = modelItemDao.findByClassifications2InAndStatusIn(classes, itemStatusVisible, pageable);
+//            } else {
+//                modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndClassifications2InAndStatusIn(searchText, classes, itemStatusVisible, pageable);
+//            }
+//        } else {
+//            if (searchText.equals("") && classes.get(0).equals("all")) {
+//                modelItemPage = modelItemDao.findAllByNameContainsAndClassifications2IsNotNullAndAuthorAndStatusIn("", userName, itemStatusVisible, pageable);
+//            } else if (!searchText.equals("") && classes.get(0).equals("all")) {
+//                modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndClassifications2IsNotNullAndAuthorAndStatusIn(searchText, userName, itemStatusVisible, pageable);
+//            } else if (searchText.equals("") && !classes.get(0).equals("all")) {
+//                modelItemPage = modelItemDao.findByClassifications2InAndAuthorAndStatusIn(classes, userName, itemStatusVisible, pageable);
+//            } else {
+//                modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndClassifications2InAndAuthorAndStatusIn(searchText, classes, userName,itemStatusVisible, pageable);
+//            }
+//        }
 
 
         List<ModelItemResultDTO> modelItems=modelItemPage.getContent();
@@ -1891,6 +1955,120 @@ public class ModelItemService {
                 break;
         }
         return name;
+    }
+
+    public JSONObject getKnowledgeGraph(String oid){
+        JSONObject result = new JSONObject();
+
+        JSONArray nodes = new JSONArray();
+        JSONArray links = new JSONArray();
+
+        ModelItem modelItem = modelItemDao.findFirstByOid(oid);
+        JSONObject node = new JSONObject();
+        node.put("name",modelItem.getName());
+        node.put("oid",modelItem.getOid());
+        node.put("img", modelItem.getImage().equals("")?"":"/static"+modelItem.getImage());
+        node.put("overview", modelItem.getDescription());
+        node.put("type","model");
+        nodes.add(node);
+        List<ModelRelation> modelRelationList = modelItem.getModelRelationList();
+
+        addNodeAndLink(0,modelRelationList,nodes,links);
+
+        result.put("nodes",nodes);
+        result.put("links",links);
+
+        return result;
+    }
+
+    private void addNodeAndLink(int oriNum, List<ModelRelation> modelRelationList, JSONArray nodes, JSONArray links){
+        for(int i = 0;i<modelRelationList.size();i++){
+            ModelRelation modelRelation = modelRelationList.get(i);
+            String relateOid = modelRelation.getOid();
+            ModelItem modelItem_relation = modelItemDao.findFirstByOid(relateOid);
+
+            Boolean exist = false;
+            int n = 0;
+            for(;n<nodes.size();n++){
+                JSONObject node = nodes.getJSONObject(n);
+                if(relateOid.equals(node.getString("oid"))){
+                    exist = true;
+                    break;
+                }
+            }
+
+            int modelNodeNum;
+            if(exist){
+                modelNodeNum = n;
+            }else {
+                JSONObject node = new JSONObject();
+                node.put("name", modelItem_relation.getName());
+                node.put("oid", modelItem_relation.getOid());
+                node.put("img", modelItem_relation.getImage().equals("")?"":"/static"+modelItem_relation.getImage());
+                node.put("overview", modelItem_relation.getDescription());
+                node.put("type", "model");
+                nodes.add(node);
+                modelNodeNum = nodes.size()-1;
+            }
+
+
+            JSONObject link = new JSONObject();
+            link.put("ori",oriNum);
+            link.put("tar",modelNodeNum);
+            link.put("relation",modelRelation.getRelation().getText());
+            link.put("type", "model");
+            links.add(link);
+
+            List<Reference> referenceList = modelItem_relation.getReferences();
+            for(int j = 0;j<referenceList.size();j++){
+                Reference reference = referenceList.get(j);
+
+                Boolean refFind = false;
+                int r = 0;
+                for(;r<nodes.size();r++){
+                    JSONObject node = nodes.getJSONObject(r);
+                    if(node.getString("type").equals("ref") && reference.getTitle().equals(node.getString("name"))){
+                        refFind = true;
+                        break;
+                    }
+                }
+                int refNum;
+                if(refFind){
+                    refNum=r;
+                }else{
+                    JSONObject node = new JSONObject();
+                    node.put("name",reference.getTitle());
+                    node.put("author",reference.getAuthor());
+                    node.put("journal",reference.getJournal());
+                    node.put("link", reference.getLinks());
+                    node.put("type","ref");
+                    nodes.add(node);
+                    refNum = nodes.size()-1;
+                }
+                link = new JSONObject();
+                link.put("ori", modelNodeNum);
+                link.put("tar", refNum);
+                link.put("type", "ref");
+                links.add(link);
+            }
+
+            List<ModelRelation> subModelRelationList = modelItem_relation.getModelRelationList();
+            for(int k = 0;k<subModelRelationList.size();k++){
+                ModelRelation subModelRelation = subModelRelationList.get(k);
+                for(int m = 0;m<nodes.size();m++){
+                    JSONObject node_exist = nodes.getJSONObject(m);
+                    if(subModelRelation.getOid().equals(node_exist.getString("oid"))){
+                        subModelRelationList.remove(k);
+                        k--;
+                        break;
+                    }
+                }
+            }
+            if(subModelRelationList.size()!=0){
+                addNodeAndLink(modelNodeNum, subModelRelationList, nodes, links);
+            }
+        }
+
     }
 
 }

@@ -105,6 +105,8 @@
         <!-- new banner -->
         <div th:replace="fragments/navbar :: unlog"></div>
 
+        <div th:replace="fragments/backToTop :: backtop-down"></div>
+
         <section role="header" style="top:0;margin-top:0">
             <div class="headContainer">
                 <div class="headBackPic"></div>
@@ -433,6 +435,11 @@
                                     style="height: 300px;border-radius:20px;border: solid 1px; " alt="">
                             </el-carousel-item>
 
+                            <el-carousel-item>
+                                <img src="/static/img/thematic_center/ChinaBasin_cj.png"
+                                    style="height: 300px;border-radius:20px;border: solid 1px; " alt="">
+                            </el-carousel-item>
+
                         </el-carousel>
 
 
@@ -468,12 +475,18 @@
                         <el-button type="warning" style="margin-top: 32px" size="medium"
                         @click="window.open('https://geomodeling.njnu.edu.cn/app/B-SHADE_Estimation.html')">B-SHADE-Estimation
                         </el-button>
+                        <el-button type="warning" style="margin-top: 32px" size="medium"
+                        @click="window.open('https://geomodeling.njnu.edu.cn/Beautiful-China/theme/info')">Beautiful China
+                        </el-button>
+                        <el-button type="warning" style="margin-top: 32px" size="medium"
+                        @click="window.open('http://geomodeling.njnu.edu.cn/ChinaBasin/')">China Basin
+                        </el-button>
                         <!--<el-button type="warning" style="margin-top: 32px" size="medium" @click="window.open()">-->
                             <!--Meteorological-->
                         <!--</el-button>-->
-                        <!--<el-button type="warning" style="margin-top: 32px" size="medium"-->
-                            <!--@click="window.open('/modelItem/repository')">Explore More-->
-                        <!--</el-button>-->
+                        <el-button type="warning" style="margin-top: 32px" size="medium"
+                            @click="window.open('/repository/thematic')">Explore More
+                        </el-button>
 
                     </div>
                 </div>
@@ -1124,7 +1137,7 @@
 <script src="/static/element-ui/umd/locale/en.js"></script>
 <script src="/static/js/common/navbar.js"></script>
 <script src="/static/js/common/navbarJquery.js"></script>
-<script src="/static/js/common/backTop.js"></script>
+<!--<script src="/static/js/common/backTop.js"></script>-->
 
 <script>
 

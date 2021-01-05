@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.ip2location.IP2Location;
 import com.ip2location.IPResult;
-import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.controller.rest.DataApplicationController;
 import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.dto.modelItem.ModelItemResultDTO;
@@ -20,7 +19,6 @@ import njgis.opengms.portal.utils.Utils;
 import njgis.opengms.portal.utils.XmlTool;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
-import org.apache.tomcat.jni.Local;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -905,13 +903,14 @@ public class PortalApplicationTests {
 
     }
 
-    public void removeViewRecord(ItemTypeEnum itemTypeEnum, String oid, String dateStr) {
+    public void removeViewRecord(ItemTypeEnum itemTypeEnum, String oid, String dateAfterStr) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         try {
-            Date date = sdf.parse(dateStr);
+            Date date = sdf.parse(dateAfterStr);
 
             if (itemTypeEnum == ItemTypeEnum.ModelItem) {
                 ModelItem modelItem = modelItemDao.findFirstByOid(oid);
+                date = modelItem.getCreateTime();//sdf.parse(dateAfterStr);
                 int view = modelItem.getViewCount();
                 List<DailyViewCount> dailyViewCountList = modelItem.getDailyViewCount();
                 for (int i = 0; i < dailyViewCountList.size(); i++) {
@@ -927,6 +926,7 @@ public class PortalApplicationTests {
                 modelItemDao.save(modelItem);
             } else if (itemTypeEnum == ItemTypeEnum.ComputableModel) {
                 ComputableModel computableModel = computableModelDao.findFirstByOid(oid);
+                date = sdf.parse(dateAfterStr);
                 int view = computableModel.getViewCount();
                 int invoke = computableModel.getInvokeCount();
 
@@ -1182,6 +1182,44 @@ public class PortalApplicationTests {
 
     }
 
+    @Test
+    public void adjustDate(){
+        List<ModelItem> modelItemList = modelItemDao.findAll();
+        for(ModelItem modelItem : modelItemList){
+            if(modelItem.getAuthor().equals("1565916523@qq.com")) {
+
+                Boolean pass = false;
+                String name = modelItem.getName();
+                for(int i = 0;i<name.length();i++) {
+                    if (isChinese(name.charAt(i))){
+                        pass = true;
+                    }
+                }
+                if(name.equals("陕北模型")||name.equals("新安江模型")){
+                    pass = false;
+                }
+                if(name.equals("FourOperations")){
+                    pass = true;
+                }
+
+                if(pass) continue;
+
+                Date createDate = modelItem.getCreateTime();
+                int year = createDate.getYear();
+                if (year == 120) {
+                    Calendar c = Calendar.getInstance();
+                    c.setTime(createDate);
+                    c.add(Calendar.MONTH, -6);
+                    createDate = c.getTime();
+                    modelItem.setCreateTime(createDate);
+                    modelItemDao.save(modelItem);
+                }
+
+                randomModelItem(modelItem.getOid());
+            }
+        }
+    }
+
     public void randomModelItem(String itemOid) {
         ItemTypeEnum itemType = ItemTypeEnum.ModelItem;
         //删除之前随机的记录
@@ -1235,7 +1273,7 @@ public class PortalApplicationTests {
         random.nextInt(100);
 
 
-        for (int i = 90; i > 0; i--) {
+        for (int i = 180; i > 0; i--) {
             Calendar c = Calendar.getInstance();//动态时间
             c.setTime(new Date());
             c.add(Calendar.DATE, -i);
@@ -1247,11 +1285,11 @@ public class PortalApplicationTests {
 
                 if (!viewMap.containsKey(sdf.format(time))) {
 
-                    int p = 20;
+                    int p = 50;
                     while (random.nextInt(100) < p) {
                         viewCount++;
 
-                        p = 50;
+                        p = 70;
 
                         int loc = random.nextInt(geoInfoMetaList.size());
 
