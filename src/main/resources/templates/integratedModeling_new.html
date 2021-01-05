@@ -88,10 +88,10 @@
             <div id="MxGraph" ref="mxGraph" class="integratedContained" :class="mxgraphExpand==0?'':'fullScreenMx'" style="flex: 1;">
                 <div class="toolBar flexJustBetween flexAlignCenter" style="height: 41px">
                     <div class="flexJustStart">
-                        <el-button style="margin:5px;font-weight: 700;color: #009900;" size="small" @click="loadLogicalModelClick()">Load Logical Model</el-button>
-                        <el-button style="margin:5px;font-weight: 700;color: #009900;" size="small" @click="chooseModelVisible=true">
-                            Select computable model
-                        </el-button>
+<!--                        <el-button style="margin:5px;font-weight: 700;color: #009900;" size="small" @click="loadLogicalModelClick()">Load Logical Model</el-button>-->
+<!--                        <el-button style="margin:5px;font-weight: 700;color: #009900;" size="small" @click="chooseModelVisible=true">-->
+<!--                            Select computable model-->
+<!--                        </el-button>-->
                         <!--        <el-button style="margin: 5px;font-weight: 700;color: #009900;" @click="configuration">-->
                         <!--            Input Data Configuration-->
                         <!--        </el-button>-->
@@ -136,6 +136,9 @@
                     <div role="itemSelector" class="flex1" style="width: 210px;border-right: 1px solid #e6e6e6;">
                         <el-tabs v-model="itemClassify" @tab-click="changeItem" style="background: #ffffff;height: 100%">
                             <el-tab-pane label="General" name="general">
+                                <p class="noMargin"
+                                   style="font-style: italic;color: #888888;text-align: center;font-size: 13px;">
+                                    Click cell to add to graph.</p>
                                 <div class="flexCol flexAlignCenter" style="width: 100%">
                                     <div class="startCell flexCenter" style="margin-top: 15px" @click="addStartToMxgraph">
                                         Start
@@ -240,7 +243,7 @@
 
                     </div>
                     <iframe id="ModelEditor" src="/common/integratedModelEditor"
-                            style="width: calc(100% - 220px);height: 100%;;border:0px;position:relative;margin-right: 10px;"></iframe>
+                            style="width: calc(100% - 220px);height: 100%;;border:0px;position:relative;"></iframe>
                 </div>
             </div>
             <div role="selectedModelContainer" class="integratedContained"
@@ -1173,10 +1176,10 @@
             <h4 style="">Source Model Action:</h4>
             <h4 style="font-weight: 600;margin-left: 50px">{{dataLinkConfig.sourceModelName}}</h4>
         </div>
-        <div class="flexJustStart flexAlignCenter wzhInfoContainer" style="height: 32px">
-            <h4 style="">Convertion Tool:       </h4>
-            <el-button size="small" @click="convertToolsVisible=true">Select</el-button>
-        </div>
+<!--        <div class="flexJustStart flexAlignCenter wzhInfoContainer" style="height: 32px">-->
+<!--            <h4 style="">Convertion Tool:       </h4>-->
+<!--            <el-button size="small" @click="convertToolsVisible=true">Select</el-button>-->
+<!--        </div>-->
 
         <div slot="footer" class="dialog-footer">
             <el-button type="primary" size="small" @click="dataLinkConfigDialog=false">OK</el-button>
@@ -1313,10 +1316,10 @@
     <el-dialog title="Condition Case" :visible.sync="conditionCaseDialog" width="30%">
         <h5>Operator:</h5>
         <el-radio-group v-model="caseConfig.operator" style="margin-left: 10px">
-            <el-radio :label="'>'"> > </el-radio>
-            <el-radio :label="'<'"> < </el-radio>
-            <el-radio :label="'>='"> >= </el-radio>
-            <el-radio :label="'<='"> <= </el-radio>
+            <el-radio v-if="conditionConfig.format=='number'" :label="'>'"> > </el-radio>
+            <el-radio v-if="conditionConfig.format=='number'" :label="'<'"> < </el-radio>
+            <el-radio v-if="conditionConfig.format=='number'" :label="'>='"> >= </el-radio>
+            <el-radio v-if="conditionConfig.format=='number'" :label="'<='"> <= </el-radio>
             <el-radio :label="'=='"> == </el-radio>
             <el-radio :label="'!='"> != </el-radio>
         </el-radio-group>
@@ -1402,7 +1405,7 @@
             <i class="fa fa-refresh" aria-hidden="true"></i>
             <span>Refresh status of services</span>
         </a>
-        <el-table class="wzhScrollbar" :data="configDataMethod.invokeServices" style="width: 100%;max-height: 485px" v-loading="invokeServiceLoading" >
+        <el-table class="wzhScrollbar" :data="configDataMethod.invokeServices" row-key="serviceId" style="width: 100%;max-height: 485px" v-loading="invokeServiceLoading" >
             <el-table-column prop="name" label="Name"></el-table-column>
             <el-table-column prop="method" label="Method Type" width="160"></el-table-column>
             <!--                            <el-table-column prop="serviceId" label = "suiyi" style="display: none"></el-table-column>-->

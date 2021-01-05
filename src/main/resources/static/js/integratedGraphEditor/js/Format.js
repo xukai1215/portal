@@ -338,10 +338,11 @@ Format.prototype.clear = function()
 Format.prototype.refresh = function()
 {
 	// Performance tweak: No refresh needed if not visible
-	if (this.container.style.width == '0px')
-	{
-		return;
-	}
+	// 折叠式右边栏 -- wzh
+	// if (this.container.style.width == '0px')
+	// {
+	// 	return;
+	// }
 	
 	this.clear();
 	var ui = this.editorUi;
@@ -376,39 +377,43 @@ Format.prototype.refresh = function()
 	
 	if (graph.isSelectionEmpty())
 	{
-		mxUtils.write(label, mxResources.get('diagram'));
-		label.style.borderLeftWidth = '0px';
-        label.style.fontSize = '16px';
+		// mxUtils.write(label, mxResources.get('diagram'));
+		// label.style.borderLeftWidth = '0px';
+        // label.style.fontSize = '16px';
+		//
+		// // Adds button to hide the format panel since
+		// // people don't seem to find the toolbar button
+		// // and the menu item in the format menu
+		// if (this.showCloseButton)
+		// {
+		// 	var img = document.createElement('img');
+		// 	img.setAttribute('border', '0');
+		// 	img.setAttribute('src', Dialog.prototype.closeImage);
+		// 	img.setAttribute('title', mxResources.get('hide'));
+		// 	img.style.position = 'absolute';
+		// 	img.style.display = 'block';
+		// 	img.style.right = '0px';
+		// 	img.style.top = '8px';
+		// 	img.style.cursor = 'pointer';
+		// 	img.style.marginTop = '1px';
+		// 	img.style.marginRight = '17px';
+		// 	img.style.border = '1px solid transparent';
+		// 	img.style.padding = '1px';
+		// 	img.style.opacity = 0.5;
+		// 	label.appendChild(img)
+		//
+		// 	mxEvent.addListener(img, 'click', function()
+		// 	{
+		// 		ui.actions.get('formatPanel').funct();
+		// 	});
+		// }
+		//
+		// div.appendChild(label);
+		// this.panels.push(new DiagramFormatPanel(this, ui, div));
 
-		// Adds button to hide the format panel since
-		// people don't seem to find the toolbar button
-		// and the menu item in the format menu
-		if (this.showCloseButton)
-		{
-			var img = document.createElement('img');
-			img.setAttribute('border', '0');
-			img.setAttribute('src', Dialog.prototype.closeImage);
-			img.setAttribute('title', mxResources.get('hide'));
-			img.style.position = 'absolute';
-			img.style.display = 'block';
-			img.style.right = '0px';
-			img.style.top = '8px';
-			img.style.cursor = 'pointer';
-			img.style.marginTop = '1px';
-			img.style.marginRight = '17px';
-			img.style.border = '1px solid transparent';
-			img.style.padding = '1px';
-			img.style.opacity = 0.5;
-			label.appendChild(img)
-			
-			mxEvent.addListener(img, 'click', function()
-			{
-				ui.actions.get('formatPanel').funct();
-			});
-		}
-		
-		div.appendChild(label);
-		this.panels.push(new DiagramFormatPanel(this, ui, div));
+		//wzh 折叠右侧边栏
+		let panel = document.getElementsByClassName('geSidebarContainer geFormatContainer')[0]
+		panel.style.width = '0px'
 	}
 	else if (graph.isEditing())
 	{
@@ -488,6 +493,9 @@ Format.prototype.refresh = function()
             label.style.borderLeftWidth = '0px';
             label.style.fontSize = '16px';
 
+			let panel = document.getElementsByClassName('geSidebarContainer geFormatContainer')[0]
+			panel.style.width = '240px'
+
             div.appendChild(label);
             if(graph.getSelectionModel().cells[0].frontId!=undefined){//如果该模型不存在frontId，则说明这个模型还没有和vue联通，先不生成event  --wzh
 				this.panels.push(new EventPanel(this, ui, div));
@@ -507,6 +515,9 @@ Format.prototype.refresh = function()
             label.style.borderLeftWidth = '0px';
             label.style.fontSize = '16px';
 
+			let panel = document.getElementsByClassName('geSidebarContainer geFormatContainer')[0]
+			panel.style.width = '240px'
+
             div.appendChild(label);
             if(graph.getSelectionModel().cells[0].origin=='dataService'){
 				this.panels.push(new DataServiceDataPanel(this, ui, div));
@@ -520,7 +531,10 @@ Format.prototype.refresh = function()
             label.style.borderLeftWidth = '0px';
             label.style.fontSize = '16px';
 
-            div.appendChild(label);
+			let panel = document.getElementsByClassName('geSidebarContainer geFormatContainer')[0]
+			panel.style.width = '240px'
+
+			div.appendChild(label);
 			if(graph.getSelectionModel().cells[0].origin=='dataService'){
 				this.panels.push(new DataServiceDataPanel(this, ui, div));
 			}else{
@@ -533,6 +547,9 @@ Format.prototype.refresh = function()
 			label.style.borderLeftWidth = '0px';
 			label.style.fontSize = '16px';
 
+			let panel = document.getElementsByClassName('geSidebarContainer geFormatContainer')[0]
+			panel.style.width = '240px'
+
 			div.appendChild(label);
 			// this.panels.push(new DataProcessingPanel(this, ui, div));
 			this.panels.push(new DataServicePanel(this, ui, div));
@@ -544,6 +561,9 @@ Format.prototype.refresh = function()
 			label.style.borderLeftWidth = '0px';
 			label.style.fontSize = '16px';
 
+			let panel = document.getElementsByClassName('geSidebarContainer geFormatContainer')[0]
+			panel.style.width = '240px'
+
 			div.appendChild(label);
 			this.panels.push(new ConditionPanel(this, ui, div));
 			addClickHandler(label, div, idx++);
@@ -554,6 +574,9 @@ Format.prototype.refresh = function()
 			let cell = graph.getSelectionModel().cells[0]
 			label.style.borderLeftWidth = '0px';
 			label.style.fontSize = '16px';
+
+			let panel = document.getElementsByClassName('geSidebarContainer geFormatContainer')[0]
+			panel.style.width = '240px'
 
 			div.appendChild(label);
 			if (cell.target.response == true && cell.source.response == false) {//如果是两个event，则是一个数据连线
@@ -575,7 +598,7 @@ Format.prototype.refresh = function()
 					p.style = 'text-align:center;'
 					panel.appendChild(p)
 				}
-			}else if(cell.target.md5!=undefined&&cell.source.style.indexOf('condition')!=-1){//条件判断的连线
+			}else if(cell.target.frontId!=undefined&&cell.source.style.indexOf('condition')!=-1){//条件判断的连线
 				mxUtils.write(label, mxResources.get('conditionLink'));
 				this.panels.push(new ConditionLinkPanel(this, ui, div));
 			}else{
@@ -6582,21 +6605,35 @@ ConditionLinkPanel.prototype.addConditionLinkInfo = function (div,edge,fromModel
 	div.appendChild(document.createElement("br"));
 	div.appendChild(document.createElement("br"));
 
+	let text = document.createElement("p");
+	text.innerHTML='select condition direction'
+	text.setAttribute("style", "margin-left:23px;margin-bottm:0px");
+	let value = edge.value
+	value = value=='No'?false:true
+
 	let trueRadio = document.createElement("input");
 	let trueLabel = document.createElement("label");
 	trueLabel.innerHTML='True'
 	trueRadio.setAttribute("type", "radio");
 	trueRadio.setAttribute("value", 'True');
+	trueRadio.setAttribute("style", "margin-left:15px");
 	trueRadio.setAttribute("name", 'conditionStatus');
-	trueRadio.setAttribute("checked", 'true');
 
 	let falseRadio = document.createElement("input");
 	let falseLabel = document.createElement("label");
+	falseLabel.setAttribute("style", "margin-left:60px");
 	falseLabel.innerHTML='False'
 	falseRadio.setAttribute("type", "radio");
 	falseRadio.setAttribute("value", 'False');
 	falseRadio.setAttribute("name", 'conditionStatus');
 
+	if(value){
+		trueRadio.setAttribute("checked", 'true');
+	}else{
+		falseRadio.setAttribute("checked", 'true');
+	}
+
+	div.appendChild(text);
 	div.appendChild(trueLabel);
 	div.appendChild(trueRadio);
 	div.appendChild(falseLabel);
@@ -6609,6 +6646,7 @@ ConditionLinkPanel.prototype.addConditionLinkInfo = function (div,edge,fromModel
 	cfgButton.innerHTML='Confirm'
 	cfgButton.setAttribute("type", "button");
 	cfgButton.setAttribute("value", 'Confirm');
+	cfgButton.setAttribute("style", 'margin-left:55px');
 	cfgButton.setAttribute("id", 'conditionLinkConfig');
 	cfgButton.setAttribute("onclick", "getConditionStatus()");
 
@@ -6651,10 +6689,10 @@ function getConditionStatus(){
 		if(radio.checked){
 			conditionLink.value = radio.value == 'True'?'Yes':'No';
 
-			if(conditionLink.value==anotherLinkValue){
-			 	alert('One condition can not have two same judge result')
-				return
-			}
+			// if(conditionLink.value==anotherLinkValue){
+			//  	alert('One condition can not have two same judge result')
+			// 	return
+			// }
 
 			window.parent.refreshConditionLink(conditionLink)
 			graph.refresh(conditionLink)

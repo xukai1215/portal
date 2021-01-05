@@ -3760,7 +3760,7 @@ Sidebar.prototype.addGeneralCellToGraph = function (text,frontId,type) {
   let style={
     'start':'shape=mxgraph.flowchart.start;whiteSpace=wrap;html=1;fillColor=#439efc;strokeColor=#000005;strokeWidth=2;fontSize=18;fontFamily=Times New Roman;',
     'end':'shape=mxgraph.flowchart.end;;whiteSpace=wrap;html=1;fillColor=#ec3f3f;strokeColor=#000005;strokeWidth=2;fontSize=18;fontFamily=Times New Roman;',
-    'condition':'shape=mxgraph.flowchart.condition;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#000005;strokeWidth=2;fontSize=18;fontFamily=Times New Roman;',
+    'condition':'shape=mxgraph.flowchart.condition;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#000005;strokeWidth=2;fontSize=15;fontFamily=sens-serif;',
   }
 
   // var a = this.createStateVertexTemplate('rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#006600;fillColor=#EEFFEE;',

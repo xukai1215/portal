@@ -29,6 +29,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -163,7 +164,10 @@ public class DataServerService {
         mheader.put("Content-Type","application/json");
 
         HttpEntity<MultiValueMap> requestEntity = new HttpEntity<MultiValueMap>(null, headers);
-        RestTemplate restTemplate = new RestTemplate();
+        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+        requestFactory.setConnectTimeout(6000);// 设置超时
+        requestFactory.setReadTimeout(6000);
+        RestTemplate restTemplate = new RestTemplate(requestFactory);
         ResponseEntity<JSONObject> response = restTemplate.exchange(url,HttpMethod.GET, requestEntity, JSONObject.class);
         JSONObject j_result = response.getBody();
 
@@ -420,7 +424,10 @@ public class DataServerService {
         mheader.put("Content-Type","application/json");
 
         HttpEntity<MultiValueMap> requestEntity = new HttpEntity<MultiValueMap>(null, headers);
-        RestTemplate restTemplate = new RestTemplate();
+        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+        requestFactory.setConnectTimeout(6000);// 设置超时
+        requestFactory.setReadTimeout(6000);
+        RestTemplate restTemplate = new RestTemplate(requestFactory);
         ResponseEntity<JSONObject> response = restTemplate.exchange(url,HttpMethod.GET, requestEntity, JSONObject.class);
         JSONObject j_result = response.getBody();
 
@@ -482,24 +489,34 @@ public class DataServerService {
         mheader.put("Content-Type","application/json");
 
         HttpEntity<MultiValueMap> requestEntity = new HttpEntity<MultiValueMap>(null, headers);
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<JSONObject> response = restTemplate.exchange(url,HttpMethod.GET, requestEntity, JSONObject.class);
-        JSONObject j_result = response.getBody();
+
+        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+        requestFactory.setConnectTimeout(6000);// 设置超时
+        requestFactory.setReadTimeout(6000);
+        RestTemplate restTemplate = new RestTemplate(requestFactory);
 
         JSONObject result = new JSONObject();
 
         try{
-            int code = j_result.getInteger("code");
-            if(code==-1){
+            ResponseEntity<JSONObject> response = restTemplate.exchange(url,HttpMethod.GET, requestEntity, JSONObject.class);
+            JSONObject j_result = response.getBody();
+
+            try{
+                int code = j_result.getInteger("code");
+                if(code==0){
+                    JSONObject capability = j_result.getJSONObject("Capability");
+                    result.put("content",capability.get("data"));
+                }else{
+                    result.put("content","offline");
+                }
+
+            }catch (Exception e){
                 result.put("content","offline");
-            }else{
-                JSONObject capability = j_result.getJSONObject("Capability");
-                result.put("content",capability.get("data"));
             }
-
         }catch (Exception e){
-
+            result.put("content","offline");
         }
+
 
         return result;
 

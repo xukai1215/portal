@@ -393,7 +393,8 @@ var vue = new Vue({
 
         invokeServiceDialog:false,
 
-        configDataMethod: {},
+        configDataMethod: {
+        },
 
         invokeServiceSelect:{},
 
@@ -402,6 +403,8 @@ var vue = new Vue({
         dataItems:[],
 
         invokeServiceLoading:false,
+
+        mxgraphXml:'',
     },
 
     computed:{
@@ -476,8 +479,20 @@ var vue = new Vue({
         },
 
         changeMxView(viewType){
-            let mxgraphXml = this.iframeWindow.getCXml()
+            if(viewType == 'All Items') {
 
+            }else if(viewType == 'Model Items'){
+
+                this.mxgraphXml = this.iframeWindow.getCXml()
+            }
+
+        },
+
+        checkActionLink(){
+            for(let dataLink of this.dataLinks){
+                let targetActionId = dataLink.targetActionId
+                let sourceActionId = dataLink.sourceActionId
+            }
 
         },
 
@@ -702,7 +717,6 @@ var vue = new Vue({
 
         addDataMethodToMxgraph(dataMethod){
 
-
             this.showInvokeServices(dataMethod)
             // let dataMethodAction = this.addDataMethodToList(dataMethod)
             // if(dataMethodAction!='check'){
@@ -726,7 +740,9 @@ var vue = new Vue({
                     let status = 0
                     status = await this.checkNodeContent(invokeService)
                     if(status == -1){
-                        invokeService.status = status
+                        Vue.set(invokeService,'status',-1)
+                    }else{
+                        Vue.set(invokeService,'status',0)
                     }
                 }
 
@@ -983,6 +999,7 @@ var vue = new Vue({
             modelAction.modelName=model.name
             modelAction.modelOid=model.oid
             modelAction.md5 = model.md5
+            modelAction.type = 'modelService'
             if(model.mdlJson != undefined){
                 modelAction.mdlJson = model.mdlJson
             }
@@ -2763,12 +2780,12 @@ var vue = new Vue({
             let link={
                 target:targetCell.eid,
                 targetName:targetCell.value,
-                targetModelId:targetModelAction.id,
-                targetModelName:targetModelAction.name,
+                targetActionId:targetModelAction.id,
+                targetActionName:targetModelAction.name,
                 source:sourceCell.eid,
                 sourceName:sourceCell.value,
-                sourceModelId:sourceModelAction.id,
-                sourceModelName:sourceModelAction.name,
+                sourceActionId:sourceModelAction.id,
+                sourceActionName:sourceModelAction.name,
             }
 
             this.dataLinks.push(link)
@@ -2779,7 +2796,7 @@ var vue = new Vue({
             let sourceCell = edgeCell.source
 
             for(let i = this.dataLinks.length-1;i>=0;i--){
-                if( this.dataLinks[i].targetModelId === targetCell.frontId&& this.dataLinks[i].sourceModelId === sourceCell.frontId){
+                if( this.dataLinks[i].targetActionId === targetCell.frontId&& this.dataLinks[i].sourceActionId === sourceCell.frontId){
                     this.dataLinks.splice(i,1)
                     break;
                 }
@@ -2791,7 +2808,7 @@ var vue = new Vue({
             let sourceCell = edgeCell.source
 
             for(let i = this.dataLinks.length-1;i>=0;i--){
-                if( this.dataLinks[i].targetModelId === targetCell.frontId&& this.dataLinks[i].sourceModelId === sourceCell.frontId){
+                if( this.dataLinks[i].targetActionId === targetCell.frontId&& this.dataLinks[i].sourceActionId === sourceCell.frontId){
                     this.dataLinkConfig = this.dataLinks[i]
                     this.dataLinkConfigDialog = true
                     break;
@@ -3280,7 +3297,7 @@ var vue = new Vue({
 
                     return false;
                 }else if(condition.true == undefined||condition.true==''||condition.false==undefined||condition.false==''){
-                    this.$alert('Please check the direction of condition' + condition.expression, 'Tip', {
+                    this.$alert('Please check the direction of condition ' + condition.expression, 'Tip', {
                             type:"warning",
                             confirmButtonText: 'OK',
                             callback: ()=>{
