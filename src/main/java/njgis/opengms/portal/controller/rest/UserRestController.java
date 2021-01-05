@@ -25,6 +25,8 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 
@@ -412,6 +414,8 @@ public class UserRestController {
 
     @RequestMapping(value = "/getUserInfoInUserPage", method = RequestMethod.GET)
     public JsonResult getUserInfoInUserPage(@RequestParam(value = "oid") String oid) {
+        oid= URLDecoder.decode(oid);
+
         JSONObject result = userService.getUserInfoByUserId(oid);
         System.out.println("/getUserInfoInUserPage" + result);
         return ResultUtils.success(result);

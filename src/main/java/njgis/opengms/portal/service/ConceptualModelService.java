@@ -654,7 +654,7 @@ public class ConceptualModelService {
     }
 
     public JSONObject searchByTitleByOid(ConceptualModelFindDTO conceptualModelFindDTO, String oid,String loadUser){
-        String userName=userDao.findFirstByOid(oid).getUserName();
+        String userName=userDao.findFirstByUserId(oid).getUserName();
         int page=conceptualModelFindDTO.getPage();
         int pageSize = conceptualModelFindDTO.getPageSize();
         String sortElement=conceptualModelFindDTO.getSortElement();

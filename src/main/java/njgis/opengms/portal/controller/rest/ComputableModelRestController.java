@@ -37,6 +37,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.text.ParseException;
 import java.util.List;
 
@@ -224,6 +225,7 @@ public class ComputableModelRestController {
         String loadUser = null;
         if(session.getAttribute("oid")!=null)
             loadUser =  session.getAttribute("oid").toString() ;
+        oid= URLDecoder.decode(oid);
         return ResultUtils.success(computableModelService.listByUserOid(modelItemFindDTO,oid,loadUser));
     }
 
@@ -360,6 +362,7 @@ public class ComputableModelRestController {
         String loadUser = null;
         if(session.getAttribute("oid")!=null)
             loadUser =  session.getAttribute("oid").toString() ;
+        oid = URLDecoder.decode(oid);
         return ResultUtils.success(computableModelService.searchByTitleByOid(computableModelFindDTO,oid,loadUser));
     }
 
@@ -466,5 +469,19 @@ public class ComputableModelRestController {
     ) {
         return ResultUtils.success(computableModelService.searchDeployedModel(asc,page,size,searchText));
     }
+
+    @RequestMapping(value="/pageByClassi",method = RequestMethod.GET)
+    public JsonResult pageByClassi(@RequestParam(value="asc") int asc,
+                                   @RequestParam(value = "page") int page,
+                                   @RequestParam(value = "size") int size,
+                                   @RequestParam(value = "sortEle") String sortEle,
+                                   @RequestParam(value = "searchText") String searchText,
+                                   @RequestParam(value = "classification") String classification
+                                   )
+    {
+        return ResultUtils.success(computableModelService.pageByClassi(asc,page,size,sortEle,searchText,classification));
+
+    }
+
 
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.net.URLDecoder;
 
 @RestController
 @RequestMapping(value="/conference")
@@ -22,7 +23,7 @@ public class ConferenceRestController {
 
     @RequestMapping(value="/listByUserOid",method = RequestMethod.GET)
     JsonResult listByUserOid(ConferenceFindDTO conferenceFindDTO, @RequestParam(value="oid")String oid){
-
+        oid= URLDecoder.decode(oid);
         return ResultUtils.success(conferenceService.listByUserOid(conferenceFindDTO,oid));
     }
 

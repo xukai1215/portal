@@ -2028,6 +2028,7 @@ mxConnectionHandler.prototype.connect = function(source, target, evt, dropTarget
 					'event', evt, 'target', dropTarget, 'terminalInserted', terminalInserted));
 			}
 
+			//wzh
 			if(edge.target.eid!=undefined&&edge.source.eid!=undefined){
 				if(edge.target.response==0&&edge.source.response==1){
 					alert('Reverse Link!')

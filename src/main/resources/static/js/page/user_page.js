@@ -1828,7 +1828,12 @@ new Vue({
 
         selectSortEle(command){
             this.resourceSortElement = command
-            this.resourceSortEleText = command
+            let text={
+                'viewCount':'View Count',
+                'name':'Name',
+                'createTime':'Create Time',
+            }
+            this.resourceSortEleText = text[command]
             this.pageOption.currentPage=1;
             this.searchResource()
         },

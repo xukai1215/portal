@@ -24,7 +24,6 @@ public class ComputableModel extends Item {
     String image;
     String relateModelItem;
 
-
     Boolean isAuthor;
     AuthorInfo realAuthor;
     String contentType;

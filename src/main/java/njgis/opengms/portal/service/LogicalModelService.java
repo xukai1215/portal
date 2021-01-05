@@ -708,7 +708,7 @@ public class LogicalModelService {
     }
 
     public JSONObject searchByTitleByOid(LogicalModelFindDTO logicalModelFindDTO, String oid,String loadUser){
-        String userName=userDao.findFirstByOid(oid).getUserName();
+        String userName=userDao.findFirstByUserId(oid).getUserName();
         int page=logicalModelFindDTO.getPage();
         int pageSize = logicalModelFindDTO.getPageSize();
         String sortElement=logicalModelFindDTO.getSortElement();

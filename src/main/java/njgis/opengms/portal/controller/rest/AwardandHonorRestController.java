@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.net.URLDecoder;
 
 @RestController
 @RequestMapping("/awardandHonor")
@@ -32,6 +33,7 @@ public class AwardandHonorRestController {
 
     @RequestMapping(value = "/listByUserOid",method=RequestMethod.GET)
     JsonResult listByUserOid(AwardandHonorFindDTO awardandHonorFindDTO, @RequestParam(value="oid") String oid){
+        oid= URLDecoder.decode(oid);
         return ResultUtils.success(awardandHonorService.listByUserOid(awardandHonorFindDTO,oid));
     }
 

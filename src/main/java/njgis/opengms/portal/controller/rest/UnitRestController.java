@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.net.URLDecoder;
 
 @RestController
 @RequestMapping(value="/unit")
@@ -26,6 +27,7 @@ public class UnitRestController {
         String loadUser = null;
         if(session.getAttribute("oid")!=null)
             loadUser =  session.getAttribute("oid").toString() ;
+        oid= URLDecoder.decode(oid);
 //        String uid=userService.getByOid(oid).getUserName();
         return ResultUtils.success(unitService.getUnitsByUserId(oid,unitFindDTO,loadUser));
     }
@@ -36,6 +38,7 @@ public class UnitRestController {
         String loadUser = null;
         if(session.getAttribute("oid")!=null)
             loadUser =  session.getAttribute("oid").toString() ;
+        oid = URLDecoder.decode(oid);
         return ResultUtils.success(unitService.searchByTitleByOid(unitFindDTO,oid,loadUser));
     }
 

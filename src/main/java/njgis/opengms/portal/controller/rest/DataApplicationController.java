@@ -313,6 +313,11 @@ public class DataApplicationController {
         return  ResultUtils.success(dataApplicationService.searchApplication(dataApplicationFindDTO));
     }
 
+    @RequestMapping(value = "/methods/getApplicationInvokable",method = RequestMethod.POST)
+    JsonResult getApplicationInvokable(@RequestBody DataApplicationFindDTO dataApplicationFindDTO){
+        return  ResultUtils.success(dataApplicationService.searchApplication(dataApplicationFindDTO));
+    }
+
     /**
      * 调用服务
      * @param dataApplicationId dataApplicationId

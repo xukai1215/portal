@@ -38,7 +38,9 @@
     </script>
     <style>
         body {
-            background: url(/static/img/carousels/study.jpg);
+            /*background: url(/static/img/logo/logogrey.png);*/
+            /*background-size: contain;*/
+            background: #fff3e4;
             margin: 0px;
             background-position-x: center;
             background-position-y: top;
@@ -46,6 +48,33 @@
 
         .el-dropdown.minWidDrop .el-button.el-button--primary.el-button--small:not(.el-dropdown__caret-button){
             min-width: 120px;
+        }
+        .radius0 .el-input__inner{
+            border-radius: 0;
+            /*border-width: 1px 0px;*/
+        }
+        .radius0 input{
+            background: #ecf5ff;
+        }
+        .w350Drawer .el-drawer{
+            width: 350px !important;
+        }
+        .img{
+            float:left;
+        }
+        .img img {
+            width: 90px;
+            height: 90px;
+        }
+        .detailIntroducePanel{
+            padding: 10px 0 0 0;
+            overflow: hidden;
+        }
+        .comptlModelDetail{
+            width: 100%;
+        }
+        .comptlModelDetail p{
+            margin: 0;
         }
     </style>
 </head>
@@ -55,40 +84,14 @@
     <div th:replace="fragments/navbar :: unlog"></div>
 
     <div>
-<!--        <div>-->
-
-<!--            <h2 style="text-align: center; color: #4a4a4a;padding: 10px;font-weight: 700;font-family: sans-serif">-->
-<!--                Integrated Modeling-->
-<!--            </h2>-->
-<!--            <div class="flexCenter flexWrap">-->
-<!--                <el-button style="margin:5px;font-weight: 700;color: #009900;" @click="loadLogicalModelClick()">Load Logical Model</el-button>-->
-<!--                <el-button style="margin:5px;font-weight: 700;color: #009900;" @click="chooseModelVisible=true">-->
-<!--                    Select computable model-->
-<!--                </el-button>-->
-<!--                &lt;!&ndash;        <el-button style="margin: 5px;font-weight: 700;color: #009900;" @click="configuration">&ndash;&gt;-->
-<!--                &lt;!&ndash;            Input Data Configuration&ndash;&gt;-->
-<!--                &lt;!&ndash;        </el-button>&ndash;&gt;-->
-<!--                &lt;!&ndash;        <el-button style="margin: 5px;font-weight: 700;color: #009900;" @click="updateMxgraphNode ">&ndash;&gt;-->
-<!--                &lt;!&ndash;            Iteration&ndash;&gt;-->
-<!--                &lt;!&ndash;        </el-button>&ndash;&gt;-->
-<!--                &lt;!&ndash;        <el-button :disabled="executeDisabled" type="success" style="margin:5px;font-weight: 700;"&ndash;&gt;-->
-<!--                &lt;!&ndash;                   @click="executeVisible=true">Execution&ndash;&gt;-->
-<!--                &lt;!&ndash;        </el-button>&ndash;&gt;-->
-<!--                <el-button type="primary" style="margin:5px;font-weight: 700;" @click="buildNewTask">Build New Task</el-button>-->
-<!--                <el-button type="success" style="margin:5px;font-weight: 700;" @click="generateXml()">XML</el-button>-->
-<!--                <el-button type="success" style="margin:5px;font-weight: 700;" @click="taskConfigure(2)">Execute Task</el-button>-->
-<!--            </div>-->
-
-<!--        </div>-->
-
         <div class="flexRow" style="padding: 5px 5px">
             <div id="MxGraph" ref="mxGraph" class="integratedContained" :class="mxgraphExpand==0?'':'fullScreenMx'" style="flex: 1;">
-                <div class="toolBar flexJustBetween flexAlignCenter" >
+                <div class="toolBar flexJustBetween flexAlignCenter" style="height: 41px">
                     <div class="flexJustStart">
-                        <el-button style="margin:5px;font-weight: 700;color: #009900;" size="small" @click="loadLogicalModelClick()">Load Logical Model</el-button>
-                        <el-button style="margin:5px;font-weight: 700;color: #009900;" size="small" @click="chooseModelVisible=true">
-                            Select computable model
-                        </el-button>
+<!--                        <el-button style="margin:5px;font-weight: 700;color: #009900;" size="small" @click="loadLogicalModelClick()">Load Logical Model</el-button>-->
+<!--                        <el-button style="margin:5px;font-weight: 700;color: #009900;" size="small" @click="chooseModelVisible=true">-->
+<!--                            Select computable model-->
+<!--                        </el-button>-->
                         <!--        <el-button style="margin: 5px;font-weight: 700;color: #009900;" @click="configuration">-->
                         <!--            Input Data Configuration-->
                         <!--        </el-button>-->
@@ -115,7 +118,7 @@
                             <el-dropdown-menu slot="dropdown">
                                 <el-dropdown-item command="All Items">All Items</el-dropdown-item>
                                 <el-dropdown-item command="Model Items">Model Items</el-dropdown-item>
-<!--                                <el-dropdown-item command="createTime">Create Time</el-dropdown-item>-->
+                                <!--                                <el-dropdown-item command="createTime">Create Time</el-dropdown-item>-->
                             </el-dropdown-menu>
                         </el-dropdown>
                         <el-button size="mini"
@@ -129,8 +132,119 @@
                     </div>
 
                 </div>
-                <iframe id="ModelEditor" src="/common/integratedModelEditor"
-                        style="width: 100%;height: calc(100% - 47px);;border:0px;position:relative;margin-right: 10px;"></iframe>
+                <div class="flexAlignStrench" style="height: calc( 100% - 41px)">
+                    <div role="itemSelector" class="flex1" style="width: 210px;border-right: 1px solid #e6e6e6;">
+                        <el-tabs v-model="itemClassify" @tab-click="changeItem" style="background: #ffffff;height: 100%">
+                            <el-tab-pane label="General" name="general">
+                                <p class="noMargin"
+                                   style="font-style: italic;color: #888888;text-align: center;font-size: 13px;">
+                                    Click cell to add to graph.</p>
+                                <div class="flexCol flexAlignCenter" style="width: 100%">
+                                    <div class="startCell flexCenter" style="margin-top: 15px" @click="addStartToMxgraph">
+                                        Start
+                                    </div>
+                                    <div class="conditionCell flexCenter" style="margin-top: 15px" @click="addCondtionToMxgraph">
+
+                                    </div>
+                                    <div class="endCell flexCenter" style="margin-top: 15px" @click="addEndToMxgraph">
+                                        End
+                                    </div>
+                                </div>
+                            </el-tab-pane>
+                            <el-tab-pane label="Model" name="modelItem">
+                                <div class="flexCol flexAlignCenter" style="width: 100%">
+                                    <el-input v-model="searchModelText"
+                                              size="mini"
+                                              placeholder="Search for ..."
+                                              @keyup.enter.native="searchComptbModel"
+                                              style="width: 90%;margin-top: 2px">
+                                        <el-button slot="append" icon="el-icon-search" @click="searchComptbModel"></el-button>
+                                    </el-input>
+                                    <p class="noMargin" style="color: #787878;margin-top: 5px;font-size: 13px;">Classification: {{currentModelClassi.label}}</p>
+                                    <el-button size="mini" type="primary" plain @click="changeModelClassi" round style="width: 90%;margin-top: 3px">Select Classification</el-button>
+                                    <!--                                    <p class="noMargin"-->
+                                    <!--                                       style="font-style: italic;color: #888888;margin-top: 5px;font-size: 13px;">-->
+                                    <!--                                        Click to add to graph.-->
+                                    <!--                                        Right click to view details.</p>-->
+                                    <div class="wzhScrollbar">
+                                        <div class="itemCard flexCenter"
+                                             v-for="(item,key) in computableModelList"
+                                             :key="item.oid" style="padding: 0 25px;" :style="getItemCardBackGround"
+                                        >
+                                            <el-tooltip class="item" effect="dark" :content="item.name"
+                                                        placement="top-start"
+                                            >
+                                                <p class="noMargin twoLine" @click="checkComputableModelDetail(item)">{{item.name}}</p>
+                                            </el-tooltip>
+                                            <div class="circleSmall flexCenter button_blank button_shadow"
+                                                 style="position: absolute;right: 6px;top: 13px"
+                                                 @click.stop ="addModelToMxgraph(item)"
+                                            >
+                                                <i class="fa fa-plus" style="font-size: 13px;color: #52bbf8"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <el-pagination @current-change="handlePageChangeModel"
+                                                   :current-page="pageOption2.currentPage"
+                                                   pager-count="4"
+                                                   small
+                                                   layout="prev, pager, next"
+                                                   :page-size="pageOption2.pageSize"
+                                                   :total="pageOption2.total">
+                                    </el-pagination>
+                                </div>
+
+
+                            </el-tab-pane>
+                            <el-tab-pane label="Data Method" name="dataMethod">
+                                <div class="flexCol flexAlignCenter" style="width: 100%">
+                                    <el-input v-model="searchDataMethodText"
+                                              size="mini"
+                                              placeholder="Search for ..."
+                                              @keyup.enter.native="searchDataMethod"
+                                              style="width: 90%;margin-top: 2px">
+                                        <el-button slot="append" icon="el-icon-search" @click="searchDataMethod"></el-button>
+                                    </el-input>
+                                    <p class="noMargin" style="color: #787878;margin-top: 5px;font-size: 13px;">Classification: {{currentDataMethodClassi.label}}</p>
+                                    <el-button size="mini" type="primary" plain @click="changeDataMethodClassi" round style="width: 90%;margin-top: 3px">Select Classification</el-button>
+                                    <!--                                    <p class="noMargin"-->
+                                    <!--                                       style="font-style: italic;color: #888888;margin-top: 5px;font-size: 13px;">-->
+                                    <!--                                        Click to add to graph.-->
+                                    <!--                                        Right click to view details.</p>-->
+                                    <div class="wzhScrollbar">
+                                        <div class="itemCard flexCenter"
+                                             v-for="(item,key) in dataMethodList"
+                                             :key="item.oid"
+                                             style="padding: 0 25px;background: #f6aede"
+                                             :style="getItemCardBackGround"
+                                        >
+                                            <el-tooltip class="item" effect="dark" :content="item.name"
+                                                        placement="top-start">
+                                                <p class="noMargin twoLine" @click="checkDataMethodDetail(item)">{{item.name}}</p>
+                                            </el-tooltip>
+                                            <div class="circleSmall flexCenter button_blank button_shadow"
+                                                 @click="addDataMethodToMxgraph(item)"
+                                                 style="position: absolute;right: 6px;top:13px;">
+                                                <i class="fa fa-plus" style="font-size: 13px;color: #52bbf8"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <el-pagination @current-change="handlePageChangeDataMethod"
+                                                   :current-page="pageOption3.currentPage"
+                                                   pager-count="4"
+                                                   small
+                                                   layout="prev, pager, next"
+                                                   :page-size="pageOption3.pageSize"
+                                                   :total="pageOption3.total">
+                                    </el-pagination>
+                                </div>
+                            </el-tab-pane>
+                        </el-tabs>
+
+                    </div>
+                    <iframe id="ModelEditor" src="/common/integratedModelEditor"
+                            style="width: calc(100% - 220px);height: 100%;;border:0px;position:relative;"></iframe>
+                </div>
             </div>
             <div role="selectedModelContainer" class="integratedContained"
                  style="width:22%;min-width: 200px;max-width: 400px; margin-left: 10px">
@@ -161,7 +275,7 @@
                                                @click="modelConfiguration(modelAction)">Configuration
                                     </el-button>
                                     <el-button type="primary" size="mini" round style="margin-right: 10px"
-                                               @click="dataConfiguration(modelAction)">Load/Check Data
+                                               @click="dataConfigurationModel(modelAction)">Load/Check Data
                                     </el-button>
                                 </div>
                             </div>
@@ -177,11 +291,11 @@
                                 </div>
                                 <div class="flexAlignCenter flexJustEnd flexWrap"
                                      style="min-height: 60px;max-height: 85px;">
+<!--                                    <el-button type="primary" size="mini" round style="margin-right: 10px"-->
+<!--                                               @click="modelConfiguration(dataProcessing)">Configuration-->
+<!--                                    </el-button>-->
                                     <el-button type="primary" size="mini" round style="margin-right: 10px"
-                                               @click="modelConfiguration(dataProcessing)">Configuration
-                                    </el-button>
-                                    <el-button type="primary" size="mini" round style="margin-right: 10px"
-                                               @click="dataConfiguration(dataProcessing)">Load/Check Data
+                                               @click="dataConfigurationDataP(dataProcessing)">Load/Check Data
                                     </el-button>
                                 </div>
                             </div>
@@ -224,7 +338,7 @@
                         </div>
                         <el-pagination style="text-align: center;margin-top:5px"
                                        v-if="integratedTaskList!='login'&&integratedTaskList.length!=0"
-                                       @current-change="handlePageChange"
+                                       @Choose Computable Modelscurrent-change="handlePageChange"
                                        :current-page="pageOption.currentPage"
                                        layout="total, prev, pager, next, jumper"
                                        :page-size="6"
@@ -241,7 +355,7 @@
             <div class="clearfix" style="margin: 0px 5px 10px;background: #f5f5f5;box-shadow:0 3.2px 7.2px 0 rgba(0,0,0,0.141), 0 0.6px 1.8px 0 rgba(0, 0, 0, .112)">
                 <h4 style="text-align: center;margin-top: 5px">Data Bus</h4>
                 <div v-for="dataLine in dataLines" class="dataBusContainer flexAlignCenter wzhScrollbar" style="width: 100%;height: 150px">
-<!--                    <div class="innerBorder" v-if="Object.keys(dataItemList).length!=0"></div>-->
+                    <!--                    <div class="innerBorder" v-if="Object.keys(dataItemList).length!=0"></div>-->
                     <div class="acrylicMask" ref="acrylicMask" @click="flatContainer($event)"></div>
                     <div class="dataFlowRoad" ref="dataFlowRoad">
                         <div class="dataFlowLink" v-for="dataLink in lightDataLinks" :key="" :style="getFlowLinkPosition(dataLink)"></div>
@@ -267,6 +381,50 @@
         <input id="uploadInputData" type="file" style="display:none"/>
 
     </div>
+
+    <el-drawer
+            title="Model Classification"
+            :visible.sync="modelClassiDrawer"
+            size="305px"
+            direction="ltr">
+
+        <el-tree style="max-height: 70vh;overflow: auto"
+                 class="wzhScrollbar"
+                 id="tree1"
+                 ref="tree1"
+                 :data="treeData2"
+                 :highlight-current="true"
+                 node-key="id"
+                 :default-expanded-keys="[1,9,30,14,19,24]"
+                 :expand-on-click-node="false"
+                 :current-node-key="24"
+                 @current-change="handleCurrentChange1"
+                 :props="defaultProps">
+        </el-tree>
+        <el-button @click="confirmModelCls" size="small" type="primary" style="float: right;margin-right: 20px;margin-top: 20px">Confirm</el-button>
+    </el-drawer>
+
+    <el-drawer
+            title="Data Method Classification"
+            :visible.sync="dataMethodClassiDrawer"
+            size="305px"
+            direction="ltr">
+
+        <el-tree style="max-height: 70vh;overflow: auto"
+                 class="wzhScrollbar"
+                 id="tree2"
+                 ref="tree2"
+                 :data="treeData3"
+                 :highlight-current="true"
+                 node-key="id"
+                 :default-expanded-keys="[1,9,30,14,19,24]"
+                 :expand-on-click-node="false"
+                 :current-node-key="24"
+                 @current-change="handleCurrentChange2"
+                 :props="defaultProps">
+        </el-tree>
+        <el-button @click="confirmDataMethodCls" size="small" type="primary" style="float: right;margin-right: 20px;margin-top: 20px">Confirm</el-button>
+    </el-drawer>
 
     <el-dialog title="Input Data Configuration" :visible.sync="configVisible" ref="userDataSpace" width="65%">
         <el-tabs>
@@ -400,10 +558,242 @@
                                 <span v-if="!scope.row.optional" style="color:red">*</span>
                                 <a style="text-decoration: underline;" :href="'/repository/template/'+scope.row.externalId.toLowerCase()" target="_blank">{{scope.row.eventName}}</a>
                             </span>
+                        <el-tag :disable-transitions="true"
+                                type="success"
+                                disable-transitions>output
+                        </el-tag>
                     </template>
                 </el-table-column>
                 <el-table-column
                         prop="eventDesc"
+                        label="Description">
+                </el-table-column>
+                <el-table-column
+                        label="File"
+                        width="200">
+                    <template slot-scope="scope">
+
+                        <el-input class="model-input"
+                                  :key="scope.row.dataId"
+                                  v-if="scope.row.children==undefined&&scope.row.child!=true"
+                                  :value="scope.row.fileName==undefined ?'':(scope.row.fileName+'.'+scope.row.suffix) "
+                                  :id="'datainput'+scope.row.dataId"
+                                  disabled="false">
+                        </el-input>
+
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        label="Operation"
+                        width="120">
+                    <template slot-scope="scope">
+                        <div class="_btn-group" v-if="scope.row.children==undefined">
+
+                            <el-button plain round type="warning" size="small" id="'download'+ scope.row.dataId"
+                                       v-if="scope.row.value!=''"
+                                       @click="download(scope.row)" style="margin-left: 0px;">
+                                <i class="fa fa-download"></i>
+                            </el-button>
+                        </div>
+                    </template>
+                </el-table-column>
+            </el-table>
+
+            </el-tab-pane>
+        </el-tabs>
+        <div slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="checkData">OK</el-button>
+        </div>
+    </el-dialog>
+
+    <el-dialog title="Input Data Configuration" :visible.sync="configDataPVisible" ref="userDataSpace" width="65%">
+        <el-tabs>
+            <div class="el-tabs__header is-top">
+                <div class="el-tabs__nav-wrap is-top">
+                    <div class="el-tabs__nav-scroll">
+                        <div role="tablist" class="el-tabs__nav is-top" style="transform: translateX(0px);">
+                            <div class="el-tabs__active-bar is-top"
+                                 style="width: 134px; transform: translateX(0px);">
+
+                            </div>
+                            <div aria-controls="pane-SWATModelAllInOne" role="tab"
+                                 aria-selected="true" tabindex="0" class="el-tabs__item is-top is-active">
+                                {{configDataProcessing.name}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <el-table :data="configDataProcessing.inputData" style="width: 100%"
+                      :key="Math.random()"
+                      row-key="dataId"
+                      border
+                      default-expand-all>
+
+                <el-table-column
+                        label="Name"
+                        width="220">
+                    <template slot-scope="scope">
+                        <span>
+                            <span style="color:red">*</span>
+                            {{scope.row.name}}
+                        </span>
+                        <el-tag :disable-transitions="true"
+                                type="primary"
+                                disable-transitions>Input
+                        </el-tag>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        prop="description"
+                        label="Description">
+                </el-table-column>
+                <el-table-column
+                        label="File"
+                        width="200">
+                    <template slot-scope="scope">
+                        <el-input class="model-input"
+                                  :key="scope.row.dataId"
+                                  :value="scope.row.fileName==undefined ?'':(scope.row.fileName+'.'+scope.row.suffix) "
+                                  :id="'datainput'+scope.row.dataId"
+                                  disabled="false">
+                        </el-input>
+                        <!--                        <el-input class="model-input"-->
+                        <!--                                  :key="scope.row.dataId"-->
+                        <!--                                  v-if="scope.row.children==undefined&&scope.row.child!=true"-->
+                        <!--                                  :value="scope.row.fileName==undefined ?'':(scope.row.fileName+'.'+scope.row.suffix) "-->
+                        <!--                                  :id="'datainput'+scope.row.dataId"-->
+                        <!--                                  disabled="false">-->
+                        <!--                        </el-input>-->
+                        <!--                        <el-input class="model-input"-->
+                        <!--                                  v-if="scope.row.children==undefined&&scope.row.child==true"-->
+                        <!--                                  v-model="scope.row.val"-->
+                        <!--                                  :id="'datainput'+scope.row.dataId">-->
+                        <!--                        </el-input>-->
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        label="Link From"
+                        width="200">
+                    <template slot-scope="scope">
+                        <el-input class="model-input"
+                                  :key="scope.row.dataId"
+                                  v-if="scope.row.linkEvent!=undefined"
+                                  :value="scope.row.linkEvent"
+                                  :id="'datainput'+scope.row.eventId"
+                                  disabled="false">
+                        </el-input>
+
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        label="Operation"
+                        width="120">
+                    <template slot-scope="scope">
+                        <div class="_btn-group" >
+                            <!--                            v-if="scope.row.children==undefined"-->
+                            <el-button
+                                    v-if="(scope.row.link == undefined||scope.row.link == '' )||configModelAction.step>1"
+                                    plain round type="primary" size="small"
+                                    @click="openUserDataSpace(scope.row)">
+                                <i class="fa fa-folder-open"></i>
+                            </el-button>
+
+                            <el-button plain round type="warning" size="small" id="'download'+ scope.row.dataId"
+                                       v-if="scope.row.fileName!=''&&scope.row.fileName!=null"
+                                       @click="download(scope.row)" style="margin-left: 0px;">
+                                <i class="fa fa-download"></i>
+                            </el-button>
+                        </div>
+                    </template>
+                </el-table-column>
+            </el-table>
+
+            <el-table v-if="configDataProcessing.params!=undefined&&configDataProcessing.params.length>0"  :data="configDataProcessing.params" style="width: 100%"
+                      :key="Math.random()"
+                      row-key="dataId"
+                      border
+                      default-expand-all>
+
+                <el-table-column
+                        label="Event Name"
+                        width="220">
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.externalId==undefined" :title="scope.row.event">
+                                    <span v-if="!scope.row.optional&&!scope.row.child"
+                                          style="color:red">*</span>
+                                        {{scope.row.name}}
+                                </span>
+                        <span v-if="scope.row.externalId!=undefined" :title="scope.row.event">
+                                    <span v-if="!scope.row.optional"
+                                          style="color:red">*</span>
+                                    <a style="text-decoration: underline;"
+                                       :href="'/repository/template/'+scope.row.externalId.toLowerCase()"
+                                       target="_blank">{{scope.row.eventName}}</a>
+                                </span>
+                        <el-tag :disable-transitions="true"
+                                type="primary"
+                                disable-transitions>Input
+                        </el-tag><el-tag :disable-transitions="true"
+                                type="info"
+                                disable-transitions>Parameter
+                        </el-tag>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        prop="description"
+                        label="Description">
+                </el-table-column>
+                <el-table-column
+                        prop="Type"
+                        label="type">
+                </el-table-column>
+                <el-table-column
+                        label="Value"
+                        width="200">
+                    <template slot-scope="scope">
+                        <el-input class="model-input"
+                                  v-model="scope.row.value"
+                                  :disabled="scope.row.linkEvent==undefined?false:true">
+                        </el-input>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        label="Link From"
+                        width="200">
+                    <template slot-scope="scope">
+                        <el-input class="model-input"
+                                  :key="scope.row.dataId"
+                                  v-if="scope.row.linkEvent!=undefined"
+                                  :value="scope.row.linkEvent"
+                                  :id="'datainput'+scope.row.eventId"
+                                  disabled="false">
+                        </el-input>
+
+                    </template>
+                </el-table-column>
+            </el-table>
+
+            <el-table :data="configDataProcessing.outputData" style="width: 100%"
+                      :key="Math.random()"
+                      row-key="dataId"
+                      border
+                      default-expand-all>
+
+                <el-table-column
+                        label="Name"
+                        width="220">
+                    <template slot-scope="scope">
+                        <span>{{scope.row.name}}</span>
+                        <el-tag :disable-transitions="true"
+                                type="success"
+                                disable-transitions>output
+                        </el-tag>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        prop="description"
                         label="Description">
                 </el-table-column>
                 <el-table-column
@@ -479,40 +869,71 @@
                     <button class="btn btn-info" @click="refreshDataNode()">
                         <i class="fa fa-refresh"></i>Refresh
                     </button>
-                    <div  v-if="dataNode.status==1">
-                        <el-table :data="dataNode.data" v-loading="nodeLoading">
-                            <el-table-column
-                                    prop="name"
-                                    label="Name"
-                                    min-width="3">
-                            </el-table-column>
-                            <el-table-column
-                                    label="Date"
-                                    min-width="2">
-                                <template slot-scope="scope">
-                                    <span>{{formatDate(scope.row.date)}}</span>
-                                </template>
-                            </el-table-column>
-                            <el-table-column
-                                    label="Option"
-                                    min-width="1">
-                                <template slot-scope="scope">
-                                    <!--                                                                <el-button size="mini" round @click="download(scope.row)" style="margin-right: 2px"><span><i class="fa fa-arrow-down"></i></span>Download</el-button>-->
-                                    <el-button size="mini" round type="success" @click="selectDataFromDataServer(scope.row)">select</el-button>
-                                </template>
-                            </el-table-column>
-                        </el-table>
+                    <div v-loading="nodeLoading">
+                        <div v-if="dataNode.status==1">
+                            <el-table :data="dataNode.data" >
+                                <el-table-column
+                                        prop="name"
+                                        label="Name"
+                                        min-width="3">
+                                </el-table-column>
+                                <el-table-column
+                                        label="Date"
+                                        min-width="2">
+                                    <template slot-scope="scope">
+                                        <span>{{formatDate(scope.row.date)}}</span>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column
+                                        label="Option"
+                                        min-width="1">
+                                    <template slot-scope="scope">
+                                        <!--                                                                <el-button size="mini" round @click="download(scope.row)" style="margin-right: 2px"><span><i class="fa fa-arrow-down"></i></span>Download</el-button>-->
+                                        <el-button size="mini" round type="success" @click="selectDataFromDataServer(scope.row)">select</el-button>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
 
-                    </div>
-                    <div v-else>
-                        <h5 style="font-style: italic;color: rgb(128,128,128);text-align: center;">Node Offline</h5>
-                        <h5 style="font-style: italic;color: rgb(128,128,128);text-align: center;">If you want to use this function, please ensure that your data server is online.</h5>
+                        </div>
+                        <div v-else>
+                            <h5 style="font-style: italic;color: rgb(128,128,128);text-align: center;">Node Offline</h5>
+                            <h5 style="font-style: italic;color: rgb(128,128,128);text-align: center;">If you want to use this function, please ensure that your data server is online.</h5>
+                        </div>
                     </div>
                 </div>
 
             </el-tab-pane>
             <el-tab-pane label="Data Item" name="dataItem">
-
+                <el-table v-loading="loading"
+                          :data="dataItems">
+                    <el-table-column
+                            prop="name"
+                            label="Name"
+                            width="320">
+                        <template slot-scope="props">
+                            <a :href="'/dataItem/'+props.row.oid" target="_blank">{{props.row.name}}</a>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            label="Contributor">
+                        <template slot-scope="props">
+                            <a :href="'/profile/'+props.row.contributorId" target="_blank">{{props.row.contributor}}</a>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            label="Option">
+                        <template slot-scope="scope">
+                            <el-button size="mini" round type="success">Select</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <el-pagination style="text-align: center;margin-top:20px"
+                               @current-change="handlePageChangeDataItem"
+                               :current-page="pageOptionDataItem.currentPage"
+                               layout="total, prev, pager, next, jumper"
+                               :page-size="pageOptionDataItem.pageSize"
+                               :total="pageOptionDataItem.total">
+                </el-pagination>
             </el-tab-pane>
         </el-tabs>
 
@@ -694,7 +1115,7 @@
                                    @click="modelConfiguration(modelAction)">Configuration
                         </el-button>
                         <el-button type="primary" size="mini" round style="margin-right: 10px"
-                                   @click="dataConfiguration(modelAction)">Load/Check Data
+                                   @click="dataConfigurationModel(modelAction)">Load/Check Data
                         </el-button>
                     </div>
                 </div>
@@ -755,10 +1176,10 @@
             <h4 style="">Source Model Action:</h4>
             <h4 style="font-weight: 600;margin-left: 50px">{{dataLinkConfig.sourceModelName}}</h4>
         </div>
-        <div class="flexJustStart flexAlignCenter wzhInfoContainer" style="height: 32px">
-            <h4 style="">Convertion Tool:       </h4>
-            <el-button size="small" @click="convertToolsVisible=true">Select</el-button>
-        </div>
+<!--        <div class="flexJustStart flexAlignCenter wzhInfoContainer" style="height: 32px">-->
+<!--            <h4 style="">Convertion Tool:       </h4>-->
+<!--            <el-button size="small" @click="convertToolsVisible=true">Select</el-button>-->
+<!--        </div>-->
 
         <div slot="footer" class="dialog-footer">
             <el-button type="primary" size="small" @click="dataLinkConfigDialog=false">OK</el-button>
@@ -769,7 +1190,7 @@
         <div v-loading="loading">
             <div class="flexRow flexJustCenter" style="margin-top: 12px; margin-left: 10px;">
                 <div class="flexRow flexColCenter" style="width: 50%;mini-width:250px">
-                    <input placeholder="Search for ..." class="noBorderInput miniInput">
+                    <input placeholder="Search for ..."  class="noBorderInput miniInput">
                 </div>
                 <i class="fa fa-search cursorPointer" style="font-size: 18px;"></i>
             </div>
@@ -895,10 +1316,10 @@
     <el-dialog title="Condition Case" :visible.sync="conditionCaseDialog" width="30%">
         <h5>Operator:</h5>
         <el-radio-group v-model="caseConfig.operator" style="margin-left: 10px">
-            <el-radio :label="'>'"> > </el-radio>
-            <el-radio :label="'<'"> < </el-radio>
-            <el-radio :label="'>='"> >= </el-radio>
-            <el-radio :label="'<='"> <= </el-radio>
+            <el-radio v-if="conditionConfig.format=='number'" :label="'>'"> > </el-radio>
+            <el-radio v-if="conditionConfig.format=='number'" :label="'<'"> < </el-radio>
+            <el-radio v-if="conditionConfig.format=='number'" :label="'>='"> >= </el-radio>
+            <el-radio v-if="conditionConfig.format=='number'" :label="'<='"> <= </el-radio>
             <el-radio :label="'=='"> == </el-radio>
             <el-radio :label="'!='"> != </el-radio>
         </el-radio-group>
@@ -915,16 +1336,122 @@
         </div>
     </el-dialog>
 
+    <el-dialog :title="detailComptbModel.name" :visible.sync="computableModelDetailDialog" width="40%">
+        <div class="flexJustStart">
+            <div class="img">
+                <img :src="(detailComptbModel.image==''||detailComptbModel.image==null)?'/static/img/model/calcModel.png':'/static/img'+detailComptbModel.image">
+            </div>
+            <div class="comptlModelDetail" style="padding: 10px 15px">
+                <p class="noMargin" style="min-height: 50px">{{detailComptbModel.description}}</p>
+                <p v-if="detailComptbModel.detail!=undefined&&detailComptbModel.detail!=''"
+                   class="noMargin"
+                   style="font-weight: 600;margin-top: 10px"
+                >Detailed:</p>
+                <div v-if="detailComptbModel.detail!=undefined&&detailComptbModel.detail!=''"
+                     id="detail" v-html="detailComptbModel.detail">
+                </div>
+                <p class="cursorPointer" style="margin-top: 10px"><span style="font-weight: 600">Contributor: </span>
+                    <a @click="window.open('/profile/' + detailComptbModel.authorId)">{{detailComptbModel.authorName}}</a></p>
+
+            </div>
+
+        </div>
+        <p class="cursorPointer text-center" style="margin-top: 10px">
+            <a style="font-style: italic;text-decoration: underline" @click="window.open('/computableModel/' + detailComptbModel.oid)" >view in computable model page</a>
+        </p>
+        <div slot="footer" class="dialog-footer">
+
+            <el-button type="primary" size="small" @click="addModelToMxgraph(detailComptbModel)">Add to Graph</el-button>
+            <el-button type="primary" plain size="small" @click="computableModelDetailDialog=false">Close</el-button>
+        </div>
+
+    </el-dialog>
+
+    <el-dialog :title="detailDataMethod.name" :visible.sync="dataMethodDetailDialog" width="40%">
+        <div class="flexJustStart">
+            <div class="img">
+                <img :src="(detailDataMethod.image==''||detailDataMethod.image==null)?'/static/img/model/calcModel.png':'/static/img'+detailDataMethod.image">
+            </div>
+            <div class="comptlModelDetail" style="padding: 10px 15px">
+                <p class="noMargin" style="min-height: 50px">{{detailDataMethod.description}}</p>
+                <p v-if="detailDataMethod.detail!=undefined&&detailDataMethod.detail!=''"
+                   class="noMargin"
+                   style="font-weight: 600;margin-top: 10px"
+                >Detailed:</p>
+                <div v-if="detailDataMethod.detail!=undefined&&detailDataMethod.detail!=''"
+                     v-html="detailDataMethod.detail">
+                </div>
+                <p class="cursorPointer" style="margin-top: 10px"><span style="font-weight: 600">Contributor: </span>
+                    <a @click="window.open('/profile/' + detailDataMethod.authorId)">{{detailDataMethod.authorName}}</a></p>
+
+            </div>
+
+        </div>
+        <p class="cursorPointer text-center" style="margin-top: 10px">
+            <a style="font-style: italic;text-decoration: underline" @click="window.open('/dataApplication/' + detailDataMethod.oid)" >view in data method page</a>
+        </p>
+        <div slot="footer" class="dialog-footer">
+
+            <el-button type="primary" size="small" @click="addDataMethodToMxgraph(detailComptbModel)">Add to Graph</el-button>
+            <el-button type="primary" plain size="small" @click="dataMethodDetailDialog=false">Close</el-button>
+        </div>
+
+    </el-dialog>
+
+    <el-dialog title="Invoke Services" :visible.sync="invokeServiceDialog">
+        <p style="text-align: center">This data method has several services, you can select one to add into your integrated task.</p>
+        <a class="cursorPointer" @click="checkDataMethodServicesStatus(configDataMethod.invokeServices)"
+        style="width: 182px;display: block;margin: auto">
+            <i class="fa fa-refresh" aria-hidden="true"></i>
+            <span>Refresh status of services</span>
+        </a>
+        <el-table class="wzhScrollbar" :data="configDataMethod.invokeServices" row-key="serviceId" style="width: 100%;max-height: 485px" v-loading="invokeServiceLoading" >
+            <el-table-column prop="name" label="Name"></el-table-column>
+            <el-table-column prop="method" label="Method Type" width="160"></el-table-column>
+            <!--                            <el-table-column prop="serviceId" label = "suiyi" style="display: none"></el-table-column>-->
+            <el-table-column
+                    prop="isPortal"
+                    label="Origin"
+                    width="110"
+            >
+                <template slot-scope="scope">
+                    <el-tag
+                            :type="scope.row.isPortal == true ? 'primary' : 'success'"
+                            disable-transitions v-if="scope.row.isPortal == true">Portal</el-tag>
+                    <el-tag
+                            :type="scope.row.isPortal == true ? 'primary' : 'success'"
+                            disable-transitions v-if="scope.row.isPortal == false">Other Node</el-tag>
+                </template>
+            </el-table-column>
+            <el-table-column label="Status">
+                <template slot-scope="scope">
+                    <el-tag
+                            :type="scope.row.status == -1 ? 'info' : 'success'"
+                            disable-transitions v-if="scope.row.status == -1">offline</el-tag>
+                    <el-tag
+                            :type="scope.row.status == -1 ? 'info' : 'success'"
+                            disable-transitions v-else>online</el-tag>
+                </template>
+            </el-table-column>
+            <el-table-column label="Operation">
+                <template slot-scope="scope">
+                    <el-button @click = "selectInvokeService(scope.row)" type="success" size="small" round class="invokeBtn">
+                        Select
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+    </el-dialog>
+
     <div th:replace="fragments/footer :: footer-mini"></div>
 </div>
+</body>
 <template th:replace="modules/userDataSpaceModule :: userDataSpaceModule"></template>
 <script src="/static/js/modules/userDataSpaceModule.js"></script>
 <template th:replace="modules/computableModelList :: computableModel"></template>
 <script src="/static/js/modules/computableModelList.js"></script>
 <template th:replace="modules/dataProcessingList :: dataProcessingList"></template>
 <script src="/static/js/modules/dataProcessingList.js"></script>
-
-</body>
 
 
 <script src="/static/js/common/jquery-3.3.1.min.js"></script>

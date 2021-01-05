@@ -969,7 +969,9 @@ EditorUi.prototype.formatEnabled = true;
 /**
  * Specifies the width of the format panel. Default is 240.
  */
-EditorUi.prototype.formatWidth = 240;
+// EditorUi.prototype.formatWidth = 240;
+//折叠式右边栏 -- wzh
+EditorUi.prototype.formatWidth = 0;
 
 /**
  * Specifies the height of the toolbar. Default is 40.
@@ -991,7 +993,9 @@ EditorUi.prototype.sidebarFooterHeight = 0;
  * screen widths <= 640px.
  */
 //更改sidebar的宽度
-EditorUi.prototype.hsplitPosition = (screen.width <= 640) ? 118 : 245;
+// EditorUi.prototype.hsplitPosition = (screen.width <= 640) ? 118 : 245;
+//隐藏左侧边栏 -- wzh
+EditorUi.prototype.hsplitPosition = (screen.width <= 640) ? 0 : 0;
 
 /**
  * Specifies if animations are allowed in <executeLayout>. Default is true.
@@ -2978,10 +2982,18 @@ EditorUi.prototype.refresh = function(sizeDidChange)
 	this.sidebarContainer.style.top = tmp + 'px';
 	this.sidebarContainer.style.width = effHsplitPosition + 'px';
 	this.formatContainer.style.top = tmp + 'px';
-	this.formatContainer.style.width = fw + 'px';
+	// this.formatContainer.style.width = fw + 'px';
+	//折叠式右边栏--wzh
+	this.formatContainer.style.width = '0px';
 	this.formatContainer.style.display = (this.format != null) ? '' : 'none';
-	
-	this.diagramContainer.style.left = (this.hsplit.parentNode != null) ? (effHsplitPosition + this.splitSize) + 'px' : '0px';
+
+	/**
+	 * wzh@2021/01/04
+	 *
+	 * @type {string}
+	 */
+	// this.diagramContainer.style.left = (this.hsplit.parentNode != null) ? (effHsplitPosition + this.splitSize) + 'px' : '0px';
+	this.diagramContainer.style.left = '0px';
 	this.diagramContainer.style.top = this.sidebarContainer.style.top;
 	this.footerContainer.style.height = this.footerHeight + 'px';
 	this.hsplit.style.top = this.sidebarContainer.style.top;
@@ -3080,6 +3092,21 @@ EditorUi.prototype.createDivs = function()
 	this.footerContainer.style.bottom = '0px';
 	this.footerContainer.style.zIndex = mxPopupMenu.prototype.zIndex - 2;
 	this.hsplit.style.width = this.splitSize + 'px';
+	/**
+	 * 2021/01/04
+	 * wzh
+	 * 隐藏侧边
+	 * @type {string}
+	 */
+	this.hsplit.style.display = 'none';
+	// this.menubarContainer.style.display = 'none';
+	// this.toolbarContainer.style.display = 'none';
+	// this.sidebarContainer.style.display = 'none';
+	// this.footerContainer.style.display = 'none';
+	// this.formatContainer.style.display = 'none';
+
+
+
 	this.sidebarFooterContainer = this.createSidebarFooterContainer();
 	
 	if (this.sidebarFooterContainer)

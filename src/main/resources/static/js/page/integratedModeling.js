@@ -445,7 +445,7 @@ var vue = new Vue({
 
             this.configModelAction = model;
 
-            for (var j = 0; j < this.configModelAction.inputData.length&& this.configModelAction.type!="dataService"; j++) {
+            for (var j = 0; j < this.configModelAction.inputData.length&&this.configModelAction.type!="dataService"; j++) {
                 var event = this.configModelAction.inputData[j];
                 var nodes = event.data[0].nodes;
                 let refName = event.data[0].text.toLowerCase();

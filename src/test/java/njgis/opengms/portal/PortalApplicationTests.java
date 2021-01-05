@@ -3569,4 +3569,19 @@ public class PortalApplicationTests {
     public void testDataApplication() {
 
     }
+
+    @Test
+    public void addComputableModelClassi(){
+        List<ModelItem> ModelItems = modelItemDao.findAll();
+        List<ComputableModel> computableModels = computableModelDao.findAll();
+
+        for(ComputableModel computableModel : computableModels){
+            String relateModelItem = computableModel.getRelateModelItem();
+            ModelItem modelItem = modelItemDao.findFirstByOid(relateModelItem);
+            if(modelItem!=null){
+                computableModel.setClassifications(modelItem.getClassifications2());
+                computableModelDao.save(computableModel);
+            }
+        }
+    }
 }

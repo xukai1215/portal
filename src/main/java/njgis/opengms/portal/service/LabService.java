@@ -29,23 +29,28 @@ public class LabService {
         User user=userDao.findFirstByUserId(userId);
         JSONObject result=new JSONObject();
         UserLab userLab=user.getLab();
-        if(userLab.getName()=="") {
-            result.put("lab","null");
-        } else {
-            String labName=userLab.getName();
-            Lab lab = labDao.findFirstByLabName(labName);
-            User leader = userDao.findFirstByUserName(lab.getLeaderName());
+        try{
+            if(userLab.getName()=="") {
+                result.put("lab","null");
+            } else {
+                String labName=userLab.getName();
+                Lab lab = labDao.findFirstByLabName(labName);
+                User leader = userDao.findFirstByUserName(lab.getLeaderName());
 
 
-            List<String> memberName = lab.getMembers();
-            List<User> members = new ArrayList<>();
-            for (int i = 0; i < memberName.size(); i++) {
-                members.add(userDao.findFirstByUserName(memberName.get(i)));
+                List<String> memberName = lab.getMembers();
+                List<User> members = new ArrayList<>();
+                for (int i = 0; i < memberName.size(); i++) {
+                    members.add(userDao.findFirstByUserName(memberName.get(i)));
+                }
+
+                result.put("lab", labName);
+                result.put("labMembers", members);
             }
+        }catch (Exception e){
 
-            result.put("lab", labName);
-            result.put("labMembers", members);
         }
+
 //        System.out.println("lab"+leader);
         return result;
 

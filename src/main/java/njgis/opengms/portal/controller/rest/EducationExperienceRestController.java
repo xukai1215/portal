@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.net.URLDecoder;
 
 @RestController
 @RequestMapping("/educationExperience")
@@ -22,6 +23,7 @@ public class EducationExperienceRestController {
 
     @RequestMapping(value = "/listByUserOid",method = RequestMethod.GET)
     JsonResult listByUserOid(EducationExperienceFindDTO educationExperienceFindDTO, @RequestParam(value="oid") String oid){
+        oid= URLDecoder.decode(oid);
 //        System.out.println("edex"+educationExperienceFindDTO);
         return ResultUtils.success(educationExperienceService.listByUserOid(educationExperienceFindDTO,oid));
     }

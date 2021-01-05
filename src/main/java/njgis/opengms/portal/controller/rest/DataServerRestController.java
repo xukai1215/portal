@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dto.DataNodeContentDTO;
+import njgis.opengms.portal.entity.support.InvokeService;
 import njgis.opengms.portal.service.DataServerService;
 import njgis.opengms.portal.utils.MyHttpUtils;
 import njgis.opengms.portal.utils.ResultUtils;
@@ -221,6 +222,16 @@ public class DataServerRestController {
             String userName = session.getAttribute("uid").toString();
             return ResultUtils.success(dataServerService.unbindDataMethod(dataNodeContentDTO,userName));
         }
+
+    }
+
+    @RequestMapping(value = "/checkNodeContent", method = RequestMethod.GET)
+    public JsonResult checkNodeContent(@RequestParam("serverId") String serverId,
+                                       @RequestParam("token") String token,
+                                       @RequestParam("type") String type
+                                       ){
+
+       return ResultUtils.success(dataServerService.checkNodeContent(serverId,token,type));
 
     }
 }

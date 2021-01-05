@@ -20,6 +20,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 import java.io.File;
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -39,6 +40,7 @@ public class TemplateRestController {
         String loadUser = null;
         if(session.getAttribute("oid")!=null)
             loadUser =  session.getAttribute("oid").toString() ;
+        oid= URLDecoder.decode(oid);
         return ResultUtils.success(templateService.getTemplatesByUserId(oid,templateFindDTO,loadUser));
     }
 
@@ -48,6 +50,7 @@ public class TemplateRestController {
         String loadUser = null;
         if(session.getAttribute("oid")!=null)
             loadUser =  session.getAttribute("oid").toString() ;
+        oid = URLDecoder.decode(oid);
         return ResultUtils.success(templateService.searchByTitleByOid(templateFindDTO,oid,loadUser));
     }
 
