@@ -16,7 +16,7 @@ let vue = new Vue({
             testData:'',
             input:'',
             xml:'',
-            parameters:'',
+            // parameters:'',
             invokeDialog:false,
             parameter:'',
             loading:false,
@@ -31,10 +31,17 @@ let vue = new Vue({
                 url:'',
                 name:''
             }],//载入的数据url以及名称，不管是测试数据、上传数据还是直接填入的link，均存到这个字段
-            dataType:'',//标识testData、uploadData、linkData
+            dataType:'',//标识localData、onlineData
             uploadName:'',
             contDtId:'',//上传到数据容器返回的数据id
             selectedFile:[],//userDataSpace中选择的文件
+
+            metaDetail:{
+
+            },
+            method:'',
+            visualization:false,
+            // initParameter:''
 
 
         }
@@ -72,16 +79,40 @@ let vue = new Vue({
             window.open("/user/" + oid);
         },
         invokeNow(){
-            this.loading = true;
             let that = this;
+            //判断参数是否已填
+            if(null==this.metaDetail.Input[0].loadName){
+                this.$message({
+                    type:"error",
+                    message:"No data loaded"
+                })
+                return ;
+            }
+            if(this.metaDetail.Parameter.length!=0){
+                for(let i=0;i<this.metaDetail.Parameter.length;i++){
+                    if(null == this.metaDetail.Parameter[i].value){
+                        this.$message({
+                            type:"error",
+                            message:"Please improve the parameters!"
+                        })
+                        return ;
+                    }
+                }
+            }
+
+            this.loading = true;
             let formData = new FormData();
+            let parameters = new Array();
+            for(let i=0;i<this.metaDetail.Parameter.length;i++){
+                parameters.push(this.metaDetail.Parameter[i].value);
+            }
             formData.append("dataApplicationId", this.applicationOid);
             formData.append("serviceId",this.serviceId);
-            formData.append("params",this.parameter);
+            formData.append("params",parameters);
             formData.append("dataType",this.dataType);//标识那三种数据来源，测试数据、上传容器数据（数据容器返回的数据id）以及数据url（目前是数据容器的url）
 
-            if(this.dataType!='testData'){
-                formData.append("selectData", JSON.stringify(this.selectData));//此项为可选，可有可无
+            if(this.dataType!='localData'){
+                formData.append("selectData", JSON.stringify(this.metaDetail.Input));//此项为可选，可有可无
             }
             $.ajax({
                 url:"/dataApplication/invokeMethod",
@@ -92,12 +123,28 @@ let vue = new Vue({
                 success:(json)=>{
                     if (json.code === -1){
                         window.location.href = "/user/login";
-                    }else {
+                    }else if (json.code === 0){
                         console.log(json);
                         that.resultData = json.data;
-                        that.outPutData = "OutData";
-                        this.loading = false;
-                        that.invokeDialog = false;
+                        if(json.data == null){
+                            that.$message({
+                                type:"error",
+                                message: 'Invoke failed!',
+                            })
+                        }else {
+                            that.outPutData = "OutData";
+                            this.loading = false;
+                            that.invokeDialog = false;
+                            that.$message({
+                                type: "success",
+                                message: 'Invoke Success!',
+                            })
+                        }
+                    }else if(json.code === 1){
+                        that.$message({
+                            type: "error",
+                            message: 'Invoke failed, Service Node Is Error!',
+                        })
                     }
                 }
             });
@@ -107,6 +154,12 @@ let vue = new Vue({
         },
         handleClick(tab, event) {
             console.log(tab, event);
+            this.$nextTick(()=>{
+                this.$refs.userDataSpace.getFilePackage();
+            })
+        },
+        openDataSpace(event){
+            this.loadDataVisible = true;
             this.$nextTick(()=>{
                 this.$refs.userDataSpace.getFilePackage();
             })
@@ -121,6 +174,7 @@ let vue = new Vue({
                 }
             }
         },
+        //待删
         selectTestData(event){
             let refLink=$(".SelectTestData");
             for(let i=0;i<refLink.length;i++){
@@ -143,7 +197,7 @@ let vue = new Vue({
             let refLink=$(".downloadInfoBtn");
             for(let i=0;i<refLink.length;i++){
                 if(event.currentTarget===refLink[i]){
-                    window.location.href = this.selectData[i].url;
+                    window.location.href = this.metaDetail.Input[i].url;
                     break;
                 }
             }
@@ -213,12 +267,6 @@ let vue = new Vue({
             console.log(fileList);
             this.uploadFiles = fileList;
         },
-        openDataSpace(){
-            this.dialogVisible = true;
-            this.$nextTick(()=>{
-                this.$refs.userDataSpace.getFilePackage();
-            })
-        },
         selectDataspaceFile(file){
             if (this.selectedFile.indexOf(file) > -1) {
                 for (var i = 0; i < this.selectedFile.length; i++) {
@@ -232,25 +280,104 @@ let vue = new Vue({
             } else {
                 this.selectedFile.push(file);
             }
-            this.selectData.splice(0,1);
-            for (let i=0;i<this.selectedFile.length;i++){
-                let obj = {
-                    name:this.selectedFile[i].label + '.' + this.selectedFile[i].suffix,
-                    url:this.selectedFile[i].url,
+
+            let name = this.selectedFile[0].label + '.' + this.selectedFile[0].suffix;
+            for (let i=0;i<this.metaDetail.Input.length;i++){
+                if(this.metaDetail.Input[i].name === name){
+                    this.metaDetail.Input[i].loadName = name;
+                    this.metaDetail.Input[i].url = this.selectedFile[0].url;
+                    break;
                 }
-                this.selectData.push(obj);
             }
-            this.dataType = 'linkData';
+            this.selectedFile = [];//置空
+            this.dataType = 'onlineData';
         },
-        // openDataSpace(){
-            // this.$nextTick(()=>{
-            //     this.$refs.userDataSpace.getFilePackage();
-            // })
-        // },
         removeDataspaceFile(file) {
             this.targetFile = {}
         },
+        loadTestData(){
+            let that = this;
+            this.loading = true;
+            //分为load本地测试数据与其他节点的数据
+            if(this.isPortal){
+                //门户节点的测试数据load，主要还是从testData里拿数据
+                if(this.metaDetail.Input.length!=this.testData.length){
+                    this.$message({
+                        message: 'data numbers not match',
+                        type: 'warning'
+                    });
+                }
+                var len = 0;
 
+                for(let i=0;i<this.testData.length;i++){
+                    let data = {
+                        url:this.testData[i].url,
+                        name:this.testData[i].name,
+                    };
+                    this.selectData.push(data);
+                    for(let j=0;j<this.metaDetail.Input.length;j++){
+                        if(this.testData[i].name === this.metaDetail.Input[j].name){
+                            len++;
+                            this.metaDetail.Input[j].url = this.testData[i].url;
+                            this.metaDetail.Input[j].loadName = this.testData[i].name;
+                            break;
+                        }
+                    }
+                    tempArray = Object.assign([],this.metaDetail.Input)
+                    this.$set(this.metaDetail, "Input", tempArray);
+                    this.dataType = 'localData';
+                    this.loading = false;
+                }
+                if(len != this.testData.length){
+                    this.$message({
+                        message: 'data numbers match failed',
+                        type: 'warning'
+                    });
+                }
+            }else {
+                //绑定节点的load数据则需要用接口获取服务测试数据信息
+                axios.get("/dataApplication/getRemoteDataInfo/" + this.serviceId + "/" + encodeURIComponent(encodeURIComponent(this.invokeService.token)))
+                    .then((res)=>{
+                        if(res.status === 200){
+                            if (res.data.code === -1){
+                                this.$message({
+                                    message: 'node offline',
+                                    type: 'error'
+                                });
+                            }else if(res.data.code == 0){
+                                console.log(res.data);
+                                console.log(that.metaDetail.Input);
+                                let fileInfo = res.data.data.id;
+                                for(let i=0;i<that.metaDetail.Input.length;i++){
+                                    for (let j=0;j<fileInfo.length;j++){
+                                        if (that.metaDetail.Input[i].name === fileInfo[j].file_name){
+                                            that.metaDetail.Input[i].loadName = fileInfo[j].file_name;
+                                            that.metaDetail.Input[i].url = fileInfo[j].url;
+                                            break;
+                                        }
+                                    }
+                                }
+                                tempArray = Object.assign([],that.metaDetail.Input)
+                                that.$set(this.metaDetail, "Input", tempArray);
+                                that.dataType = 'onlineData';
+                            }
+                            that.loading = false;
+                        }
+                    })
+            }
+            // this.loading = false;
+
+
+        },
+        confirmData(){
+
+        },
+        savePicture(){
+            let url = this.invokeService.cacheUrl;
+            axios.get("/dataApplication/visualOut").then((res)=>{
+
+            })
+        }
     },
     mounted(){
         let that = this;
@@ -271,25 +398,32 @@ let vue = new Vue({
         axios.get("/dataApplication/getServiceInfo/" + this.applicationOid + '/' + this.serviceId).then((res) => {
             if (res.status === 200) {
                 that.applicationInfo = res.data.data.application;
-                that.testData = res.data.data.application.testData;
-                //处理testData，加name属性
-                for (let i=0;i<that.testData.length;i++){
-                    let path = that.testData[i].path;
-                    let str = path.split('/');
-                    let name = str[str.length-1];
-                    that.testData[i].name = name;
-                }
+                that.method = that.applicationInfo.method;
+                that.testData = res.data.data.testData;
+
                 that.invokeService = res.data.data.service;
                 window.document.token = that.invokeService.token;
                 that.isPortal = that.invokeService.isPortal;
+                //处理portal的 testData，加name属性
+                if(that.isPortal == true){
+                    for (let i=0;i<that.testData.length;i++){
+                        let path = that.testData[i].path;
+                        let str = path.split('/');
+                        let name = str[str.length-1];
+                        that.testData[i].name = name;
+                    }
+                }
             }
         })
         axios.get("/dataApplication/getParemeter/" + this.applicationOid +'/' + this.serviceId).then((res) => {
             if (res.status === 200) {
-                that.parameters = res.data.data.parameters;
-                that.xml = res.data.data.xml;
+                console.log(res.data);
+                that.metaDetail = res.data.data.Capability.data.metaDetail;
             }
         })
 
-    }
+    },
+    created(){
+
+    },
 })
