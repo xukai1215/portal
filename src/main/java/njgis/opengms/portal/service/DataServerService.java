@@ -3,7 +3,6 @@ package njgis.opengms.portal.service;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.JsonObject;
-import com.sun.deploy.net.HttpUtils;
 import java.net.URLEncoder;
 import njgis.opengms.portal.dao.DataApplicationDao;
 import njgis.opengms.portal.dao.DataItemDao;

@@ -188,9 +188,9 @@ public class DataItemRestController {
     }
 
     //kai's function
-    @RequestMapping(value="/searchByName",method = RequestMethod.POST)
+    @RequestMapping(value="/searchByCurQueryField",method = RequestMethod.POST)
     JsonResult searchByName(@RequestBody DataItemFindDTO dataItemFindDTO){
-        return ResultUtils.success(dataItemService.searchByName(dataItemFindDTO,null));
+        return ResultUtils.success(dataItemService.searchByCurQueryField(dataItemFindDTO,null,dataItemFindDTO.getCurQueryField()));
     }
 
     @RequestMapping(value="/searchByNameAndAuthor",method = RequestMethod.POST)
@@ -201,7 +201,7 @@ public class DataItemRestController {
             return ResultUtils.error(-1,"no login");
         }else{
             String userOid = session.getAttribute("oid").toString();
-            return ResultUtils.success(dataItemService.searchByName(dataItemFindDTO,userOid));
+            return ResultUtils.success(dataItemService.searchByCurQueryField(dataItemFindDTO,userOid,dataItemFindDTO.getCurQueryField()));
         }
 
     }
@@ -380,7 +380,7 @@ public class DataItemRestController {
         List<AuthorInfo> authorshipList=dataItem.getAuthorship();
         if(authorshipList!=null){
             for (AuthorInfo author:authorshipList
-                    ) {
+            ) {
                 if(authorshipString.equals("")){
                     authorshipString+=author.getName();
                 }
@@ -1084,11 +1084,11 @@ public class DataItemRestController {
     public JsonResult bingDataItem(
             @RequestParam(value = "type") String type,
             @RequestParam (value = "dataIds") String dataIds1,
-                                   @RequestParam(value = "proId") String proId,
-                                   @RequestParam(value = "proName") String proName,
-                                   @RequestParam(value = "proDescription") String proDescription,
-                                   @RequestParam(value = "token") String token,
-                                   @RequestParam(value = "xml") String xml
+            @RequestParam(value = "proId") String proId,
+            @RequestParam(value = "proName") String proName,
+            @RequestParam(value = "proDescription") String proDescription,
+            @RequestParam(value = "token") String token,
+            @RequestParam(value = "xml") String xml
     ){
         JsonResult jsonResult = new JsonResult();
         ArrayList<String> url = new ArrayList<>();
@@ -1792,7 +1792,7 @@ public class DataItemRestController {
         List<Categorys> categorys1 = categoryDao.findAll();
         for (Categorys categorys2:categorys1){
             if (!categorys2.getCategory().equals("...All"))
-            categorys.add(categorys2.getCategory());
+                categorys.add(categorys2.getCategory());
         }
 
         map.put("old", categorys);
