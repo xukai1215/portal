@@ -35,4 +35,6 @@ public class DataItemFindDTO {
 
     String dataType;
 
+    String curQueryField;
+
 }

@@ -802,7 +802,23 @@ public class DataItemService {
 
     }
 
-    public JSONObject searchByName(DataItemFindDTO dataItemFindDTO,String userOid) {
+    // public Page<DataItemResultDTO> selectBySearchField(Pageable pageable, String value, String field, String type) {
+    //     Page<DataItem> result;
+    //     switch (field) {
+    //         case "Name": {
+    //             result = dataItemDao.findAllByNameLikeIgnoreCase(pageable, value);
+    //             break;
+    //         }
+    //         case "Keyword":{
+    //             result = dataItemDao.findByKey
+    //         }
+    //
+    //     }
+    //
+    //     return result;
+    // }
+
+    public JSONObject searchByCurQueryField(DataItemFindDTO dataItemFindDTO,String userOid, String curQueryField) {
         int page = dataItemFindDTO.getPage() - 1;
         int pageSize = dataItemFindDTO.getPageSize();
         String searchText = dataItemFindDTO.getSearchText();
@@ -832,39 +848,86 @@ public class DataItemService {
         Sort sort = new Sort(dataItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, dataItemFindDTO.getSortField());
         Pageable pageable = PageRequest.of(page, pageSize, sort);
         Page<DataItemResultDTO> dataItemPages;
-        if(userOid==null){
-            if (tabType.equals("hub")){
-                dataItemPages = dataHubsDao.findByNameLikeIgnoreCase(pageable, searchText);
-            }else {
-                dataItemPages = dataItemDao.findByNameLikeIgnoreCaseAndStatusNotLike(pageable, searchText,"Private");
+        // if(userOid!=null){
+        //     if (tabType.equals("hub")){
+        //         dataItemPages = dataHubsDao.findByNameLikeIgnoreCase(pageable, searchText);
+        //     }else {
+        //         dataItemPages = dataItemDao.findByNameLikeIgnoreCase(pageable, searchText);
+        //     }
+        // }else{
+        //     // tabType = "all";
+        //     if (tabType.equals("hub")){
+        //         dataItemPages = dataHubsDao.findByNameLikeAndAuthorIgnoreCase(pageable, searchText,userOid);
+        //     }else {
+        //         dataItemPages = dataItemDao.findByNameLikeAndAuthorIgnoreCaseAndStatusNotLike(pageable, searchText,userOid,"Private");
+        //     }
+        // }
+        if(tabType.equals("hub")){
+            switch (curQueryField){
+                case "Name":{
+                    dataItemPages = dataHubsDao.findByNameLikeIgnoreCase(pageable, searchText);
+                    break;
+                }
+                case "Keyword":{
+                    dataItemPages = dataHubsDao.findByKeywordsContains(pageable, searchText);
+                    break;
+                }
+                case "Content":{
+                    dataItemPages = dataHubsDao.findByDescriptionIsContaining(pageable, searchText);
+                    break;
+                }
+                case "Contributor":{
+                    dataItemPages = dataHubsDao.findByAuthorLikeIgnoreCase(pageable, searchText);
+                    break;
+                }
+                default:{
+                    System.out.println("curQueryField " + curQueryField + "is not right" );
+                    return null;
+                }
             }
-        }else{
-            tabType = "all";
-            if (tabType.equals("hub")){
-                dataItemPages = dataHubsDao.findByNameLikeAndAuthorIgnoreCase(pageable, searchText,userOid);
-            }else {
-                dataItemPages = dataItemDao.findByNameLikeAndAuthorIgnoreCaseAndStatusNotLike(pageable, searchText,userOid,"Private");
+        }else {
+            switch (curQueryField){
+                case "Name":{
+                    dataItemPages = dataItemDao.findByNameLikeIgnoreCase(pageable, searchText);
+                    break;
+                }
+                case "Keyword":{
+                    dataItemPages = dataItemDao.findByKeywordsContains(pageable, searchText);
+                    break;
+                }
+                case "Content":{
+                    dataItemPages = dataItemDao.findByDescriptionIsContaining(pageable, searchText);
+                    break;
+                }
+                case "Contributor":{
+                    dataItemPages = dataItemDao.findByAuthorLikeIgnoreCase(pageable, searchText);
+                    break;
+                }
+                default:{
+                    System.out.println("curQueryField " + curQueryField + "is not right" );
+                    return null;
+                }
             }
         }
 
         Page<DataItemResultDTO> dataItemPage;
         //匹配hubs的类别
         dataItemPage = dataItemPages;
-        long count = 0;
+        // long count = 0;
         List<DataItemResultDTO> dataItemss = dataItemPage.getContent();
         List<DataItemResultDTO> dataItems = new ArrayList<>();
-        //如果dataType为all，则全部的dataItem都取到
-        if (tabType!=null&&tabType.equals("all")){
-            dataItems = dataItemss;
-            count = dataItemPage.getTotalElements();
-        }else {
-            for (DataItemResultDTO dataItemResultDTO : dataItemss) {
-                if (dataItemResultDTO.getTabType()!=null&&dataItemResultDTO.getTabType().equals(tabType)) {
-                    dataItems.add(dataItemResultDTO);
-                    count++;
-                }
-            }
-        }
+        // //如果dataType为all，则全部的dataItem都取到     //  不应该本来就全部拿到吗？
+        // if (tabType!=null&&tabType.equals("all")){
+        dataItems = dataItemss;
+        // count = dataItemPage.getTotalElements();
+        // }else {
+        //     for (DataItemResultDTO dataItemResultDTO : dataItemss) {
+        //         if (dataItemResultDTO.getTabType()!=null&&dataItemResultDTO.getTabType().equals(tabType)) {
+        //             dataItems.add(dataItemResultDTO);
+        //             count++;
+        //         }
+        //     }
+        // }
 
 
         JSONArray users = new JSONArray();
@@ -906,7 +969,7 @@ public class DataItemService {
         Pageable pageable = PageRequest.of(page, pageSize, sort);
         Page<DataItem> dataItemResultDTOPage = Page.empty();
 //        if(loadUser==null||!loadUser.equals(oid)) {
-            dataItemResultDTOPage = dataItemDao.findByAuthorAndNameContainsAndStatusIn(pageable, oid, name, itemStatusVisible);
+        dataItemResultDTOPage = dataItemDao.findByAuthorAndNameContainsAndStatusIn(pageable, oid, name, itemStatusVisible);
 //        }else{
 //            dataItemResultDTOPage = dataItemDao.findByAuthorAndNameContains(pageable, oid, name);
 //        }
