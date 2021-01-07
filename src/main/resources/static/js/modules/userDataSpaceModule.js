@@ -260,7 +260,7 @@ Vue.component("user-data",
                         });
 
                 } else {
-                    alert("Please select data first!")
+                    this.$alert("Please select data first!")
 
                 }
             },
@@ -543,7 +543,7 @@ Vue.component("user-data",
                                 // console.log(this.myFileShown)
                                 // this.getFilePackage();
                                 // console.log(this.myFile)
-                                alert('Add folder successfully')
+                                this.$alert('Add folder successfully')
                                 this.newFolderName = '';
                                 this.addFolderIndex = false;
 
@@ -1024,7 +1024,7 @@ Vue.component("user-data",
                     // link.click();
 
                 } else {
-                    alert("please select first!!")
+                    this.$alert("please select first!!")
                 }
 
 
@@ -1633,7 +1633,7 @@ Vue.component("user-data",
 
             selectFile() {
                 if (this.selectedPath.length == 0) {
-                    alert('Please select a folder')
+                    this.$alert('Please select a folder')
                     return;
                 }
                 $("#uploadFile").click()
@@ -1652,7 +1652,7 @@ Vue.component("user-data",
                 console.log(uploadSource)
                 console.log($('.file-caption').val())
                 if (uploadSource.length == 0) {
-                    alert("Please upload the file into the template first")
+                    this.$alert("Please upload the file into the template first")
                 } else {
                     for (let i = 0; i < uploadSource.length; i++) {
                         let dataName = uploadSource[i].file_name;
@@ -1713,7 +1713,7 @@ Vue.component("user-data",
 
                 } else {
                     if (this.selectedPath.length == 0) {
-                        alert('Please select a folder')
+                        this.$alert('Please select a folder')
                         return
                     }
 

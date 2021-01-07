@@ -959,6 +959,8 @@ EditorUi.prototype.splitSize = (mxClient.IS_TOUCH || mxClient.IS_POINTER) ? 12 :
 /**
  * Specifies the height of the menubar. Default is 34.
  */
+// EditorUi.prototype.menubarHeight = 34;
+//隐藏菜单栏 -- wzh
 EditorUi.prototype.menubarHeight = 0;
 
 /**

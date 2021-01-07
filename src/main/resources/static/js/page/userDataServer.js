@@ -294,7 +294,7 @@ var userDataServer = Vue.extend(
                         page:this.pageOption.currentPage-1,
                         pageSize:this.pageOption.pageSize,
                         asc:1,
-                        sortEle:"name",
+                        sortEle:"lastModifyTime",
                         searchText: this.pageOption.searchText
                     },
                     async:false,
@@ -330,7 +330,7 @@ var userDataServer = Vue.extend(
                         page:this.pageOption.currentPage-1,
                         pageSize:this.pageOption.pageSize,
                         asc:1,
-                        sortEle:"name",
+                        sortEle:"lastModifyTime",
                         type:this.activeName,
                         searchText: this.pageOption.searchText
                     },
@@ -404,14 +404,14 @@ var userDataServer = Vue.extend(
             },
 
             bindDataMethod(item){
-                let dataSets = []
-                dataSets.push(this.configNodeData.dataSet)
+                // let dataSets = []
+                // dataSets.push(this.configNodeData.dataSet)
                 let data={
                     serverId:this.configNodeData.id,
                     name:this.configNodeData.name,
                     token:this.configNodeData.token,
                     type:this.activeName,
-                    dataSet:dataSets,
+                    dataSet:this.configNodeData.dataSet,
                     item:item.oid,
                 }
                 axios.post("/dataServer/bindDataMethod",
