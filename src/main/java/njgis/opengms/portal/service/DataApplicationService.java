@@ -558,6 +558,7 @@ public class DataApplicationService {
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setConnectTimeout(5000);
                 conn.setReadTimeout(60000);
+                //通过conn取得文件名称
                 String raw = conn.getHeaderField("Content-Disposition");
                 if(raw!=null&&raw.indexOf("=")>0){
                     fileName = raw.split("=")[1];
@@ -1180,6 +1181,19 @@ public class DataApplicationService {
             return false;
         }
     }
+
+//    /**
+//     * 利用url下载可视化结果，并存储起来
+//     * @param url 可视化结果url
+//     * @param dataServerTask task记录
+//     * @return 是否执行成功
+//     */
+//    public Boolean initVisual(String url,DataServerTask dataServerTask){
+//        boolean res = false;
+//
+//
+//        return res;
+//    }
 
 
 }

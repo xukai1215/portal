@@ -41,6 +41,9 @@ let vue = new Vue({
             },
             method:'',
             visualization:false,
+            loadingData:false,
+            dataServerTask:'',
+            visualPath:'',
             // initParameter:''
 
 
@@ -108,6 +111,7 @@ let vue = new Vue({
             }
             formData.append("dataApplicationId", this.applicationOid);
             formData.append("serviceId",this.serviceId);
+            formData.append("serviceName",this.invokeService.name);
             formData.append("params",parameters);
             formData.append("dataType",this.dataType);//标识那三种数据来源，测试数据、上传容器数据（数据容器返回的数据id）以及数据url（目前是数据容器的url）
 
@@ -125,7 +129,8 @@ let vue = new Vue({
                         window.location.href = "/user/login";
                     }else if (json.code === 0){
                         console.log(json);
-                        that.resultData = json.data;
+                        that.resultData = json.data.invokeService;
+                        that.dataServerTask = json.data.task;
                         if(json.data == null){
                             that.$message({
                                 type:"error",
@@ -297,7 +302,7 @@ let vue = new Vue({
         },
         loadTestData(){
             let that = this;
-            this.loading = true;
+            this.loadingData = true;
             //分为load本地测试数据与其他节点的数据
             if(this.isPortal){
                 //门户节点的测试数据load，主要还是从testData里拿数据
@@ -326,7 +331,7 @@ let vue = new Vue({
                     tempArray = Object.assign([],this.metaDetail.Input)
                     this.$set(this.metaDetail, "Input", tempArray);
                     this.dataType = 'localData';
-                    this.loading = false;
+                    this.loadingData = false;
                 }
                 if(len != this.testData.length){
                     this.$message({
@@ -361,7 +366,7 @@ let vue = new Vue({
                                 that.$set(this.metaDetail, "Input", tempArray);
                                 that.dataType = 'onlineData';
                             }
-                            that.loading = false;
+                            that.loadingData = false;
                         }
                     })
             }
@@ -372,10 +377,19 @@ let vue = new Vue({
         confirmData(){
 
         },
-        savePicture(){
-            let url = this.invokeService.cacheUrl;
-            axios.get("/dataApplication/visualOut").then((res)=>{
+        initPicture(){
+            // let url = this.invokeService.cacheUrl;
+            let formData=new FormData();
+            var that = this;
+            formData.append("dataUrl",this.invokeService.cacheUrl);
+            formData.append("taskId",this.dataServerTask.oid);
 
+            axios.post("/dataApplication/initPicture",formData).then((res)=>{
+                if(res.status === 200){
+                    console.log(res.data.data);
+                    that.visualPath = res.data.data.visualPath;
+                    that.visualization = true;
+                }
             })
         }
     },
