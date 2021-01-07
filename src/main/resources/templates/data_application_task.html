@@ -109,8 +109,8 @@
                     </div>
                     <div class="introContent">
                         <h4 class="desc-title">Introduction</h4>
-                        <div v-for="(item,index) in metaDetail.Description">
-                            <p class="desc">{{item}}</p>
+                        <div>
+                            <p class="desc">{{metaDetail.description}}</p>
                         </div>
                         <br>
                         <span class="model_date">Updated at <span
@@ -144,7 +144,7 @@
                                 <el-row class="_title">Input</el-row>
                                 <div class="_items">
 <!--                                    <p>{{metaDetail.Input}}</p>-->
-                                    <el-row v-for="(item,index) in metaDetail.Input">
+                                    <el-row v-for="(item,index) in metaDetail.input">
                                         <el-col :span="11" class="_event-desc">
                                                         <span class="event-name">
                                                             <span style="color:red">*</span>
@@ -183,7 +183,7 @@
                             <div class="_params-group">
                                 <el-row class="_title">Parameter</el-row>
                                 <div class="_items">
-                                    <el-row v-for="(item,index) in metaDetail.Parameter">
+                                    <el-row v-for="(item,index) in metaDetail.parameter">
                                         <el-col :span="11" class="_event-desc">
                                                         <span class="event-name">
                                                             <span style="color:red">*</span>

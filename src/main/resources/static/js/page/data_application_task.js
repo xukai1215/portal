@@ -84,16 +84,16 @@ let vue = new Vue({
         invokeNow(){
             let that = this;
             //判断参数是否已填
-            if(null==this.metaDetail.Input[0].loadName){
+            if(null==this.metaDetail.input[0].loadName){
                 this.$message({
                     type:"error",
                     message:"No data loaded"
                 })
                 return ;
             }
-            if(this.metaDetail.Parameter.length!=0){
-                for(let i=0;i<this.metaDetail.Parameter.length;i++){
-                    if(null == this.metaDetail.Parameter[i].value){
+            if(this.metaDetail.parameter.length!=0){
+                for(let i=0;i<this.metaDetail.parameter.length;i++){
+                    if(null == this.metaDetail.parameter[i].value){
                         this.$message({
                             type:"error",
                             message:"Please improve the parameters!"
@@ -106,8 +106,8 @@ let vue = new Vue({
             this.loading = true;
             let formData = new FormData();
             let parameters = new Array();
-            for(let i=0;i<this.metaDetail.Parameter.length;i++){
-                parameters.push(this.metaDetail.Parameter[i].value);
+            for(let i=0;i<this.metaDetail.parameter.length;i++){
+                parameters.push(this.metaDetail.parameter[i].value);
             }
             formData.append("dataApplicationId", this.applicationOid);
             formData.append("serviceId",this.serviceId);
@@ -116,7 +116,7 @@ let vue = new Vue({
             formData.append("dataType",this.dataType);//标识那三种数据来源，测试数据、上传容器数据（数据容器返回的数据id）以及数据url（目前是数据容器的url）
 
             if(this.dataType!='localData'){
-                formData.append("selectData", JSON.stringify(this.metaDetail.Input));//此项为可选，可有可无
+                formData.append("selectData", JSON.stringify(this.metaDetail.input));//此项为可选，可有可无
             }
             $.ajax({
                 url:"/dataApplication/invokeMethod",
@@ -202,7 +202,7 @@ let vue = new Vue({
             let refLink=$(".downloadInfoBtn");
             for(let i=0;i<refLink.length;i++){
                 if(event.currentTarget===refLink[i]){
-                    window.location.href = this.metaDetail.Input[i].url;
+                    window.location.href = this.metaDetail.input[i].url;
                     break;
                 }
             }
@@ -287,10 +287,10 @@ let vue = new Vue({
             }
 
             let name = this.selectedFile[0].label + '.' + this.selectedFile[0].suffix;
-            for (let i=0;i<this.metaDetail.Input.length;i++){
-                if(this.metaDetail.Input[i].name === name){
-                    this.metaDetail.Input[i].loadName = name;
-                    this.metaDetail.Input[i].url = this.selectedFile[0].url;
+            for (let i=0;i<this.metaDetail.input.length;i++){
+                if(this.metaDetail.input[i].name === name){
+                    this.metaDetail.input[i].loadName = name;
+                    this.metaDetail.input[i].url = this.selectedFile[0].url;
                     break;
                 }
             }
@@ -306,7 +306,7 @@ let vue = new Vue({
             //分为load本地测试数据与其他节点的数据
             if(this.isPortal){
                 //门户节点的测试数据load，主要还是从testData里拿数据
-                if(this.metaDetail.Input.length!=this.testData.length){
+                if(this.metaDetail.input.length!=this.testData.length){
                     this.$message({
                         message: 'data numbers not match',
                         type: 'warning'
@@ -320,16 +320,16 @@ let vue = new Vue({
                         name:this.testData[i].name,
                     };
                     this.selectData.push(data);
-                    for(let j=0;j<this.metaDetail.Input.length;j++){
-                        if(this.testData[i].name === this.metaDetail.Input[j].name){
+                    for(let j=0;j<this.metaDetail.input.length;j++){
+                        if(this.testData[i].name === this.metaDetail.input[j].name){
                             len++;
-                            this.metaDetail.Input[j].url = this.testData[i].url;
-                            this.metaDetail.Input[j].loadName = this.testData[i].name;
+                            this.metaDetail.input[j].url = this.testData[i].url;
+                            this.metaDetail.input[j].loadName = this.testData[i].name;
                             break;
                         }
                     }
-                    tempArray = Object.assign([],this.metaDetail.Input)
-                    this.$set(this.metaDetail, "Input", tempArray);
+                    tempArray = Object.assign([],this.metaDetail.input)
+                    this.$set(this.metaDetail, "input", tempArray);
                     this.dataType = 'localData';
                     this.loadingData = false;
                 }
@@ -351,19 +351,19 @@ let vue = new Vue({
                                 });
                             }else if(res.data.code == 0){
                                 console.log(res.data);
-                                console.log(that.metaDetail.Input);
+                                console.log(that.metaDetail.input);
                                 let fileInfo = res.data.data.id;
-                                for(let i=0;i<that.metaDetail.Input.length;i++){
+                                for(let i=0;i<that.metaDetail.input.length;i++){
                                     for (let j=0;j<fileInfo.length;j++){
-                                        if (that.metaDetail.Input[i].name === fileInfo[j].file_name){
-                                            that.metaDetail.Input[i].loadName = fileInfo[j].file_name;
-                                            that.metaDetail.Input[i].url = fileInfo[j].url;
+                                        if (that.metaDetail.input[i].name === fileInfo[j].file_name){
+                                            that.metaDetail.input[i].loadName = fileInfo[j].file_name;
+                                            that.metaDetail.input[i].url = fileInfo[j].url;
                                             break;
                                         }
                                     }
                                 }
-                                tempArray = Object.assign([],that.metaDetail.Input)
-                                that.$set(this.metaDetail, "Input", tempArray);
+                                tempArray = Object.assign([],that.metaDetail.input)
+                                that.$set(this.metaDetail, "input", tempArray);
                                 that.dataType = 'onlineData';
                             }
                             that.loadingData = false;
@@ -432,7 +432,7 @@ let vue = new Vue({
         axios.get("/dataApplication/getParemeter/" + this.applicationOid +'/' + this.serviceId).then((res) => {
             if (res.status === 200) {
                 console.log(res.data);
-                that.metaDetail = res.data.data.Capability.data.metaDetail;
+                that.metaDetail = res.data.data.capability.data.metaDetail;
             }
         })
 
