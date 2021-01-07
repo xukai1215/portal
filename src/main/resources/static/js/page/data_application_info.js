@@ -214,75 +214,12 @@ var data_application_info = new Vue({
                         let href=window.location.href;
                         let hrefs=href.split('/');
                         let oid=hrefs[hrefs.length-1].split("#")[0];
-
-                        // this.modelOid=oid;
                         window.location.href = '/user/userSpace#/data/manageDataApplication/'+oid;
-                        // this.editComputableModelDialog=true;
-                        // $.ajax({
-                        //     type: "GET",
-                        //     url: "/computableModel/getUserOidByOid",
-                        //     data: {
-                        //         oid:oid
-                        //     },
-                        //     cache: false,
-                        //     async: false,
-                        //     xhrFields: {
-                        //         withCredentials: true
-                        //     },
-                        //     crossDomain: true,
-                        //     success: (json) => {
-                        //         // if(json.data==data.oid){
-                        //         window.sessionStorage.setItem("editComputableModel_id",oid)
-                        //         window.location.href="/user/createComputableModel";
-                        //         // }
-                        //         // else{
-                        //         //     alert("You are not the model item's author, please contact to the author to modify the model item.")
-                        //         // }
-                        //     }
-                        // });
+
                     }
                 }
             })
         },
-
-        // setSession(name, value) {
-        //     window.sessionStorage.setItem(name, value);
-        // },
-
-        // deploy(){
-        //     this.contentBeforeDeploy=false;
-        //     this.contentDeploying=true;
-        //     this.footerBeforeDeploy=false;
-        //
-        //     const hrefs=window.location.href.split("/");
-        //     const oid=hrefs[hrefs.length-1];
-        //     console.log(oid)
-        //     $.ajax({
-        //         type: "POST",
-        //         url: "/computableModel/deploy/"+oid,
-        //         data: {},
-        //         async: true,
-        //         success: (json) => {
-        //             setTimeout(() => {
-        //                 this.contentDeploying = false;
-        //                 if (json.code == 0) {
-        //                     this.contentAfterDeploy_suc = true;
-        //                 }
-        //                 else {
-        //                     this.contentAfterDeploy_fail = true;
-        //                 }
-        //                 this.footerAfterDeploy = true;
-        //             },500)
-        //         }
-        //     })
-        // },
-        // invoke(){
-        //     const href=window.location.href;
-        //
-        //     const hrefs=href.split("/");
-        //     console.log(hrefs);
-        //     window.location.href="/task/"+hrefs[hrefs.length-1];
-        // },
 
 
         handleDownload(index,row){
@@ -306,10 +243,6 @@ var data_application_info = new Vue({
         },
 
         share(){
-            // if(this.dataid==''){
-            //     this.$message('please select file first!!');
-            // }
-
             let item =this.databrowser[this.dataid]
 
             if(item!=null){
@@ -347,12 +280,6 @@ var data_application_info = new Vue({
             return ev.fileName+"\n"+"Type:"+ev.suffix;
         },
         downloaddata(){
-
-            // if(this.dataid==undefined){
-            //     this.$message('please select file first!!');
-            // }
-            // console.log("downid"+this.dataid)
-
             let item =this.databrowser[this.dataid];
 
             if(item!=null){
@@ -480,12 +407,6 @@ var data_application_info = new Vue({
                     //往contents里添加card
                     document.getElementById("browsercont").appendChild(searchresultcard);
 
-                    //DOM2级事件绑定
-
-                    // searchresultcard.addEventListener('click',()=>{
-                    //    //点击赋值id
-                    //     this.dataid=i;
-                    // });
                     searchresultcard.click(function () {
                         this.dataid=i;
                     })
@@ -501,30 +422,6 @@ var data_application_info = new Vue({
             axios.get('/dataApplication/getApplication/' + oid).then((res) => {
                 if(res.status === 200) {
                     that.methodsData = res.data.data.invokeServices;
-                    //处理methodsData
-                    // var token = [];
-                    // for (let i=0;i<that.methodsData.length;i++){
-                    //     token.push(that.methodsData[i].token);
-                    // }
-                    // var res = [];
-                    // token.forEach(function (element, sameElement, set) {
-                    //     res.push(element);
-                    // });
-                    // let formdata = new FormData();
-                    // formdata.append("token", token);
-                    // axios.post('/dataApplication/getOnlineStatus',formdata).then((res) =>{
-                    //     if(res.status === 200){
-                    //         console.log("success");
-                    //         var onlineStatus = res.data.data;
-                    //         for(let i=0;i<that.methodsData.length;i++){
-                    //             that.methodsData[i].onlineStatus = onlineStatus[i];
-                    //         }
-                    //     }
-                    // })
-                    // that.methodsData.push(temp1)
-                    // if(res.data.data.invokeServices) {
-                    //     that.methodsData = res.data.data.invokeServices
-                    // }
                     that.viewCount = res.data.data.viewCount
                 }
             }).catch(function (err) {console.log(err)})
@@ -546,30 +443,8 @@ var data_application_info = new Vue({
                     }
                 }
             }
-            // let str = window.location.href.split('/')
-            // let oid = str[str.length-1]
-            // return "/dataApplication/task/"+oid
         },
-        // filterTag(value, row) {
-        //     return row.tag === value;
-        // },
-        // filterHandler(value, row, column) {
-        //     const property = column['property'];
-        //     return row[property] === value;
-        // },
 
-        // showMxGraph(){
-        //     $("#ModelShow").show();
-        //
-        //     document.body.scrollTop = 0;
-        //     document.documentElement.scrollTop = 0;
-        //     document.body.style.overflowY="hidden";
-        // },
-
-        // hideMxGraph(){
-        //     $("#ModelShow").hide();
-        //     document.body.style.overflowY="auto";
-        // }
 
         // 表格
         createService(){
