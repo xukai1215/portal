@@ -41,6 +41,9 @@
         .el-collapse-item__header{
             font-size: 14px;
         }
+        .el-input__inner{
+            background-color: #f5f7fa;
+        }
     </style>
 
 </head>
@@ -114,9 +117,17 @@
             </div>
             <div class="el-col el-col-18 minScreen_maxWidth" >
                 <div class="searcherPanel">
+                    <el-select v-model="curQueryField" slot="prepend" style="width:120px;border-radius: 0;margin-right: 0;float: left;">
+                        <el-option
+                                v-for="qf in queryFields"
+                                :key="qf"
+                                :label="qf"
+                                :value="qf">
+                        </el-option>
+                    </el-select>
                     <div class="searcherPanel">
-                        <div class="searcherInputPanel" @keydown.enter="search()">
-                            <input id="searchBox" type="text" placeholder="Data Item Name..." v-model="searchText">
+                        <div class="searcherInputPanel" @keydown.enter="search()" style="width: calc(100% - 120px);margin-left: 0">
+                            <input id="searchBox" type="text" :placeholder="'Data Item ' + curQueryField + ' ...'" v-model="searchText">
                             <button @click="search()"><i class="glyphicon glyphicon-search"></i> Search</button>
                         </div>
                     </div>
@@ -223,23 +234,23 @@
                                    :total="datacount">
                     </el-pagination>
                 </div>
-<!--                <div class="manyhub" >-->
-<!--                    <div>-->
-<!--                        <el-card class="hub_items" v-for="(item,index) in list" :key="index" style="width:20%;height: 140px;float: left;margin-top: 10px">-->
-<!--                            <div class="el-row" >-->
-<!--                                <a   :href="item.url" target="_blank"  >-->
-<!--                                    <avatar  :username="item.title"  :size="100"-->
-<!--                                             class="center-block" ></avatar>-->
-<!--                                </a>-->
-<!--                            </div>-->
-<!--                            <center><a :href=item.url target="_blank" :title=item.url><h5>{{item.title}}</h5></a></center>-->
-<!--                        </el-card>-->
-<!--                    </div>-->
-<!--                    <br>-->
-<!--                    <div class="el-row" ><br>-->
-<!--                        <center><el-button  v-loading="loading" id="addmore" @click="addmorehubs">View More</el-button></center>-->
-<!--                    </div>-->
-<!--                </div>-->
+                <!--                <div class="manyhub" >-->
+                <!--                    <div>-->
+                <!--                        <el-card class="hub_items" v-for="(item,index) in list" :key="index" style="width:20%;height: 140px;float: left;margin-top: 10px">-->
+                <!--                            <div class="el-row" >-->
+                <!--                                <a   :href="item.url" target="_blank"  >-->
+                <!--                                    <avatar  :username="item.title"  :size="100"-->
+                <!--                                             class="center-block" ></avatar>-->
+                <!--                                </a>-->
+                <!--                            </div>-->
+                <!--                            <center><a :href=item.url target="_blank" :title=item.url><h5>{{item.title}}</h5></a></center>-->
+                <!--                        </el-card>-->
+                <!--                    </div>-->
+                <!--                    <br>-->
+                <!--                    <div class="el-row" ><br>-->
+                <!--                        <center><el-button  v-loading="loading" id="addmore" @click="addmorehubs">View More</el-button></center>-->
+                <!--                    </div>-->
+                <!--                </div>-->
             </div>
         </div>
     </div>

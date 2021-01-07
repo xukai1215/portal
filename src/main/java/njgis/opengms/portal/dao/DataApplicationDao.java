@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import javax.xml.crypto.Data;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,4 +60,13 @@ public interface DataApplicationDao extends MongoRepository<DataApplication, Str
     // Page<DataApplication> findAllByContentTypeAndNameContainsIgnoreCaseAndClassificationsIn(String contentType,String Name,List<String> cls,Pageable pageable);
 
 //    DataApplication find
+
+    Page<DataApplication> findAllByNameContainsIgnoreCase(String name, Pageable pageable);
+    // Page<DataApplication> findAllByKeywordsContainsIgnoreCase(String keyword, Pageable pageable);
+    Page<DataApplication> findAllByDescriptionContainsIgnoreCase(String content, Pageable pageable);
+    Page<DataApplication> findAllByAuthorLikeIgnoreCase(String author, Pageable pageable);
+    Page<DataApplication> findAllByNameContainsIgnoreCaseAndMethodLikeIgnoreCase(String name, String method, Pageable pageable);
+    // Page<DataApplication> findAllByKeywordsContainsIgnoreCaseAndMethodLikeIgnoreCase(String keyword, String method, Pageable pageable);
+    Page<DataApplication> findAllByDescriptionContainsIgnoreCaseAndMethodLikeIgnoreCase(String content, String method, Pageable pageable);
+    Page<DataApplication> findAllByAuthorLikeIgnoreCaseAndMethodLikeIgnoreCase(String author, String method, Pageable pageable);
 }

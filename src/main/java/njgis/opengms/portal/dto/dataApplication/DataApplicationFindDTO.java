@@ -25,6 +25,8 @@ public class DataApplicationFindDTO {
 
     String method;
 
+    String curQueryField;
+
     //用做多条件查询
     //private List<String> properties;
 
