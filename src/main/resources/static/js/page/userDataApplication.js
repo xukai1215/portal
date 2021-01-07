@@ -213,7 +213,7 @@ var userDataApplication = Vue.extend(
 
             deleteItem(oid) {
                 // let a=this.$route.params.modelitemKind
-                if (confirm("Are you sure to delete this model?")) {
+                if (confirm("Are you sure to delete this data application?")) {
 
                     $.ajax({
                         type: "POST",

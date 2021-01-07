@@ -79,7 +79,11 @@
 <div id="app" v-cloak>
     <div th:replace="fragments/navbar :: unlog"></div>
     <div>
-        <div class="clearfix" style="max-height: 100vh;overflow: auto;" v-loading="loading">
+        <div class="clearfix" style="max-height: 100vh;overflow: auto;"
+             v-loading="loading"
+             element-loading-text="The data service is running, please do not close this page"
+             element-loading-spinner="el-icon-loading"
+             element-loading-background="rgba(0, 0, 0, 0.8)">
             <div class="el-col el-col-5" role="applicationIntro" id="applicationSider" style="min-width: 220px;position: fixed;width: 23%;">
                 <div id="introContainer" class="slider">
                     <div class="introHeader">
@@ -136,7 +140,7 @@
                             </el-row>
                         </el-row>
                         <div class="dataContainer" style="width: 100%">
-                            <div class="_params-group">
+                            <div class="_params-group"  v-loading="loadingData">
                                 <el-row class="_title">Input</el-row>
                                 <div class="_items">
 <!--                                    <p>{{metaDetail.Input}}</p>-->
@@ -235,7 +239,7 @@
                                                         <i class="fa fa-download"></i>
                                                     </el-button>
 
-                                                    <el-button plain round type="primary" v-if="method === 'Visualization'" @click="visualization = true,savePicture()">
+                                                    <el-button plain round type="primary" v-if="method === 'Visualization'" @click="initPicture()">
                                                         <i class="fa fa-eye"></i>
                                                     </el-button>
                                                 </div>
@@ -301,8 +305,10 @@
     <el-dialog
             title="Visualization Show"
             :visible.sync="visualization"
-            width="30%">
-        <span></span>
+            width="50%">
+        <span>
+            <img style="display:inline;width: 100%;height: 100%;" :src="visualPath"/>
+        </span>
         <span slot="footer" class="dialog-footer">
     <el-button @click="visualization = false">Cancel</el-button>
 <!--    <el-button type="primary" @click="dialogVisible = false">Confirm</el-button>-->
