@@ -538,6 +538,15 @@ var info=new Vue({
             this.modelRelationGraphSideBarShow = false;
         },
 
+        relateModelItemListShowChange(val){
+            console.log(val);
+            if(val) {
+                this.generateModelRelationGraph();
+            }else{
+                this.closeModelRelationGraph();
+            }
+        },
+
         generateModelRelationGraph(){
             this.modelRelationListShow = false;
 
@@ -559,6 +568,13 @@ var info=new Vue({
                         if(param.value !== undefined){
                             this.curRelation=param.value;
                             this.modelRelationGraphSideBarShow = true;
+                            // setTimeout(()=>{
+                            //     let titleHeight = $(".mr_title").css("height")
+                            //     let height = 550 - 45 - 5 - parseInt(titleHeight.substring(0,titleHeight.length-2));
+                            //     $(".mr_content").css("height", height+"px")
+                            // }, 100);
+
+
                         }
 
                         console.log(param)
@@ -713,18 +729,17 @@ var info=new Vue({
                         },
                         tooltip: {},
                         toolbox: {
+                            right:10,
                             feature: {
 
-                                restore: {},
-                                saveAsImage: {},
                                 myFull: {
                                     show: true,
                                     title: 'Full Screen',
                                     icon: 'path://M432.45,595.444c0,2.177-4.661,6.82-11.305,6.82c-6.475,0-11.306-4.567-11.306-6.82s4.852-6.812,11.306-6.812C427.841,588.632,432.452,593.191,432.45,595.444L432.45,595.444z M421.155,589.876c-3.009,0-5.448,2.495-5.448,5.572s2.439,5.572,5.448,5.572c3.01,0,5.449-2.495,5.449-5.572C426.604,592.371,424.165,589.876,421.155,589.876L421.155,589.876z M421.146,591.891c-1.916,0-3.47,1.589-3.47,3.549c0,1.959,1.554,3.548,3.47,3.548s3.469-1.589,3.469-3.548C424.614,593.479,423.062,591.891,421.146,591.891L421.146,591.891zM421.146,591.891',
                                     onclick: (e)=>{
                                         let opts = e.getOption();
-                                        opts.toolbox[0].feature.myFull.show=false;
-                                        opts.toolbox[0].feature.myFullExit.show=true;
+                                        opts.toolbox[0].feature.myFull={};//.show=false;
+                                        // opts.toolbox[0].feature.myFullExit.show=true;
                                         this.graphFullScreen = true;
                                         setTimeout(()=>{
                                             let object = document.getElementById('fullScreenGraph');
@@ -755,15 +770,17 @@ var info=new Vue({
 
                                     }
                                 },
-                                myFullExit: {
-                                    show: false,
-                                    title: 'Exit',
-                                    icon: 'path://M432.45,595.444c0,2.177-4.661,6.82-11.305,6.82c-6.475,0-11.306-4.567-11.306-6.82s4.852-6.812,11.306-6.812C427.841,588.632,432.452,593.191,432.45,595.444L432.45,595.444z M421.155,589.876c-3.009,0-5.448,2.495-5.448,5.572s2.439,5.572,5.448,5.572c3.01,0,5.449-2.495,5.449-5.572C426.604,592.371,424.165,589.876,421.155,589.876L421.155,589.876z M421.146,591.891c-1.916,0-3.47,1.589-3.47,3.549c0,1.959,1.554,3.548,3.47,3.548s3.469-1.589,3.469-3.548C424.614,593.479,423.062,591.891,421.146,591.891L421.146,591.891zM421.146,591.891',
-                                    onclick: (e)=>{
-                                        this.graphFullScreen = false;
-
-                                    }
-                                },
+                                saveAsImage: {},
+                                restore: {},
+                                // myFullExit: {
+                                //     show: false,
+                                //     title: 'Exit',
+                                //     icon: 'path://M432.45,595.444c0,2.177-4.661,6.82-11.305,6.82c-6.475,0-11.306-4.567-11.306-6.82s4.852-6.812,11.306-6.812C427.841,588.632,432.452,593.191,432.45,595.444L432.45,595.444z M421.155,589.876c-3.009,0-5.448,2.495-5.448,5.572s2.439,5.572,5.448,5.572c3.01,0,5.449-2.495,5.449-5.572C426.604,592.371,424.165,589.876,421.155,589.876L421.155,589.876z M421.146,591.891c-1.916,0-3.47,1.589-3.47,3.549c0,1.959,1.554,3.548,3.47,3.548s3.469-1.589,3.469-3.548C424.614,593.479,423.062,591.891,421.146,591.891L421.146,591.891zM421.146,591.891',
+                                //     onclick: (e)=>{
+                                //         this.graphFullScreen = false;
+                                //
+                                //     }
+                                // },
                             }
                         },
                         animationDurationUpdate: 500,
@@ -2143,11 +2160,15 @@ var info=new Vue({
         }
 
         let panes = $(".el-tab-pane")
-        for(i=0;i<3;i++){
-            let list_size = panes.eq(i).children("div").children(".list_panel").length;
-            if(list_size>0){
-                this.activeName = panes[i].id.replace("pane-","");
-                break;
+        if(modelInfo.relate.computableModels.length>0){
+            this.activeName = "Computable Model";
+        }else {
+            for (i = 0; i < 3; i++) {
+                let list_size = panes.eq(i).children("div").children(".list_panel").length;
+                if (list_size > 0) {
+                    this.activeName = panes[i].id.replace("pane-", "");
+                    break;
+                }
             }
         }
 

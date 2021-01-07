@@ -145,8 +145,7 @@
 
             </div>
 
-            <div id="Authorship0" class="detail_block minScreen"
-                 th:if="${modelInfo.authorship!=null&&#lists.size(modelInfo.authorship)!=0}">
+            <div id="Authorship0" class="detail_block minScreen">
                 <div class="block_head">
                     <div class="head_text" style="padding-left: 10px;padding-right: 15px;display: inline-flex">                         <h4>Authorship</h4>                         <el-tooltip popper-class="fontsize-15" effect="light"                                     content="We deeply understand that a model may be attributed to the efforts of a team. If all author information is not listed here, please click the feedback below."                                     placement="top">                             <i class="fa fa-question-circle-o" aria-hidden="true" style="margin-top:4px;cursor:help;"></i>                         </el-tooltip>                     </div>
                 </div>
@@ -172,6 +171,16 @@
                                 </dl>
                             </div>
                         </div>
+                    </div>
+                    <!--<div th:if="${modelInfo.authorship==null||#lists.size(modelInfo.authorship)==0}">-->
+                        <!--<el-tag type="info">Authorship is unclear, you can <a href="javascript:void(0)" @click="claim"-->
+                                                                              <!--style="text-decoration: underline">claim</a>-->
+                            <!--the item.-->
+                        <!--</el-tag>-->
+                    <!--</div>-->
+                    <div th:if="${history!=true && #lists.size(modelInfo.authorship)>0}">
+                        <el-tag type="info">Is authorship not correct? <a href="javascript:void(0)" @click="feedBack"
+                                                                          style="text-decoration: underline">Feedback</a></el-tag>
                     </div>
                 </div>
             </div>
@@ -390,8 +399,7 @@
 
             </div>
 
-            <div id="Authorship" class="detail_block"
-                 th:if="${modelInfo.authorship!=null&&#lists.size(modelInfo.authorship)!=0}">
+            <div id="Authorship" class="detail_block">
                 <div class="block_head">
                     <div class="head_text" style="padding-left: 10px;padding-right: 15px;display: inline-flex">                         <h4>Authorship</h4>                         <el-tooltip popper-class="fontsize-15" effect="light"                                     content="We deeply understand that a model may be attributed to the efforts of a team. If all author information is not listed here, please click the feedback below."                                     placement="top">                             <i class="fa fa-question-circle-o" aria-hidden="true" style="margin-top:4px;cursor:help;"></i>                         </el-tooltip>                     </div>
                 </div>
@@ -416,6 +424,16 @@
                                 </dl>
                             </div>
                         </div>
+                    </div>
+                    <!--<div th:if="${modelInfo.authorship==null||#lists.size(modelInfo.authorship)==0}">-->
+                        <!--<el-tag type="info">Authorship is unclear, you can <a href="javascript:void(0)" @click="claim"-->
+                                                                              <!--style="text-decoration: underline">claim</a>-->
+                            <!--the item.-->
+                        <!--</el-tag>-->
+                    <!--</div>-->
+                    <div th:if="${history!=true && #lists.size(modelInfo.authorship)>0}">
+                        <el-tag type="info">Is authorship not correct? <a href="javascript:void(0)" @click="feedBack"
+                                                                          style="text-decoration: underline">Feedback</a></el-tag>
                     </div>
                 </div>
             </div>
