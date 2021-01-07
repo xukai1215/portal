@@ -1828,7 +1828,7 @@ PageSetupDialog.getFormats = function()
 						graph.container.insertBefore(this.backgroundPageShape.node, firstChild);
 						this.backgroundPageShape.redraw();
 						
-						this.backgroundPageShape.node.className = 'geBackgroundPage';
+						this.backgroundPageShape.node.className = ' geBackgroundPage';
 						
 						// Adds listener for double click handling on background
 						mxEvent.addListener(this.backgroundPageShape.node, 'dblclick',
@@ -1837,7 +1837,7 @@ PageSetupDialog.getFormats = function()
 								graph.dblClick(evt);
 							})
 						);
-						
+
 						// Adds basic listeners for graph event dispatching outside of the
 						// container and finishing the handling of a single gesture
 						mxEvent.addGestureListeners(this.backgroundPageShape.node,

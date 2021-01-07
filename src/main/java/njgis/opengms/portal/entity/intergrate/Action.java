@@ -15,6 +15,8 @@ public class Action {
 
     private List<Map<String,Object>> inputData;
 
+    private List<Map<String,Object>> params;
+
     private Integer status = 0; // 0代表未开始，-1代表运行失败，1代表运行成功, 2代表运行超时(不存在运行中状态，省略)
 
     private String taskId;

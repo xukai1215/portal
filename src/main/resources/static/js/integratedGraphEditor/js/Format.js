@@ -65,7 +65,10 @@ Format.prototype.init = function()
 	{
 		this.refresh();
 	}));
-	
+
+	//修改纸张大小 -- wzh
+	this.changePageSize(6)
+
 	this.refresh();
 };
 
@@ -6205,8 +6208,8 @@ DataServicePanel.prototype.init = function()
 	var cell = graph.getSelectionModel().cells[0];
 
 	this.container.appendChild(this.addData(this.createPanel(),cell.inputData,cell,'input'));
-	if(cell.parameter!=undefined){
-		this.container.appendChild(this.addParameter(this.createPanel(),cell.parameter,cell));
+	if(cell.params!=undefined){
+		this.container.appendChild(this.addParameter(this.createPanel(),cell.params,cell));
 	}
 	this.container.appendChild(this.addData(this.createPanel(),cell.outputData,cell,'output'));
 };
@@ -6229,7 +6232,8 @@ DataServicePanel.prototype.addData = function(div,inputData,cell,type){
 		event.style.margin = '0px';
 		div.appendChild(event);
 
-		event = ui.sidebar.createDataServiceEventVertexTemplate('shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#003366;fillColor=none;', 170, 50, inputData[i].name, null, null, null,true, cell,true,inputData[i]);
+		event = ui.sidebar.createDataServiceEventVertexTemplate(
+			'shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#003366;fillColor=none;', 170, 50, inputData[i].name, null, null, null,true, cell,true,inputData[i]);
 
 		div.appendChild(event);
 	}
@@ -6239,21 +6243,16 @@ DataServicePanel.prototype.addData = function(div,inputData,cell,type){
 	return div;
 };
 
-DataServicePanel.prototype.addParameter = function(div,parameter,cell){
+DataServicePanel.prototype.addParameter = function(div,params,cell){
 	var ui = this.editorUi;
 
-	var title = this.createTitle("Input Events: ");
-	title.style.paddingBottom = '6px';
-	title.style.fontSize = "14px";
-	title.style.cursor = "default";
-	div.appendChild(title);
-
-	for (var i = 0; i<inputData.length; i++){
+	for (var i = 0; i<params.length; i++){
 		var event = document.createElement("p");
 		event.style.margin = '0px';
 		div.appendChild(event);
 
-		event = ui.sidebar.createDataServiceEventVertexTemplate('shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#003366;fillColor=none;', 170, 50, inputData[i].eventName, null, null, null,true, model,true,inputData[i]);
+		event = ui.sidebar.createDataServiceEventVertexTemplate(
+			'whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#003366;fillColor=none;', 136, 50, params[i].name, null, null, null,true, cell,true,params[i]);
 
 		div.appendChild(event);
 	}
@@ -6673,6 +6672,8 @@ function configCell(index){
 	}
 }
 
+
+
 function getConditionStatus(){
 	let conditionLink = graph.getSelectionModel().cells[0]
 	let condition = conditionLink.source
@@ -6700,4 +6701,21 @@ function getConditionStatus(){
 		}
 	}
 
+}
+
+Format.prototype.changePageSize = function (sizeIndex){
+	let formats = PageSetupDialog.getFormats();
+
+	let format = formats[sizeIndex]
+
+	let pageFormat = format.format
+
+	let ui = this.editorUi
+	let graph = this.editorUi.editor.graph;
+
+	let change = new ChangePageSetup(ui, null, null, pageFormat);
+	change.ignoreColor = true;
+	change.ignoreImage = true;
+
+	graph.model.execute(change);
 }
