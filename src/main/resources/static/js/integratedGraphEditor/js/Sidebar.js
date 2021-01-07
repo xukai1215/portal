@@ -123,9 +123,9 @@ Sidebar.prototype.init = function () {
 
 
   // 加载 model_tab 页面的图形
-  this.addSearchPalette(true);
+  // this.addSearchPalette(true);
 
-  this.addComputabelModel(computableModelList, true);
+  // this.addComputabelModel(computableModelList, true);
 
   // 加载 general_tab 页面的图形，在 addPalette 方法中判断了是否是general_tab
 
@@ -3151,6 +3151,9 @@ Sidebar.prototype.createDataServiceEventVertexTemplate = function (style, width,
   }else{
     cells[0].style = 'shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#23b220;fillColor=#aadcf8;'
   }
+  if(event.param){
+    cells[0].style = 'whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#f46161;fillColor=none;'
+  }
 
   return this.createVertexTemplateFromCells(cells, width, height, title, showLabel, showTitle, allowCellsInserted);
 };
@@ -3496,106 +3499,106 @@ Sidebar.prototype.destroy = function () {
  * 2019.11.27
  * 添加计算模型
  */
-Sidebar.prototype.addComputabelModel = function (computableModelList, expand) {
-
-  var elt = document.createElement('div');
-  /**
-   * 张硕
-   * 2020.05.10
-   * 将搜索框放在model_tab页面
-   */
-  // this.container.appendChild(elt);
-  this.sideModelContainer.appendChild(elt);
-
-  var div = document.createElement('div');
-  div.className = 'geSidebar';
-  div.id = 'pageModelContainer';
-  div.style.boxSizing = 'border-box';
-  div.style.overflow = 'hidden';
-  div.style.width = '100%';
-  div.style.padding = '8px';
-  div.style.paddingTop = '14px';
-  div.style.paddingBottom = '0px';
-  elt.appendChild(div);
-
-  // 填充字典
-  // for (var i=0; i<allComputableModel.length; i++){
-  //     var model = allComputableModel[i];
-  //     var modelName = model.name;
-  //     this.createVertexTemplateEntry('rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#006600;fillColor=#EEFFEE;', 210, 50, modelName, 'Computable Model', null, null, modelName,model);
-  // }
-
-  //绘制指定页码的计算模型
-  for (var j = 0; j < computableModelList.size; j++) {
-    var model = computableModelList.content[j];
-    var modelName = model.name;
-    var a = this.createStateVertexTemplate('rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#5bbbf2;fillColor=#5bbbf2;', 200, 50, modelName, model.description, null, null, modelName, model);
-    div.appendChild(a);
-  }
-
-  var pagination = document.createElement('div');
-  pagination.className = 'el-pagination';
-  pagination.style.textAlign = 'center';
-  pagination.style.marginTop = '20px';
-  elt.appendChild(pagination);
-
-  var prevBtn = document.createElement('button');
-  prevBtn.type = 'button';
-  prevBtn.className = 'btn-prev';
-  prevBtn.style.paddingRight = '0px';
-  var left = document.createElement('i');
-  left.className = 'el-icon el-icon-arrow-left';
-  prevBtn.appendChild(left);
-  pagination.appendChild(prevBtn);
-
-  var ul = document.createElement('ul');
-  ul.className = 'el-pager';
-  pagination.appendChild(ul);
-
-  if (computableModelList.totalPages > 6) {
-    for (var i = 1; i <= 5; i++) {
-      var li = document.createElement('li');
-      li.className = 'number';
-      li.id = 'number_' + i,
-          li.innerText = i;
-      li.style.minWidth = '0px';
-      if (i == 1) li.className = 'number active';
-      ul.appendChild(li);
-    }
-    var more = document.createElement('li');
-    more.className = 'el-icon more btn-quicknext el-icon-more';
-    more.style.minWidth = '0px';
-    ul.appendChild(more);
-
-    var li = document.createElement('li');
-    li.className = 'number';
-    li.id = 'number_' + computableModelList.totalPages,
-        li.innerText = computableModelList.totalPages;
-    li.style.minWidth = '0px';
-    ul.appendChild(li);
-  }
-
-
-  var nextBtn = document.createElement('button');
-  nextBtn.type = 'button';
-  nextBtn.className = 'btn-next';
-  var right = document.createElement('i');
-  right.className = 'el-icon el-icon-arrow-right';
-  nextBtn.appendChild(right);
-  pagination.appendChild(nextBtn);
-
-};
-
-Sidebar.prototype.addComputabelModelPage = function (computableModelList, div) {
-
-  //绘制指定页码的是个计算模型
-  for (var i = 0; i < computableModelList.numberOfElements; i++) {
-    var model = computableModelList.content[i];
-    var modelName = model.name;
-    var a = this.createStateVertexTemplate('rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#5bbbf2;fillColor=#5bbbf2;', 200, 50, modelName, model.description, null, null, modelName, model);
-    div.appendChild(a);
-  }
-};
+// Sidebar.prototype.addComputabelModel = function (computableModelList, expand) {
+//
+//   var elt = document.createElement('div');
+//   /**
+//    * 张硕
+//    * 2020.05.10
+//    * 将搜索框放在model_tab页面
+//    */
+//   // this.container.appendChild(elt);
+//   this.sideModelContainer.appendChild(elt);
+//
+//   var div = document.createElement('div');
+//   div.className = 'geSidebar';
+//   div.id = 'pageModelContainer';
+//   div.style.boxSizing = 'border-box';
+//   div.style.overflow = 'hidden';
+//   div.style.width = '100%';
+//   div.style.padding = '8px';
+//   div.style.paddingTop = '14px';
+//   div.style.paddingBottom = '0px';
+//   elt.appendChild(div);
+//
+//   // 填充字典
+//   // for (var i=0; i<allComputableModel.length; i++){
+//   //     var model = allComputableModel[i];
+//   //     var modelName = model.name;
+//   //     this.createVertexTemplateEntry('rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#006600;fillColor=#EEFFEE;', 210, 50, modelName, 'Computable Model', null, null, modelName,model);
+//   // }
+//
+//   //绘制指定页码的计算模型
+//   for (var j = 0; j < computableModelList.size; j++) {
+//     var model = computableModelList.content[j];
+//     var modelName = model.name;
+//     var a = this.createStateVertexTemplate('rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#5bbbf2;fillColor=#5bbbf2;', 200, 50, modelName, model.description, null, null, modelName, model);
+//     div.appendChild(a);
+//   }
+//
+//   var pagination = document.createElement('div');
+//   pagination.className = 'el-pagination';
+//   pagination.style.textAlign = 'center';
+//   pagination.style.marginTop = '20px';
+//   elt.appendChild(pagination);
+//
+//   var prevBtn = document.createElement('button');
+//   prevBtn.type = 'button';
+//   prevBtn.className = 'btn-prev';
+//   prevBtn.style.paddingRight = '0px';
+//   var left = document.createElement('i');
+//   left.className = 'el-icon el-icon-arrow-left';
+//   prevBtn.appendChild(left);
+//   pagination.appendChild(prevBtn);
+//
+//   var ul = document.createElement('ul');
+//   ul.className = 'el-pager';
+//   pagination.appendChild(ul);
+//
+//   if (computableModelList.totalPages > 6) {
+//     for (var i = 1; i <= 5; i++) {
+//       var li = document.createElement('li');
+//       li.className = 'number';
+//       li.id = 'number_' + i,
+//           li.innerText = i;
+//       li.style.minWidth = '0px';
+//       if (i == 1) li.className = 'number active';
+//       ul.appendChild(li);
+//     }
+//     var more = document.createElement('li');
+//     more.className = 'el-icon more btn-quicknext el-icon-more';
+//     more.style.minWidth = '0px';
+//     ul.appendChild(more);
+//
+//     var li = document.createElement('li');
+//     li.className = 'number';
+//     li.id = 'number_' + computableModelList.totalPages,
+//         li.innerText = computableModelList.totalPages;
+//     li.style.minWidth = '0px';
+//     ul.appendChild(li);
+//   }
+//
+//
+//   var nextBtn = document.createElement('button');
+//   nextBtn.type = 'button';
+//   nextBtn.className = 'btn-next';
+//   var right = document.createElement('i');
+//   right.className = 'el-icon el-icon-arrow-right';
+//   nextBtn.appendChild(right);
+//   pagination.appendChild(nextBtn);
+//
+// };
+//
+// Sidebar.prototype.addComputabelModelPage = function (computableModelList, div) {
+//
+//   //绘制指定页码的是个计算模型
+//   for (var i = 0; i < computableModelList.numberOfElements; i++) {
+//     var model = computableModelList.content[i];
+//     var modelName = model.name;
+//     var a = this.createStateVertexTemplate('rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#5bbbf2;fillColor=#5bbbf2;', 200, 50, modelName, model.description, null, null, modelName, model);
+//     div.appendChild(a);
+//   }
+// };
 
 /**
  * 张硕
@@ -3833,6 +3836,7 @@ Sidebar.prototype.addDataProcessToGraph = function (info) {
   cell.frontId = info.id
   cell.inputData = info.inputData;
   cell.outputData = info.outputData;
+  cell.params = info.params;
 
   // ds.drop(graph, evt, null, pt.x, pt.y, true);
 }

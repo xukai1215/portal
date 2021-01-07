@@ -118,19 +118,24 @@ public class DataServerService {
         String url = "http://" + dataServerManager+"/onlineNodes";
 
         RestTemplate restTemplate = new RestTemplate(httpRequestFactory);
-        String xml = restTemplate.getForObject(url,String.class);
+        String xml = null;
+        try{
+            xml = restTemplate.getForObject(url,String.class);
+        }catch (Exception e){
+            JSONObject json = new JSONObject();
+            return json;
+        }
 
         if(xml.equals("err")){
             JSONObject json = new JSONObject();
             return json;
         }
 
-
-
         JSONObject jsonObject = XmlTool.xml2Json(xml);
+        JSONObject jsonNodeInfo = jsonObject.getJSONObject("serviceNodes");
 
         try {
-            JSONArray nodes = jsonObject.getJSONArray("onlineServiceNodes");
+            JSONArray nodes = jsonNodeInfo.getJSONArray("onlineServiceNode");
 
             for (int i = 0; i < nodes.size(); i++) {
                 JSONObject node = (JSONObject) nodes.get(i);
@@ -140,7 +145,7 @@ public class DataServerService {
                 }
             }
         } catch (Exception e) {
-            JSONObject node = jsonObject.getJSONObject("onlineServiceNodes");
+            JSONObject node = jsonNodeInfo.getJSONObject("onlineServiceNode");
             if (node.getString("node").equals(userName)) {
                 userNode = node;
                 user.setDataNodeToken(userNode.getString("token"));
@@ -168,43 +173,52 @@ public class DataServerService {
         requestFactory.setConnectTimeout(6000);// 设置超时
         requestFactory.setReadTimeout(6000);
         RestTemplate restTemplate = new RestTemplate(requestFactory);
-        ResponseEntity<JSONObject> response = restTemplate.exchange(url,HttpMethod.GET, requestEntity, JSONObject.class);
-        JSONObject j_result = response.getBody();
 
-
+        JSONObject j_result = new JSONObject();
         try{
-            xml = MyHttpUtils.GET(url, "utf-8", null);
+            ResponseEntity<JSONObject> response = restTemplate.exchange(url,HttpMethod.GET, requestEntity, JSONObject.class);
+            j_result = response.getBody();
         }catch (Exception e){
             return null;
         }
-
-        JSONObject jsonObject = XmlTool.xml2Json(xml);
-        JSONArray j_processings = new JSONArray();
         JSONArray result = new JSONArray();
-        try {
-            j_processings = jsonObject.getJSONArray("AvailablePcs");
-            result = updateUserNodeContent(j_processings,token,type);
-        } catch (Exception e) {
-            JSONObject j_processing = jsonObject.getJSONObject("AvailablePcs");
-            j_processing.put("token", token);
-            DataNodeContent dataNodeContent = dataNodeContentDao.findAllByServerIdAndToken(j_processing.getString("id"),token);
+        JSONObject j_content = j_result.getJSONObject("servicesAvailable");
+        JSONArray j_contents = j_content.getJSONArray("availablePcs");
+        result = updateUserNodeContent(j_contents,token,type);
 
-            if(dataNodeContent!=null){
-                dataNodeContent.setChecked(1);
-                j_processing.put("bindItems",dataNodeContent.getBindItems());
-            }
-            List<DataNodeContent> dataNodeContentList = dataNodeContentDao.findAllByTokenAndType(token,type);
-            for(int i=0;i<dataNodeContentList.size();i++){
-                DataNodeContent content = dataNodeContentList.get(i);
-                if(dataNodeContent.getChecked()==0){
-                    dataNodeContentDao.delete(content);
-                }else {
-                    content.setChecked(0);
-                }
 
-            }
-            result.add(j_processing);
-        }
+//        try{
+//            xml = MyHttpUtils.GET(url, "utf-8", null);
+//        }catch (Exception e){
+//            return null;
+//        }
+//
+//        JSONObject jsonObject = XmlTool.xml2Json(xml);
+//        JSONArray j_processings = new JSONArray();
+//        try {
+//            j_processings = jsonObject.getJSONArray("AvailablePcs");
+//            result = updateUserNodeContent(j_processings,token,type);
+//        } catch (Exception e) {
+//            JSONObject j_processing = jsonObject.getJSONObject("AvailablePcs");
+//            j_processing.put("token", token);
+//            DataNodeContent dataNodeContent = dataNodeContentDao.findAllByServerIdAndToken(j_processing.getString("id"),token);
+//
+//            if(dataNodeContent!=null){
+//                dataNodeContent.setChecked(1);
+//                j_processing.put("bindItems",dataNodeContent.getBindItems());
+//            }
+//            List<DataNodeContent> dataNodeContentList = dataNodeContentDao.findAllByTokenAndType(token,type);
+//            for(int i=0;i<dataNodeContentList.size();i++){
+//                DataNodeContent content = dataNodeContentList.get(i);
+//                if(dataNodeContent.getChecked()==0){
+//                    dataNodeContentDao.delete(content);
+//                }else {
+//                    content.setChecked(0);
+//                }
+//
+//            }
+//            result.add(j_processing);
+//        }
         return result;
     }
 
@@ -491,8 +505,8 @@ public class DataServerService {
         HttpEntity<MultiValueMap> requestEntity = new HttpEntity<MultiValueMap>(null, headers);
 
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
-        requestFactory.setConnectTimeout(6000);// 设置超时
-        requestFactory.setReadTimeout(6000);
+        requestFactory.setConnectTimeout(5000);// 设置超时
+        requestFactory.setReadTimeout(5000);
         RestTemplate restTemplate = new RestTemplate(requestFactory);
 
         JSONObject result = new JSONObject();
@@ -504,7 +518,7 @@ public class DataServerService {
             try{
                 int code = j_result.getInteger("code");
                 if(code==0){
-                    JSONObject capability = j_result.getJSONObject("Capability");
+                    JSONObject capability = j_result.getJSONObject("capability");
                     result.put("content",capability.get("data"));
                 }else{
                     result.put("content","offline");

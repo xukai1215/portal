@@ -103,7 +103,8 @@
                         <!--        </el-button>-->
                         <el-button type="primary" size="small" style="margin:5px;font-weight: 700;" @click="buildNewTask">Build New Task</el-button>
                         <el-button type="success" size="small" style="margin:5px;font-weight: 700;" @click="generateXml()">XML</el-button>
-                        <el-button type="success" size="small" style="margin:5px;font-weight: 700;" @click="taskConfigure(2)"><i class="fa fa-play-circle" aria-hidden="true"></i> Execute</el-button>
+                        <el-button type="success" size="small" style="margin:5px;font-weight: 700;" @click="taskConfigure(2)">
+                            <i class="fa fa-play-circle" aria-hidden="true"></i> Execute</el-button>
                     </div>
                     <div class="flexJustStart flexAlignCenter">
                         <h5>View: </h5>
@@ -140,26 +141,38 @@
                                    style="font-style: italic;color: #888888;text-align: center;font-size: 13px;">
                                     Click cell to add to graph.</p>
                                 <div class="flexCol flexAlignCenter" style="width: 100%">
-                                    <div class="startCell flexCenter" style="margin-top: 15px" @click="addStartToMxgraph">
-                                        Start
-                                    </div>
-                                    <div class="conditionCell flexCenter" style="margin-top: 15px" @click="addCondtionToMxgraph">
-
-                                    </div>
-                                    <div class="endCell flexCenter" style="margin-top: 15px" @click="addEndToMxgraph">
-                                        End
-                                    </div>
+                                    <el-tooltip class="item" effect="dark" content="Start"
+                                                placement="right">
+                                        <div class="startCell flexCenter" style="margin-top: 15px" @click="addStartToMxgraph">
+                                            Start
+                                        </div>
+                                    </el-tooltip>
+                                    <el-tooltip class="item" effect="dark" content="Condition"
+                                                placement="right">
+                                        <div class="conditionCell flexCenter" style="margin-top: 15px" @click="addCondtionToMxgraph"></div>
+                                    </el-tooltip>
+                                    <el-tooltip class="item" effect="dark" content="End"
+                                                placement="right">
+                                        <div class="endCell flexCenter" style="margin-top: 15px" @click="addEndToMxgraph">
+                                            End
+                                        </div>
+                                    </el-tooltip>
                                 </div>
                             </el-tab-pane>
                             <el-tab-pane label="Model" name="modelItem">
                                 <div class="flexCol flexAlignCenter" style="width: 100%">
-                                    <el-input v-model="searchModelText"
-                                              size="mini"
-                                              placeholder="Search for ..."
-                                              @keyup.enter.native="searchComptbModel"
-                                              style="width: 90%;margin-top: 2px">
-                                        <el-button slot="append" icon="el-icon-search" @click="searchComptbModel"></el-button>
-                                    </el-input>
+                                    <div>
+                                        <el-input v-model="searchModelText"
+                                                  size="mini"
+                                                  placeholder="Search for ..."
+                                                  @keyup.enter.native="searchComptbModel"
+                                                  style="width: 160px;margin-top: 2px">
+                                            <el-button slot="append" icon="el-icon-search" @click="searchComptbModel"></el-button>
+                                        </el-input>
+                                        <el-button size="mini" type="primary" plain style="padding: 7px 9px">
+                                            <i class="fa fa-refresh" @click="refreshModelItemList()"></i>
+                                        </el-button>
+                                    </div>
                                     <p class="noMargin" style="color: #787878;margin-top: 5px;font-size: 13px;">Classification: {{currentModelClassi.label}}</p>
                                     <el-button size="mini" type="primary" plain @click="changeModelClassi" round style="width: 90%;margin-top: 3px">Select Classification</el-button>
                                     <!--                                    <p class="noMargin"-->
@@ -172,7 +185,7 @@
                                              :key="item.oid" style="padding: 0 25px;" :style="getItemCardBackGround"
                                         >
                                             <el-tooltip class="item" effect="dark" :content="item.name"
-                                                        placement="top-start"
+                                                        placement="top"
                                             >
                                                 <p class="noMargin twoLine" @click="checkComputableModelDetail(item)">{{item.name}}</p>
                                             </el-tooltip>
@@ -198,13 +211,19 @@
                             </el-tab-pane>
                             <el-tab-pane label="Data Method" name="dataMethod">
                                 <div class="flexCol flexAlignCenter" style="width: 100%">
-                                    <el-input v-model="searchDataMethodText"
-                                              size="mini"
-                                              placeholder="Search for ..."
-                                              @keyup.enter.native="searchDataMethod"
-                                              style="width: 90%;margin-top: 2px">
-                                        <el-button slot="append" icon="el-icon-search" @click="searchDataMethod"></el-button>
-                                    </el-input>
+                                    <div>
+                                        <el-input v-model="searchDataMethodText"
+                                                  size="mini"
+                                                  placeholder="Search for ..."
+                                                  @keyup.enter.native="searchDataMethod"
+                                                  style="width: 160px;margin-top: 2px">
+                                            <el-button slot="append" icon="el-icon-search" @click="searchDataMethod"></el-button>
+                                        </el-input>
+                                        <el-button size="mini" type="primary" plain style="padding: 7px 9px">
+                                            <i class="fa fa-refresh" @click="refreshDataMethodList()"></i>
+                                        </el-button>
+                                    </div>
+
                                     <p class="noMargin" style="color: #787878;margin-top: 5px;font-size: 13px;">Classification: {{currentDataMethodClassi.label}}</p>
                                     <el-button size="mini" type="primary" plain @click="changeDataMethodClassi" round style="width: 90%;margin-top: 3px">Select Classification</el-button>
                                     <!--                                    <p class="noMargin"-->
@@ -219,7 +238,7 @@
                                              :style="getItemCardBackGround"
                                         >
                                             <el-tooltip class="item" effect="dark" :content="item.name"
-                                                        placement="top-start">
+                                                        placement="top">
                                                 <p class="noMargin twoLine" @click="checkDataMethodDetail(item)">{{item.name}}</p>
                                             </el-tooltip>
                                             <div class="circleSmall flexCenter button_blank button_shadow"
@@ -262,15 +281,15 @@
                             <div class="wzhCard_w100" v-for="(modelAction,frontId) in modelActions" :key="frontId">
                                 <div class="flexJustStart" style="min-height: 40px;max-height: 60px">
                                     <div class="flexColCenter w100" style="padding: 5px">
-                                        <a class="w100 cursorPointer" @click="seeDetailPage(modelAction.modelOid)">
-                                            <p style="color: inherit;word-break: break-all;font-size: 16px"
+                                        <a class="w100 cursorPointer" @click="seeDetailPage(modelAction.modelOid)" style=";margin-right: 10px">
+                                            <p style="color: inherit;font-size: 16px"
                                                class="itemTitle noMargin twoLine">{{modelAction.name}}</p>
                                         </a>
                                         <i class="fa fa-trash-o cursorPointer" style="font-size: 16px;color: #ec0817" @click="deleteModelClick(modelAction)"></i>
                                     </div>
                                 </div>
                                 <div class="flexAlignCenter flexJustEnd flexWrap"
-                                     style="min-height: 60px;max-height: 85px;">
+                                     style="min-height: 60px;max-height: 85px;background: #ecf6ff">
                                     <el-button type="primary" size="mini" round style="margin-right: 10px"
                                                @click="modelConfiguration(modelAction)">Configuration
                                     </el-button>
@@ -282,15 +301,15 @@
                             <div class="wzhCard_w100" v-for="(dataProcessing,frontId) in dataProcessings" v-if="dataProcessing.name!=undefined" :key="frontId">
                                 <div class="flexJustStart" style="min-height: 40px;max-height: 60px">
                                     <div class="flexColCenter w100" style="padding: 5px">
-                                        <a class="w100 cursorPointer" @click="seeDetailPage(dataProcessing.modelOid)">
-                                            <p style="color: inherit;word-break: break-all;font-size: 16px"
+                                        <a class="w100 cursorPointer" @click="seeDetailPage(dataProcessing.modelOid)" style=";margin-right: 10px">
+                                            <p style="color: inherit;font-size: 16px"
                                                class="itemTitle noMargin twoLine">{{dataProcessing.name}}</p>
                                         </a>
                                         <i class="fa fa-trash-o cursorPointer" style="font-size: 16px;color: #ec0817" @click="deleteDataProcessingClick(dataProcessing)"></i>
                                     </div>
                                 </div>
                                 <div class="flexAlignCenter flexJustEnd flexWrap"
-                                     style="min-height: 60px;max-height: 85px;">
+                                     style="min-height: 60px;max-height: 85px;background: #fff0f6;">
 <!--                                    <el-button type="primary" size="mini" round style="margin-right: 10px"-->
 <!--                                               @click="modelConfiguration(dataProcessing)">Configuration-->
 <!--                                    </el-button>-->
@@ -590,7 +609,7 @@
                         <div class="_btn-group" v-if="scope.row.children==undefined">
 
                             <el-button plain round type="warning" size="small" id="'download'+ scope.row.dataId"
-                                       v-if="scope.row.value!=''"
+                                       v-if="scope.row.value!=''&&scope.row.value!=null&&scope.row.value!=undefined"
                                        @click="download(scope.row)" style="margin-left: 0px;">
                                 <i class="fa fa-download"></i>
                             </el-button>
@@ -715,9 +734,8 @@
                       row-key="dataId"
                       border
                       default-expand-all>
-
                 <el-table-column
-                        label="Event Name"
+                        label="Name"
                         width="220">
                     <template slot-scope="scope">
                         <span v-if="scope.row.externalId==undefined" :title="scope.row.event">
@@ -818,9 +836,14 @@
                         <div class="_btn-group" v-if="scope.row.children==undefined">
 
                             <el-button plain round type="warning" size="small" id="'download'+ scope.row.dataId"
-                                       v-if="scope.row.value!=''"
+                                       v-if="scope.row.value!=''&&scope.row.value!=null&&scope.row.value!=undefined"
                                        @click="download(scope.row)" style="margin-left: 0px;">
                                 <i class="fa fa-download"></i>
+                            </el-button>
+                            <el-button plain round type="warning" size="small" id="'download'+ scope.row.dataId"
+                                       v-if="scope.row.value!=''&&scope.row.value!=null&&scope.row.value!=undefined&&configDataProcessing.method==='Visualization'"
+                                       @click="preview(scope.row)" style="margin-left: 0px;">
+                                <i class="fa fa-eye"></i>
                             </el-button>
                         </div>
                     </template>
@@ -1441,6 +1464,14 @@
                 </template>
             </el-table-column>
         </el-table>
+    </el-dialog>
+
+    <el-dialog title="Preview Result" :visible.sync="previewDialog" width="55%">
+        <div class="flexCenter">
+            <img :src="previewUrl" style="max-height:900px;max-width:1600px">
+        </div>
+<!--        <div style="max-height:900px;max-width:1600px" :style="'background-image:url('+previewUrl+')'"></div>-->
+
     </el-dialog>
 
     <div th:replace="fragments/footer :: footer-mini"></div>

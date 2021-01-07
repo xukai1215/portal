@@ -187,17 +187,17 @@
   var currentModels = [];
   var currentXml = '';
 
-  var DY_STYLE={
-    'waiting':'rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#5bbbf2;fillColor=#5bbbf2;',
+  var DYNA_STYLE={
+    'waiting':'rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;fillColor=#5bbbf2;',
     'waitingInput':'rounded=0;shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#f46161;fillColor=#aadcf8;',
     'waitingOutput':'rounded=0;shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#449d44;fillColor=#aadcf8;',
-    'running':'rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#f8d478;fillColor=#ffd058;',
+    'running':'rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;fillColor=#ffd058;',
     'runningInput':'rounded=0;shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#f46161;fillColor=#ffd058;',
     'runningOutput':'rounded=0;shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#5ac323;fillColor=#ffd058;',
-    'completed':'rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#EEFFEE;fillColor=#7ad34e;',
+    'completed':'rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;fillColor=#7ad34e;',
     'completedInput':'rounded=0;shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#449d44;fillColor=#9aee71;',
     'completedOutput':'rounded=0;shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#449d44;fillColor=#9aee71;',
-    'failed':'rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#ede2e2;fillColor=#ef6b6b;',
+    'failed':'rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;fillColor=#ef6b6b;',
     'failedInput':'rounded=0;shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#f46161;fillColor=#ef6b6b;',
     'failedOutput':'rounded=0;shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#5ac323;fillColor=#ef6b6b;',
   }
@@ -222,12 +222,15 @@
         // let style = cells[i].getStyle()
         // console.log(style)
         if(cells[i].md5!=undefined){
-          cells[i].setStyle(DY_STYLE[status])
+          cells[i].setStyle(DYNA_STYLE[status]+'strokeColor=#5bbbf2;')
 
-        }else if(cells[i].response==0){
-          cells[i].setStyle(DY_STYLE[status+'Output'])
+        }else if(cells[i].type==='dataService'){
+          cells[i].setStyle(DYNA_STYLE[status]+'strokeColor=#f6aede;')
+        }
+        else if(cells[i].response==0){
+          cells[i].setStyle(DYNA_STYLE[status+'Output'])
         }else if(cells[i].response==1){
-          cells[i].setStyle(DY_STYLE[status+'Input'])
+          cells[i].setStyle(DYNA_STYLE[status+'Input'])
         }
 
         if(status==='completed'){
