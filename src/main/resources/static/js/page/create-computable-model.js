@@ -358,13 +358,16 @@ var createComputableModel = Vue.extend({
 
         addFile(){
 
-            this.dataDialogVisible = true;
+            // this.dataDialogVisible = true;
+            // this.$nextTick(()=>{
+            //     this.$refs.userDataSpace.getFilePackage();
+            // })
 
-            // if(this.computableModel.contentType == "Package"){
-            //     $("#file").click();
-            // }else{
-            //     $("#file_multi").click();
-            // }
+            if(this.computableModel.contentType == "Package"){
+                $("#file").click();
+            }else{
+                $("#file_multi").click();
+            }
 
 
         },

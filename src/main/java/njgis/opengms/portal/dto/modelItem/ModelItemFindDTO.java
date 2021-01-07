@@ -20,6 +20,7 @@ public class ModelItemFindDTO implements Serializable {
     private Integer pageSize = 10;
     private Boolean asc = false;
     private String sortField = "viewCount";
+    private String queryField = "Name";
     //用做多条件查询
     //private List<String> classifications;
     private String searchText;

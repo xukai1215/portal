@@ -133,7 +133,7 @@ public class DataItemRestController {
     public ModelAndView getHubs(){
 //        System.out.println("data-items-page");
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("data_items");
+        modelAndView.setViewName("data_items_hubs");
         modelAndView.addObject("dataType","hubs");
         return modelAndView;
     }

@@ -78,106 +78,96 @@
 <body>
 <div id="app" v-cloak>
     <div th:replace="fragments/navbar :: unlog"></div>
-    <div style="height: 700px">
-    <div class="el-col el-col-5" role="applicationIntro" id="applicationSider" style="min-width: 220px">
-        <div id="introContainer" class="slider">
-            <div class="introHeader">
-                <div class="image">
-                    <i class="fa fa-cogs"></i>
-                    <!--<img src="/static/haha/img/default.png">-->
-                </div>
-                <div>
-                    <h3 class="model_title"> {{invokeService.name}}</h3>
-                    <span>Contributed by <span style="cursor: pointer; font-size: 2rem;"
-                                               @click="goPersonCenter(user.oid)">{{invokeService.contributor}}</span></span>
-                    <br>
-                </div>
-            </div>
-            <div class="btn-list">
-                <el-button plain type="primary" style="min-width: 120px" @click="loadDataVisible = true">
-                    Load data
-                </el-button>
-
-                <el-button plain type="primary" style="min-width: 121px" @click="invokeDialog = true">
-                    <i class="fa fa-hand-spock-o"></i>&nbsp;Invoke
-                </el-button>
-            </div>
-            <div class="introContent">
-                <h4 class="desc-title">Introduction</h4>
-                <p class="desc">{{applicationInfo.description}}</p>
-                <br>
-                <span class="model_date">Updated at <span
-                        style="font-weight: 600">{{dateFormat(applicationInfo.lastModifyTime)}}</span></span>
-            </div>
-        </div>
-    </div>
-    <div class="el-col el-col-18" style="margin-left: 8px;border-left: black solid 1px;padding-left: 20px">
-        <div class="content">
-            <div class="_main">
-                <el-row class="_title">
-                    <el-row type="flex" align="middle">
-                        <i class="fa fa-database"></i>
-                        <p style="font-size: 18px;margin-bottom: 0;margin-left:10px">Configure Execution</p>
-
-                        <div style="position:absolute;right:0">
-                            <span style="margin-right:10px">Origin: </span>
-<!--                            <el-radio-group v-model="radioStyle">-->
-                            <el-tag v-if="invokeService.isPortal === true" class="classic" label="Portal">Portal</el-tag>
-                            <el-tag v-if="invokeService.isPortal != true" class="classic" label="Others">Others</el-tag>
-<!--                            </el-radio-group>-->
+    <div>
+        <div class="clearfix" style="max-height: 100vh;overflow: auto;"
+             v-loading="loading"
+             element-loading-text="The data service is running, please do not close this page"
+             element-loading-spinner="el-icon-loading"
+             element-loading-background="rgba(0, 0, 0, 0.8)">
+            <div class="el-col el-col-5" role="applicationIntro" id="applicationSider" style="min-width: 220px;position: fixed;width: 23%;">
+                <div id="introContainer" class="slider">
+                    <div class="introHeader">
+                        <div class="image">
+                            <i class="fa fa-cogs"></i>
+                            <!--<img src="/static/haha/img/default.png">-->
                         </div>
-                    </el-row>
-                </el-row>
-<!--                <el-row v-if="radioStyle=='Classic'">-->
-<!--                    <el-row type="flex" class="state-container" v-for="(state,index) in testStep"-->
-<!--                            :key="index"-->
-<!--                            justify="start" style="flex-wrap:wrap">-->
-<!--                        <div class="leftContainer">-->
-<!--                            <div class="modelState">-->
-<!--                                -->
-<!--&lt;!&ndash;                                <p class="state-name"> {{state.name}}</p>&ndash;&gt;-->
-<!--&lt;!&ndash;                                <p class="state-desc"> {{state.desc}}</p>&ndash;&gt;-->
-<!--                            </div>-->
-<!--                        </div>-->
+                        <div>
+                            <h3 class="model_title"> {{invokeService.name}}</h3>
+                            <span>Contributed by <span style="cursor: pointer; font-size: 2rem;"
+                                                       @click="goPersonCenter(user.oid)">{{invokeService.contributor}}</span></span>
+                            <br>
+                        </div>
+                    </div>
+                    <div class="btn-list">
+                        <el-button plain type="primary" style="min-width: 120px" @click="loadTestData()">
+                            Load Test Data
+                        </el-button>
+
+                        <el-button plain type="primary" style="min-width: 121px" @click="invokeNow()">
+                            <i class="fa fa-hand-spock-o"></i>&nbsp;Invoke
+                        </el-button>
+                    </div>
+                    <div class="introContent">
+                        <h4 class="desc-title">Introduction</h4>
+                        <div>
+                            <p class="desc">{{metaDetail.description}}</p>
+                        </div>
+                        <br>
+                        <span class="model_date">Updated at <span
+                                style="font-weight: 600">{{dateFormat(applicationInfo.lastModifyTime)}}</span></span>
+                    </div>
+                </div>
+            </div>
+            <div class="el-col el-col-18" style="margin-left: 25%;border-left: black solid 1px;padding-left: 20px;
+            overflow-y: auto;display: block;position: relative;margin-bottom: 5%">
+                <div class="content">
+                    <div class="_main">
+                        <el-row class="_title">
+                            <el-row type="flex" align="middle">
+                                <i class="fa fa-database"></i>
+                                <p style="font-size: 18px;margin-bottom: 0;margin-left:10px">Configure Execution</p>
+
+                                <div style="position:absolute;right:0">
+                                    <span>Origin: </span>
+                                    <!--                            <el-radio-group v-model="radioStyle">-->
+                                    <el-tag v-if="invokeService.isPortal === true" class="classic" label="Portal" style="margin-right:20px">Portal</el-tag>
+                                    <el-tag v-if="invokeService.isPortal != true" class="classic" label="Others" style="margin-right:20px">Others</el-tag>
+
+                                    <span>Method category: </span>
+                                    <el-tag class="classic" label="Others" style="margin-right:20px">{{method}}</el-tag>
+                                    <!--                            </el-radio-group>-->
+                                </div>
+                            </el-row>
+                        </el-row>
                         <div class="dataContainer" style="width: 100%">
-                            <div class="_params-group">
+                            <div class="_params-group"  v-loading="loadingData">
                                 <el-row class="_title">Input</el-row>
                                 <div class="_items">
-                                    <el-row>
+<!--                                    <p>{{metaDetail.Input}}</p>-->
+                                    <el-row v-for="(item,index) in metaDetail.input">
                                         <el-col :span="11" class="_event-desc">
                                                         <span class="event-name">
                                                             <span style="color:red">*</span>
-                                                            Input Data
+                                                            {{item.name}}
                                                         </span>
-<!--                                                        <span>-->
-<!--                                                            <el-tag type="info" :disable-transitions="true">-->
-<!--                                                                Data Type:-->
-<!--                                                                <a style="text-decoration: underline"-->
-<!--                                                                   target="_blank">shp</a>-->
-<!--                                                            </el-tag>-->
-<!--                                                        </span>-->
                                         </el-col>
                                         <div>
                                             <el-col :span="6" :offset="1">
                                                 <!--:value="modelInEvent.tag"-->
-                                                <div v-for="(item,index) in selectData">
-                                                    <el-input class="model-input" v-model="item.name">
+<!--                                                <div v-for="(item,index) in selectData">-->
+                                                    <el-input class="data-input" placeholder="Input Data" v-model="item.loadName" :disabled="true">
                                                     </el-input>
-                                                </div>
+<!--                                                </div>-->
                                             </el-col>
 
                                             <el-col :span="6">
                                                 <div class="_btn-group">
-                                                    <el-button plain round type="success">
+                                                    <el-button plain round type="success" @click="openDataSpace($event)" class="uploadBtn">
                                                         <i class="fa fa-folder-open"></i>
                                                     </el-button>
 
                                                     <el-button plain round type="warning" @click="downLoadInfoTestData($event)" class="downloadInfoBtn">
                                                         <i class="fa fa-download"></i>
-                                                    </el-button>
-
-                                                    <el-button plain round type="primary">
-                                                        <i class="fa fa-eye"></i>
                                                     </el-button>
                                                 </div>
                                             </el-col>
@@ -190,157 +180,140 @@
                                     </el-row>
                                 </div>
                             </div>
-
+                            <div class="_params-group">
+                                <el-row class="_title">Parameter</el-row>
+                                <div class="_items">
+                                    <el-row v-for="(item,index) in metaDetail.parameter">
+                                        <el-col :span="11" class="_event-desc">
+                                                        <span class="event-name">
+                                                            <span style="color:red">*</span>
+                                                            {{item.name}}
+                                                        </span>
+                                        </el-col>
+                                        <div>
+                                            <el-input placeholder="Please Input Parameter" v-model="item.value" :disabled="false"></el-input>
+<!--                                            <p>{{item}}</p>-->
+<!--                                            <p>{{metaDetail.Parameter}}</p>-->
+<!--                                            <el-input class="parameter-input" v-model="parameter">-->
+<!--                                            </el-input>-->
+                                        </div>
+                                    </el-row>
+                                    <el-row>
+                                        <p title="Input parameter can be used to run data processing services" class="event-desc">
+                                            Input parameter, can be used to run data processing services
+                                        </p>
+                                    </el-row>
+                                </div>
+                            </div>
                             <div class="_params-group">
                                 <el-row class="_title">Output</el-row>
                                 <div class="_items">
-                                <el-row>
-                                    <el-col :span="11" class="_event-desc">
+                                    <el-row>
+                                        <el-col :span="11" class="_event-desc">
                                                         <span class="event-name">
                                                             <span style="color:red">*</span>
                                                             Output Data
                                                         </span>
-<!--                                        <span>-->
-<!--                                                            <el-tag type="info" :disable-transitions="true">-->
-<!--                                                                Data Type:-->
-<!--                                                                <a style="text-decoration: underline"-->
-<!--                                                                   target="_blank">shp</a>-->
-<!--                                                            </el-tag>-->
-<!--                                                        </span>-->
-                                    </el-col>
-                                    <div>
-                                        <el-col :span="6" :offset="1">
-                                            <!--:value="modelInEvent.tag"-->
-                                            <el-input class="model-input" v-model="outPutData">
-                                            </el-input>
+                                            <!--                                        <span>-->
+                                            <!--                                                            <el-tag type="info" :disable-transitions="true">-->
+                                            <!--                                                                Data Type:-->
+                                            <!--                                                                <a style="text-decoration: underline"-->
+                                            <!--                                                                   target="_blank">shp</a>-->
+                                            <!--                                                            </el-tag>-->
+                                            <!--                                                        </span>-->
                                         </el-col>
+                                        <div>
+                                            <el-col :span="6" :offset="1">
+                                                <!--:value="modelInEvent.tag"-->
+                                                <el-input class="model-input" v-model="outPutData">
+                                                </el-input>
+                                            </el-col>
 
-                                        <el-col :span="6">
-                                            <div class="_btn-group">
-                                                <el-button plain round type="success">
-                                                    <i class="fa fa-folder-open"></i>
-                                                </el-button>
+                                            <el-col :span="6">
+                                                <div class="_btn-group">
+                                                    <el-button plain round type="success">
+                                                        <i class="fa fa-folder-open"></i>
+                                                    </el-button>
 
-                                                <el-button plain round type="warning" @click="downloadResult()">
-                                                    <i class="fa fa-download"></i>
-                                                </el-button>
+                                                    <el-button plain round type="warning" @click="downloadResult()">
+                                                        <i class="fa fa-download"></i>
+                                                    </el-button>
 
-                                                <el-button plain round type="primary">
-                                                    <i class="fa fa-eye"></i>
-                                                </el-button>
-                                            </div>
-                                        </el-col>
-                                    </div>
-                                </el-row>
-                                <el-row>
-                                    <p title="Output data, data processing service running result file" class="event-desc">
-                                        Output data, data processing service running result file
-                                    </p>
-                                </el-row>
+                                                    <el-button plain round type="primary" v-if="method === 'Visualization'" @click="initPicture()">
+                                                        <i class="fa fa-eye"></i>
+                                                    </el-button>
+                                                </div>
+                                            </el-col>
+                                        </div>
+                                    </el-row>
+                                    <el-row>
+                                        <p title="Output data, data processing service running result file" class="event-desc">
+                                            Output data, data processing service running result file
+                                        </p>
+                                    </el-row>
+                                </div>
                             </div>
                         </div>
-                        </div>
-<!--                    </el-row>-->
-<!--                </el-row>-->
+                        <!--                    </el-row>-->
+                        <!--                </el-row>-->
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-
     </div>
     <div th:replace="fragments/footer :: footer"></div>
-    <el-dialog
-            v-loading="loading"
-        title="Invoke"
-        :visible.sync="invokeDialog"
-        width="80%">
-    <el-card>
-        <div class="" style="display: inline-block;width: 60%;">
-            <p style="font-weight: 600">XML description of visualization:</p><br>
-            <pre v-if="xml" lang="xml">{{xml}}</pre>
-        </div>
-        <div class="" style="display: inline-block;float: right;width: 35%">
-            <p style="font-weight: 600">Parameters to be filled in:</p><br>
-            <div class="" v-for = "(para,i) in parameters" v-if="parameters.length != 0">
-                <p>{{para}}</p>
-                <input type="text" autocomplete="off" v-model="parameter" placeholder="Please enter the content" :id ="para" class="el-input__inner">
-            </div>
-        </div>
-    </el-card>
-        <span slot="footer" class="dialog-footer">
-        <el-button @click="invokeDialog = false">Cancel</el-button>
-        <el-button type="primary" @click = "invokeNow()">Invoke Now</el-button>
-    </span>
-    </el-dialog>
+<!--    <el-dialog-->
+<!--            v-loading="loading"-->
+<!--        title="Invoke"-->
+<!--        :visible.sync="invokeDialog"-->
+<!--        width="80%">-->
+<!--    <el-card>-->
+<!--        <div class="" style="display: inline-block;width: 60%;">-->
+<!--            <p style="font-weight: 600">XML description of visualization:</p><br>-->
+<!--            <pre v-if="xml" lang="xml">{{xml}}</pre>-->
+<!--        </div>-->
+<!--        <div class="" style="display: inline-block;float: right;width: 35%">-->
+<!--            <p style="font-weight: 600">Parameters to be filled in:</p><br>-->
+<!--            <div class="" v-for = "(para,i) in parameters" v-if="parameters.length != 0">-->
+<!--                <p>{{para}}</p>-->
+<!--                <input type="text" autocomplete="off" v-model="parameter" placeholder="Please enter the content" :id ="para" class="el-input__inner">-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </el-card>-->
+<!--        <span slot="footer" class="dialog-footer">-->
+<!--        <el-button @click="invokeDialog = false">Cancel</el-button>-->
+<!--        <el-button type="primary" @click = "invokeNow()">Invoke Now</el-button>-->
+<!--    </span>-->
+<!--    </el-dialog>-->
 
     <el-dialog
             title="Load Data"
             :visible.sync="loadDataVisible"
             width="80%">
-        <el-tabs v-model="activeName" @tab-click="handleClick"  stretch="true">
-            <el-tab-pane label="Test Data" name="first">
-    <!--            Test Data Table-->
-                <el-table
-                        :data="testData"
-                        style="width: 100%"
-                        fit="true">
-                    <el-table-column
-                            prop="name"
-                            label="Data Name">
-                    </el-table-column>
-                    <el-table-column label="Download">
-                        <template slot-scope="scope">
-                            <el-button @click = "downloadTestData($event)" type="success" class="downloadBtn">
-                                Download
-                            </el-button>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="Operation" prop="loadStatus">
-                        <template slot-scope="scope">
-                            <el-button @click = "selectTestData($event)" type="success" class="SelectTestData" v-if="scope.row.loadStatus != 'true'">
-                                Load Test Data
-                            </el-button>
-                            <el-button type="info" v-if="scope.row.loadStatus === 'true'">
-                                Loaded
-                            </el-button>
-    <!--                        <el-button @click = "" type="info"  v-if="currUrl.length!=0">-->
-    <!--                            Selected-->
-    <!--                        </el-button>-->
-                        </template>
-                    </el-table-column>
-                </el-table>
-            </el-tab-pane>
-<!--            <el-tab-pane label="Upload Data" name="second">-->
-<!--                <div class="form-group flexColContainer">-->
-<!--                    <label style="margin-right:5px;font-size: 1.4rem">Name :</label>-->
-<!--                    <el-input v-model="uploadName" placeholder="Dataset name"></el-input>-->
-<!--                </div>-->
-<!--                <el-upload-->
-<!--                        class="upload-demo"-->
-<!--                        multiple="true"-->
-<!--                        ref="upload"-->
-<!--                        :on-change="uploadChange"-->
-<!--                        :auto-upload="false">-->
-<!--                    <el-button id="uploadFile" slot="trigger" size="small"-->
-<!--                               type="primary">Select Data-->
-<!--                    </el-button>-->
-<!--                </el-upload>-->
-<!--                <el-button type="success" @click="submitUpload" style="float: right">Upload Data</el-button>-->
-<!--            </el-tab-pane>-->
-            <el-tab-pane label="Use Data Space" name="second">
                 <user-data
                         @com-selectfile="selectDataspaceFile"
                         @com-removefile="removeDataspaceFile"
                         single-choice
                         ref="userDataSpace" style="height: 505px;">
                 </user-data>
-            </el-tab-pane>
-        </el-tabs>
         <span slot="footer" class="dialog-footer">
             <el-button @click="loadDataVisible = false">Cancel</el-button>
+            <el-button @click="confirmData(),loadDataVisible = false" type="success">Confirm</el-button>
         </span>
     </el-dialog>
-<!--    <template th:replace="modules/userDataSpaceModule :: userDataSpaceModule"></template>-->
-<!--    <script src="/static/js/modules/userDataSpaceModule.js"></script>-->
+
+    <el-dialog
+            title="Visualization Show"
+            :visible.sync="visualization"
+            width="50%">
+        <span>
+            <img style="display:inline;width: 100%;height: 100%;" :src="visualPath"/>
+        </span>
+        <span slot="footer" class="dialog-footer">
+    <el-button @click="visualization = false">Cancel</el-button>
+<!--    <el-button type="primary" @click="dialogVisible = false">Confirm</el-button>-->
+  </span>
+    </el-dialog>
 </div>
 <template th:replace="modules/userDataSpaceModule :: userDataSpaceModule"></template>
 <script src="/static/js/modules/userDataSpaceModule.js"></script>

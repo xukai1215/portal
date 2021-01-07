@@ -26,7 +26,6 @@ import org.springframework.web.servlet.view.RedirectView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 
@@ -347,7 +346,7 @@ public class UserRestController {
             String loginId = oid_obj.toString();
             userInfo.put("loginId", loginId);
         }else{
-            userInfo.put("loginId", oid_obj);
+            userInfo.put("loginId", null);
         }
         modelAndView.setViewName("user_page_overview");
         modelAndView.addObject("userInfo", userInfo);

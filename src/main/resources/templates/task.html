@@ -26,6 +26,7 @@
     <link rel="stylesheet" href="/static/css/page/user_space_out.css">
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css"/>
+    <link rel="stylesheet" href="/static/driver/driver.min.css"/>
     <style>
 
         .el-button--text {
@@ -94,14 +95,17 @@
                             <br>
                         </div>
                     </div>
-                    <div class="btn-list">
-                        <el-button plain type="primary" @click="loadData(1)"
+                    <div style="display:flex;justify-content: space-evenly;">
+
+                        <el-button type="primary" icon="el-icon-question" @click="showDriver" circle></el-button>
+
+                        <el-button id="loadDataBtn" plain type="primary" @click="loadData(1)"
                                    style="min-width: 120px">
                             Load data
                         </el-button>
 
 
-                        <el-button plain type="primary" @click="invoke()" style="min-width: 121px">
+                        <el-button id="invokeBtn" plain type="primary" @click="invoke()" style="min-width: 121px">
                             <i class="fa fa-hand-spock-o"></i>&nbsp;Invoke
                         </el-button>
 
@@ -110,8 +114,7 @@
                         <h4 class="desc-title">Introduction</h4>
                         <p class="desc">{{info.modelInfo.des}}</p>
                         <br>
-                        <span class="model_date">Updated at <span
-                                style="font-weight: 600">{{dateFormat(info.modelInfo.date)}}</span></span>
+                        <span class="model_date">Contributed at <span>{{dateFormat(info.modelInfo.date,'yyyy-MM-dd')}}</span></span>
                     </div>
                 </div>
             </el-col>
@@ -382,7 +385,7 @@
                                 <i class="fa fa-database"></i>
                                 <p style="font-size: 18px;margin-bottom: 0;margin-left:10px">Configure Execution</p>
 
-                                <div style="position:absolute;right:0">
+                                <div id="showStyle" style="position:absolute;right:0">
                                     <span style="margin-right:10px">Show style:</span>
                                     <el-radio-group v-model="radioStyle">
                                         <el-radio-button id="classic" label="Classic"></el-radio-button>
@@ -464,11 +467,11 @@
                                                                     <i class="fa fa-download"></i>
                                                                 </el-button>
 
-                                                                <el-button plain round type="primary"
-                                                                           v-if="modelInEvent.visual"
-                                                                           @click="visualize(modelInEvent)">
-                                                                    <i class="fa fa-eye"></i>
-                                                                </el-button>
+                                                                <!--<el-button plain round type="primary"-->
+                                                                           <!--v-if="modelInEvent.visual"-->
+                                                                           <!--@click="visualize(modelInEvent)">-->
+                                                                    <!--<i class="fa fa-eye"></i>-->
+                                                                <!--</el-button>-->
                                                             </div>
                                                         </el-col>
                                                     </div>
@@ -564,11 +567,11 @@
                                                                 <i class="fa fa-download"></i>
                                                             </el-button>
 
-                                                            <el-button plain round type="primary"
-                                                                       v-if="modelOutEvent.visual"
-                                                                       @click="visualize(modelOutEvent)">
-                                                                <i class="fa fa-eye"></i>
-                                                            </el-button>
+                                                            <!--<el-button plain round type="primary"-->
+                                                                       <!--v-if="modelOutEvent.visual"-->
+                                                                       <!--@click="visualize(modelOutEvent)">-->
+                                                                <!--<i class="fa fa-eye"></i>-->
+                                                            <!--</el-button>-->
                                                         </div>
 
 
@@ -697,11 +700,11 @@
                                                         <i class="fa fa-download"></i>
                                                     </el-button>
 
-                                                    <el-button plain round type="primary"
-                                                               v-if="scope.row.visual"
-                                                               @click="visualize(scope.row)">
-                                                        <i class="fa fa-eye"></i>
-                                                    </el-button>
+                                                    <!--<el-button plain round type="primary"-->
+                                                               <!--v-if="scope.row.visual"-->
+                                                               <!--@click="visualize(scope.row)">-->
+                                                        <!--<i class="fa fa-eye"></i>-->
+                                                    <!--</el-button>-->
                                                 </div>
                                             </template>
                                         </el-table-column>
@@ -1093,11 +1096,11 @@
                                                    @click="download(scope.row)">
                                             <i class="fa fa-download"></i>
                                         </el-button>
-                                        <el-button plain circle type="primary"
-                                                   v-if="scope.row.visual"
-                                                   @click="visualize(scope.row)">
-                                            <i class="fa fa-eye"></i>
-                                        </el-button>
+                                        <!--<el-button plain circle type="primary"-->
+                                                   <!--v-if="scope.row.visual"-->
+                                                   <!--@click="visualize(scope.row)">-->
+                                            <!--<i class="fa fa-eye"></i>-->
+                                        <!--</el-button>-->
                                     </template>
 
                                 </el-table-column>
@@ -1341,6 +1344,7 @@
 <script type="text/javascript" src="/static/js/common/jquery.tag-editor.js"></script>
 <script src="/static/js/common/bootstrap-tagsinput.js"></script>
 <!--<script src="https://unpkg.com/element-ui/lib/index.js"></script>-->
+<script src="/static/driver/driver.min.js"></script>
 <script src="/static/js/modules/userDataSpaceModule.js"></script>
 <script src="/static/js/page/task.js"></script>
 <script src="/static/element-ui/umd/locale/en.js"></script>

@@ -78,6 +78,60 @@ new Vue({
         }
     },
     methods: {
+
+        //显示功能引导框
+        showDriver(){
+            if(!this.driver){
+                this.driver = new Driver({
+                    "className": "scope-class",
+                    "allowClose": false,
+                    "opacity" : 0.1,
+                    "prevBtnText": "Previous",
+                    "nextBtnText": "Next"
+                });
+                this.stepsConfig = [
+                    {
+                        "element" : ".categoryList",
+                        "popover" : {
+                            "title" : "Repository Collections",
+                            "description" : "You can query spatiotemporal references by choosing a collection.",
+                            "position" : "right",
+                        }
+                    },
+                    {
+                        "element": ".searcherInputPanel",
+                        "popover": {
+                            "title": "Search",
+                            "description": "You can also search spatiotemporal references by name.",
+                            "position": "bottom-right",
+                        }
+                    },
+                    {
+                        "element": ".modelPanel",
+                        "popover": {
+                            "title": "Overview",
+                            "description": "Here is query result, you can browse spatiotemporal references' overview. Click name to check detail.",
+                            "position": "top",
+                        }
+                    },
+                    {
+                        "element" : "#contributeBtn",
+                        "popover" : {
+                            "title" : "Contribute",
+                            "description" : "You can share spatiotemporal references on OpenGMS, and get a OpenGMS unique identifier!",
+                            "position" : "bottom",
+                        }
+                    }
+                ];
+            }
+
+            if(document.body.clientWidth < 1000){
+                this.stepsConfig[1].popover.position = "top";
+            }
+            this.driver.defineSteps(this.stepsConfig);
+            this.driver.start();
+        },
+
         changeSortField(ele){
             this.sortTypeName = ele;
             let field = ele.replace(" ","").replace(ele[0],ele[0].toLowerCase());
@@ -342,5 +396,11 @@ new Vue({
                 lines.eq(lines.length - 1).remove();
             }
         })
+
+        if(document.cookie.indexOf("communityRep=1")==-1){
+            this.showDriver();
+            var t=new Date(new Date().getTime()+1000*60*60*24*60);
+            document.cookie="communityRep=1; expires="+t.toGMTString();
+        }
     }
 })

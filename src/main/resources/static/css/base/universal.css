@@ -8,7 +8,12 @@
     /*filter:gray; !*ie9- *!*/
 /*}*/
 
+html{
+    scroll-behavior: smooth;
+}
+
 body{
+
     font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
 }
 
@@ -313,5 +318,24 @@ dt{
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+.backtop-up{
+    visibility: hidden;
+    right:40px;
+    bottom:100px;
+}
+
+.backtop-down{
+    visibility: hidden;
+    right:40px;
+    bottom:40px;
+}
+
+.guide{
+    font-size: 46px;
+    right:40px;
+    bottom:40px;
+}
+
 
 

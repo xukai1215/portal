@@ -93,11 +93,58 @@
     </style>
 
 </head>
-<body>
+<body style="overflow-x: hidden;">
 <div id="app">
     <div th:replace="fragments/navbar :: unlog"></div>
 
-    <div class="clearfix" style="padding:40px 0px;height: auto;position: relative;">
+    <div th:replace="fragments/backToTop :: backtop-down"></div>
+
+    <div v-cloak v-if="graphFullScreen" class="fullScreenMask" style="height: 1000px;width: 100%;background-color: white;">
+        <div v-if="modelRelationGraphSideBarShow" style="height:100%;width:300px;padding:15px;position: absolute;z-index: 999;background-color: #f6f6f6eb">
+            <div class="mr_header" style="height:10px;">
+                <a href="javascript:void(0);" @click="closeGraphSideBar" style="font-size: 20px;">×</a>
+            </div>
+            <div class="mr_body">
+                <div class="mr_title" style="text-align: center;">
+                    <div v-if="curRelation.type=='model'">
+                        <div style="margin-bottom: 10px;">
+                            <img v-if="curRelation.img != ''" :src="curRelation.img" style="width:90px;height:90px;">
+                            <img v-else src="/static/img/model/model.png"/>
+                        </div>
+                        <a :href="'/modelItem/'+curRelation.oid" target="_blank" style="font-size: 16px;text-decoration: underline;">{{curRelation.name}}</a>
+                    </div>
+                    <div v-if="curRelation.type=='ref'">
+                        <div style="margin-bottom: 10px;">
+                            <li class="el-icon-document" style="font-size: 90px;"></li>
+                        </div>
+                        <a v-if="curRelation.link!=''" :href="curRelation.link" target="_blank" style="font-size: 16px;text-decoration: underline;">{{curRelation.name}}</a>
+                        <div v-else style="font-size: 16px;">{{curRelation.name}}</div>
+                    </div>
+                </div>
+                <hr style="margin:10px 0;"/>
+                <div class="mr_content">
+                    <div v-if="curRelation.type=='model'">
+                        {{curRelation.overview}}
+                    </div>
+                    <div v-if="curRelation.type=='ref'">
+                        <div v-if="curRelation.author != undefined && curRelation.author != ''">
+                            <label>Author</label>
+                            <span>{{curRelation.author.join('; ')}}</span>
+                        </div>
+                        <div v-if="curRelation.journal != undefined && curRelation.journal != ''">
+                            <label>Journal</label>
+                            <span>{{curRelation.journal}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        <div id="fullScreenGraph" style="height: 100%;"></div>
+    </div>
+
+    <div v-else class="pageMainContent clearfix" style="padding:40px 0px;height: auto;position: relative;">
         <div class="left-panel el-col" >
             <div class="detail">
                 <div class="detail_title">
@@ -105,7 +152,7 @@
                         style="display: inline-block;word-wrap:break-word; word-break:break-all;width:90%;"></h2>
                     <div class="pull-right" style="width:10%;">
                         <el-tooltip popper-class="fontsize-15" content="Edit" effect="light" placement="top">
-                            <a th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock!=true}" href="javascript:void(0)"
+                            <a th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock!=true}" href="javascript:void(0);"
                                class='fa fa-pencil fa-2x' aria-hidden='true' @click="edit"></a>
                         </el-tooltip>
                         <el-tooltip popper-class="fontsize-15"
@@ -305,7 +352,7 @@
                 </div>
             </div>
 
-            <div id="description" th:if="${#lists.size(modelInfo.localizationList)>0}" class="detail_block">
+            <div id="description" th:if="${detailLanguage!=''}" class="detail_block">
                 <div class="block_head">
                     <div class="head_text">
                         <h4>Detailed Description</h4>
@@ -519,10 +566,7 @@
                                 </a>
                                 <div class="info" style="margin-top:0px;">
                                     <a :href="'/modelItem/'+model.oid">{{model.name}}</a>
-                                    <span class="label label-success"
-                                          style="margin-left:5px;">
-                                            {{model.relation}}
-                                        </span>
+                                    <span class="label label-success" style="margin-left:5px;">{{model.relation}}</span>
                                     <el-tooltip effect="light"
                                                 :content="modelInfo.name+' '+model.relation.toLowerCase()+' '+model.name"
                                                 placement="top">
@@ -541,13 +585,54 @@
                                     :total="relatedModelItems.length"
                                     @current-change="handleRelationCurrentChange($event,'modelItem')">
                             </el-pagination>
-                            <div v-if="!modelRelationListShow" >
-                                <div id="modelRelationGraph" style="height: 550px"></div>
+                            <div v-if="!modelRelationListShow" style="height:550px;">
+                                <div v-if="modelRelationGraphSideBarShow" style="height:550px;width:200px;padding:15px;position: absolute;z-index: 999;background-color: #f6f6f6eb">
+                                    <div class="mr_header" style="height:10px;">
+                                        <a href="javascript:void(0);" @click="closeGraphSideBar" style="font-size: 20px;">×</a>
+                                    </div>
+                                    <div class="mr_body">
+                                        <div class="mr_title" style="text-align: center;">
+                                            <div v-if="curRelation.type=='model'">
+                                                <div style="margin-bottom: 10px;">
+                                                    <img v-if="curRelation.img != ''" :src="curRelation.img" style="width:90px;height:90px;">
+                                                    <img v-else src="/static/img/model/model.png"/>
+                                                </div>
+                                                <a :href="'/modelItem/'+curRelation.oid" target="_blank" style="font-size: 16px;text-decoration: underline;">{{curRelation.name}}</a>
+                                            </div>
+                                            <div v-if="curRelation.type=='ref'">
+                                                <div style="margin-bottom: 10px;">
+                                                    <li class="el-icon-document" style="font-size: 90px;"></li>
+                                                </div>
+                                                <a v-if="curRelation.link!=''" :href="curRelation.link" target="_blank" style="font-size: 16px;text-decoration: underline;">{{curRelation.name}}</a>
+                                                <div v-else style="font-size: 16px;">{{curRelation.name}}</div>
+                                            </div>
+                                        </div>
+                                        <hr style="margin:10px 0;"/>
+                                        <div class="mr_content">
+                                            <div v-if="curRelation.type=='model'">
+                                                {{curRelation.overview}}
+                                            </div>
+                                            <div v-if="curRelation.type=='ref'">
+                                                <div v-if="curRelation.author != undefined && curRelation.author != ''">
+                                                    <label>Author</label>
+                                                    <span>{{curRelation.author.join('; ')}}</span>
+                                                </div>
+                                                <div v-if="curRelation.journal != undefined && curRelation.journal != ''">
+                                                    <label>Journal</label>
+                                                    <span>{{curRelation.journal}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                <div id="modelRelationGraph" style="height:100%;"></div>
                             </div>
                             <el-button @click="addRelation(1)" type="primary" icon="el-icon-plus"
                                        style="width: 49.5%">
                                 Edit Related Model Item
-                            </el-button><el-button v-if="modelRelationListShow" @click="generateModelRelationGraph" type="success" style="margin-left:1%;width: 49.5%">
+                            </el-button><el-button v-if="modelRelationListShow" @click="generateModelRelationGraph" type="success" icon="el-icon-picture-outline" style="margin-left:1%;width: 49.5%">
                                 Relation Graph
                             </el-button><el-button v-if="!modelRelationListShow" @click="closeModelRelationGraph" type="danger" style="margin-left:1%;width: 49.5%">
                                 Close Graph
@@ -1120,7 +1205,7 @@
                 <el-table-column Label="Relation" v-if="relateType=='modelItem'">
                     <template slot-scope="props">
                         <el-tooltip popper-class="fontsize-15" effect="light"
-                                    :content="'Current model ' + props.row.relation.toLowerCase() + ' ' + props.row.name"
+                                    :content="modelInfo.name +' '+  props.row.relation.toLowerCase() + ' ' + props.row.name"
                                     placement="top">
                             <el-select v-model="props.row.relation" value-key="props.row.relation" placeholder="Select">
                                 <el-option-group
@@ -1184,8 +1269,8 @@
             <el-tab-pane name="my" label="My Repository" v-if="relateType!='concept'&&relateType!='spatialReference'&&relateType!='template'&&relateType!='unit'">
 
                 <el-input placeholder="Please enter name..." v-model="pageOption_my.relateSearch" class="input-with-select"
-                          clearable="true" @keyup.enter.native="search()">
-                    <el-button slot="append" icon="el-icon-search" @click="search()"></el-button>
+                          clearable="true" @keyup.enter.native="searchInit()">
+                    <el-button slot="append" icon="el-icon-search" @click="searchInit()"></el-button>
                 </el-input>
                 <el-table
                         :data="pageOption_my.searchResult"
@@ -1244,8 +1329,8 @@
             <el-tab-pane name="all" label="All Repository">
 
                 <el-input placeholder="Please enter name..." v-model="pageOption_all.relateSearch" class="input-with-select"
-                          clearable="true" @keyup.enter.native="search('all')">
-                    <el-button slot="append" icon="el-icon-search" @click="search('all')"></el-button>
+                          clearable="true" @keyup.enter.native="searchInit('all')">
+                    <el-button slot="append" icon="el-icon-search" @click="searchInit('all')"></el-button>
                 </el-input>
                 <el-table
                         :data="pageOption_all.searchResult"
@@ -1305,7 +1390,7 @@
         </el-tabs>
 
         <div slot="footer" class="dialog-footer">
-            <span style="float:left;font-size: 16px">Or you can click <a style="cursor:pointer" @click="jump">here</a> to create a new one.</span>
+            <!--<span style="float:left;font-size: 16px">Or you can click <a style="cursor:pointer" @click="jump">here</a> to create a new one.</span>-->
             <el-button @click="dialogTableVisible = false;">Cancel</el-button>
             <el-button type="primary" @click="confirm()">OK</el-button>
         </div>

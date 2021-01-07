@@ -325,12 +325,21 @@ public class DataApplicationService {
                 dataApplication.setCreateTime(now);
                 dataApplication.setLastModifyTime(now);
 
-                //将服务invokeApplications置入
+                //将服务invokeApplications置入,如果不绑定测试数据，则无需部署，直接创建条目即可
+                if(dataApplication.getTestData().size() == 0){
+                    dataApplicationDao.insert(dataApplication);
+                    result.put("code", 1);
+                    result.put("id", dataApplication.getOid());
+                    return result;
+                }
                 InvokeService invokeService = new InvokeService();
                 invokeService.setServiceId(UUID.randomUUID().toString());//
                 invokeService.setMethod(dataApplication.getMethod());
                 invokeService.setName(dataApplication.getName());
-                invokeService.setToken("POMaXlYttteoEeV7GrO8Ww==");
+                //75
+                invokeService.setToken("fdtwTxlnhka8jY66lOT+kKutgZHnvi4NlnDc7QY5jR4=");
+                //33
+//                invokeService.setToken("fcky/35Rezr+Kyazr8SRWA==");
                 invokeService.setContributor("Portal");
                 invokeService.setIsPortal(true);
                 List<InvokeService> invokeServices = new ArrayList<>();
@@ -508,118 +517,166 @@ public class DataApplicationService {
         JsonResult jsonResult = new JsonResult();
         //post file 部署file
         List<TestData> testDatas = dataApplication.getTestData();
-
-        String destDirPath = resourcePath + "/DataApplication/TestData/" + testDatas.get(0).getOid();
+        String testDataUUID = UUID.randomUUID().toString();
+        String destDirPath = resourcePath + "/DataApplication/TestData/" + testDataUUID;
+        File file = new File(destDirPath);
+        if(!file.exists()){
+            file.mkdirs();
+        }
         //查看是否已下载
         File testExist = new File(destDirPath);
-        if (testExist.exists()){
-            jsonResult.setMsg("Data is already exist!");
-            //判断当前文件夹下是文件夹还是文件，如果为文件夹，则设置至文件夹路径，
-            // 如果为文件则设置为上层路径（路径为测试数据路径，测试数据有单个文件与多个文件之分，多个文件则存储在文件夹里）
-            File[] files = testExist.listFiles();
-            for (File item : files){
-                if(item.isDirectory()){
-                    testDatas.get(0).setPath(destDirPath + "/" + item.getName());
-                }else{
-                    testDatas.get(0).setPath(destDirPath);
+        //待处理
+//        if (testExist.exists()){
+//            jsonResult.setMsg("Data is already exist!");
+//            //判断当前文件夹下是文件夹还是文件，如果为文件夹，则设置至文件夹路径，
+//            // 如果为文件则设置为上层路径（路径为测试数据路径，测试数据有单个文件与多个文件之分，多个文件则存储在文件夹里）
+//            File[] files = testExist.listFiles();
+//            for (File item : files){
+//                if(item.isDirectory()){
+//                    testDatas.get(0).setPath(destDirPath + "/" + item.getName());
+//                }else{
+//                    testDatas.get(0).setPath(destDirPath);
+//                }
+//            }
+//            dataApplication.setTestData(testDatas);
+//            dataApplicationDao.save(dataApplication);
+//            jsonResult.setCode(1);
+//            deployPackage(dataApplication,destDirPath);
+//
+//            return jsonResult;
+//        }
+
+        //当前为一个zip包，存储所有的测试数据,此处废弃
+        //当前为多个测试文件，每个文件代表一个Item
+        String dataUrl = null;
+        String fileName = null;
+        for(TestData testData1:testDatas){
+            //循环下载所有的测试数据至uuid文件夹下
+            dataUrl = testData1.getUrl();
+            InputStream inputStream = null;
+            FileOutputStream fileOutputStream = null;
+            if (dataUrl!=null){
+                URL url = new URL(dataUrl);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setConnectTimeout(5000);
+                conn.setReadTimeout(60000);
+                //通过conn取得文件名称
+                String raw = conn.getHeaderField("Content-Disposition");
+                if(raw!=null&&raw.indexOf("=")>0){
+                    fileName = raw.split("=")[1];
+                    fileName = new String(fileName.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
                 }
-            }
-            dataApplication.setTestData(testDatas);
-            dataApplicationDao.save(dataApplication);
-            jsonResult.setCode(1);
-            deployPackage(dataApplication);
-
-            return jsonResult;
-        }
-
-        //当前为一个zip包，存储所有的测试数据
-        String dataUrl = testDatas.get(0).getUrl();
-        InputStream inputStream = null;
-        FileOutputStream fileOutputStream = null;
-
-        if (dataUrl!=null){
-            URL url = new URL(dataUrl);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setConnectTimeout(5000);
-            conn.setReadTimeout(60000);
-            inputStream = conn.getInputStream();
-        }
-
-        //下载文件到固定路径
-        String testDataPath = resourcePath + "/DataApplication/TestData/" + testDatas.get(0).getOid() + "/zipFile";
-        File testData = new File(testDataPath);
-        if(!testData.exists()){
-            testData.mkdirs();
-        }
-        String path = testDataPath + "/" + "downLoad.zip";
-        File localFile = new File(path);
-        try {
-            //将数据下载至resourcePath下
-            if (localFile.exists()) {
-                //如果文件存在删除文件
-                boolean delete = localFile.delete();
-            }
-            //创建文件
-            if (!localFile.exists()) {
-                //如果文件不存在，则创建新的文件
-                localFile.createNewFile();
+                inputStream = conn.getInputStream();
             }
 
-            fileOutputStream = new FileOutputStream(localFile);
-            byte[] bytes = new byte[1024];
-            int len = -1;
-            while ((len = inputStream.read(bytes)) != -1) {
-                fileOutputStream.write(bytes, 0, len);
+            File testData = new File(destDirPath);
+            if(!testData.exists()){
+                testData.mkdirs();
             }
-            fileOutputStream.close();
-            inputStream.close();
-
-        } catch (FileNotFoundException e){
-            e.printStackTrace();
-        }catch (IOException e) {
-            e.printStackTrace();
-        } finally {
+            String path = destDirPath + "/" + fileName ;
+            File localFile = new File(path);
             try {
-                if (fileOutputStream != null) {
-                    fileOutputStream.close();
+                //将数据下载至resourcePath下
+                if (localFile.exists()) {
+                    //如果文件存在删除文件
+                    boolean delete = localFile.delete();
                 }
-                if (inputStream != null) {
-                    inputStream.close();
+                //创建文件
+                if (!localFile.exists()) {
+                    //如果文件不存在，则创建新的文件
+                    localFile.createNewFile();
                 }
+
+                fileOutputStream = new FileOutputStream(localFile);
+                byte[] bytes = new byte[1024];
+                int len = -1;
+                while ((len = inputStream.read(bytes)) != -1) {
+                    fileOutputStream.write(bytes, 0, len);
+                }
+                fileOutputStream.close();
+                inputStream.close();
+
+            } catch (FileNotFoundException e){
+                e.printStackTrace();
             }catch (IOException e) {
                 e.printStackTrace();
+            } finally {
+                try {
+                    if (fileOutputStream != null) {
+                        fileOutputStream.close();
+                    }
+                    if (inputStream != null) {
+                        inputStream.close();
+                    }
+                }catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
+
+            //开始往数据库里存储
+//            File[] files = localFile.listFiles();
+//            for (File item : files) {
+//                if (item.isDirectory()) {
+//                    testDatas.get(0).setPath(destDirPath + "/" + item.getName());
+//                } else {
+//                    testDatas.get(0).setPath(destDirPath);
+//                }
+//            }
+           testData1.setPath(path);
         }
+        dataApplication.setTestData(testDatas);
+        dataApplicationDao.save(dataApplication);
+        jsonResult.setCode(0);
+        jsonResult.setMsg("suc");
+
+
+//        String dataUrl = testDatas.get(0).getUrl();
+//        InputStream inputStream = null;
+//        FileOutputStream fileOutputStream = null;
+//
+//        if (dataUrl!=null){
+//            URL url = new URL(dataUrl);
+//            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+//            conn.setConnectTimeout(5000);
+//            conn.setReadTimeout(60000);
+//            inputStream = conn.getInputStream();
+//        }
+
+        //下载文件到固定路径
+
+
+
+
 
         //将写入的zip文件进行解压
         //需要进行判断
-        zipUncompress(path,destDirPath);
+//        zipUncompress(path,destDirPath);
 
         //解压后删除zip包路径
-        boolean del = deleteFolder(testDataPath);
+//        boolean del = deleteFolder(testDataPath);
         //post package包 部署package
 
-        if(del) {
-            File[] files = testExist.listFiles();
-            for (File item : files) {
-                if (item.isDirectory()) {
-                    testDatas.get(0).setPath(destDirPath + "/" + item.getName());
-                } else {
-                    testDatas.get(0).setPath(destDirPath);
-                }
-            }
-            dataApplication.setTestData(testDatas);
-            dataApplicationDao.save(dataApplication);
-            jsonResult.setCode(0);
-            jsonResult.setMsg("suc");
-        }else {
-            jsonResult.setCode(-1);
-            jsonResult.setMsg("zip delete failed!");
-            return jsonResult;
-        }
+//        if(del) {
+//            File[] files = testExist.listFiles();
+//            for (File item : files) {
+//                if (item.isDirectory()) {
+//                    testDatas.get(0).setPath(destDirPath + "/" + item.getName());
+//                } else {
+//                    testDatas.get(0).setPath(destDirPath);
+//                }
+//            }
+//            dataApplication.setTestData(testDatas);
+//            dataApplicationDao.save(dataApplication);
+//            jsonResult.setCode(0);
+//            jsonResult.setMsg("suc");
+//        }else {
+//            jsonResult.setCode(-1);
+//            jsonResult.setMsg("zip delete failed!");
+//            return jsonResult;
+//        }
 
         //跨域调用容器接口，部署数据以及服务
-        deployPackage(dataApplication);
+        deployPackage(dataApplication,destDirPath);
 
         return jsonResult;
     }
@@ -629,20 +686,21 @@ public class DataApplicationService {
      * @param dataApplication 待部署的DataApplication
      * @return 是否成功部署
      */
-    public Boolean deployPackage(DataApplication dataApplication) throws Exception {
+    public Boolean deployPackage(DataApplication dataApplication, String dataPath) throws Exception {
         //跨域调用容器接口，部署数据
         String dataUrl="http://"+ dataContainerDeployPort +"/newFile";
 
         List<InvokeService> invokeServices = dataApplication.getInvokeServices();
         InvokeService invokeService = invokeServices.get(0);
 
-
-
         RestTemplate restTemplate = new RestTemplate();
         Map<String, Object> part = new HashMap<>();
         part.put("uid", "0");//存在根目录中
         part.put("instype", "Data");
-        part.put("userToken", "f30f0e82-f6f1-4264-a302-caff7c40ccc9");
+        //33
+//        part.put("userToken", "f30f0e82-f6f1-4264-a302-caff7c40ccc9");
+        //75
+        part.put("userToken", "e3cea591-a8a5-4f50-b640-a569eccd94b7");
         String newFileId = UUID.randomUUID().toString();
         part.put("id", newFileId);
         part.put("oid", "0");
@@ -657,7 +715,7 @@ public class DataApplicationService {
         invokeService.setDataIds(dataIds);
 
         MetaData metaData = new MetaData();
-        metaData.setDataPath(dataApplication.getTestData().get(0).getPath());
+        metaData.setDataPath(dataPath);
         metaData.setDataTime("1970/1/1 上午8:00:00");
         metaData.setFileDataType("File");
         metaData.setSecurity("Public");
@@ -681,9 +739,18 @@ public class DataApplicationService {
 
         String serviceId = UUID.randomUUID().toString();
         part2.add("id", serviceId);
-        part2.add("instype", "Processing");
+        if(dataApplication.getMethod().equals("Processing")||dataApplication.getMethod().equals("Conversion")) {
+            part2.add("instype", "Processing");
+        }else {
+            part2.add("instype", "Visualization");
+        }
         part2.add("name", dataApplication.getName());
-        part2.add("oid", "I3MXbzRq/NZkbWcKO8tF0w==");
+        //todo
+        //33
+//        part2.add("oid", "I3MXbzRq/NZkbWcKO8tF0w==");
+        //75
+        part2.add("oid", "5KglgbsDPmrFnA3J9CALzQ==");
+
         //获取xml
         String packageZipPath = resourcePath + "/DataApplication/Package" + dataApplication.getResources().get(0);
         File packageZip = new File(packageZipPath);
@@ -694,7 +761,6 @@ public class DataApplicationService {
 
         packageZip = new File(destDirPath);
         File[] files = packageZip.listFiles();
-//        List<String> fileList = new ArrayList<>();
         String fileList = "";
         int paramsCount = 0;
         int i=0;
@@ -730,7 +796,10 @@ public class DataApplicationService {
         part2.add("relatedData", newFileId);//dataId
         part2.add("type", "Processing");
         part2.add("uid", "0");
-        part2.add("userToken", "f30f0e82-f6f1-4264-a302-caff7c40ccc9");
+        //33
+//        part2.add("userToken", "f30f0e82-f6f1-4264-a302-caff7c40ccc9");
+        //75
+        part2.add("userToken", "e3cea591-a8a5-4f50-b640-a569eccd94b7");
         part2.add("processingPath", destDirPath);
 
         invokeService.setServiceId(serviceId);
@@ -1124,6 +1193,19 @@ public class DataApplicationService {
             return false;
         }
     }
+
+//    /**
+//     * 利用url下载可视化结果，并存储起来
+//     * @param url 可视化结果url
+//     * @param dataServerTask task记录
+//     * @return 是否执行成功
+//     */
+//    public Boolean initVisual(String url,DataServerTask dataServerTask){
+//        boolean res = false;
+//
+//
+//        return res;
+//    }
 
 
 }
