@@ -123,7 +123,6 @@ var data_items = new Vue({
         },
         startinput(){
             $('.el-collapse-item .el-button').css('color','#2b305b')
-            this.ca=''
         },
         //文本检索
         search(){
@@ -193,6 +192,7 @@ var data_items = new Vue({
             this.classlist=val;
         },
         chooseCate(item){
+            this.searchText = ''
             this.theDefaultCate=item
             this.findDto.page=1
             window.history.pushState(null,null,"?category="+this.theDefaultCate+"&page="+this.findDto.page)

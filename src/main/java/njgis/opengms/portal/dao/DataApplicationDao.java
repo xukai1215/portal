@@ -62,11 +62,11 @@ public interface DataApplicationDao extends MongoRepository<DataApplication, Str
 //    DataApplication find
 
     Page<DataApplication> findAllByNameContainsIgnoreCase(String name, Pageable pageable);
-    // Page<DataApplication> findAllByKeywordsContainsIgnoreCase(String keyword, Pageable pageable);
+    Page<DataApplication> findAllByKeywordsContainsIgnoreCase(String keyword, Pageable pageable);
     Page<DataApplication> findAllByDescriptionContainsIgnoreCase(String content, Pageable pageable);
     Page<DataApplication> findAllByAuthorLikeIgnoreCase(String author, Pageable pageable);
     Page<DataApplication> findAllByNameContainsIgnoreCaseAndMethodLikeIgnoreCase(String name, String method, Pageable pageable);
-    // Page<DataApplication> findAllByKeywordsContainsIgnoreCaseAndMethodLikeIgnoreCase(String keyword, String method, Pageable pageable);
+    Page<DataApplication> findAllByKeywordsContainsIgnoreCaseAndMethodLikeIgnoreCase(String keyword, String method, Pageable pageable);
     Page<DataApplication> findAllByDescriptionContainsIgnoreCaseAndMethodLikeIgnoreCase(String content, String method, Pageable pageable);
     Page<DataApplication> findAllByAuthorLikeIgnoreCaseAndMethodLikeIgnoreCase(String author, String method, Pageable pageable);
 }
