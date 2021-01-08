@@ -32,6 +32,7 @@ public interface DataItemDao extends MongoRepository<DataItem,String> {
 
     Page<DataItemResultDTO> findByClassificationsIn(Pageable pageable,List<String> cate);
 
+    @Override
     Page<DataItem> findAll(Pageable pageable);
 
     Page<DataItem> findAllByNameLikeIgnoreCase(Pageable pageable,String name);

@@ -875,16 +875,21 @@ public class DataApplicationService {
                         result = dataApplicationDao.findAllByNameContainsIgnoreCase(searchText, pageable);
                         break;
                     }
-                    // case "Keyword":{
-                    //     result = dataApplicationDao.findAllByKeywordsContainsIgnoreCase(searchText, pageable);      // datamethod 里面并没有关键字字段
-                    //     break;
-                    // }
+                    case "keyword":{
+                        result = dataApplicationDao.findAllByKeywordsContainsIgnoreCase(searchText, pageable);
+                        break;
+                    }
                     case "content":{
                         result = dataApplicationDao.findAllByDescriptionContainsIgnoreCase(searchText, pageable);
                         break;
                     }
                     case "contributor":{
-                        result = dataApplicationDao.findAllByAuthorLikeIgnoreCase(searchText, pageable);
+                        User user = userDao.findFirstByName(searchText);
+                        if(user != null && user.getOid() != ""){
+                            result = dataApplicationDao.findAllByAuthorLikeIgnoreCase(user.getOid(), pageable);
+                        }else{
+                            return null;
+                        }
                         break;
                     }
                     default:{
@@ -902,16 +907,21 @@ public class DataApplicationService {
                         result = dataApplicationDao.findAllByNameContainsIgnoreCaseAndMethodLikeIgnoreCase(searchText, method, pageable);
                         break;
                     }
-                    // case "Keyword":{
-                    //     result = dataApplicationDao.findAllByKeywordsContainsIgnoreCaseAndMethodLikeIgnoreCase(searchText, method, pageable);      // datamethod 里面并没有关键字字段
-                    //     break;
-                    // }
+                    case "keyword":{
+                        result = dataApplicationDao.findAllByKeywordsContainsIgnoreCaseAndMethodLikeIgnoreCase(searchText, method, pageable);
+                        break;
+                    }
                     case "content":{
                         result = dataApplicationDao.findAllByDescriptionContainsIgnoreCaseAndMethodLikeIgnoreCase(searchText, method, pageable);
                         break;
                     }
                     case "contributor":{
-                        result = dataApplicationDao.findAllByAuthorLikeIgnoreCaseAndMethodLikeIgnoreCase(searchText, method, pageable);
+                        User user = userDao.findFirstByName(searchText);
+                        if(user != null && user.getOid() != ""){
+                            result = dataApplicationDao.findAllByAuthorLikeIgnoreCaseAndMethodLikeIgnoreCase(user.getOid(), method, pageable);
+                        }else{
+                            return null;
+                        }
                         break;
                     }
                     default:{
@@ -964,6 +974,7 @@ public class DataApplicationService {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
             jsonObject.put("createTime",simpleDateFormat.format(dataApplication.getCreateTime()));
             jsonObject.put("name",dataApplication.getName());
+            jsonObject.put("keywords", dataApplication.getKeywords());
             jsonObject.put("description",dataApplication.getDescription());
             jsonObject.put("type",dataApplication.getType());
             jsonObject.put("status",dataApplication.getStatus());
