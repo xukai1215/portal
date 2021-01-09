@@ -7,8 +7,10 @@ import java.util.List;
 
 public interface ModelContainerDao extends MongoRepository<ModelContainer,String> {
 
-    ModelContainer findFirstByUserAndMac(String user,String mac);
+    ModelContainer findFirstByAccountAndMac(String user,String mac);
 
-    List<ModelContainer> findAllByUser(String userName);
+    List<ModelContainer> findAllByAccount(String userName);
+
+    ModelContainer findByMac(String mac);
 
 }

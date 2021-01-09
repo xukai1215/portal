@@ -8,9 +8,9 @@ package njgis.opengms.portal.enums;
  * @Version 1.0.0
  */
 public enum ResultEnum {
-    SUCCESS(0, "成功"),
-    NO_OBJECT(-1, "没有对应的对象"),
-    ERROR(-2,"失败");
+    SUCCESS(0, "Success"),
+    NO_OBJECT(-1, "No object"),
+    ERROR(-2,"Error");
 
     private Integer code;
 

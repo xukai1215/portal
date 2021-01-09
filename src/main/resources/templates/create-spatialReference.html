@@ -279,9 +279,9 @@
                                                                     </div>
                                                                 </div>
                                                                 <div v-if="editType=='modify'" class="localization">
-                                                                    <el-card style="width: 30%;float:left">
+                                                                    <el-card style="width: 15%;float:left">
                                                                         <div slot="header" class="clearfix">
-                                                                            <span style="font-weight: bold">Localization Description</span>
+                                                                            <span style="font-weight: bold">Localizations</span>
                                                                             <el-button
                                                                                     style="float: right; padding: 3px 0"
                                                                                     type="text" @click="addLocalization">+ Add
@@ -328,7 +328,7 @@
                                                                             </el-table>
                                                                         </div>
                                                                     </el-card>
-                                                                    <el-card style="width: 70%;">
+                                                                    <el-card style="width: 85%;">
                                                                         <div slot="header" class="clearfix">
                                                                             <span>Spatiotemporal Reference Name : </span>
                                                                             <el-input v-model="currentLocalization.name" placeholder="Please enter the item's localized name"></el-input>

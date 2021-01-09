@@ -144,7 +144,28 @@ new Vue({
         }
     },
     methods: {
-
+        claim(){
+            $.get("/user/load",{},(result)=>{
+                let json = result;
+                if (json.oid == "") {
+                    this.confirmLogin();
+                }
+                else {
+                    this.authorshipFormVisible = true;
+                }
+            })
+        },
+        feedBack(){
+            $.get("/user/load",{},(result)=>{
+                let json = result;
+                if (json.oid == "") {
+                    this.confirmLogin();
+                }
+                else {
+                    window.location.href = "/user/userSpace#/feedback"
+                }
+            })
+        },
         submitComment(){
             if(this.useroid==""||this.useroid==null||this.useroid==undefined){
                 this.$message({

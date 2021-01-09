@@ -90,6 +90,38 @@
         .tox.tox-silver-sink. tox-tinymce-aux{
             z-index: 2077;
         }
+
+        .modelRelationGraphSideBar::-webkit-scrollbar {/*滚动条整体样式*/
+
+            width: 7px;     /*高宽分别对应横竖滚动条的尺寸*/
+
+            height: 1px;
+
+        }
+
+        .modelRelationGraphSideBar::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+
+            border-radius: 10px;
+
+            -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+
+            background: #9e9e9e;
+
+        }
+
+        .modelRelationGraphSideBar::-webkit-scrollbar-track {/*滚动条里面轨道*/
+
+            -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+
+            border-radius: 10px;
+
+            background: #EDEDED;
+
+        }
+
+        .el-tabs__item > div > div > .el-switch__label.is-active{
+            color: #13ce66;
+        }
     </style>
 
 </head>
@@ -99,52 +131,7 @@
 
     <div th:replace="fragments/backToTop :: backtop-down"></div>
 
-    <div v-cloak v-if="graphFullScreen" class="fullScreenMask" style="height: 1000px;width: 100%;background-color: white;">
-        <div v-if="modelRelationGraphSideBarShow" style="height:100%;width:300px;padding:15px;position: absolute;z-index: 999;background-color: #f6f6f6eb">
-            <div class="mr_header" style="height:10px;">
-                <a href="javascript:void(0);" @click="closeGraphSideBar" style="font-size: 20px;">×</a>
-            </div>
-            <div class="mr_body">
-                <div class="mr_title" style="text-align: center;">
-                    <div v-if="curRelation.type=='model'">
-                        <div style="margin-bottom: 10px;">
-                            <img v-if="curRelation.img != ''" :src="curRelation.img" style="width:90px;height:90px;">
-                            <img v-else src="/static/img/model/model.png"/>
-                        </div>
-                        <a :href="'/modelItem/'+curRelation.oid" target="_blank" style="font-size: 16px;text-decoration: underline;">{{curRelation.name}}</a>
-                    </div>
-                    <div v-if="curRelation.type=='ref'">
-                        <div style="margin-bottom: 10px;">
-                            <li class="el-icon-document" style="font-size: 90px;"></li>
-                        </div>
-                        <a v-if="curRelation.link!=''" :href="curRelation.link" target="_blank" style="font-size: 16px;text-decoration: underline;">{{curRelation.name}}</a>
-                        <div v-else style="font-size: 16px;">{{curRelation.name}}</div>
-                    </div>
-                </div>
-                <hr style="margin:10px 0;"/>
-                <div class="mr_content">
-                    <div v-if="curRelation.type=='model'">
-                        {{curRelation.overview}}
-                    </div>
-                    <div v-if="curRelation.type=='ref'">
-                        <div v-if="curRelation.author != undefined && curRelation.author != ''">
-                            <label>Author</label>
-                            <span>{{curRelation.author.join('; ')}}</span>
-                        </div>
-                        <div v-if="curRelation.journal != undefined && curRelation.journal != ''">
-                            <label>Journal</label>
-                            <span>{{curRelation.journal}}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-        </div>
-        <div id="fullScreenGraph" style="height: 100%;"></div>
-    </div>
-
-    <div v-else class="pageMainContent clearfix" style="padding:40px 0px;height: auto;position: relative;">
+    <div class="pageMainContent clearfix" style="padding:40px 0px;height: auto;position: relative;">
         <div class="left-panel el-col" >
             <div class="detail">
                 <div class="detail_title">
@@ -400,66 +387,7 @@
                 </div>
                 <el-tabs class="block_content" v-model="activeName" type="border-card" stretch="true">
 
-                    <el-tab-pane name="Computable Model">
-                        <div slot="label">
-                            <!--<el-button v-if="activeName=='Computable Model'" type="primary" icon="el-icon-edit" size="mini" circle></el-button>-->
-                            Computable Model List
-                            <span class="el-badge__content el-badge__content--undefined" th:style="@{(${#lists.size(computableModels)==0} ? 'background-color: #bbbbbb' : '')}"
-                                  th:text="${#lists.size(computableModels)}">
-                            </span>
 
-                        </div>
-
-                        <div th:if="${#lists.size(computableModels)}!=0">
-                            <div class="list_panel clearfix" th:each="model:${computableModels}">
-                                <a th:href="'/computableModel/'+${model.oid}" class="img">
-                                    <img src="/static/img/model/calcModel.png">
-                                </a>
-
-                                <div class="info" style="margin-top:0px;">
-                                    <a th:href="'/computableModel/'+${model.oid}"
-                                       th:text="${model.name}">Ground Water Flow System</a>
-                                    <div style="display: inline-block;margin-left:5px">
-                                        <span class="label label-success" th:if="${model.contentType == 'Package' || model.contentType == 'MD5'}">
-                                            OpenGMS Model-Service Package
-                                        </span>
-                                        <span class="label label-success" th:if="${model.contentType == 'Code'}">
-                                            Source Code
-                                        </span>
-                                        <span class="label label-success" th:if="${model.contentType == 'Library'}">
-                                            Executable Library
-                                        </span>
-                                        <span class="label label-success" th:if="${model.contentType == 'Service'}">
-                                            Third-party Web-Service Link
-                                        </span>
-                                        <span class="label label-success" th:if="${model.contentType == 'Link'}">
-                                            Downloadable Link
-                                        </span>
-                                    </div>
-                                    <p style="margin-top: 0px" th:text="${model.description}">ANN-CA uses the artificial
-                                        neural network method to extract
-                                        land use change rules in the study area, and then applies the rules to
-                                        subsequent
-                                        simulations and predictions.</p>
-                                </div>
-                            </div>
-                            <el-button @click="addRelation(4)" type="primary" icon="el-icon-plus"
-                                       style="width: 100%">
-                                Edit Related Computable Model
-                            </el-button>
-                        </div>
-                        <div class="text-center" th:if="${#lists.size(computableModels)}==0">
-                            <h5 style="margin-bottom: 10px;display: inline-block;">
-                                There is no related computable model. You can link computable models.
-                            </h5>
-                            <button class="btn btn-default" type="button"
-                                    style="display: inline-block;" @click="addRelation(4)">
-
-                                <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
-                            </button>
-                        </div>
-
-                    </el-tab-pane>
                     <el-tab-pane name="Conceptual Model">
                         <div slot="label">Conceptual-schematic Model List
                             <span class="el-badge__content el-badge__content--undefined" th:style="@{(${#lists.size(conceptualModels)==0} ? 'background-color: #bbbbbb' : '')}"
@@ -539,6 +467,66 @@
                             </button>
                         </div>
                     </el-tab-pane>
+                    <el-tab-pane name="Computable Model">
+                        <div slot="label">
+                            <!--<el-button v-if="activeName=='Computable Model'" type="primary" icon="el-icon-edit" size="mini" circle></el-button>-->
+                            Computable Model List
+                            <span class="el-badge__content el-badge__content--undefined" th:style="@{(${#lists.size(computableModels)==0} ? 'background-color: #bbbbbb' : '')}"
+                                  th:text="${#lists.size(computableModels)}">
+                            </span>
+
+                        </div>
+
+                        <div th:if="${#lists.size(computableModels)}!=0">
+                            <div class="list_panel clearfix" th:each="model:${computableModels}">
+                                <a th:href="'/computableModel/'+${model.oid}" class="img">
+                                    <img src="/static/img/model/calcModel.png">
+                                </a>
+
+                                <div class="info" style="margin-top:0px;">
+                                    <a th:href="'/computableModel/'+${model.oid}"
+                                       th:text="${model.name}">Ground Water Flow System</a>
+                                    <div style="display: inline-block;margin-left:5px">
+                                        <span class="label label-success" th:if="${model.contentType == 'Package' || model.contentType == 'MD5'}">
+                                            OpenGMS Model-Service Package
+                                        </span>
+                                        <span class="label label-success" th:if="${model.contentType == 'Code'}">
+                                            Source Code
+                                        </span>
+                                        <span class="label label-success" th:if="${model.contentType == 'Library'}">
+                                            Executable Library
+                                        </span>
+                                        <span class="label label-success" th:if="${model.contentType == 'Service'}">
+                                            Third-party Web-Service Link
+                                        </span>
+                                        <span class="label label-success" th:if="${model.contentType == 'Link'}">
+                                            Downloadable Link
+                                        </span>
+                                    </div>
+                                    <p style="margin-top: 0px" th:text="${model.description}">ANN-CA uses the artificial
+                                        neural network method to extract
+                                        land use change rules in the study area, and then applies the rules to
+                                        subsequent
+                                        simulations and predictions.</p>
+                                </div>
+                            </div>
+                            <el-button @click="addRelation(4)" type="primary" icon="el-icon-plus"
+                                       style="width: 100%">
+                                Edit Related Computable Model
+                            </el-button>
+                        </div>
+                        <div class="text-center" th:if="${#lists.size(computableModels)}==0">
+                            <h5 style="margin-bottom: 10px;display: inline-block;">
+                                There is no related computable model. You can link computable models.
+                            </h5>
+                            <button class="btn btn-default" type="button"
+                                    style="display: inline-block;" @click="addRelation(4)">
+
+                                <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
+                            </button>
+                        </div>
+
+                    </el-tab-pane>
 
                 </el-tabs>
             </div>
@@ -556,37 +544,57 @@
                                  >
                                 {{relatedModelItems.length}}
                             </span>
+                            <el-switch
+                                    style="margin-left: 10px;"
+                                    v-if="relatedModelItems.length > 0"
+                                    v-model="modelRelationGraphShow"
+                                    active-text="Graph View"
+                                    active-color="#13ce66"
+                                    @change="relateModelItemListShowChange"
+                                    >
+                            </el-switch>
+                            <!--<el-radio-group-->
+                                    <!--v-if="relatedModelItems.length > 0 && activeName1 == 'Model Item'"-->
+                                    <!--v-model="modelRelationGraphShow"-->
+                                    <!--@change="relateModelItemListShowChange"-->
+                                    <!--text-color="green"-->
+                                    <!--fill="green">-->
+                                <!--<el-radio :label="true" style="margin:0 10px 0 5px;">List</el-radio>-->
+                                <!--<el-radio :label="false">Graph</el-radio>-->
+                            <!--</el-radio-group>-->
                         </div>
                         <div th:if="${#lists.size(modelItems)}!=0">
-                            <div v-if="modelRelationListShow" class="list_panel clearfix" v-for="model,key in relatedModelItemsPage">
-                                <!--<div th:text="${model.image}"></div>-->
-                                <a class="img" :href="'/modelItem/'+model.oid" >
-                                    <img v-if="model.image==null" src="/static/img/model/model.png">
-                                    <img v-else :src="model.image">
-                                </a>
-                                <div class="info" style="margin-top:0px;">
-                                    <a :href="'/modelItem/'+model.oid">{{model.name}}</a>
-                                    <span class="label label-success" style="margin-left:5px;">{{model.relation}}</span>
-                                    <el-tooltip effect="light"
-                                                :content="modelInfo.name+' '+model.relation.toLowerCase()+' '+model.name"
-                                                placement="top">
-                                        <i class="fa fa-question-circle-o" aria-hidden="true" style="vertical-align: text-top;margin-left:5px;"></i>
-                                    </el-tooltip>
-                                    <p style="margin-top: 0px">{{model.description}}</p>
+                            <div v-if="!modelRelationGraphShow">
+                                <div class="list_panel clearfix" v-for="model,key in relatedModelItemsPage">
+                                    <!--<div th:text="${model.image}"></div>-->
+                                    <a class="img" :href="'/modelItem/'+model.oid" >
+                                        <img v-if="model.image==null" src="/static/img/model/model.png">
+                                        <img v-else :src="model.image">
+                                    </a>
+                                    <div class="info" style="margin-top:0px;">
+                                        <span class="label label-success">{{model.relation}}</span>
+                                        <el-tooltip effect="light"
+                                                    :content="modelInfo.name+' '+model.relation.toLowerCase()+' '+model.name"
+                                                    placement="top">
+                                            <i class="fa fa-question-circle-o" aria-hidden="true" style="vertical-align: text-top;"></i>
+                                        </el-tooltip>
+                                        <a :href="'/modelItem/'+model.oid">{{model.name}}</a>
+
+                                        <p style="margin-top: 0px">{{model.description}}</p>
+                                    </div>
                                 </div>
+                                <el-pagination
+                                        style="text-align: center;padding:10px 0;"
+                                        background
+                                        layout="prev, pager, next"
+                                        :hide-on-single-page="true"
+                                        :page-size="relationPageSize"
+                                        :total="relatedModelItems.length"
+                                        @current-change="handleRelationCurrentChange($event,'modelItem')">
+                                </el-pagination>
                             </div>
-                            <el-pagination
-                                    v-if="modelRelationListShow"
-                                    style="text-align: center;padding:10px 0;"
-                                    background
-                                    layout="prev, pager, next"
-                                    :hide-on-single-page="true"
-                                    :page-size="relationPageSize"
-                                    :total="relatedModelItems.length"
-                                    @current-change="handleRelationCurrentChange($event,'modelItem')">
-                            </el-pagination>
-                            <div v-if="!modelRelationListShow" style="height:550px;">
-                                <div v-if="modelRelationGraphSideBarShow" style="height:550px;width:200px;padding:15px;position: absolute;z-index: 999;background-color: #f6f6f6eb">
+                            <div v-if="modelRelationGraphShow" style="height:550px;position: relative;">
+                                <div class="modelRelationGraphSideBar" v-if="modelRelationGraphSideBarShow" style="height:550px;width:200px;padding:15px;position: absolute;z-index: 999;background-color: #f6f6f6eb;overflow:auto;">
                                     <div class="mr_header" style="height:10px;">
                                         <a href="javascript:void(0);" @click="closeGraphSideBar" style="font-size: 20px;">×</a>
                                     </div>
@@ -627,16 +635,51 @@
 
 
                                 </div>
+                                <div class="modelRelationGraphSideBar_right" style="position: absolute;right:0;top:40px;height:500px;width:130px;z-index: 999;background-color: #cacaca38;padding:15px;border-radius: 10px;">
+                                    <label>Node Label</label><br/>
+                                    <el-switch
+                                        v-model="nodeLabelShow"
+                                        active-text="On"
+                                        inactive-text="Off"
+                                        @change="nodeLabelShowChange">
+                                    </el-switch>
+                                    <hr style="border-color: #00b9ff;"/>
+                                    <label>Full Name</label><br/>
+                                    <el-switch
+                                            v-model="fullNameShow"
+                                            active-text="On"
+                                            inactive-text="Off"
+                                            @change="fullNameShowChange">
+                                    </el-switch>
+                                    <hr style="border-color: #00b9ff;"/>
+                                    <label>Line Label</label><br/>
+                                    <el-switch
+                                            v-model="lineLabelShow"
+                                            active-text="On"
+                                            inactive-text="Off"
+                                            @change="lineLabelShowChange">
+                                    </el-switch>
+                                    <hr style="border-color: #00b9ff;"/>
+                                    <label>Line Color</label><br/>
+                                    <el-switch
+                                            v-model="lineColorShow"
+                                            active-text="On"
+                                            inactive-text="Off"
+                                            @change="lineColorShowChange">
+                                    </el-switch>
+                                    <hr style="border-color: #00b9ff;"/>
+                                </div>
                                 <div id="modelRelationGraph" style="height:100%;"></div>
                             </div>
                             <el-button @click="addRelation(1)" type="primary" icon="el-icon-plus"
-                                       style="width: 49.5%">
+                                       style="width: 100%">
                                 Edit Related Model Item
-                            </el-button><el-button v-if="modelRelationListShow" @click="generateModelRelationGraph" type="success" icon="el-icon-picture-outline" style="margin-left:1%;width: 49.5%">
-                                Relation Graph
-                            </el-button><el-button v-if="!modelRelationListShow" @click="closeModelRelationGraph" type="danger" style="margin-left:1%;width: 49.5%">
-                                Close Graph
                             </el-button>
+                            <!--<el-button v-if="!modelRelationGraphShow" @click="generateModelRelationGraph" type="success" icon="el-icon-picture-outline" style="margin-left:1%;width: 49.5%">-->
+                                <!--Relation Graph-->
+                            <!--</el-button><el-button v-if="modelRelationGraphShow" @click="closeModelRelationGraph" type="danger" style="margin-left:1%;width: 49.5%">-->
+                                <!--Close Graph-->
+                            <!--</el-button>-->
 
                         </div>
                         <div class="text-center" th:if="${#lists.size(modelItems)}==0">
@@ -1165,6 +1208,53 @@
         <div th:if="${history==true}" style="pointer-events:none;position: absolute;top:0;bottom: 0;left: 0;right: 0;background-image: url('/static/img/historyBackground.png')"></div>
     </div>
 
+    <el-dialog v-cloak :visible.sync="graphFullScreen" fullscreen show-close title="Model Relation Graph">
+        <div class="fullScreenMask" style="height: 100%;width: 100%;position: relative;background-color: white;">
+            <div class="modelRelationGraphSideBar" v-if="modelRelationGraphSideBarShow" style="height:100%;width:300px;padding:15px;position: absolute;z-index: 999;background-color: #f6f6f6eb">
+                <div class="mr_header" style="height:10px;">
+                    <a href="javascript:void(0);" @click="closeGraphSideBar" style="font-size: 20px;">×</a>
+                </div>
+                <div class="mr_body">
+                    <div class="mr_title" style="text-align: center;">
+                        <div v-if="curRelation.type=='model'">
+                            <div style="margin-bottom: 10px;">
+                                <img v-if="curRelation.img != ''" :src="curRelation.img" style="width:90px;height:90px;">
+                                <img v-else src="/static/img/model/model.png"/>
+                            </div>
+                            <a :href="'/modelItem/'+curRelation.oid" target="_blank" style="font-size: 16px;text-decoration: underline;">{{curRelation.name}}</a>
+                        </div>
+                        <div v-if="curRelation.type=='ref'">
+                            <div style="margin-bottom: 10px;">
+                                <li class="el-icon-document" style="font-size: 90px;"></li>
+                            </div>
+                            <a v-if="curRelation.link!=''" :href="curRelation.link" target="_blank" style="font-size: 16px;text-decoration: underline;">{{curRelation.name}}</a>
+                            <div v-else style="font-size: 16px;">{{curRelation.name}}</div>
+                        </div>
+                    </div>
+                    <hr style="margin:10px 0;"/>
+                    <div class="mr_content">
+                        <div v-if="curRelation.type=='model'">
+                            {{curRelation.overview}}
+                        </div>
+                        <div v-if="curRelation.type=='ref'">
+                            <div v-if="curRelation.author != undefined && curRelation.author != ''">
+                                <label>Author</label>
+                                <span>{{curRelation.author.join('; ')}}</span>
+                            </div>
+                            <div v-if="curRelation.journal != undefined && curRelation.journal != ''">
+                                <label>Journal</label>
+                                <span>{{curRelation.journal}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+            <div id="fullScreenGraph" style="height: 100%;"></div>
+
+        </div>
+    </el-dialog>
 
     <!--Relation 弹出框-->
     <el-dialog v-cloak :visible.sync="dialogTableVisible" :title="relateTitle"  width="70%"
