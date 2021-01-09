@@ -381,7 +381,7 @@ let vue = new Vue({
             // let url = this.invokeService.cacheUrl;
             let formData=new FormData();
             var that = this;
-            formData.append("dataUrl",this.invokeService.cacheUrl);
+            formData.append("dataUrl",this.dataServerTask.output.output);
             formData.append("taskId",this.dataServerTask.oid);
 
             axios.post("/dataApplication/initPicture",formData).then((res)=>{

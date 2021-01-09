@@ -336,8 +336,10 @@ public class DataApplicationService {
                 invokeService.setServiceId(UUID.randomUUID().toString());//
                 invokeService.setMethod(dataApplication.getMethod());
                 invokeService.setName(dataApplication.getName());
-//                invokeService.setToken("POMaXlYttteoEeV7GrO8Ww==");
-                invokeService.setToken("fcky/35Rezr+Kyazr8SRWA==");
+                //75
+                invokeService.setToken("fdtwTxlnhka8jY66lOT+kKutgZHnvi4NlnDc7QY5jR4=");
+                //33
+//                invokeService.setToken("fcky/35Rezr+Kyazr8SRWA==");
                 invokeService.setContributor("Portal");
                 invokeService.setIsPortal(true);
                 List<InvokeService> invokeServices = new ArrayList<>();
@@ -558,6 +560,7 @@ public class DataApplicationService {
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setConnectTimeout(5000);
                 conn.setReadTimeout(60000);
+                //通过conn取得文件名称
                 String raw = conn.getHeaderField("Content-Disposition");
                 if(raw!=null&&raw.indexOf("=")>0){
                     fileName = raw.split("=")[1];
@@ -619,7 +622,7 @@ public class DataApplicationService {
 //                    testDatas.get(0).setPath(destDirPath);
 //                }
 //            }
-            testData1.setPath(path);
+           testData1.setPath(path);
         }
         dataApplication.setTestData(testDatas);
         dataApplicationDao.save(dataApplication);
@@ -694,7 +697,10 @@ public class DataApplicationService {
         Map<String, Object> part = new HashMap<>();
         part.put("uid", "0");//存在根目录中
         part.put("instype", "Data");
-        part.put("userToken", "f30f0e82-f6f1-4264-a302-caff7c40ccc9");
+        //33
+//        part.put("userToken", "f30f0e82-f6f1-4264-a302-caff7c40ccc9");
+        //75
+        part.put("userToken", "e3cea591-a8a5-4f50-b640-a569eccd94b7");
         String newFileId = UUID.randomUUID().toString();
         part.put("id", newFileId);
         part.put("oid", "0");
@@ -740,7 +746,11 @@ public class DataApplicationService {
         }
         part2.add("name", dataApplication.getName());
         //todo
-        part2.add("oid", "I3MXbzRq/NZkbWcKO8tF0w==");
+        //33
+//        part2.add("oid", "I3MXbzRq/NZkbWcKO8tF0w==");
+        //75
+        part2.add("oid", "5KglgbsDPmrFnA3J9CALzQ==");
+
         //获取xml
         String packageZipPath = resourcePath + "/DataApplication/Package" + dataApplication.getResources().get(0);
         File packageZip = new File(packageZipPath);
@@ -786,7 +796,10 @@ public class DataApplicationService {
         part2.add("relatedData", newFileId);//dataId
         part2.add("type", "Processing");
         part2.add("uid", "0");
-        part2.add("userToken", "f30f0e82-f6f1-4264-a302-caff7c40ccc9");
+        //33
+//        part2.add("userToken", "f30f0e82-f6f1-4264-a302-caff7c40ccc9");
+        //75
+        part2.add("userToken", "e3cea591-a8a5-4f50-b640-a569eccd94b7");
         part2.add("processingPath", destDirPath);
 
         invokeService.setServiceId(serviceId);
