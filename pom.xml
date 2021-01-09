@@ -11,7 +11,7 @@
     <groupId>njgis.opengms</groupId>
     <artifactId>portal</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <name>portal</name>
     <description>OpenGMS Portal</description>
 
@@ -77,6 +77,12 @@
             <artifactId>fastjson</artifactId>
             <version>1.2.39</version>
         </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>com.alibaba</groupId>-->
+<!--            <artifactId>druid-spring-boot-starter</artifactId>-->
+<!--            <version>1.1.9</version>-->
+<!--        </dependency>-->
 
 
         <dependency>

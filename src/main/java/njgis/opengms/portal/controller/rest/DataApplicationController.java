@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.bean.LoginRequired;
 import njgis.opengms.portal.dao.DataApplicationDao;
+import njgis.opengms.portal.dao.DataServerTaskDao;
 import njgis.opengms.portal.dao.ThemeDao;
 import njgis.opengms.portal.dao.UserDao;
 import njgis.opengms.portal.dto.dataApplication.DataApplicationDTO;
@@ -52,10 +53,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.*;
 import javax.xml.crypto.Data;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
+import java.net.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -92,6 +90,12 @@ public class DataApplicationController {
     // 模仿Thematic写的data_application_center,没有写后台
     @Autowired
     ThemeDao themeDao;
+
+    @Autowired
+    DataServerTaskDao dataServerTaskDao;
+
+    @Value("${resourcePath}")
+    private String resourcePath;
 
     @Value("${dataServerManager}")
     private String dataServerManager;
@@ -322,8 +326,12 @@ public class DataApplicationController {
      * 调用服务
      * @param dataApplicationId dataApplicationId
      * @param serviceId serviceId
+     * @param serviceName serviceName
      * @param params 调用所需的参数
+     * @param dataType 调用服务的数据类型，包括localData与onlineData，区分两种调用方法
      * @param request request
+     * @param selectData onlineData所选的数据，可选传
+     * @param integrate 是否集成的调用，集成的调用则标识"integrate", 可选
      * @return invokeService
      * @throws UnsupportedEncodingException UnsupportedEncodingException
      * @throws MalformedURLException MalformedURLException
@@ -332,11 +340,27 @@ public class DataApplicationController {
     @RequestMapping(value = "/invokeMethod", method = RequestMethod.POST)
     JsonResult invokeMethod(@RequestParam(value = "dataApplicationId") String dataApplicationId,
                             @RequestParam(value = "serviceId") String serviceId,
+                            @RequestParam(value = "serviceName") String serviceName,
                             @RequestParam(value = "params") String[] params,
                             @RequestParam(value = "dataType") String dataType,
                             @RequestParam(value = "selectData",  required = false) String selectData,
+                            @RequestParam(value = "integrate",  required = false) String integrate,
                             HttpServletRequest request) throws UnsupportedEncodingException, MalformedURLException, DocumentException {
         JsonResult jsonResult = new JsonResult();
+        DataServerTask dataServerTask = new DataServerTask();
+        Date date = new Date();
+        dataServerTask.setRunTime(date);
+        dataServerTask.setOid(UUID.randomUUID().toString());
+        dataServerTask.setServiceId(serviceId);
+        dataServerTask.setServiceName(serviceName);
+        dataServerTask.setDataType(dataType);
+        if (integrate!=null){
+            dataServerTask.setIntegrate(true);
+        }else {
+            dataServerTask.setIntegrate(false);
+        }
+
+
         DataApplication dataApplication = dataApplicationDao.findFirstByOid(dataApplicationId);
         List<InvokeService> invokeServices = dataApplication.getInvokeServices();
         //门户测试解绑
@@ -345,6 +369,7 @@ public class DataApplicationController {
             return ResultUtils.error(-1,"no login");
         }
         String reqUsrId = session.getAttribute("uid").toString();
+        dataServerTask.setUserId(reqUsrId);
         //String reqUsrId = "33";//门户测试时注释掉
 
         InvokeService invokeService = null;
@@ -369,36 +394,28 @@ public class DataApplicationController {
                 parameters += ",";
             }
         }
+        JSONObject input = new JSONObject();
         if(dataType.equals("localData")){
             //数据为测试数据
             url = "http://111.229.14.128:8898/extPcs?dataId=";//invoke接口
             List<String> dataIds = invokeService.getDataIds();
             url += dataIds.get(0);
+            //将输入数据化为jsonobject的数据
+            input.put("input", dataApplication.getTestData());
+            dataServerTask.setInput(input);
 
             url += ("&params=" + parameters);
             url += ("&name=" + invokeService.getName());
             url += ("&token=" + token);//token注意要加密  注意此处使用门户节点的token，目前先用我的token代替
             url += ("&reqUsrOid=" + reqUsrId);
             url += ("&pcsId=" + serviceId);
-        }
-//        else if (dataType.equals("uploadData")){
-//            //数据为上传到数据容器的数据
-//            String contDtId = null;
-//            if(selectData!=null) {
-//                JSONArray jsonArray = JSONArray.parseArray(selectData);
-//                log.info(jsonArray.get(0).toString());
-//                JSONObject select = jsonArray.getJSONObject(0);
-//                contDtId = select.getString("url").split("uid=")[1];
-//                log.info(contDtId);
-//            }
-//            url = "http://111.229.14.128:8898/invokeDistributedPcs?token=" + token;
-//            url += ("&pcsId=" + serviceId);
-//            url += ("&params=" + params);
-//            url += ("&contDtId=" + contDtId);
-//        }
-        else {
+        } else {
             //数据为可下载数据的url  此调用为post
             String downloadLink = "";
+            //设置input数据
+            input.put("input", selectData);
+            dataServerTask.setInput(input);
+
             if(selectData!=null) {
                 JSONArray jsonArray = JSONArray.parseArray(selectData);
                 log.info(jsonArray.get(0).toString());
@@ -411,8 +428,6 @@ public class DataApplicationController {
                         downloadLink += ",";
                     }
                 }
-//                JSONObject select = jsonArray.getJSONObject(0);
-//                downloadLink = select.getString("url");
                 log.info(downloadLink);
             }
             url="http://111.229.14.128:8898/invokeUrlsDataPcs";
@@ -434,11 +449,10 @@ public class DataApplicationController {
             }catch (ResourceAccessException e){
                 jsonResult.setCode(1);
                 jsonResult.setMsg("request time out!");
+                dataServerTask.setStatus(-1);
+                dataServerTaskDao.insert(dataServerTask);
                 return jsonResult;
             }
-//            urlRes = jsonObject.split("<uid>")[1];
-//            urlRes = urlRes.split("</uid>")[0];
-//            log.info(urlRes);
         }
         if(!dataType.equals("onlineData")){
             log.info(url);
@@ -448,25 +462,52 @@ public class DataApplicationController {
                 response = restTemplate.getForObject(url,String.class);
             }catch (ResourceAccessException e){
                 jsonResult.setCode(1);
+                dataServerTask.setStatus(-1);
+                dataServerTaskDao.insert(dataServerTask);
                 jsonResult.setMsg("request time out!");
                 return jsonResult;
             }
         }
         log.info(response + "");
-        //解析xml，获取下载链接
-        //将string串读取为xml
-        Document configXML = DocumentHelper.parseText(response);
-        //获取根元素
-        Element root = configXML.getRootElement();
-        urlRes = root.element("uid").getText();
+        if(!dataType.equals("localData")) {
+            JSONObject resp = JSON.parseObject(response);
+            urlRes = resp.getString("url");
+        }else {
+            //解析xml，获取下载链接
+            //将string串读取为xml
+            Document configXML = DocumentHelper.parseText(response);
+            //获取根元素
+            Element root = configXML.getRootElement();
+            urlRes = root.element("uid").getText();
+        }
+        //运行成功后，将信息存储到dataTask中
+        //ip 与 port暂时不设
+        Date date1 = new Date();
+        dataServerTask.setFinishTime(date1);
+        dataServerTask.setPermission("private");
+        JSONObject output = new JSONObject();
+        output.put("output", urlRes);
+        dataServerTask.setOutput(output);
+        dataServerTask.setStatus(2);//成功运行
 
-
+        dataServerTaskDao.insert(dataServerTask);
         invokeService.setCacheUrl(urlRes);
-        jsonResult.setData(invokeService);
-
         dataApplication.setInvokeServices(invokeServices);
         dataApplicationDao.save(dataApplication);
-        jsonResult.setMsg("suc");
+        JSONObject res = new JSONObject();
+        res.put("invokeService", invokeService);
+        res.put("task", dataServerTask);
+
+        jsonResult.setData(res);
+
+//        if(invokeService.getMethod().equals("Visualization")){
+//            if(!dataApplicationService.initVisual(urlRes, dataServerTask)){
+//                jsonResult.setMsg("visual error");
+//            }else {
+//                jsonResult.setMsg("suc");
+//            }
+//        }
+
         jsonResult.setCode(0);
         return jsonResult;
     }
@@ -653,9 +694,8 @@ public class DataApplicationController {
         JsonResult jsonResult = new JsonResult();
         MultiValueMap<String, Object> part = new LinkedMultiValueMap<>();
 
-        for(int i=0;i<files.length;i++) {
+        for(int i=0;i<files.length;i++)
             part.add("ogmsdata", files[i].getResource());
-        }
         part.add("name", uploadName);
         part.add("userId", userName);
         part.add("serverNode", serverNode);
@@ -712,13 +752,96 @@ public class DataApplicationController {
     }
 
     /**
-     * 可视化输出
-     * @param url 输出数据url
+     * 可视化数据下载，并存储信息至相应的task中
+     * @param dataUrl 输出数据url
      * @return 可视化图片路径与名称
      */
-    @RequestMapping(value = "/visualOut", method = RequestMethod.GET)
-    public JsonResult visualOut(@RequestParam(value = "url") String url){
+    @RequestMapping(value = "/initPicture", method = RequestMethod.POST)
+    public JsonResult visualOut(@RequestParam(value = "dataUrl") String dataUrl,@RequestParam(value = "taskId") String taskId) throws IOException {
         JsonResult jsonResult = new JsonResult();
+        DataServerTask dataServerTask = dataServerTaskDao.findFirstByOid(taskId);
+        JSONObject visual = new JSONObject();
+
+        if (dataServerTask.getVisual() != null){
+            visual = dataServerTask.getVisual();
+        }else {
+            //通过url下载数据到服务器，并将相关信息存储至task里
+            String uuid = UUID.randomUUID().toString();
+            String visualPath = resourcePath + "/dataItem/visual/" + uuid;
+            InputStream inputStream = null;
+            FileOutputStream fileOutputStream = null;
+            String fileName = null;
+            if (dataUrl != null) {
+                URL url = new URL(dataUrl);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setConnectTimeout(5000);
+                conn.setReadTimeout(60000);
+                //通过conn取得文件名称
+                String raw = conn.getHeaderField("Content-Disposition");
+                if (raw != null && raw.indexOf("=") > 0) {
+                    fileName = raw.split("=")[1];
+                    fileName = new String(fileName.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+                }
+                inputStream = conn.getInputStream();
+            }
+            fileName = fileName.replaceAll("\"", "");
+
+            File testData = new File(visualPath);
+            if (!testData.exists()) {
+                testData.mkdirs();
+            }
+            String path = visualPath + "/" + fileName;
+            String dbPath = "/static/dataItem/visual/" + uuid + "/" + fileName;
+            File localFile = new File(path);
+            try {
+                //将数据下载至resourcePath下
+                if (localFile.exists()) {
+                    //如果文件存在删除文件
+                    boolean delete = localFile.delete();
+                }
+                //创建文件
+                if (!localFile.exists()) {
+                    //如果文件不存在，则创建新的文件
+                    localFile.createNewFile();
+                }
+
+                fileOutputStream = new FileOutputStream(localFile);
+                byte[] bytes = new byte[1024];
+                int len = -1;
+                while ((len = inputStream.read(bytes)) != -1) {
+                    fileOutputStream.write(bytes, 0, len);
+                }
+                fileOutputStream.close();
+                inputStream.close();
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (fileOutputStream != null) {
+                        fileOutputStream.close();
+                    }
+                    if (inputStream != null) {
+                        inputStream.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            visual.put("fileName", fileName);
+            visual.put("visualPath", dbPath);//具体到文件
+            dataServerTask.setVisual(visual);
+            dataServerTaskDao.save(dataServerTask);
+        }
+        jsonResult.setData(visual);
+        jsonResult.setMsg("success");
+        jsonResult.setCode(0);
+
         return jsonResult;
     }
+
+
 }
