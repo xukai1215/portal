@@ -118,6 +118,10 @@
             background: #EDEDED;
 
         }
+
+        .el-tabs__item > div > div > .el-switch__label.is-active{
+            color: #13ce66;
+        }
     </style>
 
 </head>
@@ -126,8 +130,6 @@
     <div th:replace="fragments/navbar :: unlog"></div>
 
     <div th:replace="fragments/backToTop :: backtop-down"></div>
-
-
 
     <div class="pageMainContent clearfix" style="padding:40px 0px;height: auto;position: relative;">
         <div class="left-panel el-col" >
@@ -542,50 +544,56 @@
                                  >
                                 {{relatedModelItems.length}}
                             </span>
-                            <!--<el-switch-->
-                                    <!--v-if="relatedModelItems.length > 0"-->
-                                    <!--v-model="modelRelationListShow"-->
-                                    <!--active-text="Graph"-->
-                                    <!--inactive-text="List">-->
-                            <!--</el-switch>-->
-                            <el-radio-group
-                                    v-if="relatedModelItems.length > 0 && activeName1 == 'Model Item'"
-                                    v-model="modelRelationListShow"
-                                    @change="relateModelItemListShowChange">
-                                <el-radio :label="true" style="margin:0 10px;">List</el-radio>
-                                <el-radio :label="false">Graph</el-radio>
-                            </el-radio-group>
+                            <el-switch
+                                    style="margin-left: 10px;"
+                                    v-if="relatedModelItems.length > 0"
+                                    v-model="modelRelationGraphShow"
+                                    active-text="Graph View"
+                                    active-color="#13ce66"
+                                    @change="relateModelItemListShowChange"
+                                    >
+                            </el-switch>
+                            <!--<el-radio-group-->
+                                    <!--v-if="relatedModelItems.length > 0 && activeName1 == 'Model Item'"-->
+                                    <!--v-model="modelRelationGraphShow"-->
+                                    <!--@change="relateModelItemListShowChange"-->
+                                    <!--text-color="green"-->
+                                    <!--fill="green">-->
+                                <!--<el-radio :label="true" style="margin:0 10px 0 5px;">List</el-radio>-->
+                                <!--<el-radio :label="false">Graph</el-radio>-->
+                            <!--</el-radio-group>-->
                         </div>
                         <div th:if="${#lists.size(modelItems)}!=0">
-                            <div v-if="modelRelationListShow" class="list_panel clearfix" v-for="model,key in relatedModelItemsPage">
-                                <!--<div th:text="${model.image}"></div>-->
-                                <a class="img" :href="'/modelItem/'+model.oid" >
-                                    <img v-if="model.image==null" src="/static/img/model/model.png">
-                                    <img v-else :src="model.image">
-                                </a>
-                                <div class="info" style="margin-top:0px;">
-                                    <span class="label label-success">{{model.relation}}</span>
-                                    <el-tooltip effect="light"
-                                                :content="modelInfo.name+' '+model.relation.toLowerCase()+' '+model.name"
-                                                placement="top">
-                                        <i class="fa fa-question-circle-o" aria-hidden="true" style="vertical-align: text-top;"></i>
-                                    </el-tooltip>
-                                    <a :href="'/modelItem/'+model.oid">{{model.name}}</a>
+                            <div v-if="!modelRelationGraphShow">
+                                <div class="list_panel clearfix" v-for="model,key in relatedModelItemsPage">
+                                    <!--<div th:text="${model.image}"></div>-->
+                                    <a class="img" :href="'/modelItem/'+model.oid" >
+                                        <img v-if="model.image==null" src="/static/img/model/model.png">
+                                        <img v-else :src="model.image">
+                                    </a>
+                                    <div class="info" style="margin-top:0px;">
+                                        <span class="label label-success">{{model.relation}}</span>
+                                        <el-tooltip effect="light"
+                                                    :content="modelInfo.name+' '+model.relation.toLowerCase()+' '+model.name"
+                                                    placement="top">
+                                            <i class="fa fa-question-circle-o" aria-hidden="true" style="vertical-align: text-top;"></i>
+                                        </el-tooltip>
+                                        <a :href="'/modelItem/'+model.oid">{{model.name}}</a>
 
-                                    <p style="margin-top: 0px">{{model.description}}</p>
+                                        <p style="margin-top: 0px">{{model.description}}</p>
+                                    </div>
                                 </div>
+                                <el-pagination
+                                        style="text-align: center;padding:10px 0;"
+                                        background
+                                        layout="prev, pager, next"
+                                        :hide-on-single-page="true"
+                                        :page-size="relationPageSize"
+                                        :total="relatedModelItems.length"
+                                        @current-change="handleRelationCurrentChange($event,'modelItem')">
+                                </el-pagination>
                             </div>
-                            <el-pagination
-                                    v-if="modelRelationListShow"
-                                    style="text-align: center;padding:10px 0;"
-                                    background
-                                    layout="prev, pager, next"
-                                    :hide-on-single-page="true"
-                                    :page-size="relationPageSize"
-                                    :total="relatedModelItems.length"
-                                    @current-change="handleRelationCurrentChange($event,'modelItem')">
-                            </el-pagination>
-                            <div v-if="!modelRelationListShow" style="height:550px;position: relative;">
+                            <div v-if="modelRelationGraphShow" style="height:550px;position: relative;">
                                 <div class="modelRelationGraphSideBar" v-if="modelRelationGraphSideBarShow" style="height:550px;width:200px;padding:15px;position: absolute;z-index: 999;background-color: #f6f6f6eb;overflow:auto;">
                                     <div class="mr_header" style="height:10px;">
                                         <a href="javascript:void(0);" @click="closeGraphSideBar" style="font-size: 20px;">×</a>
@@ -627,15 +635,49 @@
 
 
                                 </div>
+                                <div class="modelRelationGraphSideBar_right" style="position: absolute;right:0;top:40px;height:500px;width:130px;z-index: 999;background-color: #cacaca38;padding:15px;border-radius: 10px;">
+                                    <label>Node Label</label><br/>
+                                    <el-switch
+                                        v-model="nodeLabelShow"
+                                        active-text="On"
+                                        inactive-text="Off"
+                                        @change="nodeLabelShowChange">
+                                    </el-switch>
+                                    <hr style="border-color: #00b9ff;"/>
+                                    <label>Full Name</label><br/>
+                                    <el-switch
+                                            v-model="fullNameShow"
+                                            active-text="On"
+                                            inactive-text="Off"
+                                            @change="fullNameShowChange">
+                                    </el-switch>
+                                    <hr style="border-color: #00b9ff;"/>
+                                    <label>Line Label</label><br/>
+                                    <el-switch
+                                            v-model="lineLabelShow"
+                                            active-text="On"
+                                            inactive-text="Off"
+                                            @change="lineLabelShowChange">
+                                    </el-switch>
+                                    <hr style="border-color: #00b9ff;"/>
+                                    <label>Line Color</label><br/>
+                                    <el-switch
+                                            v-model="lineColorShow"
+                                            active-text="On"
+                                            inactive-text="Off"
+                                            @change="lineColorShowChange">
+                                    </el-switch>
+                                    <hr style="border-color: #00b9ff;"/>
+                                </div>
                                 <div id="modelRelationGraph" style="height:100%;"></div>
                             </div>
                             <el-button @click="addRelation(1)" type="primary" icon="el-icon-plus"
                                        style="width: 100%">
                                 Edit Related Model Item
                             </el-button>
-                            <!--<el-button v-if="modelRelationListShow" @click="generateModelRelationGraph" type="success" icon="el-icon-picture-outline" style="margin-left:1%;width: 49.5%">-->
+                            <!--<el-button v-if="!modelRelationGraphShow" @click="generateModelRelationGraph" type="success" icon="el-icon-picture-outline" style="margin-left:1%;width: 49.5%">-->
                                 <!--Relation Graph-->
-                            <!--</el-button><el-button v-if="!modelRelationListShow" @click="closeModelRelationGraph" type="danger" style="margin-left:1%;width: 49.5%">-->
+                            <!--</el-button><el-button v-if="modelRelationGraphShow" @click="closeModelRelationGraph" type="danger" style="margin-left:1%;width: 49.5%">-->
                                 <!--Close Graph-->
                             <!--</el-button>-->
 
@@ -1213,8 +1255,6 @@
 
         </div>
     </el-dialog>
-
-
 
     <!--Relation 弹出框-->
     <el-dialog v-cloak :visible.sync="dialogTableVisible" :title="relateTitle"  width="70%"

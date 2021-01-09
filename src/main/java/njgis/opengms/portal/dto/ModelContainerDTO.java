@@ -1,7 +1,20 @@
 package njgis.opengms.portal.dto;
 
-import njgis.opengms.portal.entity.ModelContainer;
+import com.alibaba.fastjson.JSONArray;
+import lombok.Data;
+import njgis.opengms.portal.entity.support.GeoInfoMeta;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-public class ModelContainerDTO extends ModelContainer {
+import java.util.Date;
 
+@Data
+@Document
+public class ModelContainerDTO {
+    String account;
+    String mac;
+    String servername;
+    JSONArray servicelist;
+    String ip;
+    GeoInfoMeta geoInfo;
+    Date registerDate;
 }

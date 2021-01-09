@@ -510,15 +510,132 @@ var info=new Vue({
 
             relationPageSize:4,
 
-            modelRelationListShow:true,
+            modelRelationGraphShow:false,
             modelRelationGraphSideBarShow:false,
             relatedModelItems:[],
             relatedModelItemsPage:[],
             curRelation:{},
             graphFullScreen: false,
+
+            nodeLabelShow:true,
+            fullNameShow:false,
+            lineLabelShow:true,
+            lineColorShow:false,
+
         }
     },
     methods: {
+
+        lineColorShowChange(newValue){
+            let object = document.getElementById('modelRelationGraph');
+            let graph = echarts.init(object,'light');
+            let opts = graph.getOption();
+
+            let links = opts.series[0].links;
+            for(i = 0;i<links.length;i++){
+                let link = links[i];
+                let formatter;
+                let name = links[i].name;
+                if(newValue){
+                    let color;
+                    switch (links[i].label.formatter){
+                        case "Connected with":
+                            color="#f6b26b";
+                            break;
+                        case "Evolved from":
+                            color="#ffd966";
+                            break;
+                        case "Belongs to":
+                            color="#93c47d";
+                            break;
+                        case "Integrated into":
+                            color="#6d9eeb";
+                            break;
+                        case "Inspires":
+                            color="#8e7cc3";
+                            break;
+                        case "Contains":
+                            color="#c27ba0";
+                            break;
+                        case "Employs/Depends on":
+                            color="#a61c00";
+                            break;
+                        case "Similar to":
+                            color="#e69138";
+                            break;
+                        case "Coexist in":
+                            color="#7f6000";
+                            break;
+                    }
+                    links[i].lineStyle={
+                        color: color,
+                    }
+                }else{
+                    links[i].lineStyle={}
+                }
+            }
+            opts.series[0].links = links;
+            graph.clear();
+            graph.setOption(opts);
+        },
+
+        lineLabelShowChange(newValue){
+            let object = document.getElementById('modelRelationGraph');
+            let graph = echarts.init(object,'light');
+            let opts = graph.getOption();
+
+            let links = opts.series[0].links;
+            for(i = 0;i<links.length;i++){
+                let link = links[i];
+                let formatter;
+                let name = links[i].name;
+                links[i].label.show = newValue;
+
+                if(link.label.formatter==undefined){
+                    links[i].label.show = false;
+                }
+            }
+            opts.series[0].links = links;
+            graph.clear();
+            graph.setOption(opts);
+        },
+
+        fullNameShowChange(newValue){
+            let object = document.getElementById('modelRelationGraph');
+            let graph = echarts.init(object,'light');
+            let opts = graph.getOption();
+
+            let data = opts.series[0].data;
+            for(i = 0;i<data.length;i++){
+                let formatter;
+                let name = data[i].name;;
+                if(newValue){
+                    formatter = name;
+                }else{
+                    formatter = name.length > 9 ? name.substring(0,7)+"..." : name
+                }
+
+                if(data[i].value.type=="ref"){
+                    formatter="";
+                }
+
+                data[i].label={
+                    formatter:formatter
+                }
+            }
+            opts.series[0].data = data;
+            graph.clear();
+            graph.setOption(opts);
+        },
+
+        nodeLabelShowChange(newValue){
+            let object = document.getElementById('modelRelationGraph');
+            let graph = echarts.init(object,'light');
+            let opts = graph.getOption();
+            graph.clear();
+            opts.series[0].label.show=newValue;
+            graph.setOption(opts);
+        },
 
         handleRelationCurrentChange(page,type){
             switch(type){
@@ -548,10 +665,10 @@ var info=new Vue({
         },
 
         generateModelRelationGraph(){
-            this.modelRelationListShow = false;
+            this.modelRelationGraphShow = true;
 
             let nodes = [];
-            let links =[];
+            let links = [];
 
             $.post("/modelItem/getKnowledgeGraph",{"oid":this.modelInfo.oid},(result)=>{
                 console.log(result);
@@ -568,15 +685,7 @@ var info=new Vue({
                         if(param.value !== undefined){
                             this.curRelation=param.value;
                             this.modelRelationGraphSideBarShow = true;
-                            // setTimeout(()=>{
-                            //     let titleHeight = $(".mr_title").css("height")
-                            //     let height = 550 - 45 - 5 - parseInt(titleHeight.substring(0,titleHeight.length-2));
-                            //     $(".mr_content").css("height", height+"px")
-                            // }, 100);
-
-
                         }
-
                         console.log(param)
                     });
 
@@ -783,13 +892,14 @@ var info=new Vue({
                                 // },
                             }
                         },
-                        animationDurationUpdate: 500,
-                        animationEasingUpdate: 'quinticInOut',
+                        animation: false,
+                        // animationDurationUpdate: 500,
+                        // animationEasingUpdate: 'quinticInOut',
                         series: [
                             {
                                 type: 'graph',
                                 layout: 'force',
-                                draggable: true,
+                                draggable: false,
                                 focusNodeAdjacency:true,
                                 symbolSize: 25,
                                 zoom:4,
@@ -797,10 +907,10 @@ var info=new Vue({
                                 force:{
                                     repulsion:100,
                                     // edgeLength:[150,200],
-                                    // layoutAnimation:false,
+                                    layoutAnimation:false,
                                 },
                                 label: {
-                                    show: true
+                                    show: true,
                                 },
                                 edgeSymbol: ['circle', 'arrow'],
                                 edgeSymbolSize: [4, 10],
@@ -886,7 +996,7 @@ var info=new Vue({
         },
 
         closeModelRelationGraph(){
-            this.modelRelationListShow = true;
+            this.modelRelationGraphShow = false;
             this.modelRelationGraphSideBarShow = false;
         },
 

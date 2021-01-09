@@ -83,7 +83,7 @@ var userSpaceHome = Vue.extend(
             },
 
             intergrateModel(){
-                window.open('/computableModel/integrating')
+                window.open('/computableModel/integratedModel')
             },
 
             openTheme(){

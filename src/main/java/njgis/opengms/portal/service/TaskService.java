@@ -1695,7 +1695,7 @@ public class TaskService {
                     param.put("ip", task.getIp());
                     param.put("port", task.getPort());
                     param.put("tid", task.getTaskId());
-                    param.put("integrate", task.getIntegrate());
+//                    param.put("integrate", task.getIntegrate());
 
                     futures.add(asyncTask.getRecordCallback(param, managerServerIpAndPort));
                 }
@@ -1732,7 +1732,8 @@ public class TaskService {
             }
 
         } catch (Exception e) {
-            System.out.println(e);
+            e.printStackTrace();
+//            System.out.println(e.getMessage());
         }
 
     }
