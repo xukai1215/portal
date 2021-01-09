@@ -65,6 +65,8 @@ public class User {
 
     int modelItems;
     int dataItems;
+    int dataItemHubs;
+    int dataMethods;
     int conceptualModels;
     int logicalModels;
     int computableModels;

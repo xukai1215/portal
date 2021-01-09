@@ -576,13 +576,13 @@ var createDataApplication = Vue.extend({
                             offset: 70,
                         });
                         return false;
-                    }else if ($('#keyWords').tagEditor('getTags')[0].tags.length === 0){
-                        new Vue().$message({
-                            message: 'Please enter keywords!',
-                            type: 'warning',
-                            offset: 70,
-                        });
-                        return false;
+                    // }else if ($('#keyWords').tagEditor('getTags')[0].tags.length === 0){        // 关键字不是必选项
+                    //     new Vue().$message({
+                    //         message: 'Please enter keywords!',
+                    //         type: 'warning',
+                    //         offset: 70,
+                    //     });
+                    //     return false;
                     } else if (this.dataApplication.description.trim() == "") {
                         new Vue().$message({
                             message: 'Please enter overview!',

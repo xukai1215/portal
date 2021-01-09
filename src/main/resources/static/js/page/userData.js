@@ -18,7 +18,9 @@ var userData = Vue.extend(
                 },
 
                 categoryTree:[],
-                countInfo:{},
+                countInfo:{
+
+                },
 
             }
         },
@@ -154,6 +156,7 @@ var userData = Vue.extend(
                             window.location.href = "/user/login";
                         } else {
                             this.countInfo = data.countInfo
+                            console.log(this.countInfo)
                             this.userId = data.oid;
                             this.userName = data.name;
                             console.log(this.userId)
