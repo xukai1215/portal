@@ -268,7 +268,7 @@
             <div role="selectedModelContainer" class="integratedContained"
                  style="width:22%;min-width: 200px;max-width: 400px; margin-left: 10px">
                 <el-tabs v-model="activeTask" type="border-card" class="sideTabs" style="height: 100%;">
-                    <el-tab-pane label="Current Model Action" name="currentTask">
+                    <el-tab-pane label="Current Action" name="currentTask">
                         <div class="flexCol flexJustStart flexAlignCenter wzhScrollbar"
                              style="padding: 5px;height: calc(100% - 34px);">
                             <div v-if="modelActions.length==0" style="margin-top: 25px">
@@ -928,7 +928,7 @@
             </el-tab-pane>
             <el-tab-pane label="Data Item" name="dataItem">
                 <el-table v-loading="loading"
-                          :data="dataItems">
+                          :data="dataItemsCheck">
                     <el-table-column
                             prop="name"
                             label="Name"

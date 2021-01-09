@@ -358,7 +358,7 @@
                                     <div  class="contentContainer" style="flex-direction: column;padding: 10px 0;height: 87px">
                                         <div th:if="${userInfo.oid==userInfo.loginId}" v-if="userPersonalInfo.researchInterests!=null&&userPersonalInfo.externalLinks.length==0" style="width: 100%">
                                             <el-button round type="primary" style="margin-left: calc(50% - 96px);margin-top: 10px" @click="editExLink">
-                                                <p>Add My External links</p>
+                                                <p>Add My External Links</p>
                                             </el-button>
                                         </div>
                                         <a class="cursorPointer" v-for="(link,index) in userPersonalInfo.externalLinks"

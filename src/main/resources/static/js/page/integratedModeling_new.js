@@ -1,7 +1,7 @@
 //说明：integratedEditor页面为iframe嵌入的mxgraph，
 //mxgraph的控制由integratedGraphEditor/js中的数个文件实现：
 //   SideBar.js:{1.添加模型到mxgraph中
-//               2.左侧栏的搜索结果/形成cell列、模型-cell组织createStateVertexTemplate
+//               2.左侧栏的搜索结果/形成cell列、模型-cell组织 createStateVertexTemplate
 //               3.右侧的event-cell组织createEventVertexTemplate
 //               4.鼠标事件down move up 拖拽加入cell
 //   }
@@ -10,7 +10,7 @@
 //
 //   }
 //
-//   format.js:{1.生成events,点击拖拽置入event
+//   format.js:{1.生成events,点击拖拽置入event,在refresh生成panel那里
 //              2.点击event查看event的详细信息
 //
 //
@@ -30,7 +30,7 @@
 //   手动连接两个cell: static/js/mxGraph/js/handler/mxConnectionHandler.js mxConnectionHandler.prototype.connect
 //
 //   侧边栏拉入model-cell流程（2020.10.22）：点击，触发format.js中的refresh方法，生成对应元素，没有frontId则先不生成event，同时生成右边栏的文字.
-//   鼠标释放cell，触发sideBar.js 的ds.mouseup,判断条件后调用全局方法加入到vue页面形成modelAction,并把vue页面生成的frontId返回赋值给这个cell
+//   鼠标释放cell，触发sideBar.js 的ds.mouseup,判断条件后调用全局方法加入到vue页面形成modelAction,并把vue页面生成的frontId返回赋值给这个cell--废弃
 //
 //   点击cell触发右侧详情panel生成（2020.10.22）：format refresh-panel.appendChild-各种panel.init
 //
@@ -399,7 +399,7 @@ var vue = new Vue({
 
         invokeServices:[],
 
-        dataItems:[],
+        dataItemsCheck:[],
 
         invokeServiceLoading:false,
 
@@ -408,6 +408,8 @@ var vue = new Vue({
         previewDialog:false,
 
         previewUrl:'',
+
+        checkTaskInterval:null,
     },
 
     computed:{
@@ -484,21 +486,45 @@ var vue = new Vue({
         changeMxView(viewType){
             if(viewType == 'All Items') {
 
+                this.readOnly = false
+                this.iframeWindow.setCXml(this.mxgraphXml);
+
             }else if(viewType == 'Model Items'){
 
                 this.mxgraphXml = this.iframeWindow.getCXml()
+                //把画布清空
+                this.iframeWindow.setCXml('<mxGraphModel dx="670" dy="683" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169">\n' +
+                    '  <root>\n' +
+                    '    <mxCell id="0"/>\n' +
+                    '    <mxCell id="1" parent="0"/>\n' +
+                    '  </root>\n' +
+                    '</mxGraphModel>');
+
+                this.readOnly = true
+                let edges = this.checkActionLink()
+                this.iframeWindow.setModelView(this.modelActions,edges)
             }
 
         },
 
         checkActionLink(){
+            let edges = []
             for(let dataLink of this.dataLinks){
                 let targetActionId = dataLink.targetActionId
                 let sourceActionId = dataLink.sourceActionId
 
-                targetAction = this.findTargetModelAction()
-            }
+                let targetAction = this.findTargetModelAction(targetActionId)[1]
+                let sourceAction = this.findTargetModelAction(sourceActionId)[1]
 
+                if(targetAction.type=='modelService'&&sourceAction.type=='modelService'){
+                    let edge = {
+                        target:targetAction.id,
+                        source:sourceAction.id
+                    }
+                    edges.push(edge)
+                }
+            }
+            return edges
         },
 
         checkMutiFlow(data){//判断是否有输入是其他模型的多输出
@@ -989,7 +1015,7 @@ var vue = new Vue({
 
                         }else{
                             let data = res.data
-                            this.dataItems = data.content
+                            this.dataItemsCheck = data.content
                             this.pageOptionDataItem.total = data.total
                             setTimeout(()=>{
                                 this.loading = false
@@ -1933,8 +1959,10 @@ var vue = new Vue({
                             var taskId = result.data;
                             this.updateTaskId(this.currentTaskOid,taskId)
 
-                            let interval = setInterval(() => {
-                                this.checkIntegratedTask(taskId,interval)
+                            clearInterval(this.checkTaskInterval);
+
+                            this.checkTaskInterval = setInterval(() => {
+                                this.checkIntegratedTask(taskId,this.checkTaskInterval)
                             }, 3000)
 
                         }
@@ -2048,16 +2076,17 @@ var vue = new Vue({
             for (let i = 0; i < this.dataProcessings.length; i++) {
                 let dataProcessing = this.dataProcessings[i]
                 for(let j = 0;j < updateDataProcessings.length;j++){
-                    let newDP = updataDataProcessings[j]
+                    let newDP = updateDataProcessings[j]
                     if(newDP.id == dataProcessing.id){
-                        for(let k = 0;k < this.dataProcessings[i].outputData.length;j++){
+                        for(let k = 0;k < this.dataProcessings[i].outputData.length;k++){
                             let data = this.dataProcessings[i].outputData[k]
-                            for(let l = 0;l<newDP.outputData.length;l++){
-                                let newData = newDP.outputData[l]
-                                if(data.eventId === newData.eventId){
+                            for(let l = 0;l<newDP.outputData.outputs.length;l++){
+                                let newData = newDP.outputData.outputs[l]
+                                if(data.eventId === newData.dataId){
                                     let dataContent = newData.dataContent
-                                    data.value == dataContent.value
+                                    data.value = dataContent.value
                                     data.fileName = 'result'
+                                    data.suffix = ''
                                 }
                             }
                         }

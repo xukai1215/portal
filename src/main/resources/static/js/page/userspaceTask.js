@@ -20,7 +20,7 @@ var userTask = Vue.extend(
 
                 //分页控制
                 page: 1,
-                sortAsc: 1,//1 -1
+                sortAsc: -1,//1 -1
                 sortType: "default",
                 pageSize: 10,// 每页数据条数
                 totalPage: 0,// 总页数

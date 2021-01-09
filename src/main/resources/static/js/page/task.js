@@ -192,6 +192,11 @@ var vue = new Vue({
         visualVisible:false,
         visualSrc:"",
         clipBoard :'',
+
+        invokable:true,
+        errorMsg:'',
+
+        taskRunning:false,
     },
     computed: {},
     watch: {
@@ -1351,61 +1356,74 @@ var vue = new Vue({
                 spinner: "el-icon-loading",
                 background: "rgba(0, 0, 0, 0.7)"
             });
-            let body = {
-                oid: this.oid,
-                host: this.info.dxInfo.dxIP,
-                port: this.info.dxInfo.dxPort,
-                type: this.info.dxInfo.dxType,
-                userName: this.info.userInfo.userName
-            };
-            let {data, code, msg} = await (await fetch("/task/loadTestData/", {
-                method: "post",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(body)
-            })).json();
+            try{
+                let body = {
+                    oid: this.oid,
+                    host: this.info.dxInfo.dxIP,
+                    port: this.info.dxInfo.dxPort,
+                    type: this.info.dxInfo.dxType,
+                    userName: this.info.userInfo.userName
+                };
+                let {data, code, msg} = await (await fetch("/task/loadTestData/", {
+                    method: "post",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(body)
+                })).json();
 
-            if (code != 0 || code == null || code == undefined) {
-                loading.close();
-                this.$message.error(msg);
-                return;
-            }
-            console.log(data)
-            data.forEach(el => {
-                let stateId = el.stateId;
-                let eventName = el.event;
-                let state = this.info.modelInfo.states.find(state => {
-                    return state.Id == stateId;
-                });
-                if (state == undefined) return;
-                let event = state.event.find(event => {
-                    return event.eventName == eventName;
-                });
-                if (event == undefined) return;
-                this.$set(event, "tag", el.tag);
-                this.$set(event, "suffix", el.suffix);
-                this.$set(event, "url", el.url);
-                this.$set(event, "visual", el.visual);
-                if (el.children.length > 0) {
-                    if (el.children.length == 1) {
-                        event.children[0].value = el.children[0].value;
-                    }
-                    else {
-                        for (i = 0; i < el.children.length; i++) {
-                            let name = el.children[i].eventName
-                            let eventChild = event.children.find(child => {
-                                return child.eventName == name;
-                            })
-                            if (eventChild != null) {
-                                eventChild.value = el.children[i].value;
+                if (code != 0 || code == null || code == undefined) {
+                    loading.close();
+                    this.$message.error(msg);
+                    return;
+                }
+                console.log(data)
+                data.forEach(el => {
+                    let stateId = el.stateId;
+                    let eventName = el.event;
+                    let state = this.info.modelInfo.states.find(state => {
+                        return state.Id == stateId;
+                    });
+                    if (state == undefined) return;
+                    let event = state.event.find(event => {
+                        return event.eventName == eventName;
+                    });
+                    if (event == undefined) return;
+                    this.$set(event, "tag", el.tag);
+                    this.$set(event, "suffix", el.suffix);
+                    this.$set(event, "url", el.url);
+                    this.$set(event, "visual", el.visual);
+                    if (el.children.length > 0) {
+                        if (el.children.length == 1) {
+                            event.children[0].value = el.children[0].value;
+                        }
+                        else {
+                            for (i = 0; i < el.children.length; i++) {
+                                let name = el.children[i].eventName
+                                let eventChild = event.children.find(child => {
+                                    return child.eventName == name;
+                                })
+                                if (eventChild != null) {
+                                    eventChild.value = el.children[i].value;
+                                }
                             }
                         }
                     }
-                }
 
 
-            });
+                });
+            }catch (e){
+                loading.close()
+                this.$alert('Can not load the test data, please load inputs of the model mannually', 'Tip', {
+                         type:"warning",
+                         confirmButtonText: 'OK',
+                         callback: ()=>{
+                             return
+                         }
+                     }
+                 );
+            }
+
             loading.close();
             this.loadDataVisible = false
         },
@@ -1790,12 +1808,18 @@ var vue = new Vue({
         },
 
         async invoke() {
+            let stateContainer = document.getElementsByClassName("state-container el-row el-row--flex")[0]
             let loading = this.$loading({
                 lock: true,
                 text: "Setting parameters...",
                 spinner: "el-icon-loading",
+                target:stateContainer,
                 background: "rgba(0, 0, 0, 0.7)"
             });
+            // setTimeout(()=>{
+            //     loading.close()
+            //     return
+            // },10000)
             let states = this.info.modelInfo.states;
             for (i = 0; i < states.length; i++) {
                 let events = states[i].event;
@@ -1854,7 +1878,9 @@ var vue = new Vue({
                 if (prepared) {
                     clearInterval(prepare);
                     console.log(this.modelInEvent)
-                    $(".el-loading-text").text("Model is running, you can check running state and get results in \"User Space\" -> \"Task\"")
+                    loading.close();
+                    this.taskRunning = true
+
                     let json = {
                         oid: this.oid,
                         ip: this.info.taskInfo.ip,
@@ -1891,6 +1917,7 @@ var vue = new Vue({
                                         }
                                     } else {
                                         if (url === null || url === undefined) {
+                                            this.taskRunning = false
                                             this.$message.error("Some input data are not provided");
                                             throw new Error("Some input data are not provided");
                                         }
@@ -1908,7 +1935,7 @@ var vue = new Vue({
                             });
                         });
                     } catch (e) {
-                        loading.close();
+                        this.taskRunning = false
                         return;
                     }
 
@@ -1922,6 +1949,19 @@ var vue = new Vue({
                         success: ({data, code, msg}) => {
                             tid = data;
 
+                            // $(".el-loading-text").text("Model is running, you can check running state and get results in \"User Space\" -> \"Task\"")
+                            this.$confirm('Model is running, you can check running state and get results in "User Space" -> "Task"', 'Tip', {
+                                    type:"success",
+                                    cancelButtonText: 'OK',
+                                    confirmButtonText: 'View in userspace',
+                                    dangerouslyUseHTMLString: true,
+                                }
+                            ).then(() => {
+                                window.open('/user/userSpace#/task');
+                            } ).catch(()=>{
+                                return
+                            });
+
                             if (code == -1) {
                                 this.$alert(msg, 'Error', {
                                     type: 'error',
@@ -1930,7 +1970,7 @@ var vue = new Vue({
                                         window.location.href="/user/login";
                                     }
                                 });
-
+                                this.taskRunning = false
                                 return;
                             }
 
@@ -1943,7 +1983,7 @@ var vue = new Vue({
 
                                     }
                                 });
-
+                                this.taskRunning = false
 
                                 return;
                             }
@@ -1970,7 +2010,7 @@ var vue = new Vue({
                                         }
                                     });
 
-                                    loading.close();
+                                    this.taskRunning = false
                                 }
                                 if (data.status === -1) {
                                     clearInterval(interval);
@@ -1982,7 +2022,7 @@ var vue = new Vue({
                                         }
                                     });
 
-                                    loading.close();
+                                    this.taskRunning = false
                                 } else if (data.status === 2) {
                                     clearInterval(interval);
                                     this.$alert("The model has run successfully!", 'Success', {
@@ -2012,7 +2052,7 @@ var vue = new Vue({
                                         this.$set(event, "multiple", el.multiple);
                                     });
 
-                                    loading.close();
+                                    this.taskRunning = false
                                 } else {
                                 }
                             }, 5000);
@@ -2656,6 +2696,36 @@ var vue = new Vue({
         }
         else{
             this.initializing=false;
+            if(data.msg=='no service'){
+                 this.invokable = false
+                 this.errorMsg = 'Cannot find this model service, maybe the model container is offline or the service is hided by the contributor.'
+                 this.$confirm('Cannot find this model service, maybe the model container is offline or the service is hided by the contributor.', 'Tip', {
+                          type:"error",
+                          cancelButtonText: 'OK',
+                          confirmButtonText: 'Try again',
+
+                      }
+                  ).then(() => {
+                     window.location.reload();
+                  } ).catch(()=>{
+                     return
+                 });
+            }else if(data.msg=='create failed'){
+                this.invokable = false
+                this.errorMsg = 'Cannot create this task,<br/> Please try again or <a href="mailto:opengms@njnu.edu.cn">contact us</a>.'
+                this.$confirm('Cannot create this task,<br/> Please try again or <a href="mailto:opengms@njnu.edu.cn">contact us</a>.', 'Tip', {
+                        type:"error",
+                        cancelButtonText: 'OK',
+                        confirmButtonText: 'Try again',
+                        dangerouslyUseHTMLString: true,
+                    }
+                ).then(() => {
+                    window.location.reload();
+                } ).catch(()=>{
+                    return
+                });
+
+            }
         }
         let states = data.modelInfo.states;
         for (i = 0; i < states.length; i++) {

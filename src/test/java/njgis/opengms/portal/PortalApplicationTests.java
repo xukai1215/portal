@@ -3622,4 +3622,10 @@ public class PortalApplicationTests {
             }
         }
     }
+
+    @Test
+    public void testJson2String(){
+       JSONObject jsonObject = new JSONObject();
+       String a = jsonObject.toJSONString();
+    }
 }

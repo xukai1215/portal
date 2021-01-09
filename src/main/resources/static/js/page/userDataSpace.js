@@ -167,6 +167,7 @@ var userDataSpace = Vue.extend(
                 uploadProgress:0,
 
                 fileContainerWidth:1200,
+
             }
         },
         computed:{
@@ -1522,7 +1523,7 @@ var userDataSpace = Vue.extend(
                     processData: false,
                     contentType: false,
                     async: true,
-                    timeout:55000,
+                    timeout:300001,
                     onUploadProgress: (progressEvent) => {
 
                         this.uploadProgress = progressEvent.loaded / progressEvent.total * 100 | 0;  //百分比
