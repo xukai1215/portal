@@ -39,5 +39,6 @@ public interface DataHubsDao extends MongoRepository<DataHubs, String> {
     Page<DataItemResultDTO> findByNameLikeAndAuthorIgnoreCase(Pageable pageable, String name, String author);
     List<DataHubs> findAllByClassificationsIn(String oid);
 
+    int countAllByAuthor(String oid);
 
 }

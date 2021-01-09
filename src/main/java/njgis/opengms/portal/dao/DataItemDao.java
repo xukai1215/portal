@@ -77,6 +77,7 @@ public interface DataItemDao extends MongoRepository<DataItem,String> {
     Page<DataItemResultDTO> findByAuthorLikeIgnoreCase(Pageable pageable, String author);
     Page<DataItemResultDTO> findByKeywordsContains(Pageable pageable, String name);
 
+    int countAllByAuthor(String oid);
 
     List<DataItem> findAllByTabType(String tabType);
 
