@@ -818,6 +818,7 @@ public class DataItemService {
     //     return result;
     // }
 
+
     public JSONObject searchByCurQueryField(DataItemFindDTO dataItemFindDTO,String userOid, String curQueryField) {
         int page = dataItemFindDTO.getPage() - 1;
         int pageSize = dataItemFindDTO.getPageSize();
@@ -876,8 +877,13 @@ public class DataItemService {
                     dataItemPages = dataHubsDao.findByDescriptionIsContaining(pageable, searchText);
                     break;
                 }
-                case "Contributor":{
-                    dataItemPages = dataHubsDao.findByAuthorLikeIgnoreCase(pageable, searchText);
+                case "Contributor":{        // 这里需要先从user表里面查出来oid，因为dataItem表的author字段里面存的是oid
+                    User user = userDao.findFirstByName(searchText);
+                    if(user != null && user.getOid() != ""){
+                        dataItemPages = dataHubsDao.findByAuthorLikeIgnoreCase(pageable, user.getOid());
+                    }else{
+                        return null;
+                    }
                     break;
                 }
                 default:{
@@ -900,7 +906,12 @@ public class DataItemService {
                     break;
                 }
                 case "Contributor":{
-                    dataItemPages = dataItemDao.findByAuthorLikeIgnoreCase(pageable, searchText);
+                    User user = userDao.findFirstByName(searchText);
+                    if(user!=null && user.getOid() != ""){
+                        dataItemPages = dataItemDao.findByAuthorLikeIgnoreCase(pageable, user.getOid());
+                    }else{
+                        return null;
+                    }
                     break;
                 }
                 default:{
@@ -914,11 +925,7 @@ public class DataItemService {
         //匹配hubs的类别
         dataItemPage = dataItemPages;
         // long count = 0;
-        List<DataItemResultDTO> dataItemss = dataItemPage.getContent();
-        List<DataItemResultDTO> dataItems = new ArrayList<>();
-        // //如果dataType为all，则全部的dataItem都取到     //  不应该本来就全部拿到吗？
-        // if (tabType!=null&&tabType.equals("all")){
-        dataItems = dataItemss;
+        List<DataItemResultDTO> dataItems = dataItemPage.getContent();
         // count = dataItemPage.getTotalElements();
         // }else {
         //     for (DataItemResultDTO dataItemResultDTO : dataItemss) {

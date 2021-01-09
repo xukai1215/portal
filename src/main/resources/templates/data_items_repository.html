@@ -141,11 +141,12 @@
                 </div>
                 <div  class="alert alert-success" role="alert" style="margin-bottom: 2px;">
                     <span >
-                        <strong class="minScreen_curClass">
-                            {{ca!=''&&searchText.length==0?( ca=="We collect data from public hubs.."?"We collect data from public hubs..":"Current Category: "+ca):''}}
+                        <strong class="minScreen_curClass" style="border-right: 1px solid rgb(234, 234, 234)">
+                            {{ca==''?'':"Current Category: "+ca}}
                         </strong>
-                        <strong>
-                            {{searchText.length!=0&&ca==''?"Current Keywords: "+searchText:''}}
+                        <span style="width: 2px;height: 100%">{{searchText.length===0?'':'|'}}</span>
+                        <strong style="color: cornflowerblue">
+                            {{searchText.length===0?'':'Current ' + curQueryField + ': '+searchText}}
                         </strong>
                         <strong style="float: right">
                             {{datacount!=0 ?(datacount===-1?'loading...':datacount+' items'):'no data'}}

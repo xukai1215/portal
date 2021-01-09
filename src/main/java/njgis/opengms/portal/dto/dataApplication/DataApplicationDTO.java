@@ -17,6 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 public class DataApplicationDTO {
     String name;
+    List<String> keywords;
     String description;
     String detail;
     List<String> classifications;

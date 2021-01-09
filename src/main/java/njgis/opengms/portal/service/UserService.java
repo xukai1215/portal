@@ -94,6 +94,9 @@ public class UserService {
     @Autowired
     TemplateEngine templateEngine;
 
+    @Autowired
+    UserUpdateDao userUpdateDao;
+
     //远程数据容器地址
     @Value("${dataContainerIpAndPort}")
     String dataContainerIpAndPort;
@@ -1900,6 +1903,7 @@ public class UserService {
     }
 
     public JSONObject loadUser(String oid){
+        userUpdateDao.updateUser(oid);      // 更新dataItem 和 dataMethod 的条目数据
 
         JSONObject userInfo = new JSONObject();
         JSONObject countInfo = new JSONObject();
@@ -1919,6 +1923,8 @@ public class UserService {
 
         countInfo.put("modelItems",user.getModelItems());
         countInfo.put("dataItems",user.getDataItems());
+        countInfo.put("dataItemHubs",user.getDataItemHubs());
+        countInfo.put("dataMethods",user.getDataMethods());
         countInfo.put("conceptualModels",user.getConceptualModels());
         countInfo.put("logicalModels",user.getLogicalModels());
         countInfo.put("computableModels",user.getComputableModels());

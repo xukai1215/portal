@@ -9,6 +9,7 @@ var createDataApplication = Vue.extend({
                 method:"Conversion",
                 status:"Public",
                 name: "",
+                keywords: [],
                 description: "",
                 contentType: "Package",
                 url: "",
@@ -242,6 +243,8 @@ var createDataApplication = Vue.extend({
             this.ScreenMinHeight = (height) + "px";
             this.ScreenMaxHeight = (height) + "px";
             this.IframeHeight = (height - 330) + "px";
+
+            $("#keyWords").tagEditor();      // 关键字的标签
 
             let resizeTimer = null;
             let that = this
@@ -573,14 +576,21 @@ var createDataApplication = Vue.extend({
                             offset: 70,
                         });
                         return false;
-                    }else if (this.dataApplication.description.trim() == "") {
+                    // }else if ($('#keyWords').tagEditor('getTags')[0].tags.length === 0){        // 关键字不是必选项
+                    //     new Vue().$message({
+                    //         message: 'Please enter keywords!',
+                    //         type: 'warning',
+                    //         offset: 70,
+                    //     });
+                    //     return false;
+                    } else if (this.dataApplication.description.trim() == "") {
                         new Vue().$message({
                             message: 'Please enter overview!',
                             type: 'warning',
                             offset: 70,
                         });
                         return false;
-                    }                    else {
+                    } else {
                         return true;
                     }
                 }
@@ -635,6 +645,7 @@ var createDataApplication = Vue.extend({
 
             var detail = tinyMCE.activeEditor.getContent();
             this.dataApplication.detail = detail.trim();
+            this.dataApplication.keywords = $('#keyWords').tagEditor('getTags')[0].tags
             this.dataApplication.authorship=[];
             this.dataApplication.classifications = this.cls;
             this.dataApplication.type = "process";

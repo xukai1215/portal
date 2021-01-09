@@ -129,21 +129,11 @@ var data_items = new Vue({
             this.loading=true;
             var that=this
             that.progressBar=true
-            if(this.searchText.length!=0){
-                this.findDto.searchText=this.searchText.toLowerCase()
-            } else {
-                this.findDto.searchText = ''
-            }
-            this.findDto.curQueryField = this.curQueryField.toLowerCase()
             this.getData()
         },
         //页码点击翻页
         handleCurrentChange(currentPage) {
             this.currentPage = currentPage;
-            //把当前页码给dto
-            this.findDto.page=currentPage;
-            this.findDto.asc = this.asc;
-            var that=this
             this.getData()
         },
         getclasslist(val){
@@ -158,9 +148,7 @@ var data_items = new Vue({
         chooseCate(item, event){
             this.changeCateColor()
             $(event.target).css('background-color','#d9edf7')
-            this.findDto.page=1
-            this.method = item
-            this.findDto.method = item==='all'?'':item      // all 赋值为空来进行查询
+            this.method = item.toLowerCase()
             this.datacount=-1
             this.loading=true
             this.progressBar=true;
@@ -193,6 +181,25 @@ var data_items = new Vue({
         changeSortField(ele){
             this.sortField = ele;
             // let field = ele.replace(" ","").replace(ele[0],ele[0].toLowerCase());
+            this.getData();
+        },
+        changeSortOrder(ele){
+            this.sortOrder=ele;
+            this.asc = (this.sortOrder === 'Asc.');
+            this.getData();
+            // this.sortAsc = ele==="asc.";
+        },
+        setFindDto(){
+            // 填入搜索条件
+            if(this.searchText.length!=0){
+                this.findDto.searchText=this.searchText.toLowerCase()
+            } else {
+                this.findDto.searchText = ''
+            }
+            //把当前页码给dto
+            this.findDto.page=this.currentPage;
+            this.findDto.asc = this.asc;
+            this.findDto.method = this.method==='all'?'':this.method.toLowerCase()      // all 赋值为空来进行查询
             if(this.sortField === "Create Time"){
                 this.findDto.sortField = "createTime"
             } else if(this.sortField === "Name"){
@@ -200,16 +207,10 @@ var data_items = new Vue({
             }else{
                 this.findDto.sortField = 'viewCount'
             }
-            this.getData();
-        },
-        changeSortOrder(ele){
-            this.sortOrder=ele;
-            this.asc = (this.sortOrder === 'Asc.');
-            this.findDto.asc = this.asc
-            this.getData();
-            // this.sortAsc = ele==="asc.";
+            this.findDto.curQueryField = this.curQueryField.toLowerCase()
         },
         getData(){
+            this.setFindDto()
             let that = this;
             axios.post("/dataApplication/methods/getApplication",that.findDto)
                 .then((res)=>{
