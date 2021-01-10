@@ -1368,7 +1368,13 @@ var vue = new Vue({
 
             if (code != 0 || code == null || code == undefined) {
                 loading.close();
-                this.$message.error(msg);
+                if(code == -2){
+                    window.location.href="/user/login";
+                    window.sessionStorage.setItem("history", window.location.href);
+                }
+                else {
+                    this.$message.error(msg);
+                }
                 return;
             }
             console.log(data)

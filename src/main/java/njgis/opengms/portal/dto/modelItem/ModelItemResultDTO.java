@@ -26,7 +26,7 @@ public class ModelItemResultDTO implements Serializable {
 
     String oid;
     String name;
-    String image;
+    String image = "";
     String description;
     String author;
     String author_oid;

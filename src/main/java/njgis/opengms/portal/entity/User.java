@@ -20,7 +20,7 @@ public class User {
     String email;
     String userName;
     String password;
-    String image;
+    String image = "";
     String name;
     String title;
     String gender;
