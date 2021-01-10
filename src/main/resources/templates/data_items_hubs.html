@@ -42,6 +42,10 @@
         .el-collapse-item__header{
             font-size: 14px;
         }
+
+        .el-input__inner{
+            background-color: #f5f7fa;
+        }
     </style>
 
 </head>
@@ -58,9 +62,9 @@
         <div class="mainContent">
             <div class="el-row">
                 <div class="data-top">
-                <h2 class="main-title">Data Item Hubs</h2>
-                <h4 class="sub-title">The hubs of data (one-stop hub with public shared data resources)
-                </h4>
+                    <h2 class="main-title">Data Item Hubs</h2>
+                    <h4 class="sub-title">The hubs of data (one-stop hub with public shared data resources)
+                    </h4>
                     <button id="contributeBtn" class="btn btn-success btn-lg" style="font-size: 15px;margin:10px;" @click="contribute()">+ Contribute</button>
                 </div>
                 <hr>
@@ -81,13 +85,13 @@
                                     <el-button type="text" id="5f3e42400e989714e8364ea0" @click="chooseCate('5f3e42400e989714e8364ea0')">Atmospheric regions</el-button>
                                     <el-button type="text" id="5f3e424c0e989714e8364ea2" @click="chooseCate('5f3e424c0e989714e8364ea2')">Space-earth regions</el-button>
                                     <el-button type="text" id="5f3e42550e989714e8364ea4" @click="chooseCate('5f3e42550e989714e8364ea4')">Solid-earth regions</el-button>
-<!--                                    <el-button type="text" id="5f3e42610e989714e8364ea6" @click="chooseCate('5f3e42610e989714e8364ea6')" style="font-size: x-small">Integrated Perspective</el-button>-->
+                                    <!--                                    <el-button type="text" id="5f3e42610e989714e8364ea6" @click="chooseCate('5f3e42610e989714e8364ea6')" style="font-size: x-small">Integrated Perspective</el-button>-->
                                 </el-collapse-item>
                                 <el-collapse-item title="Human-perspective" style="margin-left: 10%;" name="12">
                                     <el-button type="text" id="5f3e42780e989714e8364ea8" @click="chooseCate('5f3e42780e989714e8364ea8')">Development activities</el-button>
                                     <el-button type="text" id="5f3e42830e989714e8364eaa" @click="chooseCate('5f3e42830e989714e8364eaa')">Social activities</el-button>
                                     <el-button type="text" id="5f3e428c0e989714e8364eac" @click="chooseCate('5f3e428c0e989714e8364eac')">Economic activities</el-button>
-<!--                                    <el-button type="text" id="5f3e42940e989714e8364eae" @click="chooseCate('5f3e42940e989714e8364eae')" style="font-size: x-small">Integrated Perspective</el-button>-->
+                                    <!--                                    <el-button type="text" id="5f3e42940e989714e8364eae" @click="chooseCate('5f3e42940e989714e8364eae')" style="font-size: x-small">Integrated Perspective</el-button>-->
                                 </el-collapse-item>
                                 <el-collapse-item title="Integrated-perspective" style="margin-left: 10%;" name="13">
                                     <el-button type="text" id="5f6c424eefdc249e286947b8" @click="chooseCate('5f6c424eefdc249e286947b8')">Global scale</el-button>
@@ -119,14 +123,18 @@
 
             <div class="el-col el-col-18 minScreen_maxWidth" >
                 <div class="searcherPanel">
-
-                    <div class="searcherPanel">
-                        <div class="searcherInputPanel" @keydown.enter="search()">
-                            <input id="searchBox" type="text" placeholder="Data Item Name..." v-model="searchText">
-                            <button @click="search()"><i class="glyphicon glyphicon-search"></i> Search</button>
-                        </div>
+                    <el-select v-model="curQueryField" slot="prepend" style="width:120px;border-radius: 0;margin-right: 0;float: left;">
+                        <el-option
+                                v-for="qf in queryFields"
+                                :key="qf"
+                                :label="qf"
+                                :value="qf">
+                        </el-option>
+                    </el-select>
+                    <div class="searcherInputPanel" @keydown.enter="search()" style="width: calc(100% - 120px);margin-left: 0">
+                        <input id="searchBox" type="text" :placeholder="'Data Item ' + curQueryField + ' ...'" v-model="searchText">
+                        <button @click="search()"><i class="glyphicon glyphicon-search"></i> Search</button>
                     </div>
-
                 </div>
                 <div class="progressPanel">
                     <span class="barControl">
@@ -137,12 +145,12 @@
                 </div>
                 <div  class="alert alert-success" role="alert" style="margin-bottom: 2px;">
                     <span>
-                        <strong class="minScreen_curClass">
-                            {{ca!=''&&searchText.length==0?( ca=="We collect data from public hubs.."?
-                            "We collect data from public hubs..":"Current Category: "+ca):''}}
+                        <strong class="minScreen_curClass" style="border-right: 1px solid rgb(234, 234, 234)">
+                            {{ca===''?'':"Current Category: "+ca}}
                         </strong>
-                        <strong>
-                            {{searchText.length!=0&&ca==''?"Current Keywords: "+searchText:''}}
+                        <span style="width: 2px;height: 100%">{{searchText.length===0?'':'|'}}</span>
+                        <strong style="color: cornflowerblue">
+                            {{searchText.length===0?'':'Current ' + curQueryField + ': '+searchText}}
                         </strong>
                         <strong style="float: right">
                             {{datacount!=0 ?(datacount===-1?'loading...':datacount+' items'):'no data'}}
@@ -175,76 +183,76 @@
                                 </el-dropdown-menu>
                             </el-dropdown>
                         </span>
-                        <el-pagination style="text-align: right;padding: 10px"
-                                       @current-change="handleCurrentChange"
-                                       :pager-count="5"
-                                       :page-size="findDto.pageSize"
-                                       :current-page="findDto.page"
-                                       layout="prev, pager, next"
-                                       :total="datacount">
-                        </el-pagination>
-                        <div class="modelPanel" >
+                    <el-pagination style="text-align: right;padding: 10px"
+                                   @current-change="handleCurrentChange"
+                                   :pager-count="5"
+                                   :page-size="findDto.pageSize"
+                                   :current-page="findDto.page"
+                                   layout="prev, pager, next"
+                                   :total="datacount">
+                    </el-pagination>
+                    <div class="modelPanel" >
 
-                            <div  class="content-body">
-                                <div class="list-item" v-for="(item,index) in list" :key="index">
-                                    <div class="detail_title">
-                                        <el-tooltip popper-class="fontsize-15" effect="light" :content="item.status" placement="left">
-                                            <i v-if="item.status=='Public'" class="el-icon-unlock public fontsize-24 pull-right"></i>
-                                            <i v-if="item.status=='Discoverable'" class="el-icon-unlock discoverable fontsize-24 pull-right"></i>
-                                        </el-tooltip>
-                                        <!--<a :href="goto(item.id)"   ><h3 style="display: inline-block">{{item.name}}&nbsp&nbsp</h3></a>-->
-                                        <a :class="item.viewCount>100?'hot':''" :href="goto1(item.id)" target="_blank" >{{item.name}}&nbsp&nbsp</a>
-        <!---->
-                                    </div>
-                                    <div class="detail_overview">
-                                        <a class="img" :href="'/dataItem/hub/'+ item.id" target="_blank">
-                                            <avatar  :username="item.name" :size="90"
-                                                    :rounded="false"></avatar>
-                                        </a>
+                        <div  class="content-body">
+                            <div class="list-item" v-for="(item,index) in list" :key="index">
+                                <div class="detail_title">
+                                    <el-tooltip popper-class="fontsize-15" effect="light" :content="item.status" placement="left">
+                                        <i v-if="item.status=='Public'" class="el-icon-unlock public fontsize-24 pull-right"></i>
+                                        <i v-if="item.status=='Discoverable'" class="el-icon-unlock discoverable fontsize-24 pull-right"></i>
+                                    </el-tooltip>
+                                    <!--<a :href="goto(item.id)"   ><h3 style="display: inline-block">{{item.name}}&nbsp&nbsp</h3></a>-->
+                                    <a :class="item.viewCount>100?'hot':''" :href="goto1(item.id)" target="_blank" >{{item.name}}&nbsp&nbsp</a>
+                                    <!---->
+                                </div>
+                                <div class="detail_overview">
+                                    <a class="img" :href="'/dataItem/hub/'+ item.id" target="_blank">
+                                        <avatar  :username="item.name" :size="90"
+                                                 :rounded="false"></avatar>
+                                    </a>
 
-                                        <div class="info">
-                                            <p style="height:40px;-webkit-line-clamp:2;">{{item.description}}</p>
-                                            <div class="tags" v-for="(tagitem,ind) in item.keywords" :key="ind" style="display: inline-block">
-                                                <span class="badge badge-info" >{{tagitem}}</span>
+                                    <div class="info">
+                                        <p style="height:40px;-webkit-line-clamp:2;">{{item.description}}</p>
+                                        <div class="tags" v-for="(tagitem,ind) in item.keywords" :key="ind" style="display: inline-block">
+                                            <span class="badge badge-info" >{{tagitem}}</span>
 
-                                            </div>
                                         </div>
-                                    </div>
-                                    <hr>
-
-                                    <div class="detail_bottom">
-                                        <div style="display:inline-block;float: left;">
-                                            <a :href="'/profile/'+users[index].oid">
-                                            <img :src="users[index].image==''?'/static/img/icon/default.png':users[index].image" class="round_icon"
-                                                 style="margin-top:-5px;width:30px;height: 30px;display: inline-block;">
-                                            </a>
-                                            <a :href="'/profile/'+users[index].userId" style="display: inline-block;margin-left: 5px;"><h4>{{users[index].name}}</h4></a>
-
-
-                                            <h4 class="screen_view">contributed at {{formatDate(item.createTime).substring(0,10)}}</h4>
-                                            <h4 class="mobile_view">{{formatDate(item.createTime).substring(0,10)}}</h4>
-                                        </div>
-                                        <div class="detail_option">
-
-
-                                            <a class="fa fa-eye" aria-hidden="true"></a>&nbsp&nbsp{{item.viewCount}}
-                                            <!--<a class="fa fa-thumbs-o-up" aria-hidden="true"></a>{{item.description}}-->
-                                        </div>
-                                        <br>
                                     </div>
                                 </div>
-                            </div>
+                                <hr>
 
+                                <div class="detail_bottom">
+                                    <div style="display:inline-block;float: left;">
+                                        <a :href="'/profile/'+users[index].oid">
+                                            <img :src="users[index].image==''?'/static/img/icon/default.png':users[index].image" class="round_icon"
+                                                 style="margin-top:-5px;width:30px;height: 30px;display: inline-block;">
+                                        </a>
+                                        <a :href="'/profile/'+users[index].userId" style="display: inline-block;margin-left: 5px;"><h4>{{users[index].name}}</h4></a>
+
+
+                                        <h4 class="screen_view">contributed at {{formatDate(item.createTime).substring(0,10)}}</h4>
+                                        <h4 class="mobile_view">{{formatDate(item.createTime).substring(0,10)}}</h4>
+                                    </div>
+                                    <div class="detail_option">
+
+
+                                        <a class="fa fa-eye" aria-hidden="true"></a>&nbsp&nbsp{{item.viewCount}}
+                                        <!--<a class="fa fa-thumbs-o-up" aria-hidden="true"></a>{{item.description}}-->
+                                    </div>
+                                    <br>
+                                </div>
+                            </div>
                         </div>
 
-                        <el-pagination style="text-align: center;margin-top:20px"
-                                       @current-change="handleCurrentChange"
+                    </div>
 
-                                       :page-size="findDto.pageSize"
-                                       :current-page="findDto.page"
-                                       layout="total,prev, pager, next, jumper"
-                                       :total="datacount">
-                        </el-pagination>
+                    <el-pagination style="text-align: center;margin-top:20px"
+                                   @current-change="handleCurrentChange"
+
+                                   :page-size="findDto.pageSize"
+                                   :current-page="findDto.page"
+                                   layout="total,prev, pager, next, jumper"
+                                   :total="datacount">
+                    </el-pagination>
                 </div>
 
                 <div class="manyhub" >
@@ -253,8 +261,8 @@
                             <!--<img src="/static/img/hubs.jpg" style="width:70%;margin-left:15%">-->
                             <div class="el-row" >
                                 <a   :href="item.url" target="_blank"  >
-                                      <avatar  :username="item.title"  :size="100"
-                                               class="center-block" ></avatar>
+                                    <avatar  :username="item.title"  :size="100"
+                                             class="center-block" ></avatar>
 
 
                                 </a>
@@ -274,7 +282,7 @@
         </div>
     </div>
     <!--<el-card th:object="${dataitems}">-->
-        <!--<p th:text="${dataitems}"></p>-->
+    <!--<p th:text="${dataitems}"></p>-->
     <!--</el-card>-->
 
     <div th:replace="fragments/footer :: footer"></div>

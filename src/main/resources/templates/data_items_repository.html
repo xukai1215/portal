@@ -41,6 +41,9 @@
         .el-collapse-item__header{
             font-size: 14px;
         }
+        .el-input__inner{
+            background-color: #f5f7fa;
+        }
     </style>
 
 </head>
@@ -114,9 +117,17 @@
             </div>
             <div class="el-col el-col-18 minScreen_maxWidth" >
                 <div class="searcherPanel">
+                    <el-select v-model="curQueryField" slot="prepend" style="width:120px;border-radius: 0;margin-right: 0;float: left;">
+                        <el-option
+                                v-for="qf in queryFields"
+                                :key="qf"
+                                :label="qf"
+                                :value="qf">
+                        </el-option>
+                    </el-select>
                     <div class="searcherPanel">
-                        <div class="searcherInputPanel" @keydown.enter="search()">
-                            <input id="searchBox" type="text" placeholder="Data Item Name..." v-model="searchText">
+                        <div class="searcherInputPanel" @keydown.enter="search()" style="width: calc(100% - 120px);margin-left: 0">
+                            <input id="searchBox" type="text" :placeholder="'Data Item ' + curQueryField + ' ...'" v-model="searchText">
                             <button @click="search()"><i class="glyphicon glyphicon-search"></i> Search</button>
                         </div>
                     </div>
@@ -130,11 +141,12 @@
                 </div>
                 <div  class="alert alert-success" role="alert" style="margin-bottom: 2px;">
                     <span >
-                        <strong class="minScreen_curClass">
-                            {{ca!=''&&searchText.length==0?( ca=="We collect data from public hubs.."?"We collect data from public hubs..":"Current Category: "+ca):''}}
+                        <strong class="minScreen_curClass" style="border-right: 1px solid rgb(234, 234, 234)">
+                            {{ca==''?'':"Current Category: "+ca}}
                         </strong>
-                        <strong>
-                            {{searchText.length!=0&&ca==''?"Current Keywords: "+searchText:''}}
+                        <span style="width: 2px;height: 100%">{{searchText.length===0?'':'|'}}</span>
+                        <strong style="color: cornflowerblue">
+                            {{searchText.length===0?'':'Current ' + curQueryField + ': '+searchText}}
                         </strong>
                         <strong style="float: right">
                             {{datacount!=0 ?(datacount===-1?'loading...':datacount+' items'):'no data'}}
@@ -223,23 +235,23 @@
                                    :total="datacount">
                     </el-pagination>
                 </div>
-<!--                <div class="manyhub" >-->
-<!--                    <div>-->
-<!--                        <el-card class="hub_items" v-for="(item,index) in list" :key="index" style="width:20%;height: 140px;float: left;margin-top: 10px">-->
-<!--                            <div class="el-row" >-->
-<!--                                <a   :href="item.url" target="_blank"  >-->
-<!--                                    <avatar  :username="item.title"  :size="100"-->
-<!--                                             class="center-block" ></avatar>-->
-<!--                                </a>-->
-<!--                            </div>-->
-<!--                            <center><a :href=item.url target="_blank" :title=item.url><h5>{{item.title}}</h5></a></center>-->
-<!--                        </el-card>-->
-<!--                    </div>-->
-<!--                    <br>-->
-<!--                    <div class="el-row" ><br>-->
-<!--                        <center><el-button  v-loading="loading" id="addmore" @click="addmorehubs">View More</el-button></center>-->
-<!--                    </div>-->
-<!--                </div>-->
+                <!--                <div class="manyhub" >-->
+                <!--                    <div>-->
+                <!--                        <el-card class="hub_items" v-for="(item,index) in list" :key="index" style="width:20%;height: 140px;float: left;margin-top: 10px">-->
+                <!--                            <div class="el-row" >-->
+                <!--                                <a   :href="item.url" target="_blank"  >-->
+                <!--                                    <avatar  :username="item.title"  :size="100"-->
+                <!--                                             class="center-block" ></avatar>-->
+                <!--                                </a>-->
+                <!--                            </div>-->
+                <!--                            <center><a :href=item.url target="_blank" :title=item.url><h5>{{item.title}}</h5></a></center>-->
+                <!--                        </el-card>-->
+                <!--                    </div>-->
+                <!--                    <br>-->
+                <!--                    <div class="el-row" ><br>-->
+                <!--                        <center><el-button  v-loading="loading" id="addmore" @click="addmorehubs">View More</el-button></center>-->
+                <!--                    </div>-->
+                <!--                </div>-->
             </div>
         </div>
     </div>

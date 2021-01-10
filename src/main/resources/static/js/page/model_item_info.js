@@ -510,15 +510,132 @@ var info=new Vue({
 
             relationPageSize:4,
 
-            modelRelationListShow:true,
+            modelRelationGraphShow:false,
             modelRelationGraphSideBarShow:false,
             relatedModelItems:[],
             relatedModelItemsPage:[],
             curRelation:{},
             graphFullScreen: false,
+
+            nodeLabelShow:true,
+            fullNameShow:false,
+            lineLabelShow:true,
+            lineColorShow:false,
+
         }
     },
     methods: {
+
+        lineColorShowChange(newValue){
+            let object = document.getElementById('modelRelationGraph');
+            let graph = echarts.init(object,'light');
+            let opts = graph.getOption();
+
+            let links = opts.series[0].links;
+            for(i = 0;i<links.length;i++){
+                let link = links[i];
+                let formatter;
+                let name = links[i].name;
+                if(newValue){
+                    let color;
+                    switch (links[i].label.formatter){
+                        case "Connected with":
+                            color="#f6b26b";
+                            break;
+                        case "Evolved from":
+                            color="#ffd966";
+                            break;
+                        case "Belongs to":
+                            color="#93c47d";
+                            break;
+                        case "Integrated into":
+                            color="#6d9eeb";
+                            break;
+                        case "Inspires":
+                            color="#8e7cc3";
+                            break;
+                        case "Contains":
+                            color="#c27ba0";
+                            break;
+                        case "Employs/Depends on":
+                            color="#a61c00";
+                            break;
+                        case "Similar to":
+                            color="#e69138";
+                            break;
+                        case "Coexist in":
+                            color="#7f6000";
+                            break;
+                    }
+                    links[i].lineStyle={
+                        color: color,
+                    }
+                }else{
+                    links[i].lineStyle={}
+                }
+            }
+            opts.series[0].links = links;
+            graph.clear();
+            graph.setOption(opts);
+        },
+
+        lineLabelShowChange(newValue){
+            let object = document.getElementById('modelRelationGraph');
+            let graph = echarts.init(object,'light');
+            let opts = graph.getOption();
+
+            let links = opts.series[0].links;
+            for(i = 0;i<links.length;i++){
+                let link = links[i];
+                let formatter;
+                let name = links[i].name;
+                links[i].label.show = newValue;
+
+                if(link.label.formatter==undefined){
+                    links[i].label.show = false;
+                }
+            }
+            opts.series[0].links = links;
+            graph.clear();
+            graph.setOption(opts);
+        },
+
+        fullNameShowChange(newValue){
+            let object = document.getElementById('modelRelationGraph');
+            let graph = echarts.init(object,'light');
+            let opts = graph.getOption();
+
+            let data = opts.series[0].data;
+            for(i = 0;i<data.length;i++){
+                let formatter;
+                let name = data[i].name;;
+                if(newValue){
+                    formatter = name;
+                }else{
+                    formatter = name.length > 9 ? name.substring(0,7)+"..." : name
+                }
+
+                if(data[i].value.type=="ref"){
+                    formatter="";
+                }
+
+                data[i].label={
+                    formatter:formatter
+                }
+            }
+            opts.series[0].data = data;
+            graph.clear();
+            graph.setOption(opts);
+        },
+
+        nodeLabelShowChange(newValue){
+            let object = document.getElementById('modelRelationGraph');
+            let graph = echarts.init(object,'light');
+            let opts = graph.getOption();
+            graph.clear();
+            opts.series[0].label.show=newValue;
+            graph.setOption(opts);
+        },
 
         handleRelationCurrentChange(page,type){
             switch(type){
@@ -538,11 +655,20 @@ var info=new Vue({
             this.modelRelationGraphSideBarShow = false;
         },
 
+        relateModelItemListShowChange(val){
+            console.log(val);
+            if(val) {
+                this.generateModelRelationGraph();
+            }else{
+                this.closeModelRelationGraph();
+            }
+        },
+
         generateModelRelationGraph(){
-            this.modelRelationListShow = false;
+            this.modelRelationGraphShow = true;
 
             let nodes = [];
-            let links =[];
+            let links = [];
 
             $.post("/modelItem/getKnowledgeGraph",{"oid":this.modelInfo.oid},(result)=>{
                 console.log(result);
@@ -560,7 +686,6 @@ var info=new Vue({
                             this.curRelation=param.value;
                             this.modelRelationGraphSideBarShow = true;
                         }
-
                         console.log(param)
                     });
 
@@ -713,18 +838,17 @@ var info=new Vue({
                         },
                         tooltip: {},
                         toolbox: {
+                            right:10,
                             feature: {
 
-                                restore: {},
-                                saveAsImage: {},
                                 myFull: {
                                     show: true,
                                     title: 'Full Screen',
                                     icon: 'path://M432.45,595.444c0,2.177-4.661,6.82-11.305,6.82c-6.475,0-11.306-4.567-11.306-6.82s4.852-6.812,11.306-6.812C427.841,588.632,432.452,593.191,432.45,595.444L432.45,595.444z M421.155,589.876c-3.009,0-5.448,2.495-5.448,5.572s2.439,5.572,5.448,5.572c3.01,0,5.449-2.495,5.449-5.572C426.604,592.371,424.165,589.876,421.155,589.876L421.155,589.876z M421.146,591.891c-1.916,0-3.47,1.589-3.47,3.549c0,1.959,1.554,3.548,3.47,3.548s3.469-1.589,3.469-3.548C424.614,593.479,423.062,591.891,421.146,591.891L421.146,591.891zM421.146,591.891',
                                     onclick: (e)=>{
                                         let opts = e.getOption();
-                                        opts.toolbox[0].feature.myFull.show=false;
-                                        opts.toolbox[0].feature.myFullExit.show=true;
+                                        opts.toolbox[0].feature.myFull={};//.show=false;
+                                        // opts.toolbox[0].feature.myFullExit.show=true;
                                         this.graphFullScreen = true;
                                         setTimeout(()=>{
                                             let object = document.getElementById('fullScreenGraph');
@@ -755,24 +879,27 @@ var info=new Vue({
 
                                     }
                                 },
-                                myFullExit: {
-                                    show: false,
-                                    title: 'Exit',
-                                    icon: 'path://M432.45,595.444c0,2.177-4.661,6.82-11.305,6.82c-6.475,0-11.306-4.567-11.306-6.82s4.852-6.812,11.306-6.812C427.841,588.632,432.452,593.191,432.45,595.444L432.45,595.444z M421.155,589.876c-3.009,0-5.448,2.495-5.448,5.572s2.439,5.572,5.448,5.572c3.01,0,5.449-2.495,5.449-5.572C426.604,592.371,424.165,589.876,421.155,589.876L421.155,589.876z M421.146,591.891c-1.916,0-3.47,1.589-3.47,3.549c0,1.959,1.554,3.548,3.47,3.548s3.469-1.589,3.469-3.548C424.614,593.479,423.062,591.891,421.146,591.891L421.146,591.891zM421.146,591.891',
-                                    onclick: (e)=>{
-                                        this.graphFullScreen = false;
-
-                                    }
-                                },
+                                saveAsImage: {},
+                                restore: {},
+                                // myFullExit: {
+                                //     show: false,
+                                //     title: 'Exit',
+                                //     icon: 'path://M432.45,595.444c0,2.177-4.661,6.82-11.305,6.82c-6.475,0-11.306-4.567-11.306-6.82s4.852-6.812,11.306-6.812C427.841,588.632,432.452,593.191,432.45,595.444L432.45,595.444z M421.155,589.876c-3.009,0-5.448,2.495-5.448,5.572s2.439,5.572,5.448,5.572c3.01,0,5.449-2.495,5.449-5.572C426.604,592.371,424.165,589.876,421.155,589.876L421.155,589.876z M421.146,591.891c-1.916,0-3.47,1.589-3.47,3.549c0,1.959,1.554,3.548,3.47,3.548s3.469-1.589,3.469-3.548C424.614,593.479,423.062,591.891,421.146,591.891L421.146,591.891zM421.146,591.891',
+                                //     onclick: (e)=>{
+                                //         this.graphFullScreen = false;
+                                //
+                                //     }
+                                // },
                             }
                         },
-                        animationDurationUpdate: 500,
-                        animationEasingUpdate: 'quinticInOut',
+                        animation: false,
+                        // animationDurationUpdate: 500,
+                        // animationEasingUpdate: 'quinticInOut',
                         series: [
                             {
                                 type: 'graph',
                                 layout: 'force',
-                                draggable: true,
+                                draggable: false,
                                 focusNodeAdjacency:true,
                                 symbolSize: 25,
                                 zoom:4,
@@ -780,10 +907,10 @@ var info=new Vue({
                                 force:{
                                     repulsion:100,
                                     // edgeLength:[150,200],
-                                    // layoutAnimation:false,
+                                    layoutAnimation:false,
                                 },
                                 label: {
-                                    show: true
+                                    show: true,
                                 },
                                 edgeSymbol: ['circle', 'arrow'],
                                 edgeSymbolSize: [4, 10],
@@ -869,7 +996,7 @@ var info=new Vue({
         },
 
         closeModelRelationGraph(){
-            this.modelRelationListShow = true;
+            this.modelRelationGraphShow = false;
             this.modelRelationGraphSideBarShow = false;
         },
 
@@ -2143,11 +2270,15 @@ var info=new Vue({
         }
 
         let panes = $(".el-tab-pane")
-        for(i=0;i<3;i++){
-            let list_size = panes.eq(i).children("div").children(".list_panel").length;
-            if(list_size>0){
-                this.activeName = panes[i].id.replace("pane-","");
-                break;
+        if(modelInfo.relate.computableModels.length>0){
+            this.activeName = "Computable Model";
+        }else {
+            for (i = 0; i < 3; i++) {
+                let list_size = panes.eq(i).children("div").children(".list_panel").length;
+                if (list_size > 0) {
+                    this.activeName = panes[i].id.replace("pane-", "");
+                    break;
+                }
             }
         }
 

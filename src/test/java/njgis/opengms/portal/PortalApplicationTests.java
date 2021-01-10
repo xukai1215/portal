@@ -126,6 +126,7 @@ public class PortalApplicationTests {
     @Value("${managerServerIpAndPort}")
     private String managerServerIpAndPort;
 
+
     @Test
     public void changeComputableVerify(){
         List<ComputableModel> computableModelList = computableModelDao.findAll();
@@ -344,20 +345,49 @@ public class PortalApplicationTests {
         for(Concept concept:conceptList){
             Utils.count();
             List<Localization> localizationList = concept.getLocalizationList();
+            concept.setName(concept.getName().replaceAll("_"," "));
             for(int i = 0;i<localizationList.size();i++){
                 Localization localization = localizationList.get(i);
-                localization.setLocalCode("en-US");
-                localization.setLocalName("English (United States)");
-                for(int j=0;j<localization.getName().length();j++){
-                    if(isChinese(localization.getName().charAt(j))){
-                        localization.setLocalCode("zh-CN");
-                        localization.setLocalName("Chinese (Simplified)");
-                        break;
-                    }
-                }
+//                localization.setLocalCode("en-US");
+//                localization.setLocalName("English (United States)");
+//                for(int j=0;j<localization.getName().length();j++){
+//                    if(isChinese(localization.getName().charAt(j))){
+//                        localization.setLocalCode("zh-CN");
+//                        localization.setLocalName("Chinese (Simplified)");
+//                        break;
+//                    }
+//                }
+                localization.setName(localization.getName().replaceAll("_"," "));
+                localizationList.set(i,localization);
 
             }
+            concept.setLocalizationList(localizationList);
             conceptDao.save(concept);
+
+        }
+    }
+
+    @Test
+    public void changeModelLocalization(){
+        List<ModelItem> modelItemList = modelItemDao.findAll();
+        for(ModelItem modelItem:modelItemList){
+            Utils.count();
+            List<Localization> localizationList = modelItem.getLocalizationList();
+            for(int i = 0;i<localizationList.size();i++){
+                Localization localization = localizationList.get(i);
+
+                if(localization.getLocalCode().equals("en-US")){
+                    localization.setLocalCode("en");
+                    localization.setLocalName("English");
+                }else if (localization.getLocalCode().equals("zh-CN")){
+                    localization.setLocalCode("zh");
+                    localization.setLocalName("Chinese");
+                }
+
+                localizationList.set(i,localization);
+            }
+            modelItem.setLocalizationList(localizationList);
+            modelItemDao.save(modelItem);
 
         }
     }

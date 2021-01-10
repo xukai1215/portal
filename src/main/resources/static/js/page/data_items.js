@@ -20,7 +20,8 @@ var data_items = new Vue({
                 asc: false,
                 classifications:[],
                 category:'',
-                searchContent:[]
+                searchContent:[],
+                curQueryField:'',
             },
             list:new Array(),
             users:[],
@@ -47,6 +48,9 @@ var data_items = new Vue({
             sortFieldName:"viewCount",
             sortOrder:"Desc.",
             asc:false,
+
+            queryFields:["Name","Keyword","Content","Contributor"],
+            curQueryField:"Name",
 
         }
     },
@@ -119,7 +123,6 @@ var data_items = new Vue({
         },
         startinput(){
             $('.el-collapse-item .el-button').css('color','#2b305b')
-            this.ca=''
         },
         //文本检索
         search(){
@@ -130,20 +133,21 @@ var data_items = new Vue({
             let li=that.list;
             let slist=new Array();
             if(this.searchText.length!=0){
-                    this.findDto.searchText=this.searchText;
-                    this.findDto.page=1;
-                    this.findDto.tabType = this.dataType;
-                    this.findDto.asc = this.asc;
-                    axios.post("/dataItem/searchByName/",that.findDto)
-                        .then((res)=>{
-                            console.log(res);
-                            setTimeout(()=>{
-                                that.list=res.data.data.list;
-                                that.progressBar=false;
-                                that.datacount=res.data.data.total;
-                                that.users=res.data.data.users;
-                                that.loading=false;
-                            },100)
+                this.findDto.searchText=this.searchText;
+                this.findDto.page=1;
+                this.findDto.tabType = this.dataType;
+                this.findDto.asc = this.asc;
+                this.findDto.curQueryField = this.curQueryField;
+                axios.post("/dataItem/searchByCurQueryField",that.findDto)
+                    .then((res)=>{
+                        console.log(res);
+                        setTimeout(()=>{
+                            that.list=res.data.data.list;
+                            that.progressBar=false;
+                            that.datacount=res.data.data.total;
+                            that.users=res.data.data.users;
+                            that.loading=false;
+                        },100)
                     });
             }else{
                 this.datacount=0;
@@ -188,6 +192,7 @@ var data_items = new Vue({
             this.classlist=val;
         },
         chooseCate(item){
+            this.searchText = ''
             this.theDefaultCate=item
             this.findDto.page=1
             window.history.pushState(null,null,"?category="+this.theDefaultCate+"&page="+this.findDto.page)

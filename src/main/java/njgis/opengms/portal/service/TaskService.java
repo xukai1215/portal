@@ -1789,7 +1789,8 @@ public class TaskService {
             }
 
         } catch (Exception e) {
-            System.out.println(e);
+            e.printStackTrace();
+//            System.out.println(e.getMessage());
         }
         return taskList;
     }

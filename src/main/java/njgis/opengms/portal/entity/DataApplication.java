@@ -24,6 +24,7 @@ public class DataApplication {
     String id;
     String oid;
     String name;
+    List<String> keywords;
     //String image;
     String description;
     String detail;

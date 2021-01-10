@@ -32,6 +32,7 @@ public interface DataItemDao extends MongoRepository<DataItem,String> {
 
     Page<DataItemResultDTO> findByClassificationsIn(Pageable pageable,List<String> cate);
 
+    @Override
     Page<DataItem> findAll(Pageable pageable);
 
     Page<DataItem> findAllByNameLikeIgnoreCase(Pageable pageable,String name);
@@ -71,6 +72,12 @@ public interface DataItemDao extends MongoRepository<DataItem,String> {
 
     Page<DataItemResultDTO> findAllByClassificationsAndTabTypeIn(String classification, String tabType, Pageable pageable);
 
+    Page<DataItemResultDTO> findByNameLikeIgnoreCase(Pageable pageable, String name);
+    Page<DataItemResultDTO> findByDescriptionIsContaining(Pageable pageable, String description);
+    Page<DataItemResultDTO> findByAuthorLikeIgnoreCase(Pageable pageable, String author);
+    Page<DataItemResultDTO> findByKeywordsContains(Pageable pageable, String name);
+
+    int countAllByAuthor(String oid);
 
     List<DataItem> findAllByTabType(String tabType);
 

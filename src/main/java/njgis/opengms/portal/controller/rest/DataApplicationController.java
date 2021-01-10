@@ -469,12 +469,17 @@ public class DataApplicationController {
             }
         }
         log.info(response + "");
-        //解析xml，获取下载链接
-        //将string串读取为xml
-        Document configXML = DocumentHelper.parseText(response);
-        //获取根元素
-        Element root = configXML.getRootElement();
-        urlRes = root.element("uid").getText();
+        if(!dataType.equals("localData")) {
+            JSONObject resp = JSON.parseObject(response);
+            urlRes = resp.getString("url");
+        }else {
+            //解析xml，获取下载链接
+            //将string串读取为xml
+            Document configXML = DocumentHelper.parseText(response);
+            //获取根元素
+            Element root = configXML.getRootElement();
+            urlRes = root.element("uid").getText();
+        }
         //运行成功后，将信息存储到dataTask中
         //ip 与 port暂时不设
         Date date1 = new Date();

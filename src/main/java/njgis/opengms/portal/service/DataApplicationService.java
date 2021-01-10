@@ -876,23 +876,94 @@ public class DataApplicationService {
         }
     }
 
-    public Page<DataApplication> selectMethodByNameAndMethodInvokable(String name, String method,Pageable pageable) {
-        if(name.equals("") && method.equals("")){
-            return dataApplicationDao.findAllByInvokable(pageable,true);
-        }else if(name.equals("") && !method.equals("")){
-            return dataApplicationDao.findAllByMethodLikeIgnoreCaseAndInvokable(method,pageable,true);
-        }else if(!name.equals("") && method.equals("")){
-            return dataApplicationDao.findByNameLikeAndInvokable(name,pageable,true);
-        } else{
-            return dataApplicationDao.findByMethodLikeIgnoreCaseAndNameLikeAndInvokable(method,name,pageable,true);
+    public Page<DataApplication> selectMethodByCurQueryFieldAndMethod(String searchText, String curQueryField, String method,Pageable pageable) {       // 根据类别和搜索方式来查找所有数据
+        Page<DataApplication> result;
+
+        if(method.equals("")) {          // 不分类的情况
+            if(searchText.equals("")){
+                result = dataApplicationDao.findAll(pageable);
+            }else{
+                switch (curQueryField) {
+                    case "name":{
+                        result = dataApplicationDao.findAllByNameContainsIgnoreCase(searchText, pageable);
+                        break;
+                    }
+                    case "keyword":{
+                        result = dataApplicationDao.findAllByKeywordsContainsIgnoreCase(searchText, pageable);
+                        break;
+                    }
+                    case "content":{
+                        result = dataApplicationDao.findAllByDescriptionContainsIgnoreCase(searchText, pageable);
+                        break;
+                    }
+                    case "contributor":{
+                        User user = userDao.findFirstByName(searchText);
+                        if(user != null && user.getOid() != ""){
+                            result = dataApplicationDao.findAllByAuthorLikeIgnoreCase(user.getOid(), pageable);
+                        }else{
+                            return null;
+                        }
+                        break;
+                    }
+                    default:{
+                        System.out.println("curQueryField" + curQueryField + " is wrong.");
+                        return null;
+                    }
+                }
+            }
+        } else {
+            if(searchText.equals("")){
+                result = dataApplicationDao.findAllByMethodLikeIgnoreCase(method, pageable);
+            } else {
+                switch (curQueryField) {
+                    case "name":{
+                        result = dataApplicationDao.findAllByNameContainsIgnoreCaseAndMethodLikeIgnoreCase(searchText, method, pageable);
+                        break;
+                    }
+                    case "keyword":{
+                        result = dataApplicationDao.findAllByKeywordsContainsIgnoreCaseAndMethodLikeIgnoreCase(searchText, method, pageable);
+                        break;
+                    }
+                    case "content":{
+                        result = dataApplicationDao.findAllByDescriptionContainsIgnoreCaseAndMethodLikeIgnoreCase(searchText, method, pageable);
+                        break;
+                    }
+                    case "contributor":{
+                        User user = userDao.findFirstByName(searchText);
+                        if(user != null && user.getOid() != ""){
+                            result = dataApplicationDao.findAllByAuthorLikeIgnoreCaseAndMethodLikeIgnoreCase(user.getOid(), method, pageable);
+                        }else{
+                            return null;
+                        }
+                        break;
+                    }
+                    default:{
+                        System.out.println("curQueryField" + curQueryField + " is wrong.");
+                        return null;
+                    }
+                }
+            }
+
         }
+
+        return result;
+
+        // if(searchText.equals("") && method.equals("")){
+        //     return dataApplicationDao.findAllByInvokable(pageable,true);
+        // }else if(searchText.equals("") && !method.equals("")){
+        //     return dataApplicationDao.findAllByMethodLikeIgnoreCaseAndInvokable(method,pageable,true);
+        // }else if(!searchText.equals("") && method.equals("")){
+        //     return dataApplicationDao.findByNameLikeAndInvokable(searchText,pageable,true);
+        // } else{
+        //     return dataApplicationDao.findByMethodLikeIgnoreCaseAndNameLikeAndInvokable(method,searchText,pageable,true);
+        // }
     }
 
     public JSONObject searchApplication(DataApplicationFindDTO dataApplicationFindDTO){
         Pageable pageable = PageRequest.of(dataApplicationFindDTO.getPage()-1, dataApplicationFindDTO.getPageSize(), new Sort(dataApplicationFindDTO.getAsc()? Sort.Direction.ASC: Sort.Direction.DESC,dataApplicationFindDTO.getSortField()));
         Page<DataApplication> dataApplicationPage;
         try {
-            dataApplicationPage = selectMethodByNameAndMethod(dataApplicationFindDTO.getSearchText(),dataApplicationFindDTO.getMethod(),pageable);
+            dataApplicationPage = selectMethodByCurQueryFieldAndMethod(dataApplicationFindDTO.getSearchText(), dataApplicationFindDTO.getCurQueryField(), dataApplicationFindDTO.getMethod(),pageable);
         } catch (MyException err) {
             System.out.println(err);
             return null;
@@ -916,6 +987,7 @@ public class DataApplicationService {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
             jsonObject.put("createTime",simpleDateFormat.format(dataApplication.getCreateTime()));
             jsonObject.put("name",dataApplication.getName());
+            jsonObject.put("keywords", dataApplication.getKeywords());
             jsonObject.put("description",dataApplication.getDescription());
             jsonObject.put("type",dataApplication.getType());
             jsonObject.put("status",dataApplication.getStatus());
@@ -954,7 +1026,7 @@ public class DataApplicationService {
         Pageable pageable = PageRequest.of(dataApplicationFindDTO.getPage()-1, dataApplicationFindDTO.getPageSize(), new Sort(dataApplicationFindDTO.getAsc()? Sort.Direction.ASC: Sort.Direction.DESC,dataApplicationFindDTO.getSortField()));
         Page<DataApplication> dataApplicationPage;
         try {
-            dataApplicationPage = selectMethodByNameAndMethodInvokable(dataApplicationFindDTO.getSearchText(),dataApplicationFindDTO.getMethod(),pageable);
+            dataApplicationPage = selectMethodByCurQueryFieldAndMethod(dataApplicationFindDTO.getSearchText(),dataApplicationFindDTO.getCurQueryField(), dataApplicationFindDTO.getMethod(), pageable);
         } catch (MyException err) {
             System.out.println(err);
             return null;
@@ -1193,19 +1265,6 @@ public class DataApplicationService {
             return false;
         }
     }
-
-//    /**
-//     * 利用url下载可视化结果，并存储起来
-//     * @param url 可视化结果url
-//     * @param dataServerTask task记录
-//     * @return 是否执行成功
-//     */
-//    public Boolean initVisual(String url,DataServerTask dataServerTask){
-//        boolean res = false;
-//
-//
-//        return res;
-//    }
 
 
 }

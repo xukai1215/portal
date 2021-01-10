@@ -1374,7 +1374,13 @@ var vue = new Vue({
 
                 if (code != 0 || code == null || code == undefined) {
                     loading.close();
-                    this.$message.error(msg);
+                    if(code == -2){
+                        window.location.href="/user/login";
+                        window.sessionStorage.setItem("history", window.location.href);
+                    }
+                    else {
+                        this.$message.error(msg);
+                    }
                     return;
                 }
                 console.log(data)
@@ -1816,10 +1822,6 @@ var vue = new Vue({
                 target:stateContainer,
                 background: "rgba(0, 0, 0, 0.7)"
             });
-            // setTimeout(()=>{
-            //     loading.close()
-            //     return
-            // },10000)
             let states = this.info.modelInfo.states;
             for (i = 0; i < states.length; i++) {
                 let events = states[i].event;

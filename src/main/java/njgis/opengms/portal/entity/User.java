@@ -20,7 +20,7 @@ public class User {
     String email;
     String userName;
     String password;
-    String image;
+    String image = "";
     String name;
     String title;
     String gender;
@@ -65,6 +65,8 @@ public class User {
 
     int modelItems;
     int dataItems;
+    int dataItemHubs;
+    int dataMethods;
     int conceptualModels;
     int logicalModels;
     int computableModels;
