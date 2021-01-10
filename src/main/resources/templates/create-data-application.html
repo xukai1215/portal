@@ -89,18 +89,18 @@
                                                 <br><br>
                                                 <div class="step-content">
                                                     <div class="step-tab-panel col-md-offset-1" id="step1">
-                                                        <div class="form-group cl-md-6">
-                                                            <label class="control-label col-lg-2 col-md-3 col-md-offset-1">
-<!--                                                                <span class="xing">* </span>-->
-                                                                Bind Test Data
-                                                            </label>
-                                                            <div class="input-group col-md-5">
-                                                                <el-button type="primary" @click="openDataSpace()" style="margin-right:10px;display: inline-block">Bind</el-button>
-                                                                <div v-for="(item,index) in selectedFile" style="display: inline-block;padding-left: 5px;">
-                                                                    <el-tag type="success">{{item.label}}.{{item.suffix}}</el-tag>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+<!--                                                        <div class="form-group cl-md-6">-->
+<!--                                                            <label class="control-label col-lg-2 col-md-3 col-md-offset-1">-->
+<!--&lt;!&ndash;                                                                <span class="xing">* </span>&ndash;&gt;-->
+<!--                                                                Bind Test Data-->
+<!--                                                            </label>-->
+<!--                                                            <div class="input-group col-md-5">-->
+<!--                                                                <el-button type="primary" @click="openDataSpace()" style="margin-right:10px;display: inline-block">Bind</el-button>-->
+<!--                                                                <div v-for="(item,index) in selectedFile" style="display: inline-block;padding-left: 5px;">-->
+<!--                                                                    <el-tag type="success">{{item.label}}.{{item.suffix}}</el-tag>-->
+<!--                                                                </div>-->
+<!--                                                            </div>-->
+<!--                                                        </div>-->
                                                         <div class="form-group cl-md-6">
                                                             <label class="control-label col-lg-2 col-md-3 col-md-offset-1">
                                                                 <span class="xing">* </span>Name
@@ -176,7 +176,7 @@
                                                                 <span class="xing">* </span>Content Type
                                                             </label>
                                                             <div class="input-group col-md-5" style="padding:5px 0;font-size:20px">
-                                                                <el-radio-group v-model="dataApplication.contentType">
+                                                                <el-radio-group v-model="dataApplication.contentType" @change="contentTypeChange">
                                                                     <!--<el-radio label="Package">Model Service Package</el-radio>-->
                                                                     <!--<el-radio label="md5">MD5</el-radio>-->
                                                                     <el-radio label = "Package" style="display: block;padding: 5px">OpenGMS Data-Service Package</el-radio>
@@ -204,15 +204,45 @@
                                                         </div>
 
                                                         <div id="Files" v-else>
-                                                            <el-button v-if="(resources.length==0&&dataApplication.contentType=='Package')||dataApplication.contentType!='Package'" type="primary"
-                                                                       @click="addFile()">+ Add
-                                                            </el-button>
-                                                            <el-button v-if="resources.length!=0" type="danger"
-                                                                       @click="removeFile()">- Remove
-                                                            </el-button>
-                                                            <el-button v-if="resources.length!=0&&dataApplication.contentType=='Package'" type="success"
-                                                                       @click="replaceFile()">Replace
-                                                            </el-button>
+                                                            <div v-if="bindDataVisible">
+                                                                <label class="control-label" style="width: 10%;float: left">
+                                                                    <!--                                                                <span class="xing">* </span>-->
+                                                                    Bind Test Data
+                                                                </label>
+                                                                <div class="input-group">
+                                                                    <el-button type="primary" @click="openDataSpace()" style="margin-right:10px;display: inline-block">Bind Test Data</el-button>
+                                                                    <div v-for="(item,index) in selectedFile" style="display: inline-block;padding-left: 5px;">
+                                                                        <el-tag type="success">{{item.label}}.{{item.suffix}}</el-tag>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <el-divider v-if="bindDataVisible"></el-divider>
+                                                            <div>
+                                                                <label class="control-label" style="width: 10%;float: left">
+                                                                    <!--                                                                <span class="xing">* </span>-->
+                                                                    Add a Zip File
+                                                                </label>
+                                                                <div class="input-group">
+                                                                    <el-button v-if="(resources.length==0&&dataApplication.contentType=='Package')||dataApplication.contentType!='Package'" type="primary"
+                                                                               @click="addFile()">+ Add
+                                                                    </el-button>
+                                                                    <el-button v-if="resources.length!=0" type="danger"
+                                                                               @click="removeFile()">- Remove
+                                                                    </el-button>
+                                                                    <el-button v-if="resources.length!=0&&dataApplication.contentType=='Package'" type="success"
+                                                                               @click="replaceFile()">Replace
+                                                                    </el-button>
+                                                                </div>
+                                                            </div>
+<!--                                                            <el-button v-if="(resources.length==0&&dataApplication.contentType=='Package')||dataApplication.contentType!='Package'" type="primary"-->
+<!--                                                                       @click="addFile()">+ Add-->
+<!--                                                            </el-button>-->
+<!--                                                            <el-button v-if="resources.length!=0" type="danger"-->
+<!--                                                                       @click="removeFile()">- Remove-->
+<!--                                                            </el-button>-->
+<!--                                                            <el-button v-if="resources.length!=0&&dataApplication.contentType=='Package'" type="success"-->
+<!--                                                                       @click="replaceFile()">Replace-->
+<!--                                                            </el-button>-->
 
                                                             <el-card :body-style="{ padding:'9px'}"
                                                                      style="margin-top: 10px">

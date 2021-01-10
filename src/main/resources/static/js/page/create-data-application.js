@@ -83,6 +83,7 @@ var createDataApplication = Vue.extend({
             userDataList:[],
             authorDataList:[],
             dialogVisible: false,
+            bindDataVisible: true,
         }
     },
     methods: {
@@ -107,6 +108,11 @@ var createDataApplication = Vue.extend({
         handleSelect(index,indexPath){
             this.setSession("index",index);
             window.location.href="/user/userSpace"
+        },
+        contentTypeChange(val){
+            if(val === 'Package') this.bindDataVisible = true
+            else if(val === 'Code') this.bindDataVisible = false
+            else if(val === 'Library') this.bindDataVisible = false
         },
         changeOpen(n) {
             this.activeIndex = n;
@@ -244,7 +250,7 @@ var createDataApplication = Vue.extend({
             this.ScreenMaxHeight = (height) + "px";
             this.IframeHeight = (height - 330) + "px";
 
-            $("#keyWords").tagEditor();      // 关键字的标签
+            $("#keyWords").tagEditor('destory');      // 关键字的标签
 
             let resizeTimer = null;
             let that = this

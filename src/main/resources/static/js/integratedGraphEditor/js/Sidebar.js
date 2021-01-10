@@ -2994,6 +2994,7 @@ Sidebar.prototype.addClickHandler = function (elt, ds, cells) {
   };
 
   ds.mouseMove = function (evt) {
+    var targetCell = graph.getSelectionModel().cells[0];
     if (this.dragElement != null && this.dragElement.style.display == 'none' &&
         first != null && (Math.abs(first.x - mxEvent.getClientX(evt)) > tol ||
             Math.abs(first.y - mxEvent.getClientY(evt)) > tol)) {
@@ -3004,15 +3005,20 @@ Sidebar.prototype.addClickHandler = function (elt, ds, cells) {
   };
 
   ds.mouseUp = function (evt) {
+
+    // if(checkDataRepeat(evt.target.innerText,state.frontId)){
+    //   alert('You have selected this input yet')
+    //   return
+    // }
     if (!mxEvent.isPopupTrigger(evt) && this.currentGraph == null &&
         this.dragElement != null && this.dragElement.style.display == 'none') {
       sb.itemClicked(cells, ds, evt, elt);
     }
-
-
     var parent = graph.getDefaultParent();
 
     oldMouseUp.apply(ds, arguments);
+    targetCell = graph.getSelectionModel().cells[0];
+
     mxUtils.setOpacity(elt, 100);
     first = null;
 
@@ -3025,6 +3031,12 @@ Sidebar.prototype.addClickHandler = function (elt, ds, cells) {
         graph.insertEdge(parent, null, '', targetCell, state, "edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=2;strokeColor=#000066;");
         window.parent.dragIntoDataItem(targetCell)
       } else if (targetCell.response == "0") {
+
+        // if(checkCellRepeat(targetCell.eventId,'eventId')){
+        //   alert('You have selected this output yet')
+        //   return
+        // }
+
         graph.insertEdge(parent, null, '', state, targetCell, "edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=2;strokeColor=#000066;");
         window.parent.dragIntoDataItem(targetCell)
       } else if (targetCell.md5 != undefined&&targetCell.md5 != ''){
@@ -3893,3 +3905,24 @@ function unFoldMultiOutput(model,outputData){
   }
 }
 
+function checkCellRepeat(id,text){
+  var cells = graph.getModel().cells;
+  for(let i in cells){
+    if(cells[i][text]==id)
+      return true
+  }
+  return false
+}
+
+function checkDataRepeat(name,frontId){//检查拖入的event是否重复
+  var cells = graph.getModel().cells;
+  for(let i in cells){
+    if(cells[i].frontId==frontId){
+      if(cells[i].value===name){
+        return true
+      }
+    }
+
+  }
+  return false
+}

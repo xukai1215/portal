@@ -2649,10 +2649,10 @@ public class UserService {
         return "success";
     }
 
-    public JSONObject listUserArticle(int page, String oid) {
+    public JSONObject listUserArticle(int page, String userId) {
         JSONObject result = new JSONObject();
 
-        User user = userDao.findFirstByOid(oid);
+        User user = userDao.findFirstByUserId(userId);
         if (user == null) {
             result.put("user", "no user");
             return result;

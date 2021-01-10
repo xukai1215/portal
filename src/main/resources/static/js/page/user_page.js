@@ -1314,7 +1314,7 @@ new Vue({
                 url:"/user/listArticle",
                 data:{
                     page:this.pageOption.currentPage-1,
-                    oid:hrefs[hrefs.length - 1],
+                    userId:hrefs[hrefs.length - 1],
                 },
                 async:true,
                 success: (json)=>{
