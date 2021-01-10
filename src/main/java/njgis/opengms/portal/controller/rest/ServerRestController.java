@@ -4,7 +4,9 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dao.ModelContainerDao;
+import njgis.opengms.portal.dao.UserDao;
 import njgis.opengms.portal.entity.ModelContainer;
+import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.IpUtil;
 import njgis.opengms.portal.utils.ResultUtils;
@@ -26,6 +28,9 @@ import java.util.List;
 public class ServerRestController {
     @Autowired
     ModelContainerDao modelContainerDao;
+
+    @Autowired
+    UserDao userDao;
 
     @Autowired
     UserService userService;
@@ -52,6 +57,27 @@ public class ServerRestController {
         return ResultUtils.success(jsonArray);
     }
 
+    @RequestMapping(value="/userServerNodes",method = RequestMethod.GET)
+    JsonResult getUserServerNodes(HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("uid")==null){
+            return ResultUtils.error(-1,"no login");
+        }else{
+            String userName = session.getAttribute("uid").toString();
+            List<ModelContainer> modelContainerList=modelContainerDao.findAllByAccount(userName);
+            JSONArray jsonArray=new JSONArray();
+            for(int i=0;i<modelContainerList.size();i++){
+                ModelContainer modelContainer=modelContainerList.get(i);
+                JSONObject object=new JSONObject();
+                object.put("geoJson",modelContainer.getGeoInfo());
+                jsonArray.add(object);
+            }
+            return ResultUtils.success(jsonArray);
+        }
+
+
+    }
+
     //模型容器
     //注册
     @RequestMapping(value = "/modelContainer/add", method = RequestMethod.POST)
@@ -66,18 +92,23 @@ public class ServerRestController {
 
             modelContainer = new ModelContainer();
             modelContainer.setRegisterDate(new Date());
+            modelContainer.setUpdateDate(modelContainer.getRegisterDate());
 
         }else{//已经注册，更新信息
             modelContainer.setUpdateDate(new Date());
         }
-
-        modelContainer.setAccount(userName);
-        modelContainer.setMac(mac);
-        modelContainer.setServerName(serverName);
-        modelContainer.setServiceList(JSONArray.parseArray(serviceList));
-        modelContainer.setIp(IpUtil.getIpAddr(request));
+        //可能返回字段是username或者email
+        User user = userDao.findFirstByUserName(userName);
+        if(user == null){
+            user = userDao.findFirstByEmail(userName);
+        }
 
         try {
+            modelContainer.setAccount(user.getUserName());
+            modelContainer.setMac(mac);
+            modelContainer.setServerName(serverName);
+            modelContainer.setServiceList(JSONArray.parseArray(serviceList));
+            modelContainer.setIp(IpUtil.getIpAddr(request));
             modelContainer.setGeoInfo(Utils.getGeoInfoMeta(modelContainer.getIp()));
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
@@ -118,6 +149,26 @@ public class ServerRestController {
 
         ModelContainer modelContainer = modelContainerDao.findByMac(mac);
         return ResultUtils.success(modelContainer.getServiceList());
+
+    }
+
+    //获取服务列表,分页
+    @RequestMapping(value = "/modelContainer/getServiceListByPage", method = RequestMethod.POST)
+    JsonResult getServiceListByPage(@RequestParam("mac") String mac,
+                                    @RequestParam("page") int page,
+                                    @RequestParam("pageSize") int pageSize
+    ) {
+
+        ModelContainer modelContainer = modelContainerDao.findByMac(mac);
+        JSONArray serviceList = modelContainer.getServiceList();
+        int start = (page-1)*pageSize;
+        int end = (start+pageSize-1)<serviceList.size()?(start+pageSize-1):serviceList.size()-1;
+        JSONObject result = new JSONObject();
+        List<Object> resultList = serviceList.subList(start,end+1);
+        result.put("list",resultList);
+        result.put("total",serviceList.size());
+
+        return ResultUtils.success(result);
 
     }
     

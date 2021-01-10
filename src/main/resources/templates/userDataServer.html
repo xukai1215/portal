@@ -19,13 +19,68 @@
 
                 </section>
                 <section class="flexRowContainer flexWrap " style="max-width: 1050px">
-                    <div class="page-content-wrap dataNode-fluid">
+                    <div class="page-content-wrap dataNode-fluid" v-if="serverView==1">
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="panel-default">
                                     <div class="panel-body" style="height: 61px;">
                                         <div class="form-horizontal">
                                             <div class="form-group">
+                                                <div class="" style="float: right;margin-right: 15px">
+                                                    <a>
+                                                        <button class="btn btn-info" @click="refreshDataNode()">
+                                                            <i class="fa fa-refresh"></i>Refresh My Nodes
+                                                        </button>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix" style="width: 100%">
+                            <div class="col-sm-12 col-md-6 col-lg-4">
+                                <el-card class="box-card serverCard" style="min-height: 150px">
+                                    <div class="content">
+                                        <h4>
+                                            My data server node
+                                        </h4>
+                                        <div class="clearfix"
+                                             style="margin-top:10px" v-loading="nodeLoading">
+                                            <div class="serverStatus pull-left"
+                                                 v-if="dataNode.status">
+                                                <span style="background: #6FCE7F;display:inline-block;width:10px;height:10px;border-radius: 50%;"></span>
+                                                Running
+                                            </div>
+                                            <div class="serverStatus pull-left"
+                                                 v-else>
+                                                <span style="background: #929994;display:inline-block;width:10px;height:10px;border-radius: 50%;"></span>
+                                                Offline
+                                            </div>
+                                        </div>
+                                        <div v-if="dataNode.status" class="btn btn-info btn-round btn-noShadow" style="float: right" @click="changeServerView(2)">check content</div>
+                                        <div class="btn btn-info btn-round btn-noShadow" style="float: right" @click="refreshDataNode">
+                                            <i class="fa fa-refresh" style="margin: 0"></i></div>
+                                    </div>
+                                </el-card>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="page-content-wrap dataNode-fluid" v-if="serverView==2">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="panel-default">
+                                    <div class="panel-body" style="height: 61px;">
+                                        <div class="form-horizontal">
+                                            <div class="form-group">
+                                                <div class="" style="float: left;margin-left: 15px">
+                                                    <a class="flexCenter" style="height: 35px" @click="changeServerView(1)">
+                                                        <i class="fa fa-arrow-left"></i>
+                                                        <p class="noMargin hoverLine" style="margin-left: 5px;margin-top: 3px;font-size: 15px; ">Back</p>
+                                                    </a>
+                                                </div>
                                                 <div class="" style="float: right;margin-right: 15px">
                                                     <a>
                                                         <button class="btn btn-info" @click="refreshDataNode()">
@@ -42,49 +97,7 @@
                         <div class="page-content-wrap dataNode-fluid" style="margin-top:-10px;">
 
                             <div class="row">
-
-                                <div class="col-sm-12 col-md-6 col-lg-4">
-                                    <el-card class="box-card serverCard" >
-                                        <div class="content">
-                                            <h4>
-                                                My data server node
-                                            </h4>
-                                            <div class="clearfix"
-                                                 style="margin-top:10px">
-                                                <div class="serverStatus pull-left"
-                                                     v-if="dataNode.status">
-                                                    <span style="background: #6FCE7F;display:inline-block;width:10px;height:10px;border-radius: 50%;"></span>
-                                                    Running
-                                                </div>
-                                                <div class="serverStatus pull-left"
-                                                     v-else>
-                                                    <span style="background: #929994;display:inline-block;width:10px;height:10px;border-radius: 50%;"></span>
-                                                    Offline
-                                                </div>
-                                            </div>
-<!--                                            <div class="btn btn-info btn-round btn-noShadow" style="text-transform: lowercase;font-size: 14px;float: right;margin: 15px 5px" @click="getNodeAllContents()">-->
-<!--                                                check details-->
-<!--                                            </div>-->
-<!--                                            <div class="clearfix">-->
-<!--                                                <div class="pull-left">-->
-
-<!--                                                    <p style="margin-bottom:5px">{{dataNode.hardware.platform}} {{dataNode.hardware.version}}</p>-->
-<!--                                                    <p>{{dataNode.hardware.cpu_Core}} Core - {{dataNode.hardware.totalMemory}} RAM - {{dataNode.hardware.diskAll}} Hard Disk</p>-->
-<!--                                                </div>-->
-<!--                                            </div>-->
-<!--                                            <div class="clearfix" style="margin-top:10px">-->
-<!--                                                <div class="serverStatus pull-left">-->
-<!--                                                    <span style="background: #6FCE7F;display:inline-block;width:10px;height:10px;border-radius: 50%;"></span>-->
-<!--                                                    Running-->
-<!--                                                </div>-->
-<!--                                                <div class="serverIp pull-right">-->
-<!--                                                    {{dataNode.ip}}-->
-<!--                                                </div>-->
-<!--                                            </div>-->
-                                        </div>
-                                    </el-card>
-                                </div>
-                                <div class="col-sm-12 col-md-6 col-lg-8">
+                                <div class="">
                                     <el-card class="box-card" style="margin-top: 20px;border-top: #8cd1e5 8px solid" >
                                         <el-tabs v-model="activeName" stretch="stretch" @tab-click="handleClick" style="min-height: 105px">
                                             <el-tab-pane label="Data" name="Data" v-loading="nodeLoading">
@@ -94,11 +107,11 @@
                                                         <el-table-column
                                                                 prop="name"
                                                                 label="Name"
-                                                                width="260">
+                                                                width="480">
                                                         </el-table-column>
                                                         <el-table-column
                                                                 label="Date"
-                                                                width="180">
+                                                                width="340">
                                                             <template slot-scope="scope">
                                                                 <span>{{formatDate(scope.row.date)}}</span>
                                                             </template>
@@ -124,11 +137,11 @@
                                                         <el-table-column
                                                                 prop="name"
                                                                 label="Name"
-                                                                width="260">
+                                                                width="480">
                                                         </el-table-column>
                                                         <el-table-column
                                                                 label="Date"
-                                                                width="180">
+                                                                width="340">
                                                             <template slot-scope="scope">
                                                                 <span>{{formatDate(scope.row.date)}}</span>
                                                             </template>
@@ -152,11 +165,11 @@
                                                         <el-table-column
                                                                 prop="name"
                                                                 label="Name"
-                                                                width="260">
+                                                                width="480">
                                                         </el-table-column>
                                                         <el-table-column
                                                                 label="Date"
-                                                                width="180">
+                                                                width="340">
                                                             <template slot-scope="scope">
                                                                 <span>{{formatDate(scope.row.date)}}</span>
                                                             </template>

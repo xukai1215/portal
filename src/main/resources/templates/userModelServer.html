@@ -74,7 +74,7 @@
 
                         </section>
                         <section class="flexRowContainer flexWrap " style="max-width: 1050px">
-                            <div class="page-content-wrap container-fluid">
+                            <div class="page-content-wrap container-fluid" v-if="serverView==1">
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="panel-default">
@@ -82,11 +82,17 @@
                                                 <div class="form-horizontal">
                                                     <div class="form-group">
                                                         <div class="" style="float: right;margin-right: 15px">
-                                                            <a>
-                                                                <button class="btn btn-warning" @click="registerModelContainerVisible=true">
-                                                                    <i class="fa fa-globe fa-fw"></i>Add Server
+                                                            <a style="float: right">
+                                                                <button class="btn btn-info" @click="refreshUserNodes()">
+                                                                    <i class="fa fa-refresh"></i>Refresh My Nodes
                                                                 </button>
                                                             </a>
+                                                            <el-tooltip content="How to add my model container?" placement="bottom-end">
+                                                                <div class="flexCenter cursorPointer" style="height:35px; float: right;margin-right: 15px"
+                                                                   @click="window.open('/help/support')" >
+                                                                    <i class="fa fa-question-circle-o" style="font-size: 21px;color: #eb830e"></i>
+                                                                </div>
+                                                            </el-tooltip>
                                                         </div>
                                                         <!--<div class="col-md-8">-->
                                                         <!--<div class="input-group" @keydown.enter="search()">-->
@@ -110,74 +116,122 @@
                                     <!--<div id="echartMap" style="height: 490px"></div>-->
                                     <!--</div>-->
                                     <!--</div>-->
-                                    <div class="row">
+                                    <div class="row" v-loading="nodeLoading">
 
                                         <div class="col-sm-12 col-md-6 col-lg-4" v-if="modelContainerList.length!=0" v-for="(container,index) in modelContainerList">
                                             <el-card class="box-card serverCard" >
                                                 <div class="content">
                                                     <div class="clearfix">
-                                                        <div class="pull-left">
-                                                            <h4>
-                                                                {{container.hardware.hostName}}
-
+<!--                                                        <div class="serverStatus pull-left">-->
+<!--                                                            <span style="background: #6FCE7F;display:inline-block;width:10px;height:10px;border-radius: 50%;"></span>-->
+<!--                                                            Running-->
+<!--                                                        </div>-->
+                                                        <div class="flexAlignCenter flexJustBetween" >
+                                                            <h4 v-if="container.alias==undefined||container.alias==''">
+                                                                {{container.serverName}}
                                                             </h4>
-                                                            <p style="margin-bottom:5px">{{container.hardware.platform}} {{container.hardware.version}}</p>
-                                                            <p>{{container.hardware.cpu_Core}} Core - {{container.hardware.totalMemory}} RAM - {{container.hardware.diskAll}} Hard Disk</p>
+                                                            <h4 v-else>
+                                                                {{container.alias}}
+                                                            </h4>
+                                                            <el-tooltip content="edit" placement="top">
+                                                                <a @click="editNode(container)">
+                                                                    <i class="el-icon-edit" style="font-size: 20px"></i>
+                                                                </a>
+                                                            </el-tooltip>
+                                                        </div>
+                                                        <div class="pull-left" style="margin-top: 10px">
+
+                                                            <div class="flexAlignCenter">
+                                                                <i class="el-icon-time" style="margin: 5px 5px 5px 0;font-size: 18px;color: #1caf9a;"></i>
+                                                                <p class="noMargin">Register Time:</p>
+                                                                <p class="noMargin" style="margin-left: 33px">{{formatDate(container.registerDate).substring(0,10)}}</p>
+                                                            </div>
+                                                            <div class="flexAlignCenter">
+                                                                <i class="el-icon-time" style="margin: 5px 5px 5px 0;font-size: 18px;color: #037afa;"></i>
+                                                                <p class="noMargin">Last Updated Time:</p>
+                                                                <p class="noMargin">{{formatDate(container.updateDate).substring(0,10)}}</p>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                     <div class="clearfix" style="margin-top:10px">
-                                                        <div class="serverStatus pull-left">
-                                                            <span style="background: #6FCE7F;display:inline-block;width:10px;height:10px;border-radius: 50%;"></span>
-                                                            Running
-                                                        </div>
-                                                        <div class="serverIp pull-right">
-                                                            {{container.ip}}
-                                                        </div>
+                                                        <div class="btn btn-danger btn-round btn-noShadow" style="float: left"
+                                                             @click="deleteNodeClick(container)">delete</div>
+                                                        <div class="btn btn-info btn-round btn-noShadow" style="float: right"
+                                                             @click="changeServerView(2,container.mac)">check content</div>
+
+<!--                                                        <div class="btn btn-info btn-round btn-noShadow" style="float: right" @click="">-->
+<!--                                                            <i class="fa fa-refresh" style="margin: 0"></i>-->
+<!--                                                        </div>-->
                                                     </div>
                                                 </div>
                                             </el-card>
                                         </div>
                                         <div class="col-sm-12 col-md-6 col-lg-4" v-if="modelContainerList.length==0">
                                             <el-card class="box-card serverCard" >
-                                                <div class="addModelContainer" @click="registerModelContainerVisible=true">
-                                                    <i class="el-icon-circle-plus-outline" style="font-size: 35px;margin-bottom:10px"></i>
+                                                <div class="addModelContainer" @click="window.open('/help/support')">
+                                                    <i class="fa fa-question-circle-o" style="font-size: 35px;margin-bottom:10px"></i>
                                                     <br/>
-                                                    Add Model Container
+                                                    How to Add My Model Container
                                                 </div>
                                             </el-card>
                                         </div>
 
-                                        <!--<div class="col-md-10 col-md-offset-1 col-sm-12" style="margin-top:20px">-->
-                                        <!--<span class="h3">My Model Server Container</span>-->
-                                        <!--<span>-->
-                                        <!--<el-button type="success"-->
-                                        <!--@click="registerModelContainerVisible=true">Register</el-button>-->
-                                        <!--</span>-->
-                                        <!--</div>-->
-
-                                        <!--<div id="computerNodePanel" class="col-sm-12">-->
-                                        <!--<div class="col-md-10 col-md-offset-1 col-sm-12"-->
-                                        <!--v-for="computerNodeCity in computerNodesInfos"-->
-                                        <!--:id="computerNodeCity.name">-->
-                                        <!--<div class="headTitle">-->
-                                        <!--<h3 style="font-weight:normal">-->
-                                        <!--<span>{{computerNodeCity.name + ' (' + computerNodeCity.value + ')'}}</span>-->
-                                        <!--</h3>-->
-                                        <!--</div>-->
-                                        <!--<div class="col-sm-6" v-for="computerNodeInfo in computerNodeCity.computerNodeInfos">-->
-                                        <!--<div class="serverNodeInfo">-->
-                                        <!--<h3>{{computerNodeInfo.name}}</h3>-->
-                                        <!--<span :class="{active:computerNodeInfo.status}">{{computerNodeInfo.status ? 'Running':'Offline'}}</span>-->
-                                        <!--<a href="../computer-node-info/computer-node-info.html"-->
-                                        <!--v-if="computerNodeInfo.status"-->
-                                        <!--@click="setSession('computerNode_id',computerNodeInfo.id)">more details</a>-->
-                                        <!--</div>-->
-                                        <!--</div>-->
-                                        <!--</div>-->
-                                        <!--</div>-->
-
                                     </div>
 
+                                </div>
+                            </div>
+                            <div class="page-content-wrap container-fluid" v-if="serverView==2">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="panel-default">
+                                            <div class="panel-body" style="height: 61px;">
+                                                <div class="form-horizontal">
+                                                    <div class="form-group">
+                                                        <div class="" style="float: left;margin-left: 15px">
+                                                            <a class="flexCenter" style="height: 35px" @click="changeServerView(1)">
+                                                                <i class="fa fa-arrow-left"></i>
+                                                                <p class="noMargin hoverLine" style="margin-left: 5px;margin-top: 3px;font-size: 15px; ">Back</p>
+                                                            </a>
+                                                        </div>
+                                                        <el-tooltip content="How to refresh content of this node?" placement="bottom-end">
+                                                            <div class="flexCenter cursorPointer" style="height:35px; float: right;margin-right: 30px"
+                                                                 @click="window.open('/help/support')" >
+                                                                <i class="fa fa-question-circle-o" style="font-size: 21px;color: #eb0e93"></i>
+                                                            </div>
+                                                        </el-tooltip>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="page-content-wrap dataNode-fluid" style="margin-top:-10px;">
+                                    <div class="row">
+                                        <el-card class="box-card" style="margin-top: 20px;border-top: #8cd1e5 8px solid" >
+                                            <el-table
+                                            :data="nodeContent"
+                                            >
+                                                <el-table-column
+                                                        prop="ms_model.m_name"
+                                                        label="Name"
+                                                        width="580">
+                                                </el-table-column>
+                                                <el-table-column
+                                                        prop="ms_update"
+                                                        label="Date"
+                                                        >
+                                                </el-table-column>
+
+                                            </el-table>
+                                            <el-pagination style="text-align: center;margin-top:20px"
+                                                           @current-change="handlePageChange"
+                                                           :current-page="pageOption.currentPage"
+                                                           layout="total, prev, pager, next, jumper"
+                                                           :page-size="pageOption.pageSize"
+                                                           :total="pageOption.total">
+                                            </el-pagination>
+                                        </el-card>
+                                    </div>
                                 </div>
                             </div>
                             <!--                            <nav aria-label="Page navigation example">-->
@@ -261,6 +315,17 @@
                                @click="registerModelContainerActive++">Next
                     </el-button>
 
+                </el-dialog>
+
+                <el-dialog title="Edit Container Name" width="33%" :visible.sync="nodeEditDialog">
+                    <el-input v-model="nodeAlias"
+                              maxlength="20"
+                              show-word-limit
+                    ></el-input>
+                    <span slot="footer" class="dialog-footer">
+                        <el-button size="medium" plain @click="nodeEditDialog=false">Cancel</el-button>
+                        <el-button size="medium" type="primary" @click="updateNodeAlias">Confirm</el-button>
+                    </span>
                 </el-dialog>
             </div>
         </template>

@@ -863,8 +863,8 @@ public class UserRestController {
     }
 
     @RequestMapping(value = "/listArticle",method = RequestMethod.GET)
-    JsonResult listArticle(@RequestParam(value="page")int page, @RequestParam(value="oid") String oid){
-        return ResultUtils.success(userService.listUserArticle(page,oid));
+    JsonResult listArticle(@RequestParam(value="page")int page, @RequestParam(value="userId") String userId){
+        return ResultUtils.success(userService.listUserArticle(page,userId));
     }
 
     @RequestMapping(value="/userSpace/sendFeedback",method = RequestMethod.POST)
