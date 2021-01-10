@@ -91,6 +91,13 @@ var vue = new Vue({
             }
         },
         methods:{
+            backClick(){
+                // $.get("/help/support",function (result) {
+                //
+                // })
+                window.location.href='../support'
+            },
+
             anchorClick(data){
                 window.location.href='#d_'+data.label
                 this.scrollToAnchor()
