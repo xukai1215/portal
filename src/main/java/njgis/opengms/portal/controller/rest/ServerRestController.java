@@ -10,6 +10,7 @@ import njgis.opengms.portal.utils.IpUtil;
 import njgis.opengms.portal.utils.ResultUtils;
 import njgis.opengms.portal.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,6 +30,9 @@ public class ServerRestController {
 
     @Autowired
     UserService userService;
+
+    @Value("${dataServerManager}")
+    private String managerServerIpAndPort;
 
 
     @RequestMapping(value="",method= RequestMethod.GET)
@@ -120,10 +124,10 @@ public class ServerRestController {
         return ResultUtils.success(modelContainer.getServiceList());
 
     }
-    
+
     //获取所有模型容器
     @RequestMapping(value="/modelContainer/all",method=RequestMethod.GET)
-    JsonResult getAll(){
+    JsonResult getModelContainerAll(){
         return ResultUtils.success(modelContainerDao.findAll());
     }
 
@@ -138,6 +142,10 @@ public class ServerRestController {
         return ResultUtils.success(modelContainerDao.findAllByAccount(userName));
     }
 
-
+    //获取所有模型\数据容器
+    @RequestMapping(value="/all",method=RequestMethod.GET)
+    JsonResult getAll(){
+        return ResultUtils.success(modelContainerDao.findAll());
+    }
 
 }

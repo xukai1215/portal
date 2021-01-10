@@ -44,7 +44,10 @@
 
             <div class="el-row">
                 <h2 class="main-title">Server Nodes</h2>
-                <h4 class="sub-title">OpenGMS</h4>
+                <h4 class="sub-title">OpenGMS's server nodes in the world.</h4>
+                <button id="contributeBtn" class="btn btn-success btn-lg" style="font-size: 15px;margin:10px;"
+                        onclick="window.open('/user/userSpace#/server')">+ Contribute
+                </button>
                 <hr>
             </div>
             <div class="el-row" style="margin-top:20px;font-size: 20px">
@@ -92,7 +95,7 @@
 
                     $.ajax({
                         type: "GET",
-                        url: "/server/serverNodes",
+                        url: "/server/modelContainer/all",
                         data: {},
 
                         crossDomain: true,
@@ -253,7 +256,7 @@
                 //存放城市个数及城市下所在具体计算节点信息
                 var cityCount = [];
                 for (var i = 0; i < infoArray.length; i++) {
-                    var geoJson = infoArray[i].geoJson;
+                    var geoJson = infoArray[i].geoInfo;
                     var city = geoJson.city;
                     var flag = false;
                     //get the count of the same city
@@ -489,7 +492,7 @@
             //server
             $.ajax({
                 type: "GET",
-                url: "/server/serverNodes",
+                url: "/server/modelContainer/all",
                 data: {},
 
                 crossDomain: true,
@@ -512,7 +515,7 @@
 <script src="/static/js/common/axios.min.js"></script>
 <script src="/static/js/common/bootstrap.js"></script>
 <script src="/static/element-ui/umd/locale/en.js"></script>
-<script src="/static/js/common/loadUser.js"></script>
+
 <script src="/static/js/common/navbar.js"></script>
 
 

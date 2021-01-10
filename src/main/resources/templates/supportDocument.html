@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -27,7 +27,9 @@
                 <h3 style="text-align: center;margin-top: 45px">Model Resource<span class="h_lite"> Learn And Support</span></h3>
                 <h5 style="text-align: center;margin-top: 20px">Let't learn what is provided about Model Resource!</h5>
             </div>
+
             <div class="col-lg-10 col-lg-offset-1 col-md-12 clearfix" style="padding: 25px 0">
+
                 <el-row :gutter="20">
                     <el-col :span="sectionTitleSpan">
                         <div class="treeContainer">
@@ -42,7 +44,7 @@
                         <div class="clearfix docSection " style="background-color: white;padding: 0 20px 20px" >
                             <section class="wordSpace" v-for="section in supportDoc" :id="section.title">
                                 <h3 class="h_lite">{{section.title}}</h3>
-                                <p>{{section.content}}</p>
+                                <p v-html="section.content"></p>
                             </section>
                         </div>
                     </el-col>

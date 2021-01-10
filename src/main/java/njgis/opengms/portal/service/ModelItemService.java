@@ -1957,7 +1957,57 @@ public class ModelItemService {
         return name;
     }
 
-    public JSONObject getKnowledgeGraph(String oid){
+    public JSONObject getFullRelationGraph(){
+        JSONObject result = new JSONObject();
+
+        try {
+
+            JSONArray nodes = new JSONArray();
+            JSONArray links = new JSONArray();
+
+            List<ModelItem> modelItemList = modelItemDao.findAll();
+            for (int i = 0; i < modelItemList.size(); i++) {
+                ModelItem modelItem = modelItemList.get(i);
+                if(modelItem.getModelRelationList().size()==0){
+                    continue;
+                }
+
+                Boolean exist = false;
+                for (int j = 0; j < nodes.size(); j++) {
+                    JSONObject node = nodes.getJSONObject(j);
+//                    System.out.println(modelItem.getOid() + " " + j);
+//                    System.out.println(node);
+//                    System.out.println(modelItem.getOid());
+                    if (node.getString("type").equals("model") && node.getString("name").equals(modelItem.getName())) {
+                        exist = true;
+                        break;
+                    }
+                }
+
+                if (!exist) {
+                    JSONObject node = new JSONObject();
+                    node.put("name", modelItem.getName());
+                    node.put("oid", modelItem.getOid());
+                    node.put("img", modelItem.getImage().equals("") ? "" : "/static" + modelItem.getImage());
+                    node.put("overview", modelItem.getDescription());
+                    node.put("type", "model");
+                    nodes.add(node);
+                    List<ModelRelation> modelRelationList = modelItem.getModelRelationList();
+
+                    addNodeAndLink(nodes.size()-1, modelRelationList, nodes, links);
+                }
+            }
+
+            result.put("nodes", nodes);
+            result.put("links", links);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    public JSONObject getRelationGraph(String oid){
         JSONObject result = new JSONObject();
 
         JSONArray nodes = new JSONArray();
@@ -1991,7 +2041,7 @@ public class ModelItemService {
             int n = 0;
             for(;n<nodes.size();n++){
                 JSONObject node = nodes.getJSONObject(n);
-                if(relateOid.equals(node.getString("oid"))){
+                if(modelItem_relation.getName().equals(node.getString("name"))){
                     exist = true;
                     break;
                 }

@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>Model Relation Graph | OpenGMS</title>
+    <meta name="keywords"/>
+    <meta name="description"/>
+
+    <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
+    <link rel="stylesheet" href="/static/css/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/base/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/base/universal.css">
+    <link rel="stylesheet" href="/static/css/page/model_items.css">
+    <link rel="stylesheet" href="/static/css/base/list.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css"/>
+
+    <style>
+        hr{
+            margin: 10px 0;
+        }
+
+        .modelRelationGraphSideBar::-webkit-scrollbar {/*滚动条整体样式*/
+
+            width: 7px;     /*高宽分别对应横竖滚动条的尺寸*/
+
+            height: 1px;
+
+        }
+
+        .modelRelationGraphSideBar::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+
+            border-radius: 10px;
+
+            -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+
+            background: #9e9e9e;
+
+        }
+
+        .modelRelationGraphSideBar::-webkit-scrollbar-track {/*滚动条里面轨道*/
+
+            -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+
+            border-radius: 10px;
+
+            background: #EDEDED;
+
+        }
+    </style>
+
+</head>
+<body style="overflow: hidden;">
+<div  id="app">
+    <div th:replace="fragments/navbar :: unlog"></div>
+
+    <div id="graph" v-cloak style="position: relative;">
+        <div class="modelRelationGraphSideBar" v-if="modelRelationGraphSideBarShow" style="height:100%;width:200px;padding:15px;position: absolute;z-index: 999;background-color: #f6f6f6eb;overflow:auto;">
+            <div class="mr_header" style="height:10px;">
+                <a href="javascript:void(0);" @click="closeGraphSideBar" style="font-size: 20px;">×</a>
+            </div>
+            <div class="mr_body">
+                <div class="mr_title" style="text-align: center;">
+                    <div v-if="curRelation.type=='model'">
+                        <div style="margin-bottom: 10px;">
+                            <img v-if="curRelation.img != ''" :src="curRelation.img" style="width:90px;height:90px;">
+                            <img v-else src="/static/img/model/model.png"/>
+                        </div>
+                        <a :href="'/modelItem/'+curRelation.oid" target="_blank" style="font-size: 16px;text-decoration: underline;">{{curRelation.name}}</a>
+                    </div>
+                    <div v-if="curRelation.type=='ref'">
+                        <div style="margin-bottom: 10px;">
+                            <li class="el-icon-document" style="font-size: 90px;"></li>
+                        </div>
+                        <a v-if="curRelation.link!=''" :href="curRelation.link" target="_blank" style="font-size: 16px;text-decoration: underline;">{{curRelation.name}}</a>
+                        <div v-else style="font-size: 16px;">{{curRelation.name}}</div>
+                    </div>
+                </div>
+                <hr style="margin:10px 0;"/>
+                <div class="mr_content">
+                    <div v-if="curRelation.type=='model'">
+                        {{curRelation.overview}}
+                    </div>
+                    <div v-if="curRelation.type=='ref'">
+                        <div v-if="curRelation.author != undefined && curRelation.author != ''">
+                            <label>Author</label>
+                            <span>{{curRelation.author.join('; ')}}</span>
+                        </div>
+                        <div v-if="curRelation.journal != undefined && curRelation.journal != ''">
+                            <label>Journal</label>
+                            <span>{{curRelation.journal}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="modelRelationGraphSideBar_right" style="position: absolute;right:0;top:40px;height:auto;width:130px;z-index: 999;background-color: #cacaca38;padding:15px;border-radius: 10px;">
+            <label>Node Label</label><br/>
+            <el-switch
+                    v-model="nodeLabelShow"
+                    active-text="On"
+                    inactive-text="Off"
+                    @change="nodeLabelShowChange">
+            </el-switch>
+            <hr style="border-color: #00b9ff;"/>
+            <label>Full Name</label><br/>
+            <el-switch
+                    v-model="fullNameShow"
+                    active-text="On"
+                    inactive-text="Off"
+                    @change="fullNameShowChange">
+            </el-switch>
+            <hr style="border-color: #00b9ff;"/>
+            <label>Line Label</label><br/>
+            <el-switch
+                    v-model="lineLabelShow"
+                    active-text="On"
+                    inactive-text="Off"
+                    @change="lineLabelShowChange">
+            </el-switch>
+            <hr style="border-color: #00b9ff;"/>
+            <label>Line Color</label><br/>
+            <el-switch
+                    v-model="lineColorShow"
+                    active-text="On"
+                    inactive-text="Off"
+                    @change="lineColorShowChange">
+            </el-switch>
+        </div>
+        <div id="modelRelationGraph" style="height:100%;"></div>
+    </div>
+    <div th:replace="fragments/footer :: footer-mini"></div>
+
+</div>
+</body>
+
+<script src="/static/js/common/jquery-3.3.1.min.js"></script>
+<script src="/static/js/common/echarts-graph.min.js"></script>
+<script src="/static/js/common/vue.min.js"></script>
+<script src="/static/element-ui/index.js"></script>
+<script src="/static/element-ui/umd/locale/en.js"></script>
+
+<script>
+    var info = new Vue({
+        el: '#app',
+        data: function () {
+            return {
+                graphHeight: "500px",
+
+                modelRelationGraphSideBarShow: false,
+                relatedModelItems: [],
+                relatedModelItemsPage: [],
+                curRelation: {},
+                graphFullScreen: false,
+
+                nodeLabelShow: true,
+                fullNameShow: false,
+                lineLabelShow: true,
+                lineColorShow: false,
+
+                modelRelationGraph: null,
+
+            }
+        },
+        methods: {
+
+            lineColorShowChange(newValue) {
+                let object = document.getElementById('modelRelationGraph');
+                let graph = echarts.init(object, 'light');
+                let opts = graph.getOption();
+
+                let links = opts.series[0].links;
+                for (i = 0; i < links.length; i++) {
+                    let link = links[i];
+                    let formatter;
+                    let name = links[i].name;
+                    if (newValue) {
+                        let color;
+                        switch (links[i].label.formatter) {
+                            case "Connected with":
+                                color = "#f6b26b";
+                                break;
+                            case "Evolved from":
+                                color = "#ffd966";
+                                break;
+                            case "Belongs to":
+                                color = "#93c47d";
+                                break;
+                            case "Integrated into":
+                                color = "#6d9eeb";
+                                break;
+                            case "Inspires":
+                                color = "#8e7cc3";
+                                break;
+                            case "Contains":
+                                color = "#c27ba0";
+                                break;
+                            case "Employs/Depends on":
+                                color = "#a61c00";
+                                break;
+                            case "Similar to":
+                                color = "#e69138";
+                                break;
+                            case "Coexist in":
+                                color = "#7f6000";
+                                break;
+                        }
+                        links[i].lineStyle = {
+                            color: color,
+                        }
+                    } else {
+                        links[i].lineStyle = {}
+                    }
+                }
+                opts.series[0].links = links;
+                graph.clear();
+                graph.setOption(opts);
+            },
+
+            lineLabelShowChange(newValue) {
+                let object = document.getElementById('modelRelationGraph');
+                let graph = echarts.init(object, 'light');
+                let opts = graph.getOption();
+
+                let links = opts.series[0].links;
+                for (i = 0; i < links.length; i++) {
+                    let link = links[i];
+                    let formatter;
+                    let name = links[i].name;
+                    links[i].label.show = newValue;
+
+                    if (link.label.formatter == undefined) {
+                        links[i].label.show = false;
+                    }
+                }
+                opts.series[0].links = links;
+                graph.clear();
+                graph.setOption(opts);
+            },
+
+            fullNameShowChange(newValue) {
+                let object = document.getElementById('modelRelationGraph');
+                let graph = echarts.init(object, 'light');
+                let opts = graph.getOption();
+
+                let data = opts.series[0].data;
+                for (i = 0; i < data.length; i++) {
+                    let formatter;
+                    let name = data[i].name;
+                    ;
+                    if (newValue) {
+                        formatter = name;
+                    } else {
+                        formatter = name.length > 9 ? name.substring(0, 7) + "..." : name
+                    }
+
+                    if (data[i].value.type == "ref") {
+                        formatter = "";
+                    }
+
+                    data[i].label = {
+                        formatter: formatter
+                    }
+                }
+                opts.series[0].data = data;
+                graph.clear();
+                graph.setOption(opts);
+            },
+
+            nodeLabelShowChange(newValue) {
+                let object = document.getElementById('modelRelationGraph');
+                let graph = echarts.init(object, 'light');
+                let opts = graph.getOption();
+                graph.clear();
+                opts.series[0].label.show = newValue;
+                graph.setOption(opts);
+            },
+
+            handleRelationCurrentChange(page, type) {
+                switch (type) {
+                    case "modelItem":
+                        let start = (page - 1) * this.relationPageSize;
+                        let end = page * this.relationPageSize;
+                        this.relatedModelItemsPage = [];
+                        for (i = start; i < this.relatedModelItems.length; i++) {
+                            if (i === end) break;
+                            this.relatedModelItemsPage.push(this.relatedModelItems[i]);
+                        }
+                        break;
+                }
+            },
+
+            closeGraphSideBar() {
+                this.modelRelationGraphSideBarShow = false;
+            },
+
+            relateModelItemListShowChange(val) {
+                console.log(val);
+                if (val) {
+                    this.generateModelRelationGraph();
+                } else {
+                    this.closeModelRelationGraph();
+                }
+            },
+
+            generateModelRelationGraph() {
+                this.modelRelationGraphShow = true;
+
+                let nodes = [];
+                let links = [];
+                let object = document.getElementById('modelRelationGraph');
+                let modelRelationGraph = echarts.init(object, 'light');
+                modelRelationGraph.showLoading();
+
+                this.modelRelationGraph = modelRelationGraph;
+
+                $.post("/modelItem/getFullRelationGraph", {}, (result) => {
+                    console.log(result);
+                    nodes = result.data.nodes;
+                    links = result.data.links;
+
+                    modelRelationGraph.on("click", (param) => {
+                        if (param.value !== undefined) {
+                            this.curRelation = param.value;
+                            this.modelRelationGraphSideBarShow = true;
+                        }
+                        console.log(param)
+                    });
+
+                    let graph_nodes = [];
+                    let graph_links = [];
+
+                    let radius = 200;
+
+                    // let dtAngle = 360 / nodes.length;
+                    // let curAngle = 0;
+                    //加入节点
+                    for (i = 0; i < nodes.length; i++) {
+                        let node = nodes[i];
+
+                        // curAngle = curAngle + dtAngle;
+                        // let radian = curAngle * 2 * Math.PI / 360;
+                        // let dx = Math.cos(radian) * radius;
+                        // let dy = Math.sin(radian) * radius;
+
+                        let name = node.name;
+                        let formatter = name.length > 9 ? name.substring(0, 7) + "..." : name;
+
+                        //加入节点
+                        if (node.type === "ref") {
+                            graph_nodes.push({
+                                name: node.name,
+                                value: {
+                                    style: "node",
+                                    type: "ref",
+                                    name: node.name,
+                                    author: node.author,
+                                    journal: node.journal,
+                                    link: node.link,
+                                },
+                                // x: graph_nodes[0].x + dx,
+                                // y: graph_nodes[0].y + dy,
+                                symbolSize: 8,
+                                itemStyle: {
+                                    color: 'skyblue',
+                                },
+                                label: {
+                                    show: false,
+                                    formatter: formatter,
+                                },
+                                tooltip: {
+                                    formatter: "Reference: {b}",
+                                },
+                            });
+                        } else {
+                            graph_nodes.push({
+                                name: node.name,
+                                value: {
+                                    style: "node",
+                                    type: "model",
+                                    name: node.name,
+                                    oid: node.oid,
+                                    img: node.img,
+                                    overview: node.overview,
+                                },
+                                // x: graph_nodes[0].x + dx,
+                                // y: graph_nodes[0].y + dy,
+                                // symbolSize: 10,
+                                itemStyle: {
+                                    color: 'orange',
+                                },
+                                label: {
+                                    formatter: formatter,
+                                },
+                                tooltip: {
+                                    formatter: "{b}",
+                                },
+                            });
+                        }
+                    }
+
+                    //加入连线
+                    for (i = 0; i < links.length; i++) {
+                        let link = links[i];
+                        if (link.type === "ref") {
+                            graph_links.push({
+                                source: link.ori,
+                                target: link.tar,
+                                // symbolSize: [5, 10],
+                                label: {
+                                    show: false,
+                                    formatter: link.relation,
+                                    fontSize: 12,
+                                },
+                                lineStyle: {
+                                    width: 2,
+                                    curveness: 0
+                                },
+                                symbol: ['none', 'none'],
+                                tooltip: {
+                                    show: false,
+                                    position: 'bottom',
+                                    formatter: nodes[link.ori].name + " " + link.relation + " " + nodes[link.tar].name,
+                                },
+
+                            });
+                        } else {
+                            graph_links.push({
+                                source: link.ori,
+                                target: link.tar,
+                                symbolSize: [5, 10],
+                                label: {
+                                    show: true,
+                                    formatter: link.relation,
+                                    fontSize: 12,
+                                },
+                                lineStyle: {
+                                    width: 2,
+                                    curveness: 0
+                                },
+                                tooltip: {
+                                    position: 'bottom',
+                                    formatter: nodes[link.ori].name + " " + link.relation + " " + nodes[link.tar].name,
+                                },
+
+                            });
+                        }
+                    }
+
+                    let option = {
+                        title: {
+                            text: 'Model Relation Graph',
+                            left: "center",
+                            top: 10,
+                            textStyle: {
+                                fontFamily: "Helvetica Neue",
+                                fontSize: 30,
+                            }
+                        },
+                        tooltip: {},
+                        toolbox: {
+                            right: 10,
+                            feature: {
+
+                                myFull: {
+                                    show: true,
+                                    title: 'Full Screen',
+                                    icon: 'path://M432.45,595.444c0,2.177-4.661,6.82-11.305,6.82c-6.475,0-11.306-4.567-11.306-6.82s4.852-6.812,11.306-6.812C427.841,588.632,432.452,593.191,432.45,595.444L432.45,595.444z M421.155,589.876c-3.009,0-5.448,2.495-5.448,5.572s2.439,5.572,5.448,5.572c3.01,0,5.449-2.495,5.449-5.572C426.604,592.371,424.165,589.876,421.155,589.876L421.155,589.876z M421.146,591.891c-1.916,0-3.47,1.589-3.47,3.549c0,1.959,1.554,3.548,3.47,3.548s3.469-1.589,3.469-3.548C424.614,593.479,423.062,591.891,421.146,591.891L421.146,591.891zM421.146,591.891',
+                                    onclick: (e) => {
+                                        let opts = e.getOption();
+                                        opts.toolbox[0].feature.myFull = {};//.show=false;
+                                        // opts.toolbox[0].feature.myFullExit.show=true;
+                                        this.graphFullScreen = true;
+                                        setTimeout(() => {
+                                            let object = document.getElementById('fullScreenGraph');
+                                            let graph = echarts.init(object, 'light');
+                                            graph.setOption(opts);
+
+                                            graph.on("click", (param) => {
+                                                if (param.value !== undefined) {
+                                                    this.curRelation = param.value;
+                                                    this.modelRelationGraphSideBarShow = true;
+                                                }
+
+                                                console.log(param)
+                                            });
+
+                                            // opts.toolbox[0].feature.myFull.show=false
+                                            // //window.top表示最顶层iframe  如果在当页面全屏打开 删去window.top即可
+                                            // window.top.layer.open({
+                                            //     title:false,
+                                            //     type:1,
+                                            //     content:'<div class="fullChart" style="height:100%;width:100%;padding:30px 0px"></div>',
+                                            //     success:function(){
+                                            //         var fullchart = echarts.init(window.top.document.getElementById('fullChart'))
+                                            //         fullchart.setOption(opts)
+                                            //     }
+                                            // })
+                                        }, 300);
+
+                                    }
+                                },
+                                saveAsImage: {},
+                                restore: {},
+                                // myFullExit: {
+                                //     show: false,
+                                //     title: 'Exit',
+                                //     icon: 'path://M432.45,595.444c0,2.177-4.661,6.82-11.305,6.82c-6.475,0-11.306-4.567-11.306-6.82s4.852-6.812,11.306-6.812C427.841,588.632,432.452,593.191,432.45,595.444L432.45,595.444z M421.155,589.876c-3.009,0-5.448,2.495-5.448,5.572s2.439,5.572,5.448,5.572c3.01,0,5.449-2.495,5.449-5.572C426.604,592.371,424.165,589.876,421.155,589.876L421.155,589.876z M421.146,591.891c-1.916,0-3.47,1.589-3.47,3.549c0,1.959,1.554,3.548,3.47,3.548s3.469-1.589,3.469-3.548C424.614,593.479,423.062,591.891,421.146,591.891L421.146,591.891zM421.146,591.891',
+                                //     onclick: (e)=>{
+                                //         this.graphFullScreen = false;
+                                //
+                                //     }
+                                // },
+                            }
+                        },
+                        animation: false,
+                        // animationDurationUpdate: 500,
+                        // animationEasingUpdate: 'quinticInOut',
+                        series: [
+                            {
+                                type: 'graph',
+                                layout: 'force',
+                                draggable: false,
+                                focusNodeAdjacency: true,
+                                symbolSize: 25,
+                                zoom: 4,
+                                roam: true,
+                                force: {
+                                    repulsion: 100,
+                                    // edgeLength:[150,200],
+                                    layoutAnimation: false,
+                                },
+                                label: {
+                                    show: true,
+                                },
+                                edgeSymbol: ['circle', 'arrow'],
+                                edgeSymbolSize: [4, 10],
+                                edgeLabel: {
+                                    fontSize: 20
+                                },
+                                data: [{
+                                    name: '节点1',
+                                    x: 500,
+                                    y: 300,
+                                    symbolSize: 50,
+                                    itemStyle: {
+                                        color: 'blue',
+                                    },
+                                }, {
+                                    name: '节点2',
+                                    x: 800,
+                                    y: 300
+                                }, {
+                                    name: '节点3',
+                                    x: 550,
+                                    y: 100
+                                }, {
+                                    name: '节点4',
+                                    x: 550,
+                                    y: 500
+                                }],
+                                // links: [],
+                                links: [{
+                                    source: 0,
+                                    target: 1,
+                                    symbolSize: [5, 20],
+                                    label: {
+                                        show: true,
+                                        formatter: "1234",
+                                    },
+                                    lineStyle: {
+                                        width: 5,
+                                        curveness: 0
+                                    }
+                                }, {
+                                    source: '节点2',
+                                    target: '节点1',
+                                    label: {
+                                        show: true
+                                    },
+                                    lineStyle: {
+                                        curveness: 0.2
+                                    }
+                                }, {
+                                    source: '节点1',
+                                    target: '节点3'
+                                }, {
+                                    source: '节点2',
+                                    target: '节点3'
+                                }, {
+                                    source: '节点2',
+                                    target: '节点4'
+                                }, {
+                                    source: '节点1',
+                                    target: '节点4'
+                                }],
+                                lineStyle: {
+                                    opacity: 0.9,
+                                    width: 2,
+                                    curveness: 0
+                                }
+                            }
+                        ]
+                    };
+
+                    option.series[0].data = graph_nodes;
+                    option.series[0].links = graph_links;
+                    console.log(option);
+                    modelRelationGraph.setOption(option);
+                    modelRelationGraph.hideLoading();
+
+
+                });
+
+
+            },
+
+            closeModelRelationGraph() {
+                this.modelRelationGraphShow = false;
+                this.modelRelationGraphSideBarShow = false;
+            },
+
+
+        },
+        mounted() {
+            $(() => {
+                let height = document.documentElement.clientHeight;
+                $("#graph").css("height",(height-129) + "px");
+
+                let resizeTimer = null;
+                let that = this
+                window.onresize = () => {
+                    if (resizeTimer) clearTimeout(resizeTimer);
+                    resizeTimer = setTimeout(()=> {
+                        let height = document.documentElement.clientHeight;
+                        $("#graph").css("height",(height-129) + "px");
+                        this.modelRelationGraph.resize();
+                    }, 150);
+                };
+
+                this.generateModelRelationGraph();
+
+            })
+
+        }
+    })
+
+</script>
+<script src="/static/js/common/navbar.js"></script>
+
+
+
+</html>

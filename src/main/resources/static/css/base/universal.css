@@ -17,6 +17,14 @@ body{
     font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
 }
 
+.footer {
+    padding: 10px 10px 10px;
+
+    background: #2e3033;
+    color: white;
+    line-height: 2;
+}
+
 .fontsize-2em{
     font-size: 2em;
 }

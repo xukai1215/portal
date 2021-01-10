@@ -670,7 +670,7 @@ var info=new Vue({
             let nodes = [];
             let links = [];
 
-            $.post("/modelItem/getKnowledgeGraph",{"oid":this.modelInfo.oid},(result)=>{
+            $.post("/modelItem/getRelationGraph",{"oid":this.modelInfo.oid},(result)=>{
                 console.log(result);
                 nodes = result.data.nodes;
                 links = result.data.links;
