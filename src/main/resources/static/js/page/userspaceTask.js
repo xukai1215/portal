@@ -480,9 +480,133 @@ var userTask = Vue.extend(
 
             },
 
+            publishDataTask(task) {
+                const h = this.$createElement;
+                if (task.permission == 'private') {
+                    this.$msgbox({
+                        title: ' ',
+                        message: h('p', null, [
+                            h('span', {style: 'font-size:15px'}, 'All of the users will have'), h('span', {style: 'font-weight:600'}, ' permission '), h('span', 'to this task.'),
+                            h('br'),
+                            h('span', null, 'Are you sure to set the task'),
+                            h('span', {style: 'color: #e6a23c;font-weight:600'}, ' public'),
+                            h('span', null, '?'),
+                        ]),
+                        type: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'confirm',
+                        cancelButtonText: 'cancel',
+                        beforeClose: (action, instance, done) => {
+                            let href = window.location.href.split('/')
+                            let ids = href[href.length - 1]
+                            let taskId = ids.split('&')[1]
+                            if (action === 'confirm') {
+                                instance.confirmButtonLoading = true;
+                                // instance.confirmButtonText = '...';
+                                setTimeout(() => {
+                                    $.ajax({
+                                        type: "POST",
+                                        url: "/task/setDataTaskPublic",
+                                        data: {oid: task.oid},
+                                        async: true,
+                                        contentType: "application/x-www-form-urlencoded",
+                                        success: (json) => {
+                                            if (json.code == -1) {
+                                                alert("Please login first!")
+                                                window.sessionStorage.setItem("history", window.location.href);         // 为什么要存这个东西？
+                                                window.location.href = "/user/login"
+                                            } else {
+                                                // this.rightTargetItem=null;
+                                                task.permission = json.data;
+                                            }
+
+                                        }
+                                    });
+                                    done();
+                                    setTimeout(() => {
+                                        instance.confirmButtonLoading = false;
+                                    }, 100);
+                                }, 100);
+                            } else {
+                                done();
+                            }
+                        }
+                    }).then(action => {
+                        this.rightMenuShow = false
+                        this.$message({
+                            type: 'success',
+                            message: 'This task can be visited by public'
+                        });
+                    });
+                } else {
+                    this.$msgbox({
+                        title: ' ',
+                        message: h('p', null, [
+                            h('span', {style: 'font-size:15px'}, 'Only you have'), h('span', {style: 'font-weight:600'}, ' permission '), h('span', 'to this task.'),
+                            h('br'),
+                            h('span', null, 'Are you sure to'),
+                            h('span', {style: 'color: #67c23a;font-weight:600'}, ' continue'),
+                            h('span', null, '?'),
+                        ]),
+                        type: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'confirm',
+                        cancelButtonText: 'cancel',
+                        beforeClose: (action, instance, done) => {
+                            let href = window.location.href.split('/')
+                            let ids = href[href.length - 1]
+                            let taskId = ids.split('&')[1]
+                            if (action === 'confirm') {
+                                instance.confirmButtonLoading = true;
+                                // instance.confirmButtonText = '...';
+                                setTimeout(() => {
+                                    $.ajax({
+                                        type: "POST",
+                                        url: "/task/setDataTaskPrivate",
+                                        data: {oid: task.oid},
+                                        async: true,
+                                        contentType: "application/x-www-form-urlencoded",
+                                        success: (json) => {
+                                            if (json.code == -1) {
+                                                alert("Please login first!")
+                                                window.sessionStorage.setItem("history", window.location.href);
+                                                window.location.href = "/user/login"
+                                            } else {
+                                                // this.rightTargetItem=null;
+                                                task.permission = json.data;
+                                            }
+
+                                        }
+                                    });
+                                    done();
+                                    setTimeout(() => {
+                                        instance.confirmButtonLoading = false;
+                                    }, 100);
+                                }, 100);
+                            } else {
+                                done();
+                            }
+                        }
+                    }).then(action => {
+                        this.rightMenuShow = false
+                        this.$message({
+                            type: 'success',
+                            message: 'This task has been set private'
+                        });
+                    });
+                }
+
+
+            },
+
             changeTaskStatus(status) {
                 this.taskStatus = status;
                 this.showTasksByStatus(this.taskStatus)
+            },
+
+            changeDataTaskStatus(status) {
+                this.dataTaskStatus = status;
+                this.getDataTasks()
             },
 
             showTasksByStatus(status) {
@@ -580,6 +704,10 @@ var userTask = Vue.extend(
                 })
             },
 
+            searchDataTasks(){
+                this.dataCurPage = 1
+                this.getDataTasks()
+            },
             addOutputToMyData(output,index) {
                 console.log(output)
                 this.outputToMyData = output
@@ -1044,7 +1172,6 @@ var userTask = Vue.extend(
 
             downloadSingle(url) {
                 window.open(url);
-
             },
 
             downloadAll(recordId, name, time) {
@@ -1147,6 +1274,17 @@ var userTask = Vue.extend(
                 }else {
                     $('.ab').eq(index).removeClass('transform180')
                     $('.modelRunInfo').eq(index).collapse('hide')
+                }
+
+            },
+
+            expandDataTaskRunInfo(index,$event){
+                if(!$('.ab2').eq(index).hasClass('transform180')){
+                    $('.ab2').eq(index).addClass('transform180')
+                    $('.dataModelRunInfo').eq(index).collapse('show')
+                }else {
+                    $('.ab2').eq(index).removeClass('transform180')
+                    $('.dataModelRunInfo').eq(index).collapse('hide')
                 }
 
             },
@@ -1447,13 +1585,24 @@ var userTask = Vue.extend(
                 axios.post('/task/getDataTasks', that.dataTaskFindDto)
                     .then(res=>{
                         setTimeout(()=>{
-                            console.log(res.data.data)
                             that.dataSearchResult = res.data.data.list
+                            for(let i=0;i<that.dataSearchResult.length;++i){
+                                console.log(that.dataSearchResult[i].input.input instanceof Array)
+                                if(!(that.dataSearchResult[i].input.input instanceof Array)){
+                                    that.dataSearchResult[i].input.input = JSON.parse(that.dataSearchResult[i].input.input)
+                                }
+                                if(!(that.dataSearchResult[i].output.output instanceof Array)) {
+                                    let temp = that.dataSearchResult[i].output.output
+                                    that.dataSearchResult[i].output.output = []
+                                    that.dataSearchResult[i].output.output.push({'url': temp})
+                                }
+                            }
                             that.dataResourceLoad = false
                             that.dataTotalNum = res.data.data.totalNum
                             that.dataPageInit()
                         })
                     })
+                // input对象可能就是一个字符串，output的字符串里面可能就一个url
             }
 
         },

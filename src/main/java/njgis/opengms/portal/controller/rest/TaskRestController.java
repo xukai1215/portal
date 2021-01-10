@@ -798,6 +798,19 @@ public class TaskRestController {
         }
 
     }
+    @RequestMapping(value = "/setDataTaskPublic",method = RequestMethod.POST)
+    public JsonResult setDataTaskPublic(@RequestParam String oid,HttpServletRequest httpServletRequest)
+    {
+        HttpSession session=httpServletRequest.getSession();
+        if(session.getAttribute("uid")==null) {
+            return ResultUtils.error(-1, "no login");
+        }
+        else {
+            String username = session.getAttribute("uid").toString();
+            return ResultUtils.success(taskService.setDataTaskPublic(oid));
+        }
+
+    }
 
     @RequestMapping(value = "/setPrivate",method = RequestMethod.POST)
     public JsonResult setPrivate(@RequestParam String taskId,HttpServletRequest httpServletRequest)
@@ -809,6 +822,19 @@ public class TaskRestController {
         else {
             String username = session.getAttribute("uid").toString();
             return ResultUtils.success(taskService.setPrivate(taskId));
+        }
+
+    }
+    @RequestMapping(value = "/setDataTaskPrivate",method = RequestMethod.POST)
+    public JsonResult setDataTaskPrivate(@RequestParam String oid,HttpServletRequest httpServletRequest)
+    {
+        HttpSession session=httpServletRequest.getSession();
+        if(session.getAttribute("uid")==null) {
+            return ResultUtils.error(-1, "no login");
+        }
+        else {
+            String username = session.getAttribute("uid").toString();
+            return ResultUtils.success(taskService.setDataTaskPrivate(oid));
         }
 
     }

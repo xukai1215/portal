@@ -13,7 +13,7 @@ public interface DataServerTaskDao extends MongoRepository<DataServerTask, Strin
     DataServerTask findFirstByOid(String oid);
 
     Page<DataServerTask> findAllByUserIdLike(String userId, Pageable pageable);
-    Page<DataServerTask> findAllByUserIdLikeAndStatusLike(String userId, int status, Pageable pageable);
+    Page<DataServerTask> findAllByUserIdLikeAndStatus(String userId, int status, Pageable pageable);
     Page<DataServerTask> findAllByUserIdLikeAndServiceNameLike(String userId, String serviceName, Pageable pageable);
-    Page<DataServerTask> findAllByUserIdLikeAndStatusLikeAndServiceNameLike(String userId, int status, String serviceName, Pageable pageable);
+    Page<DataServerTask> findAllByUserIdLikeAndStatusAndServiceNameLike(String userId, int status, String serviceName, Pageable pageable);
 }

@@ -292,7 +292,7 @@
                                                         <div class="form-group flexRowContainer flexJustAround  flexColCenter">
                                                             <div class="col-md-3 flexRowContainer flexColCenter wzhSelectContainer" style="">
                                                                 Task status:
-                                                                <el-select v-model="dataTaskStatus" placeholder="task status" size="mini" @change="changeTaskStatus" >
+                                                                <el-select v-model="dataTaskStatus" placeholder="task status" size="mini" @change="changeDataTaskStatus" >
                                                                     <el-option
                                                                             v-for="item in options"
                                                                             :key="item.value"
@@ -303,15 +303,15 @@
                                                                 </el-select>
                                                             </div>
                                                             <div class="col-md-8">
-                                                                <div class="input-group" @keydown.enter="searchTasks(1)">
+                                                                <div class="input-group" @keydown.enter="searchDataTasks()">
                                                                     <input type="text" class="form-control" name="searchText"
                                                                            placeholder="please enter name" v-model="dataSearchText" style="margin-top: 3px">
                                                                     <div class="input-group-btn common-searchButton">
-                                                                        <button class="btn btn-primary" @click="searchTasks(1)">Search
+                                                                        <button class="btn btn-primary" @click="searchDataTasks()">Search
                                                                         </button>
                                                                     </div>
                                                                     <div class="input-group-btn mini-searchButton">
-                                                                        <button class="btn btn-primary" @click="searchTasks(1)"><i class="fa fa-search"></i>
+                                                                        <button class="btn btn-primary" @click="searchDataTasks()"><i class="fa fa-search"></i>
                                                                         </button>
                                                                     </div>
                                                                 </div>
@@ -336,7 +336,7 @@
                                                     <div class="" style="display: flex;align-items: center;">
                                                         <el-button v-if="task.status==2&&!task.integrate" type="warning"
                                                                    size="mini"
-                                                                   @click="publishTask(task)">
+                                                                   @click="publishDataTask(task)">
                                                     <span v-if="task.permission=='public'">
                                                         <span><i class="fa fa-unlock"></i></span>
                                                         Public</span>
@@ -351,7 +351,7 @@
                                                         </el-button>
                                                         <el-button type="primary" size="mini"
                                                                    style="float: right;margin-right: 3px;background-color: rgb(0,200,255);border:0"
-                                                                   @click="checkOutput(task.computableId,task.taskId,task.integrate)">
+                                                                   @click="checkOutput(task.computableId,task.oid,task.integrate)">
                                                             Check Task Info
                                                         </el-button>
                                                     </div>
@@ -361,30 +361,30 @@
                                                 <div class="runStatus" style="margin-top: 80px;margin-left: 10px">
                                                     <h4 v-if="task.status==2"
                                                         style="font-style: italic; font-weight: 600;font-family: sans-serif; ; color: rgb(153, 153, 153); margin-left: 10px;cursor: pointer"
-                                                        @click="expandRunInfo(index,$event)">
+                                                        @click="expandDataTaskRunInfo(index,$event)">
                                                         <span style="color: rgb(103,194,58)">Successful</span> caculation !</h4>
                                                     <h4 v-if="task.status==-1"
                                                         style="font-style: italic; font-weight: 600;font-family: sans-serif; ; color: rgb(153, 153, 153); margin-left: 10px;cursor: pointer"
-                                                        @click="expandRunInfo(index,$event)">
+                                                        @click="expandDataTaskRunInfo(index,$event)">
                                                         Something <span style="color: rgb(224,101,80)"
-                                                                        @click="expandRunInfo(index,$event)">wrong</span> with it !</h4>
+                                                                        @click="expandDataTaskRunInfo(index,$event)">wrong</span> with it !</h4>
                                                     <h4 v-if="task.status==0||task.status==1"
                                                         style="font-style: italic; font-weight: 600;font-family: sans-serif; ; color: rgb(153, 153, 153); margin-left: 10px;cursor: pointer"
-                                                        @click="expandRunInfo(index,$event)">
+                                                        @click="expandDataTaskRunInfo(index,$event)">
                                                         <span style="color: rgb(64,158,255)">Calculating</span>!</h4>
-                                                    <span role="button" tabindex="0" class="ab"
+                                                    <span role="button" tabindex="0" class="ab2"
                                                           style="float: right;margin-top: -33px;margin-right: 70px;cursor: pointer"><a
                                                             data-toggle="collapse" class="" aria-expanded="true"
-                                                            @click="expandRunInfo(index,$event)"><i class="fa fa-caret-down"
+                                                            @click="expandDataTaskRunInfo(index,$event)"><i class="fa fa-caret-down"
                                                                                                     style="font-size: 27px"></i></a></span>
                                                 </div>
-                                                <div id="" class="panel-body modelRunInfo collapse" style="padding-top: 0">
+                                                <div id="" class="panel-body dataModelRunInfo collapse" style="padding-top: 0">
                                                     <h5 v-if="task.status==0||task.status==1">
                                                         Calculating
                                                     </h5>
                                                     <ul>
                                                         <h5 style="font-family: aktiv-grotesk; font-style: italic">Intput:</h5>
-                                                        <li class="flagcontent flexRowSpaceBetween" v-for="(input,key) in task.input">
+                                                        <li class="flagcontent flexRowSpaceBetween" v-for="(input,key) in task.input.input">
                                                 <span style="margin-top: 5px; display: inline-block;">
                                                     {{input.event}}
                                                 </span>
@@ -406,7 +406,7 @@
                                                     </h5>
                                                     <ul v-if="task.status==2">
                                                         <h5 style="font-family: aktiv-grotesk; font-style: italic">Output:</h5>
-                                                        <li class="flagcontent flexRowSpaceBetween" v-for="(output,key) in task.output">
+                                                        <li class="flagcontent flexRowSpaceBetween" v-for="(output,key) in task.output.output">
                                                             <span style="margin-top: 5px; displaay: inline-block;">{{output.event}}</span>
                                                             <div class="flex">
                                                                 <button v-if="!output.multiple" class="pull-right clearfix btn btn-primary btn-round downloadAFile"
@@ -429,7 +429,7 @@
 
 
 
-                                                <div class="pull-right" :attr.uid="task.msr_id"
+                                                <div class="pull-right"
                                                      style="margin-top: -3px;padding: 5px;background-color: #ebf2e6">
                                             <span style="margin-right:20px">
                                                 <b>Create Time:</b>{{formatDate(task.runTime)}}

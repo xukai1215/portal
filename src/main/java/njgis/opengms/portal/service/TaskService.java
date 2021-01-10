@@ -1778,13 +1778,13 @@ public class TaskService {
             if(dataTasksFindDTO.getStatus() == 0){
                 dataServerTaskPage = dataServerTaskDao.findAllByUserIdLike(userId, pageable);
             } else {
-                dataServerTaskPage = dataServerTaskDao.findAllByUserIdLikeAndStatusLike(userId, dataTasksFindDTO.getStatus(), pageable);
+                dataServerTaskPage = dataServerTaskDao.findAllByUserIdLikeAndStatus(userId, dataTasksFindDTO.getStatus(), pageable);
             }
         }else {
             if(dataTasksFindDTO.getStatus() == 0){
                 dataServerTaskPage = dataServerTaskDao.findAllByUserIdLikeAndServiceNameLike(userId, dataTasksFindDTO.getSearchText(), pageable);
             } else {
-                dataServerTaskPage = dataServerTaskDao.findAllByUserIdLikeAndStatusLikeAndServiceNameLike(userId, dataTasksFindDTO.getStatus(),dataTasksFindDTO.getSearchText(),pageable);
+                dataServerTaskPage = dataServerTaskDao.findAllByUserIdLikeAndStatusAndServiceNameLike(userId, dataTasksFindDTO.getStatus(),dataTasksFindDTO.getSearchText(),pageable);
             }
         }
 
@@ -2036,6 +2036,20 @@ public class TaskService {
         return result;
     }
 
+    public String setDataTaskPublic(String oid) {
+        DataServerTask task = dataServerTaskDao.findFirstByOid(oid);
+        String result = new String();
+        if (task == null) {
+            result = "0";
+            return result;
+        }
+
+        task.setPermission("public");
+        dataServerTaskDao.save(task);
+        result = task.getPermission();
+        return result;
+    }
+
     public String setPrivate(String taskId) {
         Task task = taskDao.findFirstByTaskId(taskId);
         String result = new String();
@@ -2046,6 +2060,20 @@ public class TaskService {
 
         task.setPermission("private");
         taskDao.save(task);
+        result = task.getPermission();
+        return result;
+    }
+
+    public String setDataTaskPrivate(String oid) {
+        DataServerTask task = dataServerTaskDao.findFirstByOid(oid);
+        String result = new String();
+        if (task == null) {
+            result = "0";
+            return result;
+        }
+
+        task.setPermission("private");
+        dataServerTaskDao.save(task);
         result = task.getPermission();
         return result;
     }
