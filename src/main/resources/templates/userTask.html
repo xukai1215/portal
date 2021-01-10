@@ -446,7 +446,8 @@
                                         </div>
                                         <div style="margin-top: 50px">
                                             <h4 class="col-sm-12 text-center" v-if="dataResourceLoad"><i class="ms-Icon ms-Icon--ProgressRingDots rotate_cw_1" style="margin-right: 10px"></i>Loading ...</h4>
-                                            <h4 class="col-sm-12 text-center" v-if="dataSearchResult.length==0&&dataResourceLoad==false">No calculation tasks</h4>
+                                            <h4 class="col-sm-12 text-center" v-if="dataSearchResult.length==0&&dataResourceLoad==false&&!dataTaskIsWrong">No calculation tasks</h4>
+                                            <h4 class="col-sm-12 text-center" v-if="dataSearchResult.length==0&&dataResourceLoad==false&&dataTaskIsWrong">data tasks is wrong</h4>
                                         </div>
                                     </div>
                                     <div class="flexRowCenter">

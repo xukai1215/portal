@@ -162,7 +162,8 @@ var userTask = Vue.extend(
 
                     status:0,
                     dataSearchText:'',
-                }
+                },
+                dataTaskIsWrong:false,
             }
         },
 
@@ -1578,7 +1579,7 @@ var userTask = Vue.extend(
                 this.dataTaskFindDto.sortField = this.dataSortType
             },
 
-            getDataTasks(){
+            getDataTasks(){     // 一些数据有问题，现在还没有解决
                 this.initDataTaskFindDto()
                 let that = this
                 console.log(this.dataTaskFindDto)
@@ -1586,19 +1587,24 @@ var userTask = Vue.extend(
                     .then(res=>{
                         setTimeout(()=>{
                             that.dataSearchResult = res.data.data.list
-                            for(let i=0;i<that.dataSearchResult.length;++i){
-                                console.log(that.dataSearchResult[i].input.input instanceof Array)
-                                if(!(that.dataSearchResult[i].input.input instanceof Array)){
-                                    that.dataSearchResult[i].input.input = JSON.parse(that.dataSearchResult[i].input.input)
+                            that.dataTotalNum = res.data.data.totalNum
+                            that.dataTaskIsWrong = false
+                            try {
+                                for(let i=0;i<that.dataSearchResult.length;++i){
+                                    console.log(that.dataSearchResult[i].input.input instanceof Array)
+                                    if(!(that.dataSearchResult[i].input.input instanceof Array)){
+                                        that.dataSearchResult[i].input.input = JSON.parse(that.dataSearchResult[i].input.input)
+                                    }
+                                    if(!(that.dataSearchResult[i].output.output instanceof Array)) {
+                                        let temp = that.dataSearchResult[i].output.output
+                                        that.dataSearchResult[i].output.output = []
+                                        that.dataSearchResult[i].output.output.push({'url': temp})
+                                    }
                                 }
-                                if(!(that.dataSearchResult[i].output.output instanceof Array)) {
-                                    let temp = that.dataSearchResult[i].output.output
-                                    that.dataSearchResult[i].output.output = []
-                                    that.dataSearchResult[i].output.output.push({'url': temp})
-                                }
+                            } catch (err){
+                                console.log(err)
                             }
                             that.dataResourceLoad = false
-                            that.dataTotalNum = res.data.data.totalNum
                             that.dataPageInit()
                         })
                     })
