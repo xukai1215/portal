@@ -432,6 +432,32 @@
     }
   }
 
+  function setModelView(modelActions,edges){
+    for(let modelAction of modelActions){
+      ui.sidebar.addModelToGraph(modelAction)
+    }
+
+    let cells = graph.getModel().cells;
+    for(let edge of edges){
+      let target = getCells(edge.target,'frontId')
+      let source = getCells(edge.source,'frontId')
+      let parent = graph.getDefaultParent();
+      try{
+        graph.insertEdge(parent, null, '', source, target,  "edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=2;strokeColor=#000066;");
+      }catch (e) {
+
+      }
+    }
+  }
+
+  function getCells(id,text){
+    let cells = graph.getModel().cells;
+    for(let i in cells){
+      if(cells[i][text]===id){
+        return cells[i]
+      }
+    }
+  }
 
   //获得模型
   function getModelListByPage(num) {
