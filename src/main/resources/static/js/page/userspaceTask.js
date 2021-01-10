@@ -11,12 +11,14 @@ var userTask = Vue.extend(
 
                 //显示控制
                 curIndex: 5,
+                dataCurIndex:5,
 
                 itemIndex: 1,
                 //
                 userInfo: {},
 
                 resourceLoad: false,
+                dataResourceLoad: true,
 
                 //分页控制
                 page: 1,
@@ -28,6 +30,15 @@ var userTask = Vue.extend(
                 pageList: [],
                 totalNum: 0,
 
+                //dataTask分页控制
+                dataSortAsc: 1,//1 -1
+                dataSortType: "default",
+                dataPageSize: 10,// 每页数据条数
+                dataTotalPage: 0,// 总页数
+                dataCurPage: 1,// 当前页码
+                dataPageList: [],
+                dataTotalNum: 0,
+
                 //用户
                 userId: -1,
 
@@ -35,16 +46,21 @@ var userTask = Vue.extend(
                 itemTitle: 'Model Item',
 
                 searchResult: [],
+                dataSearchResult:[],
+
                 modelItemResult: [],
 
                 searchCount: 0,
                 ScreenMaxHeight: "0px",
                 searchText: "",
+                dataSearchText:"",
 
                 isInSearch: 0,
 
                 //task相关
                 taskStatus: 'all',
+                dataTaskStatus:'all',
+
                 options: [
                     {
                         value: 'all',
@@ -137,6 +153,16 @@ var userTask = Vue.extend(
                 outputMultiFile : [],
                 downloadUrl:'',
                 clipBoard:'',
+
+                dataTaskFindDto:{
+                    page:1,
+                    asc:1,
+                    sort: "default",
+                    pageSize: 10,
+
+                    status:0,
+                    dataSearchText:'',
+                }
             }
         },
 
@@ -191,6 +217,15 @@ var userTask = Vue.extend(
                 this.changePage(1);
             },
 
+            dataPageInit() {
+                this.dataTotalPage = Math.floor((this.dataTotalNum + this.dataPageSize - 1) / this.dataPageSize);
+                if (this.dataTotalPage < 1) {
+                    this.dataTotalPage = 1;
+                }
+                this.getDataPageList();
+                this.changeDataPage(this.dataCurPage);
+            },
+
             getPageList() {
                 this.pageList = [];
 
@@ -214,6 +249,37 @@ var userTask = Vue.extend(
 
                     }
                     this.pageList = [
+                        cur,
+                        cur + 1,
+                        cur + 2,
+                        cur + 3,
+                        cur + 4,
+                    ]
+                }
+            },
+            getDataPageList() {
+                this.dataPageList = [];
+
+                if (this.dataTotalPage < 5) {
+                    for (let i = 0; i < this.dataTotalPage; i++) {
+                        this.dataPageList.push(i + 1);
+                    }
+                } else if (this.dataTotalPage - this.dataCurPage < 5) {//如果总的页码数减去当前页码数小于5（到达最后5页），那么直接计算出来显示
+
+                    this.dataPageList = [
+                        this.dataTotalPage - 4,
+                        this.dataTotalPage - 3,
+                        this.dataTotalPage - 2,
+                        this.dataTotalPage - 1,
+                        this.dataTotalPage,
+                    ];
+                } else {
+                    let cur = Math.floor((this.curPage - 1) / 5) * 5 + 1;
+                    if (this.curPage % 5 === 0) {
+                        cur = cur + 1;
+
+                    }
+                    this.dataPageList = [
                         cur,
                         cur + 1,
                         cur + 2,
@@ -248,6 +314,12 @@ var userTask = Vue.extend(
                         this.showTasksByStatus(this.taskStatus);
                     else this.searchTasks()
                 }
+            },
+
+            changeDataPage(pageNo) {
+                if(this.dataCurPage === pageNo) return
+                this.dataCurPage = pageNo
+                this.getDataTasks()
             },
 
             // creatItem(index){
@@ -1348,16 +1420,52 @@ var userTask = Vue.extend(
                 this.$emit('com-senduserinfo',userId)
             },
 
+            initDataTaskFindDto(){
+                this.dataResourceLoad = true
+                this.dataSearchResult = []
+
+                this.dataTaskFindDto.page = this.dataCurPage
+                this.dataTaskFindDto.asc = this.dataSortAsc === 1? true: false
+                this.dataTaskFindDto.sort = this.dataSortType
+                this.dataTaskFindDto.pageSize = this.dataPageSize
+
+                if(this.dataTaskStatus === 'all'){      // status字段： started: 1,  finished: 2,  inited: 0,   error: -1, 目前只用到了2 和 -1
+                    this.dataTaskFindDto.status = 0
+                } else if (this.dataTaskStatus === 'successful'){
+                    this.dataTaskFindDto.status = 2
+                } else if(this.dataTaskStatus === 'calculating'){
+                    this.dataTaskFindDto.status = -1
+                }
+                this.dataTaskFindDto.searchText = this.dataSearchText
+                this.dataTaskFindDto.sortField = this.dataSortType
+            },
+
+            getDataTasks(){
+                this.initDataTaskFindDto()
+                let that = this
+                console.log(this.dataTaskFindDto)
+                axios.post('/task/getDataTasks', that.dataTaskFindDto)
+                    .then(res=>{
+                        setTimeout(()=>{
+                            console.log(res.data.data)
+                            that.dataSearchResult = res.data.data.list
+                            that.dataResourceLoad = false
+                            that.dataTotalNum = res.data.data.totalNum
+                            that.dataPageInit()
+                        })
+                    })
+            }
 
         },
 
 
-        created() {
-
-
-        },
+        // created() {
+        //
+        //
+        // },
 
         mounted() {
+            this.getDataTasks()
             this.clipBoard = new ClipboardJS(".copyLinkBtn");
             $(() => {
 

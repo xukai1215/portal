@@ -71,13 +71,13 @@
             <div class="el-col el-col-6 minScreen_maxWidth" style="margin-top:29px;">
                 <el-card class="box-card categoryList">
                     <div slot="header" class="clearfix text-center">
-                        <span style="font-size: large;">Data Categories</span>
+                        <span style="font-size: 20px;color:#444">Data Categories</span>
                     </div>
-                    <div id="classification" class="el-card__header;" style="padding-top: 0px">
-                        <div role="button"  tabindex="0" class="el-collapse-item__header" @click="chooseCate('Conversion',$event)">Conversion</div>
-                        <div role="button"  tabindex="0" class="el-collapse-item__header" @click="chooseCate('Processing',$event)">Processing</div>
-                        <div role="button"  tabindex="0" class="el-collapse-item__header" @click="chooseCate('Visualization',$event)">Visualization</div>
-                        <div role="button"  tabindex="0" class="el-collapse-item__header" @click="chooseCate('all',$event)">All</div>
+                    <div id="classification" style="padding-top: 0px">
+                        <div id="conversion" style="height: 27px;margin-right: 12px" role="button"  tabindex="0" class="el-collapse-item__header" @click="chooseCate('Conversion',$event)">Conversion</div>
+                        <div style="height: 27px;margin-right: 12px" role="button"  tabindex="0" class="el-collapse-item__header" @click="chooseCate('Processing',$event)">Processing</div>
+                        <div style="height: 27px;margin-right: 12px" role="button"  tabindex="0" class="el-collapse-item__header" @click="chooseCate('Visualization',$event)">Visualization</div>
+<!--                        <div style="height: 27px;margin-right: 10px" role="button"  tabindex="0" class="el-collapse-item__header" @click="chooseCate('all',$event)">All</div>-->
                     </div>
                 </el-card>
             </div>
