@@ -25,11 +25,23 @@
         <div class="clearfix" style="height: 100%;">
             <div class="clearfix titleImg_small fontWhite" style="background-image: url('/static/img/bled_clip.jpg');background-position-y: 600px;">
                 <h3 style="text-align: center;margin-top: 45px">Model Resource<span class="h_lite"> Learn And Support</span></h3>
-                <h5 style="text-align: center;margin-top: 20px">Let't learn what is provided about Model Resource!</h5>
+                <h5 style="text-align: center;margin-top: 20px">Let' learn what is provided about Model Resource!</h5>
             </div>
-            <div class="col-lg-10 col-lg-offset-1 col-md-12 clearfix" style="padding: 25px 0">
-                <el-row :gutter="20">
-                    <el-col :span="sectionTitleSpan">
+            <div class="col-lg-10 col-lg-offset-1 col-md-12 clearfix" style="padding: 0px 0">
+                <el-row :gutter="40">
+                    <el-col :span="7">
+                        <el-button  type="info" plain style="margin-top: 15px"  @click="backClick">&larr;&nbsp;back</el-button>
+                    </el-col>
+                    <el-col :span="17" >
+                        <h3 style="padding: 0 20px 0 20px; color: #0a6999" >Introduction to OpenGMS</h3>
+                        <hr>
+                    </el-col>
+
+                </el-row>
+            </div>
+            <div class="col-lg-10 col-lg-offset-1 col-md-12 clearfix" style="padding: 5px 0">
+                <el-row :gutter="40" >
+                    <el-col :span="sectionTitleSpan" style="margin-top: -20px">
                         <div class="treeContainer">
                             <el-tree
                                     :data="sectionData"
@@ -38,10 +50,10 @@
                             </el-tree>
                         </div>
                     </el-col>
-                    <el-col :span="sectionSpan" style="margin-bottom: 30px">
-                        <div class="clearfix docSection " style="background-color: white;padding: 0 20px 20px" >
-                            <section class="wordSpace" v-for="section in supportDoc" :id="section.title">
-                                <h3 class="h_lite">{{section.title}}</h3>
+                    <el-col :span="sectionSpan" style="margin-bottom: 30px;margin-top: -25px">
+                        <div class="clearfix docSection " style="background-color: white;padding: 0 20px 0px" >
+                            <section class="wordSpace" v-for="section in supportDoc" :id="section.title" >
+                                <h3 class="h_lite" >{{section.title}}</h3>
                                 <p>{{section.content}}</p>
                             </section>
                         </div>
