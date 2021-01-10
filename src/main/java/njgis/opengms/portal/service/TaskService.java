@@ -3,9 +3,11 @@ package njgis.opengms.portal.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.gson.JsonObject;
 import njgis.opengms.portal.AbstractTask.AsyncTask;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dao.*;
+import njgis.opengms.portal.dto.task.DataTasksFindDTO;
 import njgis.opengms.portal.dto.task.ResultDataDTO;
 import njgis.opengms.portal.dto.task.TestDataUploadDTO;
 import njgis.opengms.portal.dto.task.UploadDataDTO;
@@ -79,6 +81,9 @@ public class TaskService {
 
     @Autowired
     IntegratedTaskDao integratedTaskDao;
+
+    @Autowired
+    DataServerTaskDao dataServerTaskDao;
 
     @Value("${managerServerIpAndPort}")
     private String managerServer;
@@ -1766,6 +1771,35 @@ public class TaskService {
         return taskObject;
     }
 
+    public JSONObject getDataTasks(String userId, DataTasksFindDTO dataTasksFindDTO) {
+        Pageable pageable = PageRequest.of(dataTasksFindDTO.getPage()-1, dataTasksFindDTO.getPageSize(), new Sort(dataTasksFindDTO.getAsc()? Sort.Direction.ASC: Sort.Direction.DESC,dataTasksFindDTO.getSortField()));
+        Page<DataServerTask> dataServerTaskPage;
+        if(dataTasksFindDTO.getSearchText().equals("")){
+            if(dataTasksFindDTO.getStatus() == 0){
+                dataServerTaskPage = dataServerTaskDao.findAllByUserIdLike(userId, pageable);
+            } else {
+                dataServerTaskPage = dataServerTaskDao.findAllByUserIdLikeAndStatus(userId, dataTasksFindDTO.getStatus(), pageable);
+            }
+        }else {
+            if(dataTasksFindDTO.getStatus() == 0){
+                dataServerTaskPage = dataServerTaskDao.findAllByUserIdLikeAndServiceNameLike(userId, dataTasksFindDTO.getSearchText(), pageable);
+            } else {
+                dataServerTaskPage = dataServerTaskDao.findAllByUserIdLikeAndStatusAndServiceNameLike(userId, dataTasksFindDTO.getStatus(),dataTasksFindDTO.getSearchText(),pageable);
+            }
+        }
+
+        List<DataServerTask> dataServerTasks = dataServerTaskPage.getContent();
+
+        JSONArray jsonArray = new JSONArray();
+        for(int i=0;i<dataServerTasks.size();++i){
+            jsonArray.add((JSONObject)JSONObject.toJSON(dataServerTasks.get(i)));
+        }
+
+        JSONObject res = new JSONObject();
+        res.put("list", jsonArray);
+        res.put("totalNum", dataServerTaskPage.getTotalElements());
+        return res;
+    }
     public JSONObject getTasksByModelByUser(String modelId, int page, String userName) {
         Sort sort = new Sort(Sort.Direction.DESC, "runTime");
         Pageable pageable = PageRequest.of(page, 4, sort);
@@ -2002,6 +2036,20 @@ public class TaskService {
         return result;
     }
 
+    public String setDataTaskPublic(String oid) {
+        DataServerTask task = dataServerTaskDao.findFirstByOid(oid);
+        String result = new String();
+        if (task == null) {
+            result = "0";
+            return result;
+        }
+
+        task.setPermission("public");
+        dataServerTaskDao.save(task);
+        result = task.getPermission();
+        return result;
+    }
+
     public String setPrivate(String taskId) {
         Task task = taskDao.findFirstByTaskId(taskId);
         String result = new String();
@@ -2012,6 +2060,20 @@ public class TaskService {
 
         task.setPermission("private");
         taskDao.save(task);
+        result = task.getPermission();
+        return result;
+    }
+
+    public String setDataTaskPrivate(String oid) {
+        DataServerTask task = dataServerTaskDao.findFirstByOid(oid);
+        String result = new String();
+        if (task == null) {
+            result = "0";
+            return result;
+        }
+
+        task.setPermission("private");
+        dataServerTaskDao.save(task);
         result = task.getPermission();
         return result;
     }

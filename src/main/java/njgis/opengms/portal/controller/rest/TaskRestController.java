@@ -6,10 +6,7 @@ import io.swagger.annotations.ApiOperation;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.bean.LoginRequired;
 import njgis.opengms.portal.dao.ComputableModelDao;
-import njgis.opengms.portal.dto.task.IntegratedTaskAddDto;
-import njgis.opengms.portal.dto.task.ResultDataDTO;
-import njgis.opengms.portal.dto.task.TestDataUploadDTO;
-import njgis.opengms.portal.dto.task.UploadDataDTO;
+import njgis.opengms.portal.dto.task.*;
 import njgis.opengms.portal.entity.ComputableModel;
 import njgis.opengms.portal.entity.intergrate.DataProcessing;
 import njgis.opengms.portal.entity.intergrate.ModelAction;
@@ -235,6 +232,17 @@ public class TaskRestController {
             return ResultUtils.success(taskService.getTasksByUserIdByStatus(username,status,page,sortType,sortAsc));
         }
 
+    }
+    @RequestMapping(value = "/getDataTasks", method = RequestMethod.POST)
+    JsonResult getDataTasks(@RequestBody DataTasksFindDTO dataTasksFindDTO, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        String userId = session.getAttribute("uid").toString();
+        if (userId == null){
+            return ResultUtils.error(-1, "no login");
+        }else{
+            String username = session.getAttribute("uid").toString();
+            return ResultUtils.success(taskService.getDataTasks(userId, dataTasksFindDTO));
+        }
     }
 
     /**
@@ -790,6 +798,19 @@ public class TaskRestController {
         }
 
     }
+    @RequestMapping(value = "/setDataTaskPublic",method = RequestMethod.POST)
+    public JsonResult setDataTaskPublic(@RequestParam String oid,HttpServletRequest httpServletRequest)
+    {
+        HttpSession session=httpServletRequest.getSession();
+        if(session.getAttribute("uid")==null) {
+            return ResultUtils.error(-1, "no login");
+        }
+        else {
+            String username = session.getAttribute("uid").toString();
+            return ResultUtils.success(taskService.setDataTaskPublic(oid));
+        }
+
+    }
 
     @RequestMapping(value = "/setPrivate",method = RequestMethod.POST)
     public JsonResult setPrivate(@RequestParam String taskId,HttpServletRequest httpServletRequest)
@@ -801,6 +822,19 @@ public class TaskRestController {
         else {
             String username = session.getAttribute("uid").toString();
             return ResultUtils.success(taskService.setPrivate(taskId));
+        }
+
+    }
+    @RequestMapping(value = "/setDataTaskPrivate",method = RequestMethod.POST)
+    public JsonResult setDataTaskPrivate(@RequestParam String oid,HttpServletRequest httpServletRequest)
+    {
+        HttpSession session=httpServletRequest.getSession();
+        if(session.getAttribute("uid")==null) {
+            return ResultUtils.error(-1, "no login");
+        }
+        else {
+            String username = session.getAttribute("uid").toString();
+            return ResultUtils.success(taskService.setDataTaskPrivate(oid));
         }
 
     }

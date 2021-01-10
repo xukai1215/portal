@@ -72,38 +72,42 @@
                         <section role="description" class="flexCol flexCenter contentSection">
                             <h3>Task</h3>
                             <h5 style="text-align: center">All of the tasks you have runned will be shown here, you can check the status of them</h5>
-
                         </section>
-                        <div class="page-content-wrap container-fluid" style="margin-top:10px">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="panel panel-default">
-                                        <div class="panel-body" style="height: 61px;">
-                                            <div class="form-horizontal">
-                                                <div class="form-group flexRowContainer flexJustAround  flexColCenter">
-                                                    <div class="col-md-3 flexRowContainer flexColCenter wzhSelectContainer" style="">
-                                                        Task status:
-                                                        <el-select v-model="taskStatus" placeholder="task status" size="mini" @change="changeTaskStatus" >
-                                                            <el-option
-                                                                    v-for="item in options"
-                                                                    :key="item.value"
-                                                                    :label="item.label"
-                                                                    :value="item.value">
-                                                                <!--                                        v-if="isSelect(item.value)">-->
-                                                            </el-option>
-                                                        </el-select>
-                                                    </div>
-                                                    <div class="col-md-8">
-                                                        <div class="input-group" @keydown.enter="searchTasks(1)">
-                                                            <input type="text" class="form-control" name="searchText"
-                                                                   placeholder="please enter name" v-model="searchText" style="margin-top: 3px">
-                                                            <div class="input-group-btn common-searchButton">
-                                                                <button class="btn btn-primary" @click="searchTasks(1)">Search
-                                                                </button>
+                        <el-tabs type="border-card">
+                            <el-tab-pane>
+                                <span slot="label">Normal Task</span>
+                                <div class="page-content-wrap container-fluid" style="margin-top:10px">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="panel panel-default">
+                                                <div class="panel-body" style="height: 61px;">
+                                                    <div class="form-horizontal">
+                                                        <div class="form-group flexRowContainer flexJustAround  flexColCenter">
+                                                            <div class="col-md-3 flexRowContainer flexColCenter wzhSelectContainer" style="">
+                                                                Task status:
+                                                                <el-select v-model="taskStatus" placeholder="task status" size="mini" @change="changeTaskStatus" >
+                                                                    <el-option
+                                                                            v-for="item in options"
+                                                                            :key="item.value"
+                                                                            :label="item.label"
+                                                                            :value="item.value">
+                                                                        <!--                                        v-if="isSelect(item.value)">-->
+                                                                    </el-option>
+                                                                </el-select>
                                                             </div>
-                                                            <div class="input-group-btn mini-searchButton">
-                                                                <button class="btn btn-primary" @click="searchTasks(1)"><i class="fa fa-search"></i>
-                                                                </button>
+                                                            <div class="col-md-8">
+                                                                <div class="input-group" @keydown.enter="searchTasks(1)">
+                                                                    <input type="text" class="form-control" name="searchText"
+                                                                           placeholder="please enter name" v-model="searchText" style="margin-top: 3px">
+                                                                    <div class="input-group-btn common-searchButton">
+                                                                        <button class="btn btn-primary" @click="searchTasks(1)">Search
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="input-group-btn mini-searchButton">
+                                                                        <button class="btn btn-primary" @click="searchTasks(1)"><i class="fa fa-search"></i>
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -111,174 +115,383 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-12" v-for="(task,index) in searchResult">
-                                    <div class="panel"
-                                         :class="task.status==2?'panel-success':task.status==-1?'panel-danger':'panel-info'">
-                                        <div class="panel-heading flexRowSpaceBetween">
-                                            <a class="panel-title" :href="'/task/'+task.computableId" target="_blank"
-                                               style="font-weight: bold">
-                                                {{task.computableName}}
-                                                <el-tag v-if="task.integrate" style="margin-left:10px">Integrated Model</el-tag>
-                                            </a>
+                                    <div class="row">
+                                        <div class="col-sm-12" v-for="(task,index) in searchResult">
+                                            <div class="panel"
+                                                 :class="task.status==2?'panel-success':task.status==-1?'panel-danger':'panel-info'">
+                                                <div class="panel-heading flexRowSpaceBetween">
+                                                    <a class="panel-title" :href="'/task/'+task.computableId" target="_blank"
+                                                       style="font-weight: bold">
+                                                        {{task.computableName}}
+                                                        <el-tag v-if="task.integrate" style="margin-left:10px">Integrated Model</el-tag>
+                                                    </a>
 
-                                            <div class="" style="display: flex;align-items: center;">
-                                                <el-button v-if="task.status==2&&!task.integrate" type="warning"
-                                                           size="mini"
-                                                           @click="publishTask(task)">
+                                                    <div class="" style="display: flex;align-items: center;">
+                                                        <el-button v-if="task.status==2&&!task.integrate" type="warning"
+                                                                   size="mini"
+                                                                   @click="publishTask(task)">
                                                     <span v-if="task.permission=='public'">
                                                         <span><i class="fa fa-unlock"></i></span>
                                                         Public</span>
-                                                    <span v-else><span style="margin-right: 2px"><i
-                                                            class="fa fa-lock wzhI"></i></span>Private</span>
-                                                </el-button>
-                                                <el-button v-if="task.status==2&&!task.integrate"
-                                                        @click="sharingTaskData(task)" plain size="mini"
-                                                        style="margin: 0 5px;"><i
-                                                        class="fa fa-share-square-o" aria-hidden="true"></i>Share as
-                                                    Data Item
-                                                </el-button>
-                                                <el-button type="primary" size="mini"
-                                                           style="float: right;margin-right: 3px;background-color: rgb(0,200,255);border:0"
-                                                           @click="checkOutput(task.computableId,task.taskId,task.integrate)">
-                                                    Check Task Info
-                                                </el-button>
-                                            </div>
+                                                            <span v-else><span style="margin-right: 2px"><i
+                                                                    class="fa fa-lock wzhI"></i></span>Private</span>
+                                                        </el-button>
+                                                        <el-button v-if="task.status==2&&!task.integrate"
+                                                                   @click="sharingTaskData(task)" plain size="mini"
+                                                                   style="margin: 0 5px;"><i
+                                                                class="fa fa-share-square-o" aria-hidden="true"></i>Share as
+                                                            Data Item
+                                                        </el-button>
+                                                        <el-button type="primary" size="mini"
+                                                                   style="float: right;margin-right: 3px;background-color: rgb(0,200,255);border:0"
+                                                                   @click="checkOutput(task.computableId,task.taskId,task.integrate)">
+                                                            Check Task Info
+                                                        </el-button>
+                                                    </div>
 
 
-                                        </div>
-                                        <div class="runStatus" style="margin-top: 80px;margin-left: 10px">
-                                            <h4 v-if="task.status==2"
-                                                style="font-style: italic; font-weight: 600;font-family: sans-serif; ; color: rgb(153, 153, 153); margin-left: 10px;cursor: pointer"
-                                                @click="expandRunInfo(index,$event)">
-                                                <span style="color: rgb(103,194,58)">Successful</span> caculation !</h4>
-                                            <h4 v-if="task.status==-1"
-                                                style="font-style: italic; font-weight: 600;font-family: sans-serif; ; color: rgb(153, 153, 153); margin-left: 10px;cursor: pointer"
-                                                @click="expandRunInfo(index,$event)">
-                                                Something <span style="color: rgb(224,101,80)"
-                                                                @click="expandRunInfo(index,$event)">wrong</span> with it !</h4>
-                                            <h4 v-if="task.status==0||task.status==1"
-                                                style="font-style: italic; font-weight: 600;font-family: sans-serif; ; color: rgb(153, 153, 153); margin-left: 10px;cursor: pointer"
-                                                @click="expandRunInfo(index,$event)">
-                                                <span style="color: rgb(64,158,255)">Calculating</span>!</h4>
-                                            <span role="button" tabindex="0" class="ab"
-                                                  style="float: right;margin-top: -33px;margin-right: 70px;cursor: pointer"><a
-                                                    data-toggle="collapse" class="" aria-expanded="true"
-                                                    @click="expandRunInfo(index,$event)"><i class="fa fa-caret-down"
-                                                                                            style="font-size: 27px"></i></a></span>
-                                        </div>
-                                        <div id="" class="panel-body modelRunInfo collapse" style="padding-top: 0">
-                                            <h5 v-if="task.status==0||task.status==1">
-                                                Calculating
-                                            </h5>
-                                            <ul>
-                                                <h5 style="font-family: aktiv-grotesk; font-style: italic">Intput:</h5>
-                                                <li class="flagcontent flexRowSpaceBetween" v-for="(input,key) in task.inputs">
+                                                </div>
+                                                <div class="runStatus" style="margin-top: 80px;margin-left: 10px">
+                                                    <h4 v-if="task.status==2"
+                                                        style="font-style: italic; font-weight: 600;font-family: sans-serif; ; color: rgb(153, 153, 153); margin-left: 10px;cursor: pointer"
+                                                        @click="expandRunInfo(index,$event)">
+                                                        <span style="color: rgb(103,194,58)">Successful</span> caculation !</h4>
+                                                    <h4 v-if="task.status==-1"
+                                                        style="font-style: italic; font-weight: 600;font-family: sans-serif; ; color: rgb(153, 153, 153); margin-left: 10px;cursor: pointer"
+                                                        @click="expandRunInfo(index,$event)">
+                                                        Something <span style="color: rgb(224,101,80)"
+                                                                        @click="expandRunInfo(index,$event)">wrong</span> with it !</h4>
+                                                    <h4 v-if="task.status==0||task.status==1"
+                                                        style="font-style: italic; font-weight: 600;font-family: sans-serif; ; color: rgb(153, 153, 153); margin-left: 10px;cursor: pointer"
+                                                        @click="expandRunInfo(index,$event)">
+                                                        <span style="color: rgb(64,158,255)">Calculating</span>!</h4>
+                                                    <span role="button" tabindex="0" class="ab"
+                                                          style="float: right;margin-top: -33px;margin-right: 70px;cursor: pointer"><a
+                                                            data-toggle="collapse" class="" aria-expanded="true"
+                                                            @click="expandRunInfo(index,$event)"><i class="fa fa-caret-down"
+                                                                                                    style="font-size: 27px"></i></a></span>
+                                                </div>
+                                                <div class="panel-body modelRunInfo collapse" style="padding-top: 0">
+                                                    <h5 v-if="task.status==0||task.status==1">
+                                                        Calculating
+                                                    </h5>
+                                                    <ul>
+                                                        <h5 style="font-family: aktiv-grotesk; font-style: italic">Intput:</h5>
+                                                        <li class="flagcontent flexRowSpaceBetween" v-for="(input,key) in task.inputs">
                                                 <span style="margin-top: 5px; display: inline-block;">
                                                     {{input.event}}
                                                 </span>
-                                                    <div class="flex">
-                                                        <button class="pull-right clearfix btn btn-primary btn-round downloadAFile"
-                                                                style="background-color: #43aaff;border-color: #43aaff;margin:0 5px"
-                                                                @click="downloadSingle(input.url)">Download File
-                                                        </button>
-                                                        <button class="pull-right clearfix btn btn-info btn-round downloadAFile"
-                                                                style="background-color: #71c76f;border-color: #71c76f;margin:0 5px"
-                                                                @click="addOutputToMyData(input,index)">Add to My Data
-                                                        </button>
-                                                    </div>
-                                                </li>
-                                            </ul>
+                                                            <div class="flex">
+                                                                <button class="pull-right clearfix btn btn-primary btn-round downloadAFile"
+                                                                        style="background-color: #43aaff;border-color: #43aaff;margin:0 5px"
+                                                                        @click="downloadSingle(input.url)">Download File
+                                                                </button>
+                                                                <button class="pull-right clearfix btn btn-info btn-round downloadAFile"
+                                                                        style="background-color: #71c76f;border-color: #71c76f;margin:0 5px"
+                                                                        @click="addOutputToMyData(input,index)">Add to My Data
+                                                                </button>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
 
-                                            <h5 v-if="task.status==-1">
-                                                Calculation Failure
-                                            </h5>
-                                            <ul v-if="task.status==2">
-                                                <h5 style="font-family: aktiv-grotesk; font-style: italic">Output:</h5>
-                                                <li class="flagcontent flexRowSpaceBetween" v-for="(output,key) in task.outputs">
-                                                    <span style="margin-top: 5px; displaay: inline-block;">{{output.event}}</span>
-                                                    <div class="flex">
-                                                        <button v-if="!output.multiple" class="pull-right clearfix btn btn-primary btn-round downloadAFile"
-                                                                style="background-color: #43aaff;border-color: #43aaff;margin:0 5px"
-                                                                @click="downloadSingle(output.url)">Download File
-                                                        </button>
-                                                        <button v-if="!output.multiple" class="pull-right clearfix btn btn-info btn-round downloadAFile"
-                                                                style="background-color: #71c76f;border-color: #71c76f;margin:0 5px"
-                                                                @click="addOutputToMyData(output,index)">Add to My Data
-                                                        </button>
-                                                        <button v-if="output.multiple" class="pull-right clearfix btn btn-secondary btn-round downloadAFile"
-                                                                style="background-color: #71c76f;border-color: #71c76f;margin:0 5px"
-                                                                @click="checkMultiContent(output)">Multiple File
-                                                        </button>
-                                                    </div>
+                                                    <h5 v-if="task.status==-1">
+                                                        Calculation Failure
+                                                    </h5>
+                                                    <ul v-if="task.status==2">
+                                                        <h5 style="font-family: aktiv-grotesk; font-style: italic">Output:</h5>
+                                                        <li class="flagcontent flexRowSpaceBetween" v-for="(output,key) in task.outputs">
+                                                            <span style="margin-top: 5px; displaay: inline-block;">{{output.event}}</span>
+                                                            <div class="flex">
+                                                                <button v-if="!output.multiple" class="pull-right clearfix btn btn-primary btn-round downloadAFile"
+                                                                        style="background-color: #43aaff;border-color: #43aaff;margin:0 5px"
+                                                                        @click="downloadSingle(output.url)">Download File
+                                                                </button>
+                                                                <button v-if="!output.multiple" class="pull-right clearfix btn btn-info btn-round downloadAFile"
+                                                                        style="background-color: #71c76f;border-color: #71c76f;margin:0 5px"
+                                                                        @click="addOutputToMyData(output,index)">Add to My Data
+                                                                </button>
+                                                                <button v-if="output.multiple" class="pull-right clearfix btn btn-secondary btn-round downloadAFile"
+                                                                        style="background-color: #71c76f;border-color: #71c76f;margin:0 5px"
+                                                                        @click="checkMultiContent(output)">Multiple File
+                                                                </button>
+                                                            </div>
 
-                                                </li>
-                                            </ul>
-                                        </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
 
 
 
-                                        <div class="pull-right" :attr.uid="task.msr_id"
-                                             style="margin-top: -3px;padding: 5px;background-color: #ebf2e6">
+                                                <div class="pull-right" :attr.uid="task.msr_id"
+                                                     style="margin-top: -3px;padding: 5px;background-color: #ebf2e6">
                                             <span style="margin-right:20px">
                                                 <b>Create Time:</b>{{formatDate(task.runTime)}}
                                             </span>
-                                            <!--<button class="btn btn-primary downloadAll"-->
-                                            <!--@click="downloadAll(task.id,task.name,task.runTime)"-->
-                                            <!--v-if="task.status==2">-->
-                                            <!--Download All Files-->
-                                            <!--</button>-->
-                                            <!--<button class="btn btn-danger delete" click="deleteModel(task.id)">Delete-->
-                                            <!--</button>-->
+                                                    <!--<button class="btn btn-primary downloadAll"-->
+                                                    <!--@click="downloadAll(task.id,task.name,task.runTime)"-->
+                                                    <!--v-if="task.status==2">-->
+                                                    <!--Download All Files-->
+                                                    <!--</button>-->
+                                                    <!--<button class="btn btn-danger delete" click="deleteModel(task.id)">Delete-->
+                                                    <!--</button>-->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="margin-top: 50px">
+                                            <h4 class="col-sm-12 text-center" v-if="resourceLoad"><i class="ms-Icon ms-Icon--ProgressRingDots rotate_cw_1" style="margin-right: 10px"></i>Loading ...</h4>
+                                            <h4 class="col-sm-12 text-center" v-if="searchResult.length==0&&resourceLoad==false">No
+                                                calculation tasks</h4>
                                         </div>
                                     </div>
-                                </div>
-                                <div style="margin-top: 50px">
-                                    <h4 class="col-sm-12 text-center" v-if="resourceLoad"><i class="ms-Icon ms-Icon--ProgressRingDots rotate_cw_1" style="margin-right: 10px"></i>Loading ...</h4>
-                                    <h4 class="col-sm-12 text-center" v-if="searchResult.length==0&&resourceLoad==false">No
-                                        calculation tasks</h4>
-                                </div>
-                            </div>
-                            <div class="flexRowCenter">
-                                <nav v-if="searchResult.length!=0&&resourceLoad==false" class="flexCenter" style="width: 100%;position: relative"  aria-label="Page navigation example">
-                                    <div class="flexCenter totalContainer">
-                                        <p class="noMargin">Total Num: </p>
-                                        <h5 style="margin: 0 0 1px 0">{{totalNum}}</h5>
+                                    <div class="flexRowCenter">
+                                        <nav v-if="searchResult.length!=0&&resourceLoad==false" class="flexCenter" style="width: 100%;position: relative"  aria-label="Page navigation example">
+                                            <div class="flexCenter totalContainer">
+                                                <p class="noMargin">Total Num: </p>
+                                                <h5 style="margin: 0 0 1px 0">{{totalNum}}</h5>
+                                            </div>
+                                            <ul class="pagination pagination-circle pg-blue wzhPageControl flexJustAround">
+                                                <li class="page-item" :class="curPage!=1?'':'disabled'" @click="changePage(1)"><a
+                                                        class="page-link"
+                                                        style="border-radius: 10%;background-color: inherit">First</a></li>
+                                                <li class="page-item " :class="curPage!=1?'':'disabled'"
+                                                    @click="changePage(curPage-1)">
+                                                    <a class="page-link" aria-label="Previous">
+                                                        <span aria-hidden="true" style="font-weight: 700;">&laquo;</span>
+                                                        <span class="sr-only">Previous</span>
+                                                    </a>
+                                                </li>
+                                                <li class="page-item " :class="curPage==page?'active':''" v-for="page in pageList">
+                                                    <a class="page-link btn-round"
+                                                       @click="changePage(page)">{{page}}</a></li>
+                                                <li class="page-item" :class="curPage!=totalPage?'':'disable'"
+                                                    @click="changePage(curPage+1)">
+                                                    <a class="page-link" aria-label="Next">
+                                                        <span aria-hidden="true" style="font-weight: 700;">&raquo;</span>
+                                                        <span class="sr-only">Next</span>
+                                                    </a>
+                                                </li>
+                                                <li class="page-item" :class="curPage!=totalPage?'':'disabled'"
+                                                    @click="changePage(totalPage)">
+                                                    <a class="page-link">Last</a></li>
+
+                                            </ul>
+
+
+                                        </nav>
+
                                     </div>
-                                    <ul class="pagination pagination-circle pg-blue wzhPageControl flexJustAround">
-                                        <li class="page-item" :class="curPage!=1?'':'disabled'" @click="changePage(1)"><a
-                                                class="page-link"
-                                                style="border-radius: 10%;background-color: inherit">First</a></li>
-                                        <li class="page-item " :class="curPage!=1?'':'disabled'"
-                                            @click="changePage(curPage-1)">
-                                            <a class="page-link" aria-label="Previous">
-                                                <span aria-hidden="true" style="font-weight: 700;">&laquo;</span>
-                                                <span class="sr-only">Previous</span>
-                                            </a>
-                                        </li>
-                                        <li class="page-item " :class="curPage==page?'active':''" v-for="page in pageList">
-                                            <a class="page-link btn-round"
-                                               @click="changePage(page)">{{page}}</a></li>
-                                        <li class="page-item" :class="curPage!=totalPage?'':'disable'"
-                                            @click="changePage(curPage+1)">
-                                            <a class="page-link" aria-label="Next">
-                                                <span aria-hidden="true" style="font-weight: 700;">&raquo;</span>
-                                                <span class="sr-only">Next</span>
-                                            </a>
-                                        </li>
-                                        <li class="page-item" :class="curPage!=totalPage?'':'disabled'"
-                                            @click="changePage(totalPage)">
-                                            <a class="page-link">Last</a></li>
+                                </div>
+                            </el-tab-pane>
+                            <el-tab-pane label="Data Task">
+                                <div class="page-content-wrap container-fluid" style="margin-top:10px">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="panel panel-default">
+                                                <div class="panel-body" style="height: 61px;">
+                                                    <div class="form-horizontal">
+                                                        <div class="form-group flexRowContainer flexJustAround  flexColCenter">
+                                                            <div class="col-md-3 flexRowContainer flexColCenter wzhSelectContainer" style="">
+                                                                Task status:
+                                                                <el-select v-model="dataTaskStatus" placeholder="task status" size="mini" @change="changeDataTaskStatus" >
+                                                                    <el-option
+                                                                            v-for="item in options"
+                                                                            :key="item.value"
+                                                                            :label="item.label"
+                                                                            :value="item.value">
+                                                                        <!--                                        v-if="isSelect(item.value)">-->
+                                                                    </el-option>
+                                                                </el-select>
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                <div class="input-group" @keydown.enter="searchDataTasks()">
+                                                                    <input type="text" class="form-control" name="searchText"
+                                                                           placeholder="please enter name" v-model="dataSearchText" style="margin-top: 3px">
+                                                                    <div class="input-group-btn common-searchButton">
+                                                                        <button class="btn btn-primary" @click="searchDataTasks()">Search
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="input-group-btn mini-searchButton">
+                                                                        <button class="btn btn-primary" @click="searchDataTasks()"><i class="fa fa-search"></i>
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12" v-for="(task,index) in dataSearchResult">
+                                            <div class="panel"
+                                                 :class="task.status==2?'panel-success':task.status==-1?'panel-danger':'panel-info'">
+                                                <div class="panel-heading flexRowSpaceBetween">
+                                                    <a class="panel-title" :href="'/task/'+task.id" target="_blank"
+                                                       style="font-weight: bold">
+                                                        {{task.serviceName}}
+                                                        <el-tag v-if="task.integrate" style="margin-left:10px">Integrated Model</el-tag>
+                                                    </a>
 
-                                    </ul>
+                                                    <div class="" style="display: flex;align-items: center;">
+                                                        <el-button v-if="task.status==2&&!task.integrate" type="warning"
+                                                                   size="mini"
+                                                                   @click="publishDataTask(task)">
+                                                    <span v-if="task.permission=='public'">
+                                                        <span><i class="fa fa-unlock"></i></span>
+                                                        Public</span>
+                                                            <span v-else><span style="margin-right: 2px"><i
+                                                                    class="fa fa-lock wzhI"></i></span>Private</span>
+                                                        </el-button>
+                                                        <el-button v-if="task.status==2&&!task.integrate"
+                                                                   @click="sharingTaskData(task)" plain size="mini"
+                                                                   style="margin: 0 5px;"><i
+                                                                class="fa fa-share-square-o" aria-hidden="true"></i>Share as
+                                                            Data Item
+                                                        </el-button>
+                                                        <el-button type="primary" size="mini"
+                                                                   style="float: right;margin-right: 3px;background-color: rgb(0,200,255);border:0"
+                                                                   @click="checkOutput(task.computableId,task.oid,task.integrate)">
+                                                            Check Task Info
+                                                        </el-button>
+                                                    </div>
 
 
-                                </nav>
+                                                </div>
+                                                <div class="runStatus" style="margin-top: 80px;margin-left: 10px">
+                                                    <h4 v-if="task.status==2"
+                                                        style="font-style: italic; font-weight: 600;font-family: sans-serif; ; color: rgb(153, 153, 153); margin-left: 10px;cursor: pointer"
+                                                        @click="expandDataTaskRunInfo(index,$event)">
+                                                        <span style="color: rgb(103,194,58)">Successful</span> caculation !</h4>
+                                                    <h4 v-if="task.status==-1"
+                                                        style="font-style: italic; font-weight: 600;font-family: sans-serif; ; color: rgb(153, 153, 153); margin-left: 10px;cursor: pointer"
+                                                        @click="expandDataTaskRunInfo(index,$event)">
+                                                        Something <span style="color: rgb(224,101,80)"
+                                                                        @click="expandDataTaskRunInfo(index,$event)">wrong</span> with it !</h4>
+                                                    <h4 v-if="task.status==0||task.status==1"
+                                                        style="font-style: italic; font-weight: 600;font-family: sans-serif; ; color: rgb(153, 153, 153); margin-left: 10px;cursor: pointer"
+                                                        @click="expandDataTaskRunInfo(index,$event)">
+                                                        <span style="color: rgb(64,158,255)">Calculating</span>!</h4>
+                                                    <span role="button" tabindex="0" class="ab2"
+                                                          style="float: right;margin-top: -33px;margin-right: 70px;cursor: pointer"><a
+                                                            data-toggle="collapse" class="" aria-expanded="true"
+                                                            @click="expandDataTaskRunInfo(index,$event)"><i class="fa fa-caret-down"
+                                                                                                    style="font-size: 27px"></i></a></span>
+                                                </div>
+                                                <div id="" class="panel-body dataModelRunInfo collapse" style="padding-top: 0">
+                                                    <h5 v-if="task.status==0||task.status==1">
+                                                        Calculating
+                                                    </h5>
+                                                    <ul>
+                                                        <h5 style="font-family: aktiv-grotesk; font-style: italic">Intput:</h5>
+                                                        <li class="flagcontent flexRowSpaceBetween" v-for="(input,key) in task.input.input">
+                                                <span style="margin-top: 5px; display: inline-block;">
+                                                    {{input.event}}
+                                                </span>
+                                                            <div class="flex">
+                                                                <button class="pull-right clearfix btn btn-primary btn-round downloadAFile"
+                                                                        style="background-color: #43aaff;border-color: #43aaff;margin:0 5px"
+                                                                        @click="downloadSingle(input.url)">Download File
+                                                                </button>
+                                                                <button class="pull-right clearfix btn btn-info btn-round downloadAFile"
+                                                                        style="background-color: #71c76f;border-color: #71c76f;margin:0 5px"
+                                                                        @click="addOutputToMyData(input,index)">Add to My Data
+                                                                </button>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
 
-                            </div>
-                        </div>
+                                                    <h5 v-if="task.status==-1">
+                                                        Calculation Failure
+                                                    </h5>
+                                                    <ul v-if="task.status==2">
+                                                        <h5 style="font-family: aktiv-grotesk; font-style: italic">Output:</h5>
+                                                        <li class="flagcontent flexRowSpaceBetween" v-for="(output,key) in task.output.output">
+                                                            <span style="margin-top: 5px; displaay: inline-block;">{{output.event}}</span>
+                                                            <div class="flex">
+                                                                <button v-if="!output.multiple" class="pull-right clearfix btn btn-primary btn-round downloadAFile"
+                                                                        style="background-color: #43aaff;border-color: #43aaff;margin:0 5px"
+                                                                        @click="downloadSingle(output.url)">Download File
+                                                                </button>
+                                                                <button v-if="!output.multiple" class="pull-right clearfix btn btn-info btn-round downloadAFile"
+                                                                        style="background-color: #71c76f;border-color: #71c76f;margin:0 5px"
+                                                                        @click="addOutputToMyData(output,index)">Add to My Data
+                                                                </button>
+                                                                <button v-if="output.multiple" class="pull-right clearfix btn btn-secondary btn-round downloadAFile"
+                                                                        style="background-color: #71c76f;border-color: #71c76f;margin:0 5px"
+                                                                        @click="checkMultiContent(output)">Multiple File
+                                                                </button>
+                                                            </div>
+
+                                                        </li>
+                                                    </ul>
+                                                </div>
+
+
+
+                                                <div class="pull-right"
+                                                     style="margin-top: -3px;padding: 5px;background-color: #ebf2e6">
+                                            <span style="margin-right:20px">
+                                                <b>Create Time:</b>{{formatDate(task.runTime)}}
+                                            </span>
+                                                    <!--<button class="btn btn-primary downloadAll"-->
+                                                    <!--@click="downloadAll(task.id,task.name,task.runTime)"-->
+                                                    <!--v-if="task.status==2">-->
+                                                    <!--Download All Files-->
+                                                    <!--</button>-->
+                                                    <!--<button class="btn btn-danger delete" click="deleteModel(task.id)">Delete-->
+                                                    <!--</button>-->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="margin-top: 50px">
+                                            <h4 class="col-sm-12 text-center" v-if="dataResourceLoad"><i class="ms-Icon ms-Icon--ProgressRingDots rotate_cw_1" style="margin-right: 10px"></i>Loading ...</h4>
+                                            <h4 class="col-sm-12 text-center" v-if="dataSearchResult.length==0&&dataResourceLoad==false&&!dataTaskIsWrong">No calculation tasks</h4>
+                                            <h4 class="col-sm-12 text-center" v-if="dataSearchResult.length==0&&dataResourceLoad==false&&dataTaskIsWrong">data tasks is wrong</h4>
+                                        </div>
+                                    </div>
+                                    <div class="flexRowCenter">
+                                        <nav v-if="dataSearchResult.length!=0&&resourceLoad==false" class="flexCenter" style="width: 100%;position: relative"  aria-label="Page navigation example">
+                                            <div class="flexCenter totalContainer">
+                                                <p class="noMargin">Total Num: </p>
+                                                <h5 style="margin: 0 0 1px 0">{{dataTotalNum}}</h5>
+                                            </div>
+                                            <ul class="pagination pagination-circle pg-blue wzhPageControl flexJustAround">
+                                                <li class="page-item" :class="dataCurPage!=1?'active':'disabled'"
+                                                    @click="changeDataPage(1)">
+                                                    <a class="page-link">First</a></li>
+                                                <li class="page-item " :class="dataCurPage!=1?'active':'disabled'"
+                                                    @click="changeDataPage(dataCurPage-1)">
+                                                    <a class="page-link" aria-label="Previous">
+                                                        <span aria-hidden="true" style="font-weight: 700;">&laquo;</span>
+                                                        <span class="sr-only">Previous</span>
+                                                    </a>
+                                                </li>
+                                                <li class="page-item " :class="dataCurPage==page?'active':''" v-for="page in dataPageList">
+                                                    <a class="page-link btn-round"
+                                                       @click="changeDataPage(page)">{{page}}</a></li>
+                                                <li class="page-item" :class="dataCurPage!=dataTotalPage?'active':'disabled'"
+                                                    @click="changeDataPage(dataCurPage+1)">
+                                                    <a class="page-link" aria-label="Next">
+                                                        <span aria-hidden="true" style="font-weight: 700;">&raquo;</span>
+                                                        <span class="sr-only">Next</span>
+                                                    </a>
+                                                </li>
+                                                <li class="page-item" :class="dataCurPage!=dataTotalPage?'active':'disabled'"
+                                                    @click="changeDataPage(dataTotalPage)">
+                                                    <a class="page-link">Last</a></li>
+
+                                            </ul>
+
+
+                                        </nav>
+
+                                    </div>
+                                </div>
+                            </el-tab-pane>
+                            <el-tab-pane label="Integrate Task"></el-tab-pane>
+                        </el-tabs>
+
                     </div>
 
 

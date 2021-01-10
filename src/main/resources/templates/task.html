@@ -155,7 +155,7 @@
                         <el-table-column type="expand">
                             <template slot-scope="props">
                                 <div v-if="props.row.contentType=='resource'">
-                                    <el-card v-for="item,key in props.row.dataList"
+                                    <el-card v-for="(item,key) in props.row.dataList"
                                              :title="item.name" class="dataitemisol" shadow="never"
                                              :id="item.url"
                                              :key="key" @click.native="clickData(item,$event)">
@@ -1160,7 +1160,7 @@
                                         >
                                             <el-table-column type="expand">
                                                 <template slot-scope="props">
-                                                    <el-card v-for="item,key in props.row.dataList"
+                                                    <el-card v-for="(item,key) in props.row.dataList"
                                                              :title="item.name" class="dataitemisol" shadow="never"
                                                              :id="item.url"
                                                              :key="key" @click.native="clickData(item,$event)">
@@ -1228,7 +1228,7 @@
                                         <el-table-column type="expand">
                                             <template slot-scope="props">
                                                 <div v-if="props.row.contentType=='resource'">
-                                                    <el-card v-for="item,key in props.row.dataList"
+                                                    <el-card v-for="(item,key) in props.row.dataList"
                                                              :title="item.name" class="dataitemisol" shadow="never"
                                                              :id="item.url"
                                                              :key="key" @click.native="clickData(item,$event)">
