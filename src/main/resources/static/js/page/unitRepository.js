@@ -65,11 +65,11 @@ new Vue({
                         oid: '58d45317-6dfa-4615-94a7-b0549125e2b0'
                     }, {
                         id: 3,
-                        label: 'Atomic',
+                        label: 'Atomic and Nuclear physics',
                         oid: '143787c5-d011-468b-b319-66e9c941707b'
                     }, {
                         id: 4,
-                        label: 'Electricity',
+                        label: 'Electricity and Magnetism',
                         oid: 'eaa28ef2-1cf2-4d8e-bfb1-fa51f8658be2'
                     }, {
                         id: 5,
@@ -101,7 +101,7 @@ new Vue({
                         oid: 'e5c598d0-5a89-4ee5-9c91-3c78fc26d084'
                     }, {
                         id: 12,
-                        label: 'Time',
+                        label: 'Time and Space',
                         oid: '3a1c1a4f-af6c-47d8-8c6e-d29c33472b2f'
                     }]
                 }

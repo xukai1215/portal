@@ -23,10 +23,15 @@
     <!--<h1 th:text="${name}">Hello World</h1>-->
     <div id="app">
         <div th:replace="fragments/navbar :: unlog"></div>
-        <div class="titleSection" style="background-image: url('../static/img/question-mark.jpg');background-position-y: -400px">
-            <div class="fullMask"></div>
+        <div class="titleSection" style="background-image: url('../static/img/support5.jpg');background-position-y:  -400px">
+            <div class="fullMask text-center" style="color: whitesmoke"><br><br>
+                <h2>Welcome to OpenGMS</h2>
+                <h3>
+                    Use the links below to learn how to begin sharing and collaborating.
+                </h3>
+            </div>
         </div>
-        <img class="imgAsTitle" src="../static/img/support3_1920.png" style="">
+<!--        <img class="imgAsTitle" src="../static/img/support2.png" style="">-->
         <div class="clearfix" style="position: relative;" :style="{'min-height':ScreenMinHeight}">
             <div class="grey95" style="height: 315px;padding-top: 15px">
                 <div class="col-lg-10 col-lg-offset-1 col-md-12">
@@ -36,43 +41,75 @@
 <!--                        <div class="innerBorder"></div>-->
                     </div>
                     <div class="detail">
-                        <el-row>
-                            <el-col :span="4">
-                                <div class="flexCol flexColCenter cursorPointer quickToolsCard" :class="docIndex==1?'cardHover':''"
-                                     style="height: 200px" @click="showDoc(1)">
-                                    <h4 class="h_lite">Model Resource</h4>
-                                </div>
-                            </el-col>
-                            <el-col :span="4">
-                                <div class="flexCol flexColCenter cursorPointer quickToolsCard" :class="docIndex==2?'cardHover':''"
-                                     style="height: 200px" @click="showDoc(2)">
-                                    <h4 class="h_lite">Data Resource</h4>
-                                </div>
-                            </el-col>
-                            <el-col :span="4">
-                                <div class="flexCol flexColCenter cursorPointer quickToolsCard" :class="docIndex==3?'cardHover':''"
-                                     style="height: 200px" @click="showDoc(3)">
-                                    <h4 class="h_lite">Model Application</h4>
-                                </div>
-                            </el-col>
-                            <el-col :span="4">
-                                <div class="flexCol flexColCenter cursorPointer quickToolsCard" :class="docIndex==4?'cardHover':''"
-                                     style="height: 200px" @click="showDoc(4)">
-                                    <h4 class="h_lite">Task</h4>
-                                </div>
-                            </el-col>
-                            <el-col :span="4">
-                                <div class="flexCol flexColCenter cursorPointer quickToolsCard" :class="docIndex==5?'cardHover':''"
-                                     style="height: 200px" @click="showDoc(5)">
-                                    <h4 class="h_lite">Community</h4>
-                                </div>
-                            </el-col>
-                            <el-col :span="4">
-                                <div class="flexCol flexColCenter cursorPointer quickToolsCard" :class="docIndex==6?'cardHover':''"
-                                     style="height: 200px" @click="showDoc(6)">
-                                    <h4 class="h_lite">User Space</h4>
-                                </div>
-                            </el-col>
+                        <el-row   >
+                            <el-row justify="center" type="flex">
+                                <el-col :span="4">
+                                    <div class="flexCol flexColCenter cursorPointer quickToolsCard" :class="docIndex==1?'cardHover':''"
+                                         style="height: 200px;" @click="showDoc(1)">
+                                        <img src="/static/img/supportpics/1.png" style="height: 30%;align-self: center;margin-top: 15%;margin-bottom: 20%;"/>
+                                        <h4 class="h_lite">Introduce to OpenGMS</h4>
+                                    </div>
+                                </el-col>
+                                <el-col :span="4">
+                                    <div class="flexCol flexColCenter cursorPointer quickToolsCard" :class="docIndex==2?'cardHover':''"
+                                         style="height: 200px" @click="showDoc(2)">
+                                        <img src="/static/img/supportpics/2.png" style="height: 30%;align-self: center;margin-top: 15%;margin-bottom: 20%;"/>
+                                        <h4 class="h_lite">Model Resource</h4>
+                                    </div>
+                                </el-col>
+                                <el-col :span="4">
+                                    <div class="flexCol flexColCenter cursorPointer quickToolsCard" :class="docIndex==3?'cardHover':''"
+                                         style="height: 200px" @click="showDoc(3)">
+                                        <img src="/static/img/supportpics/3.png" style="height: 30%;align-self: center;margin-top: 15%;margin-bottom: 20%;"/>
+                                        <h4 class="h_lite">Data Resource</h4>
+                                    </div>
+                                </el-col>
+                            </el-row>
+
+                            <el-row justify="center" type="flex">
+                                <el-col :span="4">
+                                    <div class="flexCol flexColCenter cursorPointer quickToolsCard" :class="docIndex==4?'cardHover':''"
+                                         style="height: 200px" @click="showDoc(4)">
+                                        <img src="/static/img/supportpics/4.png" style="height: 30%;align-self: center;margin-top: 15%;margin-bottom: 20%;"/>
+
+                                        <h4 class="h_lite">Service and Reuse</h4>
+                                    </div>
+                                </el-col>
+                                <el-col :span="4">
+                                    <div class="flexCol flexColCenter cursorPointer quickToolsCard" :class="docIndex==5?'cardHover':''"
+                                         style="height: 200px" @click="showDoc(5)">
+                                        <img src="/static/img/supportpics/5.png" style="height: 30%;align-self: center;margin-top: 15%;margin-bottom: 20%;"/>
+                                        <h4 class="h_lite">Server Nodes</h4>
+                                    </div>
+                                </el-col>
+                                <el-col :span="4">
+                                    <div class="flexCol flexColCenter cursorPointer quickToolsCard" :class="docIndex==6?'cardHover':''"
+                                         style="height: 200px" @click="showDoc(6)">
+                                        <img src="/static/img/supportpics/6.png" style="height: 30%;align-self: center;margin-top: 15%;margin-bottom: 20%;"/>
+                                        <h4 class="h_lite">Community</h4>
+                                    </div>
+                                </el-col>
+
+                            </el-row>
+
+                            <el-row justify="center" type="flex">
+                                <el-col :span="4">
+                                    <div class="flexCol flexColCenter cursorPointer quickToolsCard" :class="docIndex==6?'cardHover':''"
+                                         style="height: 200px" @click="showDoc(6)">
+                                        <img src="/static/img/supportpics/7.png" style="height: 30%;align-self: center;margin-top: 15%;margin-bottom: 20%;"/>
+                                        <h4 class="h_lite">Thematic Center</h4>
+                                    </div>
+                                </el-col>
+                                <el-col :span="4">
+                                    <div class="flexCol flexColCenter cursorPointer quickToolsCard" :class="docIndex==6?'cardHover':''"
+                                         style="height: 200px" @click="showDoc(6)">
+                                        <img src="/static/img/supportpics/8.png" style="height: 30%;align-self: center;margin-top: 15%;margin-bottom: 20%;"/>
+                                        <h4 class="h_lite">User</h4>
+                                    </div>
+                                </el-col>
+
+                            </el-row>
+
                         </el-row>
                     </div>
                 </div>
