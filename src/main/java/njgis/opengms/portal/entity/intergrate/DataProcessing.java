@@ -5,7 +5,6 @@ import njgis.opengms.portal.entity.intergrate.Action;
 
 @Data
 public class DataProcessing extends Action {
-    private String type;//modelService,dataService
 
     private String token;//对应data service的计算节点
 

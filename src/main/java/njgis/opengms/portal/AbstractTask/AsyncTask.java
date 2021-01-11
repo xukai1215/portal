@@ -15,4 +15,5 @@ public class AsyncTask extends AbstractTask {
         JSONObject result=super.getRecord(param,managerServerIpAndPort);
         return new AsyncResult<>(result.toJSONString());
     }
+
 }

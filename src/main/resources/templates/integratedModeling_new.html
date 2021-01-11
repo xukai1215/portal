@@ -357,7 +357,7 @@
                         </div>
                         <el-pagination style="text-align: center;margin-top:5px"
                                        v-if="integratedTaskList!='login'&&integratedTaskList.length!=0"
-                                       @Choose Computable Modelscurrent-change="handlePageChange"
+                                       @current-change="handlePageChange"
                                        :current-page="pageOption.currentPage"
                                        layout="total, prev, pager, next, jumper"
                                        :page-size="6"
