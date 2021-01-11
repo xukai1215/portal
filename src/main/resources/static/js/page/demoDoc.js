@@ -92,7 +92,7 @@ var vue = new Vue({
         },
         methods:{
             backClick(){
-                window.location.href='/help/support'
+                window.location.href='/help/demo'
             },
 
             anchorClick(data){

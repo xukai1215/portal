@@ -59,7 +59,7 @@
                             <el-row justify="center" type="flex" :gutter="20" style="margin: 20px">
                                 <el-col :span="4" style="border: 1px black">
                                     <div class="flexCol flexColCenter cursorPointer quickToolsCard cardborder" :class="docIndex==1?'cardHover':''"
-                                         style="height: 200px;" @click="window.location.href='/help/supportDocument/modelitem'">
+                                         style="height: 200px;" @click="showDoc(1)">
                                         <img class="cardimg" src="/static/img/supportpics/1.png" />
                                         <h4 class="h_lite">Introduce to OpenGMS</h4>
                                     </div>
@@ -111,14 +111,14 @@
                             <el-row justify="center" type="flex" :gutter="20" style="margin: 20px">
                                 <el-col :span="4" >
                                     <div class="flexCol flexColCenter cursorPointer quickToolsCard cardborder" :class="docIndex==7?'cardHover':''"
-                                         style="height: 200px;" @click="showDoc(6)">
+                                         style="height: 200px;" @click="showDoc(7)">
                                         <img class="cardimg" src="/static/img/supportpics/7.png"  />
                                         <h4 class="h_lite">Thematic Center</h4>
                                     </div>
                                 </el-col>
                                 <el-col :span="4">
                                     <div class="flexCol flexColCenter cursorPointer quickToolsCard cardborder" :class="docIndex==8?'cardHover':''"
-                                         style="height: 200px" @click="showDoc(6)">
+                                         style="height: 200px" @click="showDoc(8)">
                                         <img class="cardimg" src="/static/img/supportpics/8.png"  />
                                         <h4 class="h_lite">User</h4>
                                     </div>
