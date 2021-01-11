@@ -35,4 +35,6 @@ public class DataApplicationDTO {
     String method;  // processing visualization
 
     List<TestData> testData;//存储testData的id
+    String testDataPath;
+    String packagePathContainer;
 }
