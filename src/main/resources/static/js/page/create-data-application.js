@@ -218,6 +218,9 @@ var createDataApplication = Vue.extend({
                 this.$refs.userDataSpace.getFilePackage();
             })
         },
+        handleCloseSelectedFile(tag){
+            this.selectedFile.splice(this.selectedFile.indexOf(tag), 1)
+        },
         handleClose(done) {
             this.$confirm('Confirm to close?')
                 .then(_ => {
