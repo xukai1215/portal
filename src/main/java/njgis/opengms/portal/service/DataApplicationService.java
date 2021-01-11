@@ -394,7 +394,19 @@ public class DataApplicationService {
 
     public DataApplication getById(String oid) {
         try {
-            return dataApplicationDao.findFirstByOid(oid);
+            DataApplication dataApplication = dataApplicationDao.findFirstByOid(oid);
+            List<FileMeta> fileContainer = userDao.findFirstByOid(dataApplication.getAuthor()).getFileContainer();
+            for (int i=0;i<dataApplication.getTestData().size();++i){
+                for (int j=0;j<fileContainer.size();++j){
+                    if(fileContainer.get(j).getUrl() != ""){
+                        if(dataApplication.getTestData().get(i).getUrl().equals(fileContainer.get(j).getUrl())){
+                            dataApplication.getTestData().get(i).setLabel(fileContainer.get(j).getName());
+                            dataApplication.getTestData().get(i).setSuffix(fileContainer.get(j).getSuffix());
+                        }
+                    }
+                }
+            }
+            return dataApplication;
         } catch (Exception e) {
             System.out.println("有人乱查数据库！！该ID不存在Model Item对象");
             throw new MyException(ResultEnum.NO_OBJECT);

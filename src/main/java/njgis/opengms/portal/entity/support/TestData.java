@@ -19,4 +19,7 @@ public class TestData {
     String url;
     String distributeId;
     String token;
+
+    String label;
+    String suffix;
 }
