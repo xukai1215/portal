@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -53,7 +53,7 @@
                     </el-col>
                     <el-col :span="sectionSpan" style="margin-bottom: 30px;margin-top: -25px">
                         <div class="clearfix docSection " style="background-color: white;padding: 0 20px 0px" >
-                            <section class="wordSpace" v-for="section in supportDoc" :id="section.title" >
+                            <section class="wordSpace" v-for="section in supportDoc" :id="generateId(section.title)" >
                                 <h3 class="h_lite" >{{section.title}}</h3>
                                 <p>{{section.content}}</p>
                             </section>

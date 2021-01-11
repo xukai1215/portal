@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -16,34 +16,32 @@
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css" />
 
+    <style>
+        .fixed{
+            position: fixed;
+            top: 30px;
+        }
+    </style>
+
 </head>
 <body>
-<div id="app">
+<div v-cloak id="app">
     <div th:replace="fragments/navbar :: unlog"></div>
     <div th:replace="fragments/backToTop :: backtop-down"></div>
     <div class="clearfix" style="position: relative;"
          :style="{'min-height':ScreenMinHeight}">
         <div class="clearfix" style="height: 100%;">
             <div class="clearfix titleImg_small fontWhite" style="background-image: url('/static/img/bled_clip.jpg');background-position-y: 600px;">
-                <h3 style="text-align: center;margin-top: 45px">Model Resource<span class="h_lite"> Learn And Support</span></h3>
+                <h3 style="text-align: center;margin-top: 30px">OpenGMS<span class="h_lite"> Learn And Support</span></h3>
                 <h5 style="text-align: center;margin-top: 20px">Let's learn what is provided about Model Resource!</h5>
             </div>
-            <div class="col-lg-10 col-lg-offset-1 col-md-12 clearfix" style="padding: 0px 0">
-                <el-row :gutter="40">
-                    <el-col :span="7">
-                        <el-button  type="info" plain style="margin-top: 15px" @click="backClick">&larr;&nbsp;Back</el-button>
-                    </el-col>
-                    <el-col :span="17" >
-                        <h3 style="padding: 0 20px 0 20px; color: #0a6999" >Introduction to OpenGMS</h3>
-                        <hr>
-                    </el-col>
 
-                </el-row>
-            </div>
             <div class="col-lg-10 col-lg-offset-1 col-md-12 clearfix" style="padding: 5px 0">
                 <el-row :gutter="40" >
-                    <el-col :span="sectionTitleSpan" style="margin-top: -20px">
-                        <div class="treeContainer">
+
+                    <el-col id="leftPanel" :span="sectionTitleSpan">
+                        <el-button  type="info" plain style="margin-top: 15px;margin-bottom: 10px;" @click="backClick">&larr;&nbsp;Back</el-button>
+                        <div class="treeContainer" id="sidebarMenu" >
                             <el-tree
                                     :data="sectionData"
                                     @node-click="anchorClick"
@@ -51,11 +49,13 @@
                             </el-tree>
                         </div>
                     </el-col>
-                    <el-col :span="sectionSpan" style="margin-bottom: 30px;margin-top: -25px">
+                    <el-col :span="sectionSpan" style="margin-bottom: 30px;">
+                        <h3 style="padding: 0 20px 0 20px; color: #0a6999" th:text="${name}">Introduction to OpenGMS</h3>
+                        <hr>
                         <div class="clearfix docSection " style="background-color: white;padding: 0 20px 0px" >
-                            <section class="wordSpace" v-for="section in supportDoc" :id="section.title" >
+                            <section class="wordSpace" v-for="section in supportDoc" :id="generateId(section.title)" >
                                 <h3 class="h_lite" >{{section.title}}</h3>
-                                <p>{{section.content}}</p>
+                                <p v-html="section.content"></p>
                             </section>
                         </div>
                     </el-col>
@@ -94,9 +94,11 @@
                 </div>
             </div>
         </div>
-    </div>
 
+
+    </div>
     <div th:replace="fragments/footer :: footer"></div>
+
 </div>
 </body>
 <script src="/static/js/common/jquery-3.3.1.min.js"></script>
@@ -105,6 +107,16 @@
 <script src="/static/js/common/axios.min.js"></script>
 <script src="/static/element-ui/index.js"></script>
 <script src="/static/element-ui/umd/locale/en.js"></script>
+
+<script th:if="${name=='Introduce to OpenGMS'}" src="/static/js/help/introduction.js"></script>
+<script th:if="${name=='Model Resource'}" src="/static/js/help/modelResource.js"></script>
+<script th:if="${name=='Data Resource'}" src="/static/js/help/dataResource.js"></script>
+<script th:if="${name=='Service and Reuse'}" src="/static/js/help/serviceAndReuse.js"></script>
+<script th:if="${name=='Server Nodes'}" src="/static/js/help/serverNodes.js"></script>
+<script th:if="${name=='Community'}" src="/static/js/help/community.js"></script>
+<script th:if="${name=='Thematic Center'}" src="/static/js/help/thematicCenter.js"></script>
+<script th:if="${name=='User'}" src="/static/js/help/user.js"></script>
+
 <script src="/static/js/page/supportDoc.js"></script>
 <script src="/static/js/common/navbar.js"></script>
 </html>
