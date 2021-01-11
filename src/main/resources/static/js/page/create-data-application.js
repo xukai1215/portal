@@ -252,8 +252,6 @@ var createDataApplication = Vue.extend({
             this.ScreenMaxHeight = (height) + "px";
             this.IframeHeight = (height - 330) + "px";
 
-            $("#keyWords").tagEditor('destory');      // 关键字的标签
-
             let resizeTimer = null;
             let that = this
             window.onresize = () => {
@@ -446,6 +444,7 @@ var createDataApplication = Vue.extend({
         if ((oid === "0") || (oid === "") || (oid === null)|| (oid === undefined)) {
 
             $("#subRteTitle").text("/Create Data Method");
+            $("#keyWords").tagEditor()
 
             initTinymce('textarea#dataApplicationText')
 
@@ -453,6 +452,7 @@ var createDataApplication = Vue.extend({
         else {
             $("#subRteTitle").text("/Modify Data Application");
             // document.title="Modify Data Application | OpenGMS";
+            let that = this
             $.ajax({
                 url: "/dataApplication/getInfo/" + oid,
                 type: "get",
@@ -463,18 +463,29 @@ var createDataApplication = Vue.extend({
                     console.log(result)
                     var basicInfo = result.data;
                     if(basicInfo.resourceJson!=null)
-                        this.resources=basicInfo.resourceJson;
+                        that.resources=basicInfo.resourceJson;
 
-                    // this.dataApplication.bindModelItem=basicInfo.relateModelItemName;
-                    // this.dataApplication.bindOid=basicInfo.relateModelItem;
+                    // that.dataApplication.bindModelItem=basicInfo.relateModelItemName;
+                    // that.dataApplication.bindOid=basicInfo.relateModelItem;
 
                     let classificationId = basicInfo.classifications;
-                    this.dataApplication.url = basicInfo.url;
-                    this.dataApplication.contentType = basicInfo.contentType;
+                    that.dataApplication.url = basicInfo.url;
+                    that.dataApplication.contentType = basicInfo.contentType;
 
-                    this.$refs.tree.setCheckedKeys(basicInfo.classifications);
-                    this.clsStr=basicInfo.categorys;
-                    this.dataApplication.status=basicInfo.status;
+                    that.selectedFile = basicInfo.testData;
+                    that.dataApplication.keywords = basicInfo.keywords
+                    if(that.dataApplication.keywords){
+                        $('#keyWords').tagEditor({
+                            initialTags:that.dataApplication.keywords ,
+                            delimiter: ', ', /* 空格和逗号 */
+                            placeholder: 'Enter tags ...'
+                        });
+                    }
+                    else $("#keyWords").tagEditor()
+
+                    // that.$refs.tree.setCheckedKeys(basicInfo.classifications);
+                    // that.clsStr=basicInfo.categorys;
+                    that.dataApplication.status=basicInfo.status;
 
                     $(".providers").children(".panel").remove();
 
@@ -551,8 +562,8 @@ var createDataApplication = Vue.extend({
                         }
                     }
 
-                    this.dataApplication.name=basicInfo.name;
-                    this.dataApplication.description=basicInfo.description
+                    that.dataApplication.name=basicInfo.name;
+                    that.dataApplication.description=basicInfo.description
 
                     // $("#nameInput").val(basicInfo.name);
                     // $("#descInput").val(basicInfo.description)
