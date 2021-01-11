@@ -31,7 +31,7 @@ let vue = new Vue({
                 url:'',
                 name:''
             }],//载入的数据url以及名称，不管是测试数据、上传数据还是直接填入的link，均存到这个字段
-            dataType:'',//标识localData、onlineData
+            // dataType:'',//标识localData、onlineData
             uploadName:'',
             contDtId:'',//上传到数据容器返回的数据id
             selectedFile:[],//userDataSpace中选择的文件
@@ -44,6 +44,7 @@ let vue = new Vue({
             loadingData:false,
             dataServerTask:'',
             visualPath:'',
+            fileOrder:'',
             // initParameter:''
 
 
@@ -105,7 +106,7 @@ let vue = new Vue({
 
             this.loading = true;
             let formData = new FormData();
-            let parameters = new Array();
+            let parameters = [];
             for(let i=0;i<this.metaDetail.parameter.length;i++){
                 parameters.push(this.metaDetail.parameter[i].value);
             }
@@ -113,11 +114,11 @@ let vue = new Vue({
             formData.append("serviceId",this.serviceId);
             formData.append("serviceName",this.invokeService.name);
             formData.append("params",parameters);
-            formData.append("dataType",this.dataType);//标识那三种数据来源，测试数据、上传容器数据（数据容器返回的数据id）以及数据url（目前是数据容器的url）
+            // formData.append("dataType",this.dataType);//标识那三种数据来源，测试数据、上传容器数据（数据容器返回的数据id）以及数据url（目前是数据容器的url）
 
-            if(this.dataType!='localData'){
+            // if(this.dataType!='localData'){
                 formData.append("selectData", JSON.stringify(this.metaDetail.input));//此项为可选，可有可无
-            }
+            // }
             $.ajax({
                 url:"/dataApplication/invokeMethod",
                 type:"POST",
@@ -132,6 +133,7 @@ let vue = new Vue({
                         that.resultData = json.data.invokeService;
                         that.dataServerTask = json.data.task;
                         if(json.data == null){
+                            this.loading = false;
                             that.$message({
                                 type:"error",
                                 message: 'Invoke failed!',
@@ -146,9 +148,16 @@ let vue = new Vue({
                             })
                         }
                     }else if(json.code === 1){
+                        this.loading = false;
                         that.$message({
                             type: "error",
                             message: 'Invoke failed, Service Node Is Error!',
+                        })
+                    }else if(json.code === -2){
+                        this.loading = false;
+                        that.$message({
+                            type: "error",
+                            message: 'Invoke failed, SDK Is Error!',
                         })
                     }
                 }
@@ -165,6 +174,12 @@ let vue = new Vue({
         },
         openDataSpace(event){
             this.loadDataVisible = true;
+            let refLink=$(".uploadBtn");
+            for(let i=0;i<refLink.length;i++){
+                if(event.currentTarget===refLink[i]){
+                    this.fileOrder = i;
+                }
+            }
             this.$nextTick(()=>{
                 this.$refs.userDataSpace.getFilePackage();
             })
@@ -192,7 +207,7 @@ let vue = new Vue({
                         name:this.testData[i].name,
                     }
                     this.selectData.push(data);
-                    this.dataType = 'testData';
+                    // this.dataType = 'testData';
                     this.loadDataVisible = false;
                     break;
                 }
@@ -256,7 +271,7 @@ let vue = new Vue({
                         name: that.uploadName,
                         url: "http://111.229.14.128:8899/data?uid=" + that.contDtId
                     });
-                    that.dataType = "uploadData";
+                    // that.dataType = "uploadData";
                     that.loadDataVisible = false;
                     this.$message.success('Upload success');
                 }else{
@@ -287,15 +302,16 @@ let vue = new Vue({
             }
 
             let name = this.selectedFile[0].label + '.' + this.selectedFile[0].suffix;
-            for (let i=0;i<this.metaDetail.input.length;i++){
-                if(this.metaDetail.input[i].name === name){
-                    this.metaDetail.input[i].loadName = name;
-                    this.metaDetail.input[i].url = this.selectedFile[0].url;
-                    break;
-                }
-            }
+            this.metaDetail.input[this.fileOrder].loadName = name;
+            this.metaDetail.input[this.fileOrder].url = this.selectedFile[0].url;
+            // for (let i=0;i<this.metaDetail.input.length;i++){
+            //     if(this.metaDetail.input[i].name === name){
+            //
+            //         break;
+            //     }
+            // }
             this.selectedFile = [];//置空
-            this.dataType = 'onlineData';
+            // this.dataType = 'onlineData';
         },
         removeDataspaceFile(file) {
             this.targetFile = {}
@@ -304,42 +320,42 @@ let vue = new Vue({
             let that = this;
             this.loadingData = true;
             //分为load本地测试数据与其他节点的数据
-            if(this.isPortal){
-                //门户节点的测试数据load，主要还是从testData里拿数据
-                if(this.metaDetail.input.length!=this.testData.length){
-                    this.$message({
-                        message: 'data numbers not match',
-                        type: 'warning'
-                    });
-                }
-                var len = 0;
-
-                for(let i=0;i<this.testData.length;i++){
-                    let data = {
-                        url:this.testData[i].url,
-                        name:this.testData[i].name,
-                    };
-                    this.selectData.push(data);
-                    for(let j=0;j<this.metaDetail.input.length;j++){
-                        if(this.testData[i].name === this.metaDetail.input[j].name){
-                            len++;
-                            this.metaDetail.input[j].url = this.testData[i].url;
-                            this.metaDetail.input[j].loadName = this.testData[i].name;
-                            break;
-                        }
-                    }
-                    tempArray = Object.assign([],this.metaDetail.input)
-                    this.$set(this.metaDetail, "input", tempArray);
-                    this.dataType = 'localData';
-                    this.loadingData = false;
-                }
-                if(len != this.testData.length){
-                    this.$message({
-                        message: 'data numbers match failed',
-                        type: 'warning'
-                    });
-                }
-            }else {
+            // if(this.isPortal){
+            //     //门户节点的测试数据load，主要还是从testData里拿数据
+            //     if(this.metaDetail.input.length!=this.testData.length){
+            //         this.$message({
+            //             message: 'data numbers not match',
+            //             type: 'warning'
+            //         });
+            //     }
+            //     var len = 0;
+            //
+            //     for(let i=0;i<this.testData.length;i++){
+            //         let data = {
+            //             url:this.testData[i].url,
+            //             name:this.testData[i].name,
+            //         };
+            //         this.selectData.push(data);
+            //         for(let j=0;j<this.metaDetail.input.length;j++){
+            //             if(this.testData[i].name === this.metaDetail.input[j].name){
+            //                 len++;
+            //                 this.metaDetail.input[j].url = this.testData[i].url;
+            //                 this.metaDetail.input[j].loadName = this.testData[i].name;
+            //                 break;
+            //             }
+            //         }
+            //         tempArray = Object.assign([],this.metaDetail.input)
+            //         this.$set(this.metaDetail, "input", tempArray);
+            //         this.dataType = 'localData';
+            //         this.loadingData = false;
+            //     }
+            //     if(len != this.testData.length){
+            //         this.$message({
+            //             message: 'data numbers match failed',
+            //             type: 'warning'
+            //         });
+            //     }
+            // }else {
                 //绑定节点的load数据则需要用接口获取服务测试数据信息
                 axios.get("/dataApplication/getRemoteDataInfo/" + this.serviceId + "/" + encodeURIComponent(encodeURIComponent(this.invokeService.token)))
                     .then((res)=>{
@@ -364,12 +380,12 @@ let vue = new Vue({
                                 }
                                 tempArray = Object.assign([],that.metaDetail.input)
                                 that.$set(this.metaDetail, "input", tempArray);
-                                that.dataType = 'onlineData';
+                                // that.dataType = 'onlineData';
                             }
                             that.loadingData = false;
                         }
                     })
-            }
+            // }
             // this.loading = false;
 
 
