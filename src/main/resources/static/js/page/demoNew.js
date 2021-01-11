@@ -12,7 +12,7 @@ var vue = new Vue({
         },
         methods:{
             showDoc(index){
-                window.location.href='/help/support/modelitem';
+                window.location.href='/help/demo/modelitem';
                 // this.docIndex=index;
                 // this.docLoading=true
                 // $('html,body').animate({scrollTop: '130px'}, 200);
