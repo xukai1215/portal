@@ -39,7 +39,7 @@
         <div th:replace="fragments/navbar :: unlog"></div>
         <div class="titleSection" style="background-image: url('../static/img/support5.jpg');background-position-y:  -400px">
             <div class="fullMask text-center" style="color: whitesmoke"><br><br>
-                <h2>Welcome to OpenGMS</h2>
+                <h2>OpenGMS Support</h2>
                 <h3>
                     Use the links below to learn how to begin sharing and collaborating.
                 </h3>
@@ -110,14 +110,14 @@
 
                             <el-row justify="center" type="flex" :gutter="20" style="margin: 20px">
                                 <el-col :span="4" >
-                                    <div class="flexCol flexColCenter cursorPointer quickToolsCard cardborder" :class="docIndex==6?'cardHover':''"
+                                    <div class="flexCol flexColCenter cursorPointer quickToolsCard cardborder" :class="docIndex==7?'cardHover':''"
                                          style="height: 200px;" @click="showDoc(6)">
                                         <img class="cardimg" src="/static/img/supportpics/7.png"  />
                                         <h4 class="h_lite">Thematic Center</h4>
                                     </div>
                                 </el-col>
                                 <el-col :span="4">
-                                    <div class="flexCol flexColCenter cursorPointer quickToolsCard cardborder" :class="docIndex==6?'cardHover':''"
+                                    <div class="flexCol flexColCenter cursorPointer quickToolsCard cardborder" :class="docIndex==8?'cardHover':''"
                                          style="height: 200px" @click="showDoc(6)">
                                         <img class="cardimg" src="/static/img/supportpics/8.png"  />
                                         <h4 class="h_lite">User</h4>
@@ -131,33 +131,33 @@
                 </div>
             </div>
 
-<!--            <div class="clearfix"  style="padding-top: 20px;margin-bottom: 35px">-->
-<!--                <div class="col-lg-10 col-lg-offset-1 col-md-12">-->
-<!--                    <div class="flexJustAround" style="width: 100%;">-->
-<!--                        &lt;!&ndash;                        <div class="innerBorder"></div>&ndash;&gt;-->
-<!--                        <h4 style="font-size: 22px">Support Documents</h4>-->
-<!--                        &lt;!&ndash;                        <div class="innerBorder"></div>&ndash;&gt;-->
-<!--                    </div>-->
-<!--                    <div style="margin-top: 10px">-->
-<!--                        <el-row :gutter="20">-->
-<!--                            <el-col :span="12">-->
-<!--                                <div class="flexCol flexColCenter cursorPointer quickToolsCard"-->
-<!--                                     style="height: 200px;background-color: #fbfbfa" v-loading="docLoading" @click="window.location.href='/help/supportDocument/modelitem'">-->
-<!--                                    <h2 class="h_lite">Tips </h2>-->
-<!--                                    <h4 class="h_lite">about {{docTarget}}</h4>-->
-<!--                                </div>-->
-<!--                            </el-col>-->
-<!--                            <el-col :span="12">-->
-<!--                                <div class="flexCol flexColCenter cursorPointer quickToolsCard"-->
-<!--                                     style="height: 200px;background-color: #fbfbfa" v-loading="docLoading">-->
-<!--                                    <h2 class="h_lite">FAQ<span>s</span></h2>-->
-<!--                                    <el-button>aa</el-button>-->
-<!--                                </div>-->
-<!--                            </el-col>-->
-<!--                        </el-row>-->
-<!--                    </div>-->
-<!--                 </div>-->
-<!--            </div>-->
+            <!--<div class="clearfix"  style="padding-top: 20px;margin-bottom: 35px">-->
+                <!--<div class="col-lg-10 col-lg-offset-1 col-md-12">-->
+                    <!--<div class="flexJustAround" style="width: 100%;">-->
+                        <!--&lt;!&ndash;                        <div class="innerBorder"></div>&ndash;&gt;-->
+                        <!--<h4 style="font-size: 22px">Support Documents</h4>-->
+                        <!--&lt;!&ndash;                        <div class="innerBorder"></div>&ndash;&gt;-->
+                    <!--</div>-->
+                    <!--<div style="margin-top: 10px">-->
+                        <!--<el-row :gutter="20">-->
+                            <!--<el-col :span="12">-->
+                                <!--<div class="flexCol flexColCenter cursorPointer quickToolsCard"-->
+                                     <!--style="height: 200px;background-color: #fbfbfa" v-loading="docLoading" @click="window.location.href='/help/supportDocument/modelitem'">-->
+                                    <!--<h2 class="h_lite">Tips </h2>-->
+                                    <!--<h4 class="h_lite">about {{docTarget}}</h4>-->
+                                <!--</div>-->
+                            <!--</el-col>-->
+                            <!--<el-col :span="12">-->
+                                <!--<div class="flexCol flexColCenter cursorPointer quickToolsCard"-->
+                                     <!--style="height: 200px;background-color: #fbfbfa" v-loading="docLoading">-->
+                                    <!--<h2 class="h_lite">FAQ<span>s</span></h2>-->
+                                    <!--<el-button>aa</el-button>-->
+                                <!--</div>-->
+                            <!--</el-col>-->
+                        <!--</el-row>-->
+                    <!--</div>-->
+                 <!--</div>-->
+            <!--</div>-->
         </div>
 
         <div th:replace="fragments/footer :: footer"></div>
@@ -168,7 +168,7 @@
 <script src="/static/js/index/bootstrap.min.js"></script>
 <script src="/static/js/common/axios.min.js"></script>
 <script src="/static/element-ui/index.js"></script>
-<script src="/static/js/common/loadUser.js"></script>
+
 <script src="/static/element-ui/umd/locale/en.js"></script>
 <script src="/static/js/page/support.js"></script>
 <script src="/static/js/common/navbar.js"></script>

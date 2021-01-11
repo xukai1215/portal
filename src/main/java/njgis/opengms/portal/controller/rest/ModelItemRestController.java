@@ -40,7 +40,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.net.URLDecoder;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -147,6 +146,17 @@ public class ModelItemRestController {
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("simulation");
+
+
+        return modelAndView;
+
+    }
+
+    @RequestMapping(value="/relationGraph",method = RequestMethod.GET)
+    public ModelAndView relationGraph() {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("modelRelationGraph");
 
 
         return modelAndView;
@@ -559,10 +569,13 @@ public class ModelItemRestController {
         return ResultUtils.success(modelItemService.getArticleByDOI(DOI,modelOid,userOid));
     }
 
-    @RequestMapping(value="/getKnowledgeGraph",method = RequestMethod.POST)
-    public JsonResult getKnowledgeGraph(@RequestParam(value="oid") String oid){
-        return ResultUtils.success(modelItemService.getKnowledgeGraph(oid));
+    @RequestMapping(value="/getRelationGraph",method = RequestMethod.POST)
+    public JsonResult getRelationGraph(@RequestParam(value="oid") String oid){
+        return ResultUtils.success(modelItemService.getRelationGraph(oid));
     }
 
-
+    @RequestMapping(value="/getFullRelationGraph",method = RequestMethod.POST)
+    public JsonResult getFullRelationGraph(){
+        return ResultUtils.success(modelItemService.getFullRelationGraph());
+    }
 }

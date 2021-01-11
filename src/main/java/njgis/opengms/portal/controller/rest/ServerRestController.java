@@ -11,11 +11,15 @@ import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.IpUtil;
 import njgis.opengms.portal.utils.ResultUtils;
 import njgis.opengms.portal.utils.Utils;
+import njgis.opengms.portal.utils.XmlTool;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,6 +38,9 @@ public class ServerRestController {
 
     @Autowired
     UserService userService;
+
+    @Value("${dataServerManager}")
+    private String dataServerManager;
 
 
     @RequestMapping(value="",method= RequestMethod.GET)
@@ -171,10 +178,10 @@ public class ServerRestController {
         return ResultUtils.success(result);
 
     }
-    
+
     //获取所有模型容器
     @RequestMapping(value="/modelContainer/all",method=RequestMethod.GET)
-    JsonResult getAll(){
+    JsonResult getModelContainerAll(){
         return ResultUtils.success(modelContainerDao.findAll());
     }
 
@@ -189,6 +196,71 @@ public class ServerRestController {
         return ResultUtils.success(modelContainerDao.findAllByAccount(userName));
     }
 
+    //获取所有模型\数据容器
+    @RequestMapping(value="/all",method=RequestMethod.GET)
+    JsonResult getAll(){
 
+        JSONArray nodes = new JSONArray();
+        //模型容器节点
+        List<ModelContainer> modelContainerList = modelContainerDao.findAll();
+        for(ModelContainer modelContainer : modelContainerList){
+            JSONObject node = new JSONObject();
+            node.put("geoJson",modelContainer.getGeoInfo());
+            node.put("type","model");
+            nodes.add(node);
+        }
+
+        //数据容器节点
+        try {
+            HttpComponentsClientHttpRequestFactory httpRequestFactory = new HttpComponentsClientHttpRequestFactory();
+            httpRequestFactory.setConnectionRequestTimeout(6000);
+            httpRequestFactory.setConnectTimeout(6000);
+            httpRequestFactory.setReadTimeout(6000);
+
+            String url = "http://" + dataServerManager + "/onlineNodes";
+
+            RestTemplate restTemplate = new RestTemplate(httpRequestFactory);
+            String xml = null;
+            try {
+                xml = restTemplate.getForObject(url, String.class);
+            } catch (Exception e) {
+
+            }
+
+            if (xml.equals("err")) {
+                xml = null;
+            }
+
+            if(xml!=null) {
+
+                JSONObject jsonObject = XmlTool.xml2Json(xml);
+                JSONObject jsonNodeInfo = jsonObject.getJSONObject("serviceNodes");
+
+
+
+                try {
+                    JSONArray dataNodes = jsonNodeInfo.getJSONArray("onlineServiceNode");
+
+                    for (int i = 0; i < dataNodes.size(); i++) {
+                        JSONObject dataNode = (JSONObject) dataNodes.get(i);
+                        JSONObject node = new JSONObject();
+                        node.put("geoJson",Utils.getGeoInfoMeta(dataNode.getString("ip")));
+                        node.put("type","data");
+                        nodes.add(node);
+                    }
+                } catch (Exception e) {
+                    JSONObject dataNode = jsonNodeInfo.getJSONObject("onlineServiceNode");
+                    JSONObject node = new JSONObject();
+                    node.put("geoJson",Utils.getGeoInfoMeta(dataNode.getString("ip")));
+                    node.put("type","data");
+                    nodes.add(node);
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return ResultUtils.success(nodes);
+    }
 
 }
