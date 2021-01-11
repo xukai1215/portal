@@ -22,7 +22,15 @@ import njgis.opengms.portal.service.DataApplicationService;
 import njgis.opengms.portal.service.DataItemService;
 import njgis.opengms.portal.service.UserService;
 import njgis.opengms.portal.utils.ResultUtils;
+import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -281,15 +289,15 @@ public class DataApplicationController {
 
         }
 
-        List<String> cates = new ArrayList<>();
-        cates = dataApplication.getClassifications();
-        List<String> categorys = new ArrayList<>();
-        for(String cate : cates){
-            DataCategorys dataCategorys = dataItemService.getCategoryById(cate);
-            categorys.add(dataCategorys.getCategory());
-        }
-
-        dataApplication.setCategorys(categorys);
+        // List<String> cates = new ArrayList<>();          // 现在的 dataMethods 没有分类了
+        // cates = dataApplication.getClassifications();
+        // List<String> categorys = new ArrayList<>();
+        // for(String cate : cates){
+        //     DataCategorys dataCategorys = dataItemService.getCategoryById(cate);
+        //     categorys.add(dataCategorys.getCategory());
+        // }
+        //
+        // dataApplication.setCategorys(categorys);
 
         dataApplication.setResourceJson(resourceArray);
 
@@ -328,7 +336,6 @@ public class DataApplicationController {
      * @param serviceId serviceId
      * @param serviceName serviceName
      * @param params 调用所需的参数
-     * @param dataType 调用服务的数据类型，包括localData与onlineData，区分两种调用方法
      * @param request request
      * @param selectData onlineData所选的数据，可选传
      * @param integrate 是否集成的调用，集成的调用则标识"integrate", 可选
@@ -342,10 +349,10 @@ public class DataApplicationController {
                             @RequestParam(value = "serviceId") String serviceId,
                             @RequestParam(value = "serviceName") String serviceName,
                             @RequestParam(value = "params") String[] params,
-                            @RequestParam(value = "dataType") String dataType,
+//                            @RequestParam(value = "dataType") String dataType,
                             @RequestParam(value = "selectData",  required = false) String selectData,
                             @RequestParam(value = "integrate",  required = false) String integrate,
-                            HttpServletRequest request) throws UnsupportedEncodingException, MalformedURLException, DocumentException {
+                            HttpServletRequest request) throws IOException, DocumentException {
         JsonResult jsonResult = new JsonResult();
         DataServerTask dataServerTask = new DataServerTask();
         Date date = new Date();
@@ -353,7 +360,7 @@ public class DataApplicationController {
         dataServerTask.setOid(UUID.randomUUID().toString());
         dataServerTask.setServiceId(serviceId);
         dataServerTask.setServiceName(serviceName);
-        dataServerTask.setDataType(dataType);
+//        dataServerTask.setDataType(dataType);
         if (integrate!=null){
             dataServerTask.setIntegrate(true);
         }else {
@@ -383,103 +390,167 @@ public class DataApplicationController {
         String token = invokeService.getToken();//需要存起来，拿token
         token = URLEncoder.encode(token, "UTF-8");
 
-        String response = null;
+//        String response = null;
         //具体invoke,获取结果数据
         String url = null;
         String urlRes = null;
-        String parameters = "";
-        for(int i=0;i< params.length;i++){
-            parameters += params[i];
-            if(i != params.length-1){
-                parameters += ",";
-            }
-        }
+//        String parameters = "";
+//        for(int i=0;i< params.length;i++){
+//            parameters += params[i];
+//            if(i != params.length-1){
+//                parameters += ",";
+//            }
+//        }
         JSONObject input = new JSONObject();
-        if(dataType.equals("localData")){
-            //数据为测试数据
-            url = "http://111.229.14.128:8898/extPcs?dataId=";//invoke接口
-            List<String> dataIds = invokeService.getDataIds();
-            url += dataIds.get(0);
-            //将输入数据化为jsonobject的数据
-            input.put("input", dataApplication.getTestData());
-            dataServerTask.setInput(input);
-
-            url += ("&params=" + parameters);
-            url += ("&name=" + invokeService.getName());
-            url += ("&token=" + token);//token注意要加密  注意此处使用门户节点的token，目前先用我的token代替
-            url += ("&reqUsrOid=" + reqUsrId);
-            url += ("&pcsId=" + serviceId);
-        } else {
+//        if(dataType.equals("localData")){
+//            //数据为测试数据
+//            url = "http://111.229.14.128:8898/extPcs?dataId=";//invoke接口
+//            List<String> dataIds = invokeService.getDataIds();
+//            url += dataIds.get(0);
+//            //将输入数据化为jsonobject的数据
+//            input.put("input", dataApplication.getTestData());
+//            dataServerTask.setInput(input);
+//
+//            url += ("&params=" + parameters);
+//            url += ("&name=" + invokeService.getName());
+//            url += ("&token=" + token);//token注意要加密  注意此处使用门户节点的token，目前先用我的token代替
+//            url += ("&reqUsrOid=" + reqUsrId);
+//            url += ("&pcsId=" + serviceId);
+//        } else {
             //数据为可下载数据的url  此调用为post
-            String downloadLink = "";
+//            String downloadLink = "";
             //设置input数据
             input.put("input", selectData);
             dataServerTask.setInput(input);
+            //将所有参数放到一个JSON中
+        JSONObject postParams = new JSONObject();
+        postParams.put("token", token);
+        postParams.put("pcsId", serviceId);
+//        String[] tmp1 = new String[params.length];
+//        for (int i=0;i< params.length;i++){
+//            tmp1[i] = URLEncoder.encode(params[i], "gb2312");
+//        }
+
+        postParams.put("params", params);
+
+
+            JSONArray postUrls = new JSONArray();
+//        MultiValueMap<String, Object> part = new LinkedMultiValueMap<>();
 
             if(selectData!=null) {
                 JSONArray jsonArray = JSONArray.parseArray(selectData);
-                log.info(jsonArray.get(0).toString());
-                //拼接url
-                JSONObject jsonObject = null;
-                for(int i=0;i<jsonArray.size();i++){
-                    jsonObject = (JSONObject) jsonArray.get(i);
-                    downloadLink += jsonObject.getString("url");
-                    if(i != jsonArray.size()-1){
-                        downloadLink += ",";
-                    }
+                JSONObject tmp = new JSONObject();
+//                String[] resUrl = new String[jsonArray.size()];
+                for (int i=0;i<jsonArray.size();i++){
+                    tmp.put(jsonArray.getJSONObject(i).getString("name"), jsonArray.getJSONObject(i).getString("url"));
                 }
-                log.info(downloadLink);
+                postParams.put("urls", tmp);
+//                part.add("urls", tmp);
+
+
+//                log.info(jsonArray.get(0).toString());
+                //拼接url
+//                JSONObject jsonObject = null;
+//                for(int i=0;i<jsonArray.size();i++){
+//                    jsonObject = (JSONObject) jsonArray.get(i);
+//                    downloadLink += jsonObject.getString("url");
+//                    if(i != jsonArray.size()-1){
+//                        downloadLink += ",";
+//                    }
+//                }
+//                log.info(downloadLink);
             }
-            url="http://111.229.14.128:8898/invokeUrlsDataPcs";
+            url="http://111.229.14.128:8898/invokeUrlsDataPcsWithKey";
 
-            MultiValueMap<String, Object> part = new LinkedMultiValueMap<>();
+//            MultiValueMap<String, Object> part = new LinkedMultiValueMap<>();
 
 
-            part.add("token", token);
-            part.add("pcsId", serviceId);
-            part.add("urls", downloadLink);
-            part.add("params", parameters);
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Content-Type","application/x-www-form-urlencoded");
-            HttpEntity<MultiValueMap> requestEntity = new HttpEntity<MultiValueMap>(part, headers);
+//            part.add("token", token);
+//            part.add("pcsId", serviceId);
+//            String[] postUrlsString = new String[postUrls.size()];
+//            for(int i=0;i<postUrls.size();i++){
+//                postUrlsString[i] = postUrls.get(i).toString();
+//            }
 
-            RestTemplate restTemplate = new RestTemplate();
-            try {
-                response = restTemplate.postForObject(url, requestEntity, String.class);
-            }catch (ResourceAccessException e){
-                jsonResult.setCode(1);
-                jsonResult.setMsg("request time out!");
-                dataServerTask.setStatus(-1);
-                dataServerTaskDao.insert(dataServerTask);
-                return jsonResult;
-            }
+//            part.add("params", params);
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.add("Content-Type","application/json");
+//            HttpEntity<MultiValueMap> requestEntity = new HttpEntity<MultiValueMap>(part, headers);
+
+//            RestTemplate restTemplate = new RestTemplate();
+//            try {
+//                response = restTemplate.postForObject(url, requestEntity, String.class);
+//            }catch (ResourceAccessException e){
+//                jsonResult.setCode(1);
+//                jsonResult.setMsg("request time out!");
+//                dataServerTask.setStatus(-1);
+//                dataServerTaskDao.insert(dataServerTask);
+//                return jsonResult;
+//            }
+
+
+        String json = postParams.toJSONString();
+        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+        HttpPost post = new HttpPost(url);
+        StringEntity postingString = new StringEntity(json,"UTF-8");// json传递
+        post.setEntity(postingString);
+        post.setHeader("Content-type", "application/json");
+        HttpResponse response = null;
+        try {
+            response = httpClient.execute(post);
+        }catch (ResourceAccessException e){
+            jsonResult.setCode(1);
+            dataServerTask.setStatus(-1);
+            dataServerTaskDao.insert(dataServerTask);
+            jsonResult.setMsg("request time out!");
+            return jsonResult;
         }
-        if(!dataType.equals("onlineData")){
-            log.info(url);
-            //调用url
-            RestTemplate restTemplate = new RestTemplate();
-            try {
-                response = restTemplate.getForObject(url,String.class);
-            }catch (ResourceAccessException e){
-                jsonResult.setCode(1);
-                dataServerTask.setStatus(-1);
-                dataServerTaskDao.insert(dataServerTask);
-                jsonResult.setMsg("request time out!");
-                return jsonResult;
-            }
-        }
+        String content = EntityUtils.toString(response.getEntity());
+// Log.i("test",content);
+        System.out.println(content);
+        JSONObject resp = JSON.parseObject(content);
+
+//        }
+//        if(!dataType.equals("onlineData")){
+//            log.info(url);
+//            //调用url
+//            RestTemplate restTemplate = new RestTemplate();
+//            try {
+//                response = restTemplate.getForObject(url,String.class);
+//            }catch (ResourceAccessException e){
+//                jsonResult.setCode(1);
+//                dataServerTask.setStatus(-1);
+//                dataServerTaskDao.insert(dataServerTask);
+//                jsonResult.setMsg("request time out!");
+//                return jsonResult;
+//            }
+//        }
         log.info(response + "");
-        if(!dataType.equals("localData")) {
-            JSONObject resp = JSON.parseObject(response);
+//        if(!dataType.equals("localData")) {
+//            JSONObject resp = JSON.parseObject(response);
+//            //捕获sdk错误
+            if (resp.getString("code").equals("-1")){
+                jsonResult.setMsg("code:-1,message:err");
+                jsonResult.setCode(-2);
+                jsonResult.setData(resp);
+
+                dataServerTask.setPermission("private");
+                dataServerTask.setStatus(-1);//运行失败
+
+                dataServerTaskDao.insert(dataServerTask);
+                return jsonResult;
+            }
+//
             urlRes = resp.getString("url");
-        }else {
-            //解析xml，获取下载链接
-            //将string串读取为xml
-            Document configXML = DocumentHelper.parseText(response);
-            //获取根元素
-            Element root = configXML.getRootElement();
-            urlRes = root.element("uid").getText();
-        }
+//        }
+//        else {
+//            //解析xml，获取下载链接
+//            //将string串读取为xml
+//            Document configXML = DocumentHelper.parseText(response);
+//            //获取根元素
+//            Element root = configXML.getRootElement();
+//            urlRes = root.element("uid").getText();
+//        }
         //运行成功后，将信息存储到dataTask中
         //ip 与 port暂时不设
         Date date1 = new Date();

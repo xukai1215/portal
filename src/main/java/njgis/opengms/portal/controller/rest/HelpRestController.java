@@ -2,6 +2,7 @@ package njgis.opengms.portal.controller.rest;
 
 import njgis.opengms.portal.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,7 +21,16 @@ public class HelpRestController {
     public ModelAndView getDemo(HttpServletRequest req) {
         System.out.println("demo");
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("demo");
+        modelAndView.setViewName("demoNew");
+        modelAndView.addObject("name","OpenGMS");
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/demo/{item}", method = RequestMethod.GET)
+    public ModelAndView demoDocument(HttpServletRequest req) {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("demoDocument");
         modelAndView.addObject("name","OpenGMS");
 
         return modelAndView;
@@ -55,11 +65,11 @@ public class HelpRestController {
         return modelAndView;
     }
 
-    @RequestMapping(value = "/supportDocument/{item}", method = RequestMethod.GET)
-    public ModelAndView supportDocument(HttpServletRequest req) {
+    @RequestMapping(value = "/support/{item}", method = RequestMethod.GET)
+    public ModelAndView supportDocument(@PathVariable("item") String item, HttpServletRequest req) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("supportDocument");
-        modelAndView.addObject("name","OpenGMS");
+        modelAndView.addObject("name",item.replace("_"," "));
 
         return modelAndView;
     }

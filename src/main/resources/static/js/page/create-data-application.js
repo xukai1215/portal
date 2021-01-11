@@ -83,6 +83,8 @@ var createDataApplication = Vue.extend({
             userDataList:[],
             authorDataList:[],
             dialogVisible: false,
+            testDataPath:'',
+            packagePathContainer:'',
             bindDataVisible: true,
         }
     },
@@ -249,8 +251,6 @@ var createDataApplication = Vue.extend({
             this.ScreenMinHeight = (height) + "px";
             this.ScreenMaxHeight = (height) + "px";
             this.IframeHeight = (height - 330) + "px";
-
-            $("#keyWords").tagEditor('destory');      // 关键字的标签
 
             let resizeTimer = null;
             let that = this
@@ -444,6 +444,7 @@ var createDataApplication = Vue.extend({
         if ((oid === "0") || (oid === "") || (oid === null)|| (oid === undefined)) {
 
             $("#subRteTitle").text("/Create Data Method");
+            $("#keyWords").tagEditor()
 
             initTinymce('textarea#dataApplicationText')
 
@@ -451,6 +452,7 @@ var createDataApplication = Vue.extend({
         else {
             $("#subRteTitle").text("/Modify Data Application");
             // document.title="Modify Data Application | OpenGMS";
+            let that = this
             $.ajax({
                 url: "/dataApplication/getInfo/" + oid,
                 type: "get",
@@ -461,18 +463,29 @@ var createDataApplication = Vue.extend({
                     console.log(result)
                     var basicInfo = result.data;
                     if(basicInfo.resourceJson!=null)
-                        this.resources=basicInfo.resourceJson;
+                        that.resources=basicInfo.resourceJson;
 
-                    // this.dataApplication.bindModelItem=basicInfo.relateModelItemName;
-                    // this.dataApplication.bindOid=basicInfo.relateModelItem;
+                    // that.dataApplication.bindModelItem=basicInfo.relateModelItemName;
+                    // that.dataApplication.bindOid=basicInfo.relateModelItem;
 
                     let classificationId = basicInfo.classifications;
-                    this.dataApplication.url = basicInfo.url;
-                    this.dataApplication.contentType = basicInfo.contentType;
+                    that.dataApplication.url = basicInfo.url;
+                    that.dataApplication.contentType = basicInfo.contentType;
 
-                    this.$refs.tree.setCheckedKeys(basicInfo.classifications);
-                    this.clsStr=basicInfo.categorys;
-                    this.dataApplication.status=basicInfo.status;
+                    that.selectedFile = basicInfo.testData;
+                    that.dataApplication.keywords = basicInfo.keywords
+                    if(that.dataApplication.keywords){
+                        $('#keyWords').tagEditor({
+                            initialTags:that.dataApplication.keywords ,
+                            delimiter: ', ', /* 空格和逗号 */
+                            placeholder: 'Enter tags ...'
+                        });
+                    }
+                    else $("#keyWords").tagEditor()
+
+                    // that.$refs.tree.setCheckedKeys(basicInfo.classifications);
+                    // that.clsStr=basicInfo.categorys;
+                    that.dataApplication.status=basicInfo.status;
 
                     $(".providers").children(".panel").remove();
 
@@ -549,8 +562,8 @@ var createDataApplication = Vue.extend({
                         }
                     }
 
-                    this.dataApplication.name=basicInfo.name;
-                    this.dataApplication.description=basicInfo.description
+                    that.dataApplication.name=basicInfo.name;
+                    that.dataApplication.description=basicInfo.description
 
                     // $("#nameInput").val(basicInfo.name);
                     // $("#descInput").val(basicInfo.description)
@@ -657,15 +670,35 @@ var createDataApplication = Vue.extend({
             this.dataApplication.type = "process";
             // this.dataApplication.method = this.method;
             let testData = [];
+            let dataUrls = [];
             for(let item of this.selectedFile){
                 let obj = new Object();
                 obj.oid = item.id;
                 obj.url = item.url;
+                dataUrls.push(item.url);
                 testData.push(obj);
             }
+
             this.dataApplication.testData = testData;
+            let dataForm = new FormData();
+            dataForm.append("datafileUrl", dataUrls)
+            $.ajax({
+                url:"http://172.21.213.111:8082/dataDownloadContainer/",
+                type:"POST",
+                data:dataForm,
+                cache: false,
+                processData: false,
+                contentType: false,
+                async: false
+            }).done((res) => {
+                if(res.code === 0){
+                    // console.log(res.data);
+                    that.testDataPath = res.data;
+                }
+                console.log(res.data);
+            })
 
-
+            this.dataApplication.testDataPath = this.testDataPath;
             userspace.getUserData($("#providersPanel .user-contents .form-control"), this.dataApplication.authorship);
 
             // //重点在这里 如果使用 var data = {}; data.inputfile=... 这样的方式不能正常上传
@@ -675,6 +708,28 @@ var createDataApplication = Vue.extend({
                 this.formData.append("resources",this.fileArray[i]);
             }
 
+            let dataForm2 = new FormData();
+            for(i=0;i<this.fileArray.length;i++){
+                dataForm2.append("resources",this.fileArray[i]);
+            }
+            $.ajax({
+                url:"http://172.21.213.111:8082/dataDownloadAndCpmpress/",
+                type:"POST",
+                data:dataForm2,
+                cache: false,
+                processData: false,
+                contentType: false,
+                async: false
+            }).done((res) => {
+                if(res.code === 0){
+                    // console.log(res.data);
+                    that.packagePathContainer = res.data;
+                }
+                console.log(res.data);
+            })
+            this.dataApplication.packagePathContainer = this.packagePathContainer;
+
+            //暂时注释一下，过会解开
             if ((oid === "0") || (oid === "") || (oid == null)) {
 
                 let file = new File([JSON.stringify(this.dataApplication)],'ant.txt',{

@@ -3,7 +3,7 @@ var vue = new Vue({
         data(){
             return{
                 ScreenMinHeight: "0px",
-                docIndex:1,
+                docIndex:0,
 
                 docLoading:false,
 
@@ -12,22 +12,35 @@ var vue = new Vue({
         },
         methods:{
             showDoc(index){
-                this.docIndex=index;
-                this.docLoading=true
-                $('html,body').animate({scrollTop: '130px'}, 200);
                 let obj={
-                    1:'Model Resource',
-                    2:'Data Resource',
-                    3:'Model Application',
-                    4:'Task',
-                    5:'Community',
-                    6:'User Space',
+                    1:'Introduce to OpenGMS',
+                    2:'Model Resource',
+                    3:'Data Resource',
+                    4:'Service and Reuse',
+                    5:'Server Nodes',
+                    6:'Community',
+                    7:'Thematic Center',
+                    8:'User'
                 }
-                // this.docTarget=obj[index]
-                setTimeout(()=>{
-                    this.docTarget=obj[index]
-                    this.docLoading=false
-                },110)
+                window.location.href='/help/support/'+obj[index].replaceAll(" ","_");
+                // this.docIndex=index;
+                // this.docLoading=true
+                // $('html,body').animate({scrollTop: '130px'}, 200);
+                // let obj={
+                //     1:'Introduce to OpenGMS',
+                //     2:'Model Resource',
+                //     3:'Data Resource',
+                //     4:'Service and Reuse',
+                //     5:'Server Nodes',
+                //     6:'Community',
+                //     7:'Thematic Center',
+                //     8:'User'
+                // }
+                // // this.docTarget=obj[index]
+                // setTimeout(()=>{
+                //     this.docTarget=obj[index]
+                //     this.docLoading=false
+                // },110)
             },
         },
 
