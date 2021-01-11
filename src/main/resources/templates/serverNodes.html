@@ -44,7 +44,10 @@
 
             <div class="el-row">
                 <h2 class="main-title">Server Nodes</h2>
-                <h4 class="sub-title">OpenGMS</h4>
+                <h4 class="sub-title">OpenGMS's server nodes in the world.</h4>
+                <button id="contributeBtn" class="btn btn-success btn-lg" style="font-size: 15px;margin:10px;"
+                        onclick="window.open('/user/userSpace#/server')">+ Contribute
+                </button>
                 <hr>
             </div>
             <div class="el-row" style="margin-top:20px;font-size: 20px">
@@ -92,7 +95,7 @@
 
                     $.ajax({
                         type: "GET",
-                        url: "/server/serverNodes",
+                        url: "/server/modelContainer/all",
                         data: {},
 
                         crossDomain: true,
@@ -253,6 +256,7 @@
                 //存放城市个数及城市下所在具体计算节点信息
                 var cityCount = [];
                 for (var i = 0; i < infoArray.length; i++) {
+                    let type = infoArray[i].type;
                     var geoJson = infoArray[i].geoJson;
                     var city = geoJson.city;
                     var flag = false;
@@ -261,6 +265,11 @@
                         if (cityCount[j].name === city) {
                             cityCount[j].value += 1;
                             cityCount[j].computerNodeInfos.push(infoArray[i]);
+                            if(type === "model"){
+                                cityCount[j].modelNode += 1;
+                            }else{
+                                cityCount[j].dataNode += 1
+                            }
                             flag = true;
                         }
                     }
@@ -273,6 +282,13 @@
                         cityObj.name = city;
                         cityObj.value = 1;
                         cityObj.computerNodeInfos.push(infoArray[i]);
+                        if(type === "model"){
+                            cityObj.modelNode = 1;
+                            cityObj.dataNode = 0;
+                        }else{
+                            cityObj.modelNode = 0;
+                            cityObj.dataNode = 1;
+                        }
                         cityCount.push(cityObj);
                         geoCoord[city] = [parseFloat(geoJson.longitude), parseFloat(geoJson.latitude)];
 
@@ -297,6 +313,8 @@
                     geoCoord.push(city.value.toString());
                     cityObj.name = city.name;
                     cityObj.value = geoCoord;
+                    cityObj.modelNode = city.modelNode;
+                    cityObj.dataNode = city.dataNode;
                     chartdata.push(cityObj);
                 }
                 myChart.hideLoading();
@@ -329,7 +347,7 @@
                         roam: false,
                         itemStyle: {
                             normal: {
-                                areaColor: '#d8f5e8',
+                                areaColor: '#e8e8e8',
                                 borderColor: '#404a59',
                                 borderWidth: 0.5
                             },
@@ -358,6 +376,20 @@
                                     }
                                 }
                             },
+                            tooltip: {
+                                formatter:function (params) {
+                                    // console.log(params);
+                                    let data = params.data;
+                                    let display = data.name + "<br/>"
+                                    if(data.modelNode != 0) {
+                                        display += "<i style=\"display: inline-block;width: 10px;height: 10px;background: #03a9f4;margin-right: 5px;border-radius: 50%;}\"></i>Compute Node: " + data.modelNode + "<br/>";
+                                    }
+                                    if(data.dataNode != 0) {
+                                        display += "<i style=\"display: inline-block;width: 10px;height: 10px;background: #5cb85c;margin-right: 5px;border-radius: 50%;}\"></i>Data Node: " + data.dataNode + "<br/>";
+                                    }
+                                    return display
+                                }
+                            },
                             itemStyle: {
                                 normal: {
                                     color: '#00c0ff', //标志颜色
@@ -382,6 +414,20 @@
                                     formatter: '{b}',
                                     position: 'right',
                                     show: false
+                                }
+                            },
+                            tooltip: {
+                                formatter:function (params) {
+                                    // console.log(params);
+                                    let data = params.data;
+                                    let display = data.name + "<br/>"
+                                    if(data.modelNode != 0) {
+                                        display += "<i style=\"display: inline-block;width: 10px;height: 10px;background: #03a9f4;margin-right: 5px;border-radius: 50%;}\"></i>Compute Node: " + data.modelNode + "<br/>";
+                                    }
+                                    if(data.dataNode != 0) {
+                                        display += "<i style=\"display: inline-block;width: 10px;height: 10px;background: #5cb85c;margin-right: 5px;border-radius: 50%;}\"></i>Data Node: " + data.dataNode + "<br/>";
+                                    }
+                                    return display
                                 }
                             },
                             itemStyle: {
@@ -489,7 +535,7 @@
             //server
             $.ajax({
                 type: "GET",
-                url: "/server/serverNodes",
+                url: "/server/all",
                 data: {},
 
                 crossDomain: true,
@@ -512,7 +558,7 @@
 <script src="/static/js/common/axios.min.js"></script>
 <script src="/static/js/common/bootstrap.js"></script>
 <script src="/static/element-ui/umd/locale/en.js"></script>
-<script src="/static/js/common/loadUser.js"></script>
+
 <script src="/static/js/common/navbar.js"></script>
 
 

@@ -48,6 +48,27 @@ var userModelServer = Vue.extend(
                 modelContainerList:[],
                 registerModelContainerVisible:false, //addserver控制
                 registerModelContainerActive:0,
+
+                serverView:1,
+
+                nodeContent: [],
+                nodeLoading:false,
+
+                pageOption: {
+                    paginationShow:false,
+                    progressBar: true,
+                    sortAsc: false,
+                    currentPage: 1,
+                    pageSize: 10,
+                    searchText: '',
+                    total: 11,
+                },
+
+                configMac:'',
+
+                nodeEditDialog:false,
+
+                nodeAlias:'',
             }
         },
 
@@ -92,198 +113,169 @@ var userModelServer = Vue.extend(
                 // this.editOid = sessionStorage.getItem('editItemOid');
             },
 
-            //page
-            // 初始化page并显示第一页
-            pageInit() {
-                this.totalPage = Math.floor((this.totalNum + this.pageSize - 1) / this.pageSize);
-                if (this.totalPage < 1) {
-                    this.totalPage = 1;
-                }
-                this.getPageList();
-                this.changePage(1);
-            },
-
-            getPageList() {
-                this.pageList = [];
-
-                if (this.totalPage < 5) {
-                    for (let i = 0; i < this.totalPage; i++) {
-                        this.pageList.push(i + 1);
-                    }
-                } else if (this.totalPage - this.curPage < 5) {//如果总的页码数减去当前页码数小于5（到达最后5页），那么直接计算出来显示
-
-                    this.pageList = [
-                        this.totalPage - 4,
-                        this.totalPage - 3,
-                        this.totalPage - 2,
-                        this.totalPage - 1,
-                        this.totalPage,
-                    ];
-                } else {
-                    let cur = Math.floor((this.curPage - 1) / 5) * 5 + 1;
-                    if (this.curPage % 5 === 0) {
-                        cur = cur + 1;
-
-                    }
-                    this.pageList = [
-                        cur,
-                        cur + 1,
-                        cur + 2,
-                        cur + 3,
-                        cur + 4,
-                    ]
-                }
-            },
-
-            changePage(pageNo) {
-                if ((this.curPage === 1) && (pageNo === 1)) {
-                    return;
-                }
-                if ((this.curPage === this.totalPage) && (pageNo === this.totalPage)) {
-                    return;
-                }
-                if ((pageNo > 0) && (pageNo <= this.totalPage)) {
-                    if (this.curIndex != 1)
-                        this.pageControlIndex = this.curIndex;
-                    else this.pageControlIndex = 'research';
-
-                    this.resourceLoad = true;
-                    this.searchResult = [];
-                    //not result scroll
-                    //window.scrollTo(0, 0);
-                    this.curPage = pageNo;
-                    this.getPageList();
-                    this.page = pageNo;
-
-                    switch (this.pageControlIndex) {
-                        // this.computerModelsDeploy = [];
-                        // this.resourceLoad = true;
-                        // this.curPage = pageNo;
-                        // this.getPageList();
-                        // this.page = pageNo;
-                        // this.getDataItems();
-                        case 2:
-
-                            if (this.isInSearch == 0)
-                                this.getModels();
-                            else this.searchModels();
-                            break;
-                        //
-                        case 3:
-
-                            if (this.isInSearch == 0)
-                                this.getDataItems();
-                            else this.searchDataItem();
-                            break;
-
-                        case 4:
-
-                            if (this.isInSearch == 0)
-                                this.getConcepts();
-                            else this.searchConcepts();
-                            break;
-                        case 5:
-
-                            if (this.isInSearch == 0)
-                                this.getSpatials();
-                            else this.searchSpatials()
-                            break;
-                        case 6:
-
-                            if (this.isInSearch == 0)
-                                this.getTemplates();
-                            else this.searchTemplates();
-                            break;
-                        case 7:
-
-                            if (this.isInSearch == 0)
-                                this.getUnits();
-                            else this.searchUnits();
-                            break;
-
-                        case 7:
-                            if (this.isInSearch == 0)
-                                this.getTheme();
-                            else {}
-                            break;
-
-                        case 9:
-
-                            if (this.isInSearch == 0){
-                                if(this.taskStatus!=10)
-                                    this.showTasksByStatus(this.taskStatus)
-                                else
-                                    this.getModels();
+            refreshUserNodes(){
+                this.nodeLoading = true
+                axios.get('/server/modelContainer/getModelContainerByUserName'
+                ).then(res=>{
+                    this.nodeLoading = false
+                    let data = res.data
+                    if(data.code==-1){
+                        window.location.href="/user/login";
+                    }else{
+                        this.modelContainerList = data.data
+                        for(let container of this.modelContainerList){
+                            if(container.updateDate==undefined||container.updateDate==''){
+                                container.updateDate = container.registerDate
                             }
-
-                            else this.searchModels();
-                            break;
-
-                        case 'research':
-
-                            switch (this.researchIndex) {
-                                case 1:
-                                    this.getArticleResult();
-                                    console.log('article')
-                                    break;
-                                case 2:
-                                    this.getProjectResult();
-                                    break;
-                                case 3:
-                                    this.getConferenceResult();
-                                    break;
-                            }
-                            break;
-
-
-                    }
-                    // if(this.researchIndex==1||this.researchIndex==2||this.researchIndex==3){
-                    //     this.resourceLoad = true;
-                    //     this.searchResult = [];
-                    //     //not result scroll
-                    //     //window.scrollTo(0, 0);
-                    //     this.curPage = pageNo;
-                    //     this.getPageList();
-                    //     this.pageSize=4;
-                    //     this.page = pageNo;
-                    //     this.getResearchItems();
-                    // }
-                    //this.changeCurPage.emit(this.curPage);
-                }
-            },
-
-            creatItem(index){
-                window.sessionStorage.removeItem('editOid');
-                if(index == 1) window.location.href='../model/createModelItem'
-            },
-
-            reloadPage(){//重新装订分页诸元
-                this.pageSize = 10;
-                this.isInSearch = 0;
-                this.page = 1;
-            },
-
-            getServer() {
-                $.ajax({
-                    type: "GET",
-                    url: "/modelContainer/getModelContainerByUserName",
-                    data: {},
-
-                    crossDomain: true,
-                    xhrFields: {
-                        withCredentials: true
-                    },
-                    async: true,
-                    success: (res) => {
-                        if (res.code == -1) {
-                            alert("Please login first!")
-                            window.location.href="/user/login";
-                        } else {
-                            this.modelContainerList = res.data;
                         }
                     }
                 })
             },
+
+            deleteNodeClick(node){
+                 this.$confirm('Are you sure to <b>delete</b> this model container?', 'Tip', {
+                                         type:"warning",
+                                         cancelButtonText: 'Cancel',
+                                         confirmButtonText: 'Confirm',
+                                         dangerouslyUseHTMLString: true,
+                                     }
+                                 ).then(() => {
+                                     this.deleteNode(node);
+                                 } ).catch(()=>{
+                                     return
+                                 });
+            },
+
+            deleteNode(node){
+                let param={
+                    account:node.account,
+                    mac:node.mac
+                }
+                $.ajax({
+                        type: "POST",
+                        url:'/server/modelContainer/remove',
+                        data: param,
+                        cache: false,
+                        async: false,
+
+                        success:res=>{
+                            let data = res.data
+                            this.nodeContent = data.list
+                            this.pageOption.total = data.total
+                            this.refreshUserNodes()
+                        }
+                    }
+
+                )
+            },
+
+
+
+            editNode(container){
+                this.configContainer = container
+                this.nodeEditDialog = true
+                if(container.alias!=undefined&&container.alias!=''){
+                    this.nodeAlias = container.alias
+                }else{
+                    this.nodeAlias = ''
+                }
+            },
+
+            updateNodeAlias(){
+                if(this.nodeAlias.trim()==''){
+                     this.$alert('Please input at least one letter', 'Tip', {
+                              type:"warning",
+                              confirmButtonText: 'OK',
+                              callback: ()=>{
+                                  return
+                              }
+                          }
+                      );
+
+                     return
+                }
+
+                let param={
+                    alias:this.nodeAlias,
+                    mac:this.configContainer.mac
+                }
+                $.ajax({
+                        type: "POST",
+                        url:'/server/modelContainer/setAlias',
+                        data: param,
+                        cache: false,
+                        async: false,
+
+                        success:res=>{
+                            let data = res.data
+                            this.configContainer.alias = data
+                            this.nodeEditDialog = false
+                        }
+                    }
+
+                )
+            },
+
+            changeServerView(index,mac){
+                this.serverView = index
+                if(index==1){
+
+                }else if(index==2){
+                    // this.getNodeContent(mac)
+                    this.configMac = mac
+                    this.pageOption.currentPage = 1
+                    this.getNodeContentByPage(mac)
+                }
+            },
+
+            getNodeContent(mac){
+                let param={
+                    mac:mac
+                }
+                $.ajax({
+                        type: "POST",
+                        url:'/server/modelContainer/getServiceList',
+                        data: param,
+                        cache: false,
+                        async: false,
+
+                        success:res=>{
+                            let data = res.data
+                            this.nodeContent = data
+                        }
+                    }
+
+                )
+            },
+
+            handlePageChange(val){
+                this.pageOption.currentPage = val
+                this.getNodeContentByPage(this.configMac)
+            },
+
+            getNodeContentByPage(mac){
+                let param={
+                    mac:mac,
+                    page:this.pageOption.currentPage,
+                    pageSize:this.pageOption.pageSize
+                }
+                $.ajax({
+                        type: "POST",
+                        url:'/server/modelContainer/getServiceListByPage',
+                        data: param,
+                        cache: false,
+                        async: false,
+
+                        success:res=>{
+                            let data = res.data
+                            this.nodeContent = data.list
+                            this.pageOption.total = data.total
+                        }
+                    }
+
+                )
+            },
+
 
             // editItem(index,oid){
             //     var urls={
@@ -394,8 +386,7 @@ var userModelServer = Vue.extend(
                 })
 
 
-                this.getServer();
-
+                this.refreshUserNodes()
                 //this.getModels();
             });
 

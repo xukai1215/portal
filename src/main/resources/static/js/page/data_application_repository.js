@@ -232,6 +232,7 @@ var data_items = new Vue({
         let index = u.lastIndexOf("\/");
         // that.dataType = u.substring(index+1,u.length);
         this.getData()
+        $('#conversion').click()
         axios.get("/user/load")
             .then((res)=>{
                 that.userName=res.data.name;

@@ -188,16 +188,20 @@
   var currentXml = '';
 
   var DYNA_STYLE={
-    'waiting':'rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;fillColor=#5bbbf2;',
+    'waitingMA':'rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;fillColor=#5bbbf2;strokeColor=#5bbbf2;',
+    'waitingDP':'rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;fillColor=#f6aede;strokeColor=#f6aede;',
     'waitingInput':'rounded=0;shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#f46161;fillColor=#aadcf8;',
     'waitingOutput':'rounded=0;shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#449d44;fillColor=#aadcf8;',
-    'running':'rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;fillColor=#ffd058;',
+    'runningMA':'rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;fillColor=#ffd058;strokeColor=#5bbbf2;',
+    'runningDP':'rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;fillColor=#ffd058;strokeColor=#f6aede;',
     'runningInput':'rounded=0;shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#f46161;fillColor=#ffd058;',
     'runningOutput':'rounded=0;shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#5ac323;fillColor=#ffd058;',
-    'completed':'rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;fillColor=#7ad34e;',
+    'completedMA':'rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;fillColor=#7ad34e;strokeColor=#5bbbf2;',
+    'completedDP':'rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;fillColor=#7ad34e;strokeColor=#f6aede;',
     'completedInput':'rounded=0;shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#449d44;fillColor=#9aee71;',
     'completedOutput':'rounded=0;shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#449d44;fillColor=#9aee71;',
-    'failed':'rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;fillColor=#ef6b6b;',
+    'failedMA':'rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;fillColor=#ef6b6b;strokeColor=#5bbbf2;',
+    'failedDP':'rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;fillColor=#ef6b6b;strokeColor=#f6aede;',
     'failedInput':'rounded=0;shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#f46161;fillColor=#ef6b6b;',
     'failedOutput':'rounded=0;shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#5ac323;fillColor=#ef6b6b;',
   }
@@ -222,10 +226,10 @@
         // let style = cells[i].getStyle()
         // console.log(style)
         if(cells[i].md5!=undefined){
-          cells[i].setStyle(DYNA_STYLE[status]+'strokeColor=#5bbbf2;')
+          cells[i].setStyle(DYNA_STYLE[status+'MA'])
 
         }else if(cells[i].type==='dataService'){
-          cells[i].setStyle(DYNA_STYLE[status]+'strokeColor=#f6aede;')
+          cells[i].setStyle(DYNA_STYLE[status+'DP'])
         }
         else if(cells[i].response==0){
           cells[i].setStyle(DYNA_STYLE[status+'Output'])
@@ -428,6 +432,32 @@
     }
   }
 
+  function setModelView(modelActions,edges){
+    for(let modelAction of modelActions){
+      ui.sidebar.addModelToGraph(modelAction)
+    }
+
+    let cells = graph.getModel().cells;
+    for(let edge of edges){
+      let target = getCells(edge.target,'frontId')
+      let source = getCells(edge.source,'frontId')
+      let parent = graph.getDefaultParent();
+      try{
+        graph.insertEdge(parent, null, '', source, target,  "edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=2;strokeColor=#000066;");
+      }catch (e) {
+
+      }
+    }
+  }
+
+  function getCells(id,text){
+    let cells = graph.getModel().cells;
+    for(let i in cells){
+      if(cells[i][text]===id){
+        return cells[i]
+      }
+    }
+  }
 
   //获得模型
   function getModelListByPage(num) {

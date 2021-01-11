@@ -20,7 +20,16 @@ public class HelpRestController {
     public ModelAndView getDemo(HttpServletRequest req) {
         System.out.println("demo");
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("demo");
+        modelAndView.setViewName("demoNew");
+        modelAndView.addObject("name","OpenGMS");
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/demo/{item}", method = RequestMethod.GET)
+    public ModelAndView demoDocument(HttpServletRequest req) {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("demoDocument");
         modelAndView.addObject("name","OpenGMS");
 
         return modelAndView;
@@ -55,7 +64,7 @@ public class HelpRestController {
         return modelAndView;
     }
 
-    @RequestMapping(value = "/supportDocument/{item}", method = RequestMethod.GET)
+    @RequestMapping(value = "/support/{item}", method = RequestMethod.GET)
     public ModelAndView supportDocument(HttpServletRequest req) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("supportDocument");

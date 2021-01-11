@@ -79,6 +79,8 @@ var userDataServer = Vue.extend(
                 },
 
                 unbindConfirmDialog:false,
+
+                serverView:1,
             }
         },
 
@@ -158,6 +160,7 @@ var userDataServer = Vue.extend(
                         } else {
                             if(res.data == undefined||Object.keys(res.data).length == 0||res.data=='offline'){
                                 this.dataNode.status = 0
+                                this.serverView = 1
                                 this.nodeLoading=false
                             }else{
                                 this.dataNode.baseInfo=res.data
@@ -503,6 +506,10 @@ var userDataServer = Vue.extend(
                         }
                     })
 
+            },
+
+            changeServerView(index){
+                this.serverView = index
             },
 
             sendcurIndexToParent(){

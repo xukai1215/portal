@@ -1522,7 +1522,7 @@ var userDataSpace = Vue.extend(
                     processData: false,
                     contentType: false,
                     async: true,
-                    // timeout:55000,
+                    timeout:321111,
                     onUploadProgress: (progressEvent) => {
                         this.uploadProgress = progressEvent.loaded / progressEvent.total * 100 | 0;  //百分比
                     }

@@ -72,7 +72,12 @@
             border: 0;
         }
 
-
+        .smallLoading .el-icon-loading {
+             font-size: 20px;
+        }
+        .smallLoading .el-loading-spinner {
+             margin-top: -11px;
+        }
     </style>
 </head>
 <body>
@@ -99,22 +104,35 @@
 
                         <el-button type="primary" icon="el-icon-question" @click="showDriver" circle></el-button>
 
-                        <el-button id="loadDataBtn" plain type="primary" @click="loadData(1)"
+                        <el-button v-if="invokable" id="loadDataBtn" plain type="primary" @click="loadData(1)"
                                    style="min-width: 120px">
                             Load data
                         </el-button>
 
 
-                        <el-button id="invokeBtn" plain type="primary" @click="invoke()" style="min-width: 121px">
+                        <el-button v-if="invokable" id="invokeBtn" plain type="primary" @click="invoke()" style="min-width: 121px">
                             <i class="fa fa-hand-spock-o"></i>&nbsp;Invoke
                         </el-button>
+                        <el-tooltip v-else class="item" effect="dark" :content="errorMsg" placement="bottom-start">
+                            <el-button id="invokeBtn" plain type="danger" style="min-width: 121px">
+                                <i class="fa fa-exclamation-circle"></i>&nbsp;Invoke
+                            </el-button>
+                        </el-tooltip>
 
                     </div>
                     <div class="introContent">
                         <h4 class="desc-title">Introduction</h4>
-                        <p class="desc">{{info.modelInfo.des}}</p>
+                        <p class="desc wzhScrollbar" style="max-height: 220px;padding: 5px 10px">{{info.modelInfo.des}}</p>
                         <br>
                         <span class="model_date">Contributed at <span>{{dateFormat(info.modelInfo.date,'yyyy-MM-dd')}}</span></span>
+                    </div>
+                    <div class="flexCol" v-if="taskRunning">
+                        <div class="flexRow" style="padding: 10px 5px;border-top: #b3b3b3 1px solid;">
+                            <div class="smallLoading" style="width: 30px" v-loading="taskRunning" element-loading-spinner="el-icon-loading"></div>
+                            <p class="noMargin">A task of this model is running.</p>
+
+                        </div>
+                        <el-button size="small" type="primary" plain round @click="window.open('/user/userSpace#/task')">Check it in my space</el-button>
                     </div>
                 </div>
             </el-col>
@@ -155,7 +173,7 @@
                         <el-table-column type="expand">
                             <template slot-scope="props">
                                 <div v-if="props.row.contentType=='resource'">
-                                    <el-card v-for="item,key in props.row.dataList"
+                                    <el-card v-for="(item,key) in props.row.dataList"
                                              :title="item.name" class="dataitemisol" shadow="never"
                                              :id="item.url"
                                              :key="key" @click.native="clickData(item,$event)">
@@ -456,7 +474,7 @@
                                                                 <!--circle>-->
                                                                 <!--<i class="fa fa-th-large"></i>-->
                                                                 <!--</el-button>-->
-                                                                <el-button plain round type="success"
+                                                                <el-button plain round type="success" :disabled="taskRunning"
                                                                            @click="checkPersonData(modelInEvent)">
                                                                     <i class="fa fa-folder-open"></i>
                                                                 </el-button>
@@ -688,7 +706,7 @@
                                                     <!--<i class="fa fa-th-large"></i>-->
                                                     <!--</el-button>-->
 
-                                                    <el-button plain round type="success"
+                                                    <el-button plain round type="success" :disabled="taskRunning"
                                                                v-if="scope.row.eventType === 'response' ?true:false"
                                                                @click="checkPersonData(scope.row)">
                                                         <i class="fa fa-folder-open"></i>
@@ -774,10 +792,16 @@
                         <!--item-->
 
                         <el-col :span="3" :offset="21" class="_save-btn">
-                            <el-button plain type="primary" @click="invoke()">
+                            <el-button v-if="invokable" plain type="primary" @click="invoke()">
                                 <i class="fa fa-hand-spock-o"></i>&nbsp;Invoke
                             </el-button>
+                            <el-tooltip v-else class="item" effect="dark" :content="errorMsg" placement="bottom-start">
+                                <el-button id="invokeBtn" plain type="danger" style="min-width: 121px">
+                                    <i class="fa fa-exclamation-circle"></i>&nbsp;Invoke
+                                </el-button>
+                            </el-tooltip>
                         </el-col>
+
 
                         <input type="file" id="uploadInputData" style="display: none;"/>
                         <!--<el-dialog title="Choose Data" :visible.sync="showUpload" width="30%">-->
@@ -1160,7 +1184,7 @@
                                         >
                                             <el-table-column type="expand">
                                                 <template slot-scope="props">
-                                                    <el-card v-for="item,key in props.row.dataList"
+                                                    <el-card v-for="(item,key) in props.row.dataList"
                                                              :title="item.name" class="dataitemisol" shadow="never"
                                                              :id="item.url"
                                                              :key="key" @click.native="clickData(item,$event)">
@@ -1228,7 +1252,7 @@
                                         <el-table-column type="expand">
                                             <template slot-scope="props">
                                                 <div v-if="props.row.contentType=='resource'">
-                                                    <el-card v-for="item,key in props.row.dataList"
+                                                    <el-card v-for="(item,key) in props.row.dataList"
                                                              :title="item.name" class="dataitemisol" shadow="never"
                                                              :id="item.url"
                                                              :key="key" @click.native="clickData(item,$event)">
@@ -1325,7 +1349,7 @@
 
 <!--<script src="/static/js/common/knockout-3.4.2.js"></script>-->
 <script src="/static/js/common/jquery-3.3.1.min.js"></script>
-<script src="/static/js/common/loadUser.js"></script>
+
 <script src="/static/js/common/clipboard.min.js"></script>
 <!--<script src="/static/js/common/jquery.gritter.min.js"></script>-->
 <!--<script src="/static/js/common/lodash.js"></script>-->
@@ -1339,7 +1363,7 @@
 <!--<script type="text/javascript" src="/static/MxGraph/js/mxClient.js"></script>-->
 <!--<script type="text/javascript" src="/static/js/common/computableEditorTest.js"></script>-->
 <script src="/static/js/common/fileinput.js"></script>
-<script src="/static/js/common/loadUser.js"></script>
+
 <script src="/static/js/common/axios.min.js"></script>
 <script type="text/javascript" src="/static/js/common/jquery.tag-editor.js"></script>
 <script src="/static/js/common/bootstrap-tagsinput.js"></script>

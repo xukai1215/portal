@@ -11,22 +11,33 @@ var userTask = Vue.extend(
 
                 //显示控制
                 curIndex: 5,
+                dataCurIndex:5,
 
                 itemIndex: 1,
                 //
                 userInfo: {},
 
                 resourceLoad: false,
+                dataResourceLoad: true,
 
                 //分页控制
                 page: 1,
-                sortAsc: 1,//1 -1
+                sortAsc: -1,//1 -1
                 sortType: "default",
                 pageSize: 10,// 每页数据条数
                 totalPage: 0,// 总页数
                 curPage: 1,// 当前页码
                 pageList: [],
                 totalNum: 0,
+
+                //dataTask分页控制
+                dataSortAsc: 1,//1 -1
+                dataSortType: "default",
+                dataPageSize: 10,// 每页数据条数
+                dataTotalPage: 0,// 总页数
+                dataCurPage: 1,// 当前页码
+                dataPageList: [],
+                dataTotalNum: 0,
 
                 //用户
                 userId: -1,
@@ -35,16 +46,21 @@ var userTask = Vue.extend(
                 itemTitle: 'Model Item',
 
                 searchResult: [],
+                dataSearchResult:[],
+
                 modelItemResult: [],
 
                 searchCount: 0,
                 ScreenMaxHeight: "0px",
                 searchText: "",
+                dataSearchText:"",
 
                 isInSearch: 0,
 
                 //task相关
                 taskStatus: 'all',
+                dataTaskStatus:'all',
+
                 options: [
                     {
                         value: 'all',
@@ -137,6 +153,17 @@ var userTask = Vue.extend(
                 outputMultiFile : [],
                 downloadUrl:'',
                 clipBoard:'',
+
+                dataTaskFindDto:{
+                    page:1,
+                    asc:1,
+                    sort: "default",
+                    pageSize: 10,
+
+                    status:0,
+                    dataSearchText:'',
+                },
+                dataTaskIsWrong:false,
             }
         },
 
@@ -191,6 +218,15 @@ var userTask = Vue.extend(
                 this.changePage(1);
             },
 
+            dataPageInit() {
+                this.dataTotalPage = Math.floor((this.dataTotalNum + this.dataPageSize - 1) / this.dataPageSize);
+                if (this.dataTotalPage < 1) {
+                    this.dataTotalPage = 1;
+                }
+                this.getDataPageList();
+                this.changeDataPage(this.dataCurPage);
+            },
+
             getPageList() {
                 this.pageList = [];
 
@@ -214,6 +250,37 @@ var userTask = Vue.extend(
 
                     }
                     this.pageList = [
+                        cur,
+                        cur + 1,
+                        cur + 2,
+                        cur + 3,
+                        cur + 4,
+                    ]
+                }
+            },
+            getDataPageList() {
+                this.dataPageList = [];
+
+                if (this.dataTotalPage < 5) {
+                    for (let i = 0; i < this.dataTotalPage; i++) {
+                        this.dataPageList.push(i + 1);
+                    }
+                } else if (this.dataTotalPage - this.dataCurPage < 5) {//如果总的页码数减去当前页码数小于5（到达最后5页），那么直接计算出来显示
+
+                    this.dataPageList = [
+                        this.dataTotalPage - 4,
+                        this.dataTotalPage - 3,
+                        this.dataTotalPage - 2,
+                        this.dataTotalPage - 1,
+                        this.dataTotalPage,
+                    ];
+                } else {
+                    let cur = Math.floor((this.curPage - 1) / 5) * 5 + 1;
+                    if (this.curPage % 5 === 0) {
+                        cur = cur + 1;
+
+                    }
+                    this.dataPageList = [
                         cur,
                         cur + 1,
                         cur + 2,
@@ -248,6 +315,12 @@ var userTask = Vue.extend(
                         this.showTasksByStatus(this.taskStatus);
                     else this.searchTasks()
                 }
+            },
+
+            changeDataPage(pageNo) {
+                if(this.dataCurPage === pageNo) return
+                this.dataCurPage = pageNo
+                this.getDataTasks()
             },
 
             // creatItem(index){
@@ -408,9 +481,133 @@ var userTask = Vue.extend(
 
             },
 
+            publishDataTask(task) {
+                const h = this.$createElement;
+                if (task.permission == 'private') {
+                    this.$msgbox({
+                        title: ' ',
+                        message: h('p', null, [
+                            h('span', {style: 'font-size:15px'}, 'All of the users will have'), h('span', {style: 'font-weight:600'}, ' permission '), h('span', 'to this task.'),
+                            h('br'),
+                            h('span', null, 'Are you sure to set the task'),
+                            h('span', {style: 'color: #e6a23c;font-weight:600'}, ' public'),
+                            h('span', null, '?'),
+                        ]),
+                        type: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'confirm',
+                        cancelButtonText: 'cancel',
+                        beforeClose: (action, instance, done) => {
+                            let href = window.location.href.split('/')
+                            let ids = href[href.length - 1]
+                            let taskId = ids.split('&')[1]
+                            if (action === 'confirm') {
+                                instance.confirmButtonLoading = true;
+                                // instance.confirmButtonText = '...';
+                                setTimeout(() => {
+                                    $.ajax({
+                                        type: "POST",
+                                        url: "/task/setDataTaskPublic",
+                                        data: {oid: task.oid},
+                                        async: true,
+                                        contentType: "application/x-www-form-urlencoded",
+                                        success: (json) => {
+                                            if (json.code == -1) {
+                                                alert("Please login first!")
+                                                window.sessionStorage.setItem("history", window.location.href);         // 为什么要存这个东西？
+                                                window.location.href = "/user/login"
+                                            } else {
+                                                // this.rightTargetItem=null;
+                                                task.permission = json.data;
+                                            }
+
+                                        }
+                                    });
+                                    done();
+                                    setTimeout(() => {
+                                        instance.confirmButtonLoading = false;
+                                    }, 100);
+                                }, 100);
+                            } else {
+                                done();
+                            }
+                        }
+                    }).then(action => {
+                        this.rightMenuShow = false
+                        this.$message({
+                            type: 'success',
+                            message: 'This task can be visited by public'
+                        });
+                    });
+                } else {
+                    this.$msgbox({
+                        title: ' ',
+                        message: h('p', null, [
+                            h('span', {style: 'font-size:15px'}, 'Only you have'), h('span', {style: 'font-weight:600'}, ' permission '), h('span', 'to this task.'),
+                            h('br'),
+                            h('span', null, 'Are you sure to'),
+                            h('span', {style: 'color: #67c23a;font-weight:600'}, ' continue'),
+                            h('span', null, '?'),
+                        ]),
+                        type: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'confirm',
+                        cancelButtonText: 'cancel',
+                        beforeClose: (action, instance, done) => {
+                            let href = window.location.href.split('/')
+                            let ids = href[href.length - 1]
+                            let taskId = ids.split('&')[1]
+                            if (action === 'confirm') {
+                                instance.confirmButtonLoading = true;
+                                // instance.confirmButtonText = '...';
+                                setTimeout(() => {
+                                    $.ajax({
+                                        type: "POST",
+                                        url: "/task/setDataTaskPrivate",
+                                        data: {oid: task.oid},
+                                        async: true,
+                                        contentType: "application/x-www-form-urlencoded",
+                                        success: (json) => {
+                                            if (json.code == -1) {
+                                                alert("Please login first!")
+                                                window.sessionStorage.setItem("history", window.location.href);
+                                                window.location.href = "/user/login"
+                                            } else {
+                                                // this.rightTargetItem=null;
+                                                task.permission = json.data;
+                                            }
+
+                                        }
+                                    });
+                                    done();
+                                    setTimeout(() => {
+                                        instance.confirmButtonLoading = false;
+                                    }, 100);
+                                }, 100);
+                            } else {
+                                done();
+                            }
+                        }
+                    }).then(action => {
+                        this.rightMenuShow = false
+                        this.$message({
+                            type: 'success',
+                            message: 'This task has been set private'
+                        });
+                    });
+                }
+
+
+            },
+
             changeTaskStatus(status) {
                 this.taskStatus = status;
                 this.showTasksByStatus(this.taskStatus)
+            },
+
+            changeDataTaskStatus(status) {
+                this.dataTaskStatus = status;
+                this.getDataTasks()
             },
 
             showTasksByStatus(status) {
@@ -508,6 +705,10 @@ var userTask = Vue.extend(
                 })
             },
 
+            searchDataTasks(){
+                this.dataCurPage = 1
+                this.getDataTasks()
+            },
             addOutputToMyData(output,index) {
                 console.log(output)
                 this.outputToMyData = output
@@ -972,7 +1173,6 @@ var userTask = Vue.extend(
 
             downloadSingle(url) {
                 window.open(url);
-
             },
 
             downloadAll(recordId, name, time) {
@@ -1075,6 +1275,17 @@ var userTask = Vue.extend(
                 }else {
                     $('.ab').eq(index).removeClass('transform180')
                     $('.modelRunInfo').eq(index).collapse('hide')
+                }
+
+            },
+
+            expandDataTaskRunInfo(index,$event){
+                if(!$('.ab2').eq(index).hasClass('transform180')){
+                    $('.ab2').eq(index).addClass('transform180')
+                    $('.dataModelRunInfo').eq(index).collapse('show')
+                }else {
+                    $('.ab2').eq(index).removeClass('transform180')
+                    $('.dataModelRunInfo').eq(index).collapse('hide')
                 }
 
             },
@@ -1348,16 +1559,68 @@ var userTask = Vue.extend(
                 this.$emit('com-senduserinfo',userId)
             },
 
+            initDataTaskFindDto(){
+                this.dataResourceLoad = true
+                this.dataSearchResult = []
+
+                this.dataTaskFindDto.page = this.dataCurPage
+                this.dataTaskFindDto.asc = this.dataSortAsc === 1? true: false
+                this.dataTaskFindDto.sort = this.dataSortType
+                this.dataTaskFindDto.pageSize = this.dataPageSize
+
+                if(this.dataTaskStatus === 'all'){      // status字段： started: 1,  finished: 2,  inited: 0,   error: -1, 目前只用到了2 和 -1
+                    this.dataTaskFindDto.status = 0
+                } else if (this.dataTaskStatus === 'successful'){
+                    this.dataTaskFindDto.status = 2
+                } else if(this.dataTaskStatus === 'calculating'){
+                    this.dataTaskFindDto.status = -1
+                }
+                this.dataTaskFindDto.searchText = this.dataSearchText
+                this.dataTaskFindDto.sortField = this.dataSortType
+            },
+
+            getDataTasks(){     // 一些数据有问题，现在还没有解决
+                this.initDataTaskFindDto()
+                let that = this
+                console.log(this.dataTaskFindDto)
+                axios.post('/task/getDataTasks', that.dataTaskFindDto)
+                    .then(res=>{
+                        setTimeout(()=>{
+                            that.dataSearchResult = res.data.data.list
+                            that.dataTotalNum = res.data.data.totalNum
+                            that.dataTaskIsWrong = false
+                            try {
+                                for(let i=0;i<that.dataSearchResult.length;++i){
+                                    console.log(that.dataSearchResult[i].input.input instanceof Array)
+                                    if(!(that.dataSearchResult[i].input.input instanceof Array)){
+                                        that.dataSearchResult[i].input.input = JSON.parse(that.dataSearchResult[i].input.input)
+                                    }
+                                    if(!(that.dataSearchResult[i].output.output instanceof Array)) {
+                                        let temp = that.dataSearchResult[i].output.output
+                                        that.dataSearchResult[i].output.output = []
+                                        that.dataSearchResult[i].output.output.push({'url': temp})
+                                    }
+                                }
+                            } catch (err){
+                                console.log(err)
+                            }
+                            that.dataResourceLoad = false
+                            that.dataPageInit()
+                        })
+                    })
+                // input对象可能就是一个字符串，output的字符串里面可能就一个url
+            }
 
         },
 
 
-        created() {
-
-
-        },
+        // created() {
+        //
+        //
+        // },
 
         mounted() {
+            this.getDataTasks()
             this.clipBoard = new ClipboardJS(".copyLinkBtn");
             $(() => {
 

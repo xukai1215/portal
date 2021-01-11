@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Support | OpenGMS</title>
+
+
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/index/bootstrap.min.css" />
+    <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
+    <link rel="stylesheet" href="/static/css/base/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/common/fluent/fluent.css">
+    <link rel="stylesheet" href="/static/css/base/style.css">
+    <link rel="stylesheet" href="/static/css/base/universal.css">
+    <link rel="stylesheet" href="/static/css/common/wzhStyle.css">
+    <link rel="stylesheet" href="/static/css/common/wzhFlexContainer.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css" />
+    <style>
+        .cardborder{
+            border: solid 1px #dedede;
+            /*border: solid 1px #00c0ff;*/
+            border-radius: 10px
+        }
+        .cardimg{
+            height: 35%;
+            align-self: center;
+            margin-top: 15%;
+            margin-bottom: 13%;
+            
+        }
+    </style>
+
+</head>
+<body style="">
+    <!--<h1 th:text="${name}">Hello World</h1>-->
+    <div id="app">
+        <div th:replace="fragments/navbar :: unlog"></div>
+        <div class="titleSection" style="background-image: url('../static/img/support5.jpg');background-position-y:  -400px">
+            <div class="fullMask text-center" style="color: whitesmoke"><br><br>
+                <h2>Demo</h2>
+                <h3>
+                    Some examples about how to use OpenGMS.
+                </h3>
+            </div>
+        </div>
+<!--        <img class="imgAsTitle" src="../static/img/support2.png" style="">-->
+        <div class="clearfix" style="position: relative;" :style="{'min-height':ScreenMinHeight}">
+            <div class="grey95" >
+                <div class="col-lg-10 col-lg-offset-1 col-md-12">
+                    <div class="flexJustAround" style="width: 100%;">
+<!--                        <div class="innerBorder"></div>-->
+<!--                        <h4 style="font-size: 22px">Common Functions</h4>-->
+<!--                        <div class="innerBorder"></div>-->
+                    </div>
+                    <div class="detail">
+                        <el-row >
+                            <el-row justify="center" type="flex" :gutter="20" style="margin: 20px">
+                                <el-col :span="4" style="border: 1px black">
+                                    <div class="flexCol flexColCenter cursorPointer quickToolsCard cardborder" :class="docIndex==1?'cardHover':''"
+                                         style="height: 200px;" @click="showDoc(1)">
+                                        <img class="cardimg" src="/static/img/supportpics/1.png" />
+                                        <h4 class="h_lite">Introduce to OpenGMS</h4>
+                                    </div>
+                                </el-col>
+                                <el-col :span="4" >
+
+                                        <div class="flexCol flexColCenter cursorPointer quickToolsCard cardborder" :class="docIndex==2?'cardHover':''"
+                                             style="height: 200px" @click="showDoc(2)">
+                                            <img class="cardimg" src="/static/img/supportpics/2.png"  />
+                                            <h4 class="h_lite">Model Resource</h4>
+                                        </div>
+
+                                </el-col>
+                                <el-col :span="4">
+                                    <div class="flexCol flexColCenter cursorPointer quickToolsCard cardborder" :class="docIndex==3?'cardHover':''"
+                                         style="height: 200px" @click="showDoc(3)">
+                                        <img class="cardimg" src="/static/img/supportpics/3.png"  />
+                                        <h4 class="h_lite">Data Resource</h4>
+                                    </div>
+                                </el-col>
+                            </el-row>
+
+                            <el-row justify="center" type="flex" :gutter="20" style="margin: 20px">
+                                <el-col :span="4">
+                                    <div class="flexCol flexColCenter cursorPointer quickToolsCard cardborder" :class="docIndex==4?'cardHover':''"
+                                         style="height: 200px" @click="showDoc(4)">
+                                        <img class="cardimg" src="/static/img/supportpics/4.png"  />
+
+                                        <h4 class="h_lite">Service and Reuse</h4>
+                                    </div>
+                                </el-col>
+                                <el-col :span="4">
+                                    <div class="flexCol flexColCenter cursorPointer quickToolsCard cardborder" :class="docIndex==5?'cardHover':''"
+                                         style="height: 200px" @click="showDoc(5)">
+                                        <img class="cardimg" src="/static/img/supportpics/5.png"  />
+                                        <h4 class="h_lite">Server Nodes</h4>
+                                    </div>
+                                </el-col>
+                                <el-col :span="4">
+                                    <div class="flexCol flexColCenter cursorPointer quickToolsCard cardborder" :class="docIndex==6?'cardHover':''"
+                                         style="height: 200px" @click="showDoc(6)">
+                                        <img class="cardimg" src="/static/img/supportpics/6.png"  />
+                                        <h4 class="h_lite">Community</h4>
+                                    </div>
+                                </el-col>
+
+                            </el-row >
+
+                            <el-row justify="center" type="flex" :gutter="20" style="margin: 20px">
+                                <el-col :span="4" >
+                                    <div class="flexCol flexColCenter cursorPointer quickToolsCard cardborder" :class="docIndex==7?'cardHover':''"
+                                         style="height: 200px;" @click="showDoc(6)">
+                                        <img class="cardimg" src="/static/img/supportpics/7.png"  />
+                                        <h4 class="h_lite">Thematic Center</h4>
+                                    </div>
+                                </el-col>
+                                <el-col :span="4">
+                                    <div class="flexCol flexColCenter cursorPointer quickToolsCard cardborder" :class="docIndex==8?'cardHover':''"
+                                         style="height: 200px" @click="showDoc(6)">
+                                        <img class="cardimg" src="/static/img/supportpics/8.png"  />
+                                        <h4 class="h_lite">User</h4>
+                                    </div>
+                                </el-col>
+
+                            </el-row>
+
+                        </el-row>
+                    </div>
+                </div>
+            </div>
+
+<!--            <div class="clearfix"  style="padding-top: 20px;margin-bottom: 35px">-->
+<!--                <div class="col-lg-10 col-lg-offset-1 col-md-12">-->
+<!--                    <div class="flexJustAround" style="width: 100%;">-->
+<!--                        &lt;!&ndash;                        <div class="innerBorder"></div>&ndash;&gt;-->
+<!--                        <h4 style="font-size: 22px">Support Documents</h4>-->
+<!--                        &lt;!&ndash;                        <div class="innerBorder"></div>&ndash;&gt;-->
+<!--                    </div>-->
+<!--                    <div style="margin-top: 10px">-->
+<!--                        <el-row :gutter="20">-->
+<!--                            <el-col :span="12">-->
+<!--                                <div class="flexCol flexColCenter cursorPointer quickToolsCard"-->
+<!--                                     style="height: 200px;background-color: #fbfbfa" v-loading="docLoading" @click="window.location.href='/help/supportDocument/modelitem'">-->
+<!--                                    <h2 class="h_lite">Tips </h2>-->
+<!--                                    <h4 class="h_lite">about {{docTarget}}</h4>-->
+<!--                                </div>-->
+<!--                            </el-col>-->
+<!--                            <el-col :span="12">-->
+<!--                                <div class="flexCol flexColCenter cursorPointer quickToolsCard"-->
+<!--                                     style="height: 200px;background-color: #fbfbfa" v-loading="docLoading">-->
+<!--                                    <h2 class="h_lite">FAQ<span>s</span></h2>-->
+<!--                                    <el-button>aa</el-button>-->
+<!--                                </div>-->
+<!--                            </el-col>-->
+<!--                        </el-row>-->
+<!--                    </div>-->
+<!--                 </div>-->
+<!--            </div>-->
+        </div>
+
+        <div th:replace="fragments/footer :: footer"></div>
+    </div>
+</body>
+<script src="/static/js/common/jquery-3.3.1.min.js"></script>
+<script src="/static/js/common/vue.min.js"></script>
+<script src="/static/js/index/bootstrap.min.js"></script>
+<script src="/static/js/common/axios.min.js"></script>
+<script src="/static/element-ui/index.js"></script>
+
+<script src="/static/element-ui/umd/locale/en.js"></script>
+<script src="/static/js/page/demoNew.js"></script>
+<script src="/static/js/common/navbar.js"></script>
+
+</html>

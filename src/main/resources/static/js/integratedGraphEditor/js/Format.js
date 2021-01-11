@@ -517,6 +517,10 @@ Format.prototype.refresh = function()
             mxUtils.write(label, mxResources.get('inputEvent'));
             label.style.borderLeftWidth = '0px';
             label.style.fontSize = '16px';
+			// if(this.checkCellRepeat(targetCell.eventId,'eventId')){
+			// 	  alert('You have selected this input yet')
+			// 	  return
+			// }
 
 			let panel = document.getElementsByClassName('geSidebarContainer geFormatContainer')[0]
 			panel.style.width = '240px'
@@ -530,9 +534,15 @@ Format.prototype.refresh = function()
 
             addClickHandler(label, div, idx++);
 		}else if(graph.getSelectionModel().cells[0].response == false){
+        	let targetCell = graph.getSelectionModel().cells[0]
+
             mxUtils.write(label, mxResources.get('outputEvent'));
             label.style.borderLeftWidth = '0px';
             label.style.fontSize = '16px';
+			// if(this.checkCellRepeat(targetCell.eventId,'eventId')){
+			// 	alert('You have selected this output yet')
+			// 	return
+			// }
 
 			let panel = document.getElementsByClassName('geSidebarContainer geFormatContainer')[0]
 			panel.style.width = '240px'
@@ -5816,6 +5826,12 @@ EventPanel.prototype.addinputData = function(div,inputData,model){
         event.style.margin = '0px';
         div.appendChild(event);
 
+        console.log(inputData[i].name)
+		// if(Format.prototype.checkCellRepeat(inputData[i].eventId,'eid',ui.editor.graph)){
+		// 	  // alert('You have selected this input yet')
+		// 	  return
+		// }
+
         event = ui.sidebar.createEventVertexTemplate('shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeWidth=2;strokeColor=#003366;fillColor=none;', 170, 50, inputData[i].eventName, null, null, null,true, model,true,inputData[i]);
 
         div.appendChild(event);
@@ -6718,4 +6734,13 @@ Format.prototype.changePageSize = function (sizeIndex){
 	change.ignoreImage = true;
 
 	graph.model.execute(change);
+}
+
+Format.prototype.checkCellRepeat = function(id,text,graph){//检查拖入的event是否重复
+	var cells = graph.getModel().cells;
+	for(let i in cells){
+		if(cells[i][text]==id)
+			return true
+	}
+	return false
 }

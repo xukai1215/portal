@@ -635,7 +635,7 @@
 
 
                                 </div>
-                                <div class="modelRelationGraphSideBar_right" style="position: absolute;right:0;top:40px;height:500px;width:130px;z-index: 999;background-color: #cacaca38;padding:15px;border-radius: 10px;">
+                                <div class="modelRelationGraphSideBar_right" style="position: absolute;right:0;top:40px;height:auto;width:130px;z-index: 999;background-color: #cacaca38;padding:15px;border-radius: 10px;">
                                     <label>Node Label</label><br/>
                                     <el-switch
                                         v-model="nodeLabelShow"
@@ -667,7 +667,6 @@
                                             inactive-text="Off"
                                             @change="lineColorShowChange">
                                     </el-switch>
-                                    <hr style="border-color: #00b9ff;"/>
                                 </div>
                                 <div id="modelRelationGraph" style="height:100%;"></div>
                             </div>
@@ -1615,7 +1614,7 @@
 <script src="/static/js/common/qrcode.min.js"></script>
 <script src="/static/js/tinymce_5.3.2/tinymce/js/tinymce/tinymce.min.js"></script>
 <script src="/static/js/page/model_item_info.js"></script>
-<script src="/static/js/common/loadUser.js"></script>
+
 <script src="/static/js/common/copy.js"></script>
 <script src="/static/js/common/bootstrap.min.js"></script>
 <script src="/static/element-ui/umd/locale/en.js"></script>
