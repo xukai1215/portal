@@ -131,33 +131,33 @@
                 </div>
             </div>
 
-            <div class="clearfix"  style="padding-top: 20px;margin-bottom: 35px">
-                <div class="col-lg-10 col-lg-offset-1 col-md-12">
-                    <div class="flexJustAround" style="width: 100%;">
-                        <!--                        <div class="innerBorder"></div>-->
-                        <h4 style="font-size: 22px">Support Documents</h4>
-                        <!--                        <div class="innerBorder"></div>-->
-                    </div>
-                    <div style="margin-top: 10px">
-                        <el-row :gutter="20">
-                            <el-col :span="12">
-                                <div class="flexCol flexColCenter cursorPointer quickToolsCard"
-                                     style="height: 200px;background-color: #fbfbfa" v-loading="docLoading" @click="window.location.href='/help/supportDocument/modelitem'">
-                                    <h2 class="h_lite">Tips </h2>
-                                    <h4 class="h_lite">about {{docTarget}}</h4>
-                                </div>
-                            </el-col>
-                            <el-col :span="12">
-                                <div class="flexCol flexColCenter cursorPointer quickToolsCard"
-                                     style="height: 200px;background-color: #fbfbfa" v-loading="docLoading">
-                                    <h2 class="h_lite">FAQ<span>s</span></h2>
-                                    <el-button>aa</el-button>
-                                </div>
-                            </el-col>
-                        </el-row>
-                    </div>
-                 </div>
-            </div>
+            <!--<div class="clearfix"  style="padding-top: 20px;margin-bottom: 35px">-->
+                <!--<div class="col-lg-10 col-lg-offset-1 col-md-12">-->
+                    <!--<div class="flexJustAround" style="width: 100%;">-->
+                        <!--&lt;!&ndash;                        <div class="innerBorder"></div>&ndash;&gt;-->
+                        <!--<h4 style="font-size: 22px">Support Documents</h4>-->
+                        <!--&lt;!&ndash;                        <div class="innerBorder"></div>&ndash;&gt;-->
+                    <!--</div>-->
+                    <!--<div style="margin-top: 10px">-->
+                        <!--<el-row :gutter="20">-->
+                            <!--<el-col :span="12">-->
+                                <!--<div class="flexCol flexColCenter cursorPointer quickToolsCard"-->
+                                     <!--style="height: 200px;background-color: #fbfbfa" v-loading="docLoading" @click="window.location.href='/help/supportDocument/modelitem'">-->
+                                    <!--<h2 class="h_lite">Tips </h2>-->
+                                    <!--<h4 class="h_lite">about {{docTarget}}</h4>-->
+                                <!--</div>-->
+                            <!--</el-col>-->
+                            <!--<el-col :span="12">-->
+                                <!--<div class="flexCol flexColCenter cursorPointer quickToolsCard"-->
+                                     <!--style="height: 200px;background-color: #fbfbfa" v-loading="docLoading">-->
+                                    <!--<h2 class="h_lite">FAQ<span>s</span></h2>-->
+                                    <!--<el-button>aa</el-button>-->
+                                <!--</div>-->
+                            <!--</el-col>-->
+                        <!--</el-row>-->
+                    <!--</div>-->
+                 <!--</div>-->
+            <!--</div>-->
         </div>
 
         <div th:replace="fragments/footer :: footer"></div>
