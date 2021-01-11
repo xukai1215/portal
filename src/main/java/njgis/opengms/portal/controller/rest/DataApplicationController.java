@@ -289,15 +289,15 @@ public class DataApplicationController {
 
         }
 
-        List<String> cates = new ArrayList<>();
-        cates = dataApplication.getClassifications();
-        List<String> categorys = new ArrayList<>();
-        for(String cate : cates){
-            DataCategorys dataCategorys = dataItemService.getCategoryById(cate);
-            categorys.add(dataCategorys.getCategory());
-        }
-
-        dataApplication.setCategorys(categorys);
+        // List<String> cates = new ArrayList<>();          // 现在的 dataMethods 没有分类了
+        // cates = dataApplication.getClassifications();
+        // List<String> categorys = new ArrayList<>();
+        // for(String cate : cates){
+        //     DataCategorys dataCategorys = dataItemService.getCategoryById(cate);
+        //     categorys.add(dataCategorys.getCategory());
+        // }
+        //
+        // dataApplication.setCategorys(categorys);
 
         dataApplication.setResourceJson(resourceArray);
 

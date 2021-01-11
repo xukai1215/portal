@@ -50,6 +50,7 @@ import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import static jdk.internal.org.objectweb.asm.Type.getType;
 import static njgis.opengms.portal.utils.DataApplicationUtil.deleteFolder;
 import static njgis.opengms.portal.utils.DataApplicationUtil.zipUncompress;
 import static njgis.opengms.portal.utils.Utils.deleteFile;
@@ -426,6 +427,9 @@ public class DataApplicationService {
             dataApplication.setDescription(jsonObject.getString("description"));
             dataApplication.setContentType(jsonObject.getString("contentType"));
             dataApplication.setUrl(jsonObject.getString("url"));
+            System.out.println(jsonObject.get("keywords"));
+            dataApplication.setKeywords((List<String>)jsonObject.get("keywords"));
+            dataApplication.setTestData((List)jsonObject.get("testData"));
 
             JSONArray jsonArray = jsonObject.getJSONArray("authorship");
             List<AuthorInfo> authorship = new ArrayList<>();
