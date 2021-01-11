@@ -83,6 +83,8 @@ var createDataApplication = Vue.extend({
             userDataList:[],
             authorDataList:[],
             dialogVisible: false,
+            testDataPath:'',
+            packagePathContainer:'',
         }
     },
     methods: {
@@ -651,15 +653,35 @@ var createDataApplication = Vue.extend({
             this.dataApplication.type = "process";
             // this.dataApplication.method = this.method;
             let testData = [];
+            let dataUrls = [];
             for(let item of this.selectedFile){
                 let obj = new Object();
                 obj.oid = item.id;
                 obj.url = item.url;
+                dataUrls.push(item.url);
                 testData.push(obj);
             }
+
             this.dataApplication.testData = testData;
+            let dataForm = new FormData();
+            dataForm.append("datafileUrl", dataUrls)
+            $.ajax({
+                url:"http://172.21.213.111:8082/dataDownloadContainer/",
+                type:"POST",
+                data:dataForm,
+                cache: false,
+                processData: false,
+                contentType: false,
+                async: false
+            }).done((res) => {
+                if(res.code === 0){
+                    // console.log(res.data);
+                    that.testDataPath = res.data;
+                }
+                console.log(res.data);
+            })
 
-
+            this.dataApplication.testDataPath = this.testDataPath;
             userspace.getUserData($("#providersPanel .user-contents .form-control"), this.dataApplication.authorship);
 
             // //重点在这里 如果使用 var data = {}; data.inputfile=... 这样的方式不能正常上传
@@ -669,6 +691,28 @@ var createDataApplication = Vue.extend({
                 this.formData.append("resources",this.fileArray[i]);
             }
 
+            let dataForm2 = new FormData();
+            for(i=0;i<this.fileArray.length;i++){
+                dataForm2.append("resources",this.fileArray[i]);
+            }
+            $.ajax({
+                url:"http://172.21.213.111:8082/dataDownloadAndCpmpress/",
+                type:"POST",
+                data:dataForm2,
+                cache: false,
+                processData: false,
+                contentType: false,
+                async: false
+            }).done((res) => {
+                if(res.code === 0){
+                    // console.log(res.data);
+                    that.packagePathContainer = res.data;
+                }
+                console.log(res.data);
+            })
+            this.dataApplication.packagePathContainer = this.packagePathContainer;
+
+            //暂时注释一下，过会解开
             if ((oid === "0") || (oid === "") || (oid == null)) {
 
                 let file = new File([JSON.stringify(this.dataApplication)],'ant.txt',{

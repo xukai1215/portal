@@ -348,7 +348,7 @@ public class DataApplicationService {
                 dataApplicationDao.insert(dataApplication);
 
                 //部署服务
-                JsonResult deployRes = deployDataPrepare(dataApplication);
+                JsonResult deployRes = deployPackage(dataApplication, dataApplication.getTestDataPath());
                 if (deployRes.getCode() == -1){
                     result.put("code", -2);
                 }else {
@@ -512,9 +512,11 @@ public class DataApplicationService {
      * @param dataApplication 待部署的DataApplication
      * @return 是否成功部署
      */
+    //此接口废弃，已在前台准备好数据
     public JsonResult deployDataPrepare(DataApplication dataApplication) throws Exception {
         JsonResult jsonResult = new JsonResult();
         //post file 部署file
+//        String testDataPath = dataApplication.getTestDataPath();//测试数据在门户节点容器的路径，不是在门户服务
         List<TestData> testDatas = dataApplication.getTestData();
         String testDataUUID = UUID.randomUUID().toString();
         String destDirPath = resourcePath + "/DataApplication/TestData/" + testDataUUID;
@@ -685,9 +687,10 @@ public class DataApplicationService {
      * @param dataApplication 待部署的DataApplication
      * @return 是否成功部署
      */
-    public Boolean deployPackage(DataApplication dataApplication, String dataPath) throws Exception {
+    public JsonResult deployPackage(DataApplication dataApplication, String dataPath) throws Exception {
+        JsonResult res = new JsonResult();
         //跨域调用容器接口，部署数据
-        String dataUrl="http://"+ dataContainerDeployPort +"/newFile";
+        String dataUrl="http://172.21.213.111:8899" + "/newFile";
 
         List<InvokeService> invokeServices = dataApplication.getInvokeServices();
         InvokeService invokeService = invokeServices.get(0);
@@ -699,6 +702,7 @@ public class DataApplicationService {
 
         part.put("userToken", "f30f0e82-f6f1-4264-a302-caff7c40ccc9");//33
 //        part.put("userToken", "e3cea591-a8a5-4f50-b640-a569eccd94b7");//75
+//        part.put("userToken", "4cfc7691-c56b-483f-b1c9-bab859be9e00");//75_2
         String newFileId = UUID.randomUUID().toString();
         part.put("id", newFileId);
         part.put("oid", "0");
@@ -728,7 +732,7 @@ public class DataApplicationService {
         ResponseEntity<String> response = restTemplate.exchange(dataUrl, HttpMethod.PUT, httpEntity, String.class);
 
         //部署服务
-        String prcUrl="http://"+ dataContainerDeployPort +"/newprocess";
+        String prcUrl="http://172.21.213.111:8899"+ "/newprocess";
         RestTemplate restTemplate2 = new RestTemplate();
         MultiValueMap<String, Object> part2 = new LinkedMultiValueMap<>();
         part2.add("authority", true);
@@ -796,7 +800,8 @@ public class DataApplicationService {
 
         part2.add("userToken", "f30f0e82-f6f1-4264-a302-caff7c40ccc9");//33
 //        part2.add("userToken", "e3cea591-a8a5-4f50-b640-a569eccd94b7");//75
-        part2.add("processingPath", destDirPath);
+//        part2.add("userToken", "4cfc7691-c56b-483f-b1c9-bab859be9e00");//75_2
+        part2.add("processingPath", dataApplication.getPackagePathContainer());
 
         invokeService.setServiceId(serviceId);
         List<InvokeService> invokeServices1 = new ArrayList<>();
@@ -805,7 +810,7 @@ public class DataApplicationService {
 
         JSONObject jsonObject = restTemplate2.postForObject(prcUrl, part2,JSONObject.class);
         dataApplicationDao.save(dataApplication);
-        return true;
+        return res;
     }
 
 

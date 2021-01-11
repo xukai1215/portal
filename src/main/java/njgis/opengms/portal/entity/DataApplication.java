@@ -67,6 +67,8 @@ public class DataApplication {
     String method; // Conversion Processing Visualization
 
     List<TestData> testData;//存储testData的id
+    String testDataPath;
+    String packagePathContainer;
     String packagePath;//存储部署包的路径
 
     //statistic
