@@ -377,8 +377,20 @@
                                 },
                             });
                         } else {
+                            let name = node.name;
+                            let start = name.indexOf("(");
+                            let end = name.indexOf(")");
+                            if(name.length>0&&start!=-1&&end!=-1) {
+                                let part1 = name.substring(0, start).trim();
+                                if(end + 1 == name.length){
+                                    name = part1;
+                                }else {
+                                    let part2 = name.substring(end + 1, name.length - 1);
+                                    name = part1 + " " + part2;
+                                }
+                            }
                             graph_nodes.push({
-                                name: node.name,
+                                name: name,
                                 value: {
                                     style: "node",
                                     type: "model",
@@ -465,56 +477,8 @@
                         toolbox: {
                             right: 10,
                             feature: {
-
-                                myFull: {
-                                    show: true,
-                                    title: 'Full Screen',
-                                    icon: 'path://M432.45,595.444c0,2.177-4.661,6.82-11.305,6.82c-6.475,0-11.306-4.567-11.306-6.82s4.852-6.812,11.306-6.812C427.841,588.632,432.452,593.191,432.45,595.444L432.45,595.444z M421.155,589.876c-3.009,0-5.448,2.495-5.448,5.572s2.439,5.572,5.448,5.572c3.01,0,5.449-2.495,5.449-5.572C426.604,592.371,424.165,589.876,421.155,589.876L421.155,589.876z M421.146,591.891c-1.916,0-3.47,1.589-3.47,3.549c0,1.959,1.554,3.548,3.47,3.548s3.469-1.589,3.469-3.548C424.614,593.479,423.062,591.891,421.146,591.891L421.146,591.891zM421.146,591.891',
-                                    onclick: (e) => {
-                                        let opts = e.getOption();
-                                        opts.toolbox[0].feature.myFull = {};//.show=false;
-                                        // opts.toolbox[0].feature.myFullExit.show=true;
-                                        this.graphFullScreen = true;
-                                        setTimeout(() => {
-                                            let object = document.getElementById('fullScreenGraph');
-                                            let graph = echarts.init(object, 'light');
-                                            graph.setOption(opts);
-
-                                            graph.on("click", (param) => {
-                                                if (param.value !== undefined) {
-                                                    this.curRelation = param.value;
-                                                    this.modelRelationGraphSideBarShow = true;
-                                                }
-
-                                                console.log(param)
-                                            });
-
-                                            // opts.toolbox[0].feature.myFull.show=false
-                                            // //window.top表示最顶层iframe  如果在当页面全屏打开 删去window.top即可
-                                            // window.top.layer.open({
-                                            //     title:false,
-                                            //     type:1,
-                                            //     content:'<div class="fullChart" style="height:100%;width:100%;padding:30px 0px"></div>',
-                                            //     success:function(){
-                                            //         var fullchart = echarts.init(window.top.document.getElementById('fullChart'))
-                                            //         fullchart.setOption(opts)
-                                            //     }
-                                            // })
-                                        }, 300);
-
-                                    }
-                                },
                                 saveAsImage: {},
                                 restore: {},
-                                // myFullExit: {
-                                //     show: false,
-                                //     title: 'Exit',
-                                //     icon: 'path://M432.45,595.444c0,2.177-4.661,6.82-11.305,6.82c-6.475,0-11.306-4.567-11.306-6.82s4.852-6.812,11.306-6.812C427.841,588.632,432.452,593.191,432.45,595.444L432.45,595.444z M421.155,589.876c-3.009,0-5.448,2.495-5.448,5.572s2.439,5.572,5.448,5.572c3.01,0,5.449-2.495,5.449-5.572C426.604,592.371,424.165,589.876,421.155,589.876L421.155,589.876z M421.146,591.891c-1.916,0-3.47,1.589-3.47,3.549c0,1.959,1.554,3.548,3.47,3.548s3.469-1.589,3.469-3.548C424.614,593.479,423.062,591.891,421.146,591.891L421.146,591.891zM421.146,591.891',
-                                //     onclick: (e)=>{
-                                //         this.graphFullScreen = false;
-                                //
-                                //     }
-                                // },
                             }
                         },
                         animation: false,

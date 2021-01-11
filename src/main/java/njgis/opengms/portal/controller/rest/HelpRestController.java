@@ -20,7 +20,7 @@ public class HelpRestController {
     public ModelAndView getDemo(HttpServletRequest req) {
         System.out.println("demo");
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("demo");
+        modelAndView.setViewName("demoNew");
         modelAndView.addObject("name","OpenGMS");
 
         return modelAndView;
