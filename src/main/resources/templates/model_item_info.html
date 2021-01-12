@@ -387,7 +387,66 @@
                 </div>
                 <el-tabs class="block_content" v-model="activeName" type="border-card" stretch="true">
 
+                    <el-tab-pane name="Computable Model">
+                        <div slot="label">
+                            <!--<el-button v-if="activeName=='Computable Model'" type="primary" icon="el-icon-edit" size="mini" circle></el-button>-->
+                            Computable Model List
+                            <span class="el-badge__content el-badge__content--undefined" th:style="@{(${#lists.size(computableModels)==0} ? 'background-color: #bbbbbb' : '')}"
+                                  th:text="${#lists.size(computableModels)}">
+                            </span>
 
+                        </div>
+
+                        <div th:if="${#lists.size(computableModels)}!=0">
+                            <div class="list_panel clearfix" th:each="model:${computableModels}">
+                                <a th:href="'/computableModel/'+${model.oid}" class="img">
+                                    <img src="/static/img/model/calcModel.png">
+                                </a>
+
+                                <div class="info" style="margin-top:0px;">
+                                    <a th:href="'/computableModel/'+${model.oid}"
+                                       th:text="${model.name}">Ground Water Flow System</a>
+                                    <div style="display: inline-block;margin-left:5px">
+                                        <span class="label label-success" th:if="${model.contentType == 'Package' || model.contentType == 'MD5'}">
+                                            OpenGMS Model-Service Package
+                                        </span>
+                                        <span class="label label-success" th:if="${model.contentType == 'Code'}">
+                                            Source Code
+                                        </span>
+                                        <span class="label label-success" th:if="${model.contentType == 'Library'}">
+                                            Executable Library
+                                        </span>
+                                        <span class="label label-success" th:if="${model.contentType == 'Service'}">
+                                            Third-party Web-Service Link
+                                        </span>
+                                        <span class="label label-success" th:if="${model.contentType == 'Link'}">
+                                            Downloadable Link
+                                        </span>
+                                    </div>
+                                    <p style="margin-top: 0px" th:text="${model.description}">ANN-CA uses the artificial
+                                        neural network method to extract
+                                        land use change rules in the study area, and then applies the rules to
+                                        subsequent
+                                        simulations and predictions.</p>
+                                </div>
+                            </div>
+                            <el-button @click="addRelation(4)" type="primary" icon="el-icon-plus"
+                                       style="width: 100%">
+                                Edit Related Computable Model
+                            </el-button>
+                        </div>
+                        <div class="text-center" th:if="${#lists.size(computableModels)}==0">
+                            <h5 style="margin-bottom: 10px;display: inline-block;">
+                                There is no related computable model. You can link computable models.
+                            </h5>
+                            <button class="btn btn-default" type="button"
+                                    style="display: inline-block;" @click="addRelation(4)">
+
+                                <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
+                            </button>
+                        </div>
+
+                    </el-tab-pane>
                     <el-tab-pane name="Conceptual Model">
                         <div slot="label">Conceptual-schematic Model List
                             <span class="el-badge__content el-badge__content--undefined" th:style="@{(${#lists.size(conceptualModels)==0} ? 'background-color: #bbbbbb' : '')}"
@@ -467,66 +526,7 @@
                             </button>
                         </div>
                     </el-tab-pane>
-                    <el-tab-pane name="Computable Model">
-                        <div slot="label">
-                            <!--<el-button v-if="activeName=='Computable Model'" type="primary" icon="el-icon-edit" size="mini" circle></el-button>-->
-                            Computable Model List
-                            <span class="el-badge__content el-badge__content--undefined" th:style="@{(${#lists.size(computableModels)==0} ? 'background-color: #bbbbbb' : '')}"
-                                  th:text="${#lists.size(computableModels)}">
-                            </span>
 
-                        </div>
-
-                        <div th:if="${#lists.size(computableModels)}!=0">
-                            <div class="list_panel clearfix" th:each="model:${computableModels}">
-                                <a th:href="'/computableModel/'+${model.oid}" class="img">
-                                    <img src="/static/img/model/calcModel.png">
-                                </a>
-
-                                <div class="info" style="margin-top:0px;">
-                                    <a th:href="'/computableModel/'+${model.oid}"
-                                       th:text="${model.name}">Ground Water Flow System</a>
-                                    <div style="display: inline-block;margin-left:5px">
-                                        <span class="label label-success" th:if="${model.contentType == 'Package' || model.contentType == 'MD5'}">
-                                            OpenGMS Model-Service Package
-                                        </span>
-                                        <span class="label label-success" th:if="${model.contentType == 'Code'}">
-                                            Source Code
-                                        </span>
-                                        <span class="label label-success" th:if="${model.contentType == 'Library'}">
-                                            Executable Library
-                                        </span>
-                                        <span class="label label-success" th:if="${model.contentType == 'Service'}">
-                                            Third-party Web-Service Link
-                                        </span>
-                                        <span class="label label-success" th:if="${model.contentType == 'Link'}">
-                                            Downloadable Link
-                                        </span>
-                                    </div>
-                                    <p style="margin-top: 0px" th:text="${model.description}">ANN-CA uses the artificial
-                                        neural network method to extract
-                                        land use change rules in the study area, and then applies the rules to
-                                        subsequent
-                                        simulations and predictions.</p>
-                                </div>
-                            </div>
-                            <el-button @click="addRelation(4)" type="primary" icon="el-icon-plus"
-                                       style="width: 100%">
-                                Edit Related Computable Model
-                            </el-button>
-                        </div>
-                        <div class="text-center" th:if="${#lists.size(computableModels)}==0">
-                            <h5 style="margin-bottom: 10px;display: inline-block;">
-                                There is no related computable model. You can link computable models.
-                            </h5>
-                            <button class="btn btn-default" type="button"
-                                    style="display: inline-block;" @click="addRelation(4)">
-
-                                <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
-                            </button>
-                        </div>
-
-                    </el-tab-pane>
 
                 </el-tabs>
             </div>

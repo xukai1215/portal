@@ -2,7 +2,6 @@ package njgis.opengms.portal.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.google.gson.JsonObject;
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
@@ -282,27 +281,27 @@ public class ComputableModelService {
             computableModelDao.save(modelInfo);
             //类
             JSONArray classResult = new JSONArray();
-
-            List<String> classifications = modelInfo.getClassifications();
-            if (classifications != null) {
-                for (int i = 0; i < classifications.size(); i++) {
-
-                    JSONArray array = new JSONArray();
-                    String classId = classifications.get(i);
-
-                    do {
-                        Classification classification = classificationService.getByOid(classId);
-                        array.add(classification.getNameEn());
-                        classId = classification.getParentId();
-                    } while (classId != null);
-
-                    JSONArray array1 = new JSONArray();
-                    for (int j = array.size() - 1; j >= 0; j--) {
-                        array1.add(array.getString(j));
-                    }
-                    classResult.add(array1);
-                }
-            }
+//
+//            List<String> classifications = modelInfo.getClassifications();
+//            if (classifications != null) {
+//                for (int i = 0; i < classifications.size(); i++) {
+//
+//                    JSONArray array = new JSONArray();
+//                    String classId = classifications.get(i);
+//
+//                    do {
+//                        Classification classification = classificationService.getByOid(classId);
+//                        array.add(classification.getNameEn());
+//                        classId = classification.getParentId();
+//                    } while (classId != null);
+//
+//                    JSONArray array1 = new JSONArray();
+//                    for (int j = array.size() - 1; j >= 0; j--) {
+//                        array1.add(array.getString(j));
+//                    }
+//                    classResult.add(array1);
+//                }
+//            }
 
             //时间
             Date date = modelInfo.getCreateTime();
@@ -378,7 +377,7 @@ public class ComputableModelService {
             modelAndView.setViewName("computable_model");
 
             modelAndView.addObject("modelInfo", modelInfo);
-            modelAndView.addObject("classifications", classResult);
+//            modelAndView.addObject("classifications", classResult);
             modelAndView.addObject("date", dateResult);
             modelAndView.addObject("year", calendar.get(Calendar.YEAR));
             modelAndView.addObject("user", userJson);
@@ -404,6 +403,7 @@ public class ComputableModelService {
 
 
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println(e.getMessage());
             throw new MyException(e.getMessage());
         }
