@@ -13,9 +13,41 @@ var vue = new Vue({
         activeName: "Invoke",
         info: {
             dxInfo: {},
-            modelInfo: {},
+            modelInfo: {
+                dataRefs:[],
+                date: "",
+                des: "",
+                hasTest: true,
+                name: "Model",
+                states:[{
+                    Id:'',
+                    desc:'',
+                    event:[{
+                        data:[],
+                        eventDesc: "",
+                        eventId: "",
+                        eventName: "",
+                        eventType: "response",
+                        optional: false
+                    },
+                        {
+                            data:[],
+                            eventDesc: "",
+                            eventId: "",
+                            eventName: "",
+                            eventType: "noreponse",
+                            optional: false
+                        }]
+                }
+
+                ]
+            },
             taskInfo: {},
-            userInfo: {}
+            userInfo: {
+                compute_model_userId: "",
+                compute_model_user_name: "",
+                userName: ""
+            }
         },
         showUpload: false,
         showDataChose: false,
@@ -197,6 +229,25 @@ var vue = new Vue({
         errorMsg:'',
 
         taskRunning:false,
+
+        loadDeployedModelDialog: false,
+        deployedModel:[{
+            name:'',
+        }],
+        deployedModelCount:0,
+        pageOption: {
+            paginationShow:false,
+            progressBar: true,
+            sortAsc: false,
+            currentPage: 1,
+            pageSize: 10,
+
+            total: 11,
+            searchResult: [],
+        },
+        searchText:'',
+        modelTableLoading:false,
+        selectModel:false,
     },
     computed: {},
     watch: {
@@ -2649,6 +2700,185 @@ var vue = new Vue({
         },
 
 
+        //选择模型
+        loadDeployedModelClick() {
+            this.loadDeployedModelDialog = true;
+            this.pageOption.currentPage = 1;
+            this.searchResult = '';
+            this.loadDeployedModel();
+
+        },
+
+        handlePageChange(val) {
+            this.pageOption.currentPage = val;
+
+            if(this.inSearch==0)
+                this.loadDeployedModel();
+            else
+                this.searchDeployedModel()
+        },
+
+        loadDeployedModel(){
+            this.inSearch = 0
+            this.modelTableLoading = true;
+            axios.get('/computableModel/loadDeployedModel',{
+                params:{
+                    asc:0,
+                    page:this.pageOption.currentPage-1,
+                    size:6,
+                }
+            }).then(
+                (res)=>{
+                    if(res.data.code==0){
+                        let data = res.data.data;
+                        this.deployedModel = data.content
+                        this.pageOption.total = data.total;
+                        setTimeout(()=>{
+                            this.modelTableLoading = false;
+                        },100)
+                    }else{
+                        this.$alert('Please try again','Warning', {
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                this.modelTableLoading = false;
+                            }
+                        })
+
+                    }
+                }
+            )
+        },
+
+        searchDeployedModel(page){
+            this.inSearch = 1
+            this.modelTableLoading = true;
+            let targetPage = page==undefined?this.pageOption.currentPage:page
+            this.pageOption.currentPage=targetPage
+            axios.get('/computableModel/searchDeployedModel',{
+                params:{
+                    asc:0,
+                    page:targetPage-1,
+                    size:6,
+                    searchText: this.searchText,
+                }
+            }).then(
+                (res)=>{
+                    if(res.data.code==0){
+                        let data = res.data.data;
+                        this.deployedModel = data.content
+                        this.pageOption.total = data.total;
+                        setTimeout(()=>{
+                            this.modelTableLoading = false;
+                        },150)
+
+                    }else{
+                        this.$alert('Please try again','Warning', {
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                this.modelTableLoading = false;
+                            }
+                        })
+
+                    }
+                }
+            )
+        },
+
+        selectModel(oid){
+            this.oid = oid
+            this.loadTask();
+            this.loadDeployedModelDialog = false
+        },
+
+        async loadTask(){
+            let id = this.oid
+
+            let {data} = await (await fetch("/task/TaskInit/" + id)).json();
+            if (data == null || data == undefined) {
+                this.$alert('Initialization failure: an error occured on the server.<br/> Please try again or <a href="mailto:opengms@njnu.edu.cn">contact us</a>.', 'Error', {
+                    type:"error",
+                    showClose:false,
+                    confirmButtonText: 'Try again',
+                    dangerouslyUseHTMLString: true,
+                    callback: action => {
+                        window.location.reload();
+                    }
+                });
+            }
+            else{
+                this.initializing=false;
+                if(data.msg=='no service'){
+                    this.invokable = false
+                    this.errorMsg = 'Cannot find this model service, maybe the model container is offline or the service is hided by the contributor.'
+                    this.$confirm('Cannot find this model service, maybe the model container is offline or the service is hided by the contributor.', 'Tip', {
+                            type:"error",
+                            cancelButtonText: 'OK',
+                            confirmButtonText: 'Try again',
+
+                        }
+                    ).then(() => {
+                        window.location.reload();
+                    } ).catch(()=>{
+                        return
+                    });
+                }else if(data.msg=='create failed'){
+                    this.invokable = false
+                    this.errorMsg = 'Cannot create this task,<br/> Please try again or <a href="mailto:opengms@njnu.edu.cn">contact us</a>.'
+                    this.$confirm('Cannot create this task,<br/> Please try again or <a href="mailto:opengms@njnu.edu.cn">contact us</a>.', 'Tip', {
+                            type:"error",
+                            cancelButtonText: 'OK',
+                            confirmButtonText: 'Try again',
+                            dangerouslyUseHTMLString: true,
+                        }
+                    ).then(() => {
+                        window.location.reload();
+                    } ).catch(()=>{
+                        return
+                    });
+
+                }
+            }
+            let states = data.modelInfo.states;
+            for (i = 0; i < states.length; i++) {
+                let state = states[i];
+                for (j = 0; j < state.event.length; j++) {
+                    if (state.event[j].data != undefined && state.event[j].eventType == "response") {
+                        let nodes = state.event[j].data[0].nodes;
+                        let refName = state.event[j].data[0].text.toLowerCase();
+                        if (state.event[j].data[0].externalId != undefined) {
+                            state.event[j].externalId = state.event[j].data[0].externalId;
+                        }
+
+                        if (nodes != undefined && refName != "grid" && refName != "table" && refName != "shapes") {
+                            let children = [];
+                            for (k = 0; k < nodes.length; k++) {
+                                let node = nodes[k];
+                                let child = {};
+                                child.eventId = node.text;
+                                child.eventName = node.text;
+                                child.eventDesc = node.desc;
+                                child.eventType = node.dataType;
+
+                                child.child = true;
+                                children.push(child);
+                            }
+                            data.modelInfo.states[i].event[j].children = children;
+                        }
+                        else {
+                            data.modelInfo.states[i].event[j].data[0].nodes = undefined;
+                        }
+
+                    }
+                }
+            }
+
+            this.events = data.modelInfo.states[0].event;
+            console.log(this.events)
+            console.log(this.tableData)
+            this.info = data;
+            console.log(this.info);
+        },
+
     },
 
     async mounted() {
@@ -2674,8 +2904,6 @@ var vue = new Vue({
 
             })
 
-        this.relatedDataItem();
-
         this.remoteMethod("");
 
         this.introHeight = $('.introContent').attr('height');
@@ -2684,90 +2912,13 @@ var vue = new Vue({
         let ids = window.location.href.split("/");
         let id = ids[ids.length - 1];
         this.oid = id;
-        let {data} = await (await fetch("/task/TaskInit/" + id)).json();
-        if (data == null || data == undefined) {
-            this.$alert('Initialization failure: an error occured on the server.<br/> Please try again or <a href="mailto:opengms@njnu.edu.cn">contact us</a>.', 'Error', {
-                type:"error",
-                showClose:false,
-                confirmButtonText: 'Try again',
-                dangerouslyUseHTMLString: true,
-                callback: action => {
-                    window.location.reload();
-                }
-            });
+
+        if(id==='selecttask'){
+            this.selectModel=true
+        }else{
+            this.loadTask()
+            this.relatedDataItem();
         }
-        else{
-            this.initializing=false;
-            if(data.msg=='no service'){
-                 this.invokable = false
-                 this.errorMsg = 'Cannot find this model service, maybe the model container is offline or the service is hided by the contributor.'
-                 this.$confirm('Cannot find this model service, maybe the model container is offline or the service is hided by the contributor.', 'Tip', {
-                          type:"error",
-                          cancelButtonText: 'OK',
-                          confirmButtonText: 'Try again',
-
-                      }
-                  ).then(() => {
-                     window.location.reload();
-                  } ).catch(()=>{
-                     return
-                 });
-            }else if(data.msg=='create failed'){
-                this.invokable = false
-                this.errorMsg = 'Cannot create this task,<br/> Please try again or <a href="mailto:opengms@njnu.edu.cn">contact us</a>.'
-                this.$confirm('Cannot create this task,<br/> Please try again or <a href="mailto:opengms@njnu.edu.cn">contact us</a>.', 'Tip', {
-                        type:"error",
-                        cancelButtonText: 'OK',
-                        confirmButtonText: 'Try again',
-                        dangerouslyUseHTMLString: true,
-                    }
-                ).then(() => {
-                    window.location.reload();
-                } ).catch(()=>{
-                    return
-                });
-
-            }
-        }
-        let states = data.modelInfo.states;
-        for (i = 0; i < states.length; i++) {
-            let state = states[i];
-            for (j = 0; j < state.event.length; j++) {
-                if (state.event[j].data != undefined && state.event[j].eventType == "response") {
-                    let nodes = state.event[j].data[0].nodes;
-                    let refName = state.event[j].data[0].text.toLowerCase();
-                    if (state.event[j].data[0].externalId != undefined) {
-                        state.event[j].externalId = state.event[j].data[0].externalId;
-                    }
-
-                    if (nodes != undefined && refName != "grid" && refName != "table" && refName != "shapes") {
-                        let children = [];
-                        for (k = 0; k < nodes.length; k++) {
-                            let node = nodes[k];
-                            let child = {};
-                            child.eventId = node.text;
-                            child.eventName = node.text;
-                            child.eventDesc = node.desc;
-                            child.eventType = node.dataType;
-
-                            child.child = true;
-                            children.push(child);
-                        }
-                        data.modelInfo.states[i].event[j].children = children;
-                    }
-                    else {
-                        data.modelInfo.states[i].event[j].data[0].nodes = undefined;
-                    }
-
-                }
-            }
-        }
-
-        this.events = data.modelInfo.states[0].event;
-        console.log(this.events)
-        console.log(this.tableData)
-        this.info = data;
-        console.log(this.info);
 
 
         //get login user info

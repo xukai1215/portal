@@ -410,6 +410,8 @@ var vue = new Vue({
         previewUrl:'',
 
         checkTaskInterval:null,
+
+        iframeLoaded:false,
     },
 
     computed:{
@@ -522,9 +524,32 @@ var vue = new Vue({
                         source:sourceAction.id
                     }
                     edges.push(edge)
+                }else if(targetAction.type=='dataService'&&sourceAction.type=='modelService'){
+                    let targets=[]
+                    this.getModelTarget(sourceAction.id,targets)
+                    for(let target of targets){
+                        let edge = {
+                            target:target,
+                            source:sourceAction.id
+                        }
+                        edges.push(edge)
+                    }
                 }
             }
             return edges
+        },
+
+        getModelTarget(source,targets){
+            for(let dataLink of this.dataLinks){
+                if(dataLink.sourceActionId===source){
+                    let targetAction = this.findTargetModelAction(dataLink.targetActionId)[1]
+                    if(targetAction.type==='modelService'){
+                        targets.push(targetAction.id)
+                    }else{
+                        this.getModelTarget(targetAction.id,targets)
+                    }
+                }
+            }
         },
 
         checkMutiFlow(data){//判断是否有输入是其他模型的多输出
@@ -2185,7 +2210,10 @@ var vue = new Vue({
 
             let xml = this.generateXml('save')
 
-            let mxgraph = this.iframeWindow.getCXml();
+            let mxgraph = this.mxgraphXml
+            if(this.mxgraphXml==''){
+                mxgraph = this.iframeWindow.getCXml();
+            }
 
             if (Object.keys(this.currentTask) != 0) {
                 this.updateIntegratedTask(this.currentTask.oid, xml, mxgraph, this.models, this.modelActions,this.processingTools,this.dataProcessings,this.dataLinks,this.dataItems)
@@ -2791,7 +2819,9 @@ var vue = new Vue({
                 }
             }
 
-            this.iframeWindow.setCXml(task.mxGraph);
+            this.$nextTick(()=>{
+                this.iframeWindow.setCXml(task.mxGraph);
+            })
             this.taskInfoVisible = false
             this.currentTask = task
             this.activeTask = 'currentTask'
@@ -3867,11 +3897,38 @@ var vue = new Vue({
                 modelEditor.ui.format.changePageSize(pageIndex)
 
             })
-        }
+        },
 
+        async getTaskByOid(taskOid){
+            let data
+            await axios.get('/task/getIntegrateTaskByOid',{
+                    params:{
+                        taskOid:taskOid
+                    }
+            }).then(res=>{
+                data = res.data.data
+
+            })
+            return data
+        },
+
+        wzhloaded(){
+            this.iframeLoaded = true
+        },
+
+        loadTaskByOid(taskOid){
+            axios.get('/task/getIntegrateTaskByOid',{
+                params:{
+                    taskOid:taskOid
+                }
+            }).then(res=>{
+                let task = res.data.data
+                this.loadTask(task)
+            })
+        }
     },
 
-    mounted() {
+    async mounted() {
 
         this.iframeWindow = $("#ModelEditor")[0].contentWindow;
         let modelEditor = $("#ModelEditor")[0].contentWindow;
@@ -3999,6 +4056,9 @@ var vue = new Vue({
         }, 500);
 
         this.getModelItemList('all')
+
+
+
         // window.selectInputData = this.selectInputData;
         window.generateGUID = this.generateGUID;
 
@@ -4023,7 +4083,18 @@ var vue = new Vue({
         window.refreshConditionInfo = this.refreshConditionInfo;
         window.dragIntoDataItem = this.dragIntoDataItem;
         window.deleteDataItem = this.deleteDataItem;
+        window.wzhloaded = this.wzhloaded;
         //aaa
+        let taskOid = window.localStorage.getItem('taskOid')
+        window.localStorage.removeItem('taskOid')
+        if (taskOid != undefined && taskOid != null) {
+            let i = 0
+            setTimeout(()=>{
+                this.loadTaskByOid(taskOid)
+            },550)
+
+
+        }
     }
 
 });

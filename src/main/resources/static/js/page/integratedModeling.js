@@ -1758,7 +1758,8 @@ var vue = new Vue({
                 this.searchDeployedModel()
         },
 
-        listIntegrateTask(){
+        listIntegrateTask(page){
+
             axios.get("/task/pageIntegrateTaskByUser",{
                 params:{
                     asc:0,
