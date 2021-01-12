@@ -155,6 +155,16 @@ public class ComputableModelRestController {
 
     }
 
+    @RequestMapping(value="/selecttask",method = RequestMethod.GET)
+    public ModelAndView initTaskPage(HttpServletRequest req) {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("task");
+
+        return modelAndView;
+
+    }
+
     @RequestMapping(value="/addService",method = RequestMethod.POST)
     public JsonResult addService(ModelService modelService){
 

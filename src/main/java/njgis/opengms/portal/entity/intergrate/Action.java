@@ -21,6 +21,8 @@ public class Action {
 
     private String taskId;
 
+    private String type;//modelService,dataService,为了前端方便分类
+
     private String taskIp;
 
     private int port;

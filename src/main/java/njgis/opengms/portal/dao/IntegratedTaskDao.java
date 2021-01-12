@@ -16,4 +16,10 @@ public interface IntegratedTaskDao extends MongoRepository<IntegratedTask,String
     List<IntegratedTask> findByUserIdAndIntegrate(String userName, boolean integrate);
 
     Page<IntegratedTask> findByUserIdAndIntegrate(String userName, boolean integrate, Pageable pageable);
+
+    Page<IntegratedTask> findByUserIdAndIntegrateAndTaskNameContainsIgnoreCase(String userName, boolean integrate,String name,Pageable pageable);
+
+    Page<IntegratedTask> findByUserIdAndIntegrateAndStatus(String userName, boolean integrate, int status,Pageable pageable);
+
+    Page<IntegratedTask> findByUserIdAndIntegrateAndStatusAndTaskNameContainsIgnoreCase(String userName, boolean integrate, int status,String name,Pageable pageable);
 }

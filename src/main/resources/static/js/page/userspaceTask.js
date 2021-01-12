@@ -39,6 +39,15 @@ var userTask = Vue.extend(
                 dataPageList: [],
                 dataTotalNum: 0,
 
+                //integratedTask分页控制
+                itdSortAsc: 1,//1 -1
+                itdSortType: "default",
+                itdPageSize: 10,// 每页数据条数
+                itdTotalPage: 0,// 总页数
+                itdCurPage: 1,// 当前页码
+                itdPageList: [],
+                itdTotalNum: 0,
+
                 //用户
                 userId: -1,
 
@@ -60,6 +69,7 @@ var userTask = Vue.extend(
                 //task相关
                 taskStatus: 'all',
                 dataTaskStatus:'all',
+                itdTaskStatus:'all',
 
                 options: [
                     {
@@ -85,6 +95,39 @@ var userTask = Vue.extend(
 
                     },
                 ],
+
+                itdOptions: [
+                    {
+                        value: 'all',
+                        label: 'all',
+
+                    },
+
+                    {
+                        value: 'builded',
+                        label: 'builded',
+
+                    },
+
+                    {
+                        value: 'successful',
+                        label: 'successful',
+
+                    },
+
+                    {
+                        value: 'calculating',
+                        label: 'calculating',
+
+                    },
+
+                    {
+                        value: 'failed',
+                        label: 'failed',
+
+                    },
+                ],
+
                 addOutputToMyDataVisible: false,
                 taskSharingVisible:false,
                 taskSharingActive:0,
@@ -164,6 +207,12 @@ var userTask = Vue.extend(
                     dataSearchText:'',
                 },
                 dataTaskIsWrong:false,
+
+                integratedTaskList:[],
+
+                activeTask:'normal',
+
+                itdSearchText:'',
             }
         },
 
@@ -225,6 +274,15 @@ var userTask = Vue.extend(
                 }
                 this.getDataPageList();
                 this.changeDataPage(this.dataCurPage);
+            },
+
+            itdPageInit() {
+                this.itdTotalPage = Math.floor((this.itdTotalNum + this.itdPageSize - 1) / this.itdPageSize);
+                if (this.itdTotalPage < 1) {
+                    this.itdTotalPage = 1;
+                }
+                this.getItdPageList();
+                this.changeItdPage(1);
             },
 
             getPageList() {
@@ -290,6 +348,38 @@ var userTask = Vue.extend(
                 }
             },
 
+            getItdPageList() {
+                this.itdPageList = [];
+
+                if (this.itdTotalPage < 5) {
+                    for (let i = 0; i < this.itdTotalPage; i++) {
+                        this.itdPageList.push(i + 1);
+                    }
+                } else if (this.itdTotalPage - this.itdCurPage < 5) {//如果总的页码数减去当前页码数小于5（到达最后5页），那么直接计算出来显示
+
+                    this.itdPageList = [
+                        this.itdTotalPage - 4,
+                        this.itdTotalPage - 3,
+                        this.itdTotalPage - 2,
+                        this.itdTotalPage - 1,
+                        this.itdTotalPage,
+                    ];
+                } else {
+                    let cur = Math.floor((this.itdCurPage - 1) / 5) * 5 + 1;
+                    if (this.itdCurPage % 5 === 0) {
+                        cur = cur + 1;
+
+                    }
+                    this.itdPageList = [
+                        cur,
+                        cur + 1,
+                        cur + 2,
+                        cur + 3,
+                        cur + 4,
+                    ]
+                }
+            },
+
             changePage(pageNo) {
                 if ((this.curPage === 1) && (pageNo === 1)) {
                     return;
@@ -310,10 +400,11 @@ var userTask = Vue.extend(
                     this.getPageList();
                     this.page = pageNo;
 
-
                     if (this.isInSearch == 0)
-                        this.showTasksByStatus(this.taskStatus);
+                        this.showTasksByStatus();
                     else this.searchTasks()
+
+
                 }
             },
 
@@ -321,6 +412,31 @@ var userTask = Vue.extend(
                 if(this.dataCurPage === pageNo) return
                 this.dataCurPage = pageNo
                 this.getDataTasks()
+            },
+
+            changeItdPage(pageNo) {
+                if ((this.itdCurPage === 1) && (pageNo === 1)) {
+                    return;
+                }
+                if ((this.itdCurPage === this.itdTotalPage) && (pageNo === this.itdTotalPage)) {
+                    return;
+                }
+                if ((pageNo > 0) && (pageNo <= this.itdTotalPage)) {
+                    if (this.curIndex != 1)
+                        this.pageControlIndex = this.curIndex;
+                    else this.pageControlIndex = 'research';
+
+                    this.resourceLoad = true;
+                    this.searchResult = [];
+                    //not result scroll
+                    //window.scrollTo(0, 0);
+                    this.itdCurPage = pageNo;
+                    this.getItdPageList();
+
+                    this.listIntegrateTaskByStatus()
+
+
+                }
             },
 
             // creatItem(index){
@@ -333,34 +449,71 @@ var userTask = Vue.extend(
                 this.isInSearch = 0;
                 this.page = 1;
             },
-
-            editItem(index, oid) {
-                var urls = {
-                    1: '/user/userSpace/model/manageModelItem',
-                }
-                this.setSession('editOid', oid)
-                window.location.href = urls[this.itemIndex]
-            },
-
-            deleteItem(id) {
-                //todo 删除category中的 id
-                var cfm = confirm("Are you sure to delete?");
-
-                if (cfm == true) {
-                    axios.get("/dataItem/del/", {
-                        params: {
-                            id: id
-                        }
-                    }).then(res => {
-                        if (res.status == 200) {
-                            alert("delete success!");
-                            this.getDataItems();
-                        }
-                    })
-                }
-            },
             //
             //task
+
+            tabHandleClick(tab){
+                let tabName =tab.name
+
+                switch (tabName){
+                    case 'normal':
+                        this.showTasksByStatus()
+                        break;
+                    case 'data':
+                        this.getDataTasks()
+                        break;
+                    case 'integrated':
+                        this.listIntegrateTaskByStatus()
+                        break;
+                }
+            },
+
+            listIntegrateTaskByStatus(page){
+
+                if(page!=undefined){
+                    this.itdCurPage = page
+                }
+                this.resourceLoad = true
+                axios.get("/task/pageIntegrateTaskByUserByStatus",{
+                    params:{
+                        status: this.itdTaskStatus,
+                        page: this.itdCurPage - 1,
+                        sortType: this.sortType,
+                        asc: -1,
+                        searchText:this.itdSearchText
+                    }
+                }).then((res)=>{
+                    this.resourceLoad = false
+                    if(res.data.code == -1){
+                        window.location.href='/user/login'
+                    }else{
+                        let data = res.data.data
+                        this.integratedTaskList = data.tasks
+                        this.itdTotalNum = data.count
+                        if (this.itdCurPage == 1) {
+                            this.itdPageInit();
+                        }
+                    }
+                })
+            },
+
+            checkItdTask(taskOid){
+                window.localStorage.setItem('taskOid',taskOid)
+                window.location.href='/computableModel/integratedModel'
+            },
+
+            getPanelClass(status){
+                switch (status){
+                    case -1:
+                        return 'panel-danger'
+                    case 0:
+                        return 'panel-default'
+                    case 1:
+                        return 'panel-info'
+                    case 2:
+                        return 'panel-success'
+                }
+            },
 
             publishTask(task) {
                 const h = this.$createElement;
@@ -602,19 +755,6 @@ var userTask = Vue.extend(
 
             changeTaskStatus(status) {
                 this.taskStatus = status;
-                this.showTasksByStatus(this.taskStatus)
-            },
-
-            changeDataTaskStatus(status) {
-                this.dataTaskStatus = status;
-                this.getDataTasks()
-            },
-
-            showTasksByStatus(status) {
-                let name = 'tasks'
-                this.resourceLoad = true
-                this.taskStatus = status
-                this.isInSearch = 0;
                 if (this.taskStatus === 'successful')
                     $('.wzhSelectContainer input').css('background', '#63b75d')
                 else if (this.taskStatus === 'all')
@@ -623,15 +763,41 @@ var userTask = Vue.extend(
                     $('.wzhSelectContainer input').css('background', '#d74948')
                 else
                     $('.wzhSelectContainer input').css('background', '#1caf9a')
+                this.showTasksByStatus()
+            },
+
+            changeDataTaskStatus(status) {
+                this.dataTaskStatus = status;
+                this.getDataTasks()
+            },
+
+            changeIntegratedTaskStatus(status) {
+                this.itdTaskStatus = status;
+                if (this.itdTaskStatus === 'successful')
+                    $('.wzhSelectContainer input').css('background', '#63b75d')
+                else if (this.itdTaskStatus === 'all')
+                    $('.wzhSelectContainer input').css('background', '#00ABFF')
+                else if (this.itdTaskStatus === 'failed')
+                    $('.wzhSelectContainer input').css('background', '#d74948')
+                else if(this.itdTaskStatus === 'calculating')
+                    $('.wzhSelectContainer input').css('background', '#1caf9a')
+                else
+                    $('.wzhSelectContainer input').css('background', '#939faa')
+                this.listIntegrateTaskByStatus()
+            },
+
+            showTasksByStatus() {
+                let name = 'tasks'
+                this.resourceLoad = true
+                this.isInSearch = 0;
                 axios.get("/task/getTasksByUserIdByStatus", {
                         params: {
-                            status: status,
+                            status: this.taskStatus,
                             page: this.page - 1,
                             sortType: this.sortType,
                             asc: -1,
                         }
                     }
-
 
                     ,).then(
                     res => {
@@ -709,6 +875,7 @@ var userTask = Vue.extend(
                 this.dataCurPage = 1
                 this.getDataTasks()
             },
+
             addOutputToMyData(output,index) {
                 console.log(output)
                 this.outputToMyData = output
@@ -1551,14 +1718,6 @@ var userTask = Vue.extend(
 
             },
 
-            sendcurIndexToParent(){
-                this.$emit('com-sendcurindex',this.curIndex)
-            },
-
-            sendUserToParent(userId){
-                this.$emit('com-senduserinfo',userId)
-            },
-
             initDataTaskFindDto(){
                 this.dataResourceLoad = true
                 this.dataSearchResult = []
@@ -1570,10 +1729,15 @@ var userTask = Vue.extend(
 
                 if(this.dataTaskStatus === 'all'){      // status字段： started: 1,  finished: 2,  inited: 0,   error: -1, 目前只用到了2 和 -1
                     this.dataTaskFindDto.status = 0
+                    $('.wzhSelectContainer input').css('background', '#00ABFF')
                 } else if (this.dataTaskStatus === 'successful'){
                     this.dataTaskFindDto.status = 2
+                    $('.wzhSelectContainer input').css('background', '#63b75d')
                 } else if(this.dataTaskStatus === 'calculating'){
                     this.dataTaskFindDto.status = -1
+                    $('.wzhSelectContainer input').css('background', '#1caf9a')
+                }else{
+                    $('.wzhSelectContainer input').css('background', '#d74948')
                 }
                 this.dataTaskFindDto.searchText = this.dataSearchText
                 this.dataTaskFindDto.sortField = this.dataSortType
@@ -1609,10 +1773,12 @@ var userTask = Vue.extend(
                         })
                     })
                 // input对象可能就是一个字符串，output的字符串里面可能就一个url
-            }
+            },
 
+            sendUserToParent(userId){
+                this.$emit('com-senduserinfo',userId)
+            },
         },
-
 
         // created() {
         //
@@ -1620,7 +1786,7 @@ var userTask = Vue.extend(
         // },
 
         mounted() {
-            this.getDataTasks()
+            this.showTasksByStatus();
             this.clipBoard = new ClipboardJS(".copyLinkBtn");
             $(() => {
 
@@ -1674,8 +1840,6 @@ var userTask = Vue.extend(
                             var itemIndex = window.sessionStorage.getItem("itemIndex");
                             this.itemIndex = itemIndex
 
-                            this.showTasksByStatus('all');
-
                             // if (index != null && index != undefined && index != "" && index != NaN) {
                             //     this.defaultActive = index;
                             //     window.sessionStorage.removeItem("index");
@@ -1697,118 +1861,8 @@ var userTask = Vue.extend(
                 //this.getModels();
             });
 
-            //初始化的时候吧curIndex传给父组件，来控制bar的高亮显示
-            this.sendcurIndexToParent()
-
-            tinymce.init({
-                selector: "textarea#detail",
-                height: 205,
-                theme: 'silver',
-                plugins: ['link', 'table', 'image', 'media'],
-                image_title: true,
-                // enable automatic uploads of images represented by blob or data URIs
-                automatic_uploads: true,
-                // URL of our upload handler (for more details check: https://www.tinymce.com/docs/configure/file-image-upload/#images_upload_url)
-                // images_upload_url: 'postAcceptor.php',
-                // here we add custom filepicker only to Image dialog
-                file_picker_types: 'image',
-
-                file_picker_callback: function (cb, value, meta) {
-                    var input = document.createElement('input');
-                    input.setAttribute('type', 'file');
-                    input.setAttribute('accept', 'image/*');
-                    input.onchange = function () {
-                        var file = input.files[0];
-
-                        var reader = new FileReader();
-                        reader.readAsDataURL(file);
-                        reader.onload = function () {
-                            var img = reader.result.toString();
-                            cb(img, {title: file.name});
-                        }
-                    };
-                    input.click();
-                },
-                images_dataimg_filter: function (img) {
-                    return img.hasAttribute('internal-blob');
-                }
-            });
 
             var that = this
-            //获取data item分类树
-            axios.get("/dataItem/createTree")
-                .then(res => {
-                    that.tObj = res.data;
-                    for (var e in that.tObj) {
-                        var a = {
-                            key: e,
-                            value: that.tObj[e]
-                        }
-                        if (e != 'Data Resouces Hubs') {
-                            that.categoryTree.push(a);
-                        }
-
-
-                    }
-
-                })
-
-            var user_num = 0;
-            $(document).on("click", ".user-add", function () {
-                user_num++;
-                var content_box = $(this).parent().children('div');
-                var str = "<div class='panel panel-primary taskDataAuthorship'> <div class='panel-heading'> <h4 class='panel-title'> <a class='accordion-toggle collapsed' style='color:white' data-toggle='collapse' data-target='#user";
-                str += user_num;
-                str += "' href='javascript:;'> NEW </a> </h4><a href='javascript:;' class='fa fa-times author_close' style='float:right;margin-top:8px;color:white'></a></div><div id='user";
-                str += user_num;
-                str += "' class='panel-collapse collapse in'><div class='panel-body user-contents'> <div class='user-attr'>\n" +
-                    "                                                                                                    <div>\n" +
-                    "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
-                    "                                                                                                               style='font-weight: bold;'>\n" +
-                    "                                                                                                            Name:\n" +
-                    "                                                                                                        </lable>\n" +
-                    "                                                                                                        <div class='input-group col-sm-10'>\n" +
-                    "                                                                                                            <input type='text'\n" +
-                    "                                                                                                                   name=\"name\"\n" +
-                    "                                                                                                                   class='form-control'>\n" +
-                    "                                                                                                        </div>\n" +
-                    "                                                                                                    </div>\n" +
-                    "                                                                                                    <div style=\"margin-top:10px\">\n" +
-                    "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
-                    "                                                                                                               style='font-weight: bold;'>\n" +
-                    "                                                                                                            Affiliation:\n" +
-                    "                                                                                                        </lable>\n" +
-                    "                                                                                                        <div class='input-group col-sm-10'>\n" +
-                    "                                                                                                            <input type='text'\n" +
-                    "                                                                                                                   name=\"ins\"\n" +
-                    "                                                                                                                   class='form-control'>\n" +
-                    "                                                                                                        </div>\n" +
-                    "                                                                                                    </div>\n" +
-                    "                                                                                                    <div style=\"margin-top:10px\">\n" +
-                    "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
-                    "                                                                                                               style='font-weight: bold;'>\n" +
-                    "                                                                                                            Email:\n" +
-                    "                                                                                                        </lable>\n" +
-                    "                                                                                                        <div class='input-group col-sm-10'>\n" +
-                    "                                                                                                            <input type='text'\n" +
-                    "                                                                                                                   name=\"email\"\n" +
-                    "                                                                                                                   class='form-control'>\n" +
-                    "                                                                                                        </div>\n" +
-                    "                                                                                                    </div>\n" +
-                    "                                                                                                    <div style=\"margin-top:10px\">\n" +
-                    "                                                                                                        <lable class='control-label col-sm-2 text-center'\n" +
-                    "                                                                                                               style='font-weight: bold;'>\n" +
-                    "                                                                                                            Homepage:\n" +
-                    "                                                                                                        </lable>\n" +
-                    "                                                                                                        <div class='input-group col-sm-10'>\n" +
-                    "                                                                                                            <input type='text'\n" +
-                    "                                                                                                                   name=\"homepage\"\n" +
-                    "                                                                                                                   class='form-control'>\n" +
-                    "                                                                                                        </div>\n" +
-                    "                                                                                                    </div>\n" +
-                    "                                                                                                </div></div> </div> </div>"
-                content_box.append(str)
-            })
 
         },
 
