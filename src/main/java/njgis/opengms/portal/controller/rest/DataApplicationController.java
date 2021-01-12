@@ -14,6 +14,7 @@ import njgis.opengms.portal.dao.UserDao;
 import njgis.opengms.portal.dto.dataApplication.DataApplicationDTO;
 import njgis.opengms.portal.dto.dataApplication.DataApplicationFindDTO;
 import njgis.opengms.portal.entity.*;
+import njgis.opengms.portal.entity.support.AuthorInfo;
 import njgis.opengms.portal.entity.support.InvokeService;
 import njgis.opengms.portal.entity.support.Maintainer;
 import njgis.opengms.portal.entity.support.TestData;
@@ -913,6 +914,58 @@ public class DataApplicationController {
 
         return jsonResult;
     }
+
+    /**
+     * 批量上传服务接口，只需要filePath,暂时不用，注释掉了，先别删
+     * @return
+     */
+//    @RequestMapping(value = "/batchService", method = RequestMethod.POST)
+//    public JsonResult batchService(@RequestParam(value = "filePath") String filePath,
+//                                   @RequestParam(value = "userId") String userId){
+//        JsonResult res = new JsonResult();
+//        ArrayList<String> arrayList = new ArrayList<>();
+//        try{
+//            FileReader fileReader = new FileReader(filePath);
+//            BufferedReader bf = new BufferedReader(fileReader);
+//            String str;
+//            // 按行读取字符串
+//            while ((str = bf.readLine()) != null) {
+//                arrayList.add(str);
+//            }
+//            bf.close();
+//            fileReader.close();
+//        }catch (IOException e){
+//            e.printStackTrace();
+//        }
+//        int length = arrayList.size();
+//        for (int i = 0; i < length; i++) {
+//            String s = arrayList.get(i);
+//            String[] arr = s.split(",");
+//            DataApplication dataApplication = new DataApplication();
+//            dataApplication.setName(arr[1]);
+//            dataApplication.setDescription(arr[2]);
+////            dataApplication.setDetail(arr[2]);
+//            dataApplication.setAuthor("4");
+//            dataApplication.setMethod("Conversion");
+//            dataApplication.setOid(UUID.randomUUID().toString());
+//            dataApplication.setCreateTime(new Date());
+//            dataApplication.setLastModifyTime(new Date());
+//            dataApplication.setStatus("Public");
+//            dataApplication.setType("process");
+//            dataApplication.setContentType("Package");
+//            dataApplication.setIsAuthor(true);
+//            dataApplication.setLock(false);
+//            List<AuthorInfo> authorship = new ArrayList<>();
+//            dataApplication.setAuthorship(authorship);
+//            dataApplication.setBatch(true);
+//            List<String> resources = new ArrayList<>();
+//            resources.add("/4/"+ arr[0]);
+//            dataApplication.setResources(resources);
+//            dataApplicationDao.insert(dataApplication);
+//        }
+//
+//        return res;
+//    }
 
 
 }

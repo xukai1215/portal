@@ -85,8 +85,8 @@ public class DataApplicationService {
     @Autowired
     UserDao userDao;
 
-    @Value("${dataContainerDeployPort}")
-    String dataContainerDeployPort;
+//    @Value("${dataContainerDeployPort}")
+//    String dataContainerDeployPort;
 
     @Value("${htmlLoadPath}")
     private String htmlLoadPath;
@@ -119,7 +119,12 @@ public class DataApplicationService {
                     String[] arr = path.split("\\.");
                     String suffix = arr[arr.length - 1];
                     arr = path.split("/");
-                    String name = arr[arr.length - 1].substring(14);
+                    String name = null;
+                    if (dataApplication.getBatch()!=null&&dataApplication.getBatch() == true){
+                        name = arr[arr.length - 1];
+                    }else {
+                        name = arr[arr.length - 1].substring(14);
+                    }
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("name", name);
                     jsonObject.put("suffix", suffix);

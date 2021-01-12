@@ -371,7 +371,10 @@ let vue = new Vue({
                                 let fileInfo = res.data.data.id;
                                 for(let i=0;i<that.metaDetail.input.length;i++){
                                     for (let j=0;j<fileInfo.length;j++){
-                                        if (that.metaDetail.input[i].name === fileInfo[j].file_name){
+                                        let name1 = that.metaDetail.input[i].name.split('.');
+                                        let name2 = fileInfo[j].file_name.split('.');
+
+                                        if (name1[name1.length-1] === name2[name2.length-1]){
                                             that.metaDetail.input[i].loadName = fileInfo[j].file_name;
                                             that.metaDetail.input[i].url = fileInfo[j].url;
                                             break;
