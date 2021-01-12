@@ -766,8 +766,9 @@ public class DataApplicationController {
         JsonResult jsonResult = new JsonResult();
         MultiValueMap<String, Object> part = new LinkedMultiValueMap<>();
 
-        for(int i=0;i<files.length;i++)
+        for(int i=0;i<files.length;i++) {
             part.add("ogmsdata", files[i].getResource());
+        }
         part.add("name", uploadName);
         part.add("userId", userName);
         part.add("serverNode", serverNode);
