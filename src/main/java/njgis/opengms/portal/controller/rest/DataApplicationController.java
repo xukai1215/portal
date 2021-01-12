@@ -14,10 +14,7 @@ import njgis.opengms.portal.dao.UserDao;
 import njgis.opengms.portal.dto.dataApplication.DataApplicationDTO;
 import njgis.opengms.portal.dto.dataApplication.DataApplicationFindDTO;
 import njgis.opengms.portal.entity.*;
-import njgis.opengms.portal.entity.support.AuthorInfo;
-import njgis.opengms.portal.entity.support.InvokeService;
-import njgis.opengms.portal.entity.support.Maintainer;
-import njgis.opengms.portal.entity.support.TestData;
+import njgis.opengms.portal.entity.support.*;
 import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.service.DataApplicationService;
 import njgis.opengms.portal.service.DataItemService;
@@ -166,7 +163,8 @@ public class DataApplicationController {
         if(oid==null){
             return ResultUtils.error(-2,"未登录");
         }
-        JSONObject result=dataApplicationService.insert(files,jsonObject,oid,dataApplicationDTO);
+        String uid = session.getAttribute("uid").toString();
+        JSONObject result=dataApplicationService.insert(files,jsonObject,oid,dataApplicationDTO,uid);
 
         return ResultUtils.success(result);
     }
@@ -394,7 +392,7 @@ public class DataApplicationController {
 //        String response = null;
         //具体invoke,获取结果数据
         String url = null;
-        String urlRes = null;
+        JSONObject urlRes = null;
 //        String parameters = "";
 //        for(int i=0;i< params.length;i++){
 //            parameters += params[i];
@@ -421,9 +419,14 @@ public class DataApplicationController {
             //数据为可下载数据的url  此调用为post
 //            String downloadLink = "";
             //设置input数据
+
+            //将所有参数放到一个JSON中
+        try{
+            dataServerTask.setInput(JSONObject.parseObject(selectData));
+        }catch (Exception e){
             input.put("input", selectData);
             dataServerTask.setInput(input);
-            //将所有参数放到一个JSON中
+        }
         JSONObject postParams = new JSONObject();
         postParams.put("token", token);
         postParams.put("pcsId", serviceId);
@@ -542,7 +545,16 @@ public class DataApplicationController {
                 return jsonResult;
             }
 //
-            urlRes = resp.getString("url");
+            urlRes = resp.getJSONObject("urls");
+//            JSONObject
+        List<TaskData> taskDatas = new ArrayList<>();
+            for(String fileName:urlRes.keySet()){
+                TaskData taskData = new TaskData();
+                taskData.setTag(fileName.substring(0, fileName.lastIndexOf(".")));
+                taskData.setSuffix(fileName.substring(fileName.lastIndexOf(".")).substring(1));
+                taskData.setUrl(urlRes.getString(fileName));
+                taskDatas.add(taskData);
+            }
 //        }
 //        else {
 //            //解析xml，获取下载链接
@@ -557,13 +569,14 @@ public class DataApplicationController {
         Date date1 = new Date();
         dataServerTask.setFinishTime(date1);
         dataServerTask.setPermission("private");
-        JSONObject output = new JSONObject();
-        output.put("output", urlRes);
-        dataServerTask.setOutput(output);
+//        JSONObject output = new JSONObject();
+//        output.put("output", urlRes);
+        dataServerTask.setOutputs(taskDatas);
+//        dataServerTask.setOutput(urlRes);
         dataServerTask.setStatus(2);//成功运行
 
         dataServerTaskDao.insert(dataServerTask);
-        invokeService.setCacheUrl(urlRes);
+//        invokeService.setCacheUrl(urlRes);
         dataApplication.setInvokeServices(invokeServices);
         dataApplicationDao.save(dataApplication);
         JSONObject res = new JSONObject();
@@ -968,5 +981,35 @@ public class DataApplicationController {
 //        return res;
 //    }
 
+//    @RequestMapping(value = "/batchServiceDel", method = RequestMethod.GET)
+//    public JsonResult batchServiceDel(){
+//        JsonResult res = new JsonResult();
+//        List<DataApplication> dataApplications = dataApplicationDao.findAll();
+//        List<String> names = new ArrayList<>();
+//        for(DataApplication dataApplication:dataApplications){
+//            if (dataApplication.getAuthor().equals("4")){
+//                names.add(dataApplication.getName());
+//                dataApplicationDao.delete(dataApplication);
+//            }
+//        }
+//        res.setData(names);
+//        return res;
+//    }
+
+//    @RequestMapping(value = "/findBatchNoTrue", method = RequestMethod.GET)
+//    public JsonResult findBatchNoTrue(){
+//        List<String> names = new ArrayList<>();
+//        List<DataApplication> dataApplications = dataApplicationDao.findAll();
+//        for(DataApplication dataApplication:dataApplications){
+//            if(!dataApplication.getBatch()&&dataApplication.getAuthor().equals("4")){
+//                names.add(dataApplication.getOid());
+//                dataApplication.setBatch(true);
+//                dataApplicationDao.save(dataApplication);
+//            }
+//        }
+//        JsonResult result = new JsonResult();
+//        result.setData(names);
+//        return result;
+//    }
 
 }

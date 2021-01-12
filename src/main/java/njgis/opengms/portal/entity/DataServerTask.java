@@ -2,8 +2,10 @@ package njgis.opengms.portal.entity;
 
 import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
+import njgis.opengms.portal.entity.support.TaskData;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Author mingyuan

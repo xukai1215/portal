@@ -78,12 +78,12 @@
 <body>
 <div id="app" v-cloak>
     <div th:replace="fragments/navbar :: unlog"></div>
-    <div>
-        <div class="clearfix" style="max-height: 100vh;overflow: auto;"
-             v-loading="loading"
-             element-loading-text="The data service is running, please do not close this page"
-             element-loading-spinner="el-icon-loading"
-             element-loading-background="rgba(0, 0, 0, 0.8)">
+    <div v-loading="loading"
+         element-loading-text="The data service is running, please do not close this page"
+         element-loading-spinner="el-icon-loading"
+         element-loading-background="rgba(0, 0, 0, 0.8)">
+        <div class="clearfix" :style="{height:windowHeight+'px'}" style="max-height: 100vh;overflow: auto;"
+             >
             <div class="el-col el-col-5" role="applicationIntro" id="applicationSider" style="min-width: 220px;position: fixed;width: 23%;">
                 <div id="introContainer" class="slider">
                     <div class="introHeader">
@@ -94,7 +94,7 @@
                         <div>
                             <h3 class="model_title"> {{invokeService.name}}</h3>
                             <span>Contributed by <span style="cursor: pointer; font-size: 2rem;"
-                                                       @click="goPersonCenter(user.oid)">{{invokeService.contributor}}</span></span>
+                                                       @click="goPersonCenter(user.name)">{{invokeService.contributor}}</span></span>
                             <br>
                         </div>
                     </div>
@@ -153,11 +153,8 @@
                                         </el-col>
                                         <div>
                                             <el-col :span="6" :offset="1">
-                                                <!--:value="modelInEvent.tag"-->
-<!--                                                <div v-for="(item,index) in selectData">-->
                                                     <el-input class="data-input" placeholder="Input Data" v-model="item.loadName" :disabled="true">
                                                     </el-input>
-<!--                                                </div>-->
                                             </el-col>
 
                                             <el-col :span="6">
@@ -209,31 +206,33 @@
                                 <el-row class="_title">Output</el-row>
                                 <div class="_items">
                                     <el-row>
-                                        <el-col :span="11" class="_event-desc">
+                                        <el-col :span="6" class="_event-desc">
                                                         <span class="event-name">
                                                             <span style="color:red">*</span>
                                                             Output Data
                                                         </span>
-                                            <!--                                        <span>-->
-                                            <!--                                                            <el-tag type="info" :disable-transitions="true">-->
-                                            <!--                                                                Data Type:-->
-                                            <!--                                                                <a style="text-decoration: underline"-->
-                                            <!--                                                                   target="_blank">shp</a>-->
-                                            <!--                                                            </el-tag>-->
-                                            <!--                                                        </span>-->
                                         </el-col>
-                                        <div>
-                                            <el-col :span="6" :offset="1">
-                                                <!--:value="modelInEvent.tag"-->
-                                                <el-input class="model-input" v-model="outPutData">
-                                                </el-input>
-                                            </el-col>
 
-                                            <el-col :span="6">
+                                        <div>
+<!--                                            <el-col :span="6" :offset="1">-->
+<!--                                                <el-input class="data-input"  placeholder="Output Data" v-model="outPutData" :disabled="true">-->
+<!--                                                </el-input>-->
+<!--                                            </el-col>-->
+                                            <span style="margin-right: 20px;">{{outPutData.length}} Output Datas</span>
+                                            <el-select v-model="value" placeholder="Output Data" no-data-text="No Output Data" @change="selectChanged">
+                                                <el-option
+                                                        v-for="item in outPutData"
+                                                        :key="item.tag"
+                                                        :label="item.tag + '.' + item.suffix"
+                                                        :value="item.tag + '.' + item.suffix">
+                                                </el-option>
+                                            </el-select>
+
+                                            <el-col :span="6" style="float: right">
                                                 <div class="_btn-group">
-<!--                                                    <el-button plain round type="success">-->
-<!--                                                        <i class="fa fa-folder-open"></i>-->
-<!--                                                    </el-button>-->
+                                                    <el-button plain round type="success">
+                                                        <i class="fa fa-folder-open"></i>
+                                                    </el-button>
 
                                                     <el-button plain round type="warning" @click="downloadResult()">
                                                         <i class="fa fa-download"></i>
@@ -253,6 +252,9 @@
                                     </el-row>
                                 </div>
                             </div>
+                            <el-button plain type="primary" style="min-width: 121px;float: right;margin-right: 20px" @click="invokeNow()">
+                                <i class="fa fa-hand-spock-o"></i>&nbsp;Invoke
+                            </el-button>
                         </div>
                         <!--                    </el-row>-->
                         <!--                </el-row>-->
@@ -261,8 +263,10 @@
             </div>
         </div>
     </div>
-    <div th:replace="fragments/footer :: footer"></div>
-<!--    <el-dialog-->
+<!--    <div th:replace="fragments/footer :: footer"></div>-->
+    <div th:replace="fragments/footer :: footer-mini"></div>
+
+    <!--    <el-dialog-->
 <!--            v-loading="loading"-->
 <!--        title="Invoke"-->
 <!--        :visible.sync="invokeDialog"-->

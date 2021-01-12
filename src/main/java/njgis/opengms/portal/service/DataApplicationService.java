@@ -50,7 +50,7 @@ import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import static jdk.internal.org.objectweb.asm.Type.getType;
+//import static jdk.internal.org.objectweb.asm.Type.getType;
 import static njgis.opengms.portal.utils.DataApplicationUtil.deleteFolder;
 import static njgis.opengms.portal.utils.DataApplicationUtil.zipUncompress;
 import static njgis.opengms.portal.utils.Utils.deleteFile;
@@ -308,7 +308,7 @@ public class DataApplicationService {
      * @param dataApplicationDTO 参数3
      * @return 插入结果
      */
-    public JSONObject insert(List<MultipartFile> files, JSONObject jsonObject, String oid, DataApplicationDTO dataApplicationDTO){
+    public JSONObject insert(List<MultipartFile> files, JSONObject jsonObject, String oid, DataApplicationDTO dataApplicationDTO, String uid){
         JSONObject result = new JSONObject();
         DataApplication dataApplication = new DataApplication();
         BeanUtils.copyProperties(dataApplicationDTO, dataApplication);
@@ -343,9 +343,9 @@ public class DataApplicationService {
                 invokeService.setMethod(dataApplication.getMethod());
                 invokeService.setName(dataApplication.getName());
 
-//                invokeService.setToken("fdtwTxlnhka8jY66lOT+kKutgZHnvi4NlnDc7QY5jR4=");//75
-                invokeService.setToken("fcky/35Rezr+Kyazr8SRWA==");//33
-                invokeService.setContributor("Portal");
+                invokeService.setToken("fdtwTxlnhka8jY66lOT+kKutgZHnvi4NlnDc7QY5jR4=");//75
+//                invokeService.setToken("fcky/35Rezr+Kyazr8SRWA==");//33
+                invokeService.setContributor(uid);
                 invokeService.setIsPortal(true);
                 List<InvokeService> invokeServices = new ArrayList<>();
                 invokeServices.add(invokeService);
@@ -711,6 +711,7 @@ public class DataApplicationService {
     public JsonResult deployPackage(DataApplication dataApplication, String dataPath) throws Exception {
         JsonResult res = new JsonResult();
         //跨域调用容器接口，部署数据
+//        String dataUrl="http://172.21.213.111:8899" + "/newFile";
         String dataUrl="http://172.21.213.111:8899" + "/newFile";
 
         List<InvokeService> invokeServices = dataApplication.getInvokeServices();
@@ -721,9 +722,9 @@ public class DataApplicationService {
         part.put("uid", "0");//存在根目录中
         part.put("instype", "Data");
 
-        part.put("userToken", "f30f0e82-f6f1-4264-a302-caff7c40ccc9");//33
+//        part.put("userToken", "f30f0e82-f6f1-4264-a302-caff7c40ccc9");//33
 //        part.put("userToken", "e3cea591-a8a5-4f50-b640-a569eccd94b7");//75
-//        part.put("userToken", "4cfc7691-c56b-483f-b1c9-bab859be9e00");//75_2
+        part.put("userToken", "4cfc7691-c56b-483f-b1c9-bab859be9e00");//75_2
         String newFileId = UUID.randomUUID().toString();
         part.put("id", newFileId);
         part.put("oid", "0");
@@ -770,8 +771,8 @@ public class DataApplicationService {
         part2.add("name", dataApplication.getName());
         //todo
 
-        part2.add("oid", "I3MXbzRq/NZkbWcKO8tF0w==");//33
-//        part2.add("oid", "5KglgbsDPmrFnA3J9CALzQ==");//75
+//        part2.add("oid", "I3MXbzRq/NZkbWcKO8tF0w==");//33
+        part2.add("oid", "5KglgbsDPmrFnA3J9CALzQ==");//75
 
         //获取xml
         String packageZipPath = resourcePath + "/DataApplication/Package" + dataApplication.getResources().get(0);
@@ -819,9 +820,9 @@ public class DataApplicationService {
         part2.add("type", "Processing");
         part2.add("uid", "0");
 
-        part2.add("userToken", "f30f0e82-f6f1-4264-a302-caff7c40ccc9");//33
+//        part2.add("userToken", "f30f0e82-f6f1-4264-a302-caff7c40ccc9");//33
 //        part2.add("userToken", "e3cea591-a8a5-4f50-b640-a569eccd94b7");//75
-//        part2.add("userToken", "4cfc7691-c56b-483f-b1c9-bab859be9e00");//75_2
+        part2.add("userToken", "4cfc7691-c56b-483f-b1c9-bab859be9e00");//75_2
         part2.add("processingPath", dataApplication.getPackagePathContainer());
 
         invokeService.setServiceId(serviceId);
