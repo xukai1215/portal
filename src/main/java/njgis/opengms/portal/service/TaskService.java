@@ -1222,57 +1222,77 @@ public class TaskService {
 
     }
 
-    //从managerserver获取task的最新状态
+    //更新集成任务的运行信息
     public JSONObject checkIntegratedTask(String taskId){
+        JSONObject data = getIntegratedTask(taskId);
+        if(data.isEmpty()){
+            return data;
+        }else {
+            return updateIntegratedTaskInfo(taskId,data);
+        }
+    }
+
+
+    //从managerserver获取task的最新状态
+    public JSONObject getIntegratedTask(String taskId){
         RestTemplate restTemplate=new RestTemplate();
         String url="http://" + managerServerIpAndPort + "/GeoModeling/task/checkTaskStatus?taskId={taskId}";//远程接口
         Map<String, String> params = new HashMap<>();
         params.put("taskId", taskId);
+
+        JSONObject data = new JSONObject();
         ResponseEntity<JSONObject> responseEntity=restTemplate.getForEntity(url,JSONObject.class,params);
         if (responseEntity.getStatusCode()!= HttpStatus.OK){
             throw new MyException("远程服务出错");
         }
         else {
-            IntegratedTask task=integratedTaskDao.findByTaskId(taskId);
-            JSONObject data = responseEntity.getBody().getJSONObject("data");
-            int status = data.getInteger("status");
-            JSONObject taskInfo = data.getJSONObject("taskInfo");
-
-            //更新output
-            JSONObject j_modelActionList = taskInfo.getJSONObject("modelActionList");
-            JSONObject j_dataProcessingList = taskInfo.getJSONObject("dataProcessingList");
-            List<Action> finishedModelActions = converseOutputModelAction(j_modelActionList.getJSONArray("completed"));
-            List<Action> failedModelActions = converseOutputModelAction(j_modelActionList.getJSONArray("failed"));
-            List<Action> finishedDataProcessings = converseOutputModelAction(j_dataProcessingList.getJSONArray("completed"));
-            List<Action> failedDataProcessings = converseOutputModelAction(j_dataProcessingList.getJSONArray("failed"));
-
-            finishedModelActions.addAll(finishedDataProcessings);
-            failedModelActions.addAll(failedDataProcessings);
-            updateIntegratedTaskOutput(task,finishedModelActions,failedModelActions);
-
-            //todo common task 与 integrated task的合并
-            Task comTask = taskDao.findFirstByTaskId(task.getOid());
-            switch (status){
-                case 0:
-                    break;
-                case -1:
-                    task.setStatus(-1);
-                    comTask = taskDao.findFirstByTaskId(task.getTaskId());
-                    comTask.setStatus(-1);
-                    integratedTaskDao.save(task);
-                    taskDao.save(comTask);
-                    break;
-                case 1:
-                    task.setStatus(2);
-                    integratedTaskDao.save(task);
-                    comTask = taskDao.findFirstByTaskId(task.getTaskId());
-                    comTask.setStatus(2);
-                    integratedTaskDao.save(task);
-                    taskDao.save(comTask);
-                    break;
-            }
-            return data;
+            data = responseEntity.getBody().getJSONObject("data");
         }
+
+        return data;
+    }
+
+
+    public JSONObject updateIntegratedTaskInfo(String taskId,JSONObject data) {
+        IntegratedTask task = integratedTaskDao.findByTaskId(taskId);
+        int status = data.getInteger("status");
+        JSONObject taskInfo = data.getJSONObject("taskInfo");
+
+        //更新output
+        JSONObject j_modelActionList = taskInfo.getJSONObject("modelActionList");
+        JSONObject j_dataProcessingList = taskInfo.getJSONObject("dataProcessingList");
+        List<Action> finishedModelActions = converseOutputModelAction(j_modelActionList.getJSONArray("completed"));
+        List<Action> failedModelActions = converseOutputModelAction(j_modelActionList.getJSONArray("failed"));
+        List<Action> finishedDataProcessings = converseOutputModelAction(j_dataProcessingList.getJSONArray("completed"));
+        List<Action> failedDataProcessings = converseOutputModelAction(j_dataProcessingList.getJSONArray("failed"));
+
+        finishedModelActions.addAll(finishedDataProcessings);
+        failedModelActions.addAll(failedDataProcessings);
+        updateIntegratedTaskOutput(task, finishedModelActions, failedModelActions);
+
+        //todo common task 与 integrated task的合并
+        Task comTask = taskDao.findFirstByTaskId(task.getOid());
+        switch (status) {
+            case 0:
+                break;
+            case -1:
+                task.setStatus(-1);
+                comTask = taskDao.findFirstByTaskId(task.getTaskId());
+                comTask.setStatus(-1);
+                integratedTaskDao.save(task);
+                taskDao.save(comTask);
+                break;
+            case 1:
+                task.setStatus(2);
+                integratedTaskDao.save(task);
+                comTask = taskDao.findFirstByTaskId(task.getTaskId());
+                comTask.setStatus(2);
+                integratedTaskDao.save(task);
+                taskDao.save(comTask);
+                break;
+        }
+        return data;
+
     }
 
     public List<Action> converseOutputModelAction(JSONArray actionArray) {
@@ -1800,6 +1820,55 @@ public class TaskService {
         return taskList;
     }
 
+    public List<IntegratedTask> updateUserItdTasks(String userName,List<IntegratedTask> itdTaskList) {//多线程通过managerserver更新数据库
+        AsyncTask asyncTask = new AsyncTask();
+        List<Future> futures = new ArrayList<>();
+
+//        Sort sort = new Sort(Sort.Direction.DESC, "runTime");
+//        List<Task> ts = taskDao.findByUserId(userName);
+        List<IntegratedTask> taskList = new ArrayList<>();
+        try {
+            for (int i = 0; i < itdTaskList.size(); i++) {
+                IntegratedTask task = itdTaskList.get(i);
+                if (task.getStatus() == 1) {
+                    JSONObject param = new JSONObject();
+                    param.put("tid", task.getTaskId());
+                    param.put("integrate", task.getIntegrate());
+
+                    futures.add(asyncTask.getRecordCallback(param, managerServerIpAndPort));
+                }
+            }
+
+
+            for (Future<?> future : futures) {
+                while (true) {//CPU高速轮询：每个future都并发轮循，判断完成状态然后获取结果，这一行，是本实现方案的精髓所在。即有10个future在高速轮询，完成一个future的获取结果，就关闭一个轮询
+                    if (future.isDone() && !future.isCancelled()) {//获取future成功完成状态，如果想要限制每个任务的超时时间，取消本行的状态判断+future.get(1000*1, TimeUnit.MILLISECONDS)+catch超时异常使用即可。
+                        String result = (String) future.get();//获取结果
+                        if(!result.equals("{}")){
+                            JSONObject jsonResult = JSON.parseObject(result);
+                            JSONObject taskInfo = jsonResult.getJSONObject("taskInfo");
+                            String taskId = jsonResult.getString("taskId");
+                            updateIntegratedTaskInfo(taskId,jsonResult);
+
+                            break;//当前future获取结果完毕，跳出while
+                        }else{
+
+                        }
+                        break;
+
+                    } else {
+                        Thread.sleep(1);//每次轮询休息1毫秒（CPU纳秒级），避免CPU高速轮循耗空CPU---》新手别忘记这个
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+//            System.out.println(e.getMessage());
+        }
+        return taskList;
+    }
+
     public JSONObject getTasksByUserIdByStatus(String userName, String status, int page, String sortType, int sortAsc) {
 
         AsyncTask asyncTask = new AsyncTask();
@@ -1837,6 +1906,44 @@ public class TaskService {
 
         return taskObject;
     }
+
+    public JSONObject pageIntegrateTaskByUserByStatus(String userName, String status, int page, String sortType, int sortAsc,String searchText) {
+
+        Sort sort = new Sort(sortAsc == 1 ? Sort.Direction.ASC : Sort.Direction.DESC, "lastModifiedTime");
+        Pageable pageable = PageRequest.of(page, 10, sort);
+        Page<IntegratedTask> integratedTaskPage = Page.empty();
+
+        if (status.equals("calculating")) {
+            integratedTaskPage = integratedTaskDao.findByUserIdAndIntegrateAndStatusAndTaskNameContainsIgnoreCase(userName, true, 1,searchText ,pageable);
+        } else if (status.equals("successful")) {
+            integratedTaskPage = integratedTaskDao.findByUserIdAndIntegrateAndStatusAndTaskNameContainsIgnoreCase(userName, true, 2,searchText , pageable);
+        } else if (status.equals("failed"))
+            integratedTaskPage = integratedTaskDao.findByUserIdAndIntegrateAndStatusAndTaskNameContainsIgnoreCase(userName, true, -1,searchText , pageable);
+        else if (status.equals("builded"))
+            integratedTaskPage = integratedTaskDao.findByUserIdAndIntegrateAndStatusAndTaskNameContainsIgnoreCase(userName, true, 0,searchText , pageable);
+        else
+            integratedTaskPage = integratedTaskDao.findByUserIdAndIntegrateAndTaskNameContainsIgnoreCase(userName, true, searchText,pageable);
+        List<IntegratedTask> ts = integratedTaskPage.getContent();
+
+        List<IntegratedTask> newTasks = updateUserItdTasks(userName,ts);//先利用这个函数更新一下数据库
+
+        for(IntegratedTask newTask : newTasks){
+            for(IntegratedTask task:ts){
+                if(newTask.getOid().equals(task.getOid())){
+                    task.setModelActions(newTask.getModelActions());
+                    task.setDataProcessings(newTask.getDataProcessings());
+                }
+            }
+
+        }
+
+        JSONObject taskObject = new JSONObject();
+        taskObject.put("count", integratedTaskPage.getTotalElements());
+        taskObject.put("tasks", ts);
+
+        return taskObject;
+    }
+
 
     public JSONObject getDataTasks(String userId, DataTasksFindDTO dataTasksFindDTO) {
         Pageable pageable = PageRequest.of(dataTasksFindDTO.getPage()-1, dataTasksFindDTO.getPageSize(), new Sort(dataTasksFindDTO.getAsc()? Sort.Direction.ASC: Sort.Direction.DESC,dataTasksFindDTO.getSortField()));

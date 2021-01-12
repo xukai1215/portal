@@ -233,6 +233,26 @@ public class TaskRestController {
         }
 
     }
+
+    @RequestMapping(value="/pageIntegrateTaskByUserByStatus",method = RequestMethod.GET )
+    JsonResult pageIntegrateTaskByUserByStatus(HttpServletRequest request,
+                                      @RequestParam(value="status") String status,
+                                      @RequestParam(value="page") int page,
+                                      @RequestParam(value="sortType") String sortType,
+                                      @RequestParam(value="asc") int sortAsc,
+                                      @RequestParam(value="searchText") String searchText
+                                      ) {
+        HttpSession session = request.getSession();
+        String userId = session.getAttribute("uid").toString();
+        if (userId == null){
+            return ResultUtils.error(-1, "no login");
+        }else{
+            String username = session.getAttribute("uid").toString();
+            return ResultUtils.success(taskService.pageIntegrateTaskByUserByStatus(username,status,page,sortType,sortAsc,searchText));
+        }
+
+    }
+
     @RequestMapping(value = "/getDataTasks", method = RequestMethod.POST)
     JsonResult getDataTasks(@RequestBody DataTasksFindDTO dataTasksFindDTO, HttpServletRequest request){
         HttpSession session = request.getSession();
