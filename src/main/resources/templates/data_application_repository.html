@@ -64,7 +64,7 @@
                     <h2 class="main-title">Data Methods</h2>
                     <h4 class="sub-title">The repository of data methods (one-stop hub with public shared data methods resources)
                     </h4>
-                    <button id="contributeBtn" class="btn btn-success btn-lg" style="font-size: 15px;margin:10px;" @click="contribute()">+ Contribute</button>
+<!--                    <button id="contributeBtn" class="btn btn-success btn-lg" style="font-size: 15px;margin:10px;" @click="contribute()">+ Contribute</button>-->
                 </div>
                 <hr>
             </div>
@@ -74,9 +74,9 @@
                         <span style="font-size: 20px;color:#444">Data Categories</span>
                     </div>
                     <div id="classification" style="padding-top: 0px">
-                        <div id="conversion" style="height: 27px;margin-right: 12px" role="button"  tabindex="0" class="el-collapse-item__header" @click="chooseCate('Conversion',$event)">Conversion</div>
-                        <div style="height: 27px;margin-right: 12px" role="button"  tabindex="0" class="el-collapse-item__header" @click="chooseCate('Processing',$event)">Processing</div>
-                        <div style="height: 27px;margin-right: 12px" role="button"  tabindex="0" class="el-collapse-item__header" @click="chooseCate('Visualization',$event)">Visualization</div>
+                        <div id="conversion" style="height: 40px; font-size:16px;margin-right: 12px" role="button"  tabindex="0" class="el-collapse-item__header" @click="chooseCate('Conversion',$event)"><i class="el-icon-crop" style="margin-right: 10px"></i>Conversion</div>
+                        <div style="height: 40px; font-size:16px;margin-right: 12px" role="button"  tabindex="0" class="el-collapse-item__header" @click="chooseCate('Processing',$event)"><i class="el-icon-crop" style="margin-right: 10px"></i>Processing</div>
+                        <div style="height: 40px; font-size:16px;margin-right: 12px" role="button"  tabindex="0" class="el-collapse-item__header" @click="chooseCate('Visualization',$event)"><i class="el-icon-crop" style="margin-right: 10px"></i>Visualization</div>
 <!--                        <div style="height: 27px;margin-right: 10px" role="button"  tabindex="0" class="el-collapse-item__header" @click="chooseCate('all',$event)">All</div>-->
                     </div>
                 </el-card>
@@ -84,7 +84,7 @@
             <div class="el-col el-col-18 minScreen_maxWidth" >
                 <div class="searcherPanel">
                     <div class="searcherPanel">
-                        <el-select v-model="curQueryField" slot="prepend" style="width:120px;border-radius: 0;margin-right: 0;float: left;">
+                        <el-select v-model="curQueryField" slot="prepend" style="width:120px;border-radius: 0;margin-right: 0;float: left;" @change="getData">
                             <el-option
                                     v-for="qf in queryFields"
                                     :key="qf"
@@ -148,7 +148,7 @@
                                    @current-change="handleCurrentChange"
                                    :pager-count="5"
                                    :page-size="findDto.pageSize"
-                                   :current-page="findDto.page"
+                                   :current-page="currentPage"
                                    layout="prev, pager, next"
                                    :total="datacount">
                     </el-pagination>

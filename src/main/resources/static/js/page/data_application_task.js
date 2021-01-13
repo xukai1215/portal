@@ -2,9 +2,11 @@ let vue = new Vue({
     el:'#app',
     data: function (){
         return {
+            windowHeight: window.innerHeight,
             applicationInfo:'',
             invokeService:'',
             user:'',
+            contributorInfo:'',
             applicationOid:'',
             testStep:{
                 state:{
@@ -20,7 +22,7 @@ let vue = new Vue({
             invokeDialog:false,
             parameter:'',
             loading:false,
-            resultData:'',
+            resultData:{},
             outPutData:'',
             serviceId:'',
             isPortal:'',
@@ -45,12 +47,36 @@ let vue = new Vue({
             dataServerTask:'',
             visualPath:'',
             fileOrder:'',
+            value:'',
             // initParameter:''
 
+            addOutputToMyDataVisible: false,
+            outputToMyData:'',
+            selectedPath:'',
+            selectedFileIndex:0,
+            outputFolderTree: [{
+                id: 1,
+                label: 'All Folder',
+                children: [{
+                    id: 4,
+                    label: '二级 1-1',
+                    children: [{
+                        id: 9,
+                        label: '三级 1-1-1'
+                    }, {
+                        id: 10,
+                        label: '三级 1-1-2'
+                    }]
+                }]
+            }],
 
         }
     },
     methods:{
+        initSize() {
+            this.windowHeight = document.body.clientHeight - 129;
+            console.log(this.windowHeight);
+        },
         dateFormat(date, format) {
             let dateObj = new Date(date);
             let fmt = format || "yyyy-MM-dd hh:mm:ss";
@@ -79,8 +105,8 @@ let vue = new Vue({
                     );
             return fmt;
         },
-        goPersonCenter(oid) {
-            window.open("/user/" + oid);
+        goPersonCenter(userName) {
+            window.open("/profile/" + userName);
         },
         invokeNow(){
             let that = this;
@@ -130,17 +156,21 @@ let vue = new Vue({
                         window.location.href = "/user/login";
                     }else if (json.code === 0){
                         console.log(json);
-                        that.resultData = json.data.invokeService;
+                        // that.resultData = json.data.invokeService;
                         that.dataServerTask = json.data.task;
                         if(json.data == null){
-                            this.loading = false;
+                            that.loading = false;
                             that.$message({
                                 type:"error",
                                 message: 'Invoke failed!',
                             })
                         }else {
-                            that.outPutData = "OutData";
-                            this.loading = false;
+                            that.outPutData = that.dataServerTask.outputs;
+                            let str = this.outPutData[0].tag + '.' + this.outPutData[0].suffix;
+                            that.resultData.name = str;
+                            that.resultData.url = this.outPutData[0].url;
+                            that.value = that.resultData.name;
+                            that.loading = false;
                             that.invokeDialog = false;
                             that.$message({
                                 type: "success",
@@ -164,7 +194,7 @@ let vue = new Vue({
             });
         },
         downloadResult(){
-            window.location.href = this.resultData.cacheUrl;
+            window.location.href = this.resultData.url;
         },
         handleClick(tab, event) {
             console.log(tab, event);
@@ -371,7 +401,10 @@ let vue = new Vue({
                                 let fileInfo = res.data.data.id;
                                 for(let i=0;i<that.metaDetail.input.length;i++){
                                     for (let j=0;j<fileInfo.length;j++){
-                                        if (that.metaDetail.input[i].name === fileInfo[j].file_name){
+                                        let name1 = that.metaDetail.input[i].name.split('.');
+                                        let name2 = fileInfo[j].file_name.split('.');
+
+                                        if (name1[name1.length-1] === name2[name2.length-1]){
                                             that.metaDetail.input[i].loadName = fileInfo[j].file_name;
                                             that.metaDetail.input[i].url = fileInfo[j].url;
                                             break;
@@ -407,11 +440,225 @@ let vue = new Vue({
                     that.visualization = true;
                 }
             })
+        },
+        selectChanged(value){
+            // alert(value);
+            for(let i=0;i<this.outPutData.length;i++){
+                let str = this.outPutData[i].tag + '.' + this.outPutData[i].suffix;
+                if(value === str){
+                    this.selectedFileIndex = i;
+                    this.resultData.name = value;
+                    this.resultData.url = this.outPutData[i].url;
+                    break;
+                }
+            }
+        },
+        addOutputToMyData(output) {
+            this.outputToMyData = this.outPutData[this.selectedFileIndex]
+            this.addOutputToMyDataVisible = true
+            this.selectedPath = [];
+            let that = this
+            axios.get("/user/getFolder", {})
+                .then(res => {
+                    let json = res.data;
+                    if (json.code == -1) {
+                        alert("Please login first!")
+                        window.sessionStorage.setItem("history", window.location.href);
+                        window.location.href = "/user/login"
+                    } else {
+                        that.outputFolderTree = res.data.data;
+                        that.selectPathDialog = true;
+                        that.$nextTick(()=>{
+                            that.$refs.folderTree.setCurrentKey(null); //打开树之前先清空选择
+                        })
+                    }
+
+
+                });
+        },
+        addFolderinTree(pageIndex,index){
+            let node, data
+
+            data = this.$refs.folderTree2.getCurrentNode();
+            if (data == undefined || data == null) alert('Please select a file directory')
+            node = this.$refs.folderTree2.getNode(data);
+
+            let folderExited = data.children
+
+            console.log(node);
+            let paths=[];
+            while(node.key!=undefined&&node.key!=0){
+                paths.push(node.key);
+                node=node.parent;
+            }
+            if(paths.length==0) paths.push('0')
+            console.log(paths)
+
+            var newChild={id:""}
+
+            this.$prompt(null, 'Enter Folder Name', {
+                confirmButtonText: 'OK',
+                cancelButtonText: 'Cancel',
+                // inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
+                // inputErrorMessage: '邮箱格式不正确'
+            }).then(({ value }) => {
+                if(folderExited.some((item)=>{
+                    return  item.label===value;
+                })==true){
+                    alert('this name is existing in this path, please input a new one');
+                    return
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "/user/addFolder",
+                    data: {paths: paths, name: value},
+                    async: false,
+                    contentType: "application/x-www-form-urlencoded",
+                    success: (json) => {
+                        if (json.code == -1) {
+                            alert("Please login first!")
+                            window.sessionStorage.setItem("history", window.location.href);
+                            window.location.href = "/user/login"
+                        }
+                        else {
+                            newChild = {id: json.data, label: value, children: [], father: data.id ,package:true,suffix:'',upload:false, url:'',};
+                            if (!data.children) {
+                                this.$set(data, 'children', []);
+                            }
+                            data.children.push(newChild);
+
+                            setTimeout(()=>{
+                                this.$refs.folderTree2.setCurrentKey(newChild.id)
+                            },100)
+                        }
+
+                    }
+
+                });
+
+
+            }).then(()=>{
+
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: 'Cancel'
+                });
+            });
+
+
+
+        },
+        addOutputToMyDataConfirm() {
+            let data = this.$refs.folderTree2.getCurrentNode();
+            let node = this.$refs.folderTree2.getNode(data);
+
+            while (node.key != undefined && node.key != 0) {
+                this.selectedPath.unshift(node);
+                node = node.parent;
+            }
+            let allFder = {
+                key: '0',
+                label: 'All Folder'
+            }
+            this.selectedPath.unshift(allFder)
+            console.log(this.selectedPath)
+
+            this.uploadInPath = 0
+            let obj = {
+                label: this.outputToMyData.tag,
+                suffix: this.outputToMyData.suffix,
+                url: this.outputToMyData.url,
+                // templateId:this.outputToMyData.templateId,
+            }
+
+            this.addDataToPortalBack(obj)
+            this.addOutputToMyDataVisible = false
+        },
+        addDataToPortalBack(item){//item为undefined,则为用户上传；其他为页面已有数据的上传、修改路径
+
+            var addItem=[]
+            if(item instanceof Array) {
+                addItem=item;
+                // for(let i=0;i<addItem.length;i++)
+                //     addItem[i].file_name=this.splitFirst(addItem[i].file_name,'&')[1]
+            }
+            else{
+                let obj={
+                    file_name:item.label+'.'+item.suffix,
+                    label:item.label,
+                    suffix:item.suffix,
+                    source_store_id:item.url.split('/')[item.url.split('/').length-1],
+                    // templateId:item.templateId,
+                    upload:'false'
+                }
+                if(item.url==='') obj.source_store_id = '';
+                addItem[0]=obj
+            }
+            let paths=[]
+            if(this.uploadInPath==1){
+                let i=this.pathShown.length-1;
+                while (i>=0) {
+                    paths.push(this.pathShown[i].id);
+                    i--;
+                }
+                if(paths.length==0)paths=['0']
+
+            }else{
+                if(this.selectedPath.length==0) {
+                    alert('Please select a folder')
+                    return
+                }
+
+                let i=this.selectedPath.length-1;//selectPath中含有all folder这个不存在的文件夹，循环索引有所区别
+                while (i>=1) {
+                    paths.push(this.selectedPath[i].key);
+                    i--;
+                }
+                if(paths.length==0)paths=['0']
+            }
+            let that = this;
+            $.ajax({
+                type: "POST",
+                url: "/user/addFile",
+                data: JSON.stringify({
+                    files: addItem,
+                    paths: paths
+                }),
+
+                async: true,
+                traditional:true,
+                contentType: "application/json",
+                success: (json) => {
+                    if (json.code == -1) {
+                        alert("Please login first!")
+                        window.sessionStorage.setItem("history", window.location.href);
+                        window.location.href = "/user/login"
+                    }else{
+                        this.$message({
+                            message: 'Upload successfully!',
+                            type: 'success'
+                        });
+                    }
+
+
+                }
+            });
+
+            // alert('Upload File successfully!')
+
+
+        },
+        getContributorInfo(){
+            let that = this;
+
         }
     },
     mounted(){
         let that = this;
-
+        window.addEventListener("resize", this.initSize);
+        this.initSize();
         let str = window.location.href.split('/')
         //将dataApplicationOid与serviceId切出来
         this.applicationOid = str[str.length-3];
@@ -434,15 +681,24 @@ let vue = new Vue({
                 that.invokeService = res.data.data.service;
                 window.document.token = that.invokeService.token;
                 that.isPortal = that.invokeService.isPortal;
-                //处理portal的 testData，加name属性
-                if(that.isPortal == true){
-                    for (let i=0;i<that.testData.length;i++){
-                        let path = that.testData[i].path;
-                        let str = path.split('/');
-                        let name = str[str.length-1];
-                        that.testData[i].name = name;
+                $.ajax({
+                    url:"/dataApplication/getContributorInfo/" + that.invokeService.contributor,
+                    type:"GET",
+                    success:(json) =>{
+                        if (json.code == 0){
+                            that.contributorInfo = json.data;
+                        }
                     }
-                }
+                })
+                //处理portal的 testData，加name属性
+                // if(that.isPortal == true){
+                //     for (let i=0;i<that.testData.length;i++){
+                //         let path = that.testData[i].path;
+                //         let str = path.split('/');
+                //         let name = str[str.length-1];
+                //         that.testData[i].name = name;
+                //     }
+                // }
             }
         })
         axios.get("/dataApplication/getParemeter/" + this.applicationOid +'/' + this.serviceId).then((res) => {

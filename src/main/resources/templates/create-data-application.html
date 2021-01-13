@@ -159,13 +159,13 @@
                                                             </label>
                                                             <div class="input-group col-md-5">
                                                                 <el-radio-group v-model="dataApplication.status" size="medium">
-                                                                    <el-tooltip popper-class="fontsize-15" effect="light" content="This item can be retrieved, shared and edited." placement="top">
+                                                                    <el-tooltip popper-class="fontsize-15" effect="light" content="This item can be retrieved, shared and edited." placement="bottom">
                                                                         <el-radio-button label="Public"></el-radio-button>
                                                                     </el-tooltip>
-                                                                    <el-tooltip popper-class="fontsize-15" class="item" effect="light" content="This item can be retrieved and shared, can ONLY be edited by creator." placement="top">
+                                                                    <el-tooltip popper-class="fontsize-15" class="item" effect="light" content="This item can be retrieved and shared, can ONLY be edited by creator." placement="bottom">
                                                                         <el-radio-button label="Discoverable"></el-radio-button>
                                                                     </el-tooltip>
-                                                                    <el-tooltip popper-class="fontsize-15" class="item" effect="light" content="This item can NOT be retrieved and shared, can ONLY be edited by creator." placement="top">
+                                                                    <el-tooltip popper-class="fontsize-15" class="item" effect="light" content="This item can NOT be retrieved and shared, can ONLY be edited by creator." placement="bottom">
                                                                         <el-radio-button label="Private"></el-radio-button>
                                                                     </el-tooltip>
                                                                 </el-radio-group>
@@ -205,7 +205,7 @@
 
                                                         <div id="Files" v-else>
                                                             <div v-if="bindDataVisible">
-                                                                <label class="control-label" style="width: 10%;float: left">
+                                                                <label class="control-label" style="margin-top:10px;width: 10%;float: left">
                                                                     <!--                                                                <span class="xing">* </span>-->
                                                                     Bind Test Data
                                                                 </label>
@@ -222,7 +222,7 @@
                                                             </div>
                                                             <el-divider v-if="bindDataVisible"></el-divider>
                                                             <div>
-                                                                <label class="control-label" style="width: 10%;float: left">
+                                                                <label class="control-label" style="margin-top:10px;width: 10%;float: left">
                                                                     <!--                                                                <span class="xing">* </span>-->
                                                                     Add a Zip File
                                                                 </label>

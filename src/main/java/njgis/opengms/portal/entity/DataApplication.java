@@ -77,4 +77,6 @@ public class DataApplication {
     int thumbsUpCount = 0;
 
     List<DailyViewCount> dailyViewCount = new ArrayList<>();
+
+    Boolean batch = false;
 }

@@ -32,6 +32,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.client.RequestCallback;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
@@ -50,7 +51,7 @@ import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import static jdk.internal.org.objectweb.asm.Type.getType;
+//import static jdk.internal.org.objectweb.asm.Type.getType;
 import static njgis.opengms.portal.utils.DataApplicationUtil.deleteFolder;
 import static njgis.opengms.portal.utils.DataApplicationUtil.zipUncompress;
 import static njgis.opengms.portal.utils.Utils.deleteFile;
@@ -85,8 +86,8 @@ public class DataApplicationService {
     @Autowired
     UserDao userDao;
 
-    @Value("${dataContainerDeployPort}")
-    String dataContainerDeployPort;
+//    @Value("${dataContainerDeployPort}")
+//    String dataContainerDeployPort;
 
     @Value("${htmlLoadPath}")
     private String htmlLoadPath;
@@ -119,7 +120,12 @@ public class DataApplicationService {
                     String[] arr = path.split("\\.");
                     String suffix = arr[arr.length - 1];
                     arr = path.split("/");
-                    String name = arr[arr.length - 1].substring(14);
+                    String name = null;
+                    if (dataApplication.getBatch()!=null&&dataApplication.getBatch() == true){
+                        name = arr[arr.length - 1];
+                    }else {
+                        name = arr[arr.length - 1].substring(14);
+                    }
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("name", name);
                     jsonObject.put("suffix", suffix);
@@ -303,8 +309,8 @@ public class DataApplicationService {
      * @param dataApplicationDTO 参数3
      * @return 插入结果
      */
-    public JSONObject insert(List<MultipartFile> files, JSONObject jsonObject, String oid, DataApplicationDTO dataApplicationDTO){
-        JSONObject result = new JSONObject();
+    public JsonResult insert(List<MultipartFile> files, JSONObject jsonObject, String oid, DataApplicationDTO dataApplicationDTO, String uid){
+        JsonResult result = new JsonResult();
         DataApplication dataApplication = new DataApplication();
         BeanUtils.copyProperties(dataApplicationDTO, dataApplication);
 
@@ -314,7 +320,7 @@ public class DataApplicationService {
         saveFiles(files, path, oid, "", resources);
 
         if (resources == null){
-            result.put("code", -1);
+            result.setCode(-2);
         }else {
             try {
                 dataApplication.setResources(resources);
@@ -329,8 +335,8 @@ public class DataApplicationService {
                 //将服务invokeApplications置入,如果不绑定测试数据，则无需部署，直接创建条目即可
                 if(dataApplication.getTestData().size() == 0){
                     dataApplicationDao.insert(dataApplication);
-                    result.put("code", 1);
-                    result.put("id", dataApplication.getOid());
+                    result.setCode(1);
+                    result.setData(dataApplication.getOid());
                     return result;
                 }
                 InvokeService invokeService = new InvokeService();
@@ -338,27 +344,29 @@ public class DataApplicationService {
                 invokeService.setMethod(dataApplication.getMethod());
                 invokeService.setName(dataApplication.getName());
 
-//                invokeService.setToken("fdtwTxlnhka8jY66lOT+kKutgZHnvi4NlnDc7QY5jR4=");//75
-                invokeService.setToken("fcky/35Rezr+Kyazr8SRWA==");//33
-                invokeService.setContributor("Portal");
+                invokeService.setToken("fdtwTxlnhka8jY66lOT+kKutgZHnvi4NlnDc7QY5jR4=");//75
+//                invokeService.setToken("fcky/35Rezr+Kyazr8SRWA==");//33
+                invokeService.setContributor(uid);
                 invokeService.setIsPortal(true);
                 List<InvokeService> invokeServices = new ArrayList<>();
                 invokeServices.add(invokeService);
                 dataApplication.setInvokeServices(invokeServices);
 
-                dataApplicationDao.insert(dataApplication);
+//                dataApplicationDao.insert(dataApplication);
 
                 //部署服务
-                JsonResult deployRes = deployPackage(dataApplication, dataApplication.getTestDataPath());
-                if (deployRes.getCode() == -1){
-                    result.put("code", -2);
-                }else {
-                    result.put("code", 1);
-                    result.put("id", dataApplication.getOid());
-                }
+                result = deployPackage(dataApplication, dataApplication.getTestDataPath());
+
+//                if (deployRes.getCode() == -1){
+//                    result.put("code", -2);
+//                }else {
+//                    result.put("code", 1);
+//                    result.put("id", dataApplication.getOid());
+//                }
             }catch (Exception e){
                 log.info("dataApplication create failed");
-                result.put("code", -2);
+                result.setCode(-1);
+                result.setMsg("dataApplication create failed");
             }
         }
 
@@ -706,6 +714,7 @@ public class DataApplicationService {
     public JsonResult deployPackage(DataApplication dataApplication, String dataPath) throws Exception {
         JsonResult res = new JsonResult();
         //跨域调用容器接口，部署数据
+//        String dataUrl="http://172.21.213.111:8899" + "/newFile";
         String dataUrl="http://172.21.213.111:8899" + "/newFile";
 
         List<InvokeService> invokeServices = dataApplication.getInvokeServices();
@@ -716,9 +725,9 @@ public class DataApplicationService {
         part.put("uid", "0");//存在根目录中
         part.put("instype", "Data");
 
-        part.put("userToken", "f30f0e82-f6f1-4264-a302-caff7c40ccc9");//33
+//        part.put("userToken", "f30f0e82-f6f1-4264-a302-caff7c40ccc9");//33
 //        part.put("userToken", "e3cea591-a8a5-4f50-b640-a569eccd94b7");//75
-//        part.put("userToken", "4cfc7691-c56b-483f-b1c9-bab859be9e00");//75_2
+        part.put("userToken", "4cfc7691-c56b-483f-b1c9-bab859be9e00");//75_2
         String newFileId = UUID.randomUUID().toString();
         part.put("id", newFileId);
         part.put("oid", "0");
@@ -745,7 +754,22 @@ public class DataApplicationService {
 //        headers.add("Authorization", "Bearer "+ StaticParams.access_token);
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Map> httpEntity = new HttpEntity<>(part, headers);
-        ResponseEntity<String> response = restTemplate.exchange(dataUrl, HttpMethod.PUT, httpEntity, String.class);
+        try {
+            ResponseEntity<JSONObject> response = restTemplate.exchange(dataUrl, HttpMethod.PUT, httpEntity, JSONObject.class);
+            //解析response
+            JSONObject j_result = response.getBody();
+            //捕获sdk异常
+            if(j_result.getString("code").equals("-1")){
+                res.setMsg(j_result.getString("message"));
+                res.setCode(-1);
+                return res;
+            }
+        }catch (ResourceAccessException e){
+            res.setMsg("deploy file time out");
+            res.setCode(-1);
+            return res;
+        }
+
 
         //部署服务
         String prcUrl="http://172.21.213.111:8899"+ "/newprocess";
@@ -765,8 +789,8 @@ public class DataApplicationService {
         part2.add("name", dataApplication.getName());
         //todo
 
-        part2.add("oid", "I3MXbzRq/NZkbWcKO8tF0w==");//33
-//        part2.add("oid", "5KglgbsDPmrFnA3J9CALzQ==");//75
+//        part2.add("oid", "I3MXbzRq/NZkbWcKO8tF0w==");//33
+        part2.add("oid", "5KglgbsDPmrFnA3J9CALzQ==");//75
 
         //获取xml
         String packageZipPath = resourcePath + "/DataApplication/Package" + dataApplication.getResources().get(0);
@@ -814,9 +838,9 @@ public class DataApplicationService {
         part2.add("type", "Processing");
         part2.add("uid", "0");
 
-        part2.add("userToken", "f30f0e82-f6f1-4264-a302-caff7c40ccc9");//33
+//        part2.add("userToken", "f30f0e82-f6f1-4264-a302-caff7c40ccc9");//33
 //        part2.add("userToken", "e3cea591-a8a5-4f50-b640-a569eccd94b7");//75
-//        part2.add("userToken", "4cfc7691-c56b-483f-b1c9-bab859be9e00");//75_2
+        part2.add("userToken", "4cfc7691-c56b-483f-b1c9-bab859be9e00");//75_2
         part2.add("processingPath", dataApplication.getPackagePathContainer());
 
         invokeService.setServiceId(serviceId);
@@ -824,7 +848,21 @@ public class DataApplicationService {
         invokeServices1.add(invokeService);
         dataApplication.setInvokeServices(invokeServices1);
 
-        JSONObject jsonObject = restTemplate2.postForObject(prcUrl, part2,JSONObject.class);
+        try {
+            JSONObject jsonObject = restTemplate2.postForObject(prcUrl, part2,JSONObject.class);
+            //捕获sdk异常
+            if(jsonObject.getString("code").equals("-1")){
+                res.setMsg(jsonObject.getString("message"));
+                res.setCode(-1);
+                return res;
+            }
+        }catch (ResourceAccessException e){
+            res.setMsg("deploy server time out");
+            res.setCode(-1);
+            return res;
+        }
+        res.setCode(1);
+        res.setData(dataApplication.getOid());
         dataApplicationDao.save(dataApplication);
         return res;
     }
@@ -915,10 +953,10 @@ public class DataApplicationService {
                     }
                     case "contributor":{
                         User user = userDao.findFirstByName(searchText);
-                        if(user != null && user.getOid() != ""){
+                        if(user != null){
                             result = dataApplicationDao.findAllByAuthorLikeIgnoreCase(user.getOid(), pageable);
-                        }else{
-                            return null;
+                        } else {        // 娶一个不存在的名字，返回nodata，不能返回null
+                            result = dataApplicationDao.findAllByAuthorLikeIgnoreCase("hhhhhhhhhhhhhhhhhh", pageable);
                         }
                         break;
                     }
@@ -947,10 +985,10 @@ public class DataApplicationService {
                     }
                     case "contributor":{
                         User user = userDao.findFirstByName(searchText);
-                        if(user != null && user.getOid() != ""){
+                        if(user != null){
                             result = dataApplicationDao.findAllByAuthorLikeIgnoreCaseAndMethodLikeIgnoreCase(user.getOid(), method, pageable);
-                        }else{
-                            return null;
+                        } else {    // 娶一个不存在的名字，返回nodata，不能返回null
+                            result = dataApplicationDao.findAllByAuthorLikeIgnoreCaseAndMethodLikeIgnoreCase("hhhhhhhhhhhhhhhh", method, pageable);
                         }
                         break;
                     }
@@ -985,6 +1023,7 @@ public class DataApplicationService {
             System.out.println(err);
             return null;
         }
+
         List<DataApplication> dataApplications = dataApplicationPage.getContent();
 
         JSONArray jsonArray = new JSONArray();
