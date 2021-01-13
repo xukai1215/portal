@@ -23,7 +23,14 @@ var vue = new Vue({
                     Id:'',
                     desc:'',
                     event:[{
-                        data:[],
+                        data:[{
+                            Id: "",
+                            dataType: "",
+                            desc: "",
+                            nodes: undefined,
+                            parentId: "",
+                            text: "",
+                        }],
                         eventDesc: "",
                         eventId: "",
                         eventName: "",
@@ -31,11 +38,18 @@ var vue = new Vue({
                         optional: false
                     },
                         {
-                            data:[],
+                            data:[{
+                                Id: "",
+                                dataType: "",
+                                desc: "",
+                                nodes: undefined,
+                                parentId: "",
+                                text: "",
+                            }],
                             eventDesc: "",
                             eventId: "",
                             eventName: "",
-                            eventType: "noreponse",
+                            eventType: "noresponse",
                             optional: false
                         }]
                 }
@@ -247,13 +261,162 @@ var vue = new Vue({
         },
         searchText:'',
         modelTableLoading:false,
-        selectModel:false,
+        selectModelPage:false,
+        eventChoosing:{},
+        mainContainerHeight:'',
+
+        modelLoaded:false,
+
+        recentlyUsed:[
+            {
+                author: "王明",
+                authorId: "王明",
+                createTime: "2019-05-16T13:25:55.947+0000",
+                lastModifyTime: "2019-05-17T13:25:55.947+0000",
+                md5: "15ea8a5740fdcfa951eea30579a33c4d",
+                name: "SWAT_Model",
+                oid: "16e31602-bd05-4da4-bd01-cb7582c21ae8",
+            },
+            {
+                author: "Qiang Dai",
+                authorId: "Qiang_Dai",
+                createTime: "2019-05-16T14:43:40.834+0000",
+                lastModifyTime: "2019-05-16T14:43:40.834+0000",
+                md5: "387e28f188717c4745a071356839ecb0",
+                name: "SWMM",
+                oid: "35c12565-6a5f-41e1-8e4b-5a3c7d256b03",
+            },
+            {
+                author: "Bo Huang",
+                authorId: "Bo_Huang",
+                createTime: "2019-05-16T14:43:03.277+0000",
+                lastModifyTime: "2019-05-16T14:43:03.277+0000",
+                name: "TouchAir",
+                oid: "ff844894-bbb5-492c-b72f-a7e2fa651d57",
+            },
+            {
+                author: "王明",
+                authorId: "王明",
+                createTime: "2019-05-16T14:56:38.504+0000",
+                lastModifyTime: "2019-05-16T14:56:38.504+0000",
+                name: "Fire Dynamics Simulator",
+                oid: "fe6beeac-d4fa-4685-a7fa-3fc58dfb59d3",
+            },
+            {
+                author: "Junzhi Liu",
+                authorId: "Junzhi_Liu",
+                createTime: "2019-06-17T14:03:22.373+0000",
+                lastModifyTime: "2019-06-17T14:03:22.373+0000",
+                name: "SEIMS",
+                oid: "39daf1cf-acdb-4ea0-875b-9963bb80b887",
+            },
+            {
+                author: "Xia Li",
+                authorId: "Xia_Li",
+                createTime: "2019-05-16T07:30:44.453+0000",
+                lastModifyTime: "2019-05-16T07:30:44.453+0000",
+                name: "GeoSOS_ANN_Wrap",
+                oid: "d8754772-86b7-4f5b-9398-60f320c161c9",
+            },
+            {
+                author: "Min Cao",
+                authorId: "Min_Cao",
+                createTime: "2019-06-17T14:43:57.024+0000",
+                lastModifyTime: "2019-06-17T14:43:57.024+0000",
+                name: "GCAM-CA",
+                oid: "ebc7beaf-ff61-49da-9899-bc68e7c920e6",
+            },
+            {
+                author: "A. Stewart Fotheringham",
+                authorId: "A._Stewart_Fotheringham",
+                createTime: "2019-06-17T14:07:05.185+0000",
+                lastModifyTime: "2019-06-17T14:07:05.185+0000",
+                name: "GWR",
+                oid: "fcf84557-3264-405e-93cc-0827b29fae63",
+            },
+            {
+                author: "王明",
+                authorId: "王明",
+                createTime: "2019-05-16T13:31:58.276+0000",
+                lastModifyTime: "2019-05-16T13:31:58.276+0000",
+                name: "TaiHu_Fvcom",
+                oid: "d41dfc74-3509-4d02-8f45-5e2eeaf5eec7",
+            },
+            {
+                author: "Dawen Yang",
+                authorId: "Dawen_Yang",
+                createTime: "2020-06-12T13:35:48.436+0000",
+                lastModifyTime: "2020-06-12T13:35:48.436+0000",
+                name: "GBEHM",
+                oid: "d1057c98-dcf1-4188-9bd4-49e94770901e",
+            },
+            {
+                author: "王明",
+                authorId: "王明",
+                createTime: "2019-05-05T08:00:35.199+0000",
+                lastModifyTime: "2019-05-05T08:00:35.199+0000",
+                name: "Fvcom_lu_step1",
+                oid: "322dcfb0-6a79-48a2-9b80-bb105f1bb36d",
+            },
+            {
+                author: "王明",
+                authorId: "王明",
+                createTime: "2019-05-05T08:01:21.060+0000",
+                lastModifyTime: "2019-05-05T08:01:21.060+0000",
+                name: "Fvcom_lu_step2",
+                oid: "32a4ea56-991b-4f13-87c2-f2f9bb02b61c",
+            },
+            {
+                author: "王明",
+                authorId: "王明",
+                createTime: "2019-05-05T08:02:02.646+0000",
+                lastModifyTime: "2019-05-05T08:02:02.646+0000",
+                name: "Fvcom_lu_step3",
+                oid: "c7e6fb7f-5b88-4130-9522-81fd8fe87369",
+            },
+            {
+                author: "王明",
+                authorId: "王明",
+                createTime: "2019-05-05T07:59:20.528+0000",
+                lastModifyTime: "2019-05-05T07:59:20.528+0000",
+                name: "Fvcom_lu_step4",
+                oid: "c9a9be25-a16b-4812-9ffd-aae6bf37098c",
+            },
+            {
+                author: "Jinfeng Wang",
+                authorId: "Jinfeng_Wang",
+                createTime: "2019-05-16T12:47:36.883+0000",
+                lastModifyTime: "2019-05-16T12:47:36.883+0000",
+                name: "Geographical detector",
+                oid: "e80789bc-d29c-4bd4-9ef8-674541f40d42",
+            },
+            {
+                author: "Xinyue Ye",
+                authorId: "Xinyue_Ye",
+                createTime: "2018-01-02T14:01:01.030+0000",
+                lastModifyTime: "2019-05-16T14:01:01.030+0000",
+                name: "Space-Time Analysis of Regional Systems",
+                oid: "9948998b-1daa-4dec-8d41-d74efb20431a",
+            },
+        ],
+        inSearch:0,
+        isSearchModel:false,
     },
     computed: {},
     watch: {
         // currentFile:function (file) {
         //     this.uploadToDataContainer(file);
         // }
+        // eventChoosing(o, n){
+        //     console.log("Watch eventChoosing")
+        //     console.log(o)
+        //     console.log(n)
+        // }
+        info(o_val, n_val){
+            console.log("watch info")
+            console.log(o_val)
+            console.log(n_val)
+        }
     },
     methods: {
 
@@ -450,6 +613,7 @@ var vue = new Vue({
             });
 
         },
+
         remoteMethod(searchText) {
 
             this.selectLoading = true;
@@ -1600,6 +1764,7 @@ var vue = new Vue({
 
         async checkPersonData(event) {
             this.eventChoosing = event;//此处把页面上的event与eventChoosing绑定
+            console.log(event)
             // if (this.first == true) {
             //     let d = await this.getTableData(0);
             //     this.dataFromDataContainer = d.content;
@@ -1612,6 +1777,33 @@ var vue = new Vue({
                 this.$refs.userDataSpace.getFilePackage();
             })
 
+        },
+
+        cancelData(event){
+            // vue.$set(event,'tag',undefined)
+            // vue.$set(event,'suffix',undefined)
+            // vue.$set(event,'url',undefined)
+            // event.tag = undefined
+            this.showDataChose = true//有这两句才能触发重新渲染
+            this.showDataChose = false
+            // this.eventChoosing = []
+            // this.eventChoosing = event
+            this.eventChoosing.tag = undefined
+            this.eventChoosing.suffix = undefined
+            this.eventChoosing.url = undefined
+            this.eventChoosing.visual = undefined
+            // $("#datainput" + this.eventChoosing.eventId).val('');
+            // n_info = Object.assign({}, this.info)
+            // this.$set(this, "info", {})
+            // this.$set(this, "info", n_info)
+        },
+
+        getEventContent(event){
+            if(event.tag!=undefined&&event.tag!=null){
+                return event.tag+'.' + event.suffix
+            }else{
+                return ''
+            }
         },
 
         selectDataFromPersonal() {
@@ -2705,17 +2897,36 @@ var vue = new Vue({
             this.loadDeployedModelDialog = true;
             this.pageOption.currentPage = 1;
             this.searchResult = '';
-            this.loadDeployedModel();
-
+            // this.loadDeployedModel();
+            this.loadRecentlyUsed();
+            this.isSearchModel = false
         },
 
         handlePageChange(val) {
             this.pageOption.currentPage = val;
 
-            if(this.inSearch==0)
-                this.loadDeployedModel();
+            if(this.inSearch==0){
+                // this.loadDeployedModel();
+                this.loadRecentlyUsed();
+
+            }
             else
                 this.searchDeployedModel()
+        },
+
+        loadRecentlyUsed(){
+
+            this.modelTableLoading = true;
+            this.inSearch = 0
+            let page = this.pageOption.currentPage
+            let start = (page-1)*6
+            let end = start+6<this.recentlyUsed.length?start+6:this.recentlyUsed.length
+            this.deployedModel = this.recentlyUsed.slice(start,end)
+
+            this.pageOption.total = this.recentlyUsed.length;
+            setTimeout(()=>{
+                this.modelTableLoading = false;
+            },95)
         },
 
         loadDeployedModel(){
@@ -2754,6 +2965,12 @@ var vue = new Vue({
             this.modelTableLoading = true;
             let targetPage = page==undefined?this.pageOption.currentPage:page
             this.pageOption.currentPage=targetPage
+
+            if(this.searchText.trim()==''){
+                this.loadRecentlyUsed()
+                return
+            }
+
             axios.get('/computableModel/searchDeployedModel',{
                 params:{
                     asc:0,
@@ -2763,6 +2980,8 @@ var vue = new Vue({
                 }
             }).then(
                 (res)=>{
+
+                    this.isSearchModel = true
                     if(res.data.code==0){
                         let data = res.data.data;
                         this.deployedModel = data.content
@@ -2790,11 +3009,29 @@ var vue = new Vue({
             this.loadDeployedModelDialog = false
         },
 
+        viewUser(userId){
+            window.open('/profile/'+userId)
+        },
+
         async loadTask(){
             let id = this.oid
 
-            let {data} = await (await fetch("/task/TaskInit/" + id)).json();
-            if (data == null || data == undefined) {
+            let res = await (await fetch("/task/TaskInit/" + id)).json();
+            let data = res.data
+            if(res.code == -1){
+                 this.$confirm('You should <b>Log in</b> first before invoke a task.', 'Tip', {
+                                         type:"warning",
+                                         cancelButtonText: 'Close',
+                                         confirmButtonText: 'Log in',
+                                         dangerouslyUseHTMLString: true,
+                                     }
+                                 ).then(() => {
+                                     window.location.href='/user/login';
+                                 }).catch(()=>{
+                                     return
+                                 });
+                 return
+            } else if (data == null || data == undefined) {
                 this.$alert('Initialization failure: an error occured on the server.<br/> Please try again or <a href="mailto:opengms@njnu.edu.cn">contact us</a>.', 'Error', {
                     type:"error",
                     showClose:false,
@@ -2804,6 +3041,7 @@ var vue = new Vue({
                         window.location.reload();
                     }
                 });
+                return
             }
             else{
                 this.initializing=false;
@@ -2821,6 +3059,7 @@ var vue = new Vue({
                     } ).catch(()=>{
                         return
                     });
+                    return
                 }else if(data.msg=='create failed'){
                     this.invokable = false
                     this.errorMsg = 'Cannot create this task,<br/> Please try again or <a href="mailto:opengms@njnu.edu.cn">contact us</a>.'
@@ -2835,9 +3074,10 @@ var vue = new Vue({
                     } ).catch(()=>{
                         return
                     });
-
+                    return
                 }
             }
+            this.invokable = true
             let states = data.modelInfo.states;
             for (i = 0; i < states.length; i++) {
                 let state = states[i];
@@ -2872,6 +3112,7 @@ var vue = new Vue({
                 }
             }
 
+            this.modelLoaded = true
             this.events = data.modelInfo.states[0].event;
             console.log(this.events)
             console.log(this.tableData)
@@ -2886,6 +3127,23 @@ var vue = new Vue({
         var tha = this
 
         this.clipBoard = new ClipboardJS(".copyLinkBtn");
+
+        $(()=>{
+            let height = document.documentElement.clientHeight;
+            let mainHeight = height - 129
+            this.ScreenMinHeight = (height) + "px";
+            this.ScreenMaxHeight = (height) + "px";
+            this.mainContainerHeight = (mainHeight) + "px";
+
+            window.onresize = () => {
+                console.log('come on ..');
+                height = document.documentElement.clientHeight;
+                mainHeight = height - 129
+                this.ScreenMinHeight = (height) + "px";
+                this.ScreenMaxHeight = (height) + "px";
+                this.mainContainerHeight = (mainHeight) + "px";
+            };
+        })
 
         axios.get("/dataItem/createTree")
             .then(res => {
@@ -2914,7 +3172,8 @@ var vue = new Vue({
         this.oid = id;
 
         if(id==='selecttask'){
-            this.selectModel=true
+            this.selectModelPage=true
+            this.initializing=false
         }else{
             this.loadTask()
             this.relatedDataItem();

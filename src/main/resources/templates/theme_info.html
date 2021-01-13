@@ -89,7 +89,6 @@
                         <!--<el-radio-button :label="true">收起</el-radio-button>-->
                         <!--</el-radio-group>-->
                         <el-menu
-                                id="leftBottomBody"
                                 :default-active="defaultActive"
                                 ref="menu"
                                 class="el-menu-vertical-demo"
@@ -97,16 +96,16 @@
                                 active-text-color="#409EFF"
                                 :collapse="isCollapse"
                                 :collapse-transition = "false"
-                                style="overflow-x: hidden; overflow-y: auto; margin-bottom: 62px;">
+                                style="overflow: auto; margin-bottom: 62px;height: calc(60vh);border-bottom: 1px solid #ccc">
                             <el-menu-item index="1" th:onclick="'javascript:show(\'detailinfo'+'\',\'BasicInfoPanel\',\'detailIntroducePanel\')'">
                                 <i class="el-icon-info"></i>
                                 <span slot="title">Theme Info</span>
                             </el-menu-item>
                             <el-submenu th:if="${#arrays.length(modelClassInfos)}" index="2" class="model">
-                                <div slot="title" @click="controlButtonSet">
+                                <template slot="title">
                                     <i class="el-icon-menu"></i>
                                     <span slot="title">Models</span>
-                                </div>
+                                </template>
                                 <div  th:each="modelClass,index:${modelClassInfos}" class="modelmenu">
                                     <el-menu-item th:index="'2-'+${index.index}" th:onclick="'javascript:show(\'modelClass'+${index.index}+'\',\'model\',\'block\')'">
                                         <span slot="title"  th:utext="${modelClass.name}" ></span>
@@ -119,10 +118,10 @@
                                 </div>
                             </el-submenu>
                             <el-submenu th:if="${#arrays.length(dataClassInfos)}" index="3">
-                                <div slot="title" @click="controlButtonSet">
+                                <template slot="title">
                                     <i class="el-icon-coin"></i>
                                     <span slot="title">Data</span>
-                                </div>
+                                </template>
                                 <div th:each="dataClass,index:${dataClassInfos}" class="datamenu">
                                     <el-menu-item th:index="'3-'+${index.index}" th:onclick="'javascript:show(\'dataClass'+${index.index}+'\',\'data\')'" >
                                         <span th:utext="${dataClass.name}"></span>
@@ -142,11 +141,8 @@
                                 <i class="el-icon-s-custom"></i>
                                 <span slot="title" id="maintainer">Maintainers</span>
                             </el-menu-item>
-                            <el-menu-item>
-                                <el-button class="controlEditButton" type="primary" style="display: none;margin-left: 20px" @click="controlEdit">Enable editing</el-button>
-                            </el-menu-item>
                         </el-menu>
-                        <el-button class="controlEditButton" type="primary" style="position:absolute;left: 40px;top:800px" @click="controlEdit">Enable editing</el-button>
+                        <el-button id="controlEditButton" type="primary" style="position:absolute;left: 22%;top: calc(85vh)" @click="controlEdit">Enable editing</el-button>
                     </el-card>
                     <!--左侧菜单栏 END-->
                     <div class="col-sm-10" style="overflow: auto;padding:10px 10px;" id="right_content">
@@ -163,7 +159,7 @@
                                 <h3>
                                     <span>Theme Info</span>
                                     <!--<el-button class="editicon" type="primary" @click="edit_theme_info" icon="el-icon-edit" circle style="display: none"></el-button>-->
-                                    <el-button class="editIcon" type="primary" @click="edit_theme('0')" icon="el-icon-edit" style="display: none"></el-button>
+                                    <el-button class="editicon" type="primary" @click="edit_theme('0')" icon="el-icon-edit" style="display: none"></el-button>
                                     <!--<a href="javascript:void(0)" class='fa fa-pencil fa-2x' aria-hidden='true' @click="edit_theme_info"></a>-->
                                 </h3>
                             </div>
@@ -174,7 +170,7 @@
                             <div class="title text-center">
                                 <h3>
                                     <span>Models</span>
-                                    <el-button class="editIcon" type="primary" @click="edit_theme('1')" icon="el-icon-edit" style="display: none"></el-button>
+                                    <el-button class="editicon" type="primary" @click="edit_theme('1')" icon="el-icon-edit" style="display: none"></el-button>
                                 </h3>
                             </div>
                             <div th:each="modelClass,index:${modelClassInfos}" class="model_card">
@@ -205,7 +201,6 @@
                             <div class="title text-center">
                                 <h3>
                                     <span>Data</span>
-                                    <el-button class="editIcon" type="primary" @click="edit_theme('2')" icon="el-icon-edit" style="display: none"></el-button>
                                 </h3>
                             </div>
                             <div th:each="dataClass,index:${dataClassInfos}">
@@ -234,7 +229,7 @@
                             <div class="title text-center">
                                 <h3>
                                     <span>Applications</span>
-                                    <el-button class="editIcon" type="primary" @click="edit_theme('3')" icon="el-icon-edit" style="display: none"></el-button>
+                                    <el-button class="editicon" type="primary" @click="edit_theme('3')" icon="el-icon-edit" style="display: none"></el-button>
                                 </h3>
                             </div>
                             <div id="applications">

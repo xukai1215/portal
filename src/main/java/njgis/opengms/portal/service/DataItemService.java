@@ -327,19 +327,23 @@ public class DataItemService {
 
         cate = data.getClassifications();//获得该data item所在分类
         for (int i = 0; i < cate.size(); i++) {
-            DataCategorys dataCategorys = getDataCategoryById(cate.get(i));//data item所属类
-            ids = dataCategorys.getDataRepository();
-            //删除所属小类中的记录
-            if (ids.size() > 0&&ids != null)
-                for (int j = 0; j < ids.size(); j++) {
-                    if (ids.get(j).equals(id)) {
-                        newids = delOneOfArrayList(ids, id);
-                        break;
+            DataCategorys dataCategorys = new DataCategorys();
+            if(null == getDataCategoryById(cate.get(i))){
+                continue;
+            }else {
+                ids = dataCategorys.getDataRepository();
+                //删除所属小类中的记录
+                if (ids.size() > 0 && ids != null)
+                    for (int j = 0; j < ids.size(); j++) {
+                        if (ids.get(j).equals(id)) {
+                            newids = delOneOfArrayList(ids, id);
+                            break;
+                        }
                     }
-                }
-            //用户中心删除数控条目时，category库里同时删除
-            dataCategorys.setDataRepository(newids);
-            dataCategorysDao.save(dataCategorys);
+                //用户中心删除数控条目时，category库里同时删除
+                dataCategorys.setDataRepository(newids);
+                dataCategorysDao.save(dataCategorys);
+            }
         }
 
         List<String> relatedModels = data.getRelatedModels();
@@ -800,6 +804,97 @@ public class DataItemService {
 
         return result;
 
+    }
+
+
+    public JSONObject searchByName(DataItemFindDTO dataItemFindDTO,String userOid) {
+        int page = dataItemFindDTO.getPage() - 1;
+        int pageSize = dataItemFindDTO.getPageSize();
+        String searchText = dataItemFindDTO.getSearchText();
+
+        String tabType= dataItemFindDTO.getTabType();
+        String dataType = dataItemFindDTO.getDataType();
+        if (dataType!=null && dataType.equals("all")){
+            tabType = "all";
+        }
+        String pattern1 = "hub";
+        Pattern p1 = Pattern.compile(pattern1);
+        Matcher m1 = p1.matcher(tabType);
+
+        String pattern2 = "repository";
+        Pattern p2 = Pattern.compile(pattern2);
+        Matcher m2 = p2.matcher(tabType);
+        //正则匹配tabType
+        boolean isMatch1 = m1.find();
+        boolean isMatch2 = m2.find();
+        if (isMatch1){
+            tabType = "hub";
+        }
+        if (isMatch2){
+            tabType = "repository";
+        }
+
+        Sort sort = new Sort(dataItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, dataItemFindDTO.getSortField());
+        Pageable pageable = PageRequest.of(page, pageSize, sort);
+        Page<DataItemResultDTO> dataItemPages;
+        if(userOid==null){
+            if (tabType.equals("hub")){
+                dataItemPages = dataHubsDao.findByNameLikeIgnoreCase(pageable, searchText);
+            }else {
+                dataItemPages = dataItemDao.findByNameLikeIgnoreCaseAndStatusNotLike(pageable, searchText,"Private");
+            }
+        }else{
+            tabType = "all";
+            if (tabType.equals("hub")){
+                dataItemPages = dataHubsDao.findByNameLikeAndAuthorIgnoreCase(pageable, searchText,userOid);
+            }else {
+                dataItemPages = dataItemDao.findByNameLikeAndAuthorIgnoreCaseAndStatusNotLike(pageable, searchText,userOid,"Private");
+            }
+        }
+
+        Page<DataItemResultDTO> dataItemPage;
+        //匹配hubs的类别
+        dataItemPage = dataItemPages;
+        long count = 0;
+        List<DataItemResultDTO> dataItemss = dataItemPage.getContent();
+        List<DataItemResultDTO> dataItems = new ArrayList<>();
+        //如果dataType为all，则全部的dataItem都取到
+        if (tabType!=null&&tabType.equals("all")){
+            dataItems = dataItemss;
+            count = dataItemPage.getTotalElements();
+        }else {
+            for (DataItemResultDTO dataItemResultDTO : dataItemss) {
+                if (dataItemResultDTO.getTabType()!=null&&dataItemResultDTO.getTabType().equals(tabType)) {
+                    dataItems.add(dataItemResultDTO);
+                    count++;
+                }
+            }
+        }
+
+
+        JSONArray users = new JSONArray();
+
+        for (int i = 0; i < dataItems.size(); i++) {
+            DataItemResultDTO dataItem = dataItems.get(i);
+            String oid = dataItem.getAuthor();
+            User user = userDao.findFirstByOid(oid);
+            JSONObject userObj = new JSONObject();
+            userObj.put("oid", user.getOid());
+            userObj.put("image", user.getImage().equals("") ? "" : htmlLoadPath + user.getImage());
+            userObj.put("name", user.getName());
+            users.add(userObj);
+
+            dataItems.get(i).setAuthor(user.getName());
+            dataItems.get(i).setOid(dataItem.getId());
+        }
+
+        JSONObject result = new JSONObject();
+        result.put("list", dataItems);
+        result.put("total", dataItemPage.getTotalElements());
+        result.put("pages", dataItemPage.getTotalPages());
+        result.put("users", users);
+
+        return result;
     }
 
     // public Page<DataItemResultDTO> selectBySearchField(Pageable pageable, String value, String field, String type) {
@@ -1388,12 +1483,13 @@ public class DataItemService {
     //仿写，上面方面可注释
     public DataCategorys getDataCategoryById(String id) {
 
-        return dataCategorysDao.findById(id).orElseGet(() -> {
+        DataCategorys dataCategorys = new DataCategorys();
+        dataCategorys =  dataCategorysDao.findById(id).orElseGet(() -> {
             System.out.println("有人乱查数据库！！该ID不存在对象");
-            throw new MyException(ResultEnum.NO_OBJECT);
+            return null;
         });
 
-
+        return dataCategorys;
     }
 
 
