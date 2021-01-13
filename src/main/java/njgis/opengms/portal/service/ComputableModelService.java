@@ -290,7 +290,7 @@ public class ComputableModelService {
 //                    String classId = classifications.get(i);
 //
 //                    do {
-//                        Classification classification = classificationService.getByOid(classId);
+//                        Classification classification = classification2Service.getByOid(classId);
 //                        array.add(classification.getNameEn());
 //                        classId = classification.getParentId();
 //                    } while (classId != null);

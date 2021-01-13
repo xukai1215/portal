@@ -169,9 +169,8 @@
         methods: {
 
             lineColorShowChange(newValue) {
-                let object = document.getElementById('modelRelationGraph');
-                let graph = echarts.init(object, 'light');
-                let opts = graph.getOption();
+
+                let opts = this.modelRelationGraph.getOption();
 
                 let links = opts.series[0].links;
                 for (i = 0; i < links.length; i++) {
@@ -217,14 +216,12 @@
                     }
                 }
                 opts.series[0].links = links;
-                graph.clear();
-                graph.setOption(opts);
+                this.modelRelationGraph.clear();
+                this.modelRelationGraph.setOption(opts);
             },
 
             lineLabelShowChange(newValue) {
-                let object = document.getElementById('modelRelationGraph');
-                let graph = echarts.init(object, 'light');
-                let opts = graph.getOption();
+                let opts = this.modelRelationGraph.getOption();
 
                 let links = opts.series[0].links;
                 for (i = 0; i < links.length; i++) {
@@ -238,22 +235,20 @@
                     }
                 }
                 opts.series[0].links = links;
-                graph.clear();
-                graph.setOption(opts);
+                this.modelRelationGraph.clear();
+                this.modelRelationGraph.setOption(opts);
             },
 
             fullNameShowChange(newValue) {
-                let object = document.getElementById('modelRelationGraph');
-                let graph = echarts.init(object, 'light');
-                let opts = graph.getOption();
+
+                let opts = this.modelRelationGraph.getOption();
 
                 let data = opts.series[0].data;
                 for (i = 0; i < data.length; i++) {
                     let formatter;
                     let name = data[i].name;
-                    ;
                     if (newValue) {
-                        formatter = name;
+                        formatter = name.trim().replaceAll(" ","\n");
                     } else {
                         formatter = name.length > 9 ? name.substring(0, 7) + "..." : name
                     }
@@ -267,17 +262,15 @@
                     }
                 }
                 opts.series[0].data = data;
-                graph.clear();
-                graph.setOption(opts);
+                this.modelRelationGraph.clear();
+                this.modelRelationGraph.setOption(opts);
             },
 
             nodeLabelShowChange(newValue) {
-                let object = document.getElementById('modelRelationGraph');
-                let graph = echarts.init(object, 'light');
-                let opts = graph.getOption();
-                graph.clear();
+                let opts = this.modelRelationGraph.getOption();
+                this.modelRelationGraph.clear();
                 opts.series[0].label.show = newValue;
-                graph.setOption(opts);
+                this.modelRelationGraph.setOption(opts);
             },
 
             handleRelationCurrentChange(page, type) {
@@ -313,17 +306,17 @@
                 let nodes = [];
                 let links = [];
                 let object = document.getElementById('modelRelationGraph');
-                let modelRelationGraph = echarts.init(object, 'light');
-                modelRelationGraph.showLoading();
+                this.modelRelationGraph = echarts.init(object, 'light', {renderer: "svg"});
+                this.modelRelationGraph.showLoading();
 
-                this.modelRelationGraph = modelRelationGraph;
+                $.get("/static/cacheFile/modelRelationGraph.json", {}, (result) => {
+                // $.post("/modelItem/getFullRelationGraph", {}, (result) => {
 
-                $.post("/modelItem/getFullRelationGraph", {}, (result) => {
                     console.log(result);
                     nodes = result.data.nodes;
                     links = result.data.links;
 
-                    modelRelationGraph.on("click", (param) => {
+                    this.modelRelationGraph.on("click", (param) => {
                         if (param.value !== undefined) {
                             this.curRelation = param.value;
                             this.modelRelationGraphSideBarShow = true;
@@ -347,11 +340,13 @@
                         // let dx = Math.cos(radian) * radius;
                         // let dy = Math.sin(radian) * radius;
 
+                        let oriName = node.name;
                         let name = node.name;
-                        let formatter = name.length > 9 ? name.substring(0, 7) + "..." : name;
+
 
                         //加入节点
                         if (node.type === "ref") {
+                            let formatter = name.length > 9 ? name.substring(0, 7) + "..." : name;
                             graph_nodes.push({
                                 name: node.name,
                                 value: {
@@ -389,6 +384,7 @@
                                     name = part1 + " " + part2;
                                 }
                             }
+                            let formatter = name.length > 9 ? name.substring(0, 7) + "..." : name;
                             graph_nodes.push({
                                 name: name,
                                 value: {
@@ -574,8 +570,8 @@
                     option.series[0].data = graph_nodes;
                     option.series[0].links = graph_links;
                     console.log(option);
-                    modelRelationGraph.setOption(option);
-                    modelRelationGraph.hideLoading();
+                    this.modelRelationGraph.setOption(option);
+                    this.modelRelationGraph.hideLoading();
 
 
                 });
