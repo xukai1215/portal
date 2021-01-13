@@ -859,7 +859,7 @@ var createDataApplication = Vue.extend({
                                     $("#editModal", parent.document).remove();
                                     window.location.href = "/dataApplication/" + res.data.id;
                                 }).catch(() => {
-                                    window.location.href = "/user/userSpace#/data/manageDataApplication/" + res.data.id;
+                                    window.location.href = "http://localhost:8080/user/userSpace#/data/processingApplication";
                                     window.location.reload(true)
                                 });
                                 break;

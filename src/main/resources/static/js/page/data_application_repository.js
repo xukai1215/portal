@@ -148,6 +148,7 @@ var data_items = new Vue({
         chooseCate(item, event){
             this.changeCateColor()
             $(event.target).css('background-color','#d9edf7')
+            this.currentPage = 1
             this.method = item.toLowerCase()
             this.datacount=-1
             this.loading=true
