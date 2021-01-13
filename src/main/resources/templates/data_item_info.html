@@ -253,8 +253,7 @@
                 <div>
                     <el-card>
                         <div class="el-card dataitemisol is-never-shadow"
-                             th:each="data,key:${fileName}"
-                             th:title="${data}" shadow="never"
+                             v-for="data"
                              style="width: 150px;"><!---->
                             <!--<a target="_blank"-->
                                <!--th:href="${data.url}"-->

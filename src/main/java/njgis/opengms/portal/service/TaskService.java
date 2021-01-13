@@ -1274,21 +1274,19 @@ public class TaskService {
         Task comTask = taskDao.findFirstByTaskId(task.getOid());
         switch (status) {
             case 0:
+                task.setStatus(1);
+//                comTask = taskDao.findFirstByTaskId(task.getTaskId());
+//                comTask.setStatus(-1);
+                integratedTaskDao.save(task);
+//                taskDao.save(comTask);
                 break;
             case -1:
                 task.setStatus(-1);
-                comTask = taskDao.findFirstByTaskId(task.getTaskId());
-                comTask.setStatus(-1);
                 integratedTaskDao.save(task);
-                taskDao.save(comTask);
                 break;
             case 1:
                 task.setStatus(2);
                 integratedTaskDao.save(task);
-                comTask = taskDao.findFirstByTaskId(task.getTaskId());
-                comTask.setStatus(2);
-                integratedTaskDao.save(task);
-                taskDao.save(comTask);
                 break;
         }
         return data;
