@@ -2016,11 +2016,11 @@ public class ModelItemService {
         ModelItem modelItem = modelItemDao.findFirstByOid(oid);
         JSONObject node = new JSONObject();
         String name = modelItem.getName();
-        int start = name.indexOf("(");
-        int end = name.indexOf(")");
-        if(name.length()>0&&start!=-1&&end!=-1) {
-            name = name.substring(0, start).trim() + " " + name.substring(end + 1, name.length() - 1);
-        }
+//        int start = name.indexOf("(");
+//        int end = name.indexOf(")");
+//        if(name.length()>0&&start!=-1&&end!=-1) {
+//            name = name.substring(0, start).trim() + " " + name.substring(end + 1, name.length() - 1);
+//        }
         node.put("name", name);
         node.put("oid",modelItem.getOid());
         node.put("img", modelItem.getImage().equals("")?"":"/static"+modelItem.getImage());

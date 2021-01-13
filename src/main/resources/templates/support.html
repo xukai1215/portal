@@ -37,7 +37,7 @@
     <!--<h1 th:text="${name}">Hello World</h1>-->
     <div id="app">
         <div th:replace="fragments/navbar :: unlog"></div>
-        <div class="titleSection" style="background-image: url('../static/img/support5.jpg');background-position-y:  -400px">
+        <div class="titleSection" style="background-image: url('../static/img/support10.jpg');background-position-y:  -554px">
             <div class="fullMask text-center" style="color: whitesmoke"><br><br>
                 <h2>OpenGMS Support</h2>
                 <h3>
@@ -57,23 +57,23 @@
                     <div class="detail">
                         <el-row >
                             <el-row justify="center" type="flex" :gutter="20" style="margin: 20px">
-                                <el-col :span="4" style="border: 1px black">
+                                <el-col :span="5" style="border: 1px black">
                                     <div class="flexCol flexColCenter cursorPointer quickToolsCard cardborder" :class="docIndex==1?'cardHover':''"
                                          style="height: 200px;" @click="showDoc(1)">
                                         <img class="cardimg" src="/static/img/supportpics/1.png" />
                                         <h4 class="h_lite">Introduce to OpenGMS</h4>
                                     </div>
                                 </el-col>
-                                <el-col :span="4" >
+                                <el-col :span="5" >
 
-                                        <div class="flexCol flexColCenter cursorPointer quickToolsCard cardborder" :class="docIndex==2?'cardHover':''"
-                                             style="height: 200px" @click="showDoc(2)">
-                                            <img class="cardimg" src="/static/img/supportpics/2.png"  />
-                                            <h4 class="h_lite">Model Resource</h4>
-                                        </div>
+                                    <div class="flexCol flexColCenter cursorPointer quickToolsCard cardborder" :class="docIndex==2?'cardHover':''"
+                                         style="height: 200px" @click="showDoc(2)">
+                                        <img class="cardimg" src="/static/img/supportpics/2.png"  />
+                                        <h4 class="h_lite">Model Resource</h4>
+                                    </div>
 
                                 </el-col>
-                                <el-col :span="4">
+                                <el-col :span="5">
                                     <div class="flexCol flexColCenter cursorPointer quickToolsCard cardborder" :class="docIndex==3?'cardHover':''"
                                          style="height: 200px" @click="showDoc(3)">
                                         <img class="cardimg" src="/static/img/supportpics/3.png"  />
@@ -83,7 +83,7 @@
                             </el-row>
 
                             <el-row justify="center" type="flex" :gutter="20" style="margin: 20px">
-                                <el-col :span="4">
+                                <el-col :span="5">
                                     <div class="flexCol flexColCenter cursorPointer quickToolsCard cardborder" :class="docIndex==4?'cardHover':''"
                                          style="height: 200px" @click="showDoc(4)">
                                         <img class="cardimg" src="/static/img/supportpics/4.png"  />
@@ -91,14 +91,14 @@
                                         <h4 class="h_lite">Service and Reuse</h4>
                                     </div>
                                 </el-col>
-                                <el-col :span="4">
+                                <el-col :span="5">
                                     <div class="flexCol flexColCenter cursorPointer quickToolsCard cardborder" :class="docIndex==5?'cardHover':''"
                                          style="height: 200px" @click="showDoc(5)">
                                         <img class="cardimg" src="/static/img/supportpics/5.png"  />
                                         <h4 class="h_lite">Server Nodes</h4>
                                     </div>
                                 </el-col>
-                                <el-col :span="4">
+                                <el-col :span="5">
                                     <div class="flexCol flexColCenter cursorPointer quickToolsCard cardborder" :class="docIndex==6?'cardHover':''"
                                          style="height: 200px" @click="showDoc(6)">
                                         <img class="cardimg" src="/static/img/supportpics/6.png"  />
@@ -109,18 +109,18 @@
                             </el-row >
 
                             <el-row justify="center" type="flex" :gutter="20" style="margin: 20px">
-                                <el-col :span="4" >
+                                <el-col :span="5" >
                                     <div class="flexCol flexColCenter cursorPointer quickToolsCard cardborder" :class="docIndex==7?'cardHover':''"
                                          style="height: 200px;" @click="showDoc(7)">
                                         <img class="cardimg" src="/static/img/supportpics/7.png"  />
                                         <h4 class="h_lite">Thematic Center</h4>
                                     </div>
                                 </el-col>
-                                <el-col :span="4">
+                                <el-col :span="5">
                                     <div class="flexCol flexColCenter cursorPointer quickToolsCard cardborder" :class="docIndex==8?'cardHover':''"
                                          style="height: 200px" @click="showDoc(8)">
                                         <img class="cardimg" src="/static/img/supportpics/8.png"  />
-                                        <h4 class="h_lite">User</h4>
+                                        <h4 class="h_lite">User Center</h4>
                                     </div>
                                 </el-col>
 
@@ -131,33 +131,9 @@
                 </div>
             </div>
 
-            <!--<div class="clearfix"  style="padding-top: 20px;margin-bottom: 35px">-->
-                <!--<div class="col-lg-10 col-lg-offset-1 col-md-12">-->
-                    <!--<div class="flexJustAround" style="width: 100%;">-->
-                        <!--&lt;!&ndash;                        <div class="innerBorder"></div>&ndash;&gt;-->
-                        <!--<h4 style="font-size: 22px">Support Documents</h4>-->
-                        <!--&lt;!&ndash;                        <div class="innerBorder"></div>&ndash;&gt;-->
-                    <!--</div>-->
-                    <!--<div style="margin-top: 10px">-->
-                        <!--<el-row :gutter="20">-->
-                            <!--<el-col :span="12">-->
-                                <!--<div class="flexCol flexColCenter cursorPointer quickToolsCard"-->
-                                     <!--style="height: 200px;background-color: #fbfbfa" v-loading="docLoading" @click="window.location.href='/help/supportDocument/modelitem'">-->
-                                    <!--<h2 class="h_lite">Tips </h2>-->
-                                    <!--<h4 class="h_lite">about {{docTarget}}</h4>-->
-                                <!--</div>-->
-                            <!--</el-col>-->
-                            <!--<el-col :span="12">-->
-                                <!--<div class="flexCol flexColCenter cursorPointer quickToolsCard"-->
-                                     <!--style="height: 200px;background-color: #fbfbfa" v-loading="docLoading">-->
-                                    <!--<h2 class="h_lite">FAQ<span>s</span></h2>-->
-                                    <!--<el-button>aa</el-button>-->
-                                <!--</div>-->
-                            <!--</el-col>-->
-                        <!--</el-row>-->
-                    <!--</div>-->
-                 <!--</div>-->
-            <!--</div>-->
+            <div class="clearfix"  style="padding: 90px 0;background-color: #e4e4e45e">
+                <h1 align="center" style="margin:0;"><a href="/help/demo">There Are Some Demos For You →</a></h1>
+            </div>
         </div>
 
         <div th:replace="fragments/footer :: footer"></div>

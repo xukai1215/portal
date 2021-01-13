@@ -2,7 +2,6 @@ package njgis.opengms.portal.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.google.gson.JsonObject;
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
@@ -291,7 +290,7 @@ public class ComputableModelService {
 //                    String classId = classifications.get(i);
 //
 //                    do {
-//                        Classification classification = classificationService.getByOid(classId);
+//                        Classification classification = classification2Service.getByOid(classId);
 //                        array.add(classification.getNameEn());
 //                        classId = classification.getParentId();
 //                    } while (classId != null);
@@ -378,7 +377,7 @@ public class ComputableModelService {
             modelAndView.setViewName("computable_model");
 
             modelAndView.addObject("modelInfo", modelInfo);
-            modelAndView.addObject("classifications", classResult);
+//            modelAndView.addObject("classifications", classResult);
             modelAndView.addObject("date", dateResult);
             modelAndView.addObject("year", calendar.get(Calendar.YEAR));
             modelAndView.addObject("user", userJson);
@@ -404,6 +403,7 @@ public class ComputableModelService {
 
 
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println(e.getMessage());
             throw new MyException(e.getMessage());
         }

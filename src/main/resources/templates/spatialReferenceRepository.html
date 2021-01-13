@@ -37,7 +37,7 @@
             <div class="el-row">
                 <h2 class="main-title">Spatiotemporal Reference Repository</h2>
                 <h4 class="sub-title">The repository of spatiotemporal reference.</h4>
-                <button id="contributeBtn" class="btn btn-success btn-lg" style="font-size: 15px;margin:10px;" @click="contribute()">+ Contribute</button>
+                <button id="contributeBtn"  class="btn btn-success btn-lg" style="font-size: 15px;margin-left:10px;vertical-align: baseline;" @click="contribute()">+ Contribute</button>
                 <hr>
             </div>
             <div class="el-col el-col-6 minScreen_maxWidth" style="margin-top:29px;">
@@ -53,7 +53,7 @@
                             :highlight-current="true"
                             :expand-on-click-node="true"
                             node-key="id"
-                            :default-expanded-keys="[]"
+                            :default-expanded-keys="[1,2]"
                             :current-node-key="100"
                             @current-change="handleCurrentChange"
                             :props="defaultProps">

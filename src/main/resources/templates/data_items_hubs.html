@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Data Item Hubs | OpenGMS</title>
+    <title>Data Hub Repository | OpenGMS</title>
 
     <script src="/static/js/common/vue.min.js"></script>
     <script src="/static/js/common/vue-avatar.min.js"></script>
@@ -43,9 +43,6 @@
             font-size: 14px;
         }
 
-        .el-input__inner{
-            background-color: #f5f7fa;
-        }
     </style>
 
 </head>
@@ -62,10 +59,10 @@
         <div class="mainContent">
             <div class="el-row">
                 <div class="data-top">
-                    <h2 class="main-title">Data Item Hubs</h2>
+                    <h2 class="main-title">Data Hub Repository</h2>
                     <h4 class="sub-title">The hubs of data (one-stop hub with public shared data resources)
                     </h4>
-                    <button id="contributeBtn" class="btn btn-success btn-lg" style="font-size: 15px;margin:10px;" @click="contribute()">+ Contribute</button>
+                    <button id="contributeBtn"  class="btn btn-success btn-lg" style="font-size: 15px;margin-left:10px;vertical-align: baseline;" @click="contribute()">+ Contribute</button>
                 </div>
                 <hr>
             </div>
@@ -123,17 +120,18 @@
 
             <div class="el-col el-col-18 minScreen_maxWidth" >
                 <div class="searcherPanel">
-                    <el-select v-model="curQueryField" slot="prepend" style="width:120px;border-radius: 0;margin-right: 0;float: left;">
-                        <el-option
-                                v-for="qf in queryFields"
-                                :key="qf"
-                                :label="qf"
-                                :value="qf">
-                        </el-option>
-                    </el-select>
-                    <div class="searcherInputPanel" @keydown.enter="search()" style="width: calc(100% - 120px);margin-left: 0">
-                        <input id="searchBox" type="text" :placeholder="'Data Item ' + curQueryField + ' ...'" v-model="searchText">
-                        <button @click="search()"><i class="glyphicon glyphicon-search"></i> Search</button>
+                    <div class="searcherInputPanel" @keydown.enter="search()">
+                        <el-input v-model="searchText" placeholder="Query String..." style="border-radius: 0;">
+                            <el-select v-model="curQueryField" slot="prepend" style="color:#606266;width:120px;border-radius: 0;">
+                                <el-option
+                                        v-for="qf in queryFields"
+                                        :key="qf"
+                                        :label="qf"
+                                        :value="qf">
+                                </el-option>
+                            </el-select>
+                            <el-button slot="append" icon="el-icon-search" @click="search()" style="border-radius: 0;padding: 0;">Search</el-button>
+                        </el-input>
                     </div>
                 </div>
                 <div class="progressPanel">

@@ -12,7 +12,12 @@ var vue = new Vue({
         },
         methods:{
             showDoc(index){
-                window.location.href='/help/demo/modelitem';
+                let obj={
+                    1:'How to use a model online?',
+                    2:'How to run a integrated model online?',
+                }
+                window.location.href='/help/demo/'+obj[index].replaceAll(" ","_").replace("?","");
+
                 // this.docIndex=index;
                 // this.docLoading=true
                 // $('html,body').animate({scrollTop: '130px'}, 200);
