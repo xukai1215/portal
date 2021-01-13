@@ -6,6 +6,7 @@ let vue = new Vue({
             applicationInfo:'',
             invokeService:'',
             user:'',
+            contributorInfo:'',
             applicationOid:'',
             testStep:{
                 state:{
@@ -649,6 +650,10 @@ let vue = new Vue({
 
 
         },
+        getContributorInfo(){
+            let that = this;
+
+        }
     },
     mounted(){
         let that = this;
@@ -676,6 +681,15 @@ let vue = new Vue({
                 that.invokeService = res.data.data.service;
                 window.document.token = that.invokeService.token;
                 that.isPortal = that.invokeService.isPortal;
+                $.ajax({
+                    url:"/dataApplication/getContributorInfo/" + that.invokeService.contributor,
+                    type:"GET",
+                    success:(json) =>{
+                        if (json.code == 0){
+                            that.contributorInfo = json.data;
+                        }
+                    }
+                })
                 //处理portal的 testData，加name属性
                 // if(that.isPortal == true){
                 //     for (let i=0;i<that.testData.length;i++){
