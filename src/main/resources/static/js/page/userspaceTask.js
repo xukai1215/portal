@@ -1645,7 +1645,7 @@ var userTask = Vue.extend(
                         file_name:item.label+'.'+item.suffix,
                         label:item.label,
                         suffix:item.suffix,
-                        source_store_id:item.url.split('=')[1],
+                        source_store_id:item.url.split('/')[item.url.split('/').length-1],
                         templateId:item.templateId,
                         upload:'false'
                     }

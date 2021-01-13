@@ -953,10 +953,10 @@ public class DataApplicationService {
                     }
                     case "contributor":{
                         User user = userDao.findFirstByName(searchText);
-                        if(user != null && user.getOid() != ""){
+                        if(user != null){
                             result = dataApplicationDao.findAllByAuthorLikeIgnoreCase(user.getOid(), pageable);
-                        }else{
-                            return null;
+                        } else {        // 娶一个不存在的名字，返回nodata，不能返回null
+                            result = dataApplicationDao.findAllByAuthorLikeIgnoreCase("hhhhhhhhhhhhhhhhhh", pageable);
                         }
                         break;
                     }
@@ -985,10 +985,10 @@ public class DataApplicationService {
                     }
                     case "contributor":{
                         User user = userDao.findFirstByName(searchText);
-                        if(user != null && user.getOid() != ""){
+                        if(user != null){
                             result = dataApplicationDao.findAllByAuthorLikeIgnoreCaseAndMethodLikeIgnoreCase(user.getOid(), method, pageable);
-                        }else{
-                            return null;
+                        } else {    // 娶一个不存在的名字，返回nodata，不能返回null
+                            result = dataApplicationDao.findAllByAuthorLikeIgnoreCaseAndMethodLikeIgnoreCase("hhhhhhhhhhhhhhhh", method, pageable);
                         }
                         break;
                     }
@@ -1023,6 +1023,7 @@ public class DataApplicationService {
             System.out.println(err);
             return null;
         }
+
         List<DataApplication> dataApplications = dataApplicationPage.getContent();
 
         JSONArray jsonArray = new JSONArray();
