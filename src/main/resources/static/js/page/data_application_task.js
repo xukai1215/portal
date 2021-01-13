@@ -2,6 +2,7 @@ let vue = new Vue({
     el:'#app',
     data: function (){
         return {
+            windowHeight: window.innerHeight,
             applicationInfo:'',
             invokeService:'',
             user:'',
@@ -20,7 +21,7 @@ let vue = new Vue({
             invokeDialog:false,
             parameter:'',
             loading:false,
-            resultData:'',
+            resultData:{},
             outPutData:'',
             serviceId:'',
             isPortal:'',
@@ -45,12 +46,17 @@ let vue = new Vue({
             dataServerTask:'',
             visualPath:'',
             fileOrder:'',
+            value:'',
             // initParameter:''
 
 
         }
     },
     methods:{
+        initSize() {
+            this.windowHeight = document.body.clientHeight - 129;
+            console.log(this.windowHeight);
+        },
         dateFormat(date, format) {
             let dateObj = new Date(date);
             let fmt = format || "yyyy-MM-dd hh:mm:ss";
@@ -79,8 +85,8 @@ let vue = new Vue({
                     );
             return fmt;
         },
-        goPersonCenter(oid) {
-            window.open("/user/" + oid);
+        goPersonCenter(userName) {
+            window.open("/profile/" + userName);
         },
         invokeNow(){
             let that = this;
@@ -130,17 +136,21 @@ let vue = new Vue({
                         window.location.href = "/user/login";
                     }else if (json.code === 0){
                         console.log(json);
-                        that.resultData = json.data.invokeService;
+                        // that.resultData = json.data.invokeService;
                         that.dataServerTask = json.data.task;
                         if(json.data == null){
-                            this.loading = false;
+                            that.loading = false;
                             that.$message({
                                 type:"error",
                                 message: 'Invoke failed!',
                             })
                         }else {
-                            that.outPutData = "OutData";
-                            this.loading = false;
+                            that.outPutData = that.dataServerTask.outputs;
+                            let str = this.outPutData[0].tag + '.' + this.outPutData[0].suffix;
+                            that.resultData.name = str;
+                            that.resultData.url = this.outPutData[0].url;
+                            that.value = that.resultData.name;
+                            that.loading = false;
                             that.invokeDialog = false;
                             that.$message({
                                 type: "success",
@@ -164,7 +174,7 @@ let vue = new Vue({
             });
         },
         downloadResult(){
-            window.location.href = this.resultData.cacheUrl;
+            window.location.href = this.resultData.url;
         },
         handleClick(tab, event) {
             console.log(tab, event);
@@ -371,7 +381,10 @@ let vue = new Vue({
                                 let fileInfo = res.data.data.id;
                                 for(let i=0;i<that.metaDetail.input.length;i++){
                                     for (let j=0;j<fileInfo.length;j++){
-                                        if (that.metaDetail.input[i].name === fileInfo[j].file_name){
+                                        let name1 = that.metaDetail.input[i].name.split('.');
+                                        let name2 = fileInfo[j].file_name.split('.');
+
+                                        if (name1[name1.length-1] === name2[name2.length-1]){
                                             that.metaDetail.input[i].loadName = fileInfo[j].file_name;
                                             that.metaDetail.input[i].url = fileInfo[j].url;
                                             break;
@@ -407,11 +420,23 @@ let vue = new Vue({
                     that.visualization = true;
                 }
             })
+        },
+        selectChanged(value){
+            // alert(value);
+            for(let i=0;i<this.outPutData.length;i++){
+                let str = this.outPutData[i].tag + '.' + this.outPutData[i].suffix;
+                if(value === str){
+                    this.resultData.name = value;
+                    this.resultData.url = this.outPutData[i].url;
+                    break;
+                }
+            }
         }
     },
     mounted(){
         let that = this;
-
+        window.addEventListener("resize", this.initSize);
+        this.initSize();
         let str = window.location.href.split('/')
         //将dataApplicationOid与serviceId切出来
         this.applicationOid = str[str.length-3];
@@ -435,14 +460,14 @@ let vue = new Vue({
                 window.document.token = that.invokeService.token;
                 that.isPortal = that.invokeService.isPortal;
                 //处理portal的 testData，加name属性
-                if(that.isPortal == true){
-                    for (let i=0;i<that.testData.length;i++){
-                        let path = that.testData[i].path;
-                        let str = path.split('/');
-                        let name = str[str.length-1];
-                        that.testData[i].name = name;
-                    }
-                }
+                // if(that.isPortal == true){
+                //     for (let i=0;i<that.testData.length;i++){
+                //         let path = that.testData[i].path;
+                //         let str = path.split('/');
+                //         let name = str[str.length-1];
+                //         that.testData[i].name = name;
+                //     }
+                // }
             }
         })
         axios.get("/dataApplication/getParemeter/" + this.applicationOid +'/' + this.serviceId).then((res) => {
