@@ -193,6 +193,11 @@ public class DataItemRestController {
         return ResultUtils.success(dataItemService.searchByCurQueryField(dataItemFindDTO,null,dataItemFindDTO.getCurQueryField()));
     }
 
+    @RequestMapping(value="/searchByName",method = RequestMethod.POST)
+    JsonResult searchByName1(@RequestBody DataItemFindDTO dataItemFindDTO){
+        return ResultUtils.success(dataItemService.searchByName(dataItemFindDTO,null));
+    }
+
     @RequestMapping(value="/searchByNameAndAuthor",method = RequestMethod.POST)
     JsonResult searchByNameAndAuthor(@RequestBody DataItemFindDTO dataItemFindDTO,HttpServletRequest request){
 
