@@ -3658,4 +3658,13 @@ public class PortalApplicationTests {
        JSONObject jsonObject = new JSONObject();
        String a = jsonObject.toJSONString();
     }
+
+    @Test
+    public void addDeployed(){
+       List<ComputableModel> results = computableModelDao.findByNameContainsIgnoreCaseAndContentType("taudem","MD5");
+       for(ComputableModel result:results){
+           result.setDeploy(true);
+           computableModelDao.save(result);
+       }
+    }
 }

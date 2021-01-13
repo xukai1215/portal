@@ -52,6 +52,23 @@
 
         }
 
+        @media only screen and (max-width: 1297px){
+
+            .wzhSection{
+                width: 40% !important;
+            }
+
+        }
+
+        @media only screen and (max-width: 853px){
+
+            .wzhSection{
+                width: 100% !important;
+            }
+
+        }
+
+
     </style>
 </head>
 <body>
@@ -79,80 +96,142 @@
 
                 <hr>
             </div>
-            <section class="wzhSection darkSide" style="display:inline-block;width:30%;margin-right:4%;min-width:360px;">
-                <div class="wzhSectionContainer" style="background-color: #9387e0">
-                    <!--<div class="imgContainerW50 right0" style="background-image:url(/static/img/work.png);background-size:contain"></div>-->
-                    <div class="leftPart flexCol flexJustBetween flexAlignStart">
-                        <!--<div class="imgContainerW100" style="background-image:url(/static/img/model/modelExcution.png);height: 225px"></div>-->
-                        <div>
-                            <div class="noMargin sectionTitle" >
-                                <p>
-                                    Model Execution
-                                </p>
-                            </div>
+            <div class="flexJustCenter flexWrap">
+                <section class="wzhSection darkSide"
+                         style="display:inline-block;flex: 1;margin-right:20px;min-width:360px;">
+                    <div class="wzhSectionContainer" style="background-color: #9387e0">
+                        <!--<div class="imgContainerW50 right0" style="background-image:url(/static/img/work.png);background-size:contain"></div>-->
+                        <div class="w100 flexCol flexJustBetween flexAlignCenter">
+                            <!--<div class="imgContainerW100" style="background-image:url(/static/img/model/modelExcution.png);height: 225px"></div>-->
+                            <div>
+                                <div class="noMargin sectionTitle">
+                                    <p>
+                                        Model Execution
+                                    </p>
+                                </div>
 
-                            <div class="sectionDescribe"  style="margin-top: 10px">
-                                <p>We have deployed plenty of models on the web.</p>
-                                <p>Choose what you need to execute!</p>
-                            </div>
+                                <div class="sectionDescribe" style="margin-top: 10px">
+                                    <p>We have deployed plenty of models on the web.</p>
+                                    <p>Choose what you need to execute!</p>
+                                </div>
 
+                            </div>
+                            <img src="/static/img/work.png" style="height: 30%;align-self: center;"/>
+                            <button class="wzhBtn nutBtn plainBtn hoverPurple" @click="loadExecutionGuide()"
+                                    style="align-self:flex-end">
+                                <p style="font-size: 2.0rem;font-weight: 600;font-family: Aktiv Grotesk">Try it</p>
+                            </button>
                         </div>
-                        <img src="/static/img/work.png" style="height: 30%;align-self: center;"/>
-                        <button class="wzhBtn nutBtn plainBtn hoverPurple" @click="loadDeployedModelClick()" style="align-self:flex-end">
-                            <p style="font-size: 2.0rem;font-weight: 600;font-family: Aktiv Grotesk">Try it</p>
-                        </button>
                     </div>
-                </div>
-            </section>
-            <section class="wzhSection" style="display:inline-block;width:30%;margin-right:4%;min-width:360px;">
-                <div class="wzhSectionContainer" style="background-color: #80bfff">
-                    <!--<div class="imgContainerW50 right0" style="background-image:url(/static/img/model/modelExcution.png);background-position-y: -18px"></div>-->
-                    <div class="leftPart flexCol flexJustBetween flexAlignStart">
-                        <div>
-                            <div class="noMargin sectionTitle" >
-                                <p>
-                                    Model Integration
-                                </p>
-                            </div>
+                </section>
+                <section class="wzhSection" style="display:inline-block;flex: 1;margin-right:20px;min-width:360px;">
+                    <div class="wzhSectionContainer" style="background-color: #80bfff">
+                        <!--<div class="imgContainerW50 right0" style="background-image:url(/static/img/model/modelExcution.png);background-position-y: -18px"></div>-->
+                        <div class="w100 flexCol flexJustBetween flexAlignCenter">
+                            <div>
+                                <div class="noMargin sectionTitle">
+                                    <p>
+                                        Model Integration
+                                    </p>
+                                </div>
 
-                            <div class="sectionDescribe"  style="margin-top: 10px">
-                                <p>Single model can not satisfy you?</p>
-                                <p>You can integrate models to solve complicated problem.</p>
-                            </div>
+                                <div class="sectionDescribe" style="margin-top: 10px">
+                                    <p>Single model can not satisfy you?</p>
+                                    <p>You can integrate models to solve complicated problem.</p>
+                                </div>
 
+                            </div>
+                            <img src="/static/img/work.png" style="height: 30%;align-self: center;"/>
+                            <button class="wzhBtn nutBtn plainBtn hoverJblue"
+                                    @click="loadIntegratedGuideDialog"
+                                    style="align-self:flex-end">
+                                <p style="font-size: 2.0rem;font-weight: 600;font-family: Aktiv Grotesk">Try it</p>
+                            </button>
                         </div>
-                        <img src="/static/img/work.png" style="height: 30%;align-self: center;"/>
-                        <button class="wzhBtn nutBtn plainBtn hoverJblue" @click="window.location.href='/computableModel/integratedModel'" style="align-self:flex-end">
-                            <p style="font-size: 2.0rem;font-weight: 600;font-family: Aktiv Grotesk">Try it</p>
-                        </button>
                     </div>
-                </div>
-            </section>
-            <section class="wzhSection darkSide" style="display:inline-block;width:30%;min-width:360px;">
-                <div class="wzhSectionContainer" style="background-color: #ecb6b6">
-                    <!--<div class="imgContainerW50 right0" style="background-image:url(/static/img/model/modelExcution.png);background-position-y: -18px"></div>-->
-                    <div class="leftPart flexCol flexJustBetween flexAlignStart">
-                        <div>
-                            <div class="noMargin sectionTitle" >
-                                <p>
-                                    Parameter Optimization
-                                </p>
-                            </div>
+                </section>
+                <section class="wzhSection darkSide" style="display:inline-block;flex: 1;min-width:360px;">
+                    <div class="wzhSectionContainer" style="background-color: #ecb6b6">
+                        <!--<div class="imgContainerW50 right0" style="background-image:url(/static/img/model/modelExcution.png);background-position-y: -18px"></div>-->
+                        <div class="w100 flexCol flexJustBetween flexAlignCenter">
+                            <div>
+                                <div class="noMargin sectionTitle">
+                                    <p>
+                                        Parameter Optimization
+                                    </p>
+                                </div>
 
-                            <div class="sectionDescribe"  style="margin-top: 10px">
-                                <p>Model results are not exact?</p>
-                                <p>Try to adjust parameters!</p>
-                            </div>
+                                <div class="sectionDescribe" style="margin-top: 10px">
+                                    <p>Model results are not exact?</p>
+                                    <p>Try to adjust parameters!</p>
+                                </div>
 
+                            </div>
+                            <img src="/static/img/work.png" style="height: 30%;align-self: center;"/>
+                            <button class="wzhBtn nutBtn plainBtn hoverOrange" style="align-self: center">
+                                <p style="font-size: 2.0rem;font-weight: 600;font-family: Aktiv Grotesk">Under
+                                    Construction...</p>
+                            </button>
                         </div>
-                        <img src="/static/img/work.png" style="height: 30%;align-self: center;"/>
-                        <button class="wzhBtn nutBtn plainBtn hoverOrange" style="align-self: center">
-                            <p style="font-size: 2.0rem;font-weight: 600;font-family: Aktiv Grotesk">Under Construction...</p>
-                        </button>
                     </div>
+                </section>
+
+            </div>
+            <el-dialog title="Model Execution" center :visible.sync="modelExecutionDialog" width="58%">
+                <el-steps :active="guideActive" finish-status="success" align-center>
+                    <el-step title="Step 1" description="select computable model"></el-step>
+                    <el-step title="Step 2" description="load computable model"></el-step>
+                    <el-step title="Step 3" description="start to invoke"></el-step>
+                </el-steps>
+                <div class="flexCenter" v-show="guideActive==0" >
+                    <img src="/static/img/guide/modelExecuteGuide1.png" style="height: 381px">
                 </div>
-            </section>
-           <el-dialog title="Deployed models" :visible.sync="loadDeployedModelDialog">
+                <div class="flexCenter"  v-show="guideActive==1" >
+                    <img src="/static/img/guide/modelExecuteGuide2.png" style="height: 381px">
+                </div>
+                <div class="flexCenter"  v-show="guideActive==2" >
+                    <img src="/static/img/guide/modelExecuteGuide3.png" style="height: 381px">
+                </div>
+
+                <div style="margin-top: 10px">
+                    <el-button @click="modelExecutionDialog = false" style="float:left">Cancel</el-button>
+                    <el-button type="primary" v-if="guideActive==2" style="float:right"
+                               @click="window.open('/computableModel/selecttask')">Enter now</el-button>
+                    <el-button v-if="guideActive<2" @click="guideActive++" style="float:right">Next</el-button>
+                    <el-button v-if="guideActive>0" @click="guideActive--" style="float:right">Previous</el-button>
+                </div>
+
+
+            </el-dialog>
+
+            <el-dialog title="Integrated Modeling" center :visible.sync="integratedModelDialog" width="58%">
+                <el-steps :active="guideActive" finish-status="success" align-center>
+                    <el-step title="Step 1" description="select computable model"></el-step>
+                    <el-step title="Step 2" description="config integrated task"></el-step>
+                    <el-step title="Step 3" description="start to invoke"></el-step>
+                </el-steps>
+                <div class="flexCenter" v-show="guideActive==0" >
+                    <img src="/static/img/guide/integratedGuide1.png" style="height: 381px">
+                </div>
+                <div class="flexCenter"  v-show="guideActive==1" >
+                    <img src="/static/img/guide/integratedGuide2.png" style="height: 381px">
+                </div>
+                <div class="flexCenter"  v-show="guideActive==2" >
+                    <img src="/static/img/guide/integratedGuide3.png" style="height: 381px">
+                </div>
+
+                <div style="margin-top: 10px">
+                    <el-button @click="integratedModelDialog = false" style="float:left">Cancel</el-button>
+                    <el-button type="primary" v-if="guideActive==2" style="float:right"
+                               @click="window.open('/computableModel/integratedModel')">Enter now</el-button>
+                    <el-button v-if="guideActive<2" @click="guideActive++" style="float:right">Next</el-button>
+                    <el-button v-if="guideActive>0" @click="guideActive--" style="float:right">Previous</el-button>
+                </div>
+
+
+            </el-dialog>
+
+            <el-dialog title="Deployed models" :visible.sync="loadDeployedModelDialog">
                <div v-loading="loading">
                    <div class="flexRow flexJustCenter" style="margin-top: 12px; margin-left: 10px;">
                        <div class="flexRow flexColCenter" style="width: 50%;mini-width:250px">

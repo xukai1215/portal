@@ -82,7 +82,8 @@ public class DataServerService {
         String url = "http://"+ dataServerManager +"/fileObtain" + "?token=" + URLEncoder.encode(token) + "&id=" + id;
         String xml = MyHttpUtils.GET(url,"UTF-8",null);
 
-        dataUrl = XmlTool.xml2Json(xml).getString("url");
+        JSONObject result = XmlTool.xml2Json(xml).getJSONObject("result");
+        dataUrl = XmlTool.xml2Json(xml).getString("uid");
 
         dataNodeContent.setId(id);
         dataNodeContent.setToken(token);
