@@ -19,7 +19,7 @@ public class DataServerTask extends Task{
 
     String dataType;//标识localData与onlineData
     JSONObject input;
-    OutputDataTask output;
+    JSONObject output;
     //如果是可视化的服务，生成的可视化结果需要存储起来
     JSONObject visual;//可视化结果路径
 }
