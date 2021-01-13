@@ -200,7 +200,7 @@
                                                         <ul v-if="task.status==2">
                                                             <h5 style="font-family: aktiv-grotesk; font-style: italic">Output:</h5>
                                                             <li class="flagcontent flexRowSpaceBetween" v-for="(output,key) in task.outputs">
-                                                                <span style="margin-top: 5px; displaay: inline-block;">{{output.event}}</span>
+                                                                <span style="margin-top: 5px; displaay: inline-block;">{{output.event||(output.tag + output.suffix)}}</span>
                                                                 <div class="flex">
                                                                     <button v-if="!output.multiple" class="pull-right clearfix btn btn-primary btn-round downloadAFile"
                                                                             style="background-color: #43aaff;border-color: #43aaff;margin:0 5px"
