@@ -32,7 +32,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.client.RequestCallback;
-import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
@@ -309,8 +308,8 @@ public class DataApplicationService {
      * @param dataApplicationDTO 参数3
      * @return 插入结果
      */
-    public JsonResult insert(List<MultipartFile> files, JSONObject jsonObject, String oid, DataApplicationDTO dataApplicationDTO, String uid){
-        JsonResult result = new JsonResult();
+    public JSONObject insert(List<MultipartFile> files, JSONObject jsonObject, String oid, DataApplicationDTO dataApplicationDTO, String uid){
+        JSONObject result = new JSONObject();
         DataApplication dataApplication = new DataApplication();
         BeanUtils.copyProperties(dataApplicationDTO, dataApplication);
 
@@ -320,7 +319,7 @@ public class DataApplicationService {
         saveFiles(files, path, oid, "", resources);
 
         if (resources == null){
-            result.setCode(-2);
+            result.put("code", -1);
         }else {
             try {
                 dataApplication.setResources(resources);
@@ -335,8 +334,8 @@ public class DataApplicationService {
                 //将服务invokeApplications置入,如果不绑定测试数据，则无需部署，直接创建条目即可
                 if(dataApplication.getTestData().size() == 0){
                     dataApplicationDao.insert(dataApplication);
-                    result.setCode(1);
-                    result.setData(dataApplication.getOid());
+                    result.put("code", 1);
+                    result.put("id", dataApplication.getOid());
                     return result;
                 }
                 InvokeService invokeService = new InvokeService();
@@ -352,21 +351,19 @@ public class DataApplicationService {
                 invokeServices.add(invokeService);
                 dataApplication.setInvokeServices(invokeServices);
 
-//                dataApplicationDao.insert(dataApplication);
+                dataApplicationDao.insert(dataApplication);
 
                 //部署服务
-                result = deployPackage(dataApplication, dataApplication.getTestDataPath());
-
-//                if (deployRes.getCode() == -1){
-//                    result.put("code", -2);
-//                }else {
-//                    result.put("code", 1);
-//                    result.put("id", dataApplication.getOid());
-//                }
+                JsonResult deployRes = deployPackage(dataApplication, dataApplication.getTestDataPath());
+                if (deployRes.getCode() == -1){
+                    result.put("code", -2);
+                }else {
+                    result.put("code", 1);
+                    result.put("id", dataApplication.getOid());
+                }
             }catch (Exception e){
                 log.info("dataApplication create failed");
-                result.setCode(-1);
-                result.setMsg("dataApplication create failed");
+                result.put("code", -2);
             }
         }
 
@@ -754,22 +751,7 @@ public class DataApplicationService {
 //        headers.add("Authorization", "Bearer "+ StaticParams.access_token);
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Map> httpEntity = new HttpEntity<>(part, headers);
-        try {
-            ResponseEntity<JSONObject> response = restTemplate.exchange(dataUrl, HttpMethod.PUT, httpEntity, JSONObject.class);
-            //解析response
-            JSONObject j_result = response.getBody();
-            //捕获sdk异常
-            if(j_result.getString("code").equals("-1")){
-                res.setMsg(j_result.getString("message"));
-                res.setCode(-1);
-                return res;
-            }
-        }catch (ResourceAccessException e){
-            res.setMsg("deploy file time out");
-            res.setCode(-1);
-            return res;
-        }
-
+        ResponseEntity<String> response = restTemplate.exchange(dataUrl, HttpMethod.PUT, httpEntity, String.class);
 
         //部署服务
         String prcUrl="http://172.21.213.111:8899"+ "/newprocess";
@@ -848,21 +830,7 @@ public class DataApplicationService {
         invokeServices1.add(invokeService);
         dataApplication.setInvokeServices(invokeServices1);
 
-        try {
-            JSONObject jsonObject = restTemplate2.postForObject(prcUrl, part2,JSONObject.class);
-            //捕获sdk异常
-            if(jsonObject.getString("code").equals("-1")){
-                res.setMsg(jsonObject.getString("message"));
-                res.setCode(-1);
-                return res;
-            }
-        }catch (ResourceAccessException e){
-            res.setMsg("deploy server time out");
-            res.setCode(-1);
-            return res;
-        }
-        res.setCode(1);
-        res.setData(dataApplication.getOid());
+        JSONObject jsonObject = restTemplate2.postForObject(prcUrl, part2,JSONObject.class);
         dataApplicationDao.save(dataApplication);
         return res;
     }
@@ -953,10 +921,10 @@ public class DataApplicationService {
                     }
                     case "contributor":{
                         User user = userDao.findFirstByName(searchText);
-                        if(user != null){
+                        if(user != null && user.getOid() != ""){
                             result = dataApplicationDao.findAllByAuthorLikeIgnoreCase(user.getOid(), pageable);
-                        } else {        // 娶一个不存在的名字，返回nodata，不能返回null
-                            result = dataApplicationDao.findAllByAuthorLikeIgnoreCase("hhhhhhhhhhhhhhhhhh", pageable);
+                        }else{
+                            return null;
                         }
                         break;
                     }
@@ -985,10 +953,10 @@ public class DataApplicationService {
                     }
                     case "contributor":{
                         User user = userDao.findFirstByName(searchText);
-                        if(user != null){
+                        if(user != null && user.getOid() != ""){
                             result = dataApplicationDao.findAllByAuthorLikeIgnoreCaseAndMethodLikeIgnoreCase(user.getOid(), method, pageable);
-                        } else {    // 娶一个不存在的名字，返回nodata，不能返回null
-                            result = dataApplicationDao.findAllByAuthorLikeIgnoreCaseAndMethodLikeIgnoreCase("hhhhhhhhhhhhhhhh", method, pageable);
+                        }else{
+                            return null;
                         }
                         break;
                     }
@@ -1023,7 +991,6 @@ public class DataApplicationService {
             System.out.println(err);
             return null;
         }
-
         List<DataApplication> dataApplications = dataApplicationPage.getContent();
 
         JSONArray jsonArray = new JSONArray();

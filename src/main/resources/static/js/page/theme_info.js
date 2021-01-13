@@ -5,6 +5,7 @@ var vue = new Vue({
     },
     data: function () {
         return {
+
             //log用于计数
             log_model: 0,
             log_data: 0,
@@ -773,27 +774,46 @@ var vue = new Vue({
             this.pageOption2.currentPage = val;
             this.search2();
         },
+        controlButtonSet(){        // 控制两个control_button，只让其中一个显示出来
+            setTimeout(this.controlButtonSet1,250)      // 下拉菜单出现了再执行函数
+        },
+        controlButtonSet1(){        // 控制两个control_button，只让其中一个显示出来
+            let height = $('#leftBottomBody')[0].offsetHeight
+            let control_button = $('.controlEditButton')
+            if(height > 700) {
+                control_button[1].style.display = 'none'
+                control_button[0].style.display = ''
+            } else {
+                control_button[0].style.display = 'none'
+                control_button[1].style.display = ''
+            }
+        },
         controlEdit(){
-            let all_button = $('.editicon')
-            let control_button = $('#controlEditButton')
+            let all_button = $('.editIcon')
+            let control_button = $('.controlEditButton')
 
             if(this.controlEditMark) {
                 for(let i = 0;i<all_button.length;++i){
                     all_button[i].style.display = ''        //置为空就可以显示了
                 }
 
-                control_button[0].style.backgroundColor = '#E6A23C'     // 改变control_button样式
-                control_button[0].style.borderColor = '#E6A23C'
-                control_button[0].children[0].innerHTML = 'Disable editing'
+                for (let j=0;j<control_button.length;++j){      // 有两个控制的button
+                    control_button[j].style.backgroundColor = '#E6A23C'     // 改变control_button样式
+                    control_button[j].style.borderColor = '#E6A23C'
+                    control_button[j].children[0].innerHTML = 'Disable editing'
+                }
+
                 this.controlEditMark = false
             }else {
                 for(let i = 0;i<all_button.length;++i){
                     all_button[i].style.display = 'none'
                 }
 
-                control_button[0].style.backgroundColor = '#409EFF'
-                control_button[0].style.borderColor = '#409EFF'
-                control_button[0].children[0].innerHTML = 'Enable editing'
+                for (let j=0;j<control_button.length;++j){
+                    control_button[j].style.backgroundColor = '#409EFF'
+                    control_button[j].style.borderColor = '#409EFF'
+                    control_button[j].children[0].innerHTML = 'Enable editing'
+                }
                 this.controlEditMark = true
             }
         },

@@ -151,7 +151,6 @@ public class DataApplicationController {
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public JsonResult add(HttpServletRequest request) throws IOException {
-        JsonResult res = new JsonResult();
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
         List<MultipartFile> files=multipartRequest.getFiles("resources");
         MultipartFile file=multipartRequest.getFile("dataApplication");
@@ -159,22 +158,16 @@ public class DataApplicationController {
         JSONObject jsonObject=JSONObject.parseObject(model);
         DataApplicationDTO dataApplicationDTO = JSONObject.toJavaObject(jsonObject,DataApplicationDTO.class);
 
-        HttpSession session=request.getSession();
-        String oid = null;
-        try {
-            oid=session.getAttribute("oid").toString();
-        }catch (Exception e){
-            res.setCode(-3);
-            res.setMsg("no login");
-            return res;
-        }
-//        if(oid==null){
-//            return ResultUtils.error(-2,"未登录");
-//        }
-        String uid = session.getAttribute("uid").toString();
-        res = dataApplicationService.insert(files,jsonObject,oid,dataApplicationDTO,uid);
 
-        return res;
+        HttpSession session=request.getSession();
+        String oid=session.getAttribute("oid").toString();
+        if(oid==null){
+            return ResultUtils.error(-2,"未登录");
+        }
+        String uid = session.getAttribute("uid").toString();
+        JSONObject result=dataApplicationService.insert(files,jsonObject,oid,dataApplicationDTO,uid);
+
+        return ResultUtils.success(result);
     }
 
     @RequestMapping(value = "/delete", method = RequestMethod.POST)

@@ -123,7 +123,6 @@ var  data_item_info = new Vue({
             objDistributed:{},
 
             authorshipFormVisible:false,
-            invokeServices:[],
 
         }
 
@@ -1540,52 +1539,6 @@ var  data_item_info = new Vue({
 
 
         },
-        getDistributeDataInfo(){
-            let that = this;
-          $.ajax({
-              url:"/dataItem/getDistributeDataInfo/" + that.dataItemId,
-              type:"get",
-          }).done((res)=> {
-              if (res.code == 0) {
-                    console.log(res.data);
-                  that.invokeServices = res.data;
-              }
-          })
-        },
-        downloadDisData(event){
-            this.loading = true;
-            let that = this;
-            let refLink=$(".downloadBtn");
-            for(i=0;i<refLink.length;i++) {
-                if (event.currentTarget === refLink[i]) {
-                    let token = this.invokeServices[i].token;
-                    let dataId = this.invokeServices[i].serviceId;
-                    let formData = new FormData();
-                    formData.append("token", token);
-                    formData.append("dataId", dataId);
-                    $.ajax({
-                        url:'/dataItem/downloadDisData',
-                        type:'POST',
-                        data:formData,
-                        cache: false,
-                        processData: false,
-                        contentType: false,
-                    }).done((res)=>{
-                        if(res.code == 0){
-                            console.log("test");
-                            that.loading = false;
-                            window.location.href = res.data;
-                        }else if(res.code == -1){
-                            that.loading = false;
-                            this.$message({
-                                type: 'error',
-                                message: 'Distribute Node Offline'
-                            });
-                        }
-                    })
-                }
-            }
-        }
 
     },
 
@@ -1619,6 +1572,11 @@ var  data_item_info = new Vue({
             }
 
         }
+
+
+
+
+
         let that = this;
         //获取当前数据条目的id
         var url = window.location.href;
@@ -1688,8 +1646,6 @@ var  data_item_info = new Vue({
             $("#description .block_content").css("height","auto");
             $(".fullPaper").remove();
         })
-
-        this.getDistributeDataInfo();
 
     },
 

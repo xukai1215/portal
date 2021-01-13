@@ -583,7 +583,7 @@ zhtml,body{
     /*width: 20%;*/
     height: 100%;
     margin-top: 62px;
-    position: fixed;
+    /*position: fixed;*/
     Z-index: 2;
 }
 #right_content{
@@ -631,7 +631,7 @@ zhtml,body{
     width:180px;
     height: 161px;
 }
-#model_col{
+.model_col{
     margin-top: 50px;
     /*width:161px;*/
     /*height: 161px;*/

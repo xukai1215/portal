@@ -33,6 +33,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 @RestController
@@ -147,7 +148,7 @@ public class RepositoryRestController {
     }
 
     @RequestMapping(value = "/theme/{id}",method = RequestMethod.GET)
-    public ModelAndView getThemePage(@PathVariable("id") String id,HttpServletRequest req){
+    public ModelAndView getThemePage(@PathVariable("id") String id,HttpServletRequest req) throws InvocationTargetException {
         return repositoryService.getThemePage(id,req);
     }
     @RequestMapping(value = "/getThemesByUserId",method = RequestMethod.GET)

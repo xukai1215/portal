@@ -3,6 +3,8 @@ package njgis.opengms.portal.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.dto.Concept.ConceptAddDTO;
 import njgis.opengms.portal.dto.Concept.ConceptFindDTO;
@@ -42,6 +44,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -279,9 +282,52 @@ public class RepositoryService {
 
         return modelAndView;
     }
+    public Object findChildren(ClassInfo classInfo) throws InvocationTargetException {
+        JSONObject classObj = new JSONObject();
+        classObj.put("label",classInfo.getMcname());
+
+        List<ClassInfo> childrenArr = new ArrayList<>();
+        childrenArr = classInfo.getChildren();
+
+        if(childrenArr==null||childrenArr.size()==0){
+
+            //没有孩子
+            JSONArray models=new JSONArray();
+            List<String> modelOids=classInfo.getModelsoid();
+            for(int j=0;j<modelOids.size();j++) {
+                JSONObject model=new JSONObject();
+                ModelItem modelItem=modelItemDao.findFirstByOid(modelOids.get(j));
+                if(modelItem == null){
+                    continue;
+                }
+                model.put("name",modelItem.getName());
+                model.put("image",modelItem.getImage());
+                model.put("oid",modelItem.getOid());
+                models.add(model);
+            }
+            classObj.put("content",models);
+            classObj.put("children",new JSONArray());
+
+        }
+        else if(childrenArr.size()>0){
+
+            JSONArray children = new JSONArray();
+            for(int j=0;j<childrenArr.size();++j){
+                children.add(findChildren(childrenArr.get(j)));
+            }
+            classObj.put("content",new JSONArray());
+            classObj.put("children",children);
+
+        }
 
 
-    public ModelAndView getThemePage(String id, HttpServletRequest req) {
+        return classObj;
+
+
+    }
+
+
+    public ModelAndView getThemePage(String id, HttpServletRequest req) throws InvocationTargetException {
 
         ModelAndView modelAndView = new ModelAndView();
 
@@ -314,22 +360,24 @@ public class RepositoryService {
         List<ClassInfo> classInfos = theme.getClassinfo();
         JSONArray classInfos_result = new JSONArray();
         for(int i=0;i<classInfos.size();i++){
-            ClassInfo classInfo = classInfos.get(i);
-            JSONObject classObj=new JSONObject();
-            classObj.put("name",classInfo.getMcname());
-            JSONArray models=new JSONArray();
-            List<String> modelOids=classInfo.getModelsoid();
-            for(int j=0;j<modelOids.size();j++) {
-                JSONObject model=new JSONObject();
-                ModelItem modelItem=modelItemDao.findFirstByOid(modelOids.get(j));
-                model.put("name",modelItem.getName());
-                model.put("image",modelItem.getImage());
-                model.put("oid",modelItem.getOid());
-                models.add(model);
-            }
-            classObj.put("content",models);
-            classInfos_result.add(classObj);
+            classInfos_result.add(findChildren(classInfos.get(i)));
+//            ClassInfo classInfo = classInfos.get(i);
+//            JSONObject classObj=new JSONObject();
+//            classObj.put("name",classInfo.getMcname());
+//            JSONArray models=new JSONArray();
+//            List<String> modelOids=classInfo.getModelsoid();
+//            for(int j=0;j<modelOids.size();j++) {
+//                JSONObject model=new JSONObject();
+//                ModelItem modelItem=modelItemDao.findFirstByOid(modelOids.get(j));
+//                model.put("name",modelItem.getName());
+//                model.put("image",modelItem.getImage());
+//                model.put("oid",modelItem.getOid());
+//                models.add(model);
+//            }
+//            classObj.put("content",models);
+//            classInfos_result.add(classObj);
         }
+        System.out.println(classInfos_result);
         List<DataClassInfo> dataClassInfos = theme.getDataClassInfo();
         JSONArray dataClassInfos_result = new JSONArray();
         for(int i=0;i<dataClassInfos.size();i++){
@@ -384,10 +432,14 @@ public class RepositoryService {
                 ma.put("name", maintainer.getName());
                 ma.put("id", maintainer.getId());
                 User user = userDao.findFirstByOid(maintainer.getId());
-                ma.put("image",user.getImage());
+                if(user!=null){
+                    ma.put("image",user.getImage());
+                }
+
                 maintainer_result.add(ma);
             }
         }
+
 
         modelAndView.addObject("image", htmlLoadPath+theme.getImage());
         modelAndView.addObject("detail",theme_detailDesc);
@@ -921,6 +973,7 @@ public class RepositoryService {
         String path = "/repository/spatialReference/" + UUID.randomUUID().toString() + ".jpg";
         if(spatialAddDTO.getUploadImage()!=null){
             String[] strs=spatialAddDTO.getUploadImage().split(",");
+
             if(strs.length>1) {
                 String imgStr = spatialAddDTO.getUploadImage().split(",")[1];
                 Utils.base64StrToImage(imgStr, resourcePath + path);

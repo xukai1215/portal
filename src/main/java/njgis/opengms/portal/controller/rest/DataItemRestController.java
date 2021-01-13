@@ -2,7 +2,6 @@ package njgis.opengms.portal.controller.rest;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.dao.*;
@@ -13,16 +12,13 @@ import njgis.opengms.portal.dto.dataItem.DataItemResultDTO;
 import njgis.opengms.portal.dto.dataItem.DataItemUpdateDTO;
 import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.entity.support.AuthorInfo;
-import njgis.opengms.portal.entity.support.InvokeService;
 import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.service.DataItemService;
 import njgis.opengms.portal.service.ItemService;
 import njgis.opengms.portal.service.ModelItemService;
 import njgis.opengms.portal.service.UserService;
-import njgis.opengms.portal.utils.MyHttpUtils;
 import njgis.opengms.portal.utils.ResultUtils;
 import njgis.opengms.portal.utils.Utils;
-import njgis.opengms.portal.utils.XmlTool;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -51,9 +47,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URISyntaxException;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -122,9 +116,6 @@ public class DataItemRestController {
 
     @Value ("${dataContainerIpAndPort}")
     String dataContainerIpAndPort;
-
-    @Value("${dataServerManager}")
-    private String dataServerManager;
 
     @Value("${htmlLoadPath}")
     private String htmlLoadPath;
@@ -363,7 +354,7 @@ public class DataItemRestController {
      * @return
      */
     @RequestMapping (value = "/{id}", method = RequestMethod.GET)
-    ModelAndView get(@PathVariable ("id") String id) throws IOException, URISyntaxException, DocumentException {
+    ModelAndView get(@PathVariable ("id") String id){
         ModelAndView view = new ModelAndView();
 
         DataItem dataItem;
@@ -434,22 +425,6 @@ public class DataItemRestController {
         if (null!=dataItem.getDataType()&&dataItem.getDataType().equals("DistributedNode")){
             fileName.add(dataItem.getName());
         }
-        //设置远程数据内容
-//        JSONObject distributeData = new JSONObject();
-        List<InvokeService> invokeServices = dataItem.getInvokeServices();
-//        if(null!=invokeServices){
-//            for (InvokeService invokeService:invokeServices){
-//                String name = invokeService.getName();
-//                String url = "http://"+ dataServerManager +"/fileObtain" + "?token=" +
-//                        URLEncoder.encode(invokeService.getToken()) + "&id=" + id;
-//                String xml = MyHttpUtils.GET(url,"UTF-8",null);
-//
-//                String dataUrl = XmlTool.xml2Json(xml).getString("url");
-//                distributeData.put(name, dataUrl);
-//            }
-//        }
-
-
         view.setViewName("data_item_info");
         if (null!=dataItem.getRelatedProcessings()){
             view.addObject("relatedProcessing",dataItem.getRelatedProcessings());
@@ -464,7 +439,6 @@ public class DataItemRestController {
         view.addObject("authorship",authorshipString);
 //        view.addObject("userDataList", dataItem.getUserDataList());
         view.addObject("fileName",fileName);//后期应该是放该name下的所有数据
-        view.addObject("distributeData", invokeServices);//存放远程节点信息，包括
 
 
         return view;
@@ -2129,58 +2103,6 @@ public class DataItemRestController {
             dataHubs1.setClassifications(classifi);
             dataHubsDao.save(dataHubs1);
         }
-    }
-
-    /**
-     * 获取当前条目的远程数据信息
-     * @return 成功失败或者远程数据信息
-     */
-    @RequestMapping(value = "/getDistributeDataInfo/{dataItemId}", method = RequestMethod.GET)
-    public JsonResult getDistributeDataInfo(@PathVariable(value = "dataItemId") String dataItemId){
-        JsonResult res = new JsonResult();
-        DataItem dataItem = dataItemDao.findFirstById(dataItemId);
-        List<InvokeService> invokeServices = dataItem.getInvokeServices();
-        if(null!=invokeServices){
-            res.setData(invokeServices);
-            res.setCode(0);
-            res.setMsg("success");
-        }else {
-            res.setMsg("No Distribute Data");
-        }
-
-        return res;
-    }
-
-    /**
-     * 根据token与dataId获取下载链接或者节点在线状态
-     * @param token 远程数据所在节点token
-     * @param dataId 远程数据id
-     * @return 下载结果url或者节点不在线的状态提示
-     */
-    @RequestMapping(value = "/downloadDisData", method = RequestMethod.POST)
-    public JsonResult downloadDisData(@RequestParam(value = "token") String token,
-                                      @RequestParam(value = "dataId") String dataId) throws IOException, URISyntaxException, DocumentException {
-        JsonResult res = new JsonResult();
-        String url = "http://"+ dataServerManager +"/fileObtain" + "?token=" + URLEncoder.encode(token) + "&id=" + dataId;
-        String xml = MyHttpUtils.GET(url,"UTF-8",null);
-        String dataUrl = null;
-        try{
-            JSONObject json = JSONObject.parseObject(xml);
-            if(json.getString("code").equals("-1")){
-                res.setMsg("Node offline");
-                res.setCode(-1);
-                return  res;
-            }
-        }catch (Exception e){
-            dataUrl = XmlTool.xml2Json(xml).getString("uid");
-            res.setData(dataUrl);
-            res.setCode(0);
-        }
-//        dataUrl = XmlTool.xml2Json(xml).getString("uid");
-//        res.setData(dataUrl);
-//        res.setCode(0);
-
-        return res;
     }
 
 
