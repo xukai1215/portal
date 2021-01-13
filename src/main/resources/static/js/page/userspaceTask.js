@@ -936,10 +936,10 @@ var userTask = Vue.extend(
 
                 this.uploadInPath = 0
                 let obj = {
-                    label: this.outputToMyData.event,
+                    label: this.outputToMyData.tag,
                     suffix: this.outputToMyData.suffix,
                     url: this.outputToMyData.url,
-                    templateId:this.outputToMyData.templateId,
+                    templateId:this.outputToMyData.url.split('/')[this.outputToMyData.url.split('/').length-1],
                 }
 
                 this.addDataToPortalBack(obj)
@@ -1753,21 +1753,21 @@ var userTask = Vue.extend(
                             that.dataSearchResult = res.data.data.list
                             that.dataTotalNum = res.data.data.totalNum
                             that.dataTaskIsWrong = false
-                            try {
-                                for(let i=0;i<that.dataSearchResult.length;++i){
-                                    console.log(that.dataSearchResult[i].input.input instanceof Array)
-                                    if(!(that.dataSearchResult[i].input.input instanceof Array)){
-                                        that.dataSearchResult[i].input.input = JSON.parse(that.dataSearchResult[i].input.input)
-                                    }
-                                    if(!(that.dataSearchResult[i].output.output instanceof Array)) {
-                                        let temp = that.dataSearchResult[i].output.output
-                                        that.dataSearchResult[i].output.output = []
-                                        that.dataSearchResult[i].output.output.push({'url': temp})
-                                    }
-                                }
-                            } catch (err){
-                                console.log(err)
-                            }
+                            // try {        当时是为了处理input 和 output写的，现在已经使用inputs 和 outputs了
+                            //     for(let i=0;i<that.dataSearchResult.length;++i){
+                            //         console.log(that.dataSearchResult[i].input.input instanceof Array)
+                            //         if(!(that.dataSearchResult[i].input.input instanceof Array)){
+                            //             that.dataSearchResult[i].input.input = JSON.parse(that.dataSearchResult[i].input.input)
+                            //         }
+                            //         if(!(that.dataSearchResult[i].output.output instanceof Array)) {
+                            //             let temp = that.dataSearchResult[i].output.output
+                            //             that.dataSearchResult[i].output.output = []
+                            //             that.dataSearchResult[i].output.output.push({'url': temp})
+                            //         }
+                            //     }
+                            // } catch (err){
+                            //     console.log(err)
+                            // }
                             that.dataResourceLoad = false
                             that.dataPageInit()
                         })
