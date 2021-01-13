@@ -3,6 +3,7 @@ package njgis.opengms.portal.controller.rest;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSONPObject;
 import lombok.extern.slf4j.Slf4j;
 import com.google.gson.JsonObject;
 import njgis.opengms.portal.bean.JsonResult;
@@ -428,15 +429,27 @@ public class DataApplicationController {
             //设置input数据
 
             //将所有参数放到一个JSON中
+        List<TaskData> inputs = new ArrayList<>();
         try{
-            dataServerTask.setInput(JSONObject.parseObject(selectData));
+            JSONArray object = (JSONArray) JSONArray.parse(selectData);
+            for (int i=0;i<object.size();i++){
+                JSONObject jsonObject = object.getJSONObject(i);
+                String fileName = jsonObject.getString("name");
+                TaskData taskData = new TaskData();
+                taskData.setTag(fileName.substring(0, fileName.lastIndexOf(".")));
+                taskData.setSuffix(fileName.substring(fileName.lastIndexOf(".")).substring(1));
+                taskData.setUrl(jsonObject.getString("url"));
+                inputs.add(taskData);
+            }
+
+            dataServerTask.setInputs(inputs);
         }catch (Exception e){
             input.put("input", selectData);
             dataServerTask.setInput(input);
         }
         JSONObject postParams = new JSONObject();
         postParams.put("token", token);
-        postParams.put("pcsId", serviceId);
+        postParams.put("pcsId", serviceId);;
 //        String[] tmp1 = new String[params.length];
 //        for (int i=0;i< params.length;i++){
 //            tmp1[i] = URLEncoder.encode(params[i], "gb2312");
@@ -934,6 +947,18 @@ public class DataApplicationController {
         jsonResult.setCode(0);
 
         return jsonResult;
+    }
+
+    @RequestMapping(value = "/getContributorInfo/{uid}", method = RequestMethod.GET)
+    public JsonResult getContributorInfo(@PathVariable(value = "uid") String uid){
+        JsonResult res = new JsonResult();
+        User user = userDao.findFirstByUserName(uid);
+        JSONObject contributorInfo = new JSONObject();
+        contributorInfo.put("name", user.getName());
+        contributorInfo.put("userId", user.getUserId());
+        res.setData(contributorInfo);
+
+        return res;
     }
 
     /**
