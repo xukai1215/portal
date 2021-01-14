@@ -1089,7 +1089,7 @@ var createModelItem = Vue.extend({
             let obj = document.getElementById('imgOne')
             // obj.outerHTML=obj.outerHTML
             obj.value = ''
-            this.itemInfoImage = ''
+            this.itemInfo.image = ''
         },
 
         editImg(){
