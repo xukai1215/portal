@@ -231,7 +231,7 @@ Actions.prototype.init = function()
 					} else if(cells[i].edge==true){
 						window.parent.deleteDataLink(cells[i])
 					} else if(cells[i].eid!=undefined){
-						window.parent.deleteDataItem(cells[i].eid,cells[i].frontId)
+						window.parent.deleteDataItemInfo(cells[i].eid,cells[i].frontId)
 					}
 
 				}

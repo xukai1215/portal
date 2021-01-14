@@ -67,7 +67,7 @@ Format.prototype.init = function()
 	}));
 
 	//修改纸张大小 -- wzh
-	this.changePageSize(6)
+	this.changePageSize(5)
 
 	this.refresh();
 };
