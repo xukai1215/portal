@@ -45,7 +45,7 @@
             <div class="el-row">
                 <h2 class="main-title">Server Nodes</h2>
                 <h4 class="sub-title">OpenGMS's server nodes in the world.</h4>
-                <button id="contributeBtn" class="btn btn-success btn-lg" style="font-size: 15px;margin:10px;"
+                <button id="contributeBtn"  class="btn btn-success btn-lg" style="font-size: 15px;margin-left:10px;vertical-align: baseline;"
                         onclick="window.open('/user/userSpace#/server')">+ Contribute
                 </button>
                 <hr>
@@ -299,9 +299,8 @@
                 return chartInfo;
             },
 
-            createChartMap(chartInfo) {
-                var myChart = echarts.init(document.getElementById('echartMap'));
-                myChart.showLoading();
+            createChartMap(myChart,chartInfo) {
+
                 var chartdata = [];
                 for (var i = 0; i < chartInfo.cityCount.length; i++) {
                     let cityObj = {
@@ -532,6 +531,9 @@
             //overview
             // this.createOverview();
 
+            var myChart = echarts.init(document.getElementById('echartMap'));
+            myChart.showLoading();
+
             //server
             $.ajax({
                 type: "GET",
@@ -548,7 +550,7 @@
 
                     var chartInfo = this.createChartInfo(res.data);
                     // this.computerNodesInfos = chartInfo.cityCount;
-                    this.createChartMap(chartInfo);
+                    this.createChartMap(myChart,chartInfo);
                 }
             })
         }

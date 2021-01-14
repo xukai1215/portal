@@ -412,6 +412,157 @@ var vue = new Vue({
         checkTaskInterval:null,
 
         iframeLoaded:false,
+
+        computableModelTableDialog:false,
+
+        dataMethodTableDialog:false,
+
+        modelTableLoading:false,
+
+        searchText:'',
+
+        deployedModel:[{
+            name:'',
+        }],
+
+        dataMethodLoading:false,
+
+        recentlyUsed:[
+            {
+                author: "王明",
+                authorId: "王明",
+                createTime: "2019-05-16T13:25:55.947+0000",
+                lastModifyTime: "2019-05-17T13:25:55.947+0000",
+                md5: "15ea8a5740fdcfa951eea30579a33c4d",
+                name: "SWAT_Model",
+                oid: "16e31602-bd05-4da4-bd01-cb7582c21ae8",
+            },
+            {
+                author: "Qiang Dai",
+                authorId: "Qiang_Dai",
+                createTime: "2019-05-16T14:43:40.834+0000",
+                lastModifyTime: "2019-05-16T14:43:40.834+0000",
+                md5: "387e28f188717c4745a071356839ecb0",
+                name: "SWMM",
+                oid: "35c12565-6a5f-41e1-8e4b-5a3c7d256b03",
+            },
+            {
+                author: "Bo Huang",
+                authorId: "Bo_Huang",
+                createTime: "2019-05-16T14:43:03.277+0000",
+                lastModifyTime: "2019-05-16T14:43:03.277+0000",
+                name: "TouchAir",
+                oid: "ff844894-bbb5-492c-b72f-a7e2fa651d57",
+            },
+            {
+                author: "王明",
+                authorId: "王明",
+                createTime: "2019-05-16T14:56:38.504+0000",
+                lastModifyTime: "2019-05-16T14:56:38.504+0000",
+                name: "Fire Dynamics Simulator",
+                oid: "fe6beeac-d4fa-4685-a7fa-3fc58dfb59d3",
+            },
+            {
+                author: "Junzhi Liu",
+                authorId: "Junzhi_Liu",
+                createTime: "2019-06-17T14:03:22.373+0000",
+                lastModifyTime: "2019-06-17T14:03:22.373+0000",
+                name: "SEIMS",
+                oid: "39daf1cf-acdb-4ea0-875b-9963bb80b887",
+            },
+            {
+                author: "Xia Li",
+                authorId: "Xia_Li",
+                createTime: "2019-05-16T07:30:44.453+0000",
+                lastModifyTime: "2019-05-16T07:30:44.453+0000",
+                name: "GeoSOS_ANN_Wrap",
+                oid: "d8754772-86b7-4f5b-9398-60f320c161c9",
+            },
+            {
+                author: "Min Cao",
+                authorId: "Min_Cao",
+                createTime: "2019-06-17T14:43:57.024+0000",
+                lastModifyTime: "2019-06-17T14:43:57.024+0000",
+                name: "GCAM-CA",
+                oid: "ebc7beaf-ff61-49da-9899-bc68e7c920e6",
+            },
+            {
+                author: "A. Stewart Fotheringham",
+                authorId: "A._Stewart_Fotheringham",
+                createTime: "2019-06-17T14:07:05.185+0000",
+                lastModifyTime: "2019-06-17T14:07:05.185+0000",
+                name: "GWR",
+                oid: "fcf84557-3264-405e-93cc-0827b29fae63",
+            },
+            {
+                author: "王明",
+                authorId: "王明",
+                createTime: "2019-05-16T13:31:58.276+0000",
+                lastModifyTime: "2019-05-16T13:31:58.276+0000",
+                name: "TaiHu_Fvcom",
+                oid: "d41dfc74-3509-4d02-8f45-5e2eeaf5eec7",
+            },
+            {
+                author: "Dawen Yang",
+                authorId: "Dawen_Yang",
+                createTime: "2020-06-12T13:35:48.436+0000",
+                lastModifyTime: "2020-06-12T13:35:48.436+0000",
+                name: "GBEHM",
+                oid: "d1057c98-dcf1-4188-9bd4-49e94770901e",
+            },
+            {
+                author: "王明",
+                authorId: "王明",
+                createTime: "2019-05-05T08:00:35.199+0000",
+                lastModifyTime: "2019-05-05T08:00:35.199+0000",
+                name: "Fvcom_lu_step1",
+                oid: "322dcfb0-6a79-48a2-9b80-bb105f1bb36d",
+            },
+            {
+                author: "王明",
+                authorId: "王明",
+                createTime: "2019-05-05T08:01:21.060+0000",
+                lastModifyTime: "2019-05-05T08:01:21.060+0000",
+                name: "Fvcom_lu_step2",
+                oid: "32a4ea56-991b-4f13-87c2-f2f9bb02b61c",
+            },
+            {
+                author: "王明",
+                authorId: "王明",
+                createTime: "2019-05-05T08:02:02.646+0000",
+                lastModifyTime: "2019-05-05T08:02:02.646+0000",
+                name: "Fvcom_lu_step3",
+                oid: "c7e6fb7f-5b88-4130-9522-81fd8fe87369",
+            },
+            {
+                author: "王明",
+                authorId: "王明",
+                createTime: "2019-05-05T07:59:20.528+0000",
+                lastModifyTime: "2019-05-05T07:59:20.528+0000",
+                name: "Fvcom_lu_step4",
+                oid: "c9a9be25-a16b-4812-9ffd-aae6bf37098c",
+            },
+            {
+                author: "Jinfeng Wang",
+                authorId: "Jinfeng_Wang",
+                createTime: "2019-05-16T12:47:36.883+0000",
+                lastModifyTime: "2019-05-16T12:47:36.883+0000",
+                name: "Geographical detector",
+                oid: "e80789bc-d29c-4bd4-9ef8-674541f40d42",
+            },
+            {
+                author: "Xinyue Ye",
+                authorId: "Xinyue_Ye",
+                createTime: "2018-01-02T14:01:01.030+0000",
+                lastModifyTime: "2019-05-16T14:01:01.030+0000",
+                name: "Space-Time Analysis of Regional Systems",
+                oid: "9948998b-1daa-4dec-8d41-d74efb20431a",
+            },
+        ],
+
+        drawerFold:false,
+
+        integratedTaskXml:'',
     },
 
     computed:{
@@ -465,6 +616,18 @@ var vue = new Vue({
                 return t;
             else
                 callback(t);
+        },
+
+        handleDrawer(){
+            if(this.drawerFold) {
+                this.drawerFold = !this.drawerFold
+                $('.drawerHandler').animate({left:210},90);
+                $('.itemSelector').animate({width:210},92);
+            }else{
+                this.drawerFold = !this.drawerFold
+                $('.drawerHandler').animate({left:0},40);
+                $('.itemSelector').animate({width:0},40);
+            }
         },
 
         expandMxgraph(){
@@ -731,6 +894,11 @@ var vue = new Vue({
             this.getDataMethodList(this.currentDataMethodClassi.oid)
         },
 
+        loadDeployedDataMethodClick(){
+            this.dataMethodTableDialog = true
+            this.getDataMethodList()
+        },
+
         dataMethodListChange(){
             if(this.dataMethodList.length==0){
                 this.getDataMethodList()
@@ -743,6 +911,7 @@ var vue = new Vue({
         },
 
         getDataMethodList(classi){
+            this.dataMethodLoading = true
             if(classi == undefined||classi === ''){
                 classi = 'all'
             }
@@ -759,6 +928,7 @@ var vue = new Vue({
                 .then((res)=>{
                     setTimeout(()=>{
                         this.dataMethodList=res.data.data.list;
+                        this.dataMethodLoading = false
                         this.pageOption3.total=res.data.data.total;
                     },100)
                 });
@@ -1066,6 +1236,15 @@ var vue = new Vue({
             this.addModelActionToModelActionList(modelAction,this.modelActions)
 
             this.addModelList(model,this.models)
+
+            for(let input of modelAction.inputData){
+                this.addDataItem(input, modelAction.id)
+            }
+
+            for(let output of modelAction.outputData){
+                this.addDataItem(output, modelAction.id)
+            }
+
             return modelAction
         },
 
@@ -1161,12 +1340,16 @@ var vue = new Vue({
 
         deleteModel(modelActionId,md5){
             for(let i=this.modelActions.length-1;i>=0;i--){//从尾部开始寻找，在目标之后的模型任务step都要-1
+                let tmp
                 if(this.modelActions[i].md5===md5&&this.modelActions[i].id === modelActionId){
+                    this.deleteRelatedDataItem(this.modelActions[i])
                     this.modelActions.splice(i,1)
-                    break
                 }else{
                     this.modelActions[i].step--
                 }
+
+                break
+
             }
             for(let i=this.models.length-1;i>=0;i--){//从尾部开始寻找，如果该模型对应的action只有一个则删除
                 if(this.models[i].md5===md5){
@@ -1177,6 +1360,17 @@ var vue = new Vue({
                     }
                     break
                 }
+            }
+
+
+        },
+
+        deleteRelatedDataItem(modelAction){
+            for(let input of modelAction.inputData){
+                this.deleteDataItem(input.eventId,modelAction.id)
+            }
+            for(let output of modelAction.outputData){
+                this.deleteDataItem(output.eventId,modelAction.id)
             }
         },
 
@@ -3569,6 +3763,37 @@ var vue = new Vue({
             this.addColorPool(parentId)
         },
 
+        addDataItem(data,parentId){
+            let dataItem = {}
+            if(data.eventType=='response'){
+                dataItem.eventId = data.eventId
+                dataItem.eventName = data.eventName
+                dataItem.name = data.name
+                dataItem.eventType = data.eventType
+                dataItem.optional = data.optional
+                dataItem.response = data.response
+                dataItem.value = data.response
+
+            }else{
+                dataItem = data
+            }
+
+            dataItem.parentId = parentId
+
+            if(this.dataItemList[parentId]==undefined){
+                let list = []
+                list.push(dataItem)
+                Vue.set(this.dataItemList,parentId,list)
+            }else{
+                let list = this.dataItemList[parentId]
+                list.push(dataItem);
+                Vue.set(this.dataItemList,parentId,list)
+            }
+
+            this.dataItems.push(dataItem)
+
+            this.addColorPool(parentId)
+        },
 
         deleteDataItem(dataItemId,parentId){
             let modelDataItems = this.dataItemList[parentId]
@@ -3925,7 +4150,142 @@ var vue = new Vue({
                 let task = res.data.data
                 this.loadTask(task)
             })
-        }
+        },
+        //选择模型
+        loadDeployedModelClick() {
+            this.computableModelTableDialog = true;
+            this.pageOption2.currentPage = 1;
+            this.searchResult = '';
+            // this.loadDeployedModel();
+            this.loadRecentlyUsed();
+            this.isSearchModel = false
+        },
+
+        handlePageChangeDeployedModel(val) {
+            this.pageOption2.currentPage = val;
+
+            if(this.inSearch==0){
+                // this.loadDeployedModel();
+                this.loadRecentlyUsed();
+
+            }
+            else
+                this.searchDeployedModel()
+        },
+
+        loadRecentlyUsed(){
+
+            this.modelTableLoading = true;
+            this.inSearch = 0
+            let page = this.pageOption2.currentPage
+            let start = (page-1)*6
+            let end = start+6<this.recentlyUsed.length?start+6:this.recentlyUsed.length
+            this.deployedModel = this.recentlyUsed.slice(start,end)
+
+            this.pageOption2.total = this.recentlyUsed.length;
+            setTimeout(()=>{
+                this.modelTableLoading = false;
+            },95)
+        },
+
+        loadDeployedModel(){
+            this.inSearch = 0
+            this.modelTableLoading = true;
+            axios.get('/computableModel/loadDeployedModel',{
+                params:{
+                    asc:0,
+                    page:this.pageOption2.currentPage-1,
+                    size:6,
+                }
+            }).then(
+                (res)=>{
+                    if(res.data.code==0){
+                        let data = res.data.data;
+                        this.deployedModel = data.content
+                        this.pageOption2.total = data.total;
+                        setTimeout(()=>{
+                            this.modelTableLoading = false;
+                        },100)
+                    }else{
+                        this.$alert('Please try again','Warning', {
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                this.modelTableLoading = false;
+                            }
+                        })
+
+                    }
+                }
+            )
+        },
+
+        searchDeployedModel(page){
+            this.inSearch = 1
+            this.modelTableLoading = true;
+            let targetPage = page==undefined?this.pageOption2.currentPage:page
+            this.pageOption2.currentPage=targetPage
+
+            if(this.searchText.trim()==''){
+                this.loadRecentlyUsed()
+                return
+            }
+
+            axios.get('/computableModel/searchDeployedModel',{
+                params:{
+                    asc:0,
+                    page:targetPage-1,
+                    size:6,
+                    searchText: this.searchText,
+                }
+            }).then(
+                (res)=>{
+
+                    this.isSearchModel = true
+                    if(res.data.code==0){
+                        let data = res.data.data;
+                        this.deployedModel = data.content
+                        this.pageOption2.total = data.total;
+                        setTimeout(()=>{
+                            this.modelTableLoading = false;
+                        },150)
+
+                    }else{
+                        this.$alert('Please try again','Warning', {
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                this.modelTableLoading = false;
+                            }
+                        })
+
+                    }
+                }
+            )
+        },
+
+        async getModelInfo(oid) {
+            let data
+            await axios.get('/computableModel/getDeployedModelByOid',{
+                    params:{
+                        oid:oid
+                    }
+            }).then(
+                res=>{
+                    data = res.data.data
+                }
+            )
+
+            return data
+        },
+
+        async selectModel(oid){
+            let model = await this.getModelInfo(oid)
+            this.addModelToMxgraph(model);
+            this.computableModelTableDialog = false
+        },
+
+        viewUser(userId){
+            window.open('/profile/'+userId)
+        },
     },
 
     async mounted() {

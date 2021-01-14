@@ -990,7 +990,7 @@ h1.h_lite,h2.h_lite,h3.h_lite,h4.h_lite,span.h_lite{
 
 @media only screen and (max-width: 505px){
     .wzhSectionContainer{
-        padding-top: 0;
+        /*padding-top: 0;*/
     }
 
     .responseDialog .el-dialog{

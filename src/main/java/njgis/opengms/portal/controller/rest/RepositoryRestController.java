@@ -33,6 +33,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 @RestController
@@ -147,14 +148,14 @@ public class RepositoryRestController {
     }
 
     @RequestMapping(value = "/theme/{id}",method = RequestMethod.GET)
-    public ModelAndView getThemePage(@PathVariable("id") String id,HttpServletRequest req){
+    public ModelAndView getThemePage(@PathVariable("id") String id,HttpServletRequest req) throws InvocationTargetException {
         return repositoryService.getThemePage(id,req);
     }
     @RequestMapping(value = "/getThemesByUserId",method = RequestMethod.GET)
     public JsonResult getThemesByUserId(HttpServletRequest request,
-                                          @RequestParam(value="page") int page,
-                                          @RequestParam(value="sortType") String sortType,
-                                          @RequestParam(value="asc") int sortAsc){
+                                        @RequestParam(value="page") int page,
+                                        @RequestParam(value="sortType") String sortType,
+                                        @RequestParam(value="asc") int sortAsc){
         HttpSession session=request.getSession();
         if(session.getAttribute("uid")==null){
             return ResultUtils.error(-1,"no login");

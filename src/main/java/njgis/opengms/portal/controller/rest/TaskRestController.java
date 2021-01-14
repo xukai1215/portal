@@ -6,8 +6,10 @@ import io.swagger.annotations.ApiOperation;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.bean.LoginRequired;
 import njgis.opengms.portal.dao.ComputableModelDao;
+import njgis.opengms.portal.dao.IntegratedTaskDao;
 import njgis.opengms.portal.dto.task.*;
 import njgis.opengms.portal.entity.ComputableModel;
+import njgis.opengms.portal.entity.IntegratedTask;
 import njgis.opengms.portal.entity.intergrate.DataProcessing;
 import njgis.opengms.portal.entity.intergrate.ModelAction;
 import njgis.opengms.portal.entity.Task;
@@ -61,6 +63,9 @@ public class TaskRestController {
 
     @Autowired
     ComputableModelDao computableModelDao;
+
+    @Autowired
+    IntegratedTaskDao integratedTaskDao;
 
     @Value("${managerServerIpAndPort}")
     private String managerServerIpAndPort;
@@ -319,16 +324,11 @@ public class TaskRestController {
                 }
                 else {
                     String taskId = responseEntity.getBody().getString("data");
-                    Task task = new Task();
+                    IntegratedTask task = integratedTaskDao.findByOid(taskOid);
                     task.setOid(taskOid);
                     task.setTaskId(taskId);
-                    task.setComputableName(name);
-                    task.setIntegrate(true);
                     task.setStatus(1);
-                    task.setUserId(username);
-                    task.setRunTime(new Date());
-                    task.setPermission("private");
-                    taskService.save(task);
+                    integratedTaskDao.save(task);
                     return ResultUtils.success(taskId);
                 }
             }

@@ -2,7 +2,6 @@ package njgis.opengms.portal.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.google.gson.JsonObject;
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
@@ -283,26 +282,26 @@ public class ComputableModelService {
             //类
             JSONArray classResult = new JSONArray();
 
-            List<String> classifications = modelInfo.getClassifications();
-            if (classifications != null) {
-                for (int i = 0; i < classifications.size(); i++) {
-
-                    JSONArray array = new JSONArray();
-                    String classId = classifications.get(i);
-
-                    do {
-                        Classification classification = classificationService.getByOid(classId);
-                        array.add(classification.getNameEn());
-                        classId = classification.getParentId();
-                    } while (classId != null);
-
-                    JSONArray array1 = new JSONArray();
-                    for (int j = array.size() - 1; j >= 0; j--) {
-                        array1.add(array.getString(j));
-                    }
-                    classResult.add(array1);
-                }
-            }
+//            List<String> classifications = modelInfo.getClassifications();
+//            if (classifications != null) {
+//                for (int i = 0; i < classifications.size(); i++) {
+//
+//                    JSONArray array = new JSONArray();
+//                    String classId = classifications.get(i);
+//
+//                    do {
+//                        Classification classification = classification2Service.getByOid(classId);
+//                        array.add(classification.getNameEn());
+//                        classId = classification.getParentId();
+//                    } while (classId != null);
+//
+//                    JSONArray array1 = new JSONArray();
+//                    for (int j = array.size() - 1; j >= 0; j--) {
+//                        array1.add(array.getString(j));
+//                    }
+//                    classResult.add(array1);
+//                }
+//            }
 
             //时间
             Date date = modelInfo.getCreateTime();
@@ -378,7 +377,7 @@ public class ComputableModelService {
             modelAndView.setViewName("computable_model");
 
             modelAndView.addObject("modelInfo", modelInfo);
-            modelAndView.addObject("classifications", classResult);
+//            modelAndView.addObject("classifications", classResult);
             modelAndView.addObject("date", dateResult);
             modelAndView.addObject("year", calendar.get(Calendar.YEAR));
             modelAndView.addObject("user", userJson);
@@ -404,6 +403,7 @@ public class ComputableModelService {
 
 
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println(e.getMessage());
             throw new MyException(e.getMessage());
         }
@@ -425,7 +425,7 @@ public class ComputableModelService {
         RestTemplate restTemplate = new RestTemplate();
         JSONObject result = restTemplate.getForObject(url,JSONObject.class);
         if(result.getIntValue("code")==-1){
-            throw new MyException("远程服务出错");
+            return false;
         }
         if(result.getJSONObject("data")!=null){
             return true;
@@ -463,37 +463,42 @@ public class ComputableModelService {
         JSONObject jsonObject = new JSONObject();
         if(computableModel.getRelateModelItem()!=null) {
             ModelItem modelItem=modelItemDao.findFirstByOid(computableModel.getRelateModelItem());
-            List<String> relatedDataItem = modelItem.getRelatedData();
-            if(relatedDataItem!=null) {
-                int page = computableModelFindDTO.getPage();
-                int pageSize = computableModelFindDTO.getPageSize();
+            try{
+                List<String> relatedDataItem = modelItem.getRelatedData();
+                if(relatedDataItem!=null) {
+                    int page = computableModelFindDTO.getPage();
+                    int pageSize = computableModelFindDTO.getPageSize();
 
-                JSONArray jsonArray = new JSONArray();
-                for (int i = page * pageSize; i < relatedDataItem.size(); i++) {
-                    DataItem dataItem = dataItemDao.findFirstById(relatedDataItem.get(i));
+                    JSONArray jsonArray = new JSONArray();
+                    for (int i = page * pageSize; i < relatedDataItem.size(); i++) {
+                        DataItem dataItem = dataItemDao.findFirstById(relatedDataItem.get(i));
 
-                    JSONObject obj = new JSONObject();
-                    obj.put("name", dataItem.getName());
-                    obj.put("id", dataItem.getId());
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                    obj.put("createTime", simpleDateFormat.format(dataItem.getCreateTime()));
-                    obj.put("description", dataItem.getDescription());
-                    obj.put("contentType", dataItem.getContentType());
-                    obj.put("url", dataItem.getReference());
-                    obj.put("dataList", dataItem.getDataList());
-                    JSONObject author = new JSONObject();
-                    User user = userDao.findFirstByOid(dataItem.getAuthor());
-                    author.put("name", user.getName());
-                    author.put("oid", user.getOid());
-                    obj.put("author", author);
+                        JSONObject obj = new JSONObject();
+                        obj.put("name", dataItem.getName());
+                        obj.put("id", dataItem.getId());
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                        obj.put("createTime", simpleDateFormat.format(dataItem.getCreateTime()));
+                        obj.put("description", dataItem.getDescription());
+                        obj.put("contentType", dataItem.getContentType());
+                        obj.put("url", dataItem.getReference());
+                        obj.put("dataList", dataItem.getDataList());
+                        JSONObject author = new JSONObject();
+                        User user = userDao.findFirstByOid(dataItem.getAuthor());
+                        author.put("name", user.getName());
+                        author.put("oid", user.getOid());
+                        obj.put("author", author);
 
-                    jsonArray.add(obj);
-                    if (jsonArray.size() == pageSize)
-                        break;
+                        jsonArray.add(obj);
+                        if (jsonArray.size() == pageSize)
+                            break;
+                    }
+                    jsonObject.put("list", jsonArray);
+                    jsonObject.put("total", relatedDataItem.size());
                 }
-                jsonObject.put("list", jsonArray);
-                jsonObject.put("total", relatedDataItem.size());
+            }catch (Exception e){
+
             }
+
         }
         return jsonObject;
     }
@@ -821,6 +826,7 @@ public class ComputableModelService {
                     }
                     //End
                     computableModel.setMdlJson(mdlJson);
+                    computableModel.setDeploy(true);
                 }
 
                 computableModel.setMd5(md5);
@@ -1606,10 +1612,29 @@ public class ComputableModelService {
         Pageable pageable = PageRequest.of(page, size, sort);
 
         Page<ComputableModel> computableModelPage = computableModelDao.findAllByDeployAndStatusInAndNameLikeIgnoreCase(true,itemStatusVisible,searchText,pageable);
+        List<ComputableModel> ComputableModelList = computableModelPage.getContent();
+        JSONArray j_computableModelArray = new JSONArray();
+
+        for(ComputableModel computableModel:ComputableModelList){
+            String author = computableModel.getAuthor();
+            User user = userService.findUserByUserName(computableModel.getAuthor());
+            JSONObject j_computableModel = new JSONObject();
+            j_computableModel.put("oid",computableModel.getOid());
+            j_computableModel.put("name",computableModel.getName());
+            j_computableModel.put("description",computableModel.getDescription());
+            j_computableModel.put("author",user.getName());
+            j_computableModel.put("authorId",user.getUserId());
+            j_computableModel.put("md5",computableModel.getMd5());
+            j_computableModel.put("mdl",computableModel.getMdl());
+            j_computableModel.put("mdlJson",computableModel.getMdlJson());
+            j_computableModel.put("createTime",computableModel.getCreateTime());
+            j_computableModel.put("lastModifyTime",computableModel.getLastModifyTime());
+            j_computableModelArray.add(j_computableModel);
+        }
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("total",computableModelPage.getTotalElements());
-        jsonObject.put("content",computableModelPage.getContent());
+        jsonObject.put("content",j_computableModelArray);
 
         return jsonObject;
     }
@@ -1657,5 +1682,23 @@ public class ComputableModelService {
 
     }
 
+    public JSONObject getDeployedModelByOid(String oid){
+        ComputableModel computableModel = computableModelDao.findFirstByOidAndDeploy(oid,true);
+
+        if(computableModel.getMdl()!=null){
+            try {
+                computableModel.setMdlJson(convertMdl(computableModel.getMdl()));
+            }catch (Exception e){
+
+            }
+        }
+        String userName = computableModel.getAuthor();
+        User user = userDao.findFirstByUserName(userName);
+        JSONObject j_comptblModel = (JSONObject) JSONObject.toJSON(computableModel);
+        j_comptblModel.put("authorName",user.getName());
+        j_comptblModel.put("authorId",user.getUserId());
+
+        return j_comptblModel;
+    }
 
 }

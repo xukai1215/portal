@@ -20,7 +20,7 @@ var vue = new Vue({
                     5:'Server Nodes',
                     6:'Community',
                     7:'Thematic Center',
-                    8:'User'
+                    8:'User Center'
                 }
                 window.location.href='/help/support/'+obj[index].replaceAll(" ","_");
                 // this.docIndex=index;
