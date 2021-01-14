@@ -3,15 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Data Applications Repository | OpenGMS</title>
+    <title>Data Method Repository | OpenGMS</title>
 
     <script src="/static/js/common/vue.min.js"></script>
     <script src="/static/js/common/vue-avatar.min.js"></script>
 
     <script src="/static/element-ui/index.js"></script>
     <link rel="stylesheet" href="/static/element-ui/theme-chalk/index.css">
-
-
 
     <link rel="stylesheet" href="/static/css/base/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/font-awesome/css/font-awesome.min.css">
@@ -42,9 +40,6 @@
         .el-collapse-item__header{
             font-size: 14px;
         }
-        .el-input__inner{
-            background-color: #f5f7fa;
-        }
     </style>
 
 </head>
@@ -61,22 +56,22 @@
         <div class="mainContent">
             <div class="el-row">
                 <div class="data-top">
-                    <h2 class="main-title">Data Methods</h2>
+                    <h2 class="main-title">Data Method Repository</h2>
                     <h4 class="sub-title">The repository of data methods (one-stop hub with public shared data methods resources)
                     </h4>
-<!--                    <button id="contributeBtn" class="btn btn-success btn-lg" style="font-size: 15px;margin:10px;" @click="contribute()">+ Contribute</button>-->
+                    <button id="contributeBtn"  class="btn btn-success btn-lg" style="font-size: 15px;margin-left:10px;vertical-align: baseline;" @click="contribute()">+ Contribute</button>
                 </div>
                 <hr>
             </div>
             <div class="el-col el-col-6 minScreen_maxWidth" style="margin-top:29px;">
                 <el-card class="box-card categoryList">
                     <div slot="header" class="clearfix text-center">
-                        <span style="font-size: 20px;color:#444">Data Categories</span>
+                        <span style="font-size: 20px;color:#444">Method Categories</span>
                     </div>
                     <div id="classification" style="padding-top: 0px">
-                        <div id="conversion" style="height: 40px; font-size:16px;margin-right: 12px" role="button"  tabindex="0" class="el-collapse-item__header" @click="chooseCate('Conversion',$event)"><i class="el-icon-crop" style="margin-right: 10px"></i>Conversion</div>
-                        <div style="height: 40px; font-size:16px;margin-right: 12px" role="button"  tabindex="0" class="el-collapse-item__header" @click="chooseCate('Processing',$event)"><i class="el-icon-crop" style="margin-right: 10px"></i>Processing</div>
-                        <div style="height: 40px; font-size:16px;margin-right: 12px" role="button"  tabindex="0" class="el-collapse-item__header" @click="chooseCate('Visualization',$event)"><i class="el-icon-crop" style="margin-right: 10px"></i>Visualization</div>
+                        <div id="conversion" style="padding-left:10px; font-size:16px;margin-right: 12px" role="button"  tabindex="0" class="el-collapse-item__header" @click="chooseCate('Conversion',$event)">Conversion</div>
+                        <div style="padding-left:10px; font-size:16px;margin-right: 12px" role="button"  tabindex="0" class="el-collapse-item__header" @click="chooseCate('Processing',$event)">Processing</div>
+                        <div style="padding-left:10px; font-size:16px;margin-right: 12px" role="button"  tabindex="0" class="el-collapse-item__header" @click="chooseCate('Visualization',$event)">Visualization</div>
 <!--                        <div style="height: 27px;margin-right: 10px" role="button"  tabindex="0" class="el-collapse-item__header" @click="chooseCate('all',$event)">All</div>-->
                     </div>
                 </el-card>
@@ -84,17 +79,19 @@
             <div class="el-col el-col-18 minScreen_maxWidth" >
                 <div class="searcherPanel">
                     <div class="searcherPanel">
-                        <el-select v-model="curQueryField" slot="prepend" style="width:120px;border-radius: 0;margin-right: 0;float: left;" @change="getData">
-                            <el-option
-                                    v-for="qf in queryFields"
-                                    :key="qf"
-                                    :label="qf"
-                                    :value="qf">
-                            </el-option>
-                        </el-select>
-                        <div class="searcherInputPanel" @keydown.enter="search()" style="width: calc(100% - 120px);margin-left: 0">
-                            <input id="searchBox" type="text" :placeholder="'Data Application ' + curQueryField + ' ...'" v-model="searchText">
-                            <button @click="search()"><i class="glyphicon glyphicon-search"></i> Search</button>
+
+                        <div class="searcherInputPanel" @keydown.enter="search()">
+                            <el-input v-model="searchText" placeholder="Query String..." style="border-radius: 0;">
+                                <el-select v-model="curQueryField" slot="prepend" style="color:#606266;width:120px;border-radius: 0;">
+                                    <el-option
+                                            v-for="qf in queryFields"
+                                            :key="qf"
+                                            :label="qf"
+                                            :value="qf">
+                                    </el-option>
+                                </el-select>
+                                <el-button slot="append" icon="el-icon-search" @click="search()" style="border-radius: 0;padding: 0;">Search</el-button>
+                            </el-input>
                         </div>
                     </div>
                 </div>

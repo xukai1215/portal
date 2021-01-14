@@ -200,7 +200,7 @@
 
         </div>
         <el-dialog title="Bind DataItem" :visible.sync="dataItemBindDialog" width="50%">
-            <el-input placeholder="Data item name..." v-model="pageOption.searchText" class="input-with-select"  @keyup.enter.native="searchDataItem()">
+            <el-input placeholder="Query String..." v-model="pageOption.searchText" class="input-with-select"  @keyup.enter.native="searchDataItem()">
                 <el-button slot="append" icon="el-icon-search" @click="searchDataItem()"></el-button>
             </el-input>
             <span slot="footer" class="dialog-footer">

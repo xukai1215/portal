@@ -28,10 +28,10 @@ public class HelpRestController {
     }
 
     @RequestMapping(value = "/demo/{item}", method = RequestMethod.GET)
-    public ModelAndView demoDocument(HttpServletRequest req) {
+    public ModelAndView demoDocument(@PathVariable("item") String item,HttpServletRequest req) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("demoDocument");
-        modelAndView.addObject("name","OpenGMS");
+        modelAndView.addObject("name",item.replace("_"," "));
 
         return modelAndView;
     }

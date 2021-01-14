@@ -82,7 +82,7 @@
                 <!--<el-button @click="window.location.href='/modelItem/repository1'">1</el-button>-->
                 <!--<el-button @click="window.location.href='/modelItem/repository2'">2</el-button>-->
                 <h4 class="sub-title">The repository of models (include tools, algorithms, packages, et al.)</h4>
-                <button id="contributeBtn" class="btn btn-success btn-lg" style="font-size: 15px;margin:10px;"
+                <button id="contributeBtn"  class="btn btn-success btn-lg" style="font-size: 15px;margin-left:10px;vertical-align: baseline;"
                         @click="contribute()">+ Contribute
                 </button>
                 <hr>
@@ -143,7 +143,7 @@
                 <div class="searcherPanel">
                     <div class="searcherInputPanel" @keydown.enter="search()">
                         <el-input v-model="searchText" placeholder="Query String..." style="border-radius: 0;">
-                            <el-select v-model="curQueryField" slot="prepend" style="width:120px;border-radius: 0;">
+                            <el-select v-model="curQueryField" slot="prepend" style="color:#606266;width:120px;border-radius: 0;">
                                 <el-option
                                         v-for="qf in queryFields"
                                         :key="qf"

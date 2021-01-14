@@ -41,9 +41,7 @@
         .el-collapse-item__header{
             font-size: 14px;
         }
-        .el-input__inner{
-            background-color: #f5f7fa;
-        }
+
     </style>
 
 </head>
@@ -63,7 +61,7 @@
                     <h2 class="main-title">Data Item Repository</h2>
                     <h4 class="sub-title">The repository of data (one-stop hub with public shared data resources)
                     </h4>
-                    <button id="contributeBtn" class="btn btn-success btn-lg" style="font-size: 15px;margin:10px;" @click="contribute()">+ Contribute</button>
+                    <button id="contributeBtn"  class="btn btn-success btn-lg" style="font-size: 15px;margin-left:10px;vertical-align: baseline;" @click="contribute()">+ Contribute</button>
                 </div>
                 <hr>
             </div>
@@ -117,19 +115,18 @@
             </div>
             <div class="el-col el-col-18 minScreen_maxWidth" >
                 <div class="searcherPanel">
-                    <el-select v-model="curQueryField" slot="prepend" style="width:120px;border-radius: 0;margin-right: 0;float: left;">
-                        <el-option
-                                v-for="qf in queryFields"
-                                :key="qf"
-                                :label="qf"
-                                :value="qf">
-                        </el-option>
-                    </el-select>
-                    <div class="searcherPanel">
-                        <div class="searcherInputPanel" @keydown.enter="search()" style="width: calc(100% - 120px);margin-left: 0">
-                            <input id="searchBox" type="text" :placeholder="'Data Item ' + curQueryField + ' ...'" v-model="searchText">
-                            <button @click="search()"><i class="glyphicon glyphicon-search"></i> Search</button>
-                        </div>
+                    <div class="searcherInputPanel" @keydown.enter="search()">
+                        <el-input v-model="searchText" placeholder="Query String..." style="border-radius: 0;">
+                            <el-select v-model="curQueryField" slot="prepend" style="color:#606266;width:120px;border-radius: 0;">
+                                <el-option
+                                        v-for="qf in queryFields"
+                                        :key="qf"
+                                        :label="qf"
+                                        :value="qf">
+                                </el-option>
+                            </el-select>
+                            <el-button slot="append" icon="el-icon-search" @click="search()" style="border-radius: 0;padding: 0;">Search</el-button>
+                        </el-input>
                     </div>
                 </div>
                 <div class="progressPanel">

@@ -1216,30 +1216,30 @@ public class PortalApplicationTests {
     public void adjustDate(){
         List<ModelItem> modelItemList = modelItemDao.findAll();
         for(ModelItem modelItem : modelItemList){
-            if(modelItem.getAuthor().equals("1565916523@qq.com")) {
+            if(modelItem.getAuthor().equals("yuesongshan")) {
 
-                Boolean pass = false;
-                String name = modelItem.getName();
-                for(int i = 0;i<name.length();i++) {
-                    if (isChinese(name.charAt(i))){
-                        pass = true;
-                    }
-                }
-                if(name.equals("陕北模型")||name.equals("新安江模型")){
-                    pass = false;
-                }
-                if(name.equals("FourOperations")){
-                    pass = true;
-                }
-
-                if(pass) continue;
+//                Boolean pass = false;
+//                String name = modelItem.getName();
+//                for(int i = 0;i<name.length();i++) {
+//                    if (isChinese(name.charAt(i))){
+//                        pass = true;
+//                    }
+//                }
+//                if(name.equals("陕北模型")||name.equals("新安江模型")){
+//                    pass = false;
+//                }
+//                if(name.equals("FourOperations")){
+//                    pass = true;
+//                }
+//
+//                if(pass) continue;
 
                 Date createDate = modelItem.getCreateTime();
                 int year = createDate.getYear();
-                if (year == 120) {
+                if (year == 120 || year == 121) {
                     Calendar c = Calendar.getInstance();
                     c.setTime(createDate);
-                    c.add(Calendar.MONTH, -6);
+                    c.add(Calendar.MONTH, -12);
                     createDate = c.getTime();
                     modelItem.setCreateTime(createDate);
                     modelItemDao.save(modelItem);
