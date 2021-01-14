@@ -18,5 +18,7 @@ public class ClassInfo {
     @Id
     String oid;
     String mcname;
+    //多级菜单子节点
+    List<ClassInfo> children;
     List<String> modelsoid;
 }
