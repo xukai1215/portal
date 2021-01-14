@@ -113,7 +113,7 @@ c<!DOCTYPE html>
                                                                             <div class="form-group">
                                                                                 <label for="nameInput"
                                                                                        class="col-sm-2 control-label"
-                                                                                       style="width: 110px;font-weight: bold">Theme Name:</label>
+                                                                                       style="width: 110px;font-weight: bold"><span class="star">* </span>Theme Name:</label>
                                                                                 <div class="col-sm-10">
                                                                                     <input type="text" class="form-control"
                                                                                            id="nameInput"/>
@@ -127,13 +127,24 @@ c<!DOCTYPE html>
                                                                                        class="col-sm-2 control-label"
                                                                                        style="width: 110px;font-weight: bold">Theme Image:</label>
                                                                                 <div class="col-sm-10">
-                                                                                    <img id="imgShow" src=""/>
-                                                                                    <div id="imgChange" class="cursorPointer" style="width: 72px">
+<!--                                                                                    <img id="imgShow" src=""/>-->
+<!--                                                                                    <div id="imgChange" class="cursorPointer" style="width: 72px">-->
+<!--                                                                                        <i class="fa fa-plus fa-5x"></i>-->
+<!--                                                                                    </div>-->
+<!--                                                                                    <input id="imgFile" type="file"-->
+<!--                                                                                           style="display: none"-->
+<!--                                                                                           accept="image/*"/>-->
+                                                                                    <img id="imgShow" style="display: inline" v-show="themeImg!=undefined&&themeImg!=''" :src="themeImg"/>
+                                                                                    <div id="imgMask" class="flexCenter" v-if="themeImg!=undefined&&themeImg!=''"
+                                                                                         style="position: absolute;width: 100px;height: 100px">
+                                                                                        <div class="fa fa-times imgDelete" @click="deleteImg"></div>
+                                                                                        <div class="fa fa-pencil imgEditBlock flexCenter" style="" @click="imgFile"></div>
+                                                                                    </div>
+                                                                                    <div v-if="themeImg==''||themeImg==undefined" class="cursorPointer loadImg" @click="imgFile">
                                                                                         <i class="fa fa-plus fa-5x"></i>
                                                                                     </div>
-                                                                                    <input id="imgFile" type="file"
-                                                                                           style="display: none"
-                                                                                           accept="image/*"/>
+                                                                                    <input type="file" id="imgOne" @change="preImg()"
+                                                                                           style="display: none" accept="image/*"/>
                                                                                 </div>
                                                                             </div>
                                                                         </div>

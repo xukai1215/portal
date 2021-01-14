@@ -86,7 +86,7 @@
                         <div class="logoPanel">
                         </div>
                         <div slot="header" class="clearfix text-center headerImg" style="position: relative;height: 20vh;padding-bottom: 0px">
-                            <img th:src="'/static'+${info.image}" id="header_image" style="border-radius: unset">
+                            <img th:src="'/static'+${info.image}" id="header_image" style="border-radius: unset;height: 80%;">
                             <div>
                                 <a class="themename_item" th:utext="${info.themename}" style="font-size: 24px;color:#444"></a>
                                 <el-input type="text" v-model="form.name" id="edit_themename" class="edit_themename" th:value="${info.themename}" style="display: none"></el-input>
@@ -178,7 +178,7 @@
                                 <span slot="title" id="maintainer">Maintainers</span>
                             </el-menu-item>
                         </el-menu>
-                        <div style="text-align: center">
+                        <div style="text-align: center;">
                             <el-button id="controlEditButton" type="primary" style="margin:20px;" @click="controlEdit">Enable editing</el-button>
                         </div>
                     </el-card>
