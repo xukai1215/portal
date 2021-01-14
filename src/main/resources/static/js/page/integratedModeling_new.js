@@ -12,6 +12,7 @@
 //
 //   format.js:{1.生成events,点击拖拽置入event,在refresh生成panel那里
 //              2.点击event查看event的详细信息
+//              3.修改graph的尺寸Format.prototype.changePageSize
 //
 //
 //   }
@@ -563,6 +564,8 @@ var vue = new Vue({
         drawerFold:false,
 
         integratedTaskXml:'',
+
+        singleDataConfigTitle:'',
     },
 
     computed:{
@@ -621,8 +624,8 @@ var vue = new Vue({
         handleDrawer(){
             if(this.drawerFold) {
                 this.drawerFold = !this.drawerFold
-                $('.drawerHandler').animate({left:210},90);
-                $('.itemSelector').animate({width:210},92);
+                $('.drawerHandler').animate({left:210},105);
+                $('.itemSelector').animate({width:210},107);
             }else{
                 this.drawerFold = !this.drawerFold
                 $('.drawerHandler').animate({left:0},40);
@@ -1029,6 +1032,7 @@ var vue = new Vue({
             invokeService.metaDetail = nodeEle.metaDetail
             this.invokeServiceSelect = invokeService
             this.invokeServiceDialog = false
+            this.dataMethodTableDialog = false
             this.addInvokeService();
         },
 
@@ -1063,6 +1067,14 @@ var vue = new Vue({
 
             this.addProcessingTools(this.configDataMethod,this.processingTools);
 
+            for(let input of dataProcessing.inputData){
+                this.addDataItem(input, dataProcessing.id)
+            }
+
+            for(let output of dataProcessing.outputData){
+                this.addDataItem(output, dataProcessing.id)
+            }
+
             var modelEditor = $("#ModelEditor")[0].contentWindow;
             modelEditor.ui.sidebar.addDataProcessToGraph(dataProcessing)//把这个模型action加入画布
         },
@@ -1091,6 +1103,7 @@ var vue = new Vue({
                     input.eventId = this.generateGUID()
                     input.response = true
                     input.eventType = 'response'
+                    input.eventName = input.name
                     dataProcessAction.inputData.push(input)
                 }
             } else {
@@ -1105,6 +1118,7 @@ var vue = new Vue({
                     param.response = true
                     param.param = true
                     param.eventType = 'response'
+                    param.eventName = param.name
                     dataProcessAction.params.push(param)
                 }
             }
@@ -1114,6 +1128,7 @@ var vue = new Vue({
                     output.eventId = this.generateGUID()
                     output.response = false
                     output.eventType = 'noresponse'
+                    output.eventName = output.name
                     dataProcessAction.outputData.push(output)
                 }
             } else {
@@ -1336,6 +1351,7 @@ var vue = new Vue({
                     return [i,this.dataProcessings[i]]
                 }
             }
+            return [undefined,undefined]
         },
 
         deleteModel(modelActionId,md5){
@@ -1640,8 +1656,125 @@ var vue = new Vue({
             }
 
             this.eventConfigDialog = true
+            this.singleDataConfigTitle = 'Input Data Config'
         },
 
+        dataItemConfig(dataItem){
+            this.configEvent = []
+
+            for(let modelAction of this.modelActions){
+                if(modelAction.id==dataItem.parentId){
+                    for(let input of modelAction.inputData){
+                        if(input.eventId === dataItem.eventId){
+                            this.configEvent[0] = input
+                            break;
+                        }
+                    }
+                }
+            }
+
+            for(let modelAction of this.modelActions){
+                if(modelAction.id==dataItem.parentId){
+                    for(let output of modelAction.outputData){
+                        if(output.eventId === dataItem.eventId){
+                            this.configEvent[0] = output
+                            break;
+                        }
+                    }
+                }
+            }
+
+            for(let dataProcessing of this.dataProcessings){
+                if(dataProcessing.id==dataItem.parentId){
+                    for(let input of dataProcessing.inputData){
+                        if(input.eventId === dataItem.eventId){
+                            this.configEvent[0] = input
+                            break;
+                        }
+                    }
+                }
+            }
+
+            for(let dataProcessing of this.dataProcessings){
+                if(dataProcessing.id==dataItem.parentId){
+                    for(let output of dataProcessing.outputData){
+                        if(output.eventId === dataItem.eventId){
+                            this.configEvent[0] = output
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if(dataItem.eventType=='response'){
+                this.singleDataConfigTitle = 'Input Data Config'
+            }else{
+                this.singleDataConfigTitle = 'Output Data Config'
+            }
+
+            this.eventConfigDialog = true
+        },
+
+        checkDataLoaded(dataItem){
+            if(dataItem.eventType=='response'){
+                for(let modelAction of this.modelActions){
+                    if(modelAction.id==dataItem.parentId){
+                        for(let input of modelAction.inputData){
+                            if(input.eventId==dataItem.eventId){
+                                if(input.value!=undefined&&input.value!=''){
+                                    return 'loaded'
+                                }else if((input.link!=undefined&&input.link!='')||input.type=='mixed'){
+                                    return 'linked'
+                                }
+                            }
+                        }
+                    }
+                }
+                for(let dataProcessing of this.dataProcessings){
+                    if(dataProcessing.id==dataItem.parentId){
+                        for(let input of dataProcessing.inputData){
+                            if(input.eventId==dataItem.eventId){
+                                if(input.value!=undefined&&input.value!=''){
+                                    return 'loaded'
+                                }else if((input.link!=undefined&&input.link!='')||input.type=='mixed'){
+                                    return 'linked'
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+
+            if(dataItem.eventType=='noresponse'){
+                for(let modelAction of this.modelActions){
+                    if(modelAction.id==dataItem.parentId){
+                        for(let output of modelAction.outputData){
+                            if(output.eventId==dataItem.eventId){
+                                if(output.value!=undefined&&output.value!=''){
+                                    return 'runned'
+                                }
+                            }
+
+                        }
+                    }
+                }
+                for (let dataProcessing of this.dataProcessings) {
+                    if (dataProcessing.id == dataItem.parentId) {
+                        for (let output of dataProcessing.outputData) {
+                            if (output.eventId === dataItem.eventId) {
+                                if (output.value != undefined && output.value != '') {
+                                    return 'runned'
+                                }
+                            }
+                        }
+                    }
+            }
+            }
+
+
+            return false
+        },
         //旧版本运行方式
         // execute() {
         //
@@ -2048,10 +2181,11 @@ var vue = new Vue({
                                 }
                                 xml += " type='" + this.dataProcessings[i].inputData[j].type + "'/>\n";
                                 xml += "\t\t\t\t</DataConfiguration>\n"
-                            } else if(this.dataProcessings[i].inputData[j].optional==false&&type === 'execute'){
-                                this.$alert('Please check input of the dataProcessing '+this.dataProcessings[i].name)
-                                return null;
                             }
+                            // else if(this.dataProcessings[i].inputData[j].optional==false&&type === 'execute'){
+                            //     this.$alert('Please check input of the dataProcessing '+this.dataProcessings[i].name)
+                            //     return null;
+                            // }
                         }
                         if(this.dataProcessings[i].params!=null&&this.dataProcessings[i].params!=undefined){
                             for (let j = 0;j < this.dataProcessings[i].params.length;j++ ){
@@ -2217,6 +2351,7 @@ var vue = new Vue({
                     this.updateMxgraphNode(taskInfo.modelActionList)
                     this.updateMxgraphNode(taskInfo.dataProcessingList)
                     this.updateTaskoutput(taskInfo)
+                    this.updateTaskDataItems(taskInfo)
                     if (status == 0) {
                         console.log(status);
                     } else if (status == -1) {
@@ -2341,6 +2476,32 @@ var vue = new Vue({
             }
 
 
+        },
+
+        updateTaskDataItems(task){
+            for(let dataItem of this.dataItems){
+                if(dataItem.eventType=='noresponse'){
+                    for(let modelAction of this.modelActions){
+                        if(modelAction.id==dataItem.parentId){
+                            for(let output of modelAction.outputData){
+                                if(output.eventId==dataItem.eventId){
+                                    dataItem.value = output.value
+                                }
+
+                            }
+                        }
+                    }
+                    for (let dataProcessing of this.dataProcessings) {
+                        if (dataProcessing.id == dataItem.parentId) {
+                            for (let output of dataProcessing.outputData) {
+                                if (output.eventId === dataItem.eventId) {
+                                    dataItem.value = output.value
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         },
 
         unFoldMultiOutput(modelAction,outputData){
@@ -2805,6 +2966,38 @@ var vue = new Vue({
             })
         },
 
+        downloadDataItem(dataItem){
+            if(dataItem.value!=undefined&&dataItem.value!=''){
+                this.download(dataItem)
+            }else{
+                if(dataItem.eventType=='noresponse') {
+                    for (let modelAction of this.modelActions) {
+                        if (modelAction.id == dataItem.parentId) {
+                            for (let output of modelAction.outputData) {
+                                if (output.eventId === dataItem.eventId) {
+                                    if (output.value != undefined && output.value != '') {
+                                        this.download(output)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    for (let dataProcessing of this.dataProcessings) {
+                        if (dataProcessing.id == dataItem.parentId) {
+                            for (let output of dataProcessing.outputData) {
+                                if (output.eventId === dataItem.eventId) {
+                                    if (output.value != undefined && output.value != '') {
+                                        this.download(output)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+        },
+
         download(event) {
             //下载接口
             if (event.value != undefined) {
@@ -3013,9 +3206,9 @@ var vue = new Vue({
                 }
             }
 
-            this.$nextTick(()=>{
-                this.iframeWindow.setCXml(task.mxGraph);
-            })
+
+            this.iframeWindow.setCXml(task.mxGraph);
+
             this.taskInfoVisible = false
             this.currentTask = task
             this.activeTask = 'currentTask'
@@ -3162,11 +3355,21 @@ var vue = new Vue({
         },
 
         deleteDataLink(edgeCell){
-            let targetCell = edgeCell.target//edge的两端是event
-            let sourceCell = edgeCell.source
+            let targetId
+            let sourceId
+
+            if(edgeCell.edge!=undefined){
+                let targetCell = edgeCell.target//edge的两端是event
+                let sourceCell = edgeCell.source
+                targetId = targetCell.eid
+                sourceId = sourceCell.eid
+            }else{
+                targetId = edgeCell.target
+                sourceId = edgeCell.source
+            }
 
             for(let i = this.dataLinks.length-1;i>=0;i--){
-                if( this.dataLinks[i].targetActionId === targetCell.frontId&& this.dataLinks[i].sourceActionId === sourceCell.frontId){
+                if( this.dataLinks[i].target === targetId&& this.dataLinks[i].source === sourceId){
                     this.dataLinks.splice(i,1)
                     break;
                 }
@@ -3438,6 +3641,7 @@ var vue = new Vue({
 
             for(let i=this.dataProcessings.length-1;i>=0;i--){//从尾部开始寻找，在目标之后的模型任务step都要-1
                 if(this.dataProcessings[i][tagName]===tag&&this.dataProcessings[i].id === dataProcessingId){
+                    this.deleteRelatedDataItem(this.dataProcessings[i])
                     this.dataProcessings.splice(i,1)
                     break
                 }else{
@@ -3715,52 +3919,59 @@ var vue = new Vue({
             let targetAction = targetActionInfo[1]
             let parentId = '';
 
-            let dataItem = {}
+            //拖入时检查重复
+            let data = this.findTargetItem(dataItemCell.eid,'eventId',this.dataItems)
+            if(data == null) {
+                let dataItem = {}
 
-            for(let input of targetAction.inputData){
-                if(input.eventId == dataItemCell.eid){
-                    dataItem.parentId = dataItemCell.frontId
-                    dataItem.link = dataItemCell.link
-                    dataItem.type = dataItemCell.type
-                    dataItem.linkEvent = dataItemCell.linkEvent
-                    dataItem.eventId = input.eventId
-                    dataItem.eventName = input.eventName
-                    dataItem.name = input.name
-                    dataItem.eventType = input.eventType
-                    dataItem.optional = input.optional
-                    dataItem.response = input.response
-                    dataItem.value = input.response
+                for(let input of targetAction.inputData){
+                    if(input.eventId == dataItemCell.eid){
+                        dataItem.parentId = dataItemCell.frontId
+                        dataItem.link = dataItemCell.link
+                        dataItem.type = dataItemCell.type
+                        dataItem.linkEvent = dataItemCell.linkEvent
+                        dataItem.eventId = input.eventId
+                        dataItem.eventName = input.eventName
+                        dataItem.name = input.name
+                        dataItem.eventType = input.eventType
+                        dataItem.optional = input.optional
+                        dataItem.response = input.response
+                        dataItem.value = input.response
 
-                    break
-                }
-            }
-            if(parentId==''){
-                for(let output of targetAction.outputData){
-                    if(output.eventId == dataItemCell.eid){
-                        output.parentId = dataItemCell.frontId
-                        output.link = dataItemCell.link
-                        output.type = dataItemCell.type
-                        output.linkEvent = dataItemCell.linkEvent
-                        dataItem = output
                         break
                     }
                 }
+                if(parentId==''){
+                    for(let output of targetAction.outputData){
+                        if(output.eventId == dataItemCell.eid){
+                            output.parentId = dataItemCell.frontId
+                            output.link = dataItemCell.link
+                            output.type = dataItemCell.type
+                            output.linkEvent = dataItemCell.linkEvent
+                            dataItem = output
+                            break
+                        }
+                    }
+                }
+
+                parentId = dataItem.parentId
+                if(this.dataItemList[parentId]==undefined){
+                    let list = []
+                    list.push(dataItem)
+                    Vue.set(this.dataItemList,parentId,list)
+                }else{
+                    let list = this.dataItemList[parentId]
+                    list.push(dataItem);
+                    Vue.set(this.dataItemList,parentId,list)
+                }
+
+                this.dataItems.push(dataItem)
+
+                this.addColorPool(parentId)
             }
 
-            parentId = dataItem.parentId
-            if(this.dataItemList[parentId]==undefined){
-                let list = []
-                list.push(dataItem)
-                Vue.set(this.dataItemList,parentId,list)
-            }else{
-                let list = this.dataItemList[parentId]
-                list.push(dataItem);
-                Vue.set(this.dataItemList,parentId,list)
-            }
 
-            this.dataItems.push(dataItem)
 
-            this.addColorPool(parentId)
         },
 
         addDataItem(data,parentId){
@@ -3795,6 +4006,57 @@ var vue = new Vue({
             this.addColorPool(parentId)
         },
 
+        deleteDataItemInfo(dataItemId,parentId){
+            // let modelDataItems = this.dataItemList[parentId]
+            // for(let i=modelDataItems.length-1;i>=0;i--){
+            //     if(modelDataItems[i].eventId == dataItemId){
+            //         modelDataItems.splice(i,1);
+            //         if(modelDataItems.length>0){
+            //             Vue.set(this.dataItemList,parentId,modelDataItems)
+            //         }else{
+            //             delete this.dataItemList[parentId]
+            //         }
+            //     }
+            // }
+
+            for(let i=this.dataItems.length-1;i>=0;i--){
+                if(this.dataItems[i].eventId == dataItemId ){
+                    this.dataItems[i].value='';
+                    this.dataItems[i].fileName='';
+                    this.dataItems[i].suffix='';
+                }
+            }
+
+            //把所属action中的data数值重置
+            let targetActionInfo = this.findTargetModelAction(parentId)
+
+            let targetAction = targetActionInfo[1]
+            for(let input of targetAction.inputData){
+                if(input.eventId == dataItemId){
+                    input.value=''
+                    input.link=''
+                    input.type=''
+                    input.linkEvent=''
+                    input.fileName=''
+                    input.suffix=''
+
+                    break
+                }
+            }
+
+            this.deleteRelatedLink(dataItemId)
+        },
+
+        deleteRelatedLink(dataItemId){
+            for(let dataLink of this.dataLinks){
+                if(dataLink.target===dataItemId){
+                    this.deleteDataLink(dataLink)
+                }else if(dataLink.source===dataItemId){
+                    this.deleteDataLink(dataLink)
+                }
+            }
+        },
+
         deleteDataItem(dataItemId,parentId){
             let modelDataItems = this.dataItemList[parentId]
             for(let i=modelDataItems.length-1;i>=0;i--){
@@ -3809,7 +4071,7 @@ var vue = new Vue({
             }
 
             for(let i=this.dataItems.length-1;i>=0;i--){
-                if(this.dataItems.eventId == dataItemId ){
+                if(this.dataItems[i].eventId == dataItemId ){
                     this.dataItems.splice(i,1);
                 }
             }
@@ -3829,6 +4091,14 @@ var vue = new Vue({
                 }
             }
 
+
+        },
+
+        getParentName(parentId){
+            let modelAction = this.findTargetModelAction(parentId)[1]
+            if(modelAction != undefined){
+                return modelAction.name
+            }
 
         },
 
@@ -3905,6 +4175,7 @@ var vue = new Vue({
             // for(let card of cards){
             //     card.classList.remove('lightingDataItem')
             // }
+            this.lightDataLinks = []
             setTimeout(()=>{
                 this.linkedDataItems = []
 
@@ -4443,6 +4714,7 @@ var vue = new Vue({
         window.refreshConditionInfo = this.refreshConditionInfo;
         window.dragIntoDataItem = this.dragIntoDataItem;
         window.deleteDataItem = this.deleteDataItem;
+        window.deleteDataItemInfo = this.deleteDataItemInfo;
         window.wzhloaded = this.wzhloaded;
         //aaa
         let taskOid = window.localStorage.getItem('taskOid')
@@ -4451,7 +4723,7 @@ var vue = new Vue({
             let i = 0
             setTimeout(()=>{
                 this.loadTaskByOid(taskOid)
-            },550)
+            },850)
 
 
         }
