@@ -12,6 +12,7 @@
 //
 //   format.js:{1.生成events,点击拖拽置入event,在refresh生成panel那里
 //              2.点击event查看event的详细信息
+//              3.修改graph的尺寸Format.prototype.changePageSize
 //
 //
 //   }
@@ -1634,6 +1635,34 @@ var vue = new Vue({
                                 this.configEvent[0].eventDesc = input.description
                                 break;
                             }
+                        }
+                    }
+                }
+            }
+
+            this.eventConfigDialog = true
+        },
+
+        dataItemConfig(dataItem){
+            this.configEvent = []
+
+            for(let modelAction of this.modelActions){
+                if(modelAction.id==dataItem.parentId){
+                    for(let input of modelAction.inputData){
+                        if(input.eventId === dataItem.eventId){
+                            this.configEvent[0] = input
+                            break;
+                        }
+                    }
+                }
+            }
+
+            for(let modelAction of this.modelActions){
+                if(modelAction.id==dataItem.parentId){
+                    for(let output of modelAction.outputData){
+                        if(output.eventId === dataItem.eventId){
+                            this.configEvent[0] = output
+                            break;
                         }
                     }
                 }
@@ -3715,52 +3744,59 @@ var vue = new Vue({
             let targetAction = targetActionInfo[1]
             let parentId = '';
 
-            let dataItem = {}
+            //拖入时检查重复
+            let data = this.findTargetItem(dataItemCell.eid,'eventId',this.dataItems)
+            if(data == null) {
+                let dataItem = {}
 
-            for(let input of targetAction.inputData){
-                if(input.eventId == dataItemCell.eid){
-                    dataItem.parentId = dataItemCell.frontId
-                    dataItem.link = dataItemCell.link
-                    dataItem.type = dataItemCell.type
-                    dataItem.linkEvent = dataItemCell.linkEvent
-                    dataItem.eventId = input.eventId
-                    dataItem.eventName = input.eventName
-                    dataItem.name = input.name
-                    dataItem.eventType = input.eventType
-                    dataItem.optional = input.optional
-                    dataItem.response = input.response
-                    dataItem.value = input.response
+                for(let input of targetAction.inputData){
+                    if(input.eventId == dataItemCell.eid){
+                        dataItem.parentId = dataItemCell.frontId
+                        dataItem.link = dataItemCell.link
+                        dataItem.type = dataItemCell.type
+                        dataItem.linkEvent = dataItemCell.linkEvent
+                        dataItem.eventId = input.eventId
+                        dataItem.eventName = input.eventName
+                        dataItem.name = input.name
+                        dataItem.eventType = input.eventType
+                        dataItem.optional = input.optional
+                        dataItem.response = input.response
+                        dataItem.value = input.response
 
-                    break
-                }
-            }
-            if(parentId==''){
-                for(let output of targetAction.outputData){
-                    if(output.eventId == dataItemCell.eid){
-                        output.parentId = dataItemCell.frontId
-                        output.link = dataItemCell.link
-                        output.type = dataItemCell.type
-                        output.linkEvent = dataItemCell.linkEvent
-                        dataItem = output
                         break
                     }
                 }
+                if(parentId==''){
+                    for(let output of targetAction.outputData){
+                        if(output.eventId == dataItemCell.eid){
+                            output.parentId = dataItemCell.frontId
+                            output.link = dataItemCell.link
+                            output.type = dataItemCell.type
+                            output.linkEvent = dataItemCell.linkEvent
+                            dataItem = output
+                            break
+                        }
+                    }
+                }
+
+                parentId = dataItem.parentId
+                if(this.dataItemList[parentId]==undefined){
+                    let list = []
+                    list.push(dataItem)
+                    Vue.set(this.dataItemList,parentId,list)
+                }else{
+                    let list = this.dataItemList[parentId]
+                    list.push(dataItem);
+                    Vue.set(this.dataItemList,parentId,list)
+                }
+
+                this.dataItems.push(dataItem)
+
+                this.addColorPool(parentId)
             }
 
-            parentId = dataItem.parentId
-            if(this.dataItemList[parentId]==undefined){
-                let list = []
-                list.push(dataItem)
-                Vue.set(this.dataItemList,parentId,list)
-            }else{
-                let list = this.dataItemList[parentId]
-                list.push(dataItem);
-                Vue.set(this.dataItemList,parentId,list)
-            }
 
-            this.dataItems.push(dataItem)
 
-            this.addColorPool(parentId)
         },
 
         addDataItem(data,parentId){

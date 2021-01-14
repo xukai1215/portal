@@ -3783,7 +3783,10 @@ Sidebar.prototype.addGeneralCellToGraph = function (text,frontId,type) {
 
   hasSearchedTermsComputableModel.push(model)
   var pt = graph.getFreeInsertPoint();
-  var cell = graph.insertVertex(parent, null, text, pt.x+180, pt.y+180 , 100, 60, style[type]);
+
+  let x = pt.x>250?pt.x:250
+
+  var cell = graph.insertVertex(parent, null, text, x, pt.y , 100, 60, style[type]);
 
   if(type == 'condition'){
     cell.frontId = frontId
@@ -3814,7 +3817,10 @@ Sidebar.prototype.addModelToGraph = function (model) {
 
   hasSearchedTermsComputableModel.push(model)
   var pt = graph.getFreeInsertPoint();
-  var cell = graph.insertVertex(parent, null, model.name, pt.x+180, pt.y+180, 200, 50, "rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#5bbbf2;fillColor=#5bbbf2;fontSize=14");
+
+  let x = pt.x>250?pt.x:250
+
+  var cell = graph.insertVertex(parent, null, model.name, x, pt.y+150, 200, 50, "rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#5bbbf2;fillColor=#5bbbf2;fontSize=14");
 
   cell.frontId = model.id;
   cell.name = model.name;
@@ -3837,7 +3843,10 @@ Sidebar.prototype.addDataProcessToGraph = function (info) {
 
   var parent = graph.getDefaultParent();
   var pt = graph.getFreeInsertPoint();
-  var cell = graph.insertVertex(parent, null, model.name, pt.x+180, pt.y+180, 200, 50, "rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#f6aede;fillColor=#f6aede;fontSize=14");
+
+  let x = pt.x>250?pt.x:250
+
+  var cell = graph.insertVertex(parent, null, model.name, x, pt.y+150, 200, 50, "rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#f6aede;fillColor=#f6aede;fontSize=14");
 
   // var a = this.createStateVertexTemplate('rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#006600;fillColor=#EEFFEE;',
   //     210, 50, modelName, 'Computable Model', null, null, modelName, model);

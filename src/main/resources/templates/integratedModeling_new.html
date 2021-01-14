@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="/static/css/base/universal.css">
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css"/>
-    <link rel="stylesheet" href="/static/css/base/style.css">
+<!--    <link rel="stylesheet" href="/static/css/base/style.css">-->
     <link rel="stylesheet" href="/static/css/common/fluent/fluent.css">
     <link rel="stylesheet" href="/static/css/common/wzhStyle.css">
     <link rel="stylesheet" href="/static/css/common/wzhFlexContainer.css">
@@ -102,8 +102,8 @@
                         <!--                   @click="executeVisible=true">Execution-->
                         <!--        </el-button>-->
                         <el-button type="primary" size="small" style="margin:5px;font-weight: 700;" @click="buildNewTask">Build New Task</el-button>
-                        <el-button type="primary" size="small" style="margin:5px;font-weight: 700;" @click="loadDeployedModelClick">Select Model</el-button>
-                        <el-button type="primary" size="small" style="margin:5px;font-weight: 700;" @click="loadDeployedDataMethodClick">Select Data Method</el-button>
+                        <el-button type="primary" size="small" plain style="margin:5px;font-weight: 700;" @click="loadDeployedModelClick">Select Model</el-button>
+                        <el-button type="primary" size="small" plain style="margin:5px;font-weight: 700;" @click="loadDeployedDataMethodClick">Select Data Method</el-button>
                         <el-button type="success" size="small" style="margin:5px;font-weight: 700;" @click="generateXml()">XML</el-button>
                         <el-button type="success" size="small" style="margin:5px;font-weight: 700;" @click="taskConfigure(2)">
                             <i class="fa fa-play-circle" aria-hidden="true"></i> Execute</el-button>
@@ -401,7 +401,7 @@
         <div>
             <div class="clearfix" style="margin: 0px 5px 10px;background: #f5f5f5;box-shadow:0 3.2px 7.2px 0 rgba(0,0,0,0.141), 0 0.6px 1.8px 0 rgba(0, 0, 0, .112)">
                 <h4 style="text-align: center;margin-top: 5px">Data Bus</h4>
-                <div v-for="dataLine in dataLines" class="dataBusContainer flexAlignCenter wzhScrollbar" style="width: 100%;height: 150px">
+                <div v-for="dataLine in dataLines" class="dataBusContainer flexAlignCenter wzhScrollbar" style="width: 100%;height: 150px;z-index: 99;">
                     <!--                    <div class="innerBorder" v-if="Object.keys(dataItemList).length!=0"></div>-->
                     <div class="acrylicMask" ref="acrylicMask" @click="flatContainer($event)"></div>
                     <div class="dataFlowRoad" ref="dataFlowRoad">
@@ -418,6 +418,25 @@
                                 <a class="w100" >
                                     <p class="textEllipsis cursorPointer" :style="{color:getColor(dataItem.parentId)}" @click="riseDataItem(dataItem,i)">{{dataItem.eventName==undefined?dataItem.name:dataItem.eventName}}</p>
                                 </a>
+                                <el-tooltip class="item" effect="dark" :content="Bottom Left 提示文字" placement="bottom-start">
+                                    <p v-if="dataItem.eventType==='response'&&!dataItem.optional"><span style="color: #ff0000">*</span> required input</p>
+                                    <p v-if="dataItem.eventType==='response'&&dataItem.optional">optional input</p>
+                                    <p v-if="dataItem.eventType==='noresponse'">output</p>
+                                </el-tooltip>
+                                <p></p>
+                                <el-button style="float: right"
+                                           v-if="dataItem.eventType==='response'"
+                                           size="mini" type="primary" plain round @click="dataItemConfig(dataItem)">
+                                    config
+                                </el-button>
+                                <el-button circle type="success" size="mini" icon="el-icon-check" v-if="dataItem.eventType==='noresponse'">
+
+                                </el-button>
+                                <el-button style="float: right"
+                                           v-if="dataItem.eventType==='noresponse'&&dataItem.value!=undefined&&dataItem.value!=''"
+                                           size="mini" type="success" plain round @click="dataItemConfig(dataItem)">
+                                    check output
+                                </el-button>
                             </div>
                         </div>
                     </div>
