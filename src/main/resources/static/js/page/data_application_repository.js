@@ -19,7 +19,7 @@ var data_items = new Vue({
                 pageSize: 10,
                 asc: false,
                 sortField:"createTime",
-                method:'conversion',
+                method:'Conversion',
                 searchText:'',
                 curQueryField:'',
             },
@@ -125,7 +125,7 @@ var data_items = new Vue({
         },
         //文本检索
         search(){
-            this.searchText=$('#searchBox').val();
+            // this.searchText=$('#searchBox').val();
             this.loading=true;
             var that=this
             that.progressBar=true
@@ -148,7 +148,8 @@ var data_items = new Vue({
         chooseCate(item, event){
             this.changeCateColor()
             $(event.target).css('background-color','#d9edf7')
-            this.method = item.toLowerCase()
+            this.currentPage = 1
+            this.method = item;
             this.datacount=-1
             this.loading=true
             this.progressBar=true;

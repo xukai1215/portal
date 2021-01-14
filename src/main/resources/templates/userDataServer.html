@@ -119,7 +119,7 @@
                                                         <el-table-column
                                                                 label="Option">
                                                             <template slot-scope="scope">
-<!--                                                                <el-button size="mini" round @click="download(scope.row)" style="margin-right: 2px"><span><i class="fa fa-arrow-down"></i></span>Download</el-button>-->
+                                                                <el-button size="mini" round @click="download(scope.row)" style="margin-right: 2px"><span><i class="fa fa-arrow-down"></i></span>Download</el-button>
                                                                 <el-button size="mini" round type="success" @click="bindDataItemList(scope.row)">Bind Item</el-button>
                                                             </template>
                                                         </el-table-column>
@@ -200,7 +200,7 @@
 
         </div>
         <el-dialog title="Bind DataItem" :visible.sync="dataItemBindDialog" width="50%">
-            <el-input placeholder="Data item name..." v-model="pageOption.searchText" class="input-with-select"  @keyup.enter.native="searchDataItem()">
+            <el-input placeholder="Query String..." v-model="pageOption.searchText" class="input-with-select"  @keyup.enter.native="searchDataItem()">
                 <el-button slot="append" icon="el-icon-search" @click="searchDataItem()"></el-button>
             </el-input>
             <span slot="footer" class="dialog-footer">

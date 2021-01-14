@@ -195,8 +195,8 @@ var createTheme = Vue.extend({
         }
     },
     methods: {
-        test(node){
-            console.log(node)
+        test(){
+            console.log(this.modelClassInfos)
         },
         findFirstChildObj(parent){
             var node
@@ -584,9 +584,9 @@ var createTheme = Vue.extend({
 
                 this.editableTabsValue_applications = activeName;
                 this.editableTabs_applications = tabs.filter(tab => tab.name !== targetName);
-                
-                
-                
+
+
+
                 let num;
                 for (i=0;i<this.themeObj.application.length;i++){
                     if(this.themeObj.application[i].id == targetName){
@@ -1005,16 +1005,16 @@ var createTheme = Vue.extend({
             that.editableTabs_data[index].title = $(".category_name2").eq(index).val();
         });
         $(document).on('keyup','.application_name',function ($event) {
-                    let name_input=$(".application_name");
-                    let index=0;
-                    for(;index<name_input.length;index++){
-                        if($(this)[0]==name_input.eq(index)[0]){
-                            break;
-                        }
-                    }
-                    that.themeObj.application[index].applicationname = $("#applicationname"+ index).val();
-                    that.editableTabs_applications[index].title = $(".application_name").eq(index).val();
-         });
+            let name_input=$(".application_name");
+            let index=0;
+            for(;index<name_input.length;index++){
+                if($(this)[0]==name_input.eq(index)[0]){
+                    break;
+                }
+            }
+            that.themeObj.application[index].applicationname = $("#applicationname"+ index).val();
+            that.editableTabs_applications[index].title = $(".application_name").eq(index).val();
+        });
 
         $(document).on('keyup','.application_link',function ($event) {
             let link_input=$(".application_link");
@@ -1272,7 +1272,7 @@ var createTheme = Vue.extend({
             $('#imgFile'+index).click();
         });
         $(document).on('change','.img_file',function ($event) {
-        // $(".img_file").change(function () {
+            // $(".img_file").change(function () {
             //匹配id，增加image
             let num;
             for (i=0;i<that.themeObj.application.length;i++){
@@ -1330,8 +1330,8 @@ var createTheme = Vue.extend({
                     if (data == "ERROR") {
                         alert(data);
                     }
-                    // if(!json.doi){
-                    //     alert("ERROR")
+                        // if(!json.doi){
+                        //     alert("ERROR")
                     // }
                     else {
                         var json = eval('(' + data + ')');
@@ -1601,6 +1601,116 @@ var createTheme = Vue.extend({
             }
         });
 
+        // $(".finish").click(()=> {
+        //     let loading = this.$loading({
+        //         lock: true,
+        //         text: "Uploading...",
+        //         spinner: "el-icon-loading",
+        //         background: "rgba(0, 0, 0, 0.7)"
+        //     });
+        //     if(that.themeObj.application.length==1&&that.themeObj.application[0].applicationname==""&&that.themeObj.application[0].applicationlink==""&&that.themeObj.application[0].upload_application_image==""){
+        //
+        //     }else {
+        //         for(i = 0;i<that.themeObj.application.length; i++){
+        //             if (that.themeObj.application[i].applicationname == ""||that.themeObj.application[i].applicationlink ==""||that.themeObj.application[i].upload_application_image==""){
+        //                 alert("Please complete the information");
+        //                 return false;
+        //             }
+        //         }
+        //     }
+        //     //查看classinfo与dataClassInfo，如果存在一个也未输入，则删除
+        //     if (that.themeObj.classinfo.length==1&&that.themeObj.classinfo[0].mcname==""&&that.themeObj.classinfo[0].modelsoid.length==0) {
+        //         that.themeObj.classinfo.splice(0,1);
+        //     }
+        //     if (that.themeObj.dataClassInfo.length==1&&that.themeObj.dataClassInfo[0].dcname==""&&that.themeObj.dataClassInfo[0].datasoid.length==0) {
+        //         that.themeObj.dataClassInfo.splice(0,1);
+        //     }
+        //     if(that.themeObj.application.length==1&&that.themeObj.application[0].applicationname==""&&that.themeObj.application[0].applicationlink==""&&that.themeObj.application[0].upload_application_image==""){
+        //         that.themeObj.application.splice(0,1);
+        //     }
+        //
+        //     that.themeObj.themename = $("#nameInput").val();
+        //     that.themeObj.image = $('#imgShow').get(0).src;
+        //
+        //     var detail = tinyMCE.activeEditor.getContent();
+        //     that.themeObj.detail = detail.trim();
+        //     console.log(that.themeObj);
+        //
+        //     that.themeObj.uploadImage = $('#imgShow').get(0).currentSrc;
+        //
+        //     that.themeObj.tabledata = that.editableTabs_model;
+        //
+        //     let formData=new FormData();
+        //
+        //     if ((oid === "0") || (oid === "") || (oid == null)) {
+        //         let file = new File([JSON.stringify(that.themeObj)],'ant.txt',{
+        //             type: 'text/plain',
+        //         });
+        //         formData.append("info",file);
+        //         $.ajax({
+        //             url: "/theme/addTheme",
+        //             type: "POST",
+        //             processData: false,
+        //             contentType: false,
+        //             async: true,
+        //             data: formData,
+        //             success: function (result) {
+        //                 loading.close();
+        //                 if (result.code == "0") {
+        //                     alert("Create Success");
+        //                     window.location.href = "/repository/theme/" + result.data;//刷新当前页面
+        //                 }
+        //                 else if(result.code==-1){
+        //                     alert("Please login first!");
+        //                     window.location.href="/user/login";
+        //                 }
+        //                 else{
+        //                     alert("Create failed!");
+        //                 }
+        //             }
+        //         })
+        //     } else {
+        //
+        //         that.themeObj["oid"] = oid;
+        //
+        //         let file = new File([JSON.stringify(that.themeObj)],'ant.txt',{
+        //             type: 'text/plain',
+        //         });
+        //         formData.append("info",file);
+        //         $.ajax({
+        //             url: "/theme/update",
+        //             type: "POST",
+        //             processData: false,
+        //             contentType: false,
+        //             async: true,
+        //             data: formData,
+        //
+        //             success: function (result) {
+        //                 loading.close();
+        //                 if (result.code === 0) {
+        //                     if(result.data.method==="update") {
+        //                         alert("Update Success");
+        //                         $("#editModal", parent.document).remove();
+        //                         window.location.href = "/theme/" + result.data.oid;
+        //                     }
+        //                     else{
+        //                         alert("Success! Changes have been submitted, please wait for the author to review.");
+        //                         //产生信号调用计数，启用websocket
+        //
+        //                         window.location.href = "/user/userSpace";
+        //                     }
+        //                 }
+        //                 else if(result.code==-2){
+        //                     alert("Please login first!");
+        //                     window.location.href="/user/login";
+        //                 }
+        //                 else{
+        //                     alert(result.msg);
+        //                 }
+        //             }
+        //         })
+        //     }
+        // });
 
         $(document).on("click", ".author_close", function () { $(this).parents(".panel").eq(0).remove(); });
 

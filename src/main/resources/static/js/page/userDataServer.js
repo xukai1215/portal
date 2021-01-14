@@ -263,7 +263,12 @@ var userDataServer = Vue.extend(
                             this.$alert("Please login first!")
                             window.location.href="/user/login";
                         } else {
+                            if(data.data!=null){
+                                window.open(data.data)
 
+                            }else{
+                                this.$message.error('Can not download this resource');
+                            }
                         }
 
                     }

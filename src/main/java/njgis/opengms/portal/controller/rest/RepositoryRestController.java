@@ -153,9 +153,9 @@ public class RepositoryRestController {
     }
     @RequestMapping(value = "/getThemesByUserId",method = RequestMethod.GET)
     public JsonResult getThemesByUserId(HttpServletRequest request,
-                                          @RequestParam(value="page") int page,
-                                          @RequestParam(value="sortType") String sortType,
-                                          @RequestParam(value="asc") int sortAsc){
+                                        @RequestParam(value="page") int page,
+                                        @RequestParam(value="sortType") String sortType,
+                                        @RequestParam(value="asc") int sortAsc){
         HttpSession session=request.getSession();
         if(session.getAttribute("uid")==null){
             return ResultUtils.error(-1,"no login");

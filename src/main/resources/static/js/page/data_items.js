@@ -126,7 +126,7 @@ var data_items = new Vue({
         },
         //文本检索
         search(){
-            this.searchText=$('#searchBox').val();
+            // this.searchText=$('#searchBox').val();
             this.loading=true;
             var that=this
             that.progressBar=true

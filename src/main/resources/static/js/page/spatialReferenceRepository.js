@@ -285,8 +285,8 @@ new Vue({
     },
     mounted() {
 
-        //展开分类树第一层
-        $(".el-tree-node__expand-icon").eq(0).click();
+        // //展开分类树第一层
+        // $(".el-tree-node__expand-icon").eq(0).click();
 
         this.getModels();
 

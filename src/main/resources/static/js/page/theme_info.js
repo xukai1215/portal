@@ -495,58 +495,58 @@ var vue = new Vue({
         Application_add() {
             $(".el-tabs__new-tab").eq(2).click();
         },
-        // handleTabsEdit_model(targetName, action) {
-        //     if (action === 'add') {
-        //         let newTabName = ++this.tabIndex_model + '';
-        //         this.themeObj.classinfo.push({
-        //             id: newTabName,
-        //             mcname: "",
-        //             modelsoid: [],
-        //         });
-        //         // this.idflag = newTabName;
-        //         this.editableTabs_model.push({
-        //             id: newTabName,
-        //             tabledata: [],
-        //             title: 'New Tab',
-        //             name: newTabName,
-        //             content: '2'
-        //         });
-        //         this.editableTabsValue_model = newTabName + '';
-        //
-        //     }
-        //     if (action === 'remove') {
-        //
-        //         // this.tabIndex_model--;
-        //         // let last_tab = $(".el-tabs__item").last();
-        //         // console.log(last_tab);
-        //         // this.tab_dele_num_model++;
-        //         let tabs = this.editableTabs_model;
-        //         let activeName = this.editableTabsValue_model;
-        //         if (activeName === targetName) {
-        //             tabs.forEach((tab, index) => {
-        //                 if (tab.name === targetName) {
-        //                     let nextTab = tabs[index + 1] || tabs[index - 1];
-        //                     if (nextTab) {
-        //                         activeName = nextTab.name;
-        //                     }
-        //                 }
-        //             });
-        //         }
-        //
-        //         this.editableTabsValue_model = activeName;
-        //         this.editableTabs_model = tabs.filter(tab => tab.name !== targetName);
-        //
-        //         let num;
-        //         for (i = 0; i < this.themeObj.classinfo.length; i++) {
-        //             if (this.themeObj.classinfo[i].id == targetName) {
-        //                 num = i;
-        //                 break;
-        //             }
-        //         }
-        //         // delete this.themeObj.classinfo[num];//将存入到themeObj中的数据也移除
-        //         this.themeObj.classinfo.splice(num, 1);
-        //     }
-        // },
+        handleTabsEdit_model(targetName, action) {
+            if (action === 'add') {
+                let newTabName = ++this.tabIndex_model + '';
+                this.themeObj.classinfo.push({
+                    id: newTabName,
+                    mcname: "",
+                    modelsoid: [],
+                });
+                // this.idflag = newTabName;
+                this.editableTabs_model.push({
+                    id: newTabName,
+                    tabledata: [],
+                    title: 'New Tab',
+                    name: newTabName,
+                    content: '2'
+                });
+                this.editableTabsValue_model = newTabName + '';
+
+            }
+            if (action === 'remove') {
+
+                // this.tabIndex_model--;
+                // let last_tab = $(".el-tabs__item").last();
+                // console.log(last_tab);
+                // this.tab_dele_num_model++;
+                let tabs = this.editableTabs_model;
+                let activeName = this.editableTabsValue_model;
+                if (activeName === targetName) {
+                    tabs.forEach((tab, index) => {
+                        if (tab.name === targetName) {
+                            let nextTab = tabs[index + 1] || tabs[index - 1];
+                            if (nextTab) {
+                                activeName = nextTab.name;
+                            }
+                        }
+                    });
+                }
+
+                this.editableTabsValue_model = activeName;
+                this.editableTabs_model = tabs.filter(tab => tab.name !== targetName);
+
+                let num;
+                for (i = 0; i < this.themeObj.classinfo.length; i++) {
+                    if (this.themeObj.classinfo[i].id == targetName) {
+                        num = i;
+                        break;
+                    }
+                }
+                // delete this.themeObj.classinfo[num];//将存入到themeObj中的数据也移除
+                this.themeObj.classinfo.splice(num, 1);
+            }
+        },
         handleTabsEdit_data(targetName, action) {
             // this.confirmflag1 = 0;
 
@@ -1040,23 +1040,18 @@ var vue = new Vue({
                     all_button[i].style.display = ''        //置为空就可以显示了
                 }
 
-                for (let j=0;j<control_button.length;++j){      // 有两个控制的button
-                    control_button[j].style.backgroundColor = '#E6A23C'     // 改变control_button样式
-                    control_button[j].style.borderColor = '#E6A23C'
-                    control_button[j].children[0].innerHTML = 'Disable editing'
-                }
-
+                control_button[0].style.backgroundColor = '#E6A23C'     // 改变control_button样式
+                control_button[0].style.borderColor = '#E6A23C'
+                control_button[0].children[0].innerHTML = 'Disable editing'
                 this.controlEditMark = false
             }else {
                 for(let i = 0;i<all_button.length;++i){
                     all_button[i].style.display = 'none'
                 }
 
-                for (let j=0;j<control_button.length;++j){
-                    control_button[j].style.backgroundColor = '#409EFF'
-                    control_button[j].style.borderColor = '#409EFF'
-                    control_button[j].children[0].innerHTML = 'Enable editing'
-                }
+                control_button[0].style.backgroundColor = '#409EFF'
+                control_button[0].style.borderColor = '#409EFF'
+                control_button[0].children[0].innerHTML = 'Enable editing'
                 this.controlEditMark = true
             }
         },

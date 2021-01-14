@@ -212,37 +212,101 @@ var userDataApplication = Vue.extend(
             },
 
             deleteItem(oid) {
-                // let a=this.$route.params.modelitemKind
-                if (confirm("Are you sure to delete this data application?")) {
 
-                    $.ajax({
-                        type: "POST",
-                        url: "/dataApplication/delete",
-                        data: {
-                            oid: oid
-                        },
-                        cache: false,
-                        async: true,
-                        dataType: "json",
-                        xhrFields: {
-                            withCredentials: true
-                        },
-                        crossDomain: true,
-                        success: (json) => {
-                            if (json.code == -1) {
-                                alert("Please log in first!")
-                            } else {
-                                if (json.data == 1) {
-                                    this.$alert("delete successfully!")
-                                    this. getDataItems();
-                                } else if(json.data == -1) {
-                                    this.$alert("delete failed!")
-                                }else
-                                    this.$alert("please refresh the page!")
-                            }
+                const h = this.$createElement;
+                this.$msgbox({
+                    title: ' ',
+                    message: h('p', null, [
+                        h('span', null, 'Are you sure to '),
+                        h('span', {style: 'font-weight:600'}, 'delete'),
+                        h('span', null, ' this item?'),
+                    ]),
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'confirm',
+                    cancelButtonText: 'cancel',
+                    beforeClose: (action, instance, done) => {
+
+                        if (action === 'confirm') {
+                            instance.confirmButtonLoading = true;
+                            instance.confirmButtonText = 'deleting...';
+                            setTimeout(() => {
+
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/dataApplication/delete",
+                                    data: {
+                                        oid: oid
+                                    },
+                                    cache: false,
+                                    async: true,
+                                    dataType: "json",
+                                    xhrFields: {
+                                        withCredentials: true
+                                    },
+                                    crossDomain: true,
+                                    success: (json) => {
+                                        if (json.code == -1) {
+                                            alert("Please log in first!")
+                                        } else {
+                                            if (json.data == 1) {
+                                                // this.$alert("delete successfully!")
+                                                // this. getDataItems();
+                                            } else if(json.data == -1) {
+                                                this.$alert("delete failed!")
+                                            }else
+                                                this.$alert("please refresh the page!")
+                                        }
+                                    }
+                                })
+                                done();
+                                setTimeout(() => {
+                                    instance.confirmButtonLoading = false;
+                                }, 300);
+                            }, 300);
+                        } else {
+                            done();
                         }
-                    })
-                }
+                    }
+                }).then(action => {
+                    this.$message({
+                        type: 'success',
+                        message: 'delete successful '
+                    });
+                });
+
+
+                // let a=this.$route.params.modelitemKind
+                // if (confirm("Are you sure to delete this data application?")) {
+                //
+                //     $.ajax({
+                //         type: "POST",
+                //         url: "/dataApplication/delete",
+                //         data: {
+                //             oid: oid
+                //         },
+                //         cache: false,
+                //         async: true,
+                //         dataType: "json",
+                //         xhrFields: {
+                //             withCredentials: true
+                //         },
+                //         crossDomain: true,
+                //         success: (json) => {
+                //             if (json.code == -1) {
+                //                 alert("Please log in first!")
+                //             } else {
+                //                 if (json.data == 1) {
+                //                     this.$alert("delete successfully!")
+                //                     this. getDataItems();
+                //                 } else if(json.data == -1) {
+                //                     this.$alert("delete failed!")
+                //                 }else
+                //                     this.$alert("please refresh the page!")
+                //             }
+                //         }
+                //     })
+                // }
             },
 
             searchItems(page){

@@ -19,11 +19,27 @@ var vue = new Vue({
                 },
                 searchText:'',
                 loading:false,
+
+                modelExecutionDialog:false,
+
+                integratedModelDialog:false,
+
+                guideActive:0,
             }
         },
         methods: {
             setSession(name, value) {
                 window.sessionStorage.setItem(name, value);
+            },
+
+            loadExecutionGuide(){
+                this.modelExecutionDialog = true
+                this.guideActive = 0
+            },
+
+            loadIntegratedGuideDialog(){
+                this.integratedModelDialog=true
+                this.guideActive = 0
             },
 
             loadDeployedModelClick() {

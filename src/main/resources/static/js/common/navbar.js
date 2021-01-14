@@ -721,7 +721,7 @@ $('#phoneHelp').click((e)=>{
         clearTimeout(timeout2);
         target.css('display','block')
         fullSubMenuDropDpwn(target);
-        $('#aboutUs').animate({marginTop:199},245);
+        $('#aboutUs').animate({marginTop:149},245);
     }
 
     else{

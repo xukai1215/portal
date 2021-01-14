@@ -23,6 +23,8 @@ public interface ComputableModelDao extends MongoRepository<ComputableModel,Stri
 
     ComputableModel findFirstByOid(String id);
 
+    ComputableModel findFirstByOidAndDeploy(String id,boolean deploy);
+
     //Page<ModelItem> findByNameLike(String name, Pageable pageable);
 
     Page<ComputableModel> findByStatusNotLike(String statusNotLike, Pageable pageable);
@@ -78,6 +80,8 @@ public interface ComputableModelDao extends MongoRepository<ComputableModel,Stri
     List<ComputableModelIngtegratedDTO> findAllByRelateModelItemNotNull();
 
     List<ComputableModel> findAllByDeploy(boolean deploy);
+
+    List<ComputableModel> findAllByNameContainsIgnoreCaseAndDeploy(String name, boolean deploy);
 
     ComputableModel findFirstByAuthorAndMd5(String author, String md5);
 
