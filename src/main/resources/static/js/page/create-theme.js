@@ -192,6 +192,7 @@ var createTheme = Vue.extend({
             clsStr: '',
             model_num1: 1,
 
+            themeImg:'',
         }
     },
     methods: {
@@ -943,6 +944,34 @@ var createTheme = Vue.extend({
         sendUserToParent(userId){
             this.$emit('com-senduserinfo',userId)
         },
+
+        deleteImg(){
+            let obj = document.getElementById('imgOne')
+            obj.value = ''
+            this.themeImg = ''
+            $('#imgShow').get(0).src = ''
+        },
+
+        imgFile() {
+            $("#imgOne").click();
+        },
+
+        preImg() {
+            var file = $('#imgOne').get(0).files[0];
+            //创建用来读取此文件的对象
+            var reader = new FileReader();
+            //使用该对象读取file文件
+            reader.readAsDataURL(file);
+            //读取文件成功后执行的方法函数
+            reader.onload =  (e) => {
+                //读取成功后返回的一个参数e，整个的一个进度事件
+                //选择所要显示图片的img，要赋值给img的src就是e中target下result里面
+                //的base64编码格式的地址
+                $('#imgShow').get(0).src = e.target.result
+                this.themeImg = e.target.result
+            }
+        },
+
     },
     mounted() {
         $(() => {
@@ -1237,70 +1266,72 @@ var createTheme = Vue.extend({
             forceLowercase: false
         })
 
-        $("#imgChange").click(function () {
-            $("#imgFile").click();
-        });
-        $("#imgFile").change(function () {
-            //获取input file的files文件数组;
-            //$('#filed')获取的是jQuery对象，.get(0)转为原生对象;
-            //这边默认只能选一个，但是存放形式仍然是数组，所以取第一个元素使用[0];
-            var file = $('#imgFile').get(0).files[0];
-            //创建用来读取此文件的对象
-            var reader = new FileReader();
-            //使用该对象读取file文件
-            reader.readAsDataURL(file);
-            //读取文件成功后执行的方法函数
-            reader.onload = function (e) {
-                //读取成功后返回的一个参数e，整个的一个进度事件
-                //选择所要显示图片的img，要赋值给img的src就是e中target下result里面
-                //的base64编码格式的地址
-                $('#imgShow').get(0).src = e.target.result;
-                $('#imgShow').show();
-            }
-        });
-
-
-        $(document).on('click','.imgChange',function ($event) {
-            let num = that.editableTabsValue_applications-1;
-            let img_input = $(".img_file");
-            let index = 0;
-            for (;index<img_input.length;index++){
-                if($(this)[0].nextElementSibling==img_input.eq(index)[0]){
-                    break;
-                }
-            }
-            $('#imgFile'+index).click();
-        });
-        $(document).on('change','.img_file',function ($event) {
-            // $(".img_file").change(function () {
-            //匹配id，增加image
-            let num;
-            for (i=0;i<that.themeObj.application.length;i++){
-                if(that.themeObj.application[i].id==that.editableTabsValue_applications){
-                    num = i;
-                    break;
-                }
-            }
-            //获取input file的files文件数组;
-            //$('#filed')获取的是jQuery对象，.get(0)转为原生对象;
-            //这边默认只能选一个，但是存放形式仍然是数组，所以取第一个元素使用[0];
-            let file = $('#imgFile'+num).get(0).files[0];
-            //创建用来读取此文件的对象
-            let reader = new FileReader();
-            //使用该对象读取file文件
-            reader.readAsDataURL(file);
-            //读取文件成功后执行的方法函数
-            reader.onload = function (e) {
-                //读取成功后返回的一个参数e，整个的一个进度事件
-                //选择所要显示图片的img，要赋值给img的src就是e中target下result里面
-                //的base64编码格式的地址
-
-                $('#imgShow'+num).get(0).src = e.target.result;
-                that.themeObj.application[num].upload_application_image = e.target.result;
-                $('#imgShow'+num).show();
-            }
-            //console.log($('#imgShow1').get(0).currentSrc);
-        });
+        // $("#imgChange").click(function () {
+        //     $("#imgFile").click();
+        // });
+        // $("#imgFile").change(function () {
+        //     //获取input file的files文件数组;
+        //     //$('#filed')获取的是jQuery对象，.get(0)转为原生对象;
+        //     //这边默认只能选一个，但是存放形式仍然是数组，所以取第一个元素使用[0];
+        //     var file = $('#imgFile').get(0).files[0];
+        //     //创建用来读取此文件的对象
+        //     var reader = new FileReader();
+        //     //使用该对象读取file文件
+        //     reader.readAsDataURL(file);
+        //     //读取文件成功后执行的方法函数
+        //     reader.onload = function (e) {
+        //         //读取成功后返回的一个参数e，整个的一个进度事件
+        //         //选择所要显示图片的img，要赋值给img的src就是e中target下result里面
+        //         //的base64编码格式的地址
+        //         $('#imgShow').get(0).src = e.target.result;
+        //         $('#imgShow').show();
+        //     }
+        // });
+        //
+        //
+        // $(document).on('click','.imgChange',function ($event) {
+        //     let num = that.editableTabsValue_applications-1;
+        //     let img_input = $(".img_file");
+        //     let index = 0;
+        //     for (;index<img_input.length;index++){
+        //         if($(this)[0].nextElementSibling==img_input.eq(index)[0]){
+        //             break;
+        //         }
+        //     }
+        //     $('#imgFile'+index).click();
+        // });
+        //
+        //
+        // $(document).on('change','.img_file',function ($event) {
+        //     // $(".img_file").change(function () {
+        //     //匹配id，增加image
+        //     let num;
+        //     for (i=0;i<that.themeObj.application.length;i++){
+        //         if(that.themeObj.application[i].id==that.editableTabsValue_applications){
+        //             num = i;
+        //             break;
+        //         }
+        //     }
+        //     //获取input file的files文件数组;
+        //     //$('#filed')获取的是jQuery对象，.get(0)转为原生对象;
+        //     //这边默认只能选一个，但是存放形式仍然是数组，所以取第一个元素使用[0];
+        //     let file = $('#imgFile'+num).get(0).files[0];
+        //     //创建用来读取此文件的对象
+        //     let reader = new FileReader();
+        //     //使用该对象读取file文件
+        //     reader.readAsDataURL(file);
+        //     //读取文件成功后执行的方法函数
+        //     reader.onload = function (e) {
+        //         //读取成功后返回的一个参数e，整个的一个进度事件
+        //         //选择所要显示图片的img，要赋值给img的src就是e中target下result里面
+        //         //的base64编码格式的地址
+        //
+        //         $('#imgShow'+num).get(0).src = e.target.result;
+        //         that.themeObj.application[num].upload_application_image = e.target.result;
+        //         $('#imgShow'+num).show();
+        //     }
+        //     //console.log($('#imgShow1').get(0).currentSrc);
+        // });
         //table
         table = $('#dynamic-table').DataTable({
             //"aaSorting": [[ 0, "asc" ]],

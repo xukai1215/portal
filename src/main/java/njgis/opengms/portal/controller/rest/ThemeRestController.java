@@ -248,6 +248,7 @@ public class ThemeRestController {
     public JsonResult  replace(@RequestBody ThemeVersionDTO themeVersionDTO){
             Date curDate = new Date();
             Theme theme = themeDao.findFirstByOid(themeVersionDTO.getThemeOid());
+            List<Maintainer> maintainers = theme.getMaintainer();
             String authorUserName = theme.getAuthor();
             if (theme.getVersions() == null || theme.getVersions().size() == 0) {
                 ThemeVersion themeVersion = new ThemeVersion();
@@ -288,15 +289,16 @@ public class ThemeRestController {
                 contributors.add(contributor);
                 theme.setContributors(contributors);
             }
-
+            theme.setMaintainer(maintainers);
             theme.setLastModifier(contributor);
             theme.setLock(false);
             theme.setLastModifyTime(themeVersion.getModifyTime());
             themeDao.save(theme);
 
             themeVersion.setStatus(1);//
+            String userName = userDao.findFirstByOid(themeVersionDTO.getModifier()).getUserName();
 
-            userService.messageNumPlusPlus(themeVersionDTO.getModifier());
+            userService.messageNumPlusPlus(userName);
             userService.messageNumMinusMinus(authorUserName);
             themeVersion.setAcceptTime(curDate);
             themeVersionDao.save(themeVersion);
@@ -310,7 +312,8 @@ public class ThemeRestController {
             String authorUserName = theme.getAuthor();
             ThemeVersion themeVersion = themeVersionDao.findFirstByOid(themeVersionDTO.getOid());
             themeVersion.setStatus(-1);
-            userService.messageNumPlusPlus(themeVersionDTO.getModifier());
+            String userName = userDao.findFirstByOid(themeVersion.getModifierOid()).getUserName();
+            userService.messageNumPlusPlus(userName);
             userService.messageNumMinusMinus(authorUserName);
             themeVersion.setRejectTime(curDate);
             themeVersionDao.save(themeVersion);

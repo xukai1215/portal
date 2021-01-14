@@ -488,7 +488,8 @@ var createDataApplication = Vue.extend({
 
                     // that.$refs.tree.setCheckedKeys(basicInfo.classifications);
                     // that.clsStr=basicInfo.categorys;
-                    that.dataApplication.status=basicInfo.status;
+                    that.dataApplication.status = basicInfo.status
+                    that.dataApplication.method  = basicInfo.method
 
                     $(".providers").children(".panel").remove();
 
