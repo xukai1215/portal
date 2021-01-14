@@ -857,97 +857,97 @@ public class DataApplicationController {
         return jsonResult;
     }
 
-    /**
-     * 可视化数据下载，并存储信息至相应的task中
-     * @param dataUrl 输出数据url
-     * @return 可视化图片路径与名称
-     */
-    @RequestMapping(value = "/initPicture", method = RequestMethod.POST)
-    public JsonResult visualOut(@RequestParam(value = "dataUrl") String dataUrl,@RequestParam(value = "taskId") String taskId) throws IOException {
-        JsonResult jsonResult = new JsonResult();
-        DataServerTask dataServerTask = dataServerTaskDao.findFirstByOid(taskId);
-        JSONObject visual = new JSONObject();
-
-        if (dataServerTask.getVisual() != null){
-            visual = dataServerTask.getVisual();
-        }else {
-            //通过url下载数据到服务器，并将相关信息存储至task里
-            String uuid = UUID.randomUUID().toString();
-            String visualPath = resourcePath + "/dataItem/visual/" + uuid;
-            InputStream inputStream = null;
-            FileOutputStream fileOutputStream = null;
-            String fileName = null;
-            if (dataUrl != null) {
-                URL url = new URL(dataUrl);
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setConnectTimeout(5000);
-                conn.setReadTimeout(60000);
-                //通过conn取得文件名称
-                String raw = conn.getHeaderField("Content-Disposition");
-                if (raw != null && raw.indexOf("=") > 0) {
-                    fileName = raw.split("=")[1];
-                    fileName = new String(fileName.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
-                }
-                inputStream = conn.getInputStream();
-            }
-            fileName = fileName.replaceAll("\"", "");
-
-            File testData = new File(visualPath);
-            if (!testData.exists()) {
-                testData.mkdirs();
-            }
-            String path = visualPath + "/" + fileName;
-            String dbPath = "/static/dataItem/visual/" + uuid + "/" + fileName;
-            File localFile = new File(path);
-            try {
-                //将数据下载至resourcePath下
-                if (localFile.exists()) {
-                    //如果文件存在删除文件
-                    boolean delete = localFile.delete();
-                }
-                //创建文件
-                if (!localFile.exists()) {
-                    //如果文件不存在，则创建新的文件
-                    localFile.createNewFile();
-                }
-
-                fileOutputStream = new FileOutputStream(localFile);
-                byte[] bytes = new byte[1024];
-                int len = -1;
-                while ((len = inputStream.read(bytes)) != -1) {
-                    fileOutputStream.write(bytes, 0, len);
-                }
-                fileOutputStream.close();
-                inputStream.close();
-
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    if (fileOutputStream != null) {
-                        fileOutputStream.close();
-                    }
-                    if (inputStream != null) {
-                        inputStream.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            visual.put("fileName", fileName);
-            visual.put("visualPath", dbPath);//具体到文件
-            dataServerTask.setVisual(visual);
-            dataServerTaskDao.save(dataServerTask);
-        }
-        jsonResult.setData(visual);
-        jsonResult.setMsg("success");
-        jsonResult.setCode(0);
-
-        return jsonResult;
-    }
+//    /**
+//     * 可视化数据下载，并存储信息至相应的task中
+//     * @param dataUrl 输出数据url
+//     * @return 可视化图片路径与名称
+//     */
+//    @RequestMapping(value = "/initPicture", method = RequestMethod.POST)
+//    public JsonResult visualOut(@RequestParam(value = "dataUrl") String dataUrl,@RequestParam(value = "taskId") String taskId) throws IOException {
+//        JsonResult jsonResult = new JsonResult();
+//        DataServerTask dataServerTask = dataServerTaskDao.findFirstByOid(taskId);
+//        JSONObject visual = new JSONObject();
+//
+//        if (dataServerTask.getVisual() != null){
+//            visual = dataServerTask.getVisual();
+//        }else {
+//            //通过url下载数据到服务器，并将相关信息存储至task里
+//            String uuid = UUID.randomUUID().toString();
+//            String visualPath = resourcePath + "/dataItem/visual/" + uuid;
+//            InputStream inputStream = null;
+//            FileOutputStream fileOutputStream = null;
+//            String fileName = null;
+//            if (dataUrl != null) {
+//                URL url = new URL(dataUrl);
+//                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+//                conn.setConnectTimeout(5000);
+//                conn.setReadTimeout(60000);
+//                //通过conn取得文件名称
+//                String raw = conn.getHeaderField("Content-Disposition");
+//                if (raw != null && raw.indexOf("=") > 0) {
+//                    fileName = raw.split("=")[1];
+//                    fileName = new String(fileName.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+//                }
+//                inputStream = conn.getInputStream();
+//            }
+//            fileName = fileName.replaceAll("\"", "");
+//
+//            File testData = new File(visualPath);
+//            if (!testData.exists()) {
+//                testData.mkdirs();
+//            }
+//            String path = visualPath + "/" + fileName;
+//            String dbPath = "/static/dataItem/visual/" + uuid + "/" + fileName;
+//            File localFile = new File(path);
+//            try {
+//                //将数据下载至resourcePath下
+//                if (localFile.exists()) {
+//                    //如果文件存在删除文件
+//                    boolean delete = localFile.delete();
+//                }
+//                //创建文件
+//                if (!localFile.exists()) {
+//                    //如果文件不存在，则创建新的文件
+//                    localFile.createNewFile();
+//                }
+//
+//                fileOutputStream = new FileOutputStream(localFile);
+//                byte[] bytes = new byte[1024];
+//                int len = -1;
+//                while ((len = inputStream.read(bytes)) != -1) {
+//                    fileOutputStream.write(bytes, 0, len);
+//                }
+//                fileOutputStream.close();
+//                inputStream.close();
+//
+//            } catch (FileNotFoundException e) {
+//                e.printStackTrace();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            } finally {
+//                try {
+//                    if (fileOutputStream != null) {
+//                        fileOutputStream.close();
+//                    }
+//                    if (inputStream != null) {
+//                        inputStream.close();
+//                    }
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//            visual.put("fileName", fileName);
+//            visual.put("visualPath", dbPath);//具体到文件
+//            dataServerTask.setVisual(visual);
+//            dataServerTaskDao.save(dataServerTask);
+//        }
+//        jsonResult.setData(visual);
+//        jsonResult.setMsg("success");
+//        jsonResult.setCode(0);
+//
+//        return jsonResult;
+//    }
 
     @RequestMapping(value = "/getContributorInfo/{uid}", method = RequestMethod.GET)
     public JsonResult getContributorInfo(@PathVariable(value = "uid") String uid){

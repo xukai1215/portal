@@ -428,18 +428,20 @@ let vue = new Vue({
         },
         initPicture(){
             // let url = this.invokeService.cacheUrl;
-            let formData=new FormData();
-            var that = this;
-            formData.append("dataUrl",this.dataServerTask.output.output);
-            formData.append("taskId",this.dataServerTask.oid);
-
-            axios.post("/dataApplication/initPicture",formData).then((res)=>{
-                if(res.status === 200){
-                    console.log(res.data.data);
-                    that.visualPath = res.data.data.visualPath;
-                    that.visualization = true;
-                }
-            })
+            this.visualPath = this.resultData.url;
+            this.visualization = true;
+            // let formData=new FormData();
+            // var that = this;
+            // formData.append("dataUrl",this.dataServerTask.output.output);
+            // formData.append("taskId",this.dataServerTask.oid);
+            //
+            // axios.post("/dataApplication/initPicture",formData).then((res)=>{
+            //     if(res.status === 200){
+            //         console.log(res.data.data);
+            //         that.visualPath = res.data.data.visualPath;
+            //         that.visualization = true;
+            //     }
+            // })
         },
         selectChanged(value){
             // alert(value);
