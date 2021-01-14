@@ -335,12 +335,18 @@ var data_items = new Vue({
                     },500)
                 })
         },
-        contribute(){
+        contribute(event){
             if(this.useroid==''){
                 alert("Please login");
                 window.location.href = "/user/login";
             }else{
-                window.location.href="/user/userSpace#/data/createDataItem";
+                console.log(event.currentTarget._prevClass.split(" ")[event.currentTarget._prevClass.split(" ").length-1]);
+                let type = event.currentTarget._prevClass.split(" ")[event.currentTarget._prevClass.split(" ").length-1];
+                if(type === "contributeItemBtn"){
+                    window.location.href="/user/userSpace#/data/createDataItem";
+                }else {
+                    window.location.href="/user/userSpace#/data/createDataHubs";
+                }
             }
         },
         getParams(){
