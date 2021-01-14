@@ -4,7 +4,19 @@ var vue = new Vue({
         'avatar': VueAvatar.Avatar
     },
     data: function () {
+        const themeData = [
+            {
+                id: 1,
+                mcname: 'Default',
+                children: []
+            }
+        ];
         return {
+            themeData: JSON.parse(JSON.stringify(themeData)),
+            selectedTableData:[],
+            currentNode:2,
+            parentNode:false,
+            childNode:true,
 
             //log用于计数
             log_model: 0,
@@ -69,7 +81,7 @@ var vue = new Vue({
             themeObj: {
                 classinfo: [{
                     id: "1",
-                    mcname: "",
+                    label: "",
                     modelsoid: [],
                 }],
                 dataClassInfo: [{
@@ -220,6 +232,237 @@ var vue = new Vue({
         }
     },
     methods: {
+        test(node,data) {
+            console.log("thatis")
+            console.log(node)
+            console.log(data)
+        },
+        //model多级菜单
+        findFirstChildObj(parent){
+            var node
+            if(parent.children.length==0){
+                node = parent
+            }
+            else{
+                if(parent.children[0].children.length > 0){
+                    this.findFirstChild(parent.children[0])
+                }else{
+                    node = parent.children[0]
+                }
+
+            }
+
+            return node
+
+        },
+        findFirstChild(parent){
+            var nodeId
+            if(parent.children[0].children.length > 0){
+                this.findFirstChild(parent.children[0])
+            }else{
+                nodeId = parent.children[0].id
+            }
+            return nodeId
+        },
+        findTableData(modelClass){
+            if(modelClass.children.length ==0 && modelClass.id == this.currentNode){
+                return modelClass.modelsoid
+            }else if(modelClass.children.length > 0){
+                for (let n = 0; n <modelClass.children.length; n++) {
+                    var flag = this.findTableData(modelClass.children[n])
+                    if (flag != null) {
+                        return flag
+                    }
+                }
+            }else{
+                return null
+            }
+
+        },
+        findModelClass(modelClass, classId){
+            if(modelClass.id == classId){
+                return modelClass
+            }else if(modelClass.children.length > 0){
+                for (let n = 0; n <modelClass.children.length; n++) {
+                    var flag = this.findModelClass(modelClass.children[n])
+                    if (flag != null) {
+                        return flag
+                    }
+                }
+            }else{
+                return null
+            }
+        },
+
+        // tree的四个事件
+        changeClassNode(data,node) {
+            if(data.children.length == 0){
+                console.log(data)
+                this.selectedTableData = data.tableData
+                this.currentNode = data.id
+                this.parentNode = false
+                this.childNode = true
+            }else{
+                console.log(this.themeObj)
+                this.currentNode = this.findFirstChild(data)
+                this.parentNode = true
+                this.childNode = false
+            }
+            console.log(this.themeObj)
+            console.log(this.themeData)
+        },
+        append(data) {
+            this.$prompt('Class Name', '提示', {
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No'
+            }).then(({ value }) => {
+                const newChild = { id: id++, label: value ,children: [], tableData:[]};
+                if (!data.children) {
+                    this.$set(data, 'children', []);
+                }
+                data.children.push(newChild);
+                // 找到themeobj中对应的class
+                if(data.id == 1){
+                    this.themeObj.classinfo.push({
+                        id: id-1,
+                        mcname:value,
+                        children:[],
+                        modelsoid: [],
+                    })
+                }else{
+
+                    for (var n = 0; n < this.themeObj.classinfo.length; n++) {
+                        var modelClass = this.findModelClass(this.themeObj.classinfo[n],data.id)
+                        if(modelClass != null){
+                            modelClass.children.push({
+                                id: id-1,
+                                mcname:value,
+                                children:[],
+                                modelsoid: [],
+                            })
+                            break
+                        }
+                    }
+                }
+
+                //更改显示内容
+                this.parentNode = true
+                this.childNode = false
+            }).catch(()=>{
+
+            })
+        },
+        modify(data) {
+            this.$prompt('Class Name', 'Modify the item', {
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No'
+            }).then(({ value }) => {
+                data.label = value
+                // 找到themeobj中对应的class
+                for (var n = 0; n < this.themeObj.classinfo.length; n++) {
+                    var modelClass = this.findModelClass(this.themeObj.classinfo[n],data.id)
+                    if(modelClass != null){
+                        modelClass.mcname=value
+                        break
+                    }
+                }
+            }).catch(()=>{
+
+            })
+        },
+        remove(node, data) {
+            this.$confirm('Are you sure to delete this item?',  {
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No',
+                type: 'warning',
+                center: true
+            }).then(() => {
+
+                if(node.data.id=="2"){
+                    this.$message({
+                        type:'warning',
+                        message:'This item is forbidden to be deleted!',
+                    });
+                }
+                else{
+                    this.$message({
+                        type: 'success',
+                        message: 'delete successfully!'
+                    });
+                    const parent = node.parent;
+                    //删除themeobj中的model class
+                    // 找到themeobj中对应的parent class
+                    for (var n = 0; n < this.themeObj.classinfo.length; n++) {
+                        var modelClass = this.findModelClass(this.themeObj.classinfo[n],parent.data.id)
+                        if(modelClass != null){
+                            //找到孩子节点
+                            var childIndex = modelClass.children.findIndex(d => d.id === data.id);
+                            modelClass.children.splice(childIndex, 1);
+                            console.log(this.themeObj.classinfo)
+                            break
+                        }
+                    }
+                    //删除树
+                    const children = parent.data.children || parent.data;
+                    const index = children.findIndex(d => d.id === data.id);
+                    children.splice(index, 1);
+
+                }
+
+
+            }).catch(()=>{
+
+            })
+        },
+        // model的两个事件
+        addModel(index, row) {
+
+            // 往数组中添加新模型
+            var flag = false
+            for (var n = 0; n < this.selectedTableData.length; n++) {
+                if(this.selectedTableData[n].oid == row.oid){
+                    flag = true
+                    break
+                }
+            }
+            if(!flag){
+                this.selectedTableData.push(row)
+                // 找到当前分类的数组
+                for (var n = 0; n < this.themeObj.classinfo.length; n++) {
+                    var modelsoid = this.findTableData(this.themeObj.classinfo[n])
+                    if(modelsoid != null){
+                        modelsoid.push(row.oid)
+                        break
+                    }
+                }
+                // this.themeObj.classinfo[num].modelsoid.push(row.oid);
+            }
+
+        },
+        deleteModel(index, row) {
+            // 删除数组中的模型
+            for (var n = 0; n < this.selectedTableData.length; n++) {
+                if(this.selectedTableData[n].oid == row.oid){
+                    this.selectedTableData.splice(n, 1);
+                    break
+                }
+            }
+
+            // 找到themeobj中当前分类的数组
+            for (var n = 0; n < this.themeObj.classinfo.length; n++) {
+                var modelsoid = this.findTableData(this.themeObj.classinfo[n])
+                if(modelsoid != null){
+                    for (var m = 0; m < modelsoid.length; m++) {
+                        if(modelsoid[m] == row.oid){
+                            modelsoid.splice(m, 1);
+                            break
+                        }
+                    }
+                    break
+                }
+            }
+
+        },
         // 图片加载失败的回调
         errorHandler(){
             return true
@@ -252,58 +495,58 @@ var vue = new Vue({
         Application_add() {
             $(".el-tabs__new-tab").eq(2).click();
         },
-        handleTabsEdit_model(targetName, action) {
-            if (action === 'add') {
-                let newTabName = ++this.tabIndex_model + '';
-                this.themeObj.classinfo.push({
-                    id: newTabName,
-                    mcname: "",
-                    modelsoid: [],
-                });
-                // this.idflag = newTabName;
-                this.editableTabs_model.push({
-                    id: newTabName,
-                    tabledata: [],
-                    title: 'New Tab',
-                    name: newTabName,
-                    content: '2'
-                });
-                this.editableTabsValue_model = newTabName + '';
-
-            }
-            if (action === 'remove') {
-
-                // this.tabIndex_model--;
-                // let last_tab = $(".el-tabs__item").last();
-                // console.log(last_tab);
-                // this.tab_dele_num_model++;
-                let tabs = this.editableTabs_model;
-                let activeName = this.editableTabsValue_model;
-                if (activeName === targetName) {
-                    tabs.forEach((tab, index) => {
-                        if (tab.name === targetName) {
-                            let nextTab = tabs[index + 1] || tabs[index - 1];
-                            if (nextTab) {
-                                activeName = nextTab.name;
-                            }
-                        }
-                    });
-                }
-
-                this.editableTabsValue_model = activeName;
-                this.editableTabs_model = tabs.filter(tab => tab.name !== targetName);
-
-                let num;
-                for (i = 0; i < this.themeObj.classinfo.length; i++) {
-                    if (this.themeObj.classinfo[i].id == targetName) {
-                        num = i;
-                        break;
-                    }
-                }
-                // delete this.themeObj.classinfo[num];//将存入到themeObj中的数据也移除
-                this.themeObj.classinfo.splice(num, 1);
-            }
-        },
+        // handleTabsEdit_model(targetName, action) {
+        //     if (action === 'add') {
+        //         let newTabName = ++this.tabIndex_model + '';
+        //         this.themeObj.classinfo.push({
+        //             id: newTabName,
+        //             mcname: "",
+        //             modelsoid: [],
+        //         });
+        //         // this.idflag = newTabName;
+        //         this.editableTabs_model.push({
+        //             id: newTabName,
+        //             tabledata: [],
+        //             title: 'New Tab',
+        //             name: newTabName,
+        //             content: '2'
+        //         });
+        //         this.editableTabsValue_model = newTabName + '';
+        //
+        //     }
+        //     if (action === 'remove') {
+        //
+        //         // this.tabIndex_model--;
+        //         // let last_tab = $(".el-tabs__item").last();
+        //         // console.log(last_tab);
+        //         // this.tab_dele_num_model++;
+        //         let tabs = this.editableTabs_model;
+        //         let activeName = this.editableTabsValue_model;
+        //         if (activeName === targetName) {
+        //             tabs.forEach((tab, index) => {
+        //                 if (tab.name === targetName) {
+        //                     let nextTab = tabs[index + 1] || tabs[index - 1];
+        //                     if (nextTab) {
+        //                         activeName = nextTab.name;
+        //                     }
+        //                 }
+        //             });
+        //         }
+        //
+        //         this.editableTabsValue_model = activeName;
+        //         this.editableTabs_model = tabs.filter(tab => tab.name !== targetName);
+        //
+        //         let num;
+        //         for (i = 0; i < this.themeObj.classinfo.length; i++) {
+        //             if (this.themeObj.classinfo[i].id == targetName) {
+        //                 num = i;
+        //                 break;
+        //             }
+        //         }
+        //         // delete this.themeObj.classinfo[num];//将存入到themeObj中的数据也移除
+        //         this.themeObj.classinfo.splice(num, 1);
+        //     }
+        // },
         handleTabsEdit_data(targetName, action) {
             // this.confirmflag1 = 0;
 
@@ -838,6 +1081,11 @@ var vue = new Vue({
                             type: "GET",
                             data: {},
                             success: (result) => {
+                                console.log("thisthis");
+                                this.themeData.children = result.data.classinfo;
+                                this.themeObj = result.data.classinfo
+                                console.log(this.themeData)
+                                console.log(this.themeObj)
                                 console.log(result);
                                 let basicInfo = result.data;
 
@@ -1192,7 +1440,6 @@ var vue = new Vue({
     },
     mounted() {
         let that = this;
-
 
         $(document).on('keyup', '.category_name', function ($event) {
             let category_input = $(".category_name");

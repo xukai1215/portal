@@ -195,8 +195,8 @@ var createTheme = Vue.extend({
         }
     },
     methods: {
-        test(){
-            console.log(this.modelClassInfos)
+        test(node){
+            console.log(node)
         },
         findFirstChildObj(parent){
             var node

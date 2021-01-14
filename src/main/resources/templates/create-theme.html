@@ -169,7 +169,8 @@
                                                                                       <span class="custom-tree-node" slot-scope="{ node, data }">
                                                                                             <span>{{node.label}}</span>
                                                                                             <span>
-                                                                                                  <el-button type="text"  @click="() => append(data)" icon="el-icon-plus"></el-button>
+                                                                                                  <el-button type="text"  @click="() => test(node)" icon="el-icon-plus"></el-button>
+<!--                                                                                                  <el-button type="text"  @click="() => append(data)" icon="el-icon-plus"></el-button>-->
                                                                                                   <el-button type="text"  @click="() => modify(data)" icon="el-icon-edit" v-if="data.id!=1"></el-button>
                                                                                                   <el-button type="text"  @click="() => remove(node, data)" icon="el-icon-delete" v-if="data.id!=1"></el-button>
                                                                                             </span>
