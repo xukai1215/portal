@@ -1,7 +1,26 @@
+let id = 1000;
 var createTheme = Vue.extend({
     template: "#createTheme",
     data() {
+        const themeData = [
+            {
+                id: 1,
+                label: 'Default',
+                children: [{
+                    id: 2,
+                    label: 'new model class',
+                    children: [],
+                    tableData: []
+                }]
+            }
+        ];
         return {
+            themeData: JSON.parse(JSON.stringify(themeData)),
+            selectedTableData:[],
+            currentNode:2,
+            parentNode:false,
+            childNode:true,
+
             // remove_flag:0,
             // idflag:"",
             //mnum用来模型计数
@@ -48,8 +67,9 @@ var createTheme = Vue.extend({
             //定义存储从前端获取的数据，用于与后台进行传输
             themeObj: {
                 classinfo: [{
-                    id: "1",
-                    mcname: "",
+                    id: 2,
+                    mcname: "new model class",
+                    children:[],
                     modelsoid: [],
                 }],
                 dataClassInfo: [{
@@ -175,6 +195,235 @@ var createTheme = Vue.extend({
         }
     },
     methods: {
+        test(){
+            console.log(this.modelClassInfos)
+        },
+        findFirstChildObj(parent){
+            var node
+            if(parent.children.length==0){
+                node = parent
+            }
+            else{
+                if(parent.children[0].children.length > 0){
+                    this.findFirstChild(parent.children[0])
+                }else{
+                    node = parent.children[0]
+                }
+
+            }
+
+            return node
+
+        },
+        findFirstChild(parent){
+            var nodeId
+            if(parent.children[0].children.length > 0){
+                this.findFirstChild(parent.children[0])
+            }else{
+                nodeId = parent.children[0].id
+            }
+            return nodeId
+        },
+        findTableData(modelClass){
+            if(modelClass.children.length ==0 && modelClass.id == this.currentNode){
+                return modelClass.modelsoid
+            }else if(modelClass.children.length > 0){
+                for (let n = 0; n <modelClass.children.length; n++) {
+                    var flag = this.findTableData(modelClass.children[n])
+                    if (flag != null) {
+                        return flag
+                    }
+                }
+            }else{
+                return null
+            }
+
+        },
+        findModelClass(modelClass, classId){
+            if(modelClass.id == classId){
+                return modelClass
+            }else if(modelClass.children.length > 0){
+                for (let n = 0; n <modelClass.children.length; n++) {
+                    var flag = this.findModelClass(modelClass.children[n])
+                    if (flag != null) {
+                        return flag
+                    }
+                }
+            }else{
+                return null
+            }
+        },
+
+        // tree的四个事件
+        changeClassNode(data,node) {
+            if(data.children.length == 0){
+                console.log(data)
+                this.selectedTableData = data.tableData
+                this.currentNode = data.id
+                this.parentNode = false
+                this.childNode = true
+            }else{
+                console.log(this.themeObj)
+                this.currentNode = this.findFirstChild(data)
+                this.parentNode = true
+                this.childNode = false
+            }
+            console.log(this.themeObj)
+            console.log(this.themeData)
+        },
+        append(data) {
+            this.$prompt('Class Name', '提示', {
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No'
+            }).then(({ value }) => {
+                const newChild = { id: id++, label: value ,children: [], tableData:[]};
+                if (!data.children) {
+                    this.$set(data, 'children', []);
+                }
+                data.children.push(newChild);
+                // 找到themeobj中对应的class
+                if(data.id == 1){
+                    this.themeObj.classinfo.push({
+                        id: id-1,
+                        mcname:value,
+                        children:[],
+                        modelsoid: [],
+                    })
+                }else{
+
+                    for (var n = 0; n < this.themeObj.classinfo.length; n++) {
+                        var modelClass = this.findModelClass(this.themeObj.classinfo[n],data.id)
+                        if(modelClass != null){
+                            modelClass.children.push({
+                                id: id-1,
+                                mcname:value,
+                                children:[],
+                                modelsoid: [],
+                            })
+                            break
+                        }
+                    }
+                }
+
+                //更改显示内容
+                this.parentNode = true
+                this.childNode = false
+            }).catch(()=>{
+
+            })
+        },
+        modify(data) {
+            this.$prompt('Class Name', 'Modify the item', {
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No'
+            }).then(({ value }) => {
+                data.label = value
+                // 找到themeobj中对应的class
+                for (var n = 0; n < this.themeObj.classinfo.length; n++) {
+                    var modelClass = this.findModelClass(this.themeObj.classinfo[n],data.id)
+                    if(modelClass != null){
+                        modelClass.mcname=value
+                        break
+                    }
+                }
+            }).catch(()=>{
+
+            })
+        },
+        remove(node, data) {
+            this.$confirm('Are you sure to delete this item?',  {
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No',
+                type: 'warning',
+                center: true
+            }).then(() => {
+
+                if(node.data.id=="2"){
+                    this.$message({
+                        type:'warning',
+                        message:'This item is forbidden to be deleted!',
+                    });
+                }
+                else{
+                    this.$message({
+                        type: 'success',
+                        message: 'delete successfully!'
+                    });
+                    const parent = node.parent;
+                    //删除themeobj中的model class
+                    // 找到themeobj中对应的parent class
+                    for (var n = 0; n < this.themeObj.classinfo.length; n++) {
+                        var modelClass = this.findModelClass(this.themeObj.classinfo[n],parent.data.id)
+                        if(modelClass != null){
+                            //找到孩子节点
+                            var childIndex = modelClass.children.findIndex(d => d.id === data.id);
+                            modelClass.children.splice(childIndex, 1);
+                            console.log(this.themeObj.classinfo)
+                            break
+                        }
+                    }
+                    //删除树
+                    const children = parent.data.children || parent.data;
+                    const index = children.findIndex(d => d.id === data.id);
+                    children.splice(index, 1);
+
+                }
+
+
+            }).catch(()=>{
+
+            })
+        },
+        // model的两个事件
+        addModel(index, row) {
+
+            // 往数组中添加新模型
+            var flag = false
+            for (var n = 0; n < this.selectedTableData.length; n++) {
+                if(this.selectedTableData[n].oid == row.oid){
+                    flag = true
+                    break
+                }
+            }
+            if(!flag){
+                this.selectedTableData.push(row)
+                // 找到当前分类的数组
+                for (var n = 0; n < this.themeObj.classinfo.length; n++) {
+                    var modelsoid = this.findTableData(this.themeObj.classinfo[n])
+                    if(modelsoid != null){
+                        modelsoid.push(row.oid)
+                        break
+                    }
+                }
+                // this.themeObj.classinfo[num].modelsoid.push(row.oid);
+            }
+
+        },
+        deleteModel(index, row) {
+            // 删除数组中的模型
+            for (var n = 0; n < this.selectedTableData.length; n++) {
+                if(this.selectedTableData[n].oid == row.oid){
+                    this.selectedTableData.splice(n, 1);
+                    break
+                }
+            }
+
+            // 找到themeobj中当前分类的数组
+            for (var n = 0; n < this.themeObj.classinfo.length; n++) {
+                var modelsoid = this.findTableData(this.themeObj.classinfo[n])
+                if(modelsoid != null){
+                    for (var m = 0; m < modelsoid.length; m++) {
+                        if(modelsoid[m] == row.oid){
+                            modelsoid.splice(m, 1);
+                            break
+                        }
+                    }
+                    break
+                }
+            }
+
+        },
+
         changeRter(index){
             this.curIndex = index;
             var urls={
@@ -335,9 +584,9 @@ var createTheme = Vue.extend({
 
                 this.editableTabsValue_applications = activeName;
                 this.editableTabs_applications = tabs.filter(tab => tab.name !== targetName);
-                
-                
-                
+
+
+
                 let num;
                 for (i=0;i<this.themeObj.application.length;i++){
                     if(this.themeObj.application[i].id == targetName){
@@ -756,16 +1005,16 @@ var createTheme = Vue.extend({
             that.editableTabs_data[index].title = $(".category_name2").eq(index).val();
         });
         $(document).on('keyup','.application_name',function ($event) {
-                    let name_input=$(".application_name");
-                    let index=0;
-                    for(;index<name_input.length;index++){
-                        if($(this)[0]==name_input.eq(index)[0]){
-                            break;
-                        }
-                    }
-                    that.themeObj.application[index].applicationname = $("#applicationname"+ index).val();
-                    that.editableTabs_applications[index].title = $(".application_name").eq(index).val();
-         });
+            let name_input=$(".application_name");
+            let index=0;
+            for(;index<name_input.length;index++){
+                if($(this)[0]==name_input.eq(index)[0]){
+                    break;
+                }
+            }
+            that.themeObj.application[index].applicationname = $("#applicationname"+ index).val();
+            that.editableTabs_applications[index].title = $(".application_name").eq(index).val();
+        });
 
         $(document).on('keyup','.application_link',function ($event) {
             let link_input=$(".application_link");
@@ -816,10 +1065,16 @@ var createTheme = Vue.extend({
                             return true
                         } else{
                             for (i = 0; i < that.themeObj.classinfo.length; i++) {
-                                if (that.themeObj.classinfo[i].mcname == "" || that.themeObj.classinfo[i].modelsoid.length == 0) {
+
+                                // console.log((that.findFirstChild(that.themeObj.classinfo[i])))
+                                if (that.themeObj.classinfo[i].mcname == "" || (that.findFirstChildObj(that.themeObj.classinfo[i])).modelsoid.length==0) {
                                     alert("Please complete the information");
                                     return false;
                                 }
+                                // if (that.themeObj.classinfo[i].mcname == "" || that.themeObj.classinfo[i].modelsoid.length == 0) {
+                                //     alert("Please complete the information");
+                                //     return false;
+                                // }
                             }
                         }
                         return true;
@@ -1017,7 +1272,7 @@ var createTheme = Vue.extend({
             $('#imgFile'+index).click();
         });
         $(document).on('change','.img_file',function ($event) {
-        // $(".img_file").change(function () {
+            // $(".img_file").change(function () {
             //匹配id，增加image
             let num;
             for (i=0;i<that.themeObj.application.length;i++){
@@ -1075,8 +1330,8 @@ var createTheme = Vue.extend({
                     if (data == "ERROR") {
                         alert(data);
                     }
-                    // if(!json.doi){
-                    //     alert("ERROR")
+                        // if(!json.doi){
+                        //     alert("ERROR")
                     // }
                     else {
                         var json = eval('(' + data + ')');
@@ -1271,16 +1526,15 @@ var createTheme = Vue.extend({
             console.log(that.themeObj);
 
             that.themeObj.uploadImage = $('#imgShow').get(0).currentSrc;
-
             that.themeObj.tabledata = that.editableTabs_model;
-
             let formData=new FormData();
-
             if ((oid === "0") || (oid === "") || (oid == null)) {
                 let file = new File([JSON.stringify(that.themeObj)],'ant.txt',{
                     type: 'text/plain',
                 });
                 formData.append("info",file);
+                console.log(that.themeObj);
+                console.log(formData);
                 $.ajax({
                     url: "/theme/addTheme",
                     type: "POST",
@@ -1311,6 +1565,7 @@ var createTheme = Vue.extend({
                     type: 'text/plain',
                 });
                 formData.append("info",file);
+                console.log(formData)
                 $.ajax({
                     url: "/theme/update",
                     type: "POST",
@@ -1468,5 +1723,6 @@ var createTheme = Vue.extend({
                 $(this).parents('.panel').eq(0).children('.panel-heading').children().children().html("NEW");
             }
         })
+
     }
 })
