@@ -298,55 +298,57 @@
                 <el-tabs v-model="activeTask" type="border-card" class="sideTabs" style="height: 100%;">
                     <el-tab-pane label="Current Action" name="currentTask">
                         <div class="flexCol flexJustStart flexAlignCenter wzhScrollbar"
-                             style="padding: 5px;height: calc(100% - 34px);">
+                             style="padding: 5px;height: calc(100% - 34px);max-height: 730px">
                             <div v-if="modelActions.length==0" style="margin-top: 25px">
                                 <p style="font-style: italic">You haven't selected models yet.</p>
                             </div>
                             <div class="flexAlignCenter" v-if="currentTask!={}&&modelActions.length!=0" style="margin-top: 5px;width: 100%">
                                 <p class="noMargin">Current Editing Task: </p>
-                                <a class="cursorPointer" @click="checkTaskInfo(currentTask)">&nbsp{{currentTask.taskName}}</a>
+                                <a class="cursorPointer" @click="checkTaskInfo(currentTask )">&nbsp{{currentTask.taskName}}</a>
                             </div>
-                            <div class="wzhCard_w100" v-for="(modelAction,frontId) in modelActions" :key="frontId">
-                                <div class="flexJustStart" style="min-height: 40px;max-height: 60px">
-                                    <div class="flexColCenter w100" style="padding: 5px">
-                                        <a class="w100 cursorPointer" @click="seeDetailPage(modelAction.modelOid)" style=";margin-right: 10px">
-                                            <p style="color: inherit;font-size: 16px"
-                                               class="itemTitle noMargin twoLine">{{modelAction.name}}</p>
-                                        </a>
-                                        <i class="fa fa-trash-o cursorPointer" style="font-size: 16px;color: #ec0817" @click="deleteModelClick(modelAction)"></i>
+                            <div class="wzhScrollbar" style="width: 100%;padding-right: 10px">
+                                <div class="wzhCard_w100" v-for="(modelAction,frontId) in modelActions" :key="frontId">
+                                    <div class="flexJustStart" style="min-height: 40px;max-height: 60px">
+                                        <div class="flexColCenter w100" style="padding: 5px">
+                                            <a class="w100 cursorPointer" @click="seeDetailPage(modelAction.modelOid)" style=";margin-right: 10px">
+                                                <p style="color: inherit;font-size: 16px"
+                                                   class="itemTitle noMargin twoLine">{{modelAction.name}}</p>
+                                            </a>
+                                            <i class="fa fa-trash-o cursorPointer" style="font-size: 16px;color: #ec0817" @click="deleteModelClick(modelAction)"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flexAlignCenter flexJustEnd flexWrap"
+                                         style="min-height: 60px;max-height: 85px;background: #ecf6ff">
+                                        <el-button type="primary" size="mini" round style="margin-right: 10px"
+                                                   @click="modelConfiguration(modelAction)">Configuration
+                                        </el-button>
+                                        <el-button type="primary" size="mini" round style="margin-right: 10px"
+                                                   @click="dataConfigurationModel(modelAction)">Load/Check Data
+                                        </el-button>
                                     </div>
                                 </div>
-                                <div class="flexAlignCenter flexJustEnd flexWrap"
-                                     style="min-height: 60px;max-height: 85px;background: #ecf6ff">
-                                    <el-button type="primary" size="mini" round style="margin-right: 10px"
-                                               @click="modelConfiguration(modelAction)">Configuration
-                                    </el-button>
-                                    <el-button type="primary" size="mini" round style="margin-right: 10px"
-                                               @click="dataConfigurationModel(modelAction)">Load/Check Data
-                                    </el-button>
-                                </div>
-                            </div>
-                            <div class="wzhCard_w100" v-for="(dataProcessing,frontId) in dataProcessings" v-if="dataProcessing.name!=undefined" :key="frontId">
-                                <div class="flexJustStart" style="min-height: 40px;max-height: 60px">
-                                    <div class="flexColCenter w100" style="padding: 5px">
-                                        <a class="w100 cursorPointer" @click="seeDetailPage(dataProcessing.modelOid)" style=";margin-right: 10px">
-                                            <p style="color: inherit;font-size: 16px"
-                                               class="itemTitle noMargin twoLine">{{dataProcessing.name}}</p>
-                                        </a>
-                                        <i class="fa fa-trash-o cursorPointer" style="font-size: 16px;color: #ec0817" @click="deleteDataProcessingClick(dataProcessing)"></i>
+                                <div class="wzhCard_w100" v-for="(dataProcessing,frontId) in dataProcessings" v-if="dataProcessing.name!=undefined" :key="frontId">
+                                    <div class="flexJustStart" style="min-height: 40px;max-height: 60px">
+                                        <div class="flexColCenter w100" style="padding: 5px">
+                                            <a class="w100 cursorPointer" @click="seeDetailPage(dataProcessing.modelOid)" style=";margin-right: 10px">
+                                                <p style="color: inherit;font-size: 16px"
+                                                   class="itemTitle noMargin twoLine">{{dataProcessing.name}}</p>
+                                            </a>
+                                            <i class="fa fa-trash-o cursorPointer" style="font-size: 16px;color: #ec0817" @click="deleteDataProcessingClick(dataProcessing)"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flexAlignCenter flexJustEnd flexWrap"
+                                         style="min-height: 60px;max-height: 85px;background: #fcf0ff;">
+                                        <!--                                    <el-button type="primary" size="mini" round style="margin-right: 10px"-->
+                                        <!--                                               @click="modelConfiguration(dataProcessing)">Configuration-->
+                                        <!--                                    </el-button>-->
+                                        <el-button type="primary" size="mini" round style="margin-right: 10px"
+                                                   @click="dataConfigurationDataP(dataProcessing)">Load/Check Data
+                                        </el-button>
                                     </div>
                                 </div>
-                                <div class="flexAlignCenter flexJustEnd flexWrap"
-                                     style="min-height: 60px;max-height: 85px;background: #fff0f6;">
-<!--                                    <el-button type="primary" size="mini" round style="margin-right: 10px"-->
-<!--                                               @click="modelConfiguration(dataProcessing)">Configuration-->
-<!--                                    </el-button>-->
-                                    <el-button type="primary" size="mini" round style="margin-right: 10px"
-                                               @click="dataConfigurationDataP(dataProcessing)">Load/Check Data
-                                    </el-button>
-                                </div>
                             </div>
-                            <el-button v-if="modelActions.length!=0" type="success" style="margin-top:10px;font-weight: 700;" size="small"
+                           <el-button v-if="modelActions.length!=0" type="success" style="margin-top:10px;font-weight: 700;" size="small"
                                        @click="taskConfigure(1)">Save Task
                             </el-button>
                         </div>
@@ -401,7 +403,7 @@
         <div>
             <div class="clearfix" style="margin: 0px 5px 10px;background: #f5f5f5;box-shadow:0 3.2px 7.2px 0 rgba(0,0,0,0.141), 0 0.6px 1.8px 0 rgba(0, 0, 0, .112)">
                 <h4 style="text-align: center;margin-top: 5px">Data Bus</h4>
-                <div v-for="dataLine in dataLines" class="dataBusContainer flexAlignCenter wzhScrollbar" style="width: 100%;height: 150px;z-index: 99;">
+                <div v-for="dataLine in dataLines" class="dataBusContainer flexAlignCenter wzhScrollbar" style="width: 100%;height: 150px;z-index: 1;">
                     <!--                    <div class="innerBorder" v-if="Object.keys(dataItemList).length!=0"></div>-->
                     <div class="acrylicMask" ref="acrylicMask" @click="flatContainer($event)"></div>
                     <div class="dataFlowRoad" ref="dataFlowRoad">
@@ -413,27 +415,36 @@
                             <div class="wzhCard " :ref="'dataItemCard'+dataItem.eventId"
                                  v-for="dataItem in dataItems"
                                  :class="linkedDataItems.indexOf(dataItem)==-1?'':'lightingDataItem'"
-                                 style="min-width: 145px;max-width: 145px;height: 130px;border-bottom: 8px solid; "
+                                 style="min-width: 150px;max-width: 150px;height: 130px;border-bottom: 8px solid;padding: 10px 5px "
                                  :style="{borderBottomColor:getBottomBorder(dataItem)}" >
                                 <a class="w100" >
                                     <p class="textEllipsis cursorPointer" :style="{color:getColor(dataItem.parentId)}" @click="riseDataItem(dataItem,i)">{{dataItem.eventName==undefined?dataItem.name:dataItem.eventName}}</p>
                                 </a>
-                                <el-tooltip class="item" effect="dark" :content="Bottom Left 提示文字" placement="bottom-start">
-                                    <p v-if="dataItem.eventType==='response'&&!dataItem.optional"><span style="color: #ff0000">*</span> required input</p>
-                                    <p v-if="dataItem.eventType==='response'&&dataItem.optional">optional input</p>
-                                    <p v-if="dataItem.eventType==='noresponse'">output</p>
+                                <el-tooltip class="item" effect="dark" :content="'Action: '+getParentName(dataItem.parentId)" placement="top-start">
+                                    <el-tag type="info" v-if="dataItem.eventType==='response'&&!dataItem.optional"><span style="color: #ff0000">*</span> required input</el-tag>
+                                    <el-tag type="info" v-if="dataItem.eventType==='response'&&dataItem.optional">optional input</el-tag>
+                                    <el-tag type="info" v-if="dataItem.eventType==='noresponse'">output</el-tag>
                                 </el-tooltip>
                                 <p></p>
+<!--                                input-->
                                 <el-button style="float: right"
                                            v-if="dataItem.eventType==='response'"
                                            size="mini" type="primary" plain round @click="dataItemConfig(dataItem)">
                                     config
                                 </el-button>
-                                <el-button circle type="success" size="mini" icon="el-icon-check" v-if="dataItem.eventType==='noresponse'">
-
+                                <el-button circle type="success" size="mini" plain icon="el-icon-files"
+                                           v-if="dataItem.eventType=='response'&&checkDataLoaded(dataItem)=='loaded'">
+                                </el-button>
+                                <el-button circle type="success" size="mini" plain icon="el-icon-connection"
+                                           v-if="dataItem.eventType=='response'&&checkDataLoaded(dataItem)=='linked'">
+                                </el-button>
+<!--                                output-->
+                                <el-button circle type="success" size="mini" icon="el-icon-check"
+                                           v-if="dataItem.eventType=='noresponse'&&checkDataLoaded(dataItem)=='runned'"
+                                           @click="downloadDataItem(dataItem)">
                                 </el-button>
                                 <el-button style="float: right"
-                                           v-if="dataItem.eventType==='noresponse'&&dataItem.value!=undefined&&dataItem.value!=''"
+                                           v-if="dataItem.eventType==='noresponse'&&checkDataLoaded(dataItem)=='runned'"
                                            size="mini" type="success" plain round @click="dataItemConfig(dataItem)">
                                     check output
                                 </el-button>
@@ -1013,7 +1024,7 @@
     </span>
     </el-dialog>
 
-    <el-dialog title="Input Data Config" :visible.sync="eventConfigDialog" width="60%">
+    <el-dialog :title="singleDataConfigTitle" :visible.sync="eventConfigDialog" width="60%">
         <el-table :data="configEvent" style="width: 100%"
                   :key="Math.random()"
                   row-key="dataId"
@@ -1083,7 +1094,7 @@
                     <div class="_btn-group" v-if="scope.row.children==undefined">
 
                         <el-button
-                                v-if="(scope.row.link == undefined||scope.row.link == '' )||configModelAction.step>1"
+                                v-if="scope.row.eventType=='response'&&((scope.row.link == undefined||scope.row.link == '' )||configModelAction.step>1)"
                                 plain round type="primary" size="small"
                                 @click="openUserDataSpace(scope.row)">
                             <i class="fa fa-folder-open"></i>
@@ -1562,13 +1573,13 @@
 
     </el-dialog>
 
-    <el-dialog title="Computable Model" :visible.sync="dataMethodTableDialog" width="55%">
+    <el-dialog title="Data Method" :visible.sync="dataMethodTableDialog" width="55%">
         <div v-loading="dataMethodLoading">
             <div class="flexRow flexJustCenter" style="margin-top: 12px; margin-left: 10px;">
                 <div class="flexRow flexColCenter" style="width: 50%;mini-width:250px">
-                    <input placeholder="Search for ..." v-model="searchText" class="noBorderInput miniInput" @keyup.enter="searchDeployedModel(1)">
+                    <input placeholder="Search for ..." v-model="searchDataMethodText" class="noBorderInput miniInput" @keyup.enter="searchDataMethod(1)">
                 </div>
-                <i class="fa fa-search cursorPointer" style="font-size: 18px;" @click="searchDeployedModel(1)"></i>
+                <i class="fa fa-search cursorPointer" style="font-size: 18px;" @click="searchDataMethod(1)"></i>
             </div>
             <p style="margin-left: 18px;font-style: italic;color: #999999">Search result.</p>
             <el-table style="padding-left:10px "
