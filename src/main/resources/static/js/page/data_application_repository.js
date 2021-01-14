@@ -18,7 +18,7 @@ var data_items = new Vue({
                 page: 1,
                 pageSize: 10,
                 asc: false,
-                sortField:"createTime",
+                sortField:"viewCount",
                 method:'Conversion',
                 searchText:'',
                 curQueryField:'',
@@ -44,7 +44,7 @@ var data_items = new Vue({
             // stretch:true,
             // dataApplication: [],
             // // categoryId:"5cb83fd0ea3cba3224b6e24e",
-            sortField:"Create Time",
+            sortField:"View Count",
             sortOrder:"Desc.",
             asc:false,
 
