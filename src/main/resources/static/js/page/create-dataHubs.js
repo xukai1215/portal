@@ -417,6 +417,8 @@ var createDataHubs = Vue.extend({
             }
         },
         deleteImg(){
+            let obj = document.getElementById('imgOne')
+            obj.value = ''
             this.$set(this.itemInfo,'image' , '')
             console.log(this.itemInfo.image)
         },

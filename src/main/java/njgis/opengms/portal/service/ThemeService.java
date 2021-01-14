@@ -2234,7 +2234,7 @@ public class ThemeService {
                     themeVersion.setImage(path);
                 }else {
                     String[] names = uploadImage.split("theme");
-                    themeVersion.setImage("/theme/"+names[1]);
+                    themeVersion.setImage("/repository/theme/"+names[1]);
                 }
 
                 List<Application> applications = themeUpdateDTO.getApplication();
@@ -2254,6 +2254,7 @@ public class ThemeService {
                     }
                 }
                 themeVersion.setApplication(applications);
+                themeVersion.setMaintainer(theme.getMaintainer());
                 themeVersion.setModifierOid(oid);
                 themeVersion.setStatus(0);
                 userService.messageNumPlusPlus(authorUserName);

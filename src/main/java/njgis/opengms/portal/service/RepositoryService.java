@@ -331,7 +331,7 @@ public class RepositoryService {
 
         ModelAndView modelAndView = new ModelAndView();
 
-        Theme theme = themeDao.findByOid(id);
+        Theme theme = themeDao.findFirstByOid(id);
         theme=(Theme)itemService.recordViewCount(theme);
         themeDao.save(theme);
 

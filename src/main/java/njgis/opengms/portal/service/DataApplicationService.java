@@ -443,6 +443,7 @@ public class DataApplicationService {
 
             dataApplication.setName(jsonObject.getString("name"));
             dataApplication.setStatus(jsonObject.getString("status"));
+            dataApplication.setMethod(jsonObject.getString("method"));
             dataApplication.setDetail(jsonObject.getString("detail"));
             dataApplication.setDescription(jsonObject.getString("description"));
             dataApplication.setContentType(jsonObject.getString("contentType"));
