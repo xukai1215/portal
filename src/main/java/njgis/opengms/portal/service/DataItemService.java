@@ -911,6 +911,7 @@ public class DataItemService {
 
 
     public JSONObject searchByCurQueryField(DataItemFindDTO dataItemFindDTO,String userOid, String curQueryField) {
+
         int page = dataItemFindDTO.getPage() - 1;
         int pageSize = dataItemFindDTO.getPageSize();
         String searchText = dataItemFindDTO.getSearchText();
@@ -972,8 +973,8 @@ public class DataItemService {
                     User user = userDao.findFirstByName(searchText);
                     if(user != null && user.getOid() != ""){
                         dataItemPages = dataHubsDao.findByAuthorLikeIgnoreCase(pageable, user.getOid());
-                    }else{
-                        return null;
+                    }else{      // 取一个不存在的名字，不然重新构造太麻烦了
+                        dataItemPages = dataHubsDao.findByAuthorLikeIgnoreCase(pageable, "hhhhhhhhhhhhhhhh");
                     }
                     break;
                 }
@@ -1000,8 +1001,8 @@ public class DataItemService {
                     User user = userDao.findFirstByName(searchText);
                     if(user!=null && user.getOid() != ""){
                         dataItemPages = dataItemDao.findByAuthorLikeIgnoreCase(pageable, user.getOid());
-                    }else{
-                        return null;
+                    }else{      // 取一个不存在的名字，不然重新构造太麻烦了
+                        dataItemPages = dataItemDao.findByAuthorLikeIgnoreCase(pageable, "hhhhhhhhhhhhhhhhh");
                     }
                     break;
                 }
