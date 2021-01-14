@@ -6,7 +6,7 @@ var data_items = new Vue({
     data: function () {
         return {
             activeIndex: '3',
-            searchText: new Array(),
+            searchText: '',
             progressBar: true,
             currentPage: 1,
             viewCount:-1,
@@ -20,7 +20,7 @@ var data_items = new Vue({
                 asc: false,
                 classifications:[],
                 category:'',
-                searchContent:[],
+                searchContent:'',
                 curQueryField:'',
             },
             list:new Array(),
@@ -37,7 +37,7 @@ var data_items = new Vue({
             hubnbm:'',
             tObj:new Object(),
             categoryTree:[],
-            theDefaultCate:'5f3e42070e989714e8364e9a',
+            curDefaultCate:'5f3e42070e989714e8364e9a',
             loading:false,
             useroid:'',
             dataType:"hubs",
@@ -126,35 +126,31 @@ var data_items = new Vue({
         },
         //文本检索
         search(){
-            // this.searchText=$('#searchBox').val();
+            if(this.searchText === ''){
+                this.chooseCate(this.curDefaultCate)
+            }
+
             this.loading=true;
             var that=this
             that.progressBar=true
             let li=that.list;
             let slist=new Array();
-            if(this.searchText.length!=0){
-                this.findDto.searchText=this.searchText;
-                this.findDto.page=1;
-                this.findDto.tabType = this.dataType;
-                this.findDto.asc = this.asc;
-                this.findDto.curQueryField = this.curQueryField;
-                axios.post("/dataItem/searchByCurQueryField",that.findDto)
-                    .then((res)=>{
-                        console.log(res);
-                        setTimeout(()=>{
-                            that.list=res.data.data.list;
-                            that.progressBar=false;
-                            that.datacount=res.data.data.total;
-                            that.users=res.data.data.users;
-                            that.loading=false;
-                        },100)
-                    });
-            }else{
-                this.datacount=0;
-                this.list=[]
-                this.list.push("no content");
-                that.progressBar=false;
-            }
+            this.findDto.searchText=this.searchText;
+            this.findDto.page=1;
+            this.findDto.tabType = this.dataType;
+            this.findDto.asc = this.asc;
+            this.findDto.curQueryField = this.curQueryField;
+            axios.post("/dataItem/searchByCurQueryField",that.findDto)
+                .then((res)=>{
+                    console.log(res);
+                    setTimeout(()=>{
+                        that.list=res.data.data.list;
+                        that.progressBar=false;
+                        that.datacount=res.data.data.total;
+                        that.users=res.data.data.users;
+                        that.loading=false;
+                    },100)
+                });
         },
         //页码点击翻页
         handleCurrentChange(currentPage) {
@@ -164,10 +160,10 @@ var data_items = new Vue({
             this.findDto.asc = this.asc;
             var that=this
             if(this.ca!=''){
-                axios.get("/dataItem/items/"+this.theDefaultCate+"&"+currentPage+"&"+this.dataType+"&"+this.sortFieldName+"&"+this.sortOrder)
+                axios.get("/dataItem/items/"+this.curDefaultCate+"&"+currentPage+"&"+this.dataType+"&"+this.sortFieldName+"&"+this.sortOrder)
                     .then(res=>{
                         setTimeout(()=>{
-                            window.history.pushState(null,null,"?category="+that.theDefaultCate+"&page="+that.findDto.page)
+                            window.history.pushState(null,null,"?category="+that.curDefaultCate+"&page="+that.findDto.page)
                             that.list=res.data.data.content;
                             that.datacount=res.data.data.totalElements;
                             that.users=res.data.data.users;
@@ -192,10 +188,10 @@ var data_items = new Vue({
             this.classlist=val;
         },
         chooseCate(item){
+            this.curDefaultCate = item
             this.searchText = ''
-            this.theDefaultCate=item
             this.findDto.page=1
-            window.history.pushState(null,null,"?category="+this.theDefaultCate+"&page="+this.findDto.page)
+            window.history.pushState(null,null,"?category="+this.curDefaultCate+"&page="+this.findDto.page)
             this.getParams()
             var this_button=$('#'+item)
             this.datacount=-1
@@ -224,7 +220,7 @@ var data_items = new Vue({
             if(this.ca==="Hubs"){
                 this.hubs();
             }else {
-                axios.get("/dataItem/items/"+this.theDefaultCate+"&"+1+"&"+this.dataType+"&"+this.sortFieldName+"&"+this.sortOrder)
+                axios.get("/dataItem/items/"+this.curDefaultCate+"&"+1+"&"+this.dataType+"&"+this.sortFieldName+"&"+this.sortOrder)
                     .then(res=>{
                         setTimeout(()=>{
                             console.log(res)
@@ -243,7 +239,7 @@ var data_items = new Vue({
             this.progressBar=true;
             this.loading=true;
             // //todo 默认第一个按钮被选中
-            var this_button=$('#'+this.theDefaultCate)
+            var this_button=$('#'+this.curDefaultCate)
             // e.target.style.color="green";
             this_button[0].style.color="green";
             this_button[0].style.fontWeight="bold";
@@ -257,7 +253,7 @@ var data_items = new Vue({
             this.ca=this_button[0].innerText
             var that=this;
             let sendDate = (new Date()).getTime();
-            axios.get("/dataItem/items/"+this.theDefaultCate+"&"+1+"&"+this.dataType+"&"+this.sortFieldName+"&"+this.sortOrder)
+            axios.get("/dataItem/items/"+this.curDefaultCate+"&"+1+"&"+this.dataType+"&"+this.sortFieldName+"&"+this.sortOrder)
                 .then(res=>{
                     let receiveDate = (new Date()).getTime();
                     let responseTimeMs = receiveDate - sendDate;
@@ -352,7 +348,7 @@ var data_items = new Vue({
         getParams(){
             let category=this.GetQueryString("category");
             let page=this.GetQueryString("page");
-            this.theDefaultCate=category
+            this.curDefaultCate=category
             this.findDto.page=page
         },
         GetQueryString(name) {
@@ -374,7 +370,7 @@ var data_items = new Vue({
         },
         getData(){
             let that = this;
-            axios.get("/dataItem/items/"+this.theDefaultCate+"&"+this.currentPage+"&"+this.dataType+"&"+this.sortFieldName+"&"+this.sortOrder)
+            axios.get("/dataItem/items/"+this.curDefaultCate+"&"+this.currentPage+"&"+this.dataType+"&"+this.sortFieldName+"&"+this.sortOrder)
                 .then(res=>{
                     setTimeout(()=>{
                         console.log(res)
@@ -396,7 +392,7 @@ var data_items = new Vue({
         let index = u.lastIndexOf("\/");
         that.dataType = u.substring(index+1,u.length);
         if(f[f.length-1]==="hubs"){
-            axios.get("/dataItem/items/"+this.theDefaultCate+"&"+1+"&"+this.dataType+"&"+this.sortFieldName+"&"+this.sortOrder)
+            axios.get("/dataItem/items/"+this.curDefaultCate+"&"+1+"&"+this.dataType+"&"+this.sortFieldName+"&"+this.sortOrder)
                 .then(res=>{
                     setTimeout(()=>{
                         console.log(res)
@@ -422,7 +418,7 @@ var data_items = new Vue({
             }
             this.ca="Land Regions";
         }else if(f[f.length-1]==="repository"){
-            axios.get("/dataItem/items/"+this.theDefaultCate+"&"+1+"&"+this.dataType+"&"+this.sortFieldName+"&"+this.sortOrder)
+            axios.get("/dataItem/items/"+this.curDefaultCate+"&"+1+"&"+this.dataType+"&"+this.sortFieldName+"&"+this.sortOrder)
                 .then(res=>{
                     setTimeout(()=>{
                         console.log(res)
@@ -448,7 +444,7 @@ var data_items = new Vue({
             }
             this.ca="Land Regions";
         }else if(f[f.length-1]==="network"){
-            axios.get("/dataItem/items/"+this.theDefaultCate+"&"+1+"&"+this.dataType+"&"+this.sortFieldName+"&"+this.sortOrder)
+            axios.get("/dataItem/items/"+this.curDefaultCate+"&"+1+"&"+this.dataType+"&"+this.sortFieldName+"&"+this.sortOrder)
                 .then(res=>{
                     setTimeout(()=>{
                         console.log(res)
