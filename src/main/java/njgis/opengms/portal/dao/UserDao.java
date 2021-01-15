@@ -17,6 +17,8 @@ public interface UserDao extends MongoRepository<User,String> {
 
     User findFirstByName(String name);
 
+    User findFirstByNameLikeIgnoreCase(String name);
+
     User findFirstByEmail(String email);
 
     User findFirstByUserName(String username);
