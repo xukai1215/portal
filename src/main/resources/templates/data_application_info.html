@@ -289,22 +289,6 @@
                 </div>
             </div>
 
-            <div id="link" class="detail_block"
-                 th:if="${dataApplicationInfo.contentType=='Link'||(dataApplicationInfo.contentType=='Service')}">
-                <div class="block_head">
-                    <div class="head_text">
-                        <h4>Link</h4>
-                    </div>
-                </div>
-                <div class="block_content flex">
-                    <div id="link-text" class="width:100%">
-                        <a th:href="${dataApplicationInfo.url}" th:text="${dataApplicationInfo.url}" target="_blank">
-                            https://geomodeling.njnu.edu.cn/conceptualmodel/4e028983-c8c0-4d98-86cd-85fc16a00d21
-                        </a>
-                    </div>
-                </div>
-            </div>
-
             <div id="invoke" class="detail_block">
                 <div class="block_head">
                     <div class="head_text">
@@ -348,6 +332,22 @@
 <!--                        the personal center to create a service" placement="top-start">-->
                             <el-button  icon="el-icon-plus" @click="addNewDialog=true"></el-button>
 <!--                        </el-tooltip>-->
+                    </div>
+                </div>
+            </div>
+
+            <div id="link" class="detail_block"
+                 th:if="${dataApplicationInfo.contentType=='Link'||(dataApplicationInfo.contentType=='Service')}">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Link</h4>
+                    </div>
+                </div>
+                <div class="block_content flex">
+                    <div id="link-text" class="width:100%">
+                        <a th:href="${dataApplicationInfo.url}" th:text="${dataApplicationInfo.url}" target="_blank">
+                            https://geomodeling.njnu.edu.cn/conceptualmodel/4e028983-c8c0-4d98-86cd-85fc16a00d21
+                        </a>
                     </div>
                 </div>
             </div>

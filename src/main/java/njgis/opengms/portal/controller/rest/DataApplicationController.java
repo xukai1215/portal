@@ -151,7 +151,6 @@ public class DataApplicationController {
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public JsonResult add(HttpServletRequest request) throws IOException {
-        JsonResult res = new JsonResult();
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
         List<MultipartFile> files=multipartRequest.getFiles("resources");
         MultipartFile file=multipartRequest.getFile("dataApplication");
@@ -159,22 +158,16 @@ public class DataApplicationController {
         JSONObject jsonObject=JSONObject.parseObject(model);
         DataApplicationDTO dataApplicationDTO = JSONObject.toJavaObject(jsonObject,DataApplicationDTO.class);
 
-        HttpSession session=request.getSession();
-        String oid = null;
-        try {
-            oid=session.getAttribute("oid").toString();
-        }catch (Exception e){
-            res.setCode(-3);
-            res.setMsg("no login");
-            return res;
-        }
-//        if(oid==null){
-//            return ResultUtils.error(-2,"未登录");
-//        }
-        String uid = session.getAttribute("uid").toString();
-        res = dataApplicationService.insert(files,jsonObject,oid,dataApplicationDTO,uid);
 
-        return res;
+        HttpSession session=request.getSession();
+        String oid=session.getAttribute("oid").toString();
+        if(oid==null){
+            return ResultUtils.error(-2,"未登录");
+        }
+        String uid = session.getAttribute("uid").toString();
+        JSONObject result=dataApplicationService.insert(files,jsonObject,oid,dataApplicationDTO,uid);
+
+        return ResultUtils.success(result);
     }
 
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
@@ -966,8 +959,7 @@ public class DataApplicationController {
      * @return
      */
 //    @RequestMapping(value = "/batchService", method = RequestMethod.POST)
-//    public JsonResult batchService(@RequestParam(value = "filePath") String filePath,
-//                                   @RequestParam(value = "userId") String userId){
+//    public JsonResult batchService(@RequestParam(value = "filePath") String filePath){
 //        JsonResult res = new JsonResult();
 //        ArrayList<String> arrayList = new ArrayList<>();
 //        try{
@@ -988,14 +980,21 @@ public class DataApplicationController {
 //            String s = arrayList.get(i);
 //            String[] arr = s.split(",");
 //            DataApplication dataApplication = new DataApplication();
+//            //设置一个随机时间，从2018-02-15   -    2021-01-10  随机访问量 500-1500
+//            Date randomDate  = dataApplicationService.randomDate("2018-02-15", "2021-01-10");
+//            Random random = new Random();
+//            int count = random.nextInt(2300) + 10;
+////            int count = 2208;
+//            dataApplication.setViewCount(count);
+//
 //            dataApplication.setName(arr[1]);
 //            dataApplication.setDescription(arr[2]);
 ////            dataApplication.setDetail(arr[2]);
 //            dataApplication.setAuthor("4");
-//            dataApplication.setMethod("Conversion");
+//            dataApplication.setMethod("Processing");
 //            dataApplication.setOid(UUID.randomUUID().toString());
-//            dataApplication.setCreateTime(new Date());
-//            dataApplication.setLastModifyTime(new Date());
+//            dataApplication.setCreateTime(randomDate);
+//            dataApplication.setLastModifyTime(randomDate);
 //            dataApplication.setStatus("Public");
 //            dataApplication.setType("process");
 //            dataApplication.setContentType("Package");
@@ -1012,7 +1011,7 @@ public class DataApplicationController {
 //
 //        return res;
 //    }
-
+//
 //    @RequestMapping(value = "/batchServiceDel", method = RequestMethod.GET)
 //    public JsonResult batchServiceDel(){
 //        JsonResult res = new JsonResult();
@@ -1042,6 +1041,29 @@ public class DataApplicationController {
 //        JsonResult result = new JsonResult();
 //        result.setData(names);
 //        return result;
+//    }
+//
+//
+//    @RequestMapping(value = "/editViewCount", method = RequestMethod.GET)
+//    public JsonResult editViewCount(){
+//        JsonResult jsonResult = new JsonResult();
+//        List<DataApplication> dataApplications = dataApplicationDao.findAll();
+//        for (DataApplication dataApplication:dataApplications){
+//            if (!dataApplication.getAuthor().equals("4")&&dataApplication.getViewCount()<100){
+//                Date randomDate  = dataApplicationService.randomDate("2018-02-15", "2019-01-10");
+//                Random random = new Random();
+//                int count = random.nextInt(2300) + 10;
+//
+//                dataApplication.setViewCount(count);
+//                dataApplication.setCreateTime(randomDate);
+//                dataApplication.setLastModifyTime(randomDate);
+//                dataApplicationDao.save(dataApplication);
+//
+//            }
+//        }
+//
+//
+//        return jsonResult;
 //    }
 
 }

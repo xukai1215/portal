@@ -327,23 +327,19 @@ public class DataItemService {
 
         cate = data.getClassifications();//获得该data item所在分类
         for (int i = 0; i < cate.size(); i++) {
-            DataCategorys dataCategorys = new DataCategorys();
-            if(null == getDataCategoryById(cate.get(i))){
-                continue;
-            }else {
-                ids = dataCategorys.getDataRepository();
-                //删除所属小类中的记录
-                if (ids.size() > 0 && ids != null)
-                    for (int j = 0; j < ids.size(); j++) {
-                        if (ids.get(j).equals(id)) {
-                            newids = delOneOfArrayList(ids, id);
-                            break;
-                        }
+            DataCategorys dataCategorys = getDataCategoryById(cate.get(i));//data item所属类
+            ids = dataCategorys.getDataRepository();
+            //删除所属小类中的记录
+            if (ids.size() > 0&&ids != null)
+                for (int j = 0; j < ids.size(); j++) {
+                    if (ids.get(j).equals(id)) {
+                        newids = delOneOfArrayList(ids, id);
+                        break;
                     }
-                //用户中心删除数控条目时，category库里同时删除
-                dataCategorys.setDataRepository(newids);
-                dataCategorysDao.save(dataCategorys);
-            }
+                }
+            //用户中心删除数控条目时，category库里同时删除
+            dataCategorys.setDataRepository(newids);
+            dataCategorysDao.save(dataCategorys);
         }
 
         List<String> relatedModels = data.getRelatedModels();
@@ -1484,13 +1480,12 @@ public class DataItemService {
     //仿写，上面方面可注释
     public DataCategorys getDataCategoryById(String id) {
 
-        DataCategorys dataCategorys = new DataCategorys();
-        dataCategorys =  dataCategorysDao.findById(id).orElseGet(() -> {
+        return dataCategorysDao.findById(id).orElseGet(() -> {
             System.out.println("有人乱查数据库！！该ID不存在对象");
-            return null;
+            throw new MyException(ResultEnum.NO_OBJECT);
         });
 
-        return dataCategorys;
+
     }
 
 
