@@ -192,8 +192,12 @@ var data_items = new Vue({
         },
         setFindDto(){
             // 填入搜索条件
+            this.findDto.curQueryField = this.curQueryField.toLowerCase()
             if(this.searchText.length!=0){
-                this.findDto.searchText=this.searchText.toLowerCase()
+                if(this.findDto.curQueryField != 'contributor')
+                    this.findDto.searchText = this.searchText.toLowerCase()
+                else
+                    this.findDto.searchText = this.searchText
             } else {
                 this.findDto.searchText = ''
             }
@@ -208,7 +212,6 @@ var data_items = new Vue({
             }else{
                 this.findDto.sortField = 'viewCount'
             }
-            this.findDto.curQueryField = this.curQueryField.toLowerCase()
         },
         getData(){
             this.setFindDto()
