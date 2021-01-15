@@ -1230,9 +1230,9 @@ var vue = new Vue({
                     $('#introContainer').addClass("fixed")
                     if (parseInt(totalHeight) - parseInt(scrollTop) + 62 < parseInt(leftbarHeight)) {
                         $('#introContainer').removeClass("fixed")
-                        $('#introContainer').addClass("stop")
+                        // $('#introContainer').addClass("stop")
                     } else {
-                        $('#introContainer').removeClass("stop")
+                        // $('#introContainer').removeClass("stop")
                         $('#introContainer').addClass("fixed")
                     }
                 } else {
@@ -1395,7 +1395,7 @@ var vue = new Vue({
 
         loadUserTask(val) {
             let href = window.location.href.split('/')
-            let modelId = href[href.length - 1]
+            let modelId = this.oid
 
             axios.get("/task/getTasksByModelByUser", {
                     params:
@@ -1507,10 +1507,12 @@ var vue = new Vue({
 
         async loadExampleData(id) {
             console.log(id)
+            let stateContainer = document.getElementById("state-container"+this.radioStyle)
             const loading = this.$loading({
                 lock: true,
                 text: "Loading",
                 spinner: "el-icon-loading",
+                target:stateContainer,
                 background: "rgba(0, 0, 0, 0.7)"
             });
 
@@ -1530,7 +1532,7 @@ var vue = new Vue({
                     let state = this.info.modelInfo.states.find(state => {
                         return state.name == el.state;
                     });
-
+                    if (state == undefined) return;
                     let event = state.event.find(event => {
                         return event.eventName == el.event;
                     });
@@ -1565,11 +1567,12 @@ var vue = new Vue({
         },
 
         async loadTest(type) {
+            this.loadDataVisible = false
             let stateContainer = document.getElementById("state-container"+this.radioStyle)
             const loading = this.$loading({
                 lock: true,
-                text: "Loading",
-                spinner: "el-icon-loading",
+                text: "Loading Test Data",
+                spinner: "el-icon-loading fixLoading",
                 target:stateContainer,
                 background: "rgba(0, 0, 0, 0.7)"
             });
@@ -1618,7 +1621,9 @@ var vue = new Vue({
                     this.$set(event, "visual", el.visual);
                     if (el.children.length > 0) {
                         if (el.children.length == 1) {
-                            event.children[0].value = el.children[0].value;
+                            let children = event.children[0]
+                            this.$set(children,'value',el.children[0].value)
+                            // event.children[0].value = el.children[0].value;
                         }
                         else {
                             for (i = 0; i < el.children.length; i++) {
@@ -1627,14 +1632,17 @@ var vue = new Vue({
                                     return child.eventName == name;
                                 })
                                 if (eventChild != null) {
-                                    eventChild.value = el.children[i].value;
+                                    this.$set(eventChild,'value',el.children[i].value)
+                                    // eventChild.value = el.children[i].value;
                                 }
                             }
                         }
                     }
 
 
-                });
+                })
+
+                ;
             }catch (e){
                 loading.close()
                 this.$alert('Can not load the test data, please load inputs of the model mannually', 'Tip', {
@@ -1648,14 +1656,18 @@ var vue = new Vue({
             }
 
             loading.close();
+            this.$forceUpdate();
+            this.loadDataVisible = true
             this.loadDataVisible = false
         },
 
         async addDataItemData(event){
+            let stateContainer = document.getElementById("state-container"+this.radioStyle)
             const loading = this.$loading({
                 lock: true,
                 text: "Loading",
                 spinner: "el-icon-loading",
+                target:stateContainer,
                 background: "rgba(0, 0, 0, 0.7)"
             });
             let dataItemId = event.currentTarget.id;
@@ -1782,18 +1794,19 @@ var vue = new Vue({
         },
 
         cancelData(event){
-            // vue.$set(event,'tag',undefined)
-            // vue.$set(event,'suffix',undefined)
-            // vue.$set(event,'url',undefined)
+            this.$set(event,'tag',undefined)
+            this.$set(event,'suffix',undefined)
+            this.$set(event,'url',undefined)
+            this.$forceUpdate()
             // event.tag = undefined
-            this.showDataChose = true//有这两句才能触发重新渲染
-            this.showDataChose = false
+            // this.showDataChose = true//有这两句才能触发重新渲染
+            // this.showDataChose = false
             // this.eventChoosing = []
             // this.eventChoosing = event
-            this.eventChoosing.tag = undefined
-            this.eventChoosing.suffix = undefined
-            this.eventChoosing.url = undefined
-            this.eventChoosing.visual = undefined
+            // this.eventChoosing.tag = undefined
+            // this.eventChoosing.suffix = undefined
+            // this.eventChoosing.url = undefined
+            // this.eventChoosing.visual = undefined
             // $("#datainput" + this.eventChoosing.eventId).val('');
             // n_info = Object.assign({}, this.info)
             // this.$set(this, "info", {})
@@ -2059,7 +2072,7 @@ var vue = new Vue({
         },
 
         async invoke() {
-            let stateContainer = document.getElementsByClassName("state-container el-row el-row--flex")[0]
+            let stateContainer = document.getElementById("state-container"+this.radioStyle)
             let loading = this.$loading({
                 lock: true,
                 text: "Setting parameters...",
