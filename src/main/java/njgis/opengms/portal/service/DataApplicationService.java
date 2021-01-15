@@ -953,7 +953,7 @@ public class DataApplicationService {
                         break;
                     }
                     case "contributor":{
-                        User user = userDao.findFirstByName(searchText);
+                        User user = userDao.findFirstByNameLikeIgnoreCase(searchText);
                         if(user != null){
                             result = dataApplicationDao.findAllByAuthorLikeIgnoreCase(user.getOid(), pageable);
                         } else {        // 娶一个不存在的名字，返回nodata，不能返回null
@@ -985,7 +985,7 @@ public class DataApplicationService {
                         break;
                     }
                     case "contributor":{
-                        User user = userDao.findFirstByName(searchText);
+                        User user = userDao.findFirstByNameLikeIgnoreCase(searchText);
                         if(user != null){
                             result = dataApplicationDao.findAllByAuthorLikeIgnoreCaseAndMethodLikeIgnoreCase(user.getOid(), method, pageable);
                         } else {    // 娶一个不存在的名字，返回nodata，不能返回null
