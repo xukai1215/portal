@@ -166,6 +166,7 @@ public class DataApplicationController {
         }catch (Exception e){
             res.setCode(-3);
             res.setMsg("no login");
+            int i=1;
             return res;
         }
 //        if(oid==null){
