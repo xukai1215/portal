@@ -291,7 +291,7 @@
 
 
             <!--Distributed Node Data2-->
-            <div  v-loading="loading" th:if="${#arrays.length(distributeData)}" id="distributedNodeData2" class="detail_block">
+            <div  v-loading="loading" th:if="${not #strings.isEmpty(distributeData)}" id="distributedNodeData2" class="detail_block">
                 <div class="block_head">
                     <div class="head_text">
                         <h4>Distributed Node Data</h4>
