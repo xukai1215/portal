@@ -119,8 +119,30 @@ public class TaskRestController {
 //            }
             return modelAndView;
         }
+    }
+    @LoginRequired
+    @RequestMapping(value = "/dataTaskOutput/{id}", method = RequestMethod.GET)
+    ModelAndView getDataTaskOutput(@PathVariable("id") String id, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        ModelAndView modelAndView = new ModelAndView();
+        if (session.getAttribute("uid") == null) {
+            modelAndView.setViewName("login");
 
+            return modelAndView;
+        } else {
+            String userName = request.getSession().getAttribute("uid").toString();
+            JSONObject info=taskService.initDataTaskOutput(id, userName);
+//            if(info.getString("permission").equals("forbid")){
+//                modelAndView.setViewName("error/404");
+//            }
+//            else {
 
+            modelAndView.setViewName("taskOutput");
+
+            modelAndView.addObject("info", info);
+//            }
+            return modelAndView;
+        }
     }
 
     @RequestMapping(value = "/TaskOutputInit/{id}", method = RequestMethod.GET)
