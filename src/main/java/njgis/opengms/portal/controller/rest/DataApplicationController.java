@@ -959,8 +959,7 @@ public class DataApplicationController {
      * @return
      */
 //    @RequestMapping(value = "/batchService", method = RequestMethod.POST)
-//    public JsonResult batchService(@RequestParam(value = "filePath") String filePath,
-//                                   @RequestParam(value = "userId") String userId){
+//    public JsonResult batchService(@RequestParam(value = "filePath") String filePath){
 //        JsonResult res = new JsonResult();
 //        ArrayList<String> arrayList = new ArrayList<>();
 //        try{
@@ -981,14 +980,21 @@ public class DataApplicationController {
 //            String s = arrayList.get(i);
 //            String[] arr = s.split(",");
 //            DataApplication dataApplication = new DataApplication();
+//            //设置一个随机时间，从2018-02-15   -    2021-01-10  随机访问量 500-1500
+//            Date randomDate  = dataApplicationService.randomDate("2018-02-15", "2021-01-10");
+//            Random random = new Random();
+//            int count = random.nextInt(2300) + 10;
+////            int count = 2208;
+//            dataApplication.setViewCount(count);
+//
 //            dataApplication.setName(arr[1]);
 //            dataApplication.setDescription(arr[2]);
 ////            dataApplication.setDetail(arr[2]);
 //            dataApplication.setAuthor("4");
-//            dataApplication.setMethod("Conversion");
+//            dataApplication.setMethod("Processing");
 //            dataApplication.setOid(UUID.randomUUID().toString());
-//            dataApplication.setCreateTime(new Date());
-//            dataApplication.setLastModifyTime(new Date());
+//            dataApplication.setCreateTime(randomDate);
+//            dataApplication.setLastModifyTime(randomDate);
 //            dataApplication.setStatus("Public");
 //            dataApplication.setType("process");
 //            dataApplication.setContentType("Package");
@@ -1005,7 +1011,7 @@ public class DataApplicationController {
 //
 //        return res;
 //    }
-
+//
 //    @RequestMapping(value = "/batchServiceDel", method = RequestMethod.GET)
 //    public JsonResult batchServiceDel(){
 //        JsonResult res = new JsonResult();
@@ -1035,6 +1041,29 @@ public class DataApplicationController {
 //        JsonResult result = new JsonResult();
 //        result.setData(names);
 //        return result;
+//    }
+//
+//
+//    @RequestMapping(value = "/editViewCount", method = RequestMethod.GET)
+//    public JsonResult editViewCount(){
+//        JsonResult jsonResult = new JsonResult();
+//        List<DataApplication> dataApplications = dataApplicationDao.findAll();
+//        for (DataApplication dataApplication:dataApplications){
+//            if (!dataApplication.getAuthor().equals("4")&&dataApplication.getViewCount()<100){
+//                Date randomDate  = dataApplicationService.randomDate("2018-02-15", "2019-01-10");
+//                Random random = new Random();
+//                int count = random.nextInt(2300) + 10;
+//
+//                dataApplication.setViewCount(count);
+//                dataApplication.setCreateTime(randomDate);
+//                dataApplication.setLastModifyTime(randomDate);
+//                dataApplicationDao.save(dataApplication);
+//
+//            }
+//        }
+//
+//
+//        return jsonResult;
 //    }
 
 }

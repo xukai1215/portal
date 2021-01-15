@@ -32,6 +32,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.client.RequestCallback;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
@@ -308,8 +309,8 @@ public class DataApplicationService {
      * @param dataApplicationDTO 参数3
      * @return 插入结果
      */
-    public JSONObject insert(List<MultipartFile> files, JSONObject jsonObject, String oid, DataApplicationDTO dataApplicationDTO, String uid){
-        JSONObject result = new JSONObject();
+    public JsonResult insert(List<MultipartFile> files, JSONObject jsonObject, String oid, DataApplicationDTO dataApplicationDTO, String uid){
+        JsonResult result = new JsonResult();
         DataApplication dataApplication = new DataApplication();
         BeanUtils.copyProperties(dataApplicationDTO, dataApplication);
 
@@ -319,7 +320,7 @@ public class DataApplicationService {
         saveFiles(files, path, oid, "", resources);
 
         if (resources == null){
-            result.put("code", -1);
+            result.setCode(-2);
         }else {
             try {
                 dataApplication.setResources(resources);
@@ -334,8 +335,8 @@ public class DataApplicationService {
                 //将服务invokeApplications置入,如果不绑定测试数据，则无需部署，直接创建条目即可
                 if(dataApplication.getTestData().size() == 0){
                     dataApplicationDao.insert(dataApplication);
-                    result.put("code", 1);
-                    result.put("id", dataApplication.getOid());
+                    result.setCode(1);
+                    result.setData(dataApplication.getOid());
                     return result;
                 }
                 InvokeService invokeService = new InvokeService();
@@ -351,19 +352,21 @@ public class DataApplicationService {
                 invokeServices.add(invokeService);
                 dataApplication.setInvokeServices(invokeServices);
 
-                dataApplicationDao.insert(dataApplication);
+//                dataApplicationDao.insert(dataApplication);
 
                 //部署服务
-                JsonResult deployRes = deployPackage(dataApplication, dataApplication.getTestDataPath());
-                if (deployRes.getCode() == -1){
-                    result.put("code", -2);
-                }else {
-                    result.put("code", 1);
-                    result.put("id", dataApplication.getOid());
-                }
+                result = deployPackage(dataApplication, dataApplication.getTestDataPath());
+
+//                if (deployRes.getCode() == -1){
+//                    result.put("code", -2);
+//                }else {
+//                    result.put("code", 1);
+//                    result.put("id", dataApplication.getOid());
+//                }
             }catch (Exception e){
                 log.info("dataApplication create failed");
-                result.put("code", -2);
+                result.setCode(-1);
+                result.setMsg("dataApplication create failed");
             }
         }
 
@@ -752,7 +755,22 @@ public class DataApplicationService {
 //        headers.add("Authorization", "Bearer "+ StaticParams.access_token);
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Map> httpEntity = new HttpEntity<>(part, headers);
-        ResponseEntity<String> response = restTemplate.exchange(dataUrl, HttpMethod.PUT, httpEntity, String.class);
+        try {
+            ResponseEntity<JSONObject> response = restTemplate.exchange(dataUrl, HttpMethod.PUT, httpEntity, JSONObject.class);
+            //解析response
+            JSONObject j_result = response.getBody();
+            //捕获sdk异常
+            if(j_result.getString("code").equals("-1")){
+                res.setMsg(j_result.getString("message"));
+                res.setCode(-1);
+                return res;
+            }
+        }catch (ResourceAccessException e){
+            res.setMsg("deploy file time out");
+            res.setCode(-1);
+            return res;
+        }
+
 
         //部署服务
         String prcUrl="http://172.21.213.111:8899"+ "/newprocess";
@@ -831,7 +849,21 @@ public class DataApplicationService {
         invokeServices1.add(invokeService);
         dataApplication.setInvokeServices(invokeServices1);
 
-        JSONObject jsonObject = restTemplate2.postForObject(prcUrl, part2,JSONObject.class);
+        try {
+            JSONObject jsonObject = restTemplate2.postForObject(prcUrl, part2,JSONObject.class);
+            //捕获sdk异常
+            if(jsonObject.getString("code").equals("-1")){
+                res.setMsg(jsonObject.getString("message"));
+                res.setCode(-1);
+                return res;
+            }
+        }catch (ResourceAccessException e){
+            res.setMsg("deploy server time out");
+            res.setCode(-1);
+            return res;
+        }
+        res.setCode(1);
+        res.setData(dataApplication.getOid());
         dataApplicationDao.save(dataApplication);
         return res;
     }
@@ -921,11 +953,11 @@ public class DataApplicationService {
                         break;
                     }
                     case "contributor":{
-                        User user = userDao.findFirstByName(searchText);
-                        if(user != null && user.getOid() != ""){
+                        User user = userDao.findFirstByNameLikeIgnoreCase(searchText);
+                        if(user != null){
                             result = dataApplicationDao.findAllByAuthorLikeIgnoreCase(user.getOid(), pageable);
-                        }else{
-                            return null;
+                        } else {        // 娶一个不存在的名字，返回nodata，不能返回null
+                            result = dataApplicationDao.findAllByAuthorLikeIgnoreCase("hhhhhhhhhhhhhhhhhh", pageable);
                         }
                         break;
                     }
@@ -953,11 +985,11 @@ public class DataApplicationService {
                         break;
                     }
                     case "contributor":{
-                        User user = userDao.findFirstByName(searchText);
-                        if(user != null && user.getOid() != ""){
+                        User user = userDao.findFirstByNameLikeIgnoreCase(searchText);
+                        if(user != null){
                             result = dataApplicationDao.findAllByAuthorLikeIgnoreCaseAndMethodLikeIgnoreCase(user.getOid(), method, pageable);
-                        }else{
-                            return null;
+                        } else {    // 娶一个不存在的名字，返回nodata，不能返回null
+                            result = dataApplicationDao.findAllByAuthorLikeIgnoreCaseAndMethodLikeIgnoreCase("hhhhhhhhhhhhhhhh", method, pageable);
                         }
                         break;
                     }
@@ -992,6 +1024,7 @@ public class DataApplicationService {
             System.out.println(err);
             return null;
         }
+
         List<DataApplication> dataApplications = dataApplicationPage.getContent();
 
         JSONArray jsonArray = new JSONArray();
@@ -1290,5 +1323,53 @@ public class DataApplicationService {
         }
     }
 
+
+    public Date randomDate(String beginDate,String endDate ){
+
+        try {
+
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+
+            Date start = format.parse(beginDate);//构造开始日期
+
+            Date end = format.parse(endDate);//构造结束日期
+
+//getTime()表示返回自 1970 年 1 月 1 日 00:00:00 GMT 以来此 Date 对象表示的毫秒数。
+
+            if(start.getTime() >= end.getTime()){
+
+                return null;
+
+            }
+
+            long date = random(start.getTime(),end.getTime());
+
+            return new Date(date);
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+        }
+
+        return null;
+
+    }
+
+    private static long random(long begin,long end){
+
+        long rtn = begin + (long)(Math.random() * (end - begin));
+
+//如果返回的是开始时间和结束时间，则递归调用本函数查找随机值
+
+        if(rtn == begin || rtn == end){
+
+            return random(begin,end);
+
+        }
+
+        return rtn;
+
+    }
 
 }
