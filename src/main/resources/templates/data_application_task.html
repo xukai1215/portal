@@ -162,10 +162,11 @@
                                                     <el-button plain round type="success" @click="openDataSpace($event)" class="uploadBtn">
                                                         <i class="fa fa-folder-open"></i>
                                                     </el-button>
-
+                                                    <span v-if="item.loadName">
                                                     <el-button plain round type="warning" @click="downLoadInfoTestData($event)" class="downloadInfoBtn">
                                                         <i class="fa fa-download"></i>
                                                     </el-button>
+                                                    </span>
                                                 </div>
                                             </el-col>
                                         </div>
@@ -234,18 +235,22 @@
                                             </el-select>
 
                                             <el-col :span="6" style="float: right">
-                                                <div class="_btn-group">
-                                                    <el-button plain round type="success">
-                                                        <i class="fa fa-folder-open"></i>
+                                                <div class="_btn-group" v-if="!(outPutData.length===0)">
+                                                    <el-tooltip class="item" effect="dark" content="Download to personal space" placement="top">
+                                                    <el-button plain round type="success" @click="addOutputToMyData(outPutData)">
+                                                        <i class="el-icon-upload2"></i>
                                                     </el-button>
-
+                                                    </el-tooltip>
+                                                    <el-tooltip class="item" effect="dark" content="Download to local" placement="top">
                                                     <el-button plain round type="warning" @click="downloadResult()">
                                                         <i class="fa fa-download"></i>
                                                     </el-button>
-
+                                                    </el-tooltip>
+                                                    <el-tooltip class="item" effect="dark" content="Visualization" placement="top">
                                                     <el-button plain round type="primary" v-if="method === 'Visualization'" @click="initPicture()">
                                                         <i class="fa fa-eye"></i>
                                                     </el-button>
+                                                    </el-tooltip>
                                                 </div>
                                             </el-col>
                                         </div>
@@ -321,7 +326,33 @@
         <span slot="footer" class="dialog-footer">
     <el-button @click="visualization = false">Cancel</el-button>
 <!--    <el-button type="primary" @click="dialogVisible = false">Confirm</el-button>-->
-  </span>
+        </span>
+    </el-dialog>
+
+            <!--            上传文件到个人空间  el-dialog-->
+    <el-dialog :visible.sync="addOutputToMyDataVisible" title="Add Output to My Data"
+                           width="35%">
+                    <el-card style="min-height: 300px;">
+                        <el-tree
+                                :data="outputFolderTree"
+                                ref="folderTree2"
+                                node-key="id"
+                                highlight-current = true
+                                default-expand-all
+                                :expand-on-click-node="false"
+                        >
+                                            <span class="custom-tree-node" slot-scope="{ node, data }">
+                                                <span>{{ node.label }}</span>
+                                            </span>
+                        </el-tree>
+                    </el-card>
+                    <span slot="footer" class="dialog-footer">
+                                        <el-button class="pull-left" type="primary" icon="el-icon-folder-add"
+                                                   @click="addFolderinTree(2)">Add new folder</el-button>
+                                        <el-button @click="addOutputToMyDataVisible = false">Cancel</el-button>
+                                        <el-button type="primary"
+                                                   @click="addOutputToMyDataConfirm()">OK</el-button>
+                    </span>
     </el-dialog>
 </div>
 <template th:replace="modules/userDataSpaceModule :: userDataSpaceModule"></template>
