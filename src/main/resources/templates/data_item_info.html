@@ -289,6 +289,54 @@
                 </div>
             </div>&nbsp;&nbsp;
 
+
+            <!--Distributed Node Data2-->
+            <div  v-loading="loading" th:if="${not #strings.isEmpty(distributeData)}" id="distributedNodeData2" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Distributed Node Data</h4>
+                    </div>
+                </div>&nbsp;&nbsp;
+                <div>
+                    <el-card>
+                        <div class="el-card dataitemisol is-never-shadow"
+                             v-for="(data, index) in invokeServices"
+                             :title="data.name" shadow="never"
+                             style="width: 150px;"><!---->
+                            <!--<a target="_blank"-->
+                               <!--th:href="${data.url}"-->
+                               <!--style="color:black">-->
+                                <div class="el-card__body downloadBtn" @click="downloadDisData($event)">
+                                    <div class="el-row">
+                                        <div class="el-col el-col-6">&nbsp;</div>
+                                        <div class="el-col el-col-12">
+                                            <img
+                                                    src="/static/img/filebrowser/undefine.svg"
+                                                    onerror="this.onerror='';src='/static/img/filebrowser/unknow.svg'"
+                                                    style="width: 100%;">
+                                        </div>
+                                        <div class="el-col el-col-6">&nbsp;</div>
+                                    </div>
+                                    <div class="el-row" style="height: 45px;">
+                                        <div class="el-col el-col-2">&nbsp;</div>
+                                        <div class="el-col el-col-20">
+                                            <p
+                                                                         style="overflow: hidden;overflow-wrap: break-word;
+                                                                         word-break: break-all; text-align: center;display:
+                                                                         -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;
+                                                                         line-height: 1.5">{{data.name}}
+                                            </p>
+                                        </div>
+                                        <div class="el-col el-col-2">&nbsp;</div>
+                                    </div>
+                                </div>
+                            <!--</a>-->
+                        </div>
+                    </el-card>
+
+                </div>
+            </div>&nbsp;&nbsp;
+
             <!--description-->
             <div th:if="${datainfo.data.detail!=''&&datainfo.data.detail!=null}" id="description" class="detail_block">
                 <div class="block_head">
