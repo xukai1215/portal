@@ -86,6 +86,9 @@ public class TaskService {
     @Autowired
     DataServerTaskDao dataServerTaskDao;
 
+    @Autowired
+    DataApplicationDao dataApplicationDao;
+
     @Value("${managerServerIpAndPort}")
     private String managerServer;
 
@@ -301,6 +304,110 @@ public class TaskService {
         return result;
     }
 
+    public JSONObject initDataTaskOutput(String id, String userName) {
+        DataServerTask dataServerTask = dataServerTaskDao.findFirstByOid(id);
+
+
+        User user = userDao.findFirstByOid(dataServerTask.getUserId());
+
+        JSONObject userJson = new JSONObject();
+        userJson.put("compute_model_user_name", user.getName());
+        userJson.put("compute_model_user_oid", user.getOid());
+
+        user = userDao.findFirstByUserName(userName);
+
+        userJson.put("userName", user.getUserName());
+        userJson.put("userOid", user.getOid());
+
+        JSONObject result = new JSONObject();
+        JsonResult jsonResult = new JsonResult();
+        // JSONObject data = JSONObject.parseObject(JSONObject.toJSONString(jsonResult.getData()));
+
+        JSONObject model_Info = new JSONObject();
+        JSONObject taskInfo = new JSONObject();
+        // JSONObject dxInfo = new JSONObject();
+        // JSONObject dxServer = data.getJSONObject("dxServer");
+
+        model_Info.put("name", dataServerTask.getServiceName());
+        model_Info.put("des", dataServerTask.getDescription());
+        model_Info.put("date", dataServerTask.getFinishTime());
+        // dxInfo.put("dxIP", dxServer.getString("ip"));
+        // dxInfo.put("dxPort", dxServer.getString("port"));
+        // dxInfo.put("dxType", dxServer.getString("type"));
+        // taskInfo.put("ip", data.getString("ip"));
+        // taskInfo.put("port", data.getString("port"));
+        // taskInfo.put("pid", data.getString("pid"));
+        taskInfo.put("creater", user.getName());
+        taskInfo.put("description", dataServerTask.getDescription());
+        taskInfo.put("permission", dataServerTask.getPermission());
+        taskInfo.put("createTime", dataServerTask.getRunTime());
+        taskInfo.put("status", dataServerTask.getStatus());
+        taskInfo.put("outputs", dataServerTask.getOutputs());
+//
+        //判断权限信息
+       //  boolean hasPermission = false;
+       //
+       // List<String> publicInfos = dataServerTask.getPermission();
+       // if (publicInfos.get(0).equals("public")) {
+       //     result.put("permission", "yes");
+       // } else {
+       //
+       //     for (String publicInfo : publicInfos) {
+       //         if (publicInfo.equals(userName)) {
+       //             hasPermission = true;
+       //             result.put("permission", "yes");
+       //             break;
+       //         }
+       //
+       //     }
+       //     if (hasPermission == false) {
+       //         result.put("permission", "no");
+       //         return result;
+       //     }
+       // }
+        if (dataServerTask.getPermission().equals("private")&&!dataServerTask.getUserId().equals(userName) ) {
+            result.put("permission", "forbid");
+//            return result;
+        } else {
+            result.put("permission", "allow");
+        }
+
+        // List<TaskData> inputs = dataServerTask.getInputs();
+        // for(int i=0;i<inputs.size();i++){
+        //     TaskData input=inputs.get(i);
+        //     for(String taskId:visualTemplateIds){
+        //         String templateId = input.getTemplateId();
+        //         if(templateId!=null) {
+        //             if (templateId.toLowerCase().equals(taskId)) {
+        //                 inputs.get(i).setVisual(true);
+        //                 break;
+        //             }
+        //         }
+        //     }
+        // }
+        taskInfo.put("inputs", dataServerTask.getInputs());
+
+        // boolean hasTest;
+        // if (modelInfo.getTestDataPath() == null || modelInfo.getTestDataPath().equals("")) {
+        //     hasTest = false;
+        // } else {
+        //     hasTest = true;
+        // }
+        // model_Info.put("hasTest", hasTest);
+        // JSONObject mdlInfo = convertMdl(modelInfo.getMdl());
+        // JSONObject mdlObj = mdlInfo.getJSONObject("mdl");
+        // JSONArray states = mdlObj.getJSONArray("states");
+        // model_Info.put("states", states);
+        //拼接
+
+        result.put("userInfo", userJson);
+        result.put("modelInfo", model_Info);
+        result.put("taskInfo", taskInfo);
+//        result.put("dxInfo", dxInfo);
+        System.out.println(result);
+
+        return result;
+    }
     public Task templateMatch(Task task){//为taskoutput匹配templateId
 
         String modelId = task.getComputableId();
