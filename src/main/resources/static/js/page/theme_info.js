@@ -4,19 +4,7 @@ var vue = new Vue({
         'avatar': VueAvatar.Avatar
     },
     data: function () {
-        const themeData = [
-            {
-                id: 1,
-                mcname: 'Default',
-                children: []
-            }
-        ];
         return {
-            themeData: JSON.parse(JSON.stringify(themeData)),
-            selectedTableData:[],
-            currentNode:2,
-            parentNode:false,
-            childNode:true,
 
             //log用于计数
             log_model: 0,
@@ -81,7 +69,7 @@ var vue = new Vue({
             themeObj: {
                 classinfo: [{
                     id: "1",
-                    label: "",
+                    mcname: "",
                     modelsoid: [],
                 }],
                 dataClassInfo: [{
@@ -232,237 +220,6 @@ var vue = new Vue({
         }
     },
     methods: {
-        test(node,data) {
-            console.log("thatis")
-            console.log(node)
-            console.log(data)
-        },
-        //model多级菜单
-        findFirstChildObj(parent){
-            var node
-            if(parent.children.length==0){
-                node = parent
-            }
-            else{
-                if(parent.children[0].children.length > 0){
-                    this.findFirstChild(parent.children[0])
-                }else{
-                    node = parent.children[0]
-                }
-
-            }
-
-            return node
-
-        },
-        findFirstChild(parent){
-            var nodeId
-            if(parent.children[0].children.length > 0){
-                this.findFirstChild(parent.children[0])
-            }else{
-                nodeId = parent.children[0].id
-            }
-            return nodeId
-        },
-        findTableData(modelClass){
-            if(modelClass.children.length ==0 && modelClass.id == this.currentNode){
-                return modelClass.modelsoid
-            }else if(modelClass.children.length > 0){
-                for (let n = 0; n <modelClass.children.length; n++) {
-                    var flag = this.findTableData(modelClass.children[n])
-                    if (flag != null) {
-                        return flag
-                    }
-                }
-            }else{
-                return null
-            }
-
-        },
-        findModelClass(modelClass, classId){
-            if(modelClass.id == classId){
-                return modelClass
-            }else if(modelClass.children.length > 0){
-                for (let n = 0; n <modelClass.children.length; n++) {
-                    var flag = this.findModelClass(modelClass.children[n])
-                    if (flag != null) {
-                        return flag
-                    }
-                }
-            }else{
-                return null
-            }
-        },
-
-        // tree的四个事件
-        changeClassNode(data,node) {
-            if(data.children.length == 0){
-                console.log(data)
-                this.selectedTableData = data.tableData
-                this.currentNode = data.id
-                this.parentNode = false
-                this.childNode = true
-            }else{
-                console.log(this.themeObj)
-                this.currentNode = this.findFirstChild(data)
-                this.parentNode = true
-                this.childNode = false
-            }
-            console.log(this.themeObj)
-            console.log(this.themeData)
-        },
-        append(data) {
-            this.$prompt('Class Name', '提示', {
-                confirmButtonText: 'Yes',
-                cancelButtonText: 'No'
-            }).then(({ value }) => {
-                const newChild = { id: id++, label: value ,children: [], tableData:[]};
-                if (!data.children) {
-                    this.$set(data, 'children', []);
-                }
-                data.children.push(newChild);
-                // 找到themeobj中对应的class
-                if(data.id == 1){
-                    this.themeObj.classinfo.push({
-                        id: id-1,
-                        mcname:value,
-                        children:[],
-                        modelsoid: [],
-                    })
-                }else{
-
-                    for (var n = 0; n < this.themeObj.classinfo.length; n++) {
-                        var modelClass = this.findModelClass(this.themeObj.classinfo[n],data.id)
-                        if(modelClass != null){
-                            modelClass.children.push({
-                                id: id-1,
-                                mcname:value,
-                                children:[],
-                                modelsoid: [],
-                            })
-                            break
-                        }
-                    }
-                }
-
-                //更改显示内容
-                this.parentNode = true
-                this.childNode = false
-            }).catch(()=>{
-
-            })
-        },
-        modify(data) {
-            this.$prompt('Class Name', 'Modify the item', {
-                confirmButtonText: 'Yes',
-                cancelButtonText: 'No'
-            }).then(({ value }) => {
-                data.label = value
-                // 找到themeobj中对应的class
-                for (var n = 0; n < this.themeObj.classinfo.length; n++) {
-                    var modelClass = this.findModelClass(this.themeObj.classinfo[n],data.id)
-                    if(modelClass != null){
-                        modelClass.mcname=value
-                        break
-                    }
-                }
-            }).catch(()=>{
-
-            })
-        },
-        remove(node, data) {
-            this.$confirm('Are you sure to delete this item?',  {
-                confirmButtonText: 'Yes',
-                cancelButtonText: 'No',
-                type: 'warning',
-                center: true
-            }).then(() => {
-
-                if(node.data.id=="2"){
-                    this.$message({
-                        type:'warning',
-                        message:'This item is forbidden to be deleted!',
-                    });
-                }
-                else{
-                    this.$message({
-                        type: 'success',
-                        message: 'delete successfully!'
-                    });
-                    const parent = node.parent;
-                    //删除themeobj中的model class
-                    // 找到themeobj中对应的parent class
-                    for (var n = 0; n < this.themeObj.classinfo.length; n++) {
-                        var modelClass = this.findModelClass(this.themeObj.classinfo[n],parent.data.id)
-                        if(modelClass != null){
-                            //找到孩子节点
-                            var childIndex = modelClass.children.findIndex(d => d.id === data.id);
-                            modelClass.children.splice(childIndex, 1);
-                            console.log(this.themeObj.classinfo)
-                            break
-                        }
-                    }
-                    //删除树
-                    const children = parent.data.children || parent.data;
-                    const index = children.findIndex(d => d.id === data.id);
-                    children.splice(index, 1);
-
-                }
-
-
-            }).catch(()=>{
-
-            })
-        },
-        // model的两个事件
-        addModel(index, row) {
-
-            // 往数组中添加新模型
-            var flag = false
-            for (var n = 0; n < this.selectedTableData.length; n++) {
-                if(this.selectedTableData[n].oid == row.oid){
-                    flag = true
-                    break
-                }
-            }
-            if(!flag){
-                this.selectedTableData.push(row)
-                // 找到当前分类的数组
-                for (var n = 0; n < this.themeObj.classinfo.length; n++) {
-                    var modelsoid = this.findTableData(this.themeObj.classinfo[n])
-                    if(modelsoid != null){
-                        modelsoid.push(row.oid)
-                        break
-                    }
-                }
-                // this.themeObj.classinfo[num].modelsoid.push(row.oid);
-            }
-
-        },
-        deleteModel(index, row) {
-            // 删除数组中的模型
-            for (var n = 0; n < this.selectedTableData.length; n++) {
-                if(this.selectedTableData[n].oid == row.oid){
-                    this.selectedTableData.splice(n, 1);
-                    break
-                }
-            }
-
-            // 找到themeobj中当前分类的数组
-            for (var n = 0; n < this.themeObj.classinfo.length; n++) {
-                var modelsoid = this.findTableData(this.themeObj.classinfo[n])
-                if(modelsoid != null){
-                    for (var m = 0; m < modelsoid.length; m++) {
-                        if(modelsoid[m] == row.oid){
-                            modelsoid.splice(m, 1);
-                            break
-                        }
-                    }
-                    break
-                }
-            }
-
-        },
         // 图片加载失败的回调
         errorHandler(){
             return true
@@ -1017,23 +774,23 @@ var vue = new Vue({
             this.pageOption2.currentPage = val;
             this.search2();
         },
-        controlButtonSet(){        // 控制两个control_button，只让其中一个显示出来
-            setTimeout(this.controlButtonSet1,250)      // 下拉菜单出现了再执行函数
-        },
-        controlButtonSet1(){        // 控制两个control_button，只让其中一个显示出来
-            let height = $('#leftBottomBody')[0].offsetHeight
-            let control_button = $('.controlEditButton')
-            if(height > 700) {
-                control_button[1].style.display = 'none'
-                control_button[0].style.display = ''
-            } else {
-                control_button[0].style.display = 'none'
-                control_button[1].style.display = ''
-            }
-        },
+        // controlButtonSet(){        // 控制两个control_button，只让其中一个显示出来
+        //     setTimeout(this.controlButtonSet1,250)      // 下拉菜单出现了再执行函数
+        // },
+        // controlButtonSet1(){        // 控制两个control_button，只让其中一个显示出来
+        //     let height = $('#leftBottomBody')[0].offsetHeight
+        //     let control_button = $('.controlEditButton')
+        //     if(height > 700) {
+        //         control_button[1].style.display = 'none'
+        //         control_button[0].style.display = ''
+        //     } else {
+        //         control_button[0].style.display = 'none'
+        //         control_button[1].style.display = ''
+        //     }
+        // },
         controlEdit(){
             let all_button = $('.editIcon')
-            let control_button = $('.controlEditButton')
+            let control_button = $('#controlEditButton')
 
             if(this.controlEditMark) {
                 for(let i = 0;i<all_button.length;++i){
@@ -1056,10 +813,10 @@ var vue = new Vue({
             }
         },
         edit_theme(defaultActive) {
-            this.editThemeActive = defaultActive
-            this.dialogVisible3 = true;
-            this.log_theme++;
-            if (this.log_theme == 1) {
+                this.editThemeActive = defaultActive
+                this.dialogVisible3 = true;
+                this.log_theme++;
+                if (this.log_theme == 1) {
                 $.ajax({
                     type: "GET",
                     url: "/user/load",
@@ -1076,11 +833,6 @@ var vue = new Vue({
                             type: "GET",
                             data: {},
                             success: (result) => {
-                                console.log("thisthis");
-                                this.themeData.children = result.data.classinfo;
-                                // this.themeObj = result.data.classinfo
-                                console.log(this.themeData)
-                                console.log(this.themeObj)
                                 console.log(result);
                                 let basicInfo = result.data;
 
@@ -1342,49 +1094,49 @@ var vue = new Vue({
 
 
             //将数据打包传输
-            this.themeObj["themeOid"] = this.themeoid;
+                this.themeObj["themeOid"] = this.themeoid;
 
-            let file = new File([JSON.stringify(this.themeObj)],'ant.txt',{
-                type: 'text/plain',
-            });
-            formData.append("info",file);
-            let that = this;
-            $.ajax({
-                url: "/theme/update",
-                type: "POST",
-                processData: false,
-                contentType: false,
-                async: true,
-                data: formData,
+                let file = new File([JSON.stringify(this.themeObj)],'ant.txt',{
+                    type: 'text/plain',
+                });
+                formData.append("info",file);
+                let that = this;
+                $.ajax({
+                    url: "/theme/update",
+                    type: "POST",
+                    processData: false,
+                    contentType: false,
+                    async: true,
+                    data: formData,
 
-                success: function (result) {
-                    // loading.close();
-                    if (result.code === 0) {
-                        if(result.data.method==="update") {
-                            // alert("Update Success");
-                            that.$message('Update Success');
-                            $("#editModal", parent.document).remove();
-                            that.dialogVisible3 = false;
-                            // window.location.href = "/repository/theme/" + result.data.oid;
+                    success: function (result) {
+                        // loading.close();
+                        if (result.code === 0) {
+                            if(result.data.method==="update") {
+                                // alert("Update Success");
+                                that.$message('Update Success');
+                                $("#editModal", parent.document).remove();
+                                that.dialogVisible3 = false;
+                                // window.location.href = "/repository/theme/" + result.data.oid;
+                            }
+                            else{
+                                that.$message('Success! Changes have been submitted, please wait for the author to review.');
+                                that.dialogVisible3 = false;
+                                // window.location.href = "/repository/theme/" + result.data.oid;
+                                // alert("Success! Changes have been submitted, please wait for the author to review.");
+                                //产生信号调用计数，启用websocket
+                                // window.location.href = "/user/userSpace";
+                            }
+                        }
+                        else if(result.code==-2){
+                            alert("Please login first!");
+                            window.location.href="/user/login";
                         }
                         else{
-                            that.$message('Success! Changes have been submitted, please wait for the author to review.');
-                            that.dialogVisible3 = false;
-                            // window.location.href = "/repository/theme/" + result.data.oid;
-                            // alert("Success! Changes have been submitted, please wait for the author to review.");
-                            //产生信号调用计数，启用websocket
-                            // window.location.href = "/user/userSpace";
+                            alert(result.msg);
                         }
                     }
-                    else if(result.code==-2){
-                        alert("Please login first!");
-                        window.location.href="/user/login";
-                    }
-                    else{
-                        alert(result.msg);
-                    }
-                }
-            })
+                })
         },
         uploadImg(){
 
@@ -1435,6 +1187,7 @@ var vue = new Vue({
     },
     mounted() {
         let that = this;
+
 
         $(document).on('keyup', '.category_name', function ($event) {
             let category_input = $(".category_name");

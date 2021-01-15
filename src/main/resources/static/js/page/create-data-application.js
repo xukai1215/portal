@@ -757,7 +757,7 @@ var createDataApplication = Vue.extend({
                     loading.close();
                     // $("#step").css("display", "block");
                     // $(".uploading").css("display", "none");
-                    switch (res.data.code) {
+                    switch (res.code) {
                         case 1:
                             this.$confirm('<div style=\'font-size: 18px\'>Create data application successfully!</div>', 'Tip', {
                                 dangerouslyUseHTMLString: true,
@@ -769,14 +769,14 @@ var createDataApplication = Vue.extend({
                                 center: true,
                                 showClose: false,
                             }).then(() => {
-                                window.location.href = "/dataApplication/" + res.data.id;
+                                window.location.href = "/dataApplication/" + res.data;
                             }).catch(() => {
                                 window.location.reload(true)
                                 window.location.href = "/user/userSpace#/models/dataApplication";
                             });
 
                             break;
-                        case -1:
+                        case -2:
                             this.$alert('Save files error!', 'Error', {
                                 type:"error",
                                 confirmButtonText: 'OK',
@@ -785,14 +785,17 @@ var createDataApplication = Vue.extend({
                                 }
                             });
                             break;
-                        case -2:
-                            this.$alert('Created failed!', 'Error', {
+                        case -1:
+                            this.$alert(res.msg, 'Error', {
                                 type:"error",
                                 confirmButtonText: 'OK',
                                 callback: action => {
 
                                 }
                             });
+                            break;
+                        case -3:
+                            window.location.href = "/user/login";
                             break;
                     }
                 }).fail((res) => {
@@ -860,7 +863,7 @@ var createDataApplication = Vue.extend({
                                     $("#editModal", parent.document).remove();
                                     window.location.href = "/dataApplication/" + res.data.id;
                                 }).catch(() => {
-                                    window.location.href = "/user/userSpace#/data/manageDataApplication/" + res.data.id;
+                                    window.location.href = "http://localhost:8080/user/userSpace#/data/processingApplication";
                                     window.location.reload(true)
                                 });
                                 break;
