@@ -291,7 +291,7 @@
 
 
             <!--Distributed Node Data2-->
-            <div  v-loading="loading" th:if="${not #strings.isEmpty(distributeData)}" id="distributedNodeData2" class="detail_block">
+            <div  v-loading="loading" th:if="${#arrays.length(distributeData)}" id="distributedNodeData2" class="detail_block">
                 <div class="block_head">
                     <div class="head_text">
                         <h4>Distributed Node Data</h4>
@@ -856,7 +856,7 @@
 
                         <div class="el-col">
                             <div class="pull-left" style="display: block;margin-left: 15px;">
-                                <a th:href="'/profile/'+${user.userId}"><h4 th:text="${user.name}" style="padding: 0;">Tom Marvolo Riddle</h4></a>
+                                <a th:href="'/profile/'+${user.oid}"><h4 th:text="${user.name}" style="padding: 0;">Tom Marvolo Riddle</h4></a>
                             </div>
                         </div>
                     </div>

@@ -554,6 +554,7 @@ public class TaskService {
         result.put("userInfo", userJson);
         result.put("modelInfo", model_Info);
         result.put("taskInfo", taskInfo);
+        result.put("dxInfo", dxInfo);
         result.put("msg", msg);
         result.put("visualIds",visualTemplateIds);
 

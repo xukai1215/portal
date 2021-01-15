@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Model Item Application | OpenGMS</title>
+    <title>Model Application | OpenGMS</title>
     <meta name="keywords" content="opengms, geographic model, geo-analysis model"/>
     <meta name="description" content="OpenGMS supports sharing your resources in geographic modeling and simulation. Also, this platform provides a community for collaboration works among researchers in various disciplines. Through the sharing and collaboration works, this platform contributes to building resource libraries, leaving them for the next generation, and ultimately advance in knowledge."/>
     <script src="/static/js/common/vue.min.js"></script>
@@ -168,7 +168,7 @@
 
                             </div>
                             <img src="/static/img/work.png" style="height: 30%;align-self: center;"/>
-                            <button class="wzhBtn nutBtn plainBtn hoverOrange" style="align-self: center">
+                            <button class="wzhBtn nutBtn plainBtn hoverOrange" @click="loadParamOptimaGuideDialog()" style="align-self: center">
                                 <p style="font-size: 2.0rem;font-weight: 600;font-family: Aktiv Grotesk">Under
                                     Construction...</p>
                             </button>
@@ -197,8 +197,8 @@
                     <el-button @click="modelExecutionDialog = false" style="float:left">Cancel</el-button>
                     <el-button type="primary" v-if="guideActive==2" style="float:right"
                                @click="window.open('/computableModel/selecttask')">Enter now</el-button>
-                    <el-button v-if="guideActive<2" @click="guideActive++" style="float:right">Next</el-button>
-                    <el-button v-if="guideActive>0" @click="guideActive--" style="float:right">Previous</el-button>
+                    <el-button v-if="guideActive<2" @click="guideActive++" type="primary" plain style="float:right">Next</el-button>
+                    <el-button v-if="guideActive>0" @click="guideActive--" type="primary" plain style="float:right">Previous</el-button>
                 </div>
 
 
@@ -224,8 +224,35 @@
                     <el-button @click="integratedModelDialog = false" style="float:left">Cancel</el-button>
                     <el-button type="primary" v-if="guideActive==2" style="float:right"
                                @click="window.open('/computableModel/integratedModel')">Enter now</el-button>
-                    <el-button v-if="guideActive<2" @click="guideActive++" style="float:right">Next</el-button>
-                    <el-button v-if="guideActive>0" @click="guideActive--" style="float:right">Previous</el-button>
+                    <el-button v-if="guideActive<2" @click="guideActive++" type="primary" plain  style="float:right">Next</el-button>
+                    <el-button v-if="guideActive>0" @click="guideActive--" type="primary" plain style="float:right">Previous</el-button>
+                </div>
+
+
+            </el-dialog>
+
+            <el-dialog title="Parameter Optimization" center :visible.sync="paramOptimaDialog" width="58%">
+                <el-steps :active="guideActive" finish-status="success" align-center>
+                    <el-step title="Step 1" description=""></el-step>
+                    <el-step title="Step 2" description=""></el-step>
+                    <el-step title="Step 3" description=""></el-step>
+                </el-steps>
+                <div class="flexCenter" v-show="guideActive==0" >
+                    <img src="/static/img/guide/paramOptimaGuide1.png" style="height: 381px">
+                </div>
+                <div class="flexCenter"  v-show="guideActive==1" >
+                    <img src="/static/img/guide/paramOptimaGuide2.png" style="height: 381px">
+                </div>
+                <div class="flexCenter"  v-show="guideActive==2" >
+                    <img src="/static/img/guide/paramOptimaGuide3.png" style="height: 381px">
+                </div>
+
+                <div style="margin-top: 10px">
+                    <el-button @click="integratedModelDialog = false" style="float:left">Cancel</el-button>
+                    <el-button type="primary" v-if="guideActive==2" style="float:right"
+                               @click="underConstruction">Under construction...</el-button>
+                    <el-button v-if="guideActive<2" @click="guideActive++" type="primary" plain style="float:right">Next</el-button>
+                    <el-button v-if="guideActive>0" @click="guideActive--" type="primary" plain style="float:right">Previous</el-button>
                 </div>
 
 
