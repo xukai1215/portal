@@ -195,7 +195,11 @@ var userTheme = Vue.extend(
             },
 
             deleteItem(oid) {
-                if (confirm("Are you sure to delete this model?")) {
+                this.$confirm("Are you sure to delete this item?",'',{
+                    confirmButtonText:'Yes',
+                    cancelButtonText:'No',
+                    type:'warning'
+                }).then(()=>{
                     $.ajax({
                         type: "POST",
                         url: "/theme/delete",
@@ -211,18 +215,25 @@ var userTheme = Vue.extend(
                         crossDomain: true,
                         success: (json) => {
                             if (json.code == -1) {
-                                alert("Please log in first!")
+                                this.$alert("Please log in first!")
                             } else {
                                 if (json.data == 1) {
-                                    alert("delete successfully!")
+                                    this.$message({message: "delete successfully!",
+                                                  type:"success"});
                                     this.getTheme();
                                 } else {
-                                    alert("delete failed!")
+                                    this.$message({message:"delete failed!",
+                                                      type:"error"})
                                 }
                             }
                         }
                     })
-                }
+                }).catch(()=>{
+
+                })
+                // if (confirm("Are you sure to delete this model?")) {
+                //
+                // }
             },
 
             getTheme() {
