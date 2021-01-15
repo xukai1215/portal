@@ -123,7 +123,7 @@ var vue = new Vue({
             progressBar: true,
             sortAsc: false,
             currentPage: 1,
-            pageSize: 8,
+            pageSize: 6,
             total: 1,
             searchResult: [],
         },
@@ -624,8 +624,8 @@ var vue = new Vue({
         handleDrawer(){
             if(this.drawerFold) {
                 this.drawerFold = !this.drawerFold
-                $('.drawerHandler').animate({left:210},105);
-                $('.itemSelector').animate({width:210},107);
+                $('.drawerHandler').animate({left:210},95);
+                $('.itemSelector').animate({width:210},97);
             }else{
                 this.drawerFold = !this.drawerFold
                 $('.drawerHandler').animate({left:0},40);
@@ -684,13 +684,13 @@ var vue = new Vue({
                 let targetAction = this.findTargetModelAction(targetActionId)[1]
                 let sourceAction = this.findTargetModelAction(sourceActionId)[1]
 
-                if(targetAction.type=='modelService'&&sourceAction.type=='modelService'){
+                if(targetAction!=undefined&&targetAction.type=='modelService'&&sourceAction.type=='modelService'){
                     let edge = {
                         target:targetAction.id,
                         source:sourceAction.id
                     }
                     edges.push(edge)
-                }else if(targetAction.type=='dataService'&&sourceAction.type=='modelService'){
+                }else if(targetAction!=undefined&&targetAction.type=='dataService'&&sourceAction.type=='modelService'){
                     let targets=[]
                     this.getModelTarget(sourceAction.id,targets)
                     for(let target of targets){
@@ -956,6 +956,17 @@ var vue = new Vue({
         },
 
         addModelToMxgraph(model){
+            if(this.readOnly){
+                this.$alert('This view is read-only !', 'Tip', {
+                        type:"warning",
+                        confirmButtonText: 'OK',
+                        callback: ()=>{
+                        }
+                    }
+                );
+                return
+            }
+
             var modelEditor = $("#ModelEditor")[0].contentWindow;
             if(model==undefined){
                 model = this.detailComptbModel
@@ -968,7 +979,17 @@ var vue = new Vue({
         },
 
         addDataMethodToMxgraph(dataMethod){
-
+            if(this.readOnly){
+                this.$alert('This view is read-only !', 'Tip', {
+                        type:"warning",
+                        confirmButtonText: 'OK',
+                        callback: ()=>{
+                            return
+                        }
+                    }
+                );
+                return
+            }
             this.showInvokeServices(dataMethod)
             // let dataMethodAction = this.addDataMethodToList(dataMethod)
             // if(dataMethodAction!='check'){
@@ -1182,12 +1203,36 @@ var vue = new Vue({
         },
 
         addStartToMxgraph(){
+            if(this.readOnly){
+                this.$alert('This view is read-only !', 'Tip', {
+                        type:"warning",
+                        confirmButtonText: 'OK',
+                        callback: ()=>{
+                            return
+                        }
+                    }
+                );
+                return
+            }
+
             var modelEditor = $("#ModelEditor")[0].contentWindow;
 
             modelEditor.ui.sidebar.addGeneralCellToGraph('Start',undefined,'start')
         },
 
         addCondtionToMxgraph(){
+            if(this.readOnly){
+                this.$alert('This view is read-only !', 'Tip', {
+                        type:"warning",
+                        confirmButtonText: 'OK',
+                        callback: ()=>{
+                            return
+                        }
+                    }
+                );
+                return
+            }
+
             let id = this.generateGUID();
             let condition = {
                 id:id,
@@ -1199,6 +1244,18 @@ var vue = new Vue({
         },
 
         addEndToMxgraph(){
+            if(this.readOnly){
+                this.$alert('This view is read-only !', 'Tip', {
+                        type:"warning",
+                        confirmButtonText: 'OK',
+                        callback: ()=>{
+                            return
+                        }
+                    }
+                );
+                return
+            }
+
             var modelEditor = $("#ModelEditor")[0].contentWindow;
             modelEditor.ui.sidebar.addGeneralCellToGraph('End',undefined,'end')
         },
@@ -2603,6 +2660,7 @@ var vue = new Vue({
                     modelOid:modelAction.modelOid,
                     md5:modelAction.md5,
                     name:modelAction.name,
+                    type:'modelService',
                     description:modelAction.description,
                     outputData:[],
                     inputData:[],
@@ -2647,7 +2705,7 @@ var vue = new Vue({
             let addTools = []
             let addProcessings = []
 
-            //拼接集成模型中的models部分
+            //拼接集成模型中的datatools部分
             for(let tool of processingTools){
                 let addTool={
                     name:tool.name,
@@ -2661,11 +2719,11 @@ var vue = new Vue({
                 addTools.push(addTool)
             }
 
-            //拼接集成模型中的modelActions部分
+            //拼接集成模型中的dataProcessing部分
             for(let dataProcessing of dataProcessings){
                 let addProcessing={
                     id:dataProcessing.id,
-                    type:dataProcessing.type,
+                    type:'dataService',
                     name:dataProcessing.name,
                     service:dataProcessing.service,
                     description:dataProcessing.description,
@@ -4557,9 +4615,41 @@ var vue = new Vue({
         viewUser(userId){
             window.open('/profile/'+userId)
         },
+
+        loadUser(){
+            $.ajax({
+                    type: "GET",
+                    url: "/user/load",
+                    data: {},
+                    cache: false,
+                    async: false,
+                    xhrFields: {
+                        withCredentials: true
+                    },
+                    crossDomain: true,
+                    success: (data) => {
+
+                        if (data.oid == "") {
+                            this.$alert('You should log in first to use this function。', 'Tip', {
+                                    type:"warning",
+                                    confirmButtonText: 'OK',
+                                    callback: ()=>{
+                                        window.location.href = "/user/login";
+                                    }
+                                }
+                            );
+
+                        } else {
+                        }
+                    }
+                }
+            )
+        },
     },
 
     async mounted() {
+
+        this.loadUser()
 
         this.iframeWindow = $("#ModelEditor")[0].contentWindow;
         let modelEditor = $("#ModelEditor")[0].contentWindow;

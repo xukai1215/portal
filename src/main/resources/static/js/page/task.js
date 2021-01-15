@@ -1565,10 +1565,12 @@ var vue = new Vue({
         },
 
         async loadTest(type) {
+            let stateContainer = document.getElementById("state-container"+this.radioStyle)
             const loading = this.$loading({
                 lock: true,
                 text: "Loading",
                 spinner: "el-icon-loading",
+                target:stateContainer,
                 background: "rgba(0, 0, 0, 0.7)"
             });
             try{

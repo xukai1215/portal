@@ -422,8 +422,8 @@
 
                         </el-row>
 
-                        <el-row v-if="radioStyle=='Classic'">
-                            <el-row type="flex" class="state-container" v-for="(state,index) in info.modelInfo.states"
+                        <el-row v-if="radioStyle=='Classic'" class="state-container" :id="'state-container'+radioStyle">
+                            <el-row type="flex" v-for="(state,index) in info.modelInfo.states"
                                     :key="index"
                                     justify="start" style="flex-wrap:wrap">
                                 <div class="leftContainer">
