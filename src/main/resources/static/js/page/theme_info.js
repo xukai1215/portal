@@ -1056,10 +1056,10 @@ var vue = new Vue({
             }
         },
         edit_theme(defaultActive) {
-                this.editThemeActive = defaultActive
-                this.dialogVisible3 = true;
-                this.log_theme++;
-                if (this.log_theme == 1) {
+            this.editThemeActive = defaultActive
+            this.dialogVisible3 = true;
+            this.log_theme++;
+            if (this.log_theme == 1) {
                 $.ajax({
                     type: "GET",
                     url: "/user/load",
@@ -1078,7 +1078,7 @@ var vue = new Vue({
                             success: (result) => {
                                 console.log("thisthis");
                                 this.themeData.children = result.data.classinfo;
-                                this.themeObj = result.data.classinfo
+                                // this.themeObj = result.data.classinfo
                                 console.log(this.themeData)
                                 console.log(this.themeObj)
                                 console.log(result);
@@ -1342,49 +1342,49 @@ var vue = new Vue({
 
 
             //将数据打包传输
-                this.themeObj["themeOid"] = this.themeoid;
+            this.themeObj["themeOid"] = this.themeoid;
 
-                let file = new File([JSON.stringify(this.themeObj)],'ant.txt',{
-                    type: 'text/plain',
-                });
-                formData.append("info",file);
-                let that = this;
-                $.ajax({
-                    url: "/theme/update",
-                    type: "POST",
-                    processData: false,
-                    contentType: false,
-                    async: true,
-                    data: formData,
+            let file = new File([JSON.stringify(this.themeObj)],'ant.txt',{
+                type: 'text/plain',
+            });
+            formData.append("info",file);
+            let that = this;
+            $.ajax({
+                url: "/theme/update",
+                type: "POST",
+                processData: false,
+                contentType: false,
+                async: true,
+                data: formData,
 
-                    success: function (result) {
-                        // loading.close();
-                        if (result.code === 0) {
-                            if(result.data.method==="update") {
-                                // alert("Update Success");
-                                that.$message('Update Success');
-                                $("#editModal", parent.document).remove();
-                                that.dialogVisible3 = false;
-                                // window.location.href = "/repository/theme/" + result.data.oid;
-                            }
-                            else{
-                                that.$message('Success! Changes have been submitted, please wait for the author to review.');
-                                that.dialogVisible3 = false;
-                                // window.location.href = "/repository/theme/" + result.data.oid;
-                                // alert("Success! Changes have been submitted, please wait for the author to review.");
-                                //产生信号调用计数，启用websocket
-                                // window.location.href = "/user/userSpace";
-                            }
-                        }
-                        else if(result.code==-2){
-                            alert("Please login first!");
-                            window.location.href="/user/login";
+                success: function (result) {
+                    // loading.close();
+                    if (result.code === 0) {
+                        if(result.data.method==="update") {
+                            // alert("Update Success");
+                            that.$message('Update Success');
+                            $("#editModal", parent.document).remove();
+                            that.dialogVisible3 = false;
+                            // window.location.href = "/repository/theme/" + result.data.oid;
                         }
                         else{
-                            alert(result.msg);
+                            that.$message('Success! Changes have been submitted, please wait for the author to review.');
+                            that.dialogVisible3 = false;
+                            // window.location.href = "/repository/theme/" + result.data.oid;
+                            // alert("Success! Changes have been submitted, please wait for the author to review.");
+                            //产生信号调用计数，启用websocket
+                            // window.location.href = "/user/userSpace";
                         }
                     }
-                })
+                    else if(result.code==-2){
+                        alert("Please login first!");
+                        window.location.href="/user/login";
+                    }
+                    else{
+                        alert(result.msg);
+                    }
+                }
+            })
         },
         uploadImg(){
 

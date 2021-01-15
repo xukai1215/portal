@@ -443,21 +443,21 @@ var createTheme = Vue.extend({
             window.location.href=urls[index]
 
         },
-        modelClass_add(){
-            this.mcnum++;
-            this.tableflag1++;
-            this.tabledataflag++;
-            $(".el-tabs__new-tab").eq(0).click();
-        },
+        // modelClass_add(){
+        //     this.mcnum++;
+        //     this.tableflag1++;
+        //     this.tabledataflag++;
+        //     $(".el-tabs__new-tab").eq(0).click();
+        // },
         dataClass_add(){
             this.dcnum++;
             this.tableflag2++;
             this.tabledataflag1++;
 
-            $(".el-tabs__new-tab").eq(1).click();
+            $(".el-tabs__new-tab").eq(0).click();
         },
         Application_add(){
-            $(".el-tabs__new-tab").eq(2).click();
+            $(".el-tabs__new-tab").eq(1).click();
         },
         handleTabsEdit_model(targetName, action) {
             if (action === 'add') {
@@ -1097,7 +1097,7 @@ var createTheme = Vue.extend({
 
                                 // console.log((that.findFirstChild(that.themeObj.classinfo[i])))
                                 if (that.themeObj.classinfo[i].mcname == "" || (that.findFirstChildObj(that.themeObj.classinfo[i])).modelsoid.length==0) {
-                                    alert("Please complete the information");
+                                    that.$alert("Please complete the information");
                                     return false;
                                 }
                                 // if (that.themeObj.classinfo[i].mcname == "" || that.themeObj.classinfo[i].modelsoid.length == 0) {
@@ -1115,7 +1115,7 @@ var createTheme = Vue.extend({
                         } else {
                             for (i = 0; i < that.themeObj.dataClassInfo.length; i++) {
                                 if (that.themeObj.dataClassInfo[i].dcname == "" || that.themeObj.dataClassInfo[i].datasoid.length == 0) {
-                                    alert("Please complete the information");
+                                    that.$alert("Please complete the information");
                                     return false;
                                 }
                             }
@@ -1183,7 +1183,7 @@ var createTheme = Vue.extend({
             success: (data) => {
                 console.log(data);
                 if (data.oid == "") {
-                    alert("Please login");
+                    that.$alert("Please login");
                     window.location.href = "/user/login";
                 }
                 else {
@@ -1211,6 +1211,7 @@ var createTheme = Vue.extend({
                 data: {},
 
                 success: (result) => {
+                    console.log("thisthis")
                     console.log(result)
                     var basicInfo = result.data;
 
@@ -1519,20 +1520,22 @@ var createTheme = Vue.extend({
         });
 
         $(".finish").click(()=> {
-            let loading = this.$loading({
-                lock: true,
-                text: "Uploading...",
-                spinner: "el-icon-loading",
-                background: "rgba(0, 0, 0, 0.7)"
-            });
+
             if(that.themeObj.application.length===1&&that.themeObj.application[0].applicationname===""&&that.themeObj.application[0].applicationlink===""
                 &&that.themeObj.application[0].upload_application_image===""){
+                let loading = this.$loading({
+                    lock: true,
+                    text: "Uploading...",
+                    spinner: "el-icon-loading",
+                    background: "rgba(0, 0, 0, 0.7)"
+                });
 
             }else {
                 for(i = 0;i<that.themeObj.application.length; i++){
                     if (that.themeObj.application[i].applicationname === ""||that.themeObj.application[i].applicationlink ===""||
                         that.themeObj.application[i].upload_application_image===""){
-                        alert("Please complete the information");
+                        that.$alert("Please complete the information"
+                        );
                         return false;
                     }
                 }
@@ -1566,6 +1569,7 @@ var createTheme = Vue.extend({
                 formData.append("info",file);
                 console.log(that.themeObj);
                 console.log(formData);
+
                 $.ajax({
                     url: "/theme/addTheme",
                     type: "POST",
@@ -1574,10 +1578,45 @@ var createTheme = Vue.extend({
                     async: true,
                     data: formData,
                     success: function (result) {
-                        loading.close();
+                        if(typeof(loading) != "undefined"){
+                            loading.close();
+                        }
+
+                        // if (result.code == 0) {
+                        //     this.$confirm('<div style=\'font-size: 18px\'>Create theme  successfully!</div>', 'Tip', {
+                        //         dangerouslyUseHTMLString: true,
+                        //         confirmButtonText: 'View',
+                        //         cancelButtonText: 'Go Back',
+                        //         cancelButtonClass: 'fontsize-15',
+                        //         confirmButtonClass: 'fontsize-15',
+                        //         type: 'success',
+                        //         center: true,
+                        //         showClose: false,
+                        //     }).then(() => {
+                        //         window.location.href = "/repository/theme/" + result.data;//刷新当前页面
+                        //     }).catch(() => {
+                        //         window.location.href = "/user/userSpace#/userTheme";
+                        //     });
+                        // }
                         if (result.code == "0") {
-                            alert("Create Success");
-                            window.location.href = "/repository/theme/" + result.data;//刷新当前页面
+                            console.log("success");
+                                that.$confirm('<div style=\'font-size: 18px\'>Create theme  successfully!</div>', 'Tip', {
+                                    dangerouslyUseHTMLString: true,
+                                    confirmButtonText: 'View',
+                                    cancelButtonText: 'Go Back',
+                                    cancelButtonClass: 'fontsize-15',
+                                    confirmButtonClass: 'fontsize-15',
+                                    type: 'success',
+                                    center: true,
+                                    showClose: false,
+                                }).then(() => {
+                                    window.location.href = "/repository/theme/" + result.data;//刷新当前页面
+                                }).catch(() => {
+                                    window.location.href = "/user/userSpace#/userTheme";
+                                });
+
+                            // alert("Create Success");
+                            // window.location.href = "/repository/theme/" + result.data;//刷新当前页面
                         }
                         else if(result.code==-1){
                             alert("Please login first!");
