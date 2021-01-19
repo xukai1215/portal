@@ -553,15 +553,6 @@
                                     @change="relateModelItemListShowChange"
                                     >
                             </el-switch>
-                            <!--<el-radio-group-->
-                                    <!--v-if="relatedModelItems.length > 0 && activeName1 == 'Model Item'"-->
-                                    <!--v-model="modelRelationGraphShow"-->
-                                    <!--@change="relateModelItemListShowChange"-->
-                                    <!--text-color="green"-->
-                                    <!--fill="green">-->
-                                <!--<el-radio :label="true" style="margin:0 10px 0 5px;">List</el-radio>-->
-                                <!--<el-radio :label="false">Graph</el-radio>-->
-                            <!--</el-radio-group>-->
                         </div>
                         <div th:if="${#lists.size(modelItems)}!=0">
                             <div v-if="!modelRelationGraphShow">

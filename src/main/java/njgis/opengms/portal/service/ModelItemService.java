@@ -1319,7 +1319,7 @@ public class ModelItemService {
         //TODO Sort是可以设置排序字段的
         int page = modelItemFindDTO.getPage();
         int pageSize = modelItemFindDTO.getPageSize();
-        String searchText = modelItemFindDTO.getSearchText();
+        String searchText = modelItemFindDTO.getSearchText().trim();
         //List<String> classifications=modelItemFindDTO.getClassifications();
         //默认以viewCount排序
         Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, modelItemFindDTO.getSortField());
@@ -2069,9 +2069,9 @@ public class ModelItemService {
 
 
             JSONObject link = new JSONObject();
-            link.put("ori",oriNum);
-            link.put("tar",modelNodeNum);
-            link.put("relation",modelRelation.getRelation().getText());
+            link.put("ori",modelNodeNum);
+            link.put("tar",oriNum);
+            link.put("relation",RelationTypeEnum.getOpposite(modelRelation.getRelation().getNumber()).getText());
             link.put("type", "model");
             links.add(link);
 
