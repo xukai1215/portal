@@ -1044,7 +1044,7 @@ var info=new Vue({
                 "language": this.currentDetailLanguage
             };
 
-            if(!window.location.href.indexOf("history")) {
+            if(window.location.href.indexOf("history")===-1) {
                 $.get("/modelItem/getDetailByLanguage", data, (result) => {
                     this.detail = result.data;
                 })

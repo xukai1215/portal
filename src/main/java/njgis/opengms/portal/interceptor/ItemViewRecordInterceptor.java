@@ -39,6 +39,8 @@ public class ItemViewRecordInterceptor implements HandlerInterceptor {
         viewRecord.setUserOid(userOid);
         viewRecord.setIp(ip);
         viewRecord.setUrl(servletPath);
+        viewRecord.setMethod(request.getMethod());
+        viewRecord.setUserAgent(request.getHeader("user-agent"));
 
         ItemTypeEnum itemType;
 

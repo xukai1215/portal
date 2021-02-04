@@ -526,8 +526,14 @@ public class ModelItemService {
         modelItem.setAuthor(author);
         modelItem.setOid(UUID.randomUUID().toString());
         modelItem.setDetail("");
-        //TODO: localization图片本地化存储
-//        modelItem.setDetail(Utils.saveBase64Image(modelItemAddDTO.getDetail(),modelItem.getOid(),resourcePath,htmlLoadPath));
+        //localization图片本地化存储
+        List<Localization> localizationList = modelItem.getLocalizationList();
+        for(int l = 0;l<localizationList.size();l++){
+            Localization localization = localizationList.get(l);
+            localization.setDescription(Utils.saveBase64Image(localization.getDescription(),modelItem.getOid(),resourcePath,htmlLoadPath));
+            localizationList.set(l,localization);
+        }
+        modelItem.setLocalizationList(localizationList);
 
         String path="/modelItem/" + UUID.randomUUID().toString() + ".jpg";
 
@@ -623,7 +629,14 @@ public class ModelItemService {
                 Date curDate = new Date();
                 modelItem.setLastModifyTime(curDate);
                 modelItem.setLastModifier(author);
-                modelItem.setDetail(Utils.saveBase64Image(modelItemUpdateDTO.getDetail(),modelItem.getOid(),resourcePath,htmlLoadPath));
+
+                List<Localization> localizationList = modelItem.getLocalizationList();
+                for(int l = 0;l<localizationList.size();l++){
+                    Localization localization = localizationList.get(l);
+                    localization.setDescription(Utils.saveBase64Image(localization.getDescription(),modelItem.getOid(),resourcePath,htmlLoadPath));
+                    localizationList.set(l,localization);
+                }
+                modelItem.setLocalizationList(localizationList);
 
                 ModelItemVersion modelItemVersion = new ModelItemVersion();
                 BeanUtils.copyProperties(modelItem,modelItemVersion,"id");
@@ -675,7 +688,15 @@ public class ModelItemService {
                 modelItemVersion.setVerNumber(curDate.getTime());
                 modelItemVersion.setVerStatus(0);
                 userService.messageNumPlusPlus(authorUserName);
-                modelItemVersion.setDetail(Utils.saveBase64Image(modelItemUpdateDTO.getDetail(),modelItem.getOid(),resourcePath,htmlLoadPath));
+
+                List<Localization> localizationList = modelItemVersion.getLocalizationList();
+                for(int l = 0;l<localizationList.size();l++){
+                    Localization localization = localizationList.get(l);
+                    localization.setDescription(Utils.saveBase64Image(localization.getDescription(),modelItemVersion.getOid(),resourcePath,htmlLoadPath));
+                    localizationList.set(l,localization);
+                }
+                modelItemVersion.setLocalizationList(localizationList);
+
                 modelItemVersion.setCreator(author);
                 modelItemVersionDao.insert(modelItemVersion);
 

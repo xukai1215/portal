@@ -122,7 +122,6 @@ public class VersionRestController {
         else {
             modelAndView.setViewName("error/404");
         }
-        modelAndView.setViewName("version/versionCheck");
 
         return modelAndView;
     }
