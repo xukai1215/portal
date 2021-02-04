@@ -526,8 +526,14 @@ public class ModelItemService {
         modelItem.setAuthor(author);
         modelItem.setOid(UUID.randomUUID().toString());
         modelItem.setDetail("");
-        //TODO: localization图片本地化存储
-//        modelItem.setDetail(Utils.saveBase64Image(modelItemAddDTO.getDetail(),modelItem.getOid(),resourcePath,htmlLoadPath));
+        //localization图片本地化存储
+        List<Localization> localizationList = modelItem.getLocalizationList();
+        for(int l = 0;l<localizationList.size();l++){
+            Localization localization = localizationList.get(l);
+            localization.setDescription(Utils.saveBase64Image(localization.getDescription(),modelItem.getOid(),resourcePath,htmlLoadPath));
+            localizationList.set(l,localization);
+        }
+        modelItem.setLocalizationList(localizationList);
 
         String path="/modelItem/" + UUID.randomUUID().toString() + ".jpg";
 
@@ -623,7 +629,14 @@ public class ModelItemService {
                 Date curDate = new Date();
                 modelItem.setLastModifyTime(curDate);
                 modelItem.setLastModifier(author);
-                modelItem.setDetail(Utils.saveBase64Image(modelItemUpdateDTO.getDetail(),modelItem.getOid(),resourcePath,htmlLoadPath));
+
+                List<Localization> localizationList = modelItem.getLocalizationList();
+                for(int l = 0;l<localizationList.size();l++){
+                    Localization localization = localizationList.get(l);
+                    localization.setDescription(Utils.saveBase64Image(localization.getDescription(),modelItem.getOid(),resourcePath,htmlLoadPath));
+                    localizationList.set(l,localization);
+                }
+                modelItem.setLocalizationList(localizationList);
 
                 ModelItemVersion modelItemVersion = new ModelItemVersion();
                 BeanUtils.copyProperties(modelItem,modelItemVersion,"id");
@@ -675,7 +688,15 @@ public class ModelItemService {
                 modelItemVersion.setVerNumber(curDate.getTime());
                 modelItemVersion.setVerStatus(0);
                 userService.messageNumPlusPlus(authorUserName);
-                modelItemVersion.setDetail(Utils.saveBase64Image(modelItemUpdateDTO.getDetail(),modelItem.getOid(),resourcePath,htmlLoadPath));
+
+                List<Localization> localizationList = modelItemVersion.getLocalizationList();
+                for(int l = 0;l<localizationList.size();l++){
+                    Localization localization = localizationList.get(l);
+                    localization.setDescription(Utils.saveBase64Image(localization.getDescription(),modelItemVersion.getOid(),resourcePath,htmlLoadPath));
+                    localizationList.set(l,localization);
+                }
+                modelItemVersion.setLocalizationList(localizationList);
+
                 modelItemVersion.setCreator(author);
                 modelItemVersionDao.insert(modelItemVersion);
 
@@ -1319,7 +1340,7 @@ public class ModelItemService {
         //TODO Sort是可以设置排序字段的
         int page = modelItemFindDTO.getPage();
         int pageSize = modelItemFindDTO.getPageSize();
-        String searchText = modelItemFindDTO.getSearchText();
+        String searchText = modelItemFindDTO.getSearchText().trim();
         //List<String> classifications=modelItemFindDTO.getClassifications();
         //默认以viewCount排序
         Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, modelItemFindDTO.getSortField());
@@ -2069,9 +2090,9 @@ public class ModelItemService {
 
 
             JSONObject link = new JSONObject();
-            link.put("ori",oriNum);
-            link.put("tar",modelNodeNum);
-            link.put("relation",modelRelation.getRelation().getText());
+            link.put("ori",modelNodeNum);
+            link.put("tar",oriNum);
+            link.put("relation",RelationTypeEnum.getOpposite(modelRelation.getRelation().getNumber()).getText());
             link.put("type", "model");
             links.add(link);
 

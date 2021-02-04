@@ -75,18 +75,18 @@
     </script>
 </head>
 <body class="scrollbar">
-<div id="app">
+<div id="app" style="height: 100%;">
     <div th:replace="fragments/navbar :: unlog" class="head"></div>
-    <div class="container-fluid" v-cloak>
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="row">
+    <div class="container-fluid" v-cloak style="height: 100%;">
+        <div class="row" style="height: 100%;">
+            <div class="col-sm-12" style="height: 100%;">
+                <div class="row" style="height: 100%;">
                     <!--左侧菜单栏-->
                     <el-card id="subcard" style="min-width: 60px;">
                         <div class="logoPanel">
                         </div>
-                        <div slot="header" class="clearfix text-center headerImg" style="position: relative;height: 20vh;padding-bottom: 0px">
-                            <img th:src="'/static'+${info.image}" id="header_image" style="border-radius: unset;height: 80%;">
+                        <div slot="header" class="clearfix text-center headerImg" style="position: relative;">
+                            <img th:src="'/static'+${info.image}" id="header_image" style="border-radius: unset;">
                             <div>
                                 <a class="themename_item" th:utext="${info.themename}" style="font-size: 24px;color:#444"></a>
                                 <el-input type="text" v-model="form.name" id="edit_themename" class="edit_themename" th:value="${info.themename}" style="display: none"></el-input>
@@ -107,7 +107,7 @@
                                 active-text-color="#409EFF"
                                 :collapse="isCollapse"
                                 :collapse-transition = "false"
-                                style="overflow: auto;border-bottom: 1px solid #ccc;height: 60vh">
+                                style="overflow: auto;border-bottom: 1px solid #ccc;">
                             <el-menu-item index="1" th:onclick="'javascript:show(\'detailinfo'+'\',\'BasicInfoPanel\',\'detailIntroducePanel\')'">
                                 <i class="el-icon-info"></i>
                                 <span slot="title">Theme Info</span>

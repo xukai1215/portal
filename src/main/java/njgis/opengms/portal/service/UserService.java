@@ -1784,7 +1784,7 @@ public class UserService {
                 return name;
             }else {
                 orders.sort(Comparator.comparingInt(Integer::intValue).reversed());
-                return name + "_" + orders.get(0)+1;
+                return name + "_" + (orders.get(0)+1);
             }
         }
     }

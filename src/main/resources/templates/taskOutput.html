@@ -149,10 +149,10 @@
                                                                        @click="download(input)" >
                                                                 <i class="fa fa-download"></i>
                                                             </el-button>
-                                                            <el-button v-if="input.event==modelInEvent.eventName&&input.visual" plain round type="primary"
-                                                                       @click="visualize(input)">
-                                                                <i class="fa fa-eye"></i>
-                                                            </el-button>
+                                                            <!--<el-button v-if="input.event==modelInEvent.eventName&&input.visual" plain round type="primary"-->
+                                                                       <!--@click="visualize(input)">-->
+                                                                <!--<i class="fa fa-eye"></i>-->
+                                                            <!--</el-button>-->
                                                         </div>
                                                     </el-col>
                                                 </el-row>
@@ -198,11 +198,11 @@
                                                                        @click="download(output)" >
                                                                 <i class="fa fa-download"></i>
                                                             </el-button>
-                                                            <el-button plain round type="primary"
-                                                                       v-if="output.event==modelOutEvent.eventName&&!output.multiple&&output.visual"
-                                                                       @click="visualize(output)">
-                                                                <i class="fa fa-eye"></i>
-                                                            </el-button>
+                                                            <!--<el-button plain round type="primary"-->
+                                                                       <!--v-if="output.event==modelOutEvent.eventName&&!output.multiple&&output.visual"-->
+                                                                       <!--@click="visualize(output)">-->
+                                                                <!--<i class="fa fa-eye"></i>-->
+                                                            <!--</el-button>-->
 <!--                                                            <el-button plain round type="success"-->
 <!--                                                                       v-if="output.event==modelOutEvent.eventName&&!output.multiple&&output.visual"-->
 <!--                                                                       @click="visualize(output)">-->
@@ -266,11 +266,11 @@
                                                    @click="download(scope.row)">
                                             <i class="fa fa-download"></i>
                                         </el-button>
-                                        <el-button plain circle type="primary"
-                                                   v-if="scope.row.visual"
-                                                   @click="visualize(scope.row)">
-                                            <i class="fa fa-eye"></i>
-                                        </el-button>
+                                        <!--<el-button plain circle type="primary"-->
+                                                   <!--v-if="scope.row.visual"-->
+                                                   <!--@click="visualize(scope.row)">-->
+                                            <!--<i class="fa fa-eye"></i>-->
+                                        <!--</el-button>-->
                                     </template>
 
                                 </el-table-column>
