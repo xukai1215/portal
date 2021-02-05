@@ -857,6 +857,7 @@ new Vue({
             }
             else{
                 url="/repository/searchConcept";
+
                 this.classifications1=[""];
                 this.currentClass="ALL";
                 this.$refs.tree1.setCurrentKey(null);

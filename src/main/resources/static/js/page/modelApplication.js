@@ -24,6 +24,8 @@ var vue = new Vue({
 
                 integratedModelDialog:false,
 
+                paramOptimaDialog:false,
+
                 guideActive:0,
             }
         },
@@ -42,12 +44,21 @@ var vue = new Vue({
                 this.guideActive = 0
             },
 
+            loadParamOptimaGuideDialog(){
+                this.paramOptimaDialog=true
+                this.guideActive = 0
+            },
+
             loadDeployedModelClick() {
                 this.loadDeployedModelDialog = true;
                 this.pageOption.currentPage = 1;
                 this.searchResult = '';
                 this.loadDeployedModel();
 
+            },
+
+            underConstruction(){
+                this.$message({message:'We are working to complete this.',type: 'success', center: true});
             },
 
             handlePageChange(val) {

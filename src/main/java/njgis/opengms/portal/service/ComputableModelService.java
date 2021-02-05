@@ -272,11 +272,26 @@ public class ComputableModelService {
 
 
 
-    public ModelAndView getPage(String id) {
+    public ModelAndView getPage(String id, String userName) {
         //条目信息
         try {
 
+            ModelAndView modelAndView = new ModelAndView();
+
             ComputableModel modelInfo = getByOid(id);
+
+            if (modelInfo.getStatus().equals("Private")) {
+                if (userName == null) {
+                    modelAndView.setViewName("error/404");
+                    return modelAndView;
+                } else {
+                    if (!userName.equals(modelInfo.getAuthor())) {
+                        modelAndView.setViewName("error/404");
+                        return modelAndView;
+                    }
+                }
+            }
+
             modelInfo=(ComputableModel)itemService.recordViewCount(modelInfo);
             computableModelDao.save(modelInfo);
             //类
@@ -372,7 +387,7 @@ public class ComputableModelService {
             modelItemInfo.put("contentType", modelInfo.getContentType());
 
 
-            ModelAndView modelAndView = new ModelAndView();
+
 
             modelAndView.setViewName("computable_model");
 

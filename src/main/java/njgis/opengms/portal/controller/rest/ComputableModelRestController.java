@@ -35,7 +35,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.text.ParseException;
@@ -173,9 +172,11 @@ public class ComputableModelRestController {
     }
 
     @RequestMapping (value="/{id}",method = RequestMethod.GET)
-    ModelAndView get(@PathVariable ("id") String id ){
+    ModelAndView get(@PathVariable ("id") String id, HttpServletRequest request){
 
-        return computableModelService.getPage(id);
+        String userName = Utils.checkLoginStatus(request.getSession());
+
+        return computableModelService.getPage(id,userName);
 
     }
 

@@ -21,7 +21,7 @@ c<!DOCTYPE html>
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/other/bootstrap-select.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="/static/data-tables/DT_bootstrap.css"/>
 
-<!--    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/page/create-theme.css"/>-->
+    <!--    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/page/create-theme.css"/>-->
     <link rel="stylesheet" type="text/css" href="/static/css/page/user_space.css">
     <link rel="stylesheet" href="/static/css/common/newSideBar.css">
 
@@ -921,6 +921,100 @@ c<!DOCTYPE html>
             </div>
         </template>
 
+        <!--<el-dialog :visible.sync="dialogTableVisible" :title="relateTitle" :before-close="handleClose" width="70%" top="40px">-->
+
+        <!--<el-card class="box-card" style="width:40%;margin-right: 1%;float: left;">-->
+        <!--<div slot="header" class="clearfix">-->
+        <!--<span>Selected Items</span>-->
+        <!--</div>-->
+        <!--<el-table-->
+        <!--:data="tableData"-->
+        <!--ref="leftTable"-->
+        <!--:max-height="tableMaxHeight">-->
+        <!--<el-table-column type="expand">-->
+        <!--<template slot-scope="props">-->
+        <!--<el-form label-position="left" inline class="demo-table-expand">-->
+        <!--<el-form-item label="Contributor">-->
+        <!--<span>{{ props.row.author }}</span>-->
+        <!--</el-form-item>-->
+
+        <!--</el-form>-->
+        <!--</template>-->
+        <!--</el-table-column>-->
+        <!--<el-table-column-->
+        <!--label="Name">-->
+        <!--<template slot-scope="props">-->
+        <!--<a :href="'/'+relateType+'/'+props.row.oid" target="_blank">{{props.row.name}}</a>-->
+        <!--</template>-->
+        <!--</el-table-column>-->
+
+        <!--<el-table-column fixed="right" label="Operation" width="100">-->
+        <!--<template slot-scope="scope">-->
+
+        <!--<el-button-->
+        <!--size="mini"-->
+        <!--type="danger"-->
+        <!--@click="handleDelete(scope.$index, scope.row)">Delete-->
+        <!--</el-button>-->
+        <!--</template>-->
+        <!--</el-table-column>-->
+        <!--</el-table>-->
+        <!--</el-card>-->
+
+
+        <!--<el-card class="box-card" style="width:59%;">-->
+        <!--<el-input placeholder="Please enter name..." v-model="relateSearch" class="input-with-select">-->
+        <!--<el-button slot="append" icon="el-icon-search" @click="search()"></el-button>-->
+        <!--</el-input>-->
+        <!--<el-table-->
+        <!--:data="pageOption.searchResult"-->
+        <!--:data="pageOption.searchResult"-->
+        <!--style="margin-top:17px;"-->
+        <!--:max-height="tableMaxHeight">-->
+        <!--<el-table-column type="expand">-->
+        <!--<template slot-scope="props">-->
+        <!--<el-form label-position="left" inline class="demo-table-expand">-->
+        <!--<el-form-item label="Detail">-->
+        <!--<span>{{ props.row.description }}</span>-->
+        <!--</el-form-item>-->
+
+        <!--</el-form>-->
+        <!--</template>-->
+        <!--</el-table-column>-->
+        <!--<el-table-column-->
+        <!--label="Name">-->
+        <!--<template slot-scope="props">-->
+        <!--<a :href="'/repository/'+relateType+'/'+props.row.oid" target="_blank">{{props.row.name}}</a>-->
+        <!--</template>-->
+        <!--</el-table-column>-->
+        <!--<el-table-column-->
+        <!--label="Contributor"-->
+        <!--prop="author">-->
+        <!--</el-table-column>-->
+        <!--<el-table-column fixed="right" label="Operation" width="100">-->
+        <!--<template slot-scope="scope">-->
+        <!--<el-button-->
+        <!--size="mini"-->
+        <!--@click="handleEdit(scope.$index, scope.row)">Add-->
+        <!--</el-button>-->
+
+        <!--</template>-->
+        <!--</el-table-column>-->
+        <!--</el-table>-->
+        <!--<el-pagination style="text-align: center;margin-top:20px"-->
+        <!--@current-change="handlePageChange"-->
+        <!--:current-page="pageOption.currentPage"-->
+        <!--layout="total, prev, pager, next, jumper"-->
+        <!--:page-size="5"-->
+        <!--:total="pageOption.total">-->
+        <!--</el-pagination>-->
+        <!--</el-card>-->
+        <!--<div slot="footer" class="dialog-footer">-->
+        <!--<span style="float:left;font-size: 16px">Or you can click <a style="cursor:pointer" @click="jump">here</a> to create a new one.</span>-->
+        <!--<el-button @click="dialogTableVisible = false;">Cancel</el-button>-->
+        <!--<el-button type="primary"  id="selectok">OK</el-button>-->
+        <!--</div>-->
+        <!--</el-dialog>-->
     </div>
 
 </div>

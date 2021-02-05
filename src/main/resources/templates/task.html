@@ -76,11 +76,19 @@
             font-size: 20px;
         }
         .smallLoading .el-loading-spinner {
-            margin-top: -11px;
+            margin-top: 0px;
         }
 
         .model-input .el-input-group__append{
             padding-right: 15px
+        }
+
+        .el-loading-spinner{
+            top: 150px;
+            width: calc(100%);
+            text-align: center;
+            position: sticky;
+            margin-top: 200px;
         }
     </style>
 </head>
@@ -422,8 +430,8 @@
 
                         </el-row>
 
-                        <el-row v-if="radioStyle=='Classic'">
-                            <el-row type="flex" class="state-container" v-for="(state,index) in info.modelInfo.states"
+                        <el-row v-if="radioStyle=='Classic'" class="state-container" :id="'state-container'+radioStyle">
+                            <el-row type="flex" v-for="(state,index) in info.modelInfo.states"
                                     :key="index"
                                     justify="start" style="flex-wrap:wrap">
                                 <div class="leftContainer">

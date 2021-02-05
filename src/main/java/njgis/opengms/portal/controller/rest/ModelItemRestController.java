@@ -38,7 +38,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
+import java.io.*;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -81,6 +81,9 @@ public class ModelItemRestController {
 
     @Value("${htmlLoadPath}")
     private String htmlLoadPath;
+
+    @Value("${resourcePath}")
+    private String resourcePath;
 
     @RequestMapping(value="/repository",method = RequestMethod.GET)
     public ModelAndView getModelItems() {
@@ -577,5 +580,23 @@ public class ModelItemRestController {
     @RequestMapping(value="/getFullRelationGraph",method = RequestMethod.POST)
     public JsonResult getFullRelationGraph(){
         return ResultUtils.success(modelItemService.getFullRelationGraph());
+    }
+
+    @RequestMapping(value="/refreshFullRelationGraph",method = RequestMethod.POST)
+    public JsonResult refreshFullRelationGraph(){
+        JsonResult jsonResult = ResultUtils.success(modelItemService.getFullRelationGraph());
+        try {
+            String fileName = resourcePath + "/cacheFile/modelRelationGraph.json";
+            File file = new File(fileName);
+            if(!file.exists()){
+                file.createNewFile();
+            }
+            BufferedWriter out = new BufferedWriter(new FileWriter(fileName));
+            out.write(jsonResult.getData().toString());
+            out.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return jsonResult;
     }
 }

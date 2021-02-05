@@ -31,8 +31,8 @@ var userTask = Vue.extend(
                 totalNum: 0,
 
                 //dataTask分页控制
-                dataSortAsc: 1,//1 -1
-                dataSortType: "default",
+                dataSortAsc: -1,//1 -1
+                dataSortType: "runTime",
                 dataPageSize: 10,// 每页数据条数
                 dataTotalPage: 0,// 总页数
                 dataCurPage: 1,// 当前页码
@@ -1714,8 +1714,9 @@ var userTask = Vue.extend(
                 } else{
                     window.open('/task/output/' + modelId + '&' + taskId);
                 }
-
-
+            },
+            checkDataTaskOutput(taskId) {
+                window.open('/task/dataTaskOutput/' + taskId)
             },
 
             initDataTaskFindDto(){

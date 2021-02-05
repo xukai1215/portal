@@ -582,7 +582,7 @@ zhtml,body{
     width: 280px;
     /*width: 20%;*/
     height: 100%;
-    margin-top: 62px;
+    padding-top: 62px;
     /*position: fixed;*/
     Z-index: 2;
 }
