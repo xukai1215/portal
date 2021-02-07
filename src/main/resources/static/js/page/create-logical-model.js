@@ -318,7 +318,7 @@ var createLogicalModel = Vue.extend({
             itemObj.name=this.logicalModel.name
             itemObj.status=this.logicalModel.status
             itemObj.description=this.logicalModel.description
-            itemObj.bindModelItem=this.logicalModel.bindModelItem
+            itemObj.relatedModelItem=this.logicalModel.bindOid
             itemObj.contentType=$("input[name='ContentType']:checked").val();
             itemObj.isAuthor=$("input[name='author_confirm']:checked").val();
             var detail = tinyMCE.activeEditor.getContent();
