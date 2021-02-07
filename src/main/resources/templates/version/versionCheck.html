@@ -61,6 +61,9 @@
                     <template slot-scope="scope">
                         <el-button class="accept" type="success" size="middle" @click="accept(scope.row)">Accept</el-button>
                         <el-button class="reject" type="danger" size="middle" @click="reject(scope.row)">Reject</el-button>
+                        <el-tooltip class="item" effect="dark" content="modify this item after accepting" placement="left">
+                            <el-button class="reject" type="warning" size="middle" @click="acceptWithModification(scope.row)">A & M</el-button>
+                        </el-tooltip>
                     </template>
                 </el-table-column>
             </el-table>
@@ -255,6 +258,41 @@
                             if(a>=0){
                                 this.tableData.splice(a,1);
                             }
+                        }
+                    })
+
+                },
+                acceptWithModification(event){
+                    let data={
+                        modifier:event.modifier,
+                        type:event.type,
+                        oid:event.oid,
+                        originOid:event.originOid
+                    };
+                    $.ajax({
+                        type:"POST",
+                        url:"/version/accept",
+                        contentType: "application/json",
+                        data: JSON.stringify(data),
+                        async: true,
+                        success:(json)=>{
+                            // window.location.reload();
+                            let a = this.tableData.indexOf(event);
+                            if(a>=0){
+                                this.tableData.splice(a,1);
+                            }
+
+                            let parent = "";
+                            if(event.type.indexOf("model")!=-1 || event.type.indexOf("Model")!=-1){
+                                parent = "model";
+                            }else if(event.type.indexOf("data")!=-1){
+                                parent = "data";
+                            }else{
+                                parent = "community";
+                            }
+
+                            let type = event.type[0].toUpperCase()+event.type.substring(1);
+                            window.open("/user/userSpace#/"+parent+"/manage"+type+"/"+event.originOid);
                         }
                     })
 
