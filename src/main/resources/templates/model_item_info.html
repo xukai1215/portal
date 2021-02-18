@@ -20,7 +20,8 @@
     <link rel="stylesheet" href="/static/css/base/relate_item.css">
     <link rel="stylesheet" href="/static/css/page/model_item_info.css">
     <link rel="stylesheet" href="/static/css/common/userModule.css">
-    <!--<link rel="stylesheet" href="/static/css/common/wzhStyle.css">-->
+    <link rel="stylesheet" href="/static/css/common/wzhStyle.css">
+    <link rel="stylesheet" href="/static/css/common/wzhFlexContainer.css">
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css"/>
 
@@ -126,7 +127,7 @@
 
 </head>
 <body style="overflow-x: hidden;">
-<div id="app">
+<div id="app" v-cloak>
     <div th:replace="fragments/navbar :: unlog"></div>
 
     <div th:replace="fragments/backToTop :: backtop-down"></div>
@@ -220,13 +221,12 @@
                     <div class="el-row"
                          style="margin-bottom: 3px;height: 40px;display: flex;justify-content: center;align-items: center;">
                         <div class="el-col ">
-                            <img th:src="${user.image}==''?'/static/img/icon/default.png':${user.image}"
+                            <img :src="lightenContributor.image==''?'/static/img/icon/default.png':lightenContributor.image"
                                  class="round_icon" style="width:40px;height: 40px;float:left;">
                         </div>
                         <div class="el-col">
                             <div class="pull-left" style="display: block;margin-left: 15px;">
-                                <a th:href="'/profile/'+${user.userId}"><h4 th:text="${user.name}" style="padding: 0;">Tom
-                                    Marvolo Riddle</h4></a>
+                                <a :href="'/profile/'+lightenContributor.userId"><h4 style="padding: 0;">{{lightenContributor.name}}</h4></a>
                             </div>
                         </div>
                     </div>
@@ -234,6 +234,14 @@
                         <div class="text-center">
                             <h5 th:if="${history!=true}" th:text="'contributed at '+${date}">contributed at 2018-7-13 14:32:18 </h5>
                             <h5 th:if="${history==true}" th:text="'modified at '+${date}">modified at 2018-7-13 14:32:18 </h5>
+                        </div>
+                    </div>
+                    <div class="wzhScrollbar">
+                        <div class="flexCol flexCenter">
+                            <div v-for="contributor in contributors" style="margin: 10px 5px">
+                                <img :src="contributor.image==''?'/static/img/icon/default.png':contributor.image"
+                                     class="round_icon" style="width:40px;height: 40px;">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1077,13 +1085,12 @@
                     <div class="el-row"
                          style="margin-bottom: 3px;height: 40px;display: flex;justify-content: center;align-items: center;">
                         <div class="el-col ">
-                            <img th:src="${user.image}==''?'/static/img/icon/default.png':${user.image}"
+                            <img :src="lightenContributor.image==''?'/static/img/icon/default.png':lightenContributor.image"
                                  class="round_icon" style="width:40px;height: 40px;float:left;">
                         </div>
                         <div class="el-col">
                             <div class="pull-left" style="display: block;margin-left: 15px;">
-                                <a th:href="'/profile/'+${user.userId}"><h4 th:text="${user.name}" style="padding: 0;">Tom
-                                    Marvolo Riddle</h4></a>
+                                <a :href="'/profile/'+lightenContributor.userId"><h4 style="padding: 0;">{{lightenContributor.name}}</h4></a>
                             </div>
                         </div>
                     </div>
@@ -1092,6 +1099,18 @@
                             <h5 th:if="${history!=true}" th:text="'contributed at '+${date}">contributed at 2018-7-13 14:32:18 </h5>
                             <h5 th:if="${history==true}" th:text="'modified at '+${date}">modified at 2018-7-13 14:32:18 </h5>
                         </div>
+                    </div>
+                    <div class="wzhScrollbar flexAlignEnd" style=" white-space: nowrap;height: 70px">
+                        <div>
+                            <div v-for="(contributor,index) in contributors" :key="contributor.userId"
+                                 class="inlineBlock cursorPointer" style="margin: 10px 5px;">
+                                <img :src="contributor.image==''?'/static/img/icon/default.png':contributor.image"
+                                     @click="riseUser(contributor,index)"
+                                     class="round_icon iconImg">
+                            </div>
+
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -1599,6 +1618,7 @@
 <script th:inline="javascript">
     var modelInfo = [[${modelInfo}]];
     var modelItemList=[[${modelItems}]];
+    var author=[[${user}]];
 </script>
 
 

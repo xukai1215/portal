@@ -578,4 +578,9 @@ public class ModelItemRestController {
     public JsonResult getFullRelationGraph(){
         return ResultUtils.success(modelItemService.getFullRelationGraph());
     }
+
+    @RequestMapping(value="/getContributors",method = RequestMethod.GET)
+    public JsonResult getContributors(@RequestParam(value="id")String oid){
+        return ResultUtils.success(modelItemService.getContributors(oid));
+    }
 }

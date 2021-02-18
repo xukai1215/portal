@@ -184,15 +184,6 @@ var vue = new Vue({
                     }
                     ;
                 }
-                //控制左侧导航栏位置
-                if (s > 233) {
-                    $('#sidebarMenu').addClass("fixed")
-                    $('#sidebarMenu').css("width",$("#leftPanel").width());
-                } else {
-                    $('#sidebarMenu').removeClass("fixed")
-                    $('#sidebarMenu').css("width","auto")
-                    // $('#sidebarMenu').removeClass("el-col-7")
-                }
 
 
             }

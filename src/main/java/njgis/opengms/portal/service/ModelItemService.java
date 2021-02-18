@@ -2127,4 +2127,28 @@ public class ModelItemService {
 
     }
 
+    public JSONArray getContributors(String oid){
+
+        ModelItem modelItem = modelItemDao.findFirstByOid(oid);
+
+        List<String> contributors = modelItem.getContributors();
+        JSONArray jsonArray = new JSONArray();
+        if(contributors.size()>0){
+            for(String contributor : contributors){
+
+                JSONObject jsonObject = new JSONObject();
+                User user = userDao.findFirstByUserName(contributor);
+                jsonObject.put("name",user.getName());
+                jsonObject.put("userId",user.getUserId());
+                jsonObject.put("image",user.getImage());
+
+                jsonArray.add(jsonObject);
+
+            }
+
+        }
+
+        return jsonArray;
+    }
+
 }

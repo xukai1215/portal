@@ -522,6 +522,8 @@ var info=new Vue({
             lineLabelShow:true,
             lineColorShow:false,
 
+            lightenContributor:{},
+            contributors:[],
         }
     },
     methods: {
@@ -2154,8 +2156,34 @@ var info=new Vue({
         collapse(){
             console.log('aa')
             $('#authorship0').collapse()
-        }
+        },
+
+        getContributors(){
+            let ids = window.location.href.split('/')
+            let id = ids[ids.length-1]
+
+            axios.get('/modelItem/getContributors',{
+                params:{
+                    id:id
+                }
+            }).then(
+                res=>{
+                    this.contributors = res.data.data
+                }
+            )
+
+        },
+
+        riseUser(contributor,index){
+            let tmp = this.lightenContributor
+            this.lightenContributor = contributor
+            this.$set(this.contributors,index,tmp)
+        },
     },
+    created(){
+        this.getContributors()
+    },
+
     mounted() {
 
         this.modelInfo = modelInfo;
@@ -2167,6 +2195,7 @@ var info=new Vue({
 
         }
 
+        this.lightenContributor = author
 
         let href = window.location.href;
         let hrefs = href.split('/');

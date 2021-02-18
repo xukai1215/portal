@@ -40,9 +40,12 @@
             <div class="col-lg-10 col-lg-offset-1 col-md-12 clearfix" style="padding: 5px 0">
                 <el-row :gutter="40" >
 
-                    <el-col id="leftPanel" :span="sectionTitleSpan">
-                        <el-button  type="info" plain style="margin-top: 15px;margin-bottom: 10px;" @click="backClick">&larr;&nbsp;Back</el-button>
-                        <div class="treeContainer" id="sidebarMenu" >
+                    <el-col id="leftPanel"  :span="sectionTitleSpan" style="position: sticky;top:0px">
+                        <div class="treeContainer" id="sidebarMenu">
+                            <div class=" lineButton" style="margin: 15px 15px 25px 13px;width: 63px" >
+                                <a type="info" @click="backClick">&larr;&nbsp;Back</a>
+                                <div class="hoverLine"></div>
+                            </div>
                             <el-tree
                                     :data="sectionData"
                                     @node-click="anchorClick"

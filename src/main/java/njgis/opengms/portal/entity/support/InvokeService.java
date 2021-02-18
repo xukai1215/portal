@@ -28,7 +28,7 @@ public class InvokeService {
     String name;//服务名称
 
     List<String> dataIds;
-    JSONObject serviceDetail;
+    JSONObject metaDetail;
 
     //List<TestData> dataSet;//分布式节点的数据信息
     String method;//Conversion Processing Visualization

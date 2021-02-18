@@ -286,6 +286,14 @@ public class ComputableModelRestController {
         return modelAndView;
     }
 
+    @RequestMapping(value = "/integratedTest",method = RequestMethod.GET)
+    ModelAndView integratedTest(HttpServletRequest request){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("integratedTest");
+
+        return modelAndView;
+    }
+
     @RequestMapping(value = "/getIntegratedTask/{taskId}",method = RequestMethod.GET)
     ModelAndView getIntegratedTask(@PathVariable("taskId") String taskId){
 

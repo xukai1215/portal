@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import njgis.opengms.portal.bean.JsonResult;
+import njgis.opengms.portal.dao.TestServiceDao;
 import njgis.opengms.portal.dto.DataNodeContentDTO;
 import njgis.opengms.portal.entity.support.InvokeService;
 import njgis.opengms.portal.service.DataServerService;
@@ -32,6 +33,10 @@ import java.util.Map;
 public class DataServerRestController {
     @Value("${dataServerManager}")
     private String dataServerManager;
+
+
+    @Autowired
+    TestServiceDao testServiceDao;
 
     @Autowired
     DataServerService dataServerService;
@@ -225,13 +230,10 @@ public class DataServerRestController {
 
     }
 
-    @RequestMapping(value = "/checkNodeContent", method = RequestMethod.GET)
-    public JsonResult checkNodeContent(@RequestParam("serverId") String serverId,
-                                       @RequestParam("token") String token,
-                                       @RequestParam("type") String type
-                                       ){
+    @RequestMapping(value = "/getTestServices", method = RequestMethod.GET)
+    public JsonResult getTestServices(){
 
-       return ResultUtils.success(dataServerService.checkNodeContent(serverId,token,type));
+        return ResultUtils.success(testServiceDao.findAll());
 
     }
 }

@@ -377,7 +377,7 @@ var vue = new Vue({
             this.models = []
             this.modelActions = []
             //把画布清空
-            this.iframeWindow.setCXml('<mxGraphModel dx="670" dy="683" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169">\n' +
+            this.iframeWindow.setCXml('<mxGraphModel dx="1196" dy="704" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169">\n' +
                 '  <root>\n' +
                 '    <mxCell id="0"/>\n' +
                 '    <mxCell id="1" parent="0"/>\n' +

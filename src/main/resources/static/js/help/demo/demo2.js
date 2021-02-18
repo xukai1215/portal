@@ -25,7 +25,7 @@ const supportDoc = [{
         "<p>Then we add more models into the task. And link the output and input of them.</p>\n" +
         "<p>These models are the following:</p>\n" +
         "<p>‘TAUDEM- D-Infinity Flow Direction’,’TAUDEM - D8 Contributing Area’,’ TauDEM_D8FlowDir’, ‘TAUDEM - D-Infinity Contributing Area’,’TAUDEM - Slope Area Combination’,’TAUDEM - D8 Extreme Upslope Value’,’ Stream Definition By Threshold’,’ TauDEM - StreamNet’. </p>\n" +
-        "<p>And the data links and linked as the following picture.</p>\n" +
+        "<p>And the data links are linked as the following picture.</p>\n" +
         "<p align=\"center\"><img src=\"/static/img/demo/demo2/image007.png\" ></p>\n"
 }, {
     "title": "2 Load data of each model and data method",
@@ -338,9 +338,9 @@ const supportDoc = [{
         "<p align=\"center\"><img src=\"/static/img/demo/demo2/image014.png\" ></p>\n" +
         "<p>Completed action will turn to green, Running action will turn to yellow in the graph.</p>\n" +
         "<p align=\"center\"><img src=\"/static/img/demo/demo2/image015.jpg\" ></p>\n" +
-        "<p>When all the action cell turn to green, we have runned the task successful.</p>\n" +
+        "<p>When all the action cells turn to green, we run the task successful.</p>\n" +
         "<p align=\"center\"><img src=\"/static/img/demo/demo2/image016.png\" ></p>\n" +
-        "<p>The output can be downloaded by click the button in the data bus, once an action is completed, the outputs of it can be downloaded.</p>\n" +
+        "<p>The output of one data can be downloaded by click the button in the data bus, once an action is completed, the outputs of it can be downloaded.</p>\n" +
         "<p align=\"center\"><img src=\"/static/img/demo/demo2/image017.png\" ></p>\n" +
         "<p>And all your integrated tasks can be checked in your space.</p>\n" +
         "<p align=\"center\" width='502'><img src=\"/static/img/demo/demo2/image018.png\" ></p>\n"
