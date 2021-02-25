@@ -193,9 +193,22 @@ var createTheme = Vue.extend({
             model_num1: 1,
 
             themeImg:'',
+
+            selectButton: true,
         }
     },
     methods: {
+        showOrHideModelCard(){
+            if(this.selectButton){
+                $('#modelCard1').css('width','40%')
+                $('#modelCard2').css('display','inline')
+                this.selectButton = false
+            } else {
+                $('#modelCard1').css('width','80%')
+                $('#modelCard2').css('display','none')
+                this.selectButton = true
+            }
+        },
         test(){
             console.log(this.modelClassInfos)
         },
@@ -258,19 +271,18 @@ var createTheme = Vue.extend({
         // tree的四个事件
         changeClassNode(data,node) {
             if(data.children.length == 0){
-                console.log(data)
+
                 this.selectedTableData = data.tableData
                 this.currentNode = data.id
                 this.parentNode = false
                 this.childNode = true
             }else{
-                console.log(this.themeObj)
+                // console.log(this.themeObj)
                 this.currentNode = this.findFirstChild(data)
                 this.parentNode = true
                 this.childNode = false
             }
-            console.log(this.themeObj)
-            console.log(this.themeData)
+            console.log(this.selectedTableData)
         },
         append(data) {
             this.$prompt('Class Name', '提示', {
@@ -1080,7 +1092,7 @@ var createTheme = Vue.extend({
                 if (currentIndex === 0) {
                     if (stepDirection === "forward") {
                         if ($("#nameInput").val().length == 0) {
-                            alert('Please Input Theme Name!');
+                            that.$alert("Please Input Theme Name!");
                             return false;
                         } else {
                             return true;
@@ -1090,22 +1102,22 @@ var createTheme = Vue.extend({
 
                 if (currentIndex === 1) {
                     if (stepDirection === "forward") {
-                        if (that.themeObj.classinfo.length==1&&that.themeObj.classinfo[0].mcname==""&&that.themeObj.classinfo[0].modelsoid.length==0){
-                            return true
-                        } else{
-                            for (i = 0; i < that.themeObj.classinfo.length; i++) {
-
-                                // console.log((that.findFirstChild(that.themeObj.classinfo[i])))
-                                if (that.themeObj.classinfo[i].mcname == "" || (that.findFirstChildObj(that.themeObj.classinfo[i])).modelsoid.length==0) {
-                                    that.$alert("Please complete the information");
-                                    return false;
-                                }
-                                // if (that.themeObj.classinfo[i].mcname == "" || that.themeObj.classinfo[i].modelsoid.length == 0) {
-                                //     alert("Please complete the information");
-                                //     return false;
-                                // }
-                            }
-                        }
+                        // if (that.themeObj.classinfo.length==1&&that.themeObj.classinfo[0].mcname==""&&that.themeObj.classinfo[0].modelsoid.length==0){
+                        //     return true
+                        // } else{
+                        //     for (i = 0; i < that.themeObj.classinfo.length; i++) {
+                        //
+                        //         // console.log((that.findFirstChild(that.themeObj.classinfo[i])))
+                        //         if (that.themeObj.classinfo[i].mcname == "" || (that.findFirstChildObj(that.themeObj.classinfo[i])).modelsoid.length==0) {
+                        //            that.$alert("Please complete the information");
+                        //             return false;
+                        //         }
+                        //         // if (that.themeObj.classinfo[i].mcname == "" || that.themeObj.classinfo[i].modelsoid.length == 0) {
+                        //         //     alert("Please complete the information");
+                        //         //     return false;
+                        //         // }
+                        //     }
+                        // }
                         return true;
                     }
                 }if (currentIndex === 2) {
@@ -1619,11 +1631,11 @@ var createTheme = Vue.extend({
                             // window.location.href = "/repository/theme/" + result.data;//刷新当前页面
                         }
                         else if(result.code==-1){
-                            alert("Please login first!");
+                            that.alert("Please login first!");
                             window.location.href="/user/login";
                         }
                         else{
-                            alert("Create failed!");
+                            that.alert("Create failed!");
                         }
                     }
                 })

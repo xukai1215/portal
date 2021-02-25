@@ -3,16 +3,13 @@ var vue = new Vue({
     components: {
         'avatar': VueAvatar.Avatar
     },
-    data: function () {
-        const themeData = [
-            {
-                id: 1,
-                mcname: 'Default',
-                children: []
-            }
-        ];
+    data:
+        function () {
         return {
-            themeData: JSON.parse(JSON.stringify(themeData)),
+            model_index: 1000,
+            themeData:[],
+
+            // themeData: JSON.parse(JSON.stringify(themeData)),
             selectedTableData:[],
             currentNode:2,
             parentNode:false,
@@ -47,12 +44,11 @@ var vue = new Vue({
             editableTabsValue_data: '1',
             editableTabsValue_applications: '1',
             editableTabs_model: [{
-                id: "1",
+                id: "",
                 tabledata: [],
-                //tabledata:[],
-                title: 'Tab 1',
-                name: '1',
-                content: '1'
+                title: "",
+                name: "",
+                content: ""
             }],
             tabledataflag: 0,
             tabledataflag1: 0,
@@ -79,11 +75,7 @@ var vue = new Vue({
             tabIndex_application: 1,
             //定义存储从前端获取的数据，用于与后台进行传输
             themeObj: {
-                classinfo: [{
-                    id: "1",
-                    label: "",
-                    modelsoid: [],
-                }],
+                classinfo: [],
                 dataClassInfo: [{
                     id: "1",
                     dcname: '',
@@ -284,7 +276,7 @@ var vue = new Vue({
                 return modelClass
             }else if(modelClass.children.length > 0){
                 for (let n = 0; n <modelClass.children.length; n++) {
-                    var flag = this.findModelClass(modelClass.children[n])
+                    var flag = this.findModelClass(modelClass.children[n],classId);
                     if (flag != null) {
                         return flag
                     }
@@ -293,9 +285,22 @@ var vue = new Vue({
                 return null
             }
         },
+        getMaxId(modelClass,maxNum,n){
+            if(n<this.themeObj.classinfo.length){
+                maxNum = modelClass.id>maxNum?modelClass.id:maxNum
+                if(modelClass.children.length>0){
+                    for(let i = 0;i<modelClass.children.length;++i){
+                        return this.getMaxId(modelClass.children[i],maxNum,n)
+                    }
+                }
+                return this.getMaxId(this.themeObj.classinfo[n+1],maxNum,++n);
+            }
+            return maxNum;
+
+        },
 
         // tree的四个事件
-        changeClassNode(data,node) {
+        changeClassNode(data,node)  {
             if(data.children.length == 0){
                 console.log(data)
                 this.selectedTableData = data.tableData
@@ -316,26 +321,26 @@ var vue = new Vue({
                 confirmButtonText: 'Yes',
                 cancelButtonText: 'No'
             }).then(({ value }) => {
-                const newChild = { id: id++, label: value ,children: [], tableData:[]};
+                var newid = this.getMaxId(this.themeObj.classinfo[0],-1000,0)+1;
+                const newChild = { id: newid, label: value ,children: [], tableData:[]};
                 if (!data.children) {
                     this.$set(data, 'children', []);
                 }
                 data.children.push(newChild);
                 // 找到themeobj中对应的class
-                if(data.id == 1){
+                if(data.id == 2){
                     this.themeObj.classinfo.push({
-                        id: id-1,
+                        id: newid,
                         mcname:value,
                         children:[],
                         modelsoid: [],
                     })
                 }else{
-
                     for (var n = 0; n < this.themeObj.classinfo.length; n++) {
                         var modelClass = this.findModelClass(this.themeObj.classinfo[n],data.id)
                         if(modelClass != null){
                             modelClass.children.push({
-                                id: id-1,
+                                id: newid,
                                 mcname:value,
                                 children:[],
                                 modelsoid: [],
@@ -392,20 +397,32 @@ var vue = new Vue({
                     const parent = node.parent;
                     //删除themeobj中的model class
                     // 找到themeobj中对应的parent class
-                    for (var n = 0; n < this.themeObj.classinfo.length; n++) {
-                        var modelClass = this.findModelClass(this.themeObj.classinfo[n],parent.data.id)
-                        if(modelClass != null){
-                            //找到孩子节点
-                            var childIndex = modelClass.children.findIndex(d => d.id === data.id);
-                            modelClass.children.splice(childIndex, 1);
-                            console.log(this.themeObj.classinfo)
-                            break
-                        }
-                    }
-                    //删除树
+
                     const children = parent.data.children || parent.data;
                     const index = children.findIndex(d => d.id === data.id);
                     children.splice(index, 1);
+
+                    if(node.parent.data.id!=2){
+                        for (var n = 0; n < this.themeObj.classinfo.length; n++) {
+                            var modelClass = this.findModelClass(this.themeObj.classinfo[n],node.parent.data.id)
+                            if(modelClass != null){
+                                //找到孩子节点
+                                var childIndex = modelClass.children.findIndex(d => d.id === data.id);
+                                modelClass.children.splice(childIndex, 1);
+                                console.log(this.themeObj.classinfo)
+                                break
+                            }
+                        }
+                    }
+                    else{
+                        //删除树
+
+                        this.themeObj.classinfo.splice(index,1);
+                        console.log(children)
+                    }
+
+
+
 
                 }
 
@@ -474,15 +491,7 @@ var vue = new Vue({
             window.location.href = "/theme/getmessagepage/" + this.themeoid;
         },
 
-        modelClass_add() {
-            this.mcnum++;
-            this.tableflag1++;
-            this.tabledataflag++;
-            // $("#categoryname").attr('id','categoryname_past');//改变当前id名称
 
-
-            $(".el-tabs__new-tab").eq(0).click();
-        },
         dataClass_add() {
             // this.themeObj.dataClassInfo[this.dcnum].dcname = $("#categoryname2"+this.tableflag2).val();
 
@@ -495,58 +504,58 @@ var vue = new Vue({
         Application_add() {
             $(".el-tabs__new-tab").eq(2).click();
         },
-        handleTabsEdit_model(targetName, action) {
-            if (action === 'add') {
-                let newTabName = ++this.tabIndex_model + '';
-                this.themeObj.classinfo.push({
-                    id: newTabName,
-                    mcname: "",
-                    modelsoid: [],
-                });
-                // this.idflag = newTabName;
-                this.editableTabs_model.push({
-                    id: newTabName,
-                    tabledata: [],
-                    title: 'New Tab',
-                    name: newTabName,
-                    content: '2'
-                });
-                this.editableTabsValue_model = newTabName + '';
-
-            }
-            if (action === 'remove') {
-
-                // this.tabIndex_model--;
-                // let last_tab = $(".el-tabs__item").last();
-                // console.log(last_tab);
-                // this.tab_dele_num_model++;
-                let tabs = this.editableTabs_model;
-                let activeName = this.editableTabsValue_model;
-                if (activeName === targetName) {
-                    tabs.forEach((tab, index) => {
-                        if (tab.name === targetName) {
-                            let nextTab = tabs[index + 1] || tabs[index - 1];
-                            if (nextTab) {
-                                activeName = nextTab.name;
-                            }
-                        }
-                    });
-                }
-
-                this.editableTabsValue_model = activeName;
-                this.editableTabs_model = tabs.filter(tab => tab.name !== targetName);
-
-                let num;
-                for (i = 0; i < this.themeObj.classinfo.length; i++) {
-                    if (this.themeObj.classinfo[i].id == targetName) {
-                        num = i;
-                        break;
-                    }
-                }
-                // delete this.themeObj.classinfo[num];//将存入到themeObj中的数据也移除
-                this.themeObj.classinfo.splice(num, 1);
-            }
-        },
+        // handleTabsEdit_model(targetName, action) {
+        //     if (action === 'add') {
+        //         let newTabName = ++this.tabIndex_model + '';
+        //         this.themeObj.classinfo.push({
+        //             id: newTabName,
+        //             mcname: "",
+        //             modelsoid: [],
+        //         });
+        //         // this.idflag = newTabName;
+        //         this.editableTabs_model.push({
+        //             id: newTabName,
+        //             tabledata: [],
+        //             title: 'New Tab',
+        //             name: newTabName,
+        //             content: '2'
+        //         });
+        //         this.editableTabsValue_model = newTabName + '';
+        //
+        //     }
+        //     if (action === 'remove') {
+        //
+        //         // this.tabIndex_model--;
+        //         // let last_tab = $(".el-tabs__item").last();
+        //         // console.log(last_tab);
+        //         // this.tab_dele_num_model++;
+        //         let tabs = this.editableTabs_model;
+        //         let activeName = this.editableTabsValue_model;
+        //         if (activeName === targetName) {
+        //             tabs.forEach((tab, index) => {
+        //                 if (tab.name === targetName) {
+        //                     let nextTab = tabs[index + 1] || tabs[index - 1];
+        //                     if (nextTab) {
+        //                         activeName = nextTab.name;
+        //                     }
+        //                 }
+        //             });
+        //         }
+        //
+        //         this.editableTabsValue_model = activeName;
+        //         this.editableTabs_model = tabs.filter(tab => tab.name !== targetName);
+        //
+        //         let num;
+        //         for (i = 0; i < this.themeObj.classinfo.length; i++) {
+        //             if (this.themeObj.classinfo[i].id == targetName) {
+        //                 num = i;
+        //                 break;
+        //             }
+        //         }
+        //         // delete this.themeObj.classinfo[num];//将存入到themeObj中的数据也移除
+        //         this.themeObj.classinfo.splice(num, 1);
+        //     }
+        // },
         handleTabsEdit_data(targetName, action) {
             // this.confirmflag1 = 0;
 
@@ -988,13 +997,13 @@ var vue = new Vue({
         changeOpen(n) {
             this.activeIndex = n;
         },
-        modelClass_add() {
-            this.mcnum++;
-            this.tableflag1++;
-            this.tabledataflag++;
-            // $("#categoryname").attr('id','categoryname_past');//改变当前id名称
-            $(".el-tabs__new-tab").eq(0).click();
-        },
+        // modelClass_add() {
+        //     this.mcnum++;
+        //     this.tableflag1++;
+        //     this.tabledataflag++;
+        //     // $("#categoryname").attr('id','categoryname_past');//改变当前id名称
+        //     $(".el-tabs__new-tab").eq(0).click();
+        // },
         dataClass_add() {
             // this.themeObj.dataClassInfo[this.dcnum].dcname = $("#categoryname2"+this.tableflag2).val();
 
@@ -1002,10 +1011,10 @@ var vue = new Vue({
             this.tableflag2++;
             this.tabledataflag1++;
 
-            $(".el-tabs__new-tab").eq(1).click();
+            $(".el-tabs__new-tab").eq(0).click();
         },
         Application_add() {
-            $(".el-tabs__new-tab").eq(2).click();
+            $(".el-tabs__new-tab").eq(1).click();
         },
         handlePageChange1(val) {
             // val--;
@@ -1056,151 +1065,257 @@ var vue = new Vue({
             }
         },
         edit_theme(defaultActive) {
-            this.editThemeActive = defaultActive
-            this.dialogVisible3 = true;
-            this.log_theme++;
-            if (this.log_theme == 1) {
-                $.ajax({
-                    type: "GET",
-                    url: "/user/load",
-                    data: {},
-                    cache: false,
-                    async: false,
-                    xhrFields: {
-                        withCredentials: true
-                    },
-                    crossDomain: true,
-                    success: (data) => {
-                        $.ajax({
-                            url: "/theme/getInfo/" + this.themeoid,
-                            type: "GET",
-                            data: {},
-                            success: (result) => {
-                                console.log("thisthis");
-                                this.themeData.children = result.data.classinfo;
-                                // this.themeObj = result.data.classinfo
-                                console.log(this.themeData)
-                                console.log(this.themeObj)
-                                console.log(result);
-                                let basicInfo = result.data;
+            if(this.checkIsComplete(this.editThemeActive)==true)
+            {
+                this.editThemeActive = defaultActive
+                this.dialogVisible3 = true;
+                this.log_theme++;
+                if (this.log_theme == 1) {
+                    $.ajax({
+                        type: "GET",
+                        url: "/user/load",
+                        data: {},
+                        cache: false,
+                        async: false,
+                        xhrFields: {
+                            withCredentials: true
+                        },
+                        crossDomain: true,
+                        success: (data) => {
+                            $.ajax({
+                                url: "/theme/getInfo/" + this.themeoid,
+                                type: "GET",
+                                data: {},
+                                success: (result) => {
+                                    console.log("thisthis");
 
-                                let classinfo_edit = basicInfo.classinfo;
-                                console.log(classinfo_edit);
-                                this.categorynameModel = [];
-                                for (let i = 0; i < classinfo_edit.length - 1; i++) {
-                                    //先将classinfo中的数据存储到themeObj中
-                                    this.modelClass_add();
-                                }
-                                //从数据库获取数据，存放到editableTans_model里，此数组在前端渲染
-                                for (let i = 0; i < classinfo_edit.length; i++) {
-                                    //把category name数据存储起来
-                                    this.categorynameModel.push(basicInfo.classinfo[i].mcname);
-                                    this.editableTabs_model[i].title = basicInfo.classinfo[i].mcname;
-                                    // this.editableTabs_model[i].title = basicInfo.classinfo[i].mcname;
-                                    for (let j = 0; j < basicInfo.classinfo[i].modelsoid.length; j++) {
-                                        this.find_oid(basicInfo.classinfo[i].modelsoid[j], 1);//1代表type为modelitem
-                                        this.editableTabs_model[i].tabledata.push(this.tabledata_get);
+                                    // this.themeObj = result.data.classinfo
+                                    let basicInfo = result.data;
+                                    let basicInfo_model = basicInfo.classinfo;
+                                    // this.themeObj.classinfo = result.data.classinfo;
+                                    //model部分
+                                    // let classinfo_edit = basicInfo.classinfo;
+                                    // console.log(classinfo_edit);
+                                    // this.categorynameModel = [];
+                                    // let themedata_children = this.themeData.children;
+
+                                    this.themeData = [{
+                                        id:2,
+                                        label:'Default',
+                                        children:[]
+                                    }];
+                                    console.log(this.themeData)
+                                    // let model_index = 1000;
+                                    // let theme_children = this.themeData.children;
+
+                                    for(let i=0;i<basicInfo_model.length;++i){
+                                        this.themeObj.classinfo.push({
+                                            id: this.model_index,
+                                            mcname: basicInfo_model[i].mcname,
+                                            children: [],
+                                            modelsoid:basicInfo_model[i].modelsoid
+                                        });
+                                        this.themeData[0].children.push({
+                                            id: this.model_index++,
+                                            label: basicInfo_model[i].mcname,
+                                            children: [],
+                                            tableData:[]
+                                        });
+                                        for(let k=0;k<basicInfo_model[i].modelsoid.length;++k){
+
+                                            this.find_oid(basicInfo_model[i].modelsoid[k], 1);//1代表type为modelitem
+                                            this.themeData[0].children[i].tableData.push(this.tabledata_get);
+                                        }
+                                        console.log(this.themeData[0].children[0])
+
+                                        //有孩子
+                                        if(basicInfo_model[i].children.length>0) {
+
+                                            //处理孩子
+                                            for (let j = 0; j < basicInfo_model[i].children.length; ++j) {
+                                                this.themeObj.classinfo[i].children.push({
+                                                    id: this.model_index,
+                                                    mcname: basicInfo_model[i].children[j].mcname,
+                                                    children: [],
+                                                    modelsoid: basicInfo_model[i].children[j].modelsoid,
+                                                });
+                                                this.themeData[0].children[i].children.push({
+                                                    id: this.model_index++,
+                                                    label: basicInfo_model[i].children[j].mcname,
+                                                    children: [],
+                                                    tableData:[]
+                                                });
+                                                for(let k=0;k<basicInfo_model[i].children[j].modelsoid.length;++k){
+
+                                                    this.find_oid(basicInfo_model[i].children[j].modelsoid[k], 1);//1代表type为modelitem
+                                                    this.themeData[0].children[i].children[j].tableData.push(this.tabledata_get);
+                                                }
+
+                                            }
+                                        }
+
+                                        // else{
+                                        //    没孩子
+
+                                        // for(let k=0;k<basicInfo_model[i].modelsoid.length;++k){
+                                        //
+                                        //     this.find_oid(basicInfo_model[i].modelsoid[k], 1);//1代表type为modelitem
+                                        //     this.themeData[0].children[i].tableData.push(this.tabledata_get);
+                                        // }
+
+
+                                        // }
                                     }
-                                    this.themeObj.classinfo[i].mcname = classinfo_edit[i].mcname;
-                                    for (let j = 0; j < classinfo_edit[i].modelsoid.length; j++) {
-                                        this.themeObj.classinfo[i].modelsoid[j] = classinfo_edit[i].modelsoid[j];
+                                    // this.themeData.children = result.data.classinfo;
+                                    // for (let i = 0; i < classinfo_edit.length - 1; i++) {
+                                    //     //先将classinfo中的数据存储到themeObj中
+                                    //     this.modelClass_add();
+                                    // }
+                                    //从数据库获取数据，存放到editableTans_model里，此数组在前端渲染
+                                    // for (let i = 0; i < classinfo_edit.length; i++) {
+                                    //     //把category name数据存储起来
+                                    //     console.log(basicInfo.classinfo[i].mcname);
+                                    //     // this.categorynameModel.push(basicInfo.classinfo[i].mcname);
+                                    //     // this.editableTabs_model[i].title = basicInfo.classinfo[i].mcname;
+                                    //     themedata_children[i].id = model_index++;
+                                    //     themedata_children[i].mcname = classinfo_edit[i].mcname;
+                                    //     themedata_children[i].children = [];
+
+
+
+                                    // //没有孩子
+                                    // if(classinfo_edit[i].children.length==0){
+                                    //     for (let j = 0; j < classinfo_edit[i].modelsoid.length; j++) {
+                                    //         this.find_oid(classinfo_edit[i].modelsoid[j], 1);//1代表type为modelitem
+                                    //         this.editableTabs_model[i].tabledata.push(this.tabledata_get);
+                                    //     }
+                                    // }
+                                    // else{
+                                    //     let c_children = themedata_children[i].children;
+                                    //     for( let k = 0;k<classinfo_edit[i].children[k].length;++k){
+                                    //         c_children.id = model_index++;
+                                    //         c_children.mcname = classinfo_edit[i].children[k].mcname;
+                                    //         c_children.children = [];
+                                    //         for (let j = 0; j < classinfo_edit[i].children[k].modelsoid.length; j++) {
+                                    //             this.find_oid(basicInfo.classinfo[i].modelsoid[j], 1);//1代表type为modelitem
+                                    //             this.editableTabs_model[i].tabledata.push(this.tabledata_get);
+                                    //         }
+                                    //
+                                    //     }
+                                    // }
+
+
+
+                                    // for (let j = 0; j < basicInfo.classinfo[i].modelsoid.length; j++) {
+                                    //     this.find_oid(basicInfo.classinfo[i].modelsoid[j], 1);//1代表type为modelitem
+                                    //     this.editableTabs_model[i].tabledata.push(this.tabledata_get);
+                                    // }
+                                    // this.themeObj.classinfo[i].mcname = classinfo_edit[i].mcname;
+                                    // for (let j = 0; j < classinfo_edit[i].modelsoid.length; j++) {
+                                    //     this.themeObj.classinfo[i].modelsoid[j] = classinfo_edit[i].modelsoid[j];
+                                    // }
+                                    // }
+
+                                    //data part
+                                    let dataClassInfo_edit = basicInfo.dataClassInfo;
+                                    console.log(dataClassInfo_edit);
+                                    this.categorynameData = [];
+                                    for (let i = 0; i < dataClassInfo_edit.length - 1; i++) {
+                                        this.dataClass_add();
                                     }
-                                }
-
-                                let dataClassInfo_edit = basicInfo.dataClassInfo;
-                                console.log(dataClassInfo_edit);
-                                this.categorynameData = [];
-                                for (let i = 0; i < dataClassInfo_edit.length - 1; i++) {
-                                    this.dataClass_add();
-                                }
-                                for (let i = 0; i < dataClassInfo_edit.length; i++) {
-                                    this.categorynameData.push(basicInfo.dataClassInfo[i].dcname);
-                                    this.editableTabs_data[i].title = basicInfo.dataClassInfo[i].dcname;
-                                    // this.editableTabs_data[i].title = basicInfo.dataClassInfo[i].dcname;
-                                    for (let j = 0; j < basicInfo.dataClassInfo[i].datasoid.length; j++) {
-                                        this.find_oid(basicInfo.dataClassInfo[i].datasoid[j], 2);
-                                        this.editableTabs_data[i].tabledata.push(this.tabledata_get);
+                                    for (let i = 0; i < dataClassInfo_edit.length; i++) {
+                                        this.categorynameData.push(basicInfo.dataClassInfo[i].dcname);
+                                        this.editableTabs_data[i].title = basicInfo.dataClassInfo[i].dcname;
+                                        // this.editableTabs_data[i].title = basicInfo.dataClassInfo[i].dcname;
+                                        for (let j = 0; j < basicInfo.dataClassInfo[i].datasoid.length; j++) {
+                                            this.find_oid(basicInfo.dataClassInfo[i].datasoid[j], 2);
+                                            this.editableTabs_data[i].tabledata.push(this.tabledata_get);
+                                        }
+                                        this.themeObj.dataClassInfo[i].dcname = dataClassInfo_edit[i].dcname;
+                                        for (let j = 0; j < dataClassInfo_edit[i].datasoid.length; j++) {
+                                            this.themeObj.dataClassInfo[i].datasoid[j] = dataClassInfo_edit[i].datasoid[j];
+                                        }
                                     }
-                                    this.themeObj.dataClassInfo[i].dcname = dataClassInfo_edit[i].dcname;
-                                    for (let j = 0; j < dataClassInfo_edit[i].datasoid.length; j++) {
-                                        this.themeObj.dataClassInfo[i].datasoid[j] = dataClassInfo_edit[i].datasoid[j];
+
+                                    let application_edit = basicInfo.application;
+                                    console.log(application_edit);
+                                    this.categorynameApplication = [];
+                                    for (let i = 0; i < application_edit.length - 1; i++) {
+                                        this.Application_add();
                                     }
+                                    for (let i = 0; i < application_edit.length; i++) {
+                                        this.themeObj.application[i].applicationname = application_edit[i].applicationname;
+                                        this.themeObj.application[i].applicationlink = application_edit[i].applicationlink;
+                                        this.themeObj.application[i].upload_application_image = application_edit[i].application_image;
+                                    }
+                                    for (let i = 0; i < application_edit.length; i++) {
+                                        let app = {};
+                                        app.name = basicInfo.application[i].applicationname;
+                                        app.link = basicInfo.application[i].applicationlink;
+                                        app.image = basicInfo.application[i].application_image;
+                                        // $("#applicationname"+i).val(app.name);
+                                        // $("#applicationlink"+i).val(app.link);
+                                        // $("#applicationname"+i).val(app.name);
+
+                                        this.categorynameApplication.push(app);
+
+                                        this.editableTabs_applications[i].title = basicInfo.application[i].applicationname;
+                                    }
+                                    //显示detail
+                                    $("#themeText").html(basicInfo.detail);
+                                    initTinymce('textarea#themeText')
+
+                                    // tinymce.init({
+                                    //     selector: "textarea#themeText",
+                                    //     height: 300,
+                                    //     theme: 'silver',
+                                    //     plugins: ['link', 'table', 'image', 'media'],
+                                    //     image_title: true,
+                                    //     // enable automatic uploads of images represented by blob or data URIs
+                                    //     automatic_uploads: true,
+                                    //     // URL of our upload handler (for more details check: https://www.tinymce.com/docs/configure/file-image-upload/#images_upload_url)
+                                    //     // images_upload_url: 'postAcceptor.php',
+                                    //     // here we add custom filepicker only to Image dialog
+                                    //     file_picker_types: 'image',
+                                    //
+                                    //     file_picker_callback: function (cb, value, meta) {
+                                    //         var input = document.createElement('input');
+                                    //         input.setAttribute('type', 'file');
+                                    //         input.setAttribute('accept', 'image/*');
+                                    //         input.onchange = function () {
+                                    //             var file = input.files[0];
+                                    //
+                                    //             var reader = new FileReader();
+                                    //             reader.readAsDataURL(file);
+                                    //             reader.onload = function () {
+                                    //                 var img = reader.result.toString();
+                                    //                 cb(img, {title: file.name});
+                                    //             }
+                                    //         };
+                                    //         input.click();
+                                    //     },
+                                    //     images_dataimg_filter: function (img) {
+                                    //         return img.hasAttribute('internal-blob');
+                                    //     }
+                                    // });
+
+
+                                    //显示themename
+                                    $("#nameInput").val(basicInfo.themename);
+                                    //显示themeimg
+                                    $('#imgShow').attr("src", basicInfo.image);
+                                    $('#imgShow').show();
+
                                 }
-
-                                let application_edit = basicInfo.application;
-                                console.log(application_edit);
-                                this.categorynameApplication = [];
-                                for (let i = 0; i < application_edit.length - 1; i++) {
-                                    this.Application_add();
-                                }
-                                for (let i = 0; i < application_edit.length; i++) {
-                                    this.themeObj.application[i].applicationname = application_edit[i].applicationname;
-                                    this.themeObj.application[i].applicationlink = application_edit[i].applicationlink;
-                                    this.themeObj.application[i].upload_application_image = application_edit[i].application_image;
-                                }
-                                for (let i = 0; i < application_edit.length; i++) {
-                                    let app = {};
-                                    app.name = basicInfo.application[i].applicationname;
-                                    app.link = basicInfo.application[i].applicationlink;
-                                    app.image = basicInfo.application[i].application_image;
-                                    // $("#applicationname"+i).val(app.name);
-                                    // $("#applicationlink"+i).val(app.link);
-                                    // $("#applicationname"+i).val(app.name);
-
-                                    this.categorynameApplication.push(app);
-
-                                    this.editableTabs_applications[i].title = basicInfo.application[i].applicationname;
-                                }
-                                //显示detail
-                                $("#themeText").html(basicInfo.detail);
-                                initTinymce('textarea#themeText')
-
-                                // tinymce.init({
-                                //     selector: "textarea#themeText",
-                                //     height: 300,
-                                //     theme: 'silver',
-                                //     plugins: ['link', 'table', 'image', 'media'],
-                                //     image_title: true,
-                                //     // enable automatic uploads of images represented by blob or data URIs
-                                //     automatic_uploads: true,
-                                //     // URL of our upload handler (for more details check: https://www.tinymce.com/docs/configure/file-image-upload/#images_upload_url)
-                                //     // images_upload_url: 'postAcceptor.php',
-                                //     // here we add custom filepicker only to Image dialog
-                                //     file_picker_types: 'image',
-                                //
-                                //     file_picker_callback: function (cb, value, meta) {
-                                //         var input = document.createElement('input');
-                                //         input.setAttribute('type', 'file');
-                                //         input.setAttribute('accept', 'image/*');
-                                //         input.onchange = function () {
-                                //             var file = input.files[0];
-                                //
-                                //             var reader = new FileReader();
-                                //             reader.readAsDataURL(file);
-                                //             reader.onload = function () {
-                                //                 var img = reader.result.toString();
-                                //                 cb(img, {title: file.name});
-                                //             }
-                                //         };
-                                //         input.click();
-                                //     },
-                                //     images_dataimg_filter: function (img) {
-                                //         return img.hasAttribute('internal-blob');
-                                //     }
-                                // });
-
-
-                                //显示themename
-                                $("#nameInput").val(basicInfo.themename);
-                                //显示themeimg
-                                $('#imgShow').attr("src", basicInfo.image);
-                                $('#imgShow').show();
-
-                            }
-                        })
-                    }
-                })
+                            })
+                        }
+                    })
+                }
             }
+            else if(this.editThemeActive!=defaultActive){
+                this.$alert("Please complete the information");
+            }
+
         },
         //由oid获取条目详细数据
         find_oid(oid, num) {
@@ -1296,25 +1411,102 @@ var vue = new Vue({
         },
         editThemePre() {
             let len = $(".editThemeStep").length;
-            if (this.editThemeActive != 0)
+            let editThemeActive = this.editThemeActive;
+            if(this.editThemeActive != 0 && this.checkIsComplete(editThemeActive) ==true)
                 this.editThemeActive--;
+            else if(this.editThemeActive!=0)
+                this.$alert("Please complete the information");
+            // if (this.editThemeActive != 0)
+            //     this.editThemeActive--;
         },
         editThemeNext() {
-            for (let i = 0; i < this.categorynameModel.length; i++) {
-                $('#categorynameModel' + i).val(this.categorynameModel[i]);
+            // for (let i = 0; i < this.categorynameModel.length; i++) {
+            //     $('#categorynameModel' + i).val(this.categorynameModel[i]);
+            // }
+            let editThemeActive = this.editThemeActive;
+
+            if(this.editThemeActive !=3 &&this.checkIsComplete(editThemeActive)==true)
+            {
+                for (let i = 0; i < this.categorynameData.length; i++) {
+                    $('#categorynameData' + i).val(this.categorynameData[i]);
+                }
+                for (let i = 0; i < this.categorynameApplication.length; i++) {
+                    $('#applicationName' + i).val(this.categorynameApplication[i].name);
+                    $('#applicationLink' + i).val(this.categorynameApplication[i].link);
+                    $('#imgShowApplication' + i).attr("src", '/static'+this.categorynameApplication[i].image);
+                    $('#imgShowApplication' + i).show();
+                }
+                if (this.editThemeActive++ > 2) this.editThemeActive = 0;
             }
-            for (let i = 0; i < this.categorynameData.length; i++) {
-                $('#categorynameData' + i).val(this.categorynameData[i]);
-            }
-            for (let i = 0; i < this.categorynameApplication.length; i++) {
-                $('#applicationName' + i).val(this.categorynameApplication[i].name);
-                $('#applicationLink' + i).val(this.categorynameApplication[i].link);
-                $('#imgShowApplication' + i).attr("src", '/static'+this.categorynameApplication[i].image);
-                $('#imgShowApplication' + i).show();
-            }
-            if (this.editThemeActive++ > 2) this.editThemeActive = 0;
+            else if(this.editThemeActive!=3)
+                this.$alert("Please complete the information"
+
+                            );
+
         },
+        checkIsComplete(editThemeActive){
+            var flag = true;
+            switch (editThemeActive){
+                case "0": {
+                        let nameinput = ($("#nameInput").val()).replace(/^\s*|\s*$/g,"");
+                        if (nameinput == "")
+                            flag = false;
+                        break;
+                };
+                case "1": {
+                        // let complete_model = this.themeObj.classinfo;
+                        // for (let i = 0; i < complete_model.length; ++i) {
+                        //     if (complete_model[i].mcname == "" || (this.findFirstChildObj(complete_model[i])).modelsoid.length == 0)
+                        //         flag = false;
+                        // }
+                        break;
+                };
+                case "2": {
+                        if (this.themeObj.dataClassInfo.length == 1 && this.themeObj.dataClassInfo[0].dcname == "" && this.themeObj.dataClassInfo[0].datasoid.length == 0) {
+
+                        } else {
+                            for (i = 0; i < this.themeObj.dataClassInfo.length; i++) {
+                                if (this.themeObj.dataClassInfo[i].dcname == "" || this.themeObj.dataClassInfo[i].datasoid.length == 0) {
+                                    flag = false;
+                                }
+                            }
+                        }
+                        break;
+                    };
+                case "3": {
+                        if (this.themeObj.application.length === 1 && this.themeObj.application[0].applicationname === "" && this.themeObj.application[0].applicationlink === ""
+                            && this.themeObj.application[0].upload_application_image === "") {
+
+                        } else {
+                            for (i = 0; i < this.themeObj.application.length; i++) {
+                                if (this.themeObj.application[i].applicationname === "" || this.themeObj.application[i].applicationlink === ""
+                                    ) {
+
+                                    flag = false;
+                                }
+                            }
+                        }
+                        break;
+                    };
+                default:{}
+            }
+            return flag;
+        },
+
         editThemeFinish() {
+
+            if(this.themeObj.application.length===1&&this.themeObj.application[0].applicationname===""&&this.themeObj.application[0].applicationlink===""&&this.themeObj.application[0].upload_application_image===""){
+
+            }else {
+                for(i = 0;i<this.themeObj.application.length; i++){
+                    if (this.themeObj.application[i].applicationname === ""||this.themeObj.application[i].applicationlink ===""||
+                        this.themeObj.application[i].upload_application_image===""){
+                        this.$alert("Please complete the information");
+                        return false;
+                    }
+                }
+            }
+
             //查看classinfo与dataClassInfo，如果存在一个也未输入，则删除
             if (this.themeObj.classinfo.length==1&&this.themeObj.classinfo[0].mcname==""&&this.themeObj.classinfo[0].modelsoid.length==0) {
                 this.themeObj.classinfo.splice(0,1);
@@ -1362,13 +1554,26 @@ var vue = new Vue({
                     if (result.code === 0) {
                         if(result.data.method==="update") {
                             // alert("Update Success");
-                            that.$message('Update Success');
+
+                            that.$message({
+                                message: 'Update Success',
+                                type: 'success',
+                                onClose:()=>{
+                                    location.reload();
+
+                                }
+                            });
+
                             $("#editModal", parent.document).remove();
                             that.dialogVisible3 = false;
                             // window.location.href = "/repository/theme/" + result.data.oid;
+
                         }
                         else{
-                            that.$message('Success! Changes have been submitted, please wait for the author to review.');
+                            that.$message({
+                                message:'Success! Changes have been submitted, please wait for the author to review.',
+                                type: 'success'
+                            });
                             that.dialogVisible3 = false;
                             // window.location.href = "/repository/theme/" + result.data.oid;
                             // alert("Success! Changes have been submitted, please wait for the author to review.");
@@ -1499,7 +1704,7 @@ var vue = new Vue({
             that.relateSearch = "";
             that.getRelation();
             that.search2();
-            console.log($(window).width());
+            // console.log($(window).width());
             let winWidth = $(window).width();
             if (winWidth<750){
                 that.isCollapse = true;
@@ -1527,7 +1732,7 @@ var vue = new Vue({
             }
         });
         $(window).resize(function () {
-            console.log($(window).width());
+            // console.log($(window).width());
             let winWidth = $(window).width();
             if (winWidth<750){
                 that.isCollapse = true;
