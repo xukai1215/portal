@@ -20,6 +20,8 @@ public class ViewRecord {
     Date date;
     String userOid;
     String url;
+    String method;
+    String userAgent;
 
     boolean flag = true;
 

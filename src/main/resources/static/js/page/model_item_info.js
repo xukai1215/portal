@@ -625,7 +625,7 @@ var info=new Vue({
                 let formatter;
                 let name = data[i].name;;
                 if(newValue){
-                    formatter = name;
+                    formatter = name.trim().replaceAll(" ","\n");
                 }else{
                     formatter = name.length > 9 ? name.substring(0,7)+"..." : name
                 }
@@ -744,10 +744,10 @@ var info=new Vue({
                         let dy = Math.sin(radian) * radius;
 
                         let name = node.name;
-                        let formatter = name.length > 9 ? name.substring(0,7)+"..." : name;
 
                         //加入节点
                         if(node.type === "ref"){
+                            let formatter = name.length > 9 ? name.substring(0,7)+"..." : name;
                             graph_nodes.push({
                                 name: node.name,
                                 value: {
@@ -773,8 +773,21 @@ var info=new Vue({
                                 },
                             });
                         }else {
+                            let name = node.name;
+                            let start = name.indexOf("(");
+                            let end = name.indexOf(")");
+                            if(name.length>0&&start!=-1&&end!=-1) {
+                                let part1 = name.substring(0, start).trim();
+                                if(end + 1 == name.length){
+                                    name = part1;
+                                }else {
+                                    let part2 = name.substring(end + 1, name.length - 1);
+                                    name = part1 + " " + part2;
+                                }
+                            }
+                            let formatter = name.length > 9 ? name.substring(0, 7) + "..." : name;
                             graph_nodes.push({
-                                name: node.name,
+                                name: name,
                                 value: {
                                     style: "node",
                                     type: "model",
@@ -1046,7 +1059,7 @@ var info=new Vue({
                 "language": this.currentDetailLanguage
             };
 
-            if(!window.location.href.indexOf("history")) {
+            if(window.location.href.indexOf("history")===-1) {
                 $.get("/modelItem/getDetailByLanguage", data, (result) => {
                     this.detail = result.data;
                 })
@@ -1802,7 +1815,7 @@ var info=new Vue({
                     asc: this.pageOption_all.sortAsc,
                     page: this.pageOption_all.currentPage-1,
                     pageSize: this.pageOption_all.pageSize,
-                    searchText: this.pageOption_all.relateSearch,
+                    searchText: this.pageOption_all.relateSearch.trim(),
                     sortField: this.pageOption_all.sortField,
                     classifications: ["all"],
                 }
@@ -2079,7 +2092,11 @@ var info=new Vue({
                             this.dialogTableVisible = false;
                             if(this.relateType === "modelItem"){
                                 this.relatedModelItems = result.data;
-                                this.generateModelRelationGraph();
+                                this.setRelatedModelItemsPage();
+                                if(this.modelRelationGraphShow){
+                                    this.generateModelRelationGraph();
+                                }
+
                             }else {
                                 window.location.reload();
                             }
@@ -2447,6 +2464,15 @@ var info=new Vue({
             $('#authorship0').collapse()
         },
 
+        setRelatedModelItemsPage(){
+            this.relatedModelItemsPage = [];
+            for(i=0;i<this.relatedModelItems.length;i++){
+                if(i===this.relationPageSize) break;
+                this.relatedModelItemsPage.push(this.relatedModelItems[i]);
+
+            }
+        },
+
         getContributors(){
             let ids = window.location.href.split('/')
             let id = ids[ids.length-1]
@@ -2469,6 +2495,7 @@ var info=new Vue({
             this.$set(this.contributors,index,tmp)
         },
     },
+
     created(){
         this.getContributors()
     },
@@ -2477,12 +2504,7 @@ var info=new Vue({
 
         this.modelInfo = modelInfo;
         this.relatedModelItems = modelItemList;
-        this.relatedModelItemsPage = [];
-        for(i=0;i<this.relatedModelItems.length;i++){
-            if(i===this.relationPageSize) break;
-            this.relatedModelItemsPage.push(this.relatedModelItems[i]);
-
-        }
+        this.setRelatedModelItemsPage();
 
         this.lightenContributor = author
 
