@@ -1061,6 +1061,12 @@ h1.h_lite,h2.h_lite,h3.h_lite,h4.h_lite,span.h_lite{
     height: 50px;
 }
 
+.ellipsis{
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+}
+
 @media only screen and (min-width:1150px) {
     .wzhSectionContainer .imgContainerW100{
         display: none;

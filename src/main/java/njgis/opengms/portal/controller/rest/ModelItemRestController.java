@@ -42,6 +42,7 @@ import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName ModelItemRestController
@@ -392,6 +393,14 @@ public class ModelItemRestController {
         return ResultUtils.success(modelItemService.listByUserOid(modelItemFindDTO,oid,loadUser));
     }
 
+    @RequestMapping(value="/getRelatedResources",method = RequestMethod.GET)
+    JsonResult getRelatedResources(@RequestParam(value = "oid") String oid){
+
+        JSONArray result=modelItemService.getRelatedResources(oid);
+
+        return ResultUtils.success(result);
+    }
+
     @RequestMapping(value="/getRelation",method = RequestMethod.GET)
     JsonResult getRelation(@RequestParam(value = "type") String type,@RequestParam(value = "oid") String oid){
 
@@ -406,6 +415,30 @@ public class ModelItemRestController {
                            @RequestParam(value = "relations[]") List<String> relations){
 
         String result=modelItemService.setRelation(oid,type,relations);
+
+        return ResultUtils.success(result);
+
+    }
+
+    @RequestMapping(value = "/addRelateResources/{oid}", method = RequestMethod.POST)
+    JsonResult addRelateResources(@PathVariable(value="oid") String oid,
+                                 HttpServletRequest request) throws IOException {
+
+        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+        List<MultipartFile> files=multipartRequest.getFiles("resources");
+
+        String info=multipartRequest.getParameter("stringInfo");
+
+        List<Map<String,String>> infoArray = (List<Map<String,String>>) JSONArray.parse(info);
+
+        HttpSession session=request.getSession();
+        String uid=session.getAttribute("uid").toString();
+        if(uid==null)
+        {
+            return ResultUtils.error(-2,"未登录");
+        }
+
+        String result=modelItemService.addRelateResources(oid,infoArray,files);
 
         return ResultUtils.success(result);
 
@@ -431,6 +464,8 @@ public class ModelItemRestController {
             return ResultUtils.success(result);
 
         }
+
+
 
     @RequestMapping (value="/findNamesByName",method = RequestMethod.GET)
     JsonResult findNameByName(@RequestParam(value = "name") String name){

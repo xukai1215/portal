@@ -123,6 +123,37 @@
         .el-tabs__item > div > div > .el-switch__label.is-active{
             color: #13ce66;
         }
+
+        .uploadCenter{
+            display: flex;
+            flex-direction: column;
+            align-self: center;
+        }
+
+        .uploadCenter .el-upload.el-upload--text{
+            display: flex;
+            flex-direction: column;
+            align-self: center;
+            justify-content: center;
+        }
+
+        .el-textarea__inner::-webkit-input-placeholder { /* WebKit browsers */
+            font-style: normal;
+        }
+
+        .el-textarea__inner::-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+            font-style: normal;
+        }
+
+        .el-textarea__inner::-moz-placeholder { /* Mozilla Firefox 19+ */
+            font-style: normal;
+        }
+
+        .el-textarea__inner::-ms-input-placeholder { /* Internet Explorer 10+ */
+            font-style: normal;
+        }
+
+
     </style>
 
 </head>
@@ -741,20 +772,14 @@
                 </el-tabs>
             </div>
 
-            <div v-cloak th:if="${history!=true}" id="related_knowledge" class="detail_block">
+            <div v-cloak th:if="${history!=true}" id="related_resource" class="detail_block">
                 <div class="block_head">
                     <div class="head_text">
-                        <h4>Related Knowledge</h4>
+                        <h4>Related Resource</h4>
                     </div>
                 </div>
                 <el-tabs class="block_content" v-model="activeName2" type="border-card" stretch="true">
-                    <el-tab-pane name="Concept & Semantic">
-                        <div slot="label">Concept & Semantic
-                            <span class="el-badge__content el-badge__content--undefined" th:style="@{(${#lists.size(concepts)==0} ? 'background-color: #bbbbbb' : '')}"
-                                  th:text="${#lists.size(concepts)}">
-                            </span>
-                        </div>
-                        <div th:if="${#lists.size(concepts)}!=0">
+                    <div th:if="${#lists.size(concepts)}!=0">
                             <div class="list_panel clearfix" th:each="model:${concepts}">
                                 <a th:href="'/repository/concept/'+${model.oid}" class="img">
                                     <img src="/static/img/model/semantics.png">
@@ -771,138 +796,119 @@
                                         simulations and predictions.</p>
                                 </div>
                             </div>
-                            <el-button @click="addRelation(5)" type="primary" icon="el-icon-plus"
-                                       style="width: 100%">
-                                Edit Related Concept & Semantic
-                            </el-button>
                         </div>
-                        <div class="text-center" th:if="${#lists.size(concepts)}==0">
-                            <h5 style="margin-bottom: 10px;display: inline-block;">
-                                There is no related concept & semantic. You can link concepts or semantics.
-                            </h5>
-                            <button class="btn btn-default" type="button"
-                                    style="display: inline-block;" @click="addRelation(5)">
 
-                                <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
-                            </button>
-                        </div>
-                    </el-tab-pane>
-                    <el-tab-pane name="Spatial Reference">
-                        <div slot="label">Spatial Reference
-                            <span class="el-badge__content el-badge__content--undefined" th:style="@{(${#lists.size(spatialReferences)==0} ? 'background-color: #bbbbbb' : '')}"
-                                  th:text="${#lists.size(spatialReferences)}">
-                            </span>
-                        </div>
-                        <div th:if="${#lists.size(spatialReferences)}!=0">
-                            <div class="list_panel clearfix" th:each="model:${spatialReferences}">
-                                <a th:href="'/repository/spatialReference/'+${model.oid}" class="img">
-                                    <img src="/static/img/model/spatialreference.png">
-                                </a>
-                                <div class="info" style="margin-top:0px;">
-                                    <a th:href="'/repository/spatialReference/'+${model.oid}"
-                                       th:text="${model.name}">Ground Water Flow System</a>
-                                    <p style="margin-top: 0px"
-                                       th:text="${model.description!=null?model.description:model.wkname}">ANN-CA uses
-                                        the artificial
-                                        neural network method to extract
-                                        land use change rules in the study area, and then applies the rules to
-                                        subsequent
-                                        simulations and predictions.</p>
-                                </div>
+                    <div th:if="${#lists.size(spatialReferences)}!=0">
+                        <div class="list_panel clearfix" th:each="model:${spatialReferences}">
+                            <a th:href="'/repository/spatialReference/'+${model.oid}" class="img">
+                                <img src="/static/img/model/spatialreference.png">
+                            </a>
+                            <div class="info" style="margin-top:0px;">
+                                <a th:href="'/repository/spatialReference/'+${model.oid}"
+                                   th:text="${model.name}">Ground Water Flow System</a>
+                                <p style="margin-top: 0px"
+                                   th:text="${model.description!=null?model.description:model.wkname}">ANN-CA uses
+                                    the artificial
+                                    neural network method to extract
+                                    land use change rules in the study area, and then applies the rules to
+                                    subsequent
+                                    simulations and predictions.</p>
                             </div>
-                            <el-button @click="addRelation(6)" type="primary" icon="el-icon-plus"
-                                       style="width: 100%">
-                                Edit Related Spatial Reference
-                            </el-button>
                         </div>
-                        <div class="text-center" th:if="${#lists.size(spatialReferences)}==0">
-                            <h5 style="margin-bottom: 10px;display: inline-block;">
-                                There is no related spatial reference. You can link spatial references.
-                            </h5>
-                            <button class="btn btn-default" type="button"
-                                    style="display: inline-block;" @click="addRelation(6)">
+                    </div>
 
-                                <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
-                            </button>
-                        </div>
-                    </el-tab-pane>
-                    <el-tab-pane name="Data Template">
-                        <div slot="label">Data Template
-                            <span class="el-badge__content el-badge__content--undefined" th:style="@{(${#lists.size(templates)==0} ? 'background-color: #bbbbbb' : '')}"
-                                  th:text="${#lists.size(templates)}">
-                            </span>
-                        </div>
-                        <div th:if="${#lists.size(templates)}!=0">
-                            <div class="list_panel clearfix" th:each="model:${templates}">
-                                <a th:href="'/repository/template/'+${model.oid}" class="img">
-                                    <img src="/static/img/model/template.png">
-                                </a>
-                                <div class="info" style="margin-top:0px;">
-                                    <a th:href="'/repository/template/'+${model.oid}"
-                                       th:text="${model.name}">Ground Water Flow System</a>
-                                    <p style="margin-top: 0px" th:text="${model.description}">ANN-CA
-                                        uses the artificial
-                                        neural network method to extract
-                                        land use change rules in the study area, and then applies the rules to
-                                        subsequent
-                                        simulations and predictions.</p>
-                                </div>
+                    <div th:if="${#lists.size(templates)}!=0">
+                        <div class="list_panel clearfix" th:each="model:${templates}">
+                            <a th:href="'/repository/template/'+${model.oid}" class="img">
+                                <img src="/static/img/model/template.png">
+                            </a>
+                            <div class="info" style="margin-top:0px;">
+                                <a th:href="'/repository/template/'+${model.oid}"
+                                   th:text="${model.name}">Ground Water Flow System</a>
+                                <p style="margin-top: 0px" th:text="${model.description}">ANN-CA
+                                    uses the artificial
+                                    neural network method to extract
+                                    land use change rules in the study area, and then applies the rules to
+                                    subsequent
+                                    simulations and predictions.</p>
                             </div>
-                            <el-button @click="addRelation(7)" type="primary" icon="el-icon-plus"
-                                       style="width: 100%">
-                                Edit Related Data Template
-                            </el-button>
                         </div>
-                        <div class="text-center" th:if="${#lists.size(templates)}==0">
-                            <h5 style="margin-bottom: 10px;display: inline-block;">
-                                There is no related data template. You can link data templates.
-                            </h5>
-                            <button class="btn btn-default" type="button"
-                                    style="display: inline-block;" @click="addRelation(7)">
+                    </div>
 
-                                <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
-                            </button>
-                        </div>
-                    </el-tab-pane>
-                    <el-tab-pane name="Unit & Metric">
-                        <div slot="label">Unit & Metric
-                            <span class="el-badge__content el-badge__content--undefined" th:style="@{(${#lists.size(units)==0} ? 'background-color: #bbbbbb' : '')}"
-                                  th:text="${#lists.size(units)}">
-                            </span>
-                        </div>
-                        <div th:if="${#lists.size(units)}!=0">
-                            <div class="list_panel clearfix" th:each="model:${units}">
-                                <a th:href="'/repository/unit/'+${model.oid}" class="img">
-                                    <img src="/static/img/model/unit.png">
-                                </a>
-                                <div class="info" style="margin-top:0px;">
-                                    <a th:href="'/repository/unit/'+${model.oid}"
-                                       th:text="${model.name}">Ground Water Flow System</a>
-                                    <p style="margin-top: 0px"
-                                       th:text="${model.description}">
-                                        ANN-CA uses the artificial
-                                        neural network method to extract
-                                        land use change rules in the study area, and then applies the rules to
-                                        subsequent
-                                        simulations and predictions.</p>
-                                </div>
+                    <div th:if="${#lists.size(units)}!=0">
+                        <div class="list_panel clearfix" th:each="model:${units}">
+                            <a th:href="'/repository/unit/'+${model.oid}" class="img">
+                                <img src="/static/img/model/unit.png">
+                            </a>
+                            <div class="info" style="margin-top:0px;">
+                                <a th:href="'/repository/unit/'+${model.oid}"
+                                   th:text="${model.name}">Ground Water Flow System</a>
+                                <p style="margin-top: 0px"
+                                   th:text="${model.description}">
+                                    ANN-CA uses the artificial
+                                    neural network method to extract
+                                    land use change rules in the study area, and then applies the rules to
+                                    subsequent
+                                    simulations and predictions.</p>
                             </div>
-                            <el-button @click="addRelation(8)" type="primary" icon="el-icon-plus"
-                                       style="width: 100%">
-                                Edit Related Unit & Metrics
-                            </el-button>
                         </div>
-                        <div class="text-center" th:if="${#lists.size(units)}==0">
-                            <h5 style="margin-bottom: 10px;display: inline-block;">
-                                There is no related Unit & Metric. You can link units or metrics.
-                            </h5>
-                            <button class="btn btn-default" type="button"
-                                    style="display: inline-block;" @click="addRelation(8)">
+                    </div>
 
-                                <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
-                            </button>
+                    <div th:if="${#lists.size(dataSpaceFiles)}!=0">
+                        <div class="list_panel clearfix" th:each="model:${dataSpaceFiles}">
+                            <a th:href="${model.url}" class="img">
+                                <i class="fa fa-file-o" style="font-size: 60px;margin: 15px 0 0 20px;color: #11c2fd"></i>
+                            </a>
+                            <div class="info" style="margin-top:0px;">
+                                <a th:href="${model.url}"
+                                   th:text="${model.name}">Ground Water Flow System</a>
+<!--                                <p style="margin-top: 0px"-->
+<!--                                   th:text="${model.description}">-->
+<!--                                    ANN-CA uses the artificial-->
+<!--                                    neural network method to extract-->
+<!--                                    land use change rules in the study area, and then applies the rules to-->
+<!--                                    subsequent-->
+<!--                                    simulations and predictions.</p>-->
+                            </div>
                         </div>
-                    </el-tab-pane>
+                    </div>
+
+                    <div th:if="${#lists.size(exLinks)}!=0">
+                        <div class="list_panel clearfix" th:each="model:${exLinks}">
+                            <a th:href="${model.content}" class="img">
+                                <i class="fa fa-link" style="font-size: 60px;margin: 15px 0 0 20px;color: #11c2fd"></i>
+                            </a>
+                            <div class="info" style="margin-top:0px;">
+                                <a th:href="${model.content}"
+                                   th:text="${model.name}">Ground Water Flow System</a>
+<!--                                <p style="margin-top: 0px"-->
+<!--                                   th:text="${model.description}">-->
+<!--                                    ANN-CA uses the artificial-->
+<!--                                    neural network method to extract-->
+<!--                                    land use change rules in the study area, and then applies the rules to-->
+<!--                                    subsequent-->
+<!--                                    simulations and predictions.</p>-->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center" th:if="${#lists.size(concepts)==0 && #lists.size(spatialReferences)==0 &&
+                    #lists.size(templates)==0 && #lists.size(units)==0 && #lists.size(dataSpaceFiles)==0&& #lists.size(exLinks)==0}">
+                        <h5 style="margin-bottom: 10px;display: inline-block;">
+                            There is no related resource. You can link resource to it.
+                        </h5>
+                        <button class="btn btn-default" type="button"
+                                style="display: inline-block;" @click="addRelatedResouece()">
+
+                            <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
+                        </button>
+                    </div>
+                    <el-button th:unless="${#lists.size(concepts)==0 && #lists.size(spatialReferences)==0 &&
+                    #lists.size(templates)==0 && #lists.size(units)==0 && #lists.size(dataSpaceFiles)==0 && #lists.size(exLinks)==0}" @click="addRelatedResouece()" type="primary" icon="el-icon-plus"
+                               style="width: 100%">
+                        Edit Related Resource
+                    </el-button>
+
                 </el-tabs>
             </div>
 
@@ -1504,6 +1510,306 @@
         </div>
     </el-dialog>
 
+    <!--Related resource 弹出框-->
+    <el-dialog v-cloak :visible.sync="relatedResourceVisible" :title="'Link Resource to '+ modelInfo.name" width="70%" style="min-height: 450px">
+
+        <el-card shadow="never" class="box-card" style="width:40%;margin-right: 1%;float: left;">
+            <div slot="header" class="clearfix">
+                <span>Related Items</span>
+
+            </div>
+            <el-table
+                    :data="tableData"
+                    ref="leftTable"
+                    :max-height="tableMaxHeight">
+                <!--<el-table-column type="expand">-->
+                <!--<template slot-scope="props">-->
+                <!--<el-form label-position="left" inline class="demo-table-expand">-->
+                <!--<el-form-item label="Contributor">-->
+                <!--<span>{{ props.row.author }}</span>-->
+                <!--</el-form-item>-->
+
+                <!--</el-form>-->
+                <!--</template>-->
+                <!--</el-table-column>-->
+
+                <el-table-column Label="Relation" v-if="relateType=='modelItem'">
+                    <template slot-scope="props">
+                        <el-tooltip popper-class="fontsize-15" effect="light"
+                                    :content="modelInfo.name +' '+  props.row.relation.toLowerCase() + ' ' + props.row.name"
+                                    placement="top">
+                            <el-select v-model="props.row.relation" value-key="props.row.relation" placeholder="Select">
+                                <el-option-group
+                                        v-for="group in options"
+                                        :key="group.label"
+                                        :label="group.label">
+                                    <el-option
+                                            v-for="item in group.options"
+                                            :key="item.value"
+                                            :label="item.value"
+                                            :value="item.value">
+                                    </el-option>
+                                </el-option-group>
+                            </el-select>
+
+                        </el-tooltip>
+                    </template>
+
+
+                </el-table-column>
+
+                <el-table-column
+                        label="Name"
+                        width="180"
+                >
+                    <template slot-scope="props">
+                        <a class="cursorPointer ellipsis" @click="checkContent(props.row)" target="_blank">{{props.row.name}}</a>
+                    </template>
+                </el-table-column>
+
+                <el-table-column
+                        label="Type"
+                        width="55"
+                >
+                    <template slot-scope="props">
+                        <el-tooltip class="item" effect="dark" :content="getTypeExpress(props.row)" placement="bottom-start">
+                            <i class="fa fa-file-o" style="font-size: 26px;color: #11c2fd;" v-if="props.row.type=='dataSpaceFile'"></i>
+                            <i class="fa fa-link" style="font-size: 26px;color: #11c2fd;" v-else-if="props.row.type=='exLink'"></i>
+                            <img class="ellipsis" :src="getTypeImg(props.row)" v-else target="_blank" style="width: 27px;">{{props.row.name}}</img>
+                        </el-tooltip>
+                    </template>
+                </el-table-column>
+
+                <el-table-column fixed="right" label=" " width="60">
+                    <template slot-scope="scope">
+                        <!--<el-button-->
+                        <!--v-if="relateType=='concept'||relateType=='spatialReference'||relateType=='template'||relateType=='unit'"-->
+                        <!--size="mini"-->
+                        <!--type="danger"-->
+                        <!--@click="handleDelete(scope.$index, scope.row)">Remove-->
+                        <!--</el-button>-->
+                        <!--<el-button-->
+                        <!--v-else-->
+                        <!--:disabled="scope.row.author_uid!=userUid&&scope.row.author!=userUid&&scope.row.userName!=userUid"-->
+                        <!--size="mini"-->
+                        <!--type="danger"-->
+                        <!--@click="handleDelete(scope.$index, scope.row)">Remove-->
+                        <!--</el-button>-->
+
+                        <el-button
+
+                                size="mini"
+                                type="danger"
+                                icon="el-icon-close" circle
+                                @click="handleDelete(scope.$index, scope.row)">
+                        </el-button>
+
+
+                    </template>
+                </el-table-column>
+            </el-table>
+        </el-card>
+
+        <div style="width:59%;float: left;">
+
+            <el-radio-group v-model="relateType" @change="search(activeName_dialog)">
+                <el-radio :label="'concept'" @click="search(activeName_dialog)">Concept & Semantic</el-radio>
+                <el-radio :label="'spatialReference'"  @click="search(activeName_dialog)">Spatiotemporal Reference</el-radio>
+                <el-radio :label="'template'"  @click="search(activeName_dialog)">Data Template</el-radio>
+                <el-radio :label="'unit'"  @click="search(activeName_dialog)">Unit & Metric</el-radio>
+                <el-radio :label="'dataSpaceFile'"  @click="search(activeName_dialog)">File</el-radio>
+                <el-radio :label="'exLink'"  @click="search(activeName_dialog)">External Link</el-radio>
+            </el-radio-group>
+            <el-tabs type="border-card" :stretch="true" v-model="activeName_dialog" v-if="relateType=='concept'||relateType=='spatialReference'
+            ||relateType=='template'||relateType=='unit'">
+                <div style="padding: 8px 16px;
+                        background-color: #ecf8ff;
+                        border-radius: 4px;
+                        border-left: 5px solid #50bfff;
+                        margin: 0 0 10px;">
+                    <p style="font-size: 14px;color: #5e6d82;line-height: 1.5em;margin:0;">
+                        You can link resource from
+                        repository to this model item, or you can <a style="cursor:pointer;text-decoration: underline"
+                                                                     @click="jump">create</a> a new <span>{{typeName.toLowerCase()}}</span>.
+                    </p>
+                </div>
+                <el-tab-pane name="my" label="My Repository" v-if="relateType!='concept'&&relateType!='spatialReference'&&relateType!='template'&&relateType!='unit'">
+
+                    <el-input placeholder="Please enter name..." v-model="pageOption_my.relateSearch" class="input-with-select"
+                              clearable="true" @keyup.enter.native="searchInit()">
+                        <el-button slot="append" icon="el-icon-search" @click="searchInit()"></el-button>
+                    </el-input>
+                    <el-table
+                            :data="pageOption_my.searchResult"
+                            style="margin-top:17px;"
+                            show-overflow-tooltip
+                            :max-height="tableMaxHeight">
+                        <el-table-column type="expand">
+                            <template slot-scope="props">
+                                <el-form label-position="left" inline class="demo-table-expand">
+                                    <el-form-item label="Overview">
+                                        <span>{{ props.row.description }}</span>
+                                    </el-form-item>
+
+                                </el-form>
+                            </template>
+                        </el-table-column>
+                        <el-table-column sortable='custom'
+                                         label="Name">
+                            <template slot-scope="props">
+                                <a :href="'/repository/'+relateType+'/'+props.row.oid"
+                                   target="_blank">{{props.row.name}}</a>
+                            </template>
+                        </el-table-column>
+                        <!--<el-table-column-->
+                        <!--label="Contributor"-->
+                        <!--prop="author">-->
+                        <!--</el-table-column>-->
+                        <el-table-column fixed="right" label=" " width="60">
+                            <template slot-scope="scope">
+                                <el-button
+                                        v-if="!isCurrentItem(scope.row)&&!hasAdded(scope.row)"
+                                        size="mini"
+                                        type="success"
+                                        icon="el-icon-plus" circle
+                                        @click="handleEdit(scope.$index, scope.row)">
+                                </el-button>
+                                <el-button
+                                        v-if="hasAdded(scope.row)"
+                                        size="mini"
+                                        type="danger"
+                                        icon="el-icon-close" circle
+                                        @click="handleDelete(scope.$index, scope.row)">
+                                </el-button>
+
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <el-pagination style="text-align: center;margin-top:20px"
+                                   @current-change="handlePageChange"
+                                   :current-page="pageOption_my.currentPage"
+                                   layout="total, prev, pager, next, jumper"
+                                   :page-size="pageOption_my.pageSize"
+                                   :total="pageOption_my.total">
+                    </el-pagination>
+                </el-tab-pane>
+                <el-tab-pane name="all" label="All Repository">
+
+                    <el-input placeholder="Please enter name..." v-model="pageOption_all.relateSearch" class="input-with-select"
+                              clearable="true" @keyup.enter.native="searchInit('all')">
+                        <el-button slot="append" icon="el-icon-search" @click="searchInit('all')"></el-button>
+                    </el-input>
+                    <el-table
+                            :data="pageOption_all.searchResult"
+                            style="margin-top:17px;"
+
+                            show-overflow-tooltip
+                            @sort-change="relationSortChange"
+                            :max-height="tableMaxHeight">
+                        <el-table-column type="expand">
+                            <template slot-scope="props">
+                                <el-form label-position="left" inline class="demo-table-expand">
+                                    <el-form-item label="Overview">
+                                        <span>{{ props.row.description }}</span>
+                                    </el-form-item>
+
+                                </el-form>
+                            </template>
+                        </el-table-column>
+                        <el-table-column sortable='custom'
+                                         label="Name">
+                            <template slot-scope="props">
+                                <a :href="'/repository/'+relateType+'/'+props.row.oid"
+                                   target="_blank">{{props.row.name}}</a>
+                            </template>
+                        </el-table-column>
+                        <!--<el-table-column-->
+                        <!--label="Contributor"-->
+                        <!--prop="author">-->
+                        <!--</el-table-column>-->
+                        <el-table-column fixed="right" label=" " width="60">
+                            <template slot-scope="scope">
+                                <el-button
+                                        v-if="!isCurrentItem(scope.row)&&!hasAdded(scope.row)"
+                                        size="mini"
+                                        type="success"
+                                        icon="el-icon-plus" circle
+                                        @click="handleEdit(scope.$index, scope.row)">
+                                </el-button>
+                                <el-button
+                                        v-if="hasAdded(scope.row)"
+                                        size="mini"
+                                        type="danger"
+                                        icon="el-icon-close" circle
+                                        @click="handleDelete(scope.$index, scope.row)">
+                                </el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <el-pagination style="text-align: center;margin-top:20px"
+                                   @current-change="handlePageChange"
+                                   :current-page="pageOption_all.currentPage"
+                                   layout="total, prev, pager, next, jumper"
+                                   :page-size="pageOption_all.pageSize"
+                                   :total="pageOption_all.total">
+                    </el-pagination>
+                </el-tab-pane>
+            </el-tabs>
+            <el-card v-if="relateType=='localFile'">
+                <div   class="">
+<!--                    <el-upload-->
+<!--                            class="uploadCenter"-->
+<!--                            drag-->
+<!--                            ref="upload"-->
+<!--                            :on-change="uploadChange"-->
+<!--                            :on-remove="uploadRemove"-->
+<!--                            :auto-upload="false"-->
+<!--                            :show-file-list="false"-->
+<!--                            :multiple="false">-->
+<!--                        <i class="el-icon-upload"></i>-->
+<!--                        <div class="el-upload__text">Drop the file here, or<em>click </em>to upload.</div>-->
+<!--                        <template #tip>-->
+<!--                            <div class="el-upload__tip">-->
+<!--                                File size should not exceed 10m.-->
+<!--                            </div>-->
+<!--                        </template>-->
+<!--                    </el-upload>-->
+                </div>
+            </el-card>
+            <el-card v-if="relateType=='dataSpaceFile'" class="flexCenter" style="min-height: 260px">
+                <el-button round size="mini" @click='checkPersonData()' type="primary">Select From My Space</el-button>
+            </el-card>
+            <el-card v-if="relateType=='exLink'" style="min-height: 260px">
+                <div class="flexCol flexAlignCenter">
+                    <el-input
+                            :rows="2"
+                            placeholder="please input name of the external link"
+                            v-model="exLink.name"
+                            style="margin-top:15px"
+                    >
+                    </el-input>
+                    <el-input
+                            type="textarea"
+                            :rows="2"
+                            placeholder="please input content the external link"
+                            v-model="exLink.content"
+                            style="margin-top:15px">
+                    </el-input>
+                    <el-button round size="mini" @click='addExLink' type="success" style="margin-top:15px">+ add</el-button>
+                </div>
+
+            </el-card>
+        </div>
+
+
+
+        <div slot="footer" class="dialog-footer">
+            <!--<span style="float:left;font-size: 16px">Or you can click <a style="cursor:pointer" @click="jump">here</a> to create a new one.</span>-->
+            <el-button @click="relatedResourceVisible = false;">Cancel</el-button>
+            <el-button type="primary" @click="addRelateResources()">OK</el-button>
+        </div>
+    </el-dialog>
+
     <!-- claim authorship-->
     <el-dialog v-cloak title="Claim" :visible.sync="authorshipFormVisible">
         <div style="padding: 8px 16px;
@@ -1609,10 +1915,29 @@
         </span>
     </el-dialog>
 
+    <el-dialog title="Personal Data Center ( User Space -> My Data )"
+               :visible.sync="showDataChose"
+               width="70%"
+               class="centerDialog"
+    >
+        <user-data
+                @com-selectfile="selectDataspaceFile"
+                @com-removefile="removeDataspaceFile"
+                single-choice
+                ref="userDataSpace" style="height: 508px;"></user-data>
+
+        <span slot="footer" class="dialog-footer">
+                                <el-button @click="showDataChose = false">Cancel</el-button>
+                                <el-button type="primary" @click="selectDataFromPersonal">Confirm</el-button>
+
+                            </span>
+    </el-dialog>
+
     <div th:replace="fragments/footer :: footer"></div>
 
 </div>
 <template th:replace="modules/editModelItemModule :: editModelItemModule"></template>
+<template th:replace="modules/userDataSpaceModule :: userDataSpaceModule"></template>
 </body>
 
 <script th:inline="javascript">
@@ -1634,7 +1959,7 @@
 <script src="/static/js/common/qrcode.min.js"></script>
 <script src="/static/js/tinymce_5.3.2/tinymce/js/tinymce/tinymce.min.js"></script>
 <script src="/static/js/page/model_item_info.js"></script>
-
+<script src="/static/js/modules/userDataSpaceModule.js"></script>
 <script src="/static/js/common/copy.js"></script>
 <script src="/static/js/common/bootstrap.min.js"></script>
 <script src="/static/element-ui/umd/locale/en.js"></script>

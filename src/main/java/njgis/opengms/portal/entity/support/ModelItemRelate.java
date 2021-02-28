@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName ModelItemRelate
@@ -30,5 +31,9 @@ public class ModelItemRelate {
     List<String> spatialReferences = new ArrayList<>();
     List<String> templates = new ArrayList<>();
     List<String> units = new ArrayList<>();
+
+    List<Map<String,String>> localFiles = new ArrayList<Map<String,String>>();
+    List<Map<String,String>> dataSpaceFiles = new ArrayList<Map<String,String>>();
+    List<Map<String,String>> exLinks = new ArrayList<Map<String,String>>();
 
 }

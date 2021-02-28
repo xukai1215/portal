@@ -23,6 +23,8 @@ var info=new Vue({
             replyTo:"",
 
             dialogTableVisible: false,
+            relatedResourceVisible:false,
+
             relateSearch: "",
             relateType: "",
             typeName: "",
@@ -524,6 +526,17 @@ var info=new Vue({
 
             lightenContributor:{},
             contributors:[],
+
+            relateFile: [],
+
+            exLink:{
+                name:'',
+                content:'',
+            },
+
+            targetFile:{},
+
+            showDataChose:false,
         }
     },
     methods: {
@@ -1921,6 +1934,33 @@ var info=new Vue({
             })
         },
 
+        getRelatedResources() {
+            //从地址栏拿到oid
+            let arr = window.location.href.split("/");
+            let oid = arr[arr.length - 1].split("#")[0];
+            let data = {
+                oid: oid,
+            };
+            $.ajax({
+                type: "GET",
+                url: "/modelItem/getRelatedResources",
+                data: data,
+                async: true,
+                success: (json) => {
+                    if (json.code == 0) {
+                        let data = json.data;
+                        console.log(data)
+
+                        this.tableData = data;
+
+                    }
+                    else {
+                        console.log("query error!")
+                    }
+                }
+            })
+        },
+
         handlePageChange(val) {
             if(this.activeName_dialog=="my") {
                 this.pageOption_my.currentPage = val;
@@ -1971,6 +2011,7 @@ var info=new Vue({
 
         handleEdit(index, row) {
             console.log(row);
+            row.type=this.relateType
             let flag = false;
             for (i = 0; i < this.tableData.length; i++) {
                 let tableRow = this.tableData[i];
@@ -2056,6 +2097,113 @@ var info=new Vue({
                     });
                 }
             })
+        },
+
+        addRelateResources(){
+            let formData=new FormData();
+
+            let stringInfo = []
+            this.tableData.forEach(function (item, index) {
+                let relateItem={}
+                relateItem.oid = item.oid
+                relateItem.type = item.type
+                if(item.type=='localFile'){
+                    formData.append("resources",item.raw);
+                }
+                if(item.type=='exLink'){
+                    relateItem.content = item.content
+                    relateItem.name = item.name
+                }
+                if(item.type=='dataSpaceFile'){
+                    relateItem.oid = item.oid
+                    relateItem.url = item.url
+                    relateItem.name = item.name
+                }
+                stringInfo.push(relateItem);
+            })
+
+            // let file = new File([JSON.stringify(stringInfo)],'ant.txt',{
+            //     type: 'text/plain',
+            // });
+            formData.append("stringInfo", JSON.stringify(stringInfo))
+
+
+            let arr = window.location.href.split("/");
+            let oid = arr[arr.length - 1].split("#")[0];
+
+            let url = '';
+
+            $.ajax({
+                type: "POST",
+                url: "/modelItem/addRelateResources/"+oid,
+                data: formData,
+                cache: false,
+                processData: false,
+                contentType: false,
+                async: true,
+                success: (result) => {
+                    this.$alert('Success!', 'Tip', {
+                        type:'success',
+                        confirmButtonText: 'OK',
+                        callback: action => {
+                            this.dialogTableVisible = false;
+                            window.location.reload();
+                        }
+                    });
+
+                },
+                error: (json) => {
+                    this.$alert('Submitted failed!', 'Error', {
+                        type:'error',
+                        confirmButtonText: 'OK',
+                        callback: action => {
+
+                        }
+                    });
+                }
+            })
+        },
+
+        async checkPersonData() {
+            this.showDataChose = true;
+            this.$nextTick(()=>{
+                this.$refs.userDataSpace.getFilePackage();
+            })
+
+        },
+
+        selectDataspaceFile(file) {
+            this.targetFile = file
+        },
+
+        removeDataspaceFile(file) {
+            this.targetFile = {}
+        },
+
+        selectDataFromPersonal(){
+            let file = {
+                name:this.targetFile.label+this.targetFile.suffix,
+                oid:this.targetFile.id,
+                url:this.targetFile.url,
+                type:"dataSpaceFile"
+            }
+            for(let tableEle of this.tableData){
+                if(tableEle.oid == file.oid){
+                     this.$alert('You have select this file.', 'Tip', {
+                              type:"warning",
+                              confirmButtonText: 'OK',
+                              callback: ()=>{
+                                  return
+                              }
+                          }
+                      );
+                     return
+                }
+            }
+
+            this.tableData.push(file)
+
+            this.showDataChose = false
         },
 
         handleClose(done) {
@@ -2152,6 +2300,147 @@ var info=new Vue({
             })
 
         },
+
+        addRelatedResouece(){
+            this.relateType = 'concept'
+            $.ajax({
+                type: "GET",
+                url: "/user/load",
+                data: {},
+                cache: false,
+                async: false,
+                xhrFields: {
+                    withCredentials: true
+                },
+                crossDomain: true,
+                success: (data) => {
+                    if (data.oid == "") {
+                        this.confirmLogin()
+                    }
+                    else {
+                        this.activeName_dialog = 'all'
+
+                        this.tableData = [];
+
+                        this.pageOption_my.currentPage = 1;
+                        this.pageOption_my.searchResult = [];
+                        this.pageOption_my.relateSearch = "";
+
+                        this.pageOption_all.currentPage = 1;
+                        this.pageOption_all.searchResult = [];
+                        this.pageOption_all.relateSearch = "";
+
+                        this.getRelatedResources();
+                        this.search(this.activeName_dialog);
+                        if(this.activeName_dialog!="all"){
+                            this.search("all");
+                        }
+                        this.relatedResourceVisible = true;
+                    }
+                }
+            })
+
+        },
+
+        uploadRemove(file, fileList) {
+            this.relateFile = [];
+        },
+
+        uploadChange(file, fileList) {
+            this.relateFile.splice(0,1);
+            this.relateFile.push(file);
+            let fileMeta = {
+                name:file.name,
+                oid:file.uid,
+                raw:file.raw,
+                type:'localFile'
+            }
+            this.tableData.push(fileMeta)
+        },
+
+        getTypeImg(row){
+            switch (row.type){
+                case "concept":
+                    return '../../static/img/model/semantics.png'
+                    break;
+                case "spatialReference":
+                    return '../../static/img/model/spatialreference.png'
+                case "template":
+                    return '../../static/img/model/template.png'
+                case "unit":
+                    return '../../static/img/model/unit.png'
+            }
+
+        },
+
+        getTypeExpress(row){
+            switch (row.type){
+                case "concept":
+                    return 'Concept & Semantic'
+                    break;
+                case "spatialReference":
+                    return 'Spatiotemporal Reference'
+                case "template":
+                    return 'Data Template'
+                case "unit":
+                    return 'Unit & Metric'
+            }
+        },
+
+        checkContent(row){
+            if(row.type=='file'){
+                return
+            }else if(row.type=='link'){
+                window.open(row.content)
+            }else {
+                window.open('/repository/'+row.type+'/'+row.oid)
+            }
+        },
+
+        addExLink(){
+            if(this.exLink.name.trim()==''){
+                 this.$alert('Please input the name of the link', 'Tip', {
+                          type:"warning",
+                          confirmButtonText: 'OK',
+                          callback: ()=>{
+                              return
+                          }
+                      }
+                  );
+                 return
+            }
+            if(this.exLink.content.trim()==''){
+                this.$alert('Please input the content of the link', 'Tip', {
+                        type:"warning",
+                        confirmButtonText: 'OK',
+                        callback: ()=>{
+                            return
+                        }
+                    }
+                );
+                return
+            }
+
+
+
+            let linkMeta = {
+                name : this.exLink.name,
+                oid : this.exLink.name,
+                content : this.exLink.content,
+                type:'exLink'
+            }
+
+            this.exLink = {}
+            this.tableData.push(linkMeta)
+        },
+
+        // handleSuccess(result,file,fileList){
+        //     let fileMeta = {
+        //
+        //     }
+        //     this.tableData.push(fileMeta)
+        //     // this.upload_data_dataManager(uploadSource);
+        // },
 
         collapse(){
             console.log('aa')
