@@ -19,10 +19,13 @@ var createDataApplication = Vue.extend({
                     ins: "",
                     email: "",
                 },
-                deploy:false
+                deploy:false,
+                bindTemplate:'',
+                bindOid:'',
+                // bindTemplates:[],
             },
 
-            bindModelItemDialogVisible:false,
+            bindTemplateDialogVisible:false,
             pageOption: {
                 paginationShow:false,
                 progressBar: true,
@@ -56,28 +59,6 @@ var createDataApplication = Vue.extend({
             socket:"",
 
             dataApplication_oid:"",
-            // treeData: [{
-            //     id: 1,
-            //     label: 'All Folder',
-            //     children: [{
-            //         id: 4,
-            //         label: '二级 1-1',
-            //         children: [{
-            //             id: 9,
-            //             label: '三级 1-1-1'
-            //         }, {
-            //             id: 10,
-            //             label: '三级 1-1-2'
-            //         }]
-            //     }]
-            // }],
-            // categoryTree: [],
-            // defaultProps: {
-            //     children: 'children',
-            //     label: 'label'
-            // },
-            // cls: [],//分类的id队列
-            // clsStr: '',//分类的label队列
 
             selectedFile:[],
             userDataList:[],
@@ -242,6 +223,62 @@ var createDataApplication = Vue.extend({
             } else {
                 this.selectedFile.push(file);
             }
+        },
+        openTemplateDialog(){
+            this.pageOption.currentPage = 1;
+            this.pageOption.sortAsc = false;
+            this.bindTemplateDialogVisible = true;
+            this.searchTemplate();
+        },
+        searchTemplate(){
+            //获取所有的template
+            let pageData = {
+                asc: this.pageOption.sortAsc,
+                page: this.pageOption.currentPage-1,
+                pageSize: this.pageOption.pageSize,
+                searchText: this.pageOption.searchText,
+                sortElement: "default",
+                // classifications: ["all"],
+            };
+            let contentType = "application/x-www-form-urlencoded";
+            $.ajax({
+                type:'POST',
+                url:'/dataApplication/getTemplate',
+                data:pageData,
+                async: true,
+                contentType: contentType,
+                success:(json)=>{
+                    console.log(json);
+                    // that.dataApplication.bindTemplates = result.data;
+
+                    if (json.code === 0) {
+                        let data = json.data;
+                        console.log(data)
+
+                        this.pageOption.total = data.totalElements;
+                        this.pageOption.pages = data.totalPages;
+                        this.pageOption.searchResult = data.content;
+                        // this.pageOption.users = data.users;
+                        this.pageOption.progressBar = false;
+                        this.pageOption.paginationShow = true;
+
+                    }
+                    else {
+                        console.log("query error!")
+                    }
+                }
+
+            })
+        },
+        handlePageChange(val) {
+            this.pageOption.currentPage = val;
+            this.searchTemplate();
+        },
+        selectTemplate(index, info){
+            console.log(info);
+            this.dataApplication.bindTemplate = info.name;
+            this.dataApplication.bindOid = info.oid;
+            this.bindTemplateDialogVisible = false;
         },
     },
     mounted() {

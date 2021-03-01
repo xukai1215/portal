@@ -110,6 +110,19 @@
                                                                        v-model="dataApplication.name">
                                                             </div>
                                                         </div>
+                                                        <div class="form-group cl-md-6" >
+                                                            <label data-original-title="Tooltip on top"
+                                                                   class="control-label col-lg-2 col-md-3 col-md-offset-1"
+                                                                   data-toggle="tooltip" data-placement="top" title="">Bind Data Template
+                                                            </label>
+                                                            <div class="input-group col-md-5">
+
+                                                                <el-button type="primary" @click="openTemplateDialog()"
+                                                                           style="margin-right:10px">Select
+                                                                </el-button>
+                                                                {{dataApplication.bindTemplate}}
+                                                            </div>
+                                                        </div>
                                                         <div class="form-group cl-md-6">
                                                             <label data-original-title="Tooltip on top"
                                                                    class="control-label col-lg-2 col-md-3 col-md-offset-1"
@@ -450,6 +463,59 @@
                       <el-button @click="dialogVisible = false">Cancel</el-button>
                       <el-button type="primary" @click="dialogVisible = false">Confirm</el-button>
                     </span>
+                </el-dialog>
+
+                <el-dialog :visible.sync="bindTemplateDialogVisible" title="Bind Template Item" width="50%"
+                           top="40px">
+                    <el-input placeholder="Template name..." v-model="pageOption.searchText" class="input-with-select"
+                              @keyup.enter.native="searchTemplate()">
+                        <el-button slot="append" icon="el-icon-search" @click="searchTemplate()"></el-button>
+                    </el-input>
+                    <el-table
+                            :data="pageOption.searchResult"
+                            style="margin-top:17px;"
+                    >
+                        <el-table-column type="expand">
+                            <template slot-scope="props">
+                                <el-form label-position="left" inline class="demo-table-expand">
+                                    <el-form-item label="Overview">
+                                        <span>{{ props.row.description }}</span>
+                                    </el-form-item>
+
+                                </el-form>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                label="Name">
+                            <template slot-scope="props">
+                                <a :href="'/repository/template/'+props.row.oid" target="_blank">{{props.row.name}}</a>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="Contributor">
+                            <template slot-scope="props">
+                                <a :href="'/profile/'+props.row.author_name"
+                                   target="_blank">{{props.row.author}}</a>
+                            </template>
+                        </el-table-column>
+                        <el-table-column fixed="right" label="Operation" width="100">
+                            <template slot-scope="scope">
+                                <el-button
+                                        size="mini"
+                                        type="success"
+                                        @click="selectTemplate(scope.$index, scope.row)">Choose
+                                </el-button>
+
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <el-pagination style="text-align: center;margin-top:20px"
+                                   @current-change="handlePageChange"
+                                   :current-page="pageOption.currentPage"
+                                   layout="total, prev, pager, next, jumper"
+                                   :page-size="6"
+                                   :total="pageOption.total">
+                    </el-pagination>
+
                 </el-dialog>
             </div>
 
