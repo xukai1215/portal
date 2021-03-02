@@ -8,10 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import com.google.gson.JsonObject;
 import njgis.opengms.portal.bean.JsonResult;
 import njgis.opengms.portal.bean.LoginRequired;
-import njgis.opengms.portal.dao.DataApplicationDao;
-import njgis.opengms.portal.dao.DataServerTaskDao;
-import njgis.opengms.portal.dao.ThemeDao;
-import njgis.opengms.portal.dao.UserDao;
+import njgis.opengms.portal.dao.*;
+import njgis.opengms.portal.dto.Template.TemplateFindDTO;
+import njgis.opengms.portal.dto.Template.TemplateResultDTO;
 import njgis.opengms.portal.dto.dataApplication.DataApplicationDTO;
 import njgis.opengms.portal.dto.dataApplication.DataApplicationFindDTO;
 import njgis.opengms.portal.entity.*;
@@ -100,6 +99,9 @@ public class DataApplicationController {
 
     @Autowired
     DataServerTaskDao dataServerTaskDao;
+
+    @Autowired
+    TemplateDao templateDao;
 
     @Value("${resourcePath}")
     private String resourcePath;
@@ -1044,5 +1046,26 @@ public class DataApplicationController {
 //        result.setData(names);
 //        return result;
 //    }
+
+    /**
+     * 获取全部的template
+     * @return 当前页的template 信息
+     */
+    @RequestMapping(value = "/getTemplate", method = RequestMethod.POST)
+    public JsonResult getTemplate(TemplateFindDTO templateFindDTO){
+        JsonResult result = new JsonResult();
+        Sort sort = new Sort(templateFindDTO.getAsc() == false ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
+        Pageable pageable = PageRequest.of(templateFindDTO.getPage(), 5, sort);
+        Page<TemplateResultDTO> templates = templateDao.findByNameContainsIgnoreCase(templateFindDTO.getSearchText(), pageable);
+
+//        List<Template> templates = templateDao.findAll();
+        if(templates!=null){
+            result.setData(templates);
+        }else {
+            result.setMsg("error");
+            result.setCode(-1);
+        }
+        return result;
+    }
 
 }

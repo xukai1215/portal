@@ -37,4 +37,8 @@ public class DataApplicationDTO {
     List<TestData> testData;//存储testData的id
     String testDataPath;
     String packagePathContainer;
+//    List<String> bindTemplates;
+    String bindTemplate;
+    String bindOid;
+
 }

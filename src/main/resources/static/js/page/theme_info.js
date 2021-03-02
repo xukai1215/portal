@@ -4,19 +4,17 @@ var vue = new Vue({
         'avatar': VueAvatar.Avatar
     },
     data: function () {
-        const themeData = [
-            {
-                id: 1,
-                mcname: 'Default',
-                children: []
-            }
-        ];
         return {
-            themeData: JSON.parse(JSON.stringify(themeData)),
+            themeModelData: '',
+            themeData: '',
             selectedTableData:[],
+            selectedModelTableData:[],
             currentNode:2,
+            currentModelNode:2,
             parentNode:false,
+            parentModelNode:false,
             childNode:true,
+            childModelNode:true,
 
             //log用于计数
             log_model: 0,
@@ -78,22 +76,42 @@ var vue = new Vue({
             tabIndex_data: 1,
             tabIndex_application: 1,
             //定义存储从前端获取的数据，用于与后台进行传输
+            // themeObj: {
+            //     classinfo: [{
+            //         id: "1",
+            //         label: "",
+            //         modelsoid: [],
+            //     }],
+            //     dataClassInfo: [{
+            //         id: "1",
+            //         dcname: '',
+            //         datasoid: [],
+            //     }],
+            //     application: [{
+            //         id: "1",
+            //         applicationname: '',
+            //         applicationlink: '',
+            //         application_image: '',
+            //         upload_application_image: '',
+            //     }]
+            // },
             themeObj: {
                 classinfo: [{
-                    id: "1",
-                    label: "",
+                    id: 2,
+                    mcname: "new model class",
+                    children:[],
                     modelsoid: [],
                 }],
                 dataClassInfo: [{
                     id: "1",
-                    dcname: '',
+                    dcname: 'new data class',
+                    children:[],
                     datasoid: [],
                 }],
                 application: [{
                     id: "1",
                     applicationname: '',
                     applicationlink: '',
-                    application_image: '',
                     upload_application_image: '',
                 }]
             },
@@ -202,6 +220,7 @@ var vue = new Vue({
                 phone: "",
                 insName: ""
             },
+            defaultModelProps:{},
             defaultProps: {},
             cls: [],
             clsStr: '',
@@ -232,31 +251,24 @@ var vue = new Vue({
         }
     },
     methods: {
-        test(node,data) {
-            console.log("thatis")
-            console.log(node)
-            console.log(data)
-        },
-        //model多级菜单
         findFirstChildObj(parent){
-            var node
+            let node
             if(parent.children.length==0){
                 node = parent
             }
             else{
                 if(parent.children[0].children.length > 0){
-                    this.findFirstChild(parent.children[0])
+                    this.findFirstChildObj(parent.children[0])
                 }else{
                     node = parent.children[0]
                 }
 
             }
-
             return node
 
         },
         findFirstChild(parent){
-            var nodeId
+            let nodeId
             if(parent.children[0].children.length > 0){
                 this.findFirstChild(parent.children[0])
             }else{
@@ -264,9 +276,24 @@ var vue = new Vue({
             }
             return nodeId
         },
+        findModelTableData(modelClass){
+            if(modelClass.children.length ==0 && modelClass.id == this.currentModelNode){
+                return modelClass.modelsoid
+            }else if(modelClass.children.length > 0){
+                for (let n = 0; n <modelClass.children.length; n++) {
+                    var flag = this.findModelTableData(modelClass.children[n])
+                    if (flag != null) {
+                        return flag
+                    }
+                }
+            }else{
+                return null
+            }
+
+        },
         findTableData(modelClass){
             if(modelClass.children.length ==0 && modelClass.id == this.currentNode){
-                return modelClass.modelsoid
+                return modelClass.datasoid
             }else if(modelClass.children.length > 0){
                 for (let n = 0; n <modelClass.children.length; n++) {
                     var flag = this.findTableData(modelClass.children[n])
@@ -279,12 +306,12 @@ var vue = new Vue({
             }
 
         },
-        findModelClass(modelClass, classId){
-            if(modelClass.id == classId){
-                return modelClass
-            }else if(modelClass.children.length > 0){
-                for (let n = 0; n <modelClass.children.length; n++) {
-                    var flag = this.findModelClass(modelClass.children[n])
+        findClass(_class, classId){
+            if(_class.id == classId){
+                return _class
+            }else if(_class.children.length > 0){
+                for (let n = 0; n <_class.children.length; n++) {
+                    var flag = this.findClass(_class.children[n])
                     if (flag != null) {
                         return flag
                     }
@@ -296,23 +323,72 @@ var vue = new Vue({
 
         // tree的四个事件
         changeClassNode(data,node) {
-            if(data.children.length == 0){
-                console.log(data)
+            if(data.children.length === 0){
                 this.selectedTableData = data.tableData
                 this.currentNode = data.id
                 this.parentNode = false
                 this.childNode = true
             }else{
-                console.log(this.themeObj)
                 this.currentNode = this.findFirstChild(data)
                 this.parentNode = true
                 this.childNode = false
             }
-            console.log(this.themeObj)
-            console.log(this.themeData)
+        },
+        changeModelClassNode(data,node) {
+            if(data.children.length === 0){
+                this.selectedModelTableData = data.tableData
+                this.currentModelNode = data.id
+                this.parentModelNode = false
+                this.childModelNode = true
+            }else{
+                this.currentModelNode = this.findFirstChild(data)
+                this.parentModelNode = true
+                this.childModelNode = false
+            }
         },
         append(data) {
-            this.$prompt('Class Name', '提示', {
+            this.$prompt('Data Class Name', '提示', {
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No'
+            }).then(({ value }) => {
+                const newChild = { id: id++, label: value ,children: [], tableData:[]};
+                if (!data.children) {
+                    this.$set(data, 'children', []);
+                }
+                data.children.push(newChild);
+                // 找到themeobj中对应的class
+                if(data.id == 1){
+                    this.themeObj.classinfo.push({
+                        id: id-1,
+                        dcname:value,
+                        children:[],
+                        datasoid: [],
+                    })
+                }else{
+
+                    for (var n = 0; n < this.themeObj.dataClassInfo.length; n++) {
+                        var modelClass = this.findClass(this.themeObj.dataClassInfo[n],data.id)
+                        if(modelClass != null){
+                            modelClass.children.push({
+                                id: id-1,
+                                dcname:value,
+                                children:[],
+                                datasoid: [],
+                            })
+                            break
+                        }
+                    }
+                }
+
+                //更改显示内容
+                this.parentNode = true
+                this.childNode = false
+            }).catch(()=>{
+
+            })
+        },
+        appendModel(data) {
+            this.$prompt('Model Class Name', '提示', {
                 confirmButtonText: 'Yes',
                 cancelButtonText: 'No'
             }).then(({ value }) => {
@@ -332,7 +408,7 @@ var vue = new Vue({
                 }else{
 
                     for (var n = 0; n < this.themeObj.classinfo.length; n++) {
-                        var modelClass = this.findModelClass(this.themeObj.classinfo[n],data.id)
+                        var modelClass = this.findClass(this.themeObj.classinfo[n],data.id)
                         if(modelClass != null){
                             modelClass.children.push({
                                 id: id-1,
@@ -346,21 +422,39 @@ var vue = new Vue({
                 }
 
                 //更改显示内容
-                this.parentNode = true
-                this.childNode = false
+                this.parentModelNode = true
+                this.childModelNode = false
             }).catch(()=>{
 
             })
         },
         modify(data) {
-            this.$prompt('Class Name', 'Modify the item', {
+            this.$prompt('Data Class Name', 'Modify the item', {
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No'
+            }).then(({ value }) => {
+                data.label = value
+                // 找到themeobj中对应的class
+                for (var n = 0; n < this.themeObj.dataClassInfo.length; n++) {
+                    var modelClass = this.findClass(this.themeObj.dataClassInfo[n],data.id)
+                    if(modelClass != null){
+                        modelClass.dcname=value
+                        break
+                    }
+                }
+            }).catch(()=>{
+
+            })
+        },
+        modifyModel(data) {
+            this.$prompt('Model Class Name', 'Modify the item', {
                 confirmButtonText: 'Yes',
                 cancelButtonText: 'No'
             }).then(({ value }) => {
                 data.label = value
                 // 找到themeobj中对应的class
                 for (var n = 0; n < this.themeObj.classinfo.length; n++) {
-                    var modelClass = this.findModelClass(this.themeObj.classinfo[n],data.id)
+                    var modelClass = this.findClass(this.themeObj.classinfo[n],data.id)
                     if(modelClass != null){
                         modelClass.mcname=value
                         break
@@ -390,10 +484,53 @@ var vue = new Vue({
                         message: 'delete successfully!'
                     });
                     const parent = node.parent;
+                    //删除themeobj中的data class
+                    // 找到themeobj中对应的parent class
+                    for (var n = 0; n < this.themeObj.dataClassInfo.length; n++) {
+                        var modelClass = this.findClass(this.themeObj.dataClassInfo[n],parent.data.id)
+                        if(modelClass != null){
+                            //找到孩子节点
+                            var childIndex = modelClass.children.findIndex(d => d.id === data.id);
+                            modelClass.children.splice(childIndex, 1);
+                            break
+                        }
+                    }
+                    //删除树
+                    const children = parent.data.children || parent.data;
+                    const index = children.findIndex(d => d.id === data.id);
+                    children.splice(index, 1);
+
+                }
+
+
+            }).catch(()=>{
+
+            })
+        },
+        removeModel(node, data) {
+            this.$confirm('Are you sure to delete this item?',  {
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No',
+                type: 'warning',
+                center: true
+            }).then(() => {
+
+                if(node.data.id=="2"){
+                    this.$message({
+                        type:'warning',
+                        message:'This item is forbidden to be deleted!',
+                    });
+                }
+                else{
+                    this.$message({
+                        type: 'success',
+                        message: 'delete successfully!'
+                    });
+                    const parent = node.parent;
                     //删除themeobj中的model class
                     // 找到themeobj中对应的parent class
                     for (var n = 0; n < this.themeObj.classinfo.length; n++) {
-                        var modelClass = this.findModelClass(this.themeObj.classinfo[n],parent.data.id)
+                        var modelClass = this.findClass(this.themeObj.classinfo[n],parent.data.id)
                         if(modelClass != null){
                             //找到孩子节点
                             var childIndex = modelClass.children.findIndex(d => d.id === data.id);
@@ -419,17 +556,17 @@ var vue = new Vue({
 
             // 往数组中添加新模型
             var flag = false
-            for (var n = 0; n < this.selectedTableData.length; n++) {
-                if(this.selectedTableData[n].oid == row.oid){
+            for (var n = 0; n < this.selectedModelTableData.length; n++) {
+                if(this.selectedModelTableData[n].oid == row.oid){
                     flag = true
                     break
                 }
             }
             if(!flag){
-                this.selectedTableData.push(row)
+                this.selectedModelTableData.push(row)
                 // 找到当前分类的数组
                 for (var n = 0; n < this.themeObj.classinfo.length; n++) {
-                    var modelsoid = this.findTableData(this.themeObj.classinfo[n])
+                    var modelsoid = this.findModelTableData(this.themeObj.classinfo[n])
                     if(modelsoid != null){
                         modelsoid.push(row.oid)
                         break
@@ -441,16 +578,16 @@ var vue = new Vue({
         },
         deleteModel(index, row) {
             // 删除数组中的模型
-            for (var n = 0; n < this.selectedTableData.length; n++) {
-                if(this.selectedTableData[n].oid == row.oid){
-                    this.selectedTableData.splice(n, 1);
+            for (var n = 0; n < this.selectedModelTableData.length; n++) {
+                if(this.selectedModelTableData[n].oid == row.oid){
+                    this.selectedModelTableData.splice(n, 1);
                     break
                 }
             }
 
             // 找到themeobj中当前分类的数组
             for (var n = 0; n < this.themeObj.classinfo.length; n++) {
-                var modelsoid = this.findTableData(this.themeObj.classinfo[n])
+                var modelsoid = this.findModelTableData(this.themeObj.classinfo[n])
                 if(modelsoid != null){
                     for (var m = 0; m < modelsoid.length; m++) {
                         if(modelsoid[m] == row.oid){
@@ -462,6 +599,54 @@ var vue = new Vue({
                 }
             }
 
+        },
+        // data的两个事件
+        addData(index, row) {
+
+            // 往数组中添加新模型
+            var flag = false
+            for (var n = 0; n < this.selectedTableData.length; n++) {
+                if(this.selectedTableData[n].oid == row.oid){
+                    flag = true
+                    break
+                }
+            }
+            if(!flag){
+                this.selectedTableData.push(row)
+                // 找到当前分类的数组
+                for (var n = 0; n < this.themeObj.dataClassInfo.length; n++) {
+                    var datasoid = this.findTableData(this.themeObj.dataClassInfo[n])
+                    if(datasoid != null){
+                        datasoid.push(row.oid)
+                        break
+                    }
+                }
+                // this.themeObj.dataClassInfo[num].datasoid.push(row.oid);
+            }
+
+        },
+        deleteData(index, row) {
+            // 删除数组中的模型
+            for (var n = 0; n < this.selectedTableData.length; n++) {
+                if(this.selectedTableData[n].oid == row.oid){
+                    this.selectedTableData.splice(n, 1);
+                    break
+                }
+            }
+
+            // 找到themeobj中当前分类的数组
+            for (var n = 0; n < this.themeObj.dataClassInfo.length; n++) {
+                var datasoid = this.findModelTableData(this.themeObj.dataClassInfo[n])
+                if(datasoid != null){
+                    for (var m = 0; m < datasoid.length; m++) {
+                        if(datasoid[m] == row.oid){
+                            datasoid.splice(m, 1);
+                            break
+                        }
+                    }
+                    break
+                }
+            }
         },
         // 图片加载失败的回调
         errorHandler(){
@@ -1055,6 +1240,12 @@ var vue = new Vue({
                 this.controlEditMark = true
             }
         },
+        // classInfoToThemeModelData(classInfo){
+        //     let themeModelData = {}
+        //     themeModelData['label'] = classInfo.mcname
+        //     themeModelData['children'] = []
+        //
+        // },
         edit_theme(defaultActive) {
             this.editThemeActive = defaultActive
             this.dialogVisible3 = true;
@@ -1076,12 +1267,9 @@ var vue = new Vue({
                             type: "GET",
                             data: {},
                             success: (result) => {
-                                console.log("thisthis");
-                                this.themeData.children = result.data.classinfo;
-                                // this.themeObj = result.data.classinfo
-                                console.log(this.themeData)
-                                console.log(this.themeObj)
-                                console.log(result);
+                                this.themeModelData = result.data.classinfo;
+                                this.themeData = result.data.dataClassInfo;
+
                                 let basicInfo = result.data;
 
                                 let classinfo_edit = basicInfo.classinfo;

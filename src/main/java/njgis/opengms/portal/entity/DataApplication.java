@@ -79,4 +79,7 @@ public class DataApplication {
     List<DailyViewCount> dailyViewCount = new ArrayList<>();
 
     Boolean batch = false;
+//    List<String> bindTemplates;//存储对应的template的id
+    String bindTemplate;
+    String bindOid;
 }

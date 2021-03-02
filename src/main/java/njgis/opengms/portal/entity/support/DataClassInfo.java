@@ -18,5 +18,7 @@ public class DataClassInfo {
     @Id
     String oid;
     String dcname;
+    //多级菜单子节点
+    List<DataClassInfo > children;
     List<String> datasoid;
 }
