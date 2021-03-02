@@ -158,15 +158,35 @@
                                     <i class="el-icon-coin"></i>
                                     <span slot="title">Data</span>
                                 </div>
-                                <div th:each="dataClass,index:${dataClassInfos}" class="datamenu">
-                                    <el-menu-item th:index="'3-'+${index.index}" th:onclick="'javascript:show(\'dataClass'+${index.index}+'\',\'data\')'" >
-                                        <span th:utext="${dataClass.name}"></span>
-                                    </el-menu-item>
-                                </div>
-                                <div v-for="(item, index) in dataClassInfos" class="sub_datamenu">
-                                    <el-menu-item index="'3-'+index" @click="show('sub_dataClass'+index,'data')">
-                                        <span slot="title">{{item.dcname}}</span>
-                                    </el-menu-item>
+<!--                                <div th:each="dataClass,index:${dataClassInfos}" class="datamenu">-->
+<!--                                    <el-menu-item th:index="'3-'+${index.index}" th:onclick="'javascript:show(\'dataClass'+${index.index}+'\',\'data\')'" >-->
+<!--                                        <span th:utext="${dataClass.name}"></span>-->
+<!--                                    </el-menu-item>-->
+<!--                                </div>-->
+<!--                                <div v-for="(item, index) in dataClassInfos" class="sub_datamenu">-->
+<!--                                    <el-menu-item index="'3-'+index" @click="show('sub_dataClass'+index,'data')">-->
+<!--                                        <span slot="title">{{item.dcname}}</span>-->
+<!--                                    </el-menu-item>-->
+<!--                                </div>-->
+
+                                <div  th:each="dataClass,index:${dataClassInfos}" class="modelmenu">
+                                    <div th:if="${#lists.size(dataClass.children)} gt 0">
+                                        <el-submenu th:index="'2-'+${index.index}">
+                                            <template slot="title" th:utext="${dataClass.label}"></template>
+                                            <div th:each="class,index2:${dataClass.children}" >
+                                                <!--                                                <el-menu-item index="1-2">选项2</el-menu-item>-->
+                                                <el-menu-item th:index="'2-'+${index.index}+'-'+${index2.index}"  th:onclick="'javascript:show(\'dataClass'+${index.index}+'-'+${index2.index}+'\',\'data\')'">
+                                                    <span slot="title"  th:utext="${class.label}" ></span>
+                                                </el-menu-item>
+                                            </div>
+                                        </el-submenu>
+                                    </div>
+
+                                    <div th:if="${#lists.size(dataClass.children)} eq 0">
+                                        <el-menu-item th:index="'2-'+${index.index}" th:onclick="'javascript:show(\'dataClass'+${index.index}+'\',\'data\')'">
+                                            <span slot="title"  th:utext="${dataClass.label}"></span>
+                                        </el-menu-item>
+                                    </div>
                                 </div>
                             </el-submenu>
                             <el-menu-item th:if="${#arrays.length(applications)}" index="4" th:onclick="'javascript:show(\'application\',\'applicationPanel\')'">
@@ -397,6 +417,7 @@
                 <el-step class="editThemeStep" @click.native="edit_theme('3')" title="Applications"></el-step>
             </el-steps>
             <el-card :style="{display:(editThemeActive==0?'block':'none')}" shadow="never">
+                <div class="panel-body" style="height: 530px">
                 <div id="RepositoryParentsPanel">
                     <div class="form-horizontal">
                         <div class="form-group">
@@ -435,208 +456,50 @@
                            style="width: 110px;font-weight: bold">Description:</label>
                 </div>
                 <textarea id="themeText"></textarea>
-            </el-card>
-            <el-card :style="{display:(editThemeActive==1?'block':'none')}" shadow="never">
-                <div class="panel-body">
-                    <!--实验tabs-->
-                    <el-card>
-                        <el-button type="success"
-                                   style="position: absolute;right: 25px;z-index: 999"
-                                   @click="modelClass_add()">Add New Category
-                        </el-button>
-                        <el-tabs v-model="editableTabsValue_model"
-                                 type="card" editable
-                                 @edit="handleTabsEdit_model">
-                            <el-tab-pane
-                                    :key="item.name"
-                                    v-for="(item, index) in editableTabs_model"
-                                    :label="item.title"
-                                    :name="item.name"
-                                    id="el_model"
-                            >
-                                <div class='model-attr'>
-                                    <div>
-                                        <lable class='control-label col-sm-2 text-center'
-                                               style='font-weight: bold;'>
-                                            Category Name:
-                                        </lable>
-                                        <div class='input-group'>
-                                            <input type='text'
-                                                   :id="'categorynameModel'+index"
-                                                   name="name"
-                                                   class='form-control category_name'>
-                                        </div>
-                                    </div>
-
-                                    <el-card class="box-c<!---->ard"
-                                             style="width:40%;margin-right: 1%;float: left;"
-                                             id="step1_left">
-                                        <div slot="header"
-                                             class="clearfix">
-                                            <span>Selected Items</span>
-                                        </div>
-                                        <!--<li v-for="site in tableDataarr"></li>-->
-                                        <el-table
-                                                :data="item.tabledata"
-                                                ref="leftTable"
-                                                :max-height="tableMaxHeight">
-                                            <el-table-column
-                                                    type="expand">
-                                                <template
-                                                        slot-scope="props">
-                                                    <el-form
-                                                            label-position="left"
-                                                            inline
-                                                            class="demo-table-expand">
-                                                        <el-form-item
-                                                                label="Contributor">
-                                                            <span>{{ props.row.author }}</span>
-                                                        </el-form-item>
-
-                                                    </el-form>
-                                                </template>
-                                            </el-table-column>
-                                            <el-table-column
-                                                    label="Name">
-                                                <template
-                                                        slot-scope="props">
-                                                    <a :href="'/'+relateType+'/'+props.row.oid"
-                                                       target="_blank">{{props.row.name}}</a>
-                                                </template>
-                                            </el-table-column>
-
-                                            <el-table-column
-                                                    fixed="right"
-                                                    label="Operation"
-                                                    width="100">
-                                                <template
-                                                        slot-scope="scope">
-
-                                                    <el-button
-                                                            size="mini"
-                                                            type="danger"
-                                                            @click="handleDelete1(scope.$index, scope.row)">
-                                                        Delete
-                                                    </el-button>
-                                                </template>
-                                            </el-table-column>
-                                        </el-table>
-                                    </el-card>
-                                    <el-card class="box-card"
-                                             style="width:59%;"
-                                             id="step1_right">
-                                        <el-input
-                                                placeholder="Please enter name..."
-                                                v-model="relateSearch"
-                                                class="input-with-select">
-                                            <el-button slot="append"
-                                                       icon="el-icon-search"
-                                                       @click="search1()"></el-button>
-                                        </el-input>
-                                        <el-table
-                                                :data="pageOption1.searchResult"
-                                                style="margin-top:17px;"
-                                                :max-height="tableMaxHeight">
-                                            <el-table-column
-                                                    type="expand">
-                                                <template
-                                                        slot-scope="props">
-                                                    <el-form
-                                                            label-position="left"
-                                                            inline
-                                                            class="demo-table-expand">
-                                                        <el-form-item
-                                                                label="Detail">
-                                                            <span>{{ props.row.description }}</span>
-                                                        </el-form-item>
-
-                                                    </el-form>
-                                                </template>
-                                            </el-table-column>
-                                            <el-table-column
-                                                    label="Name">
-                                                <template
-                                                        slot-scope="props">
-                                                    <a :href="'/repository/'+relateType+'/'+props.row.oid"
-                                                       target="_blank">{{props.row.name}}</a>
-                                                </template>
-                                            </el-table-column>
-                                            <el-table-column
-                                                    label="Contributor"
-                                                    prop="author">
-                                            </el-table-column>
-                                            <el-table-column
-                                                    fixed="right"
-                                                    label="Operation"
-                                                    width="100">
-                                                <template
-                                                        slot-scope="scope">
-                                                    <el-button
-                                                            size="mini"
-                                                            @click="handleEdit(scope.$index, scope.row)">
-                                                        Add
-                                                    </el-button>
-                                                </template>
-                                            </el-table-column>
-                                        </el-table>
-                                        <el-pagination
-                                                style="text-align: center;margin-top:20px"
-                                                @current-change="handlePageChange1"
-                                                :current-page="pageOption1.currentPage"
-                                                layout="total, prev, pager, next, jumper"
-                                                :page-size="5"
-                                                :total="pageOption1.total">
-                                        </el-pagination>
-                                    </el-card>
-                                </div>
-                            </el-tab-pane>
-                        </el-tabs>
-
-                    </el-card>
                 </div>
             </el-card>
-            <el-card :style="{display:(editThemeActive==2?'block':'none')}" shadow="never">
-                <div class="panel-body">
+            <el-card :style="{display:(editThemeActive==1?'block':'none')}" shadow="never">
+                <div class="panel-body" style="height: 530px">
                     <el-card>
-                        <el-button type="success"
-                                   style="position: absolute;right: 25px;z-index: 999"
-                                   @click="dataClass_add()">Add New
-                            Category
-                        </el-button>
-                        <el-tabs v-model="editableTabsValue_data"
-                                 type="card" editable
-                                 @edit="handleTabsEdit_data">
-                            <el-tab-pane
-                                    :key="item.name"
-                                    v-for="(item, index) in editableTabs_data"
-                                    :label="item.title"
-                                    :name="item.name"
-                            >
-                                <div class='data-attr'>
-                                    <div>
-                                        <lable class='control-label col-sm-2 text-center'
-                                               style='font-weight: bold;'>
-                                            Category Name:
-                                        </lable>
-                                        <div class='input-group'>
-                                            <input type='text'
-                                                   :id="'categorynameData'+index"
-                                                   name="name"
-                                                   class='form-control category_name2'>
-                                        </div>
-                                    </div>
-                                </div>
+                        <div style="width: 20%;float: left">
+                            <el-card class="box-card">
+
+                                <el-tree :data="themeModelData"
+                                         :props="defaultModelProps"
+                                         :current-node-key="currentModelNode"
+                                         highlight-current
+                                         node-key="id"
+                                         default-expand-all
+                                         :expand-on-click-node="false"
+                                         @node-click="changeModelClassNode">
+                                                                                      <span class="custom-tree-node" slot-scope="{ node, data }">
+                                                                                            <span>{{node.label}}</span>
+                                                                                            <span>
+                                                                                                  <el-button type="text"  @click="() => appendModel(data)" icon="el-icon-plus"></el-button>
+                                                                                                  <el-button type="text"  @click="() => modifyModel(data)" icon="el-icon-edit" v-if="data.id!=1"></el-button>
+                                                                                                  <el-button type="text"  @click="() => removeModel(node, data)" icon="el-icon-delete" v-if="data.id!=1"></el-button>
+                                                                                            </span>
+                                                                                      </span>
+                                </el-tree>
+                            </el-card>
+                        </div>
+                        <div style="width: 80%;float: right">
+                            <div v-if="parentModelNode" style="text-align: center">Please Select Children Model Class</div>
+                            <div class='model-attr' v-if="childModelNode">
+
                                 <el-card class="box-card"
                                          style="width:40%;margin-right: 1%;float: left;"
                                          id="step2_left">
-                                    <div slot="header" class="clearfix">
+                                    <div slot="header"
+                                         class="clearfix">
                                         <span>Selected Items</span>
                                     </div>
                                     <el-table
-                                            :data="item.tabledata"
+                                            :data="selectedModelTableData"
                                             ref="leftTable"
                                             :max-height="tableMaxHeight">
-                                        <el-table-column type="expand">
+                                        <el-table-column
+                                                type="expand">
                                             <template
                                                     slot-scope="props">
                                                 <el-form
@@ -660,16 +523,17 @@
                                             </template>
                                         </el-table-column>
 
-                                        <el-table-column fixed="right"
-                                                         label="Operation"
-                                                         width="100">
+                                        <el-table-column
+                                                fixed="right"
+                                                label="Operation"
+                                                width="100">
                                             <template
                                                     slot-scope="scope">
 
                                                 <el-button
                                                         size="mini"
                                                         type="danger"
-                                                        @click="handleDelete2(scope.$index, scope.row)">
+                                                        @click="deleteModel(scope.$index, scope.row)">
                                                     Delete
                                                 </el-button>
                                             </template>
@@ -685,13 +549,14 @@
                                             class="input-with-select">
                                         <el-button slot="append"
                                                    icon="el-icon-search"
-                                                   @click="search2()"></el-button>
+                                                   @click="search1()"></el-button>
                                     </el-input>
                                     <el-table
-                                            :data="pageOption2.searchResult"
+                                            :data="pageOption1.searchResult"
                                             style="margin-top:17px;"
                                             :max-height="tableMaxHeight">
-                                        <el-table-column type="expand">
+                                        <el-table-column
+                                                type="expand">
                                             <template
                                                     slot-scope="props">
                                                 <el-form
@@ -718,14 +583,167 @@
                                                 label="Contributor"
                                                 prop="author">
                                         </el-table-column>
-                                        <el-table-column fixed="right"
-                                                         label="Operation"
-                                                         width="100">
+                                        <el-table-column
+                                                fixed="right"
+                                                label="Operation"
+                                                width="100">
                                             <template
                                                     slot-scope="scope">
                                                 <el-button
                                                         size="mini"
-                                                        @click="handleEdit1(scope.$index, scope.row)">
+                                                        @click="addModel(scope.$index, scope.row)">
+                                                    Add
+                                                </el-button>
+                                            </template>
+                                        </el-table-column>
+                                    </el-table>
+                                    <el-pagination
+                                            style="text-align: center;margin-top:20px"
+                                            @current-change="handlePageChange1"
+                                            :current-page="pageOption1.currentPage"
+                                            layout="total, prev, pager, next, jumper"
+                                            :page-size="5"
+                                            :total="pageOption1.total">
+                                    </el-pagination>
+                                </el-card>
+                            </div>
+                        </div>
+                    </el-card>
+                </div>
+            </el-card>
+            <el-card :style="{display:(editThemeActive==2?'block':'none')}" shadow="never">
+                <div class="panel-body" style="height: 530px">
+                    <el-card>
+                        <div style="width: 20%;float: left">
+                            <el-card class="box-card">
+
+                                <el-tree :data="themeData"
+                                         :props="defaultProps"
+                                         :current-node-key="currentNode"
+                                         highlight-current
+                                         node-key="id"
+                                         default-expand-all
+                                         :expand-on-click-node="false"
+                                         @node-click="changeClassNode">
+                                                                                      <span class="custom-tree-node" slot-scope="{ node, data }">
+                                                                                            <span>{{node.label}}</span>
+                                                                                            <span>
+                                                                                                  <el-button type="text"  @click="() => append(data)" icon="el-icon-plus"></el-button>
+                                                                                                  <el-button type="text"  @click="() => modify(data)" icon="el-icon-edit" v-if="data.id!=1"></el-button>
+                                                                                                  <el-button type="text"  @click="() => remove(node, data)" icon="el-icon-delete" v-if="data.id!=1"></el-button>
+                                                                                            </span>
+                                                                                      </span>
+                                </el-tree>
+                            </el-card>
+                        </div>
+                        <div style="width: 80%;float: right">
+                            <div v-if="parentNode" style="text-align: center">Please Select Children Model Class</div>
+                            <div class='model-attr' v-if="childNode">
+                                <el-card class="box-card"
+                                         style="width:40%;margin-right: 1%;float: left;"
+                                         id="step3_left">
+                                    <div slot="header"
+                                         class="clearfix">
+                                        <span>Selected Items</span>
+                                    </div>
+                                    <el-table
+                                            :data="selectedTableData"
+                                            ref="leftTable"
+                                            :max-height="tableMaxHeight">
+                                        <el-table-column
+                                                type="expand">
+                                            <template
+                                                    slot-scope="props">
+                                                <el-form
+                                                        label-position="left"
+                                                        inline
+                                                        class="demo-table-expand">
+                                                    <el-form-item
+                                                            label="Contributor">
+                                                        <span>{{ props.row.author }}</span>
+                                                    </el-form-item>
+
+                                                </el-form>
+                                            </template>
+                                        </el-table-column>
+                                        <el-table-column
+                                                label="Name">
+                                            <template
+                                                    slot-scope="props">
+                                                <a :href="'/'+relateType+'/'+props.row.oid"
+                                                   target="_blank">{{props.row.name}}</a>
+                                            </template>
+                                        </el-table-column>
+
+                                        <el-table-column
+                                                fixed="right"
+                                                label="Operation"
+                                                width="100">
+                                            <template
+                                                    slot-scope="scope">
+
+                                                <el-button
+                                                        size="mini"
+                                                        type="danger"
+                                                        @click="deleteData(scope.$index, scope.row)">
+                                                    Delete
+                                                </el-button>
+                                            </template>
+                                        </el-table-column>
+                                    </el-table>
+                                </el-card>
+                                <el-card class="box-card"
+                                         style="width:59%;"
+                                         id="step3_right">
+                                    <el-input
+                                            placeholder="Please enter name..."
+                                            v-model="relateSearch"
+                                            class="input-with-select">
+                                        <el-button slot="append"
+                                                   icon="el-icon-search"
+                                                   @click="search2()"></el-button>
+                                    </el-input>
+                                    <el-table
+                                            :data="pageOption2.searchResult"
+                                            style="margin-top:17px;"
+                                            :max-height="tableMaxHeight">
+                                        <el-table-column
+                                                type="expand">
+                                            <template
+                                                    slot-scope="props">
+                                                <el-form
+                                                        label-position="left"
+                                                        inline
+                                                        class="demo-table-expand">
+                                                    <el-form-item
+                                                            label="Detail">
+                                                        <span>{{ props.row.description }}</span>
+                                                    </el-form-item>
+
+                                                </el-form>
+                                            </template>
+                                        </el-table-column>
+                                        <el-table-column
+                                                label="Name">
+                                            <template
+                                                    slot-scope="props">
+                                                <a :href="'/repository/'+relateType+'/'+props.row.oid"
+                                                   target="_blank">{{props.row.name}}</a>
+                                            </template>
+                                        </el-table-column>
+                                        <el-table-column
+                                                label="Contributor"
+                                                prop="author">
+                                        </el-table-column>
+                                        <el-table-column
+                                                fixed="right"
+                                                label="Operation"
+                                                width="100">
+                                            <template
+                                                    slot-scope="scope">
+                                                <el-button
+                                                        size="mini"
+                                                        @click="addData(scope.$index, scope.row)">
                                                     Add
                                                 </el-button>
                                             </template>
@@ -740,13 +758,13 @@
                                             :total="pageOption2.total">
                                     </el-pagination>
                                 </el-card>
-                            </el-tab-pane>
-                        </el-tabs>
+                            </div>
+                        </div>
                     </el-card>
                 </div>
             </el-card>
             <el-card :style="{display:(editThemeActive==3?'block':'none')}" shadow="never">
-                <div class="panel-body">
+                <div class="panel-body" style="height: 530px">
                     <el-card>
                         <el-button type="success"
                                    style="position: absolute;right: 25px;z-index: 999"

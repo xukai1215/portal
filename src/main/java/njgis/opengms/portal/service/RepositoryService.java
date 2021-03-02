@@ -326,6 +326,49 @@ public class RepositoryService {
 
     }
 
+    public Object findDataChildren(DataClassInfo dataClassInfo) throws InvocationTargetException {
+        JSONObject classObj = new JSONObject();
+        classObj.put("label",dataClassInfo.getDcname());
+
+        List<DataClassInfo> childrenArr = new ArrayList<>();
+        childrenArr = dataClassInfo.getChildren();
+
+        if(childrenArr==null||childrenArr.size()==0){
+
+            //没有孩子
+            JSONArray models=new JSONArray();
+            List<String> dataOids=dataClassInfo.getDatasoid();
+            for(int j=0;j<dataOids.size();j++) {
+                JSONObject data=new JSONObject();
+                // ModelItem modelItem=modelItemDao.findFirstByOid(dataOids.get(j));
+                DataItem dataItem = dataItemDao.findFirstById(dataOids.get(j));
+                if(dataItem == null){
+                    continue;
+                }
+                data.put("name",dataItem.getName());
+                data.put("image",dataItem.getImage());
+                data.put("oid",dataItem.getOid());
+                models.add(data);
+            }
+            classObj.put("content",models);
+            classObj.put("children",new JSONArray());
+
+        }
+        else if(childrenArr.size()>0){
+
+            JSONArray children = new JSONArray();
+            for(int j=0;j<childrenArr.size();++j){
+                children.add(findDataChildren(childrenArr.get(j)));
+            }
+            classObj.put("content",new JSONArray());
+            classObj.put("children",children);
+
+        }
+
+        return classObj;
+
+
+    }
 
     public ModelAndView getThemePage(String id, HttpServletRequest req) throws InvocationTargetException {
 
@@ -360,6 +403,9 @@ public class RepositoryService {
         List<ClassInfo> classInfos = theme.getClassinfo();
         JSONArray classInfos_result = new JSONArray();
         for(int i=0;i<classInfos.size();i++){
+            if(classInfos.get(i).getOid() == null && classInfos.get(i).getMcname() == null && classInfos.get(i).getChildren().size() == 0 && classInfos.get(i).getModelsoid() == null){
+                continue;
+            }
             classInfos_result.add(findChildren(classInfos.get(i)));
 //            ClassInfo classInfo = classInfos.get(i);
 //            JSONObject classObj=new JSONObject();
@@ -379,37 +425,41 @@ public class RepositoryService {
         }
         System.out.println(classInfos_result);
         List<DataClassInfo> dataClassInfos = theme.getDataClassInfo();
+
         JSONArray dataClassInfos_result = new JSONArray();
-        for(int i=0;i<dataClassInfos.size();i++){
-            DataClassInfo dataClassInfo = dataClassInfos.get(i);
-            JSONObject dataclassObj = new JSONObject();
-            dataclassObj.put("name",dataClassInfo.getDcname());
-            JSONArray datas = new JSONArray();
-            List<String> datasOid = dataClassInfo.getDatasoid();
-            //JSONArray urls= new JSONArray();
-            for(int j=0;j<datasOid.size();j++){
-                JSONObject data = new JSONObject();
-                JSONObject url = new JSONObject();
-                DataItem dataItem = dataItemDao.findFirstById(datasOid.get(j));
-                data.put("name",dataItem.getName());
-                data.put("oid",dataItem.getId());
-                //url.put("url_select",dataItem.getReference());
-                //List<DataMeta> dataList = dataItem.getDataList();
-                //JSONArray url_download = new JSONArray();
-//                for(DataMeta dataMeta:dataList){
-//                    if (dataList == null){
-//                        break;
-//                    }
-//                    url_download.add(dataMeta.getUrl());
-//                }
-                //url.put("url_download",url_download);
-                datas.add(data);
-                //urls.add(url);
-            }
-            dataclassObj.put("content",datas);
-            //dataclassObj.put("url",urls);
-            dataClassInfos_result.add(dataclassObj);
+        for(int i=0;i<dataClassInfos.size();++i){
+            dataClassInfos_result.add(findDataChildren(dataClassInfos.get(i)));
         }
+//         for(int i=0;i<dataClassInfos.size();i++){
+//             DataClassInfo dataClassInfo = dataClassInfos.get(i);
+//             JSONObject dataclassObj = new JSONObject();
+//             dataclassObj.put("name",dataClassInfo.getDcname());
+//             JSONArray datas = new JSONArray();
+//             List<String> datasOid = dataClassInfo.getDatasoid();
+//             //JSONArray urls= new JSONArray();
+//             for(int j=0;j<datasOid.size();j++){
+//                 JSONObject data = new JSONObject();
+//                 JSONObject url = new JSONObject();
+//                 DataItem dataItem = dataItemDao.findFirstById(datasOid.get(j));
+//                 data.put("name",dataItem.getName());
+//                 data.put("oid",dataItem.getId());
+//                 //url.put("url_select",dataItem.getReference());
+//                 //List<DataMeta> dataList = dataItem.getDataList();
+//                 //JSONArray url_download = new JSONArray();
+// //                for(DataMeta dataMeta:dataList){
+// //                    if (dataList == null){
+// //                        break;
+// //                    }
+// //                    url_download.add(dataMeta.getUrl());
+// //                }
+//                 //url.put("url_download",url_download);
+//                 datas.add(data);
+//                 //urls.add(url);
+//             }
+//             dataclassObj.put("content",datas);
+//             //dataclassObj.put("url",urls);
+//             dataClassInfos_result.add(dataclassObj);
+//         }
 
         List<Application> applications = theme.getApplication();
         JSONArray applications_result = new JSONArray();
