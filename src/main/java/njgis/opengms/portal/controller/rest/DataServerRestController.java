@@ -43,9 +43,6 @@ public class DataServerRestController {
     @Autowired
     DataServerService dataServerService;
 
-    @Autowired
-    TestServiceDao testServiceDao;
-
     @RequestMapping(value = "/getAllNodes", method = RequestMethod.GET)
     public JsonResult getAllNodes() throws DocumentException {
 
@@ -232,13 +229,6 @@ public class DataServerRestController {
             String userName = session.getAttribute("uid").toString();
             return ResultUtils.success(dataServerService.unbindDataMethod(dataNodeContentDTO,userName));
         }
-
-    }
-
-    @RequestMapping(value = "/getTestServices", method = RequestMethod.GET)
-    public JsonResult getTestServices(){
-
-        return ResultUtils.success(testServiceDao.findAll());
 
     }
 

@@ -30,3 +30,4 @@
 /.nb-gradle/
 
 
+/src/main/java/njgis/opengms/portal/dao/TestServiceDao.java

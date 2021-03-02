@@ -135,6 +135,296 @@
                 </div>
             </div>
 
+            <div id="related_models" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Model Content & Service</h4>
+                    </div>
+                </div>
+                <el-tabs class="block_content" v-model="activeName" type="border-card" stretch="true">
+
+                    <el-tab-pane name="Computable Model">
+                        <div slot="label">
+                            <!--<el-button v-if="activeName=='Computable Model'" type="primary" icon="el-icon-edit" size="mini" circle></el-button>-->
+                            Computable Model List
+                            <span class="el-badge__content el-badge__content--undefined" th:style="@{(${#lists.size(relatedItems_o.computableModels)==0} ? 'background-color: #bbbbbb' : '')}"
+                                  th:text="${#lists.size(relatedItems_o.computableModels)}">
+                            </span>
+
+                        </div>
+
+                        <div th:if="${#lists.size(relatedItems_o.computableModels)}!=0">
+                            <div class="list_panel clearfix" th:each="model:${relatedItems_o.computableModels}">
+                                <a th:href="'/computableModel/'+${model.oid}" class="img">
+                                    <img src="/static/img/model/calcModel.png">
+                                </a>
+
+                                <div class="info" style="margin-top:0px;">
+                                    <a th:href="'/computableModel/'+${model.oid}"
+                                       th:text="${model.name}">Ground Water Flow System</a>
+                                    <div style="display: inline-block;margin-left:5px">
+                                        <span class="label label-success" th:if="${model.contentType == 'Package' || model.contentType == 'MD5'}">
+                                            OpenGMS Model-Service Package
+                                        </span>
+                                        <span class="label label-success" th:if="${model.contentType == 'Code'}">
+                                            Source Code
+                                        </span>
+                                        <span class="label label-success" th:if="${model.contentType == 'Library'}">
+                                            Executable Library
+                                        </span>
+                                        <span class="label label-success" th:if="${model.contentType == 'Service'}">
+                                            Third-party Web-Service Link
+                                        </span>
+                                        <span class="label label-success" th:if="${model.contentType == 'Link'}">
+                                            Downloadable Link
+                                        </span>
+                                    </div>
+                                    <p style="margin-top: 0px" th:text="${model.description}">ANN-CA uses the artificial
+                                        neural network method to extract
+                                        land use change rules in the study area, and then applies the rules to
+                                        subsequent
+                                        simulations and predictions.</p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </el-tab-pane>
+                    <el-tab-pane name="Conceptual Model">
+                        <div slot="label">Conceptual-schematic Model List
+                            <span class="el-badge__content el-badge__content--undefined" th:style="@{(${#lists.size(relatedItems_o.conceptualModels)==0} ? 'background-color: #bbbbbb' : '')}"
+                                  th:text="${#lists.size(relatedItems_o.conceptualModels)}">
+                            </span>
+                        </div>
+                        <div th:if="${#lists.size(relatedItems_o.conceptualModels)}!=0">
+                            <div class="list_panel clearfix" th:each="model:${relatedItems_o.conceptualModels}">
+                                <!--<div th:text="${model.image}"></div>-->
+                                <a class="img" th:href="'/conceptualModel/'+${model.oid}" th:switch="${model.image}">
+                                    <img th:case="''" src="/static/img/model/conceptual.png">
+                                    <img th:case="null" src="/static/img/model/conceptual.png">
+                                    <img th:case="*" th:src="${model.image}">
+                                </a>
+                                <div class="info" style="margin-top:0px;">
+                                    <a th:href="'/conceptualModel/'+${model.oid}"
+                                       th:text="${model.name}">Ground Water Flow System</a>
+                                    <p style="margin-top: 0px" th:text="${model.description}">ANN-CA uses the artificial
+                                        neural network method to extract
+                                        land use change rules in the study area, and then applies the rules to
+                                        subsequent
+                                        simulations and predictions.</p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </el-tab-pane>
+                    <el-tab-pane name="Logical Model">
+                        <div slot="label">Logical-schematic Model List
+                            <span class="el-badge__content el-badge__content--undefined" th:style="@{(${#lists.size(relatedItems_o.logicalModels)==0} ? 'background-color: #bbbbbb' : '')}"
+                                  th:text="${#lists.size(relatedItems_o.logicalModels)}">
+                            </span>
+                        </div>
+                        <div th:if="${#lists.size(relatedItems_o.logicalModels)}!=0">
+                            <div class="list_panel clearfix" th:each="model:${relatedItems_o.logicalModels}">
+                                <a th:href="'/logicalModel/'+${model.oid}" th:switch="${model.image}" class="img">
+                                    <img th:case="''" src="/static/img/model/logical.png">
+                                    <img th:case="null" src="/static/img/model/logical.png">
+                                    <img th:case="*" th:src="${model.image}">
+                                </a>
+                                <div class="info" style="margin-top:0px;">
+                                    <a th:href="'/logicalModel/'+${model.oid}" th:text="${model.name}">Ground
+                                        Water Flow System</a>
+                                    <p style="margin-top: 0px" th:text="${model.description}">ANN-CA uses the artificial
+                                        neural network method to extract
+                                        land use change rules in the study area, and then applies the rules to
+                                        subsequent
+                                        simulations and predictions.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </el-tab-pane>
+
+
+                </el-tabs>
+            </div>
+
+            <div id="related_data" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Related Models & Data</h4>
+                    </div>
+                </div>
+                <el-tabs class="block_content" v-model="activeName1" type="border-card" stretch="true">
+                    <el-tab-pane name="Model Item">
+                        <div slot="label">Model Item
+                            <span class="el-badge__content el-badge__content--undefined" th:style="@{(${#lists.size(relatedItems_o.modelItems)==0} ? 'background-color: #bbbbbb' : '')}"
+                                  th:text="${#lists.size(relatedItems_o.modelItems)}">
+                            </span>
+                        </div>
+                        <div th:if="${#lists.size(relatedItems_o.modelItems)}!=0">
+                            <div class="list_panel clearfix" th:each="model:${relatedItems_o.modelItems}">
+                                <!--<div th:text="${model.image}"></div>-->
+                                <a class="img" th:href="'/modelItem/'+${model.oid}">
+                                    <img src="/static/img/model/model.png">
+                                </a>
+                                <div class="info" style="margin-top:0px;">
+                                    <a th:href="'/modelItem/'+${model.oid}"
+                                       th:text="${model.name}">Ground Water Flow System</a>
+                                    <p style="margin-top: 0px" th:text="${model.description}">ANN-CA uses the artificial
+                                        neural network method to extract
+                                        land use change rules in the study area, and then applies the rules to
+                                        subsequent
+                                        simulations and predictions.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </el-tab-pane>
+                    <el-tab-pane name="Data Item">
+                        <div slot="label">Data Item
+                            <span class="el-badge__content el-badge__content--undefined" th:style="@{(${#lists.size(relatedItems_o.dataItems)==0} ? 'background-color: #bbbbbb' : '')}"
+                                  th:text="${#lists.size(relatedItems_o.dataItems)}">
+                            </span>
+                        </div>
+                        <div th:if="${#lists.size(relatedItems_o.dataItems)}!=0">
+                            <div class="list_panel clearfix" th:each="model:${relatedItems_o.dataItems}">
+                                <!--<div th:text="${model.image}"></div>-->
+                                <a class="img" th:href="'/dataItem/'+${model.id}">
+                                    <img src="/static/img/model/data.png">
+                                </a>
+                                <div class="info" style="margin-top:0px;">
+                                    <a th:href="'/dataItem/'+${model.id}"
+                                       th:text="${model.name}">Ground Water Flow System</a>
+                                    <p style="margin-top: 0px" th:text="${model.description}">ANN-CA uses the artificial
+                                        neural network method to extract
+                                        land use change rules in the study area, and then applies the rules to
+                                        subsequent
+                                        simulations and predictions.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </el-tab-pane>
+                </el-tabs>
+            </div>
+
+            <div id="related_resource" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Related Resource</h4>
+                    </div>
+                </div>
+                <el-tabs class="block_content" v-model="activeName2" type="border-card" stretch="true">
+                    <div th:if="${#lists.size(relatedItems_o.concepts)}!=0">
+                        <div class="list_panel clearfix" th:each="model:${relatedItems_o.concepts}">
+                            <a th:href="'/repository/concept/'+${model.oid}" class="img">
+                                <img src="/static/img/model/semantics.png">
+                            </a>
+                            <div class="info" style="margin-top:0px;">
+                                <a th:href="'/repository/concept/'+${model.oid}"
+                                   th:text="${model.name}">Ground Water Flow System</a>
+                                <p style="margin-top: 0px"
+                                   th:text="${model.description!=null?model.description:model.description_ZH!=null?model.description_ZH:model.description_EN}">
+                                    ANN-CA uses the artificial
+                                    neural network method to extract
+                                    land use change rules in the study area, and then applies the rules to
+                                    subsequent
+                                    simulations and predictions.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div th:if="${#lists.size(relatedItems_o.spatialReferences)}!=0">
+                        <div class="list_panel clearfix" th:each="model:${relatedItems_o.spatialReferences}">
+                            <a th:href="'/repository/spatialReference/'+${model.oid}" class="img">
+                                <img src="/static/img/model/spatialreference.png">
+                            </a>
+                            <div class="info" style="margin-top:0px;">
+                                <a th:href="'/repository/spatialReference/'+${model.oid}"
+                                   th:text="${model.name}">Ground Water Flow System</a>
+                                <p style="margin-top: 0px"
+                                   th:text="${model.description!=null?model.description:model.wkname}">ANN-CA uses
+                                    the artificial
+                                    neural network method to extract
+                                    land use change rules in the study area, and then applies the rules to
+                                    subsequent
+                                    simulations and predictions.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div th:if="${#lists.size(relatedItems_o.templates)}!=0">
+                        <div class="list_panel clearfix" th:each="model:${relatedItems_o.templates}">
+                            <a th:href="'/repository/template/'+${model.oid}" class="img">
+                                <img src="/static/img/model/template.png">
+                            </a>
+                            <div class="info" style="margin-top:0px;">
+                                <a th:href="'/repository/template/'+${model.oid}"
+                                   th:text="${model.name}">Ground Water Flow System</a>
+                                <p style="margin-top: 0px" th:text="${model.description}">ANN-CA
+                                    uses the artificial
+                                    neural network method to extract
+                                    land use change rules in the study area, and then applies the rules to
+                                    subsequent
+                                    simulations and predictions.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div th:if="${#lists.size(relatedItems_o.units)}!=0">
+                        <div class="list_panel clearfix" th:each="model:${relatedItems_o.units}">
+                            <a th:href="'/repository/unit/'+${model.oid}" class="img">
+                                <img src="/static/img/model/unit.png">
+                            </a>
+                            <div class="info" style="margin-top:0px;">
+                                <a th:href="'/repository/unit/'+${model.oid}"
+                                   th:text="${model.name}">Ground Water Flow System</a>
+                                <p style="margin-top: 0px"
+                                   th:text="${model.description}">
+                                    ANN-CA uses the artificial
+                                    neural network method to extract
+                                    land use change rules in the study area, and then applies the rules to
+                                    subsequent
+                                    simulations and predictions.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div th:if="${#lists.size(relatedItems_o.dataSpaceFiles)}!=0">
+                        <div class="list_panel clearfix" th:each="model:${relatedItems_o.dataSpaceFiles}">
+                            <a th:href="${model.url}" class="img">
+                                <i class="fa fa-file-o" style="font-size: 60px;margin: 15px 0 0 20px;color: #11c2fd"></i>
+                            </a>
+                            <div class="info" style="margin-top:0px;">
+                                <a th:href="${model.url}"
+                                   th:text="${model.name}">Ground Water Flow System</a>
+                                <!--                                <p style="margin-top: 0px"-->
+                                <!--                                   th:text="${model.description}">-->
+                                <!--                                    ANN-CA uses the artificial-->
+                                <!--                                    neural network method to extract-->
+                                <!--                                    land use change rules in the study area, and then applies the rules to-->
+                                <!--                                    subsequent-->
+                                <!--                                    simulations and predictions.</p>-->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div th:if="${#lists.size(relatedItems_o.exLinks)}!=0">
+                        <div class="list_panel clearfix" th:each="model:${relatedItems_o.exLinks}">
+                            <a th:href="${model.content}" class="img">
+                                <i class="fa fa-link" style="font-size: 60px;margin: 15px 0 0 20px;color: #11c2fd"></i>
+                            </a>
+                            <div class="info" style="margin-top:0px;">
+                                <a th:href="${model.content}"
+                                   th:text="${model.name}">Ground Water Flow System</a>
+                                <!--                                <p style="margin-top: 0px"-->
+                                <!--                                   th:text="${model.description}">-->
+                                <!--                                    ANN-CA uses the artificial-->
+                                <!--                                    neural network method to extract-->
+                                <!--                                    land use change rules in the study area, and then applies the rules to-->
+                                <!--                                    subsequent-->
+                                <!--                                    simulations and predictions.</p>-->
+                            </div>
+                        </div>
+                    </div>
+                </el-tabs>
+            </div>
 
             <div th:if="${#lists.size(references)}!=0" id="references" class="detail_block">
                 <input id="ref" th:value="${references}" style="display: none;">
@@ -145,7 +435,7 @@
                 </div>
                 <div class="block_content">
                     <el-table
-                            :data="tableData"
+                            :data="references_o"
                             border
                             stripe
                             style="width: 100%">
@@ -276,7 +566,6 @@
                 </div>
             </div>
 
-
             <div id="classification22" class="detail_block">
                 <div class="block_head">
                     <div class="head_text">
@@ -313,6 +602,296 @@
                 </div>
             </div>
 
+            <div id="related_models2" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Model Content & Service</h4>
+                    </div>
+                </div>
+                <el-tabs class="block_content" v-model="activeName" type="border-card" stretch="true">
+
+                    <el-tab-pane name="Computable Model">
+                        <div slot="label">
+                            <!--<el-button v-if="activeName=='Computable Model'" type="primary" icon="el-icon-edit" size="mini" circle></el-button>-->
+                            Computable Model List
+                            <span class="el-badge__content el-badge__content--undefined" th:style="@{(${#lists.size(relatedItems_n.computableModels)==0} ? 'background-color: #bbbbbb' : '')}"
+                                  th:text="${#lists.size(relatedItems_n.computableModels)}">
+                            </span>
+
+                        </div>
+
+                        <div th:if="${#lists.size(relatedItems_n.computableModels)}!=0">
+                            <div class="list_panel clearfix" th:each="model:${relatedItems_n.computableModels}">
+                                <a th:href="'/computableModel/'+${model.oid}" class="img">
+                                    <img src="/static/img/model/calcModel.png">
+                                </a>
+
+                                <div class="info" style="margin-top:0px;">
+                                    <a th:href="'/computableModel/'+${model.oid}"
+                                       th:text="${model.name}">Ground Water Flow System</a>
+                                    <div style="display: inline-block;margin-left:5px">
+                                        <span class="label label-success" th:if="${model.contentType == 'Package' || model.contentType == 'MD5'}">
+                                            OpenGMS Model-Service Package
+                                        </span>
+                                        <span class="label label-success" th:if="${model.contentType == 'Code'}">
+                                            Source Code
+                                        </span>
+                                        <span class="label label-success" th:if="${model.contentType == 'Library'}">
+                                            Executable Library
+                                        </span>
+                                        <span class="label label-success" th:if="${model.contentType == 'Service'}">
+                                            Third-party Web-Service Link
+                                        </span>
+                                        <span class="label label-success" th:if="${model.contentType == 'Link'}">
+                                            Downloadable Link
+                                        </span>
+                                    </div>
+                                    <p style="margin-top: 0px" th:text="${model.description}">ANN-CA uses the artificial
+                                        neural network method to extract
+                                        land use change rules in the study area, and then applies the rules to
+                                        subsequent
+                                        simulations and predictions.</p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </el-tab-pane>
+                    <el-tab-pane name="Conceptual Model">
+                        <div slot="label">Conceptual-schematic Model List
+                            <span class="el-badge__content el-badge__content--undefined" th:style="@{(${#lists.size(relatedItems_n.conceptualModels)==0} ? 'background-color: #bbbbbb' : '')}"
+                                  th:text="${#lists.size(relatedItems_n.conceptualModels)}">
+                            </span>
+                        </div>
+                        <div th:if="${#lists.size(relatedItems_n.conceptualModels)}!=0">
+                            <div class="list_panel clearfix" th:each="model:${relatedItems_n.conceptualModels}">
+                                <!--<div th:text="${model.image}"></div>-->
+                                <a class="img" th:href="'/conceptualModel/'+${model.oid}" th:switch="${model.image}">
+                                    <img th:case="''" src="/static/img/model/conceptual.png">
+                                    <img th:case="null" src="/static/img/model/conceptual.png">
+                                    <img th:case="*" th:src="${model.image}">
+                                </a>
+                                <div class="info" style="margin-top:0px;">
+                                    <a th:href="'/conceptualModel/'+${model.oid}"
+                                       th:text="${model.name}">Ground Water Flow System</a>
+                                    <p style="margin-top: 0px" th:text="${model.description}">ANN-CA uses the artificial
+                                        neural network method to extract
+                                        land use change rules in the study area, and then applies the rules to
+                                        subsequent
+                                        simulations and predictions.</p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </el-tab-pane>
+                    <el-tab-pane name="Logical Model">
+                        <div slot="label">Logical-schematic Model List
+                            <span class="el-badge__content el-badge__content--undefined" th:style="@{(${#lists.size(relatedItems_n.logicalModels)==0} ? 'background-color: #bbbbbb' : '')}"
+                                  th:text="${#lists.size(relatedItems_n.logicalModels)}">
+                            </span>
+                        </div>
+                        <div th:if="${#lists.size(relatedItems_n.logicalModels)}!=0">
+                            <div class="list_panel clearfix" th:each="model:${relatedItems_n.logicalModels}">
+                                <a th:href="'/logicalModel/'+${model.oid}" th:switch="${model.image}" class="img">
+                                    <img th:case="''" src="/static/img/model/logical.png">
+                                    <img th:case="null" src="/static/img/model/logical.png">
+                                    <img th:case="*" th:src="${model.image}">
+                                </a>
+                                <div class="info" style="margin-top:0px;">
+                                    <a th:href="'/logicalModel/'+${model.oid}" th:text="${model.name}">Ground
+                                        Water Flow System</a>
+                                    <p style="margin-top: 0px" th:text="${model.description}">ANN-CA uses the artificial
+                                        neural network method to extract
+                                        land use change rules in the study area, and then applies the rules to
+                                        subsequent
+                                        simulations and predictions.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </el-tab-pane>
+
+
+                </el-tabs>
+            </div>
+
+            <div id="related_data2" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Related Models & Data</h4>
+                    </div>
+                </div>
+                <el-tabs class="block_content" v-model="activeName1" type="border-card" stretch="true">
+                    <el-tab-pane name="Model Item">
+                        <div slot="label">Model Item
+                            <span class="el-badge__content el-badge__content--undefined" th:style="@{(${#lists.size(relatedItems_n.modelItems)==0} ? 'background-color: #bbbbbb' : '')}"
+                                  th:text="${#lists.size(relatedItems_n.modelItems)}">
+                            </span>
+                        </div>
+                        <div th:if="${#lists.size(relatedItems_n.modelItems)}!=0">
+                            <div class="list_panel clearfix" th:each="model:${relatedItems_n.modelItems}">
+                                <!--<div th:text="${model.image}"></div>-->
+                                <a class="img" th:href="'/modelItem/'+${model.oid}">
+                                    <img src="/static/img/model/model.png">
+                                </a>
+                                <div class="info" style="margin-top:0px;">
+                                    <a th:href="'/modelItem/'+${model.oid}"
+                                       th:text="${model.name}">Ground Water Flow System</a>
+                                    <p style="margin-top: 0px" th:text="${model.description}">ANN-CA uses the artificial
+                                        neural network method to extract
+                                        land use change rules in the study area, and then applies the rules to
+                                        subsequent
+                                        simulations and predictions.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </el-tab-pane>
+                    <el-tab-pane name="Data Item">
+                        <div slot="label">Data Item
+                            <span class="el-badge__content el-badge__content--undefined" th:style="@{(${#lists.size(relatedItems_n.dataItems)==0} ? 'background-color: #bbbbbb' : '')}"
+                                  th:text="${#lists.size(relatedItems_n.dataItems)}">
+                            </span>
+                        </div>
+                        <div th:if="${#lists.size(relatedItems_n.dataItems)}!=0">
+                            <div class="list_panel clearfix" th:each="model:${relatedItems_n.dataItems}">
+                                <!--<div th:text="${model.image}"></div>-->
+                                <a class="img" th:href="'/dataItem/'+${model.id}">
+                                    <img src="/static/img/model/data.png">
+                                </a>
+                                <div class="info" style="margin-top:0px;">
+                                    <a th:href="'/dataItem/'+${model.id}"
+                                       th:text="${model.name}">Ground Water Flow System</a>
+                                    <p style="margin-top: 0px" th:text="${model.description}">ANN-CA uses the artificial
+                                        neural network method to extract
+                                        land use change rules in the study area, and then applies the rules to
+                                        subsequent
+                                        simulations and predictions.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </el-tab-pane>
+                </el-tabs>
+            </div>
+
+            <div id="related_resource2" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Related Resource</h4>
+                    </div>
+                </div>
+                <el-tabs class="block_content" v-model="activeName2" type="border-card" stretch="true">
+                    <div th:if="${#lists.size(relatedItems_n.concepts)}!=0">
+                        <div class="list_panel clearfix" th:each="model:${relatedItems_n.concepts}">
+                            <a th:href="'/repository/concept/'+${model.oid}" class="img">
+                                <img src="/static/img/model/semantics.png">
+                            </a>
+                            <div class="info" style="margin-top:0px;">
+                                <a th:href="'/repository/concept/'+${model.oid}"
+                                   th:text="${model.name}">Ground Water Flow System</a>
+                                <p style="margin-top: 0px"
+                                   th:text="${model.description!=null?model.description:model.description_ZH!=null?model.description_ZH:model.description_EN}">
+                                    ANN-CA uses the artificial
+                                    neural network method to extract
+                                    land use change rules in the study area, and then applies the rules to
+                                    subsequent
+                                    simulations and predictions.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div th:if="${#lists.size(relatedItems_n.spatialReferences)}!=0">
+                        <div class="list_panel clearfix" th:each="model:${relatedItems_n.spatialReferences}">
+                            <a th:href="'/repository/spatialReference/'+${model.oid}" class="img">
+                                <img src="/static/img/model/spatialreference.png">
+                            </a>
+                            <div class="info" style="margin-top:0px;">
+                                <a th:href="'/repository/spatialReference/'+${model.oid}"
+                                   th:text="${model.name}">Ground Water Flow System</a>
+                                <p style="margin-top: 0px"
+                                   th:text="${model.description!=null?model.description:model.wkname}">ANN-CA uses
+                                    the artificial
+                                    neural network method to extract
+                                    land use change rules in the study area, and then applies the rules to
+                                    subsequent
+                                    simulations and predictions.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div th:if="${#lists.size(relatedItems_n.templates)}!=0">
+                        <div class="list_panel clearfix" th:each="model:${relatedItems_n.templates}">
+                            <a th:href="'/repository/template/'+${model.oid}" class="img">
+                                <img src="/static/img/model/template.png">
+                            </a>
+                            <div class="info" style="margin-top:0px;">
+                                <a th:href="'/repository/template/'+${model.oid}"
+                                   th:text="${model.name}">Ground Water Flow System</a>
+                                <p style="margin-top: 0px" th:text="${model.description}">ANN-CA
+                                    uses the artificial
+                                    neural network method to extract
+                                    land use change rules in the study area, and then applies the rules to
+                                    subsequent
+                                    simulations and predictions.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div th:if="${#lists.size(relatedItems_n.units)}!=0">
+                        <div class="list_panel clearfix" th:each="model:${relatedItems_n.units}">
+                            <a th:href="'/repository/unit/'+${model.oid}" class="img">
+                                <img src="/static/img/model/unit.png">
+                            </a>
+                            <div class="info" style="margin-top:0px;">
+                                <a th:href="'/repository/unit/'+${model.oid}"
+                                   th:text="${model.name}">Ground Water Flow System</a>
+                                <p style="margin-top: 0px"
+                                   th:text="${model.description}">
+                                    ANN-CA uses the artificial
+                                    neural network method to extract
+                                    land use change rules in the study area, and then applies the rules to
+                                    subsequent
+                                    simulations and predictions.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div th:if="${#lists.size(relatedItems_n.dataSpaceFiles)}!=0">
+                        <div class="list_panel clearfix" th:each="model:${relatedItems_n.dataSpaceFiles}">
+                            <a th:href="${model.url}" class="img">
+                                <i class="fa fa-file-o" style="font-size: 60px;margin: 15px 0 0 20px;color: #11c2fd"></i>
+                            </a>
+                            <div class="info" style="margin-top:0px;">
+                                <a th:href="${model.url}"
+                                   th:text="${model.name}">Ground Water Flow System</a>
+                                <!--                                <p style="margin-top: 0px"-->
+                                <!--                                   th:text="${model.description}">-->
+                                <!--                                    ANN-CA uses the artificial-->
+                                <!--                                    neural network method to extract-->
+                                <!--                                    land use change rules in the study area, and then applies the rules to-->
+                                <!--                                    subsequent-->
+                                <!--                                    simulations and predictions.</p>-->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div th:if="${#lists.size(relatedItems_n.exLinks)}!=0">
+                        <div class="list_panel clearfix" th:each="model:${relatedItems_n.exLinks}">
+                            <a th:href="${model.content}" class="img">
+                                <i class="fa fa-link" style="font-size: 60px;margin: 15px 0 0 20px;color: #11c2fd"></i>
+                            </a>
+                            <div class="info" style="margin-top:0px;">
+                                <a th:href="${model.content}"
+                                   th:text="${model.name}">Ground Water Flow System</a>
+                                <!--                                <p style="margin-top: 0px"-->
+                                <!--                                   th:text="${model.description}">-->
+                                <!--                                    ANN-CA uses the artificial-->
+                                <!--                                    neural network method to extract-->
+                                <!--                                    land use change rules in the study area, and then applies the rules to-->
+                                <!--                                    subsequent-->
+                                <!--                                    simulations and predictions.</p>-->
+                            </div>
+                        </div>
+                    </div>
+                </el-tabs>
+            </div>
 
             <div th:if="${#lists.size(references2)}!=0" id="references2" class="detail_block">
                 <input id="ref2" th:value="${references2}" style="display: none;">
@@ -323,7 +902,7 @@
                 </div>
                 <div class="block_content">
                     <el-table
-                            :data="tableData2"
+                            :data="references_n"
                             border
                             stripe
                             style="width: 100%">
@@ -413,7 +992,13 @@
 </div>
 
 </body>
-
+<script th:inline="javascript">
+    var modelInfo = [[${modelInfo}]];
+    var modelItemList=[[${modelItems}]];
+    var author=[[${user}]];
+    var references=[[${references}]];
+    var references2=[[${references2}]];
+</script>
 
 <script src="/static/js/common/jquery-3.3.1.min.js"></script>
 <script src="/static/js/common/vue.min.js"></script>

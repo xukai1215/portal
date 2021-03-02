@@ -153,6 +153,31 @@
             font-style: normal;
         }
 
+        .localization .tox-tinymce{
+            border: none;
+        }
+
+        .localization .el-table td{
+            padding: 0;
+        }
+        .localization .el-table .cell{
+            padding: 0;
+        }
+        .localization .el-button{
+            padding-left:0;
+            padding-right:0;
+            border: none;
+            -webkit-border-radius: 0;
+            -moz-border-radius: 0;
+            border-radius: 0;
+        }
+        .localization .el-card{
+            box-shadow: none;
+            -webkit-box-shadow: none;
+        }
+        .localization .el-card__body{
+            padding: 0;
+        }
 
     </style>
 
@@ -359,9 +384,18 @@
                     <div class="head_text">
                         <h4>Classification(s)</h4>
                     </div>
-                    <!--<span class="blockEdit">-->
-                        <!--<el-button type="primary" icon="el-icon-edit" @click="getClassifications" circle></el-button>-->
-                    <!--</span>-->
+                    <span class="blockEdit">
+                        <el-tooltip popper-class="fontsize-15" content="Edit" effect="light" placement="top">
+                            <el-button th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock!=true}"
+                                       type="primary" icon="el-icon-edit" @click="getClassifications" circle></el-button>
+                        </el-tooltip>
+                        <el-tooltip popper-class="fontsize-15"
+                                    content="There is another version haven't been reviewed, you can edit it later or contact us."
+                                    effect="light" placement="top">
+                            <el-button th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock==true}"
+                                   icon="el-icon-edit" plain circle></el-button>
+                        </el-tooltip>
+                    </span>
                 </div>
                 <div class="block_content" style="margin-top:20px;">
                     <div th:each="classS:${classifications2}">
@@ -401,9 +435,18 @@
                         </el-dropdown-menu>
                     </el-dropdown>
                     <span class="fa fa-language" style="background-color:white;padding-left:10px;float:right;font-size:23px;"></span>
-                    <!--<span class="blockEdit">-->
-                    <!--<el-button type="primary" icon="el-icon-edit" @click="getClassifications" circle></el-button>-->
-                    <!--</span>-->
+                    <span class="blockEdit">
+                         <el-tooltip popper-class="fontsize-15" content="Edit" effect="light" placement="top">
+                            <el-button th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock!=true}"
+                                       type="primary" icon="el-icon-edit" @click="getDescription" circle></el-button>
+                        </el-tooltip>
+                        <el-tooltip popper-class="fontsize-15"
+                                    content="There is another version haven't been reviewed, you can edit it later or contact us."
+                                    effect="light" placement="top">
+                            <el-button th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock==true}"
+                                       icon="el-icon-edit" plain circle></el-button>
+                        </el-tooltip>
+                    </span>
                 </div>
                 <div class="block_content">
                     <div v-if="detail==''" th:utext="${detail}" id="detail" class="detailIntroducePanel">
@@ -469,20 +512,43 @@
                                         simulations and predictions.</p>
                                 </div>
                             </div>
-                            <el-button @click="addRelation(4)" type="primary" icon="el-icon-plus"
+                            <el-button th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock!=true}" @click="addRelation(4)" type="primary" icon="el-icon-plus"
                                        style="width: 100%">
                                 Edit Related Computable Model
                             </el-button>
+                            <el-tooltip th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock==true}"
+                                        popper-class="fontsize-15"
+                                        content="There is another version haven't been reviewed, you can edit it later or contact us."
+                                        effect="light" placement="top">
+                                <el-button plain type="info" icon="el-icon-plus"
+                                           style="width: 100%">
+                                    Edit Related Computable Model
+                                </el-button>
+                            </el-tooltip>
+
+
                         </div>
                         <div class="text-center" th:if="${#lists.size(computableModels)}==0">
                             <h5 style="margin-bottom: 10px;display: inline-block;">
                                 There is no related computable model. You can link computable models.
                             </h5>
-                            <button class="btn btn-default" type="button"
+                            <button th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock!=true}" class="btn btn-default" type="button"
                                     style="display: inline-block;" @click="addRelation(4)">
 
                                 <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
                             </button>
+                            <el-tooltip th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock==true}"
+                                        popper-class="fontsize-15"
+                                        content="There is another version haven't been reviewed, you can edit it later or contact us."
+                                        effect="light" placement="top">
+                                <button class="btn btn-default" type="button"
+                                        style="display: inline-block;">
+
+                                    <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
+                                </button>
+                            </el-tooltip>
+
+
                         </div>
 
                     </el-tab-pane>
@@ -510,20 +576,44 @@
                                         simulations and predictions.</p>
                                 </div>
                             </div>
-                            <el-button @click="addRelation(2)" type="primary" icon="el-icon-plus"
+                            <el-button th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock!=true}"
+                                       @click="addRelation(2)" type="primary" icon="el-icon-plus"
                                        style="width: 100%">
                                 Edit Related Conceptual Model
                             </el-button>
+                            <el-tooltip th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock==true}"
+                                        popper-class="fontsize-15"
+                                        content="There is another version haven't been reviewed, you can edit it later or contact us."
+                                        effect="light" placement="top">
+                                <el-button plain type="info" icon="el-icon-plus"
+                                           style="width: 100%">
+                                    Edit Related Conceptual Model
+                                </el-button>
+                            </el-tooltip>
+
+
                         </div>
                         <div class="text-center" th:if="${#lists.size(conceptualModels)}==0">
                             <h5 style="margin-bottom: 10px;display: inline-block;">
                                 There is no related conceptual model. You can link conceptual models.
                             </h5>
-                            <button class="btn btn-default" type="button"
+                            <button th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock!=true}"
+                                    class="btn btn-default" type="button"
                                     style="display: inline-block;" @click="addRelation(2)">
 
                                 <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
                             </button>
+                            <el-tooltip th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock==true}"
+                                        popper-class="fontsize-15"
+                                        content="There is another version haven't been reviewed, you can edit it later or contact us."
+                                        effect="light" placement="top">
+                                <button class="btn btn-default" type="button"
+                                        style="display: inline-block;" >
+
+                                    <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
+                                </button>
+                            </el-tooltip>
+
                         </div>
                     </el-tab-pane>
                     <el-tab-pane name="Logical Model">
@@ -549,20 +639,43 @@
                                         simulations and predictions.</p>
                                 </div>
                             </div>
-                            <el-button @click="addRelation(3)" type="primary" icon="el-icon-plus"
+                            <el-button th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock!=true}"
+                                       @click="addRelation(3)" type="primary" icon="el-icon-plus"
                                        style="width: 100%">
                                 Edit Related Logical Model
                             </el-button>
+                            <el-tooltip th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock==true}"
+                                        popper-class="fontsize-15"
+                                        content="There is another version haven't been reviewed, you can edit it later or contact us."
+                                        effect="light" placement="top">
+                                <el-button plain type="info" icon="el-icon-plus"
+                                           style="width: 100%">
+                                    Edit Related Logical Model
+                                </el-button>
+                            </el-tooltip>
+
+
                         </div>
                         <div class="text-center" th:if="${#lists.size(logicalModels)}==0">
                             <h5 style="margin-bottom: 10px;display: inline-block;">
                                 There is no related logical model. You can link logical models.
                             </h5>
-                            <button class="btn btn-default" type="button" style="display: inline-block;"
+                            <button th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock!=true}"
+                                    class="btn btn-default" type="button" style="display: inline-block;"
                                     @click="addRelation(3)">
 
                                 <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
                             </button>
+                            <el-tooltip th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock==true}"
+                                        popper-class="fontsize-15"
+                                        content="There is another version haven't been reviewed, you can edit it later or contact us."
+                                        effect="light" placement="top">
+                                <button class="btn btn-default" type="button" style="display: inline-block;">
+
+                                    <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
+                                </button>
+                            </el-tooltip>
+
                         </div>
                     </el-tab-pane>
 
@@ -700,10 +813,22 @@
                                 </div>
                                 <div id="modelRelationGraph" style="height:100%;"></div>
                             </div>
-                            <el-button @click="addRelation(1)" type="primary" icon="el-icon-plus"
+                            <el-button th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock!=true}"
+                                       @click="addRelation(1)" type="primary" icon="el-icon-plus"
                                        style="width: 100%">
                                 Edit Related Model Item
                             </el-button>
+                            <el-tooltip th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock==true}"
+                                        popper-class="fontsize-15"
+                                        content="There is another version haven't been reviewed, you can edit it later or contact us."
+                                        effect="light" placement="top">
+                                <el-button plain type="info" icon="el-icon-plus"
+                                           style="width: 100%">
+                                    Edit Related Model Item
+                                </el-button>
+                            </el-tooltip>
+
+
                             <!--<el-button v-if="!modelRelationGraphShow" @click="generateModelRelationGraph" type="success" icon="el-icon-picture-outline" style="margin-left:1%;width: 49.5%">-->
                                 <!--Relation Graph-->
                             <!--</el-button><el-button v-if="modelRelationGraphShow" @click="closeModelRelationGraph" type="danger" style="margin-left:1%;width: 49.5%">-->
@@ -715,11 +840,22 @@
                             <h5 style="margin-bottom: 10px;display: inline-block;">
                                 There is no related model item. You can link model items.
                             </h5>
-                            <button class="btn btn-default" type="button"
+                            <button th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock!=true}"
+                                    class="btn btn-default" type="button"
                                     style="display: inline-block;" @click="addRelation(1)">
 
                                 <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
                             </button>
+                            <el-tooltip th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock==true}"
+                                        popper-class="fontsize-15"
+                                        content="There is another version haven't been reviewed, you can edit it later or contact us."
+                                        effect="light" placement="top">
+                                <button class="btn btn-default" type="button"
+                                        style="display: inline-block;" >
+
+                                    <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
+                                </button>
+                            </el-tooltip>
                         </div>
                     </el-tab-pane>
                     <el-tab-pane name="Data Item">
@@ -744,20 +880,43 @@
                                         simulations and predictions.</p>
                                 </div>
                             </div>
-                            <el-button @click="addRelation(9)" type="primary" icon="el-icon-plus"
+                            <el-button th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock!=true}"
+                                       @click="addRelation(9)" type="primary" icon="el-icon-plus"
                                        style="width: 100%">
                                 Edit Related Data Item
                             </el-button>
+                            <el-tooltip th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock==true}"
+                                        popper-class="fontsize-15"
+                                        content="There is another version haven't been reviewed, you can edit it later or contact us."
+                                        effect="light" placement="top">
+                                <el-button plain type="info" icon="el-icon-plus"
+                                           style="width: 100%">
+                                    Edit Related Data Item
+                                </el-button>
+                            </el-tooltip>
+
                         </div>
                         <div class="text-center" th:if="${#lists.size(dataItems)}==0">
                             <h5 style="margin-bottom: 10px;display: inline-block;">
                                 There is no related data item. You can link data items.
                             </h5>
-                            <button class="btn btn-default" type="button"
+                            <button th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock!=true}"
+                                    class="btn btn-default" type="button"
                                     style="display: inline-block;" @click="addRelation(9)">
 
                                 <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
                             </button>
+                            <el-tooltip th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock==true}"
+                                        popper-class="fontsize-15"
+                                        content="There is another version haven't been reviewed, you can edit it later or contact us."
+                                        effect="light" placement="top">
+                                <button class="btn btn-default" type="button"
+                                        style="display: inline-block;">
+
+                                    <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
+                                </button>
+                            </el-tooltip>
+
                         </div>
                     </el-tab-pane>
                 </el-tabs>
@@ -888,17 +1047,44 @@
                         <h5 style="margin-bottom: 10px;display: inline-block;">
                             There is no related resource. You can link resource to it.
                         </h5>
-                        <button class="btn btn-default" type="button"
+                        <button th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock!=true}"
+                                class="btn btn-default" type="button"
                                 style="display: inline-block;" @click="addRelatedResouece()">
 
                             <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
                         </button>
+                        <el-tooltip th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock==true}"
+                                    popper-class="fontsize-15"
+                                    content="There is another version haven't been reviewed, you can edit it later or contact us."
+                                    effect="light" placement="top">
+                            <button class="btn btn-default" type="button"
+                                    style="display: inline-block;">
+
+                                <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
+                            </button>
+                        </el-tooltip>
+
                     </div>
-                    <el-button th:unless="${#lists.size(concepts)==0 && #lists.size(spatialReferences)==0 &&
-                    #lists.size(templates)==0 && #lists.size(units)==0 && #lists.size(dataSpaceFiles)==0 && #lists.size(exLinks)==0}" @click="addRelatedResouece()" type="primary" icon="el-icon-plus"
-                               style="width: 100%">
-                        Edit Related Resource
-                    </el-button>
+                    <div th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock!=true}">
+                        <el-button th:unless="${#lists.size(concepts)==0 && #lists.size(spatialReferences)==0 &&
+                         #lists.size(templates)==0 && #lists.size(units)==0 && #lists.size(dataSpaceFiles)==0 && #lists.size(exLinks)==0}"
+                                   @click="addRelatedResouece()" type="primary" icon="el-icon-plus"
+                                   style="width: 100%">
+                            Edit Related Resource
+                        </el-button>
+                    </div>
+
+                    <el-tooltip th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock==true}"
+                                popper-class="fontsize-15"
+                                content="There is another version haven't been reviewed, you can edit it later or contact us."
+                                effect="light" placement="top">
+                        <el-button th:unless="${#lists.size(concepts)==0 && #lists.size(spatialReferences)==0 &&
+                        #lists.size(templates)==0 && #lists.size(units)==0 && #lists.size(dataSpaceFiles)==0 && #lists.size(exLinks)==0}"
+                                   plain type="info" icon="el-icon-plus"
+                                   style="width: 100%">
+                            Edit Related Resource
+                        </el-button>
+                    </el-tooltip>
 
                 </el-tabs>
             </div>
@@ -909,6 +1095,18 @@
                     <div class="head_text">
                         <h4>References</h4>
                     </div>
+                    <span class="blockEdit">
+                        <el-tooltip popper-class="fontsize-15" content="Edit" effect="light" placement="top">
+                            <el-button th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock!=true}"
+                                       type="primary" icon="el-icon-edit" @click="getReference" circle></el-button>
+                        </el-tooltip>
+                        <el-tooltip popper-class="fontsize-15"
+                                    content="There is another version haven't been reviewed, you can edit it later or contact us."
+                                    effect="light" placement="top">
+                            <el-button th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock==true}"
+                                       icon="el-icon-edit" plain circle></el-button>
+                        </el-tooltip>
+                    </span>
                 </div>
                 <div class="block_content">
                     <el-table
@@ -1904,6 +2102,333 @@
             <el-button @click="editClassification = false">Cancel</el-button>
             <el-button type="primary" @click="submitClassifications">Submit</el-button>
         </span>
+    </el-dialog>
+
+    <el-dialog v-cloak title="Edit Model Description" :visible.sync="editDescription" width="75%">
+        <div class="localization">
+            <el-card style="width: 15%;float:left">
+                <div slot="header" class="clearfix">
+                    <span style="font-weight: bold">Localizations</span>
+                    <el-button
+                            style="float: right; padding: 3px 0"
+                            type="text" @click="addLocalization">+ Add
+                    </el-button>
+                </div>
+                <el-collapse-transition>
+                    <div v-show="languageAdd.show">
+                        <el-select v-model="languageAdd.local" filterable placeholder="Select language" style="width:80%;float: left;">
+                            <el-option
+                                    v-for="item in languageList"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item">
+                                <span style="float: left">{{ item.label }}</span>
+                                <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
+                            </el-option>
+                        </el-select>
+                        <el-button @click="confirmAddLocal" type="success" style="width:10%;float: left;"><i class="el-icon-check"></i></el-button>
+                        <el-button @click="cancelAddLocal" type="danger" style="width:10%;"><i class="el-icon-close"></i></el-button>
+                    </div>
+                </el-collapse-transition>
+                <div class="clearfix" style="height:400px;overflow: auto;">
+                    <el-table
+                            :data="localizationList"
+                            :show-header="false"
+                    >
+                        <el-table-column>
+                            <template slot-scope="props">
+                                <el-tooltip class="item" effect="light" :content="props.row.localCode" placement="top">
+                                    <el-button
+                                            :class="{localizationSelected:props.row.selected}"
+                                            style="width:90%;float:left;"
+                                            @click="changeLocalization(props.row)">
+                                        {{props.row.localName}}
+                                    </el-button>
+                                </el-tooltip>
+
+                                <el-button style="width:10%;" @click="deleteLocalization(props.row)"><i
+                                        class="el-icon-close"></i>
+                                </el-button>
+
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </div>
+            </el-card>
+            <el-card style="width: 85%;">
+                <div slot="header" class="clearfix">
+                    <span>Model Name : </span>
+                    <el-input v-model="currentLocalization.name" placeholder="Please enter the model's localized name"></el-input>
+
+                </div>
+                <textarea id="conceptText" style="float:left">
+
+                                                                    </textarea>
+            </el-card>
+        </div>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="editClassification = false">Cancel</el-button>
+            <el-button type="primary" @click="submitDescription">Submit</el-button>
+        </span>
+    </el-dialog>
+
+    <el-dialog  v-cloak title="Edit Reference" :visible.sync="editReference" width="75%">
+        <table class="display table table-bordered table-striped dataTable"
+               id="dynamic-table"
+               aria-describedby="dynamic-table_info">
+            <thead>
+            <tr role="row">
+                <th class="sorting"
+                    role="columnheader"
+                    tabindex="0"
+                    aria-controls="dynamic-table"
+                    rowspan="1" colspan="1"
+                    aria-label="Title: activate to sort column ascending"
+                    width="200px">
+                    Title
+                </th>
+                <th class="sorting"
+                    role="columnheader"
+                    tabindex="0"
+                    aria-controls="dynamic-table"
+                    rowspan="1" colspan="1"
+                    aria-label="Author: activate to sort column ascending"
+                    width="200px">
+                    Author
+                </th>
+                <th class="sorting"
+                    role="columnheader"
+                    tabindex="0"
+                    aria-controls="dynamic-table"
+                    rowspan="1" colspan="1"
+                    aria-label="Date: activate to sort column ascending"
+                    width="100px">
+                    Date
+                </th>
+                <th class="hidden-phone sorting"
+                    role="columnheader"
+                    tabindex="0"
+                    aria-controls="dynamic-table"
+                    rowspan="1" colspan="1"
+                    aria-label="Journal: activate to sort column ascending"
+                    width="100px">
+                    Journal
+                </th>
+                <th class="hidden-phone sorting"
+                    role="columnheader"
+                    tabindex="0"
+                    aria-controls="dynamic-table"
+                    rowspan="1" colspan="1"
+                    aria-sort="descending"
+                    aria-label="Pages: activate to sort column ascending"
+                    width="100px">
+                    Volume(Issue)
+                </th>
+                <th class="hidden-phone sorting"
+                    role="columnheader"
+                    tabindex="0"
+                    aria-controls="dynamic-table"
+                    rowspan="1" colspan="1"
+                    aria-sort="descending"
+                    aria-label="Pages: activate to sort column ascending"
+                    width="100px">
+                    Pages
+                </th>
+                <th class="hidden-phone sorting"
+                    role="columnheader"
+                    tabindex="0"
+                    aria-controls="dynamic-table"
+                    rowspan="1" colspan="1"
+                    aria-sort="descending"
+                    aria-label="Links: activate to sort column ascending"
+                    width="100px">
+                    Links
+                </th>
+                <th class="hidden-phone sorting"
+                    role="columnheader"
+                    tabindex="0"
+                    aria-controls="dynamic-table"
+                    rowspan="1" colspan="1"
+                    aria-sort="descending"
+                    aria-label="Links: activate to sort column ascending"
+                    width="100px">
+                    Doi
+                </th>
+                <th class="hidden-phone sorting"
+                    role="columnheader"
+                    tabindex="0"
+                    aria-controls="dynamic-table"
+                    rowspan="1" colspan="1"
+                    aria-sort="descending"
+                    aria-label="CSS grade: activate to sort column ascending"
+                    width="82px">
+                    Operation
+                </th>
+            </tr>
+            </thead>
+
+            <tbody role="alert"
+                   aria-live="polite"
+                   aria-relevant="all">
+
+            </tbody>
+        </table>
+        <button id="addref"
+                class="btn btn-success btn-lg btn-block"
+                data-toggle="modal"
+                data-target="#refinfo"
+                @click="addArticleClick"
+                type="button">Add Reference
+        </button>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="editReference = false">Cancel</el-button>
+            <el-button type="primary" @click="submitReference">Submit</el-button>
+        </span>
+    </el-dialog>
+
+    <el-dialog title="Reference Info" :close-on-click-modal="false" :visible.sync = "editArticleDialog" width="33%" custom-class="min400w" >
+        <div class="wzhScrollbar" style="max-height: 500px;padding-right:10px" >
+            <div class="tab-content" v-loading="doiLoading">
+                <div class="tab-pane active articleInfo" id="manually" >
+                    <div class="form-group">
+                        <label for="doiTitle" class="col-sm-2 control-label">
+                            Get by doi :
+                        </label>
+                        <el-tag size="middle" primary>Enter the doi and click search, information may be filled automaticly. </el-tag>
+                        <div class="input-group col-md-12">
+                            <input id="doiTitle" type="text"
+                                   class="form-control" v-model="doi">
+                            <span class="input-group-btn" style="width: 19%">
+                                                    <button id="doiSearch"
+                                                            class="btn btn-info"
+                                                            type="button" @click="searchDoi()" style="height: 34px;width: 100%;margin: 0;">Search</button>
+                                                </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="refTitle"
+                               class="col-sm-12 control-label">Title</label>
+                        <div>
+                            <input type="text" class="form-control"
+                                   id="refTitle"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="refAuthor"
+                               class="col-sm-12 control-label">Author</label>
+                        <div>
+                            <input type="text" class="form-control"
+                                   id="refAuthor"/>
+                            <!--                                                        <ul class="tag-editor"><li style="width:.1px">&nbsp;</li></ul>-->
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="refDate"
+                               class="col-sm-12 control-label">Date</label>
+                        <div>
+                            <input type="text" class="form-control"
+                                   id="refDate"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="refJournal"
+                               class="col-sm-12 control-label">Journal</label>
+                        <div>
+                            <input type="text" class="form-control"
+                                   id="refJournal"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="volumeIssue"
+                               class="col-sm-12 control-label">Volume(issue)</label>
+                        <div>
+                            <input type="text" class="form-control"
+                                   id="volumeIssue"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="refPages"
+                               class="col-sm-12 control-label">Page Range</label>
+                        <div>
+                            <input type="text" class="form-control"
+                                   id="refPages"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="refLink"
+                               class="col-sm-12 control-label">Link</label>
+                        <div>
+                            <input type="text" class="form-control"
+                                   id="refLink"/>
+                        </div>
+                    </div>
+                    <!--                                        <div class="form-group flexRow" style="padding-top: 3px;padding-left: 16px">-->
+                    <!--                                            <p style="font-weight: 600;margin-right: 10px">Status</p>-->
+                    <!--                                            <el-checkbox-group v-model="checkedIdentity" @change="changeChecked">-->
+                    <!--                                                <el-checkbox v-for="Identity in Identities" :label="Identity" :key="Identity">{{Identity}}</el-checkbox>-->
+                    <!--                                            </el-checkbox-group>-->
+
+                    <!--                                        </div>-->
+                </div>
+
+
+            </div>
+
+        </div>
+        <span slot="footer" class="dialog-footer">
+                        <el-button type="primary" size="small" @click="updateArticleConfirmClick" id="modal_save">Add</el-button>
+                        <el-button size="small" @click="cancelSearch()">Cancel</el-button>
+                    </span>
+    </el-dialog>
+
+    <el-dialog title="Is this article you want to add?" :visible.sync = "showUploadArticleDialog" width="30%" custom-class="min400w">
+        <h4>{{articleUploading.title}}</h4>
+        <p v-if="articleUploading.authors.length>0"><span>Authors:</span><span>&nbsp&nbsp{{articleUploading.authors[0]}},</span>
+            <span v-if="articleUploading.authors[1]">{{articleUploading.authors[1]}}, </span>
+            <span v-if="articleUploading.authors[2]">{{articleUploading.authors[2]}},</span>
+            <span v-if="articleUploading.authors.length>3"> et al.</span> </p>
+        <p v-if="articleUploading.journal!=''"><span>Journal:</span> &nbsp&nbsp{{articleUploading.journal}}</p>
+        <p v-if="articleUploading.date!=''"><span>Date:</span> &nbsp&nbsp{{articleUploading.date}}</p>
+        <p v-if="articleUploading.pageRange!=''"><span>Page range:</span> &nbsp&nbsp{{articleUploading.pageRange}}</p>
+        <p v-if="articleUploading.link!=''"><span>Link:</span> &nbsp&nbsp{{articleUploading.link}}</p>
+        <p v-if="articleUploading.doi!=''"><span>DOI:</span> &nbsp&nbsp{{articleUploading.doi}}</p>
+        <!--                            <div class="flex">-->
+
+        <!--                            </div>-->
+        <span slot="footer" class="dialog-footer">
+<!--                                <div class="flex flexRowSpaceBetween" >-->
+            <!--                                    <div class="flexColCenter">-->
+            <!--                                        <p style="font-weight: 600;margin-right: 10px">Yes,</p>-->
+            <!--                                        <el-button type="success" @click="articleDoiUploadConfirm('author')" plain>I am the author</el-button>-->
+            <!--                                        <el-button type="primary" @click="articleDoiUploadConfirm('learner')" plain>I am a learner</el-button>-->
+            <!--                                    </div>-->
+            <!--                                    <div class="innerBorderCol" style="height: 40px"></div>-->
+                                    <el-button type="success" @click="articleDoiUploadConfirm()" plain>Yes, this is it</el-button>
+                                    <el-button @click="showUploadArticleDialog = false">Cancel</el-button>
+            <!--                                </div>-->
+                            </span>
+    </el-dialog>
+
+    <el-dialog title="Tip"
+               :visible.sync = "showUploadedArticleDialog" width="30%" custom-class="min400w">
+        <!--                            <div class="flexCol" style="font-size:16px;word-break: normal ">-->
+        <!--                                <p>The article <span style="font-weight: 600;"> {{articleUploading.title}} </span> has been-->
+        <!--                                    <span style="color: #2b95f7"> uploaded</span> yet, do you want to be one of the contrbutors?</p>-->
+        <!--                            </div>-->
+        <div class="flexCol" style="font-size:16px;word-break: normal ">
+            <p>The article <span style="font-weight: 600;"> {{articleUploading.title}} </span> has been
+                <span style="color: #2b95f7"> uploaded</span> yet.</p>
+        </div>
+        <span slot="footer" class="dialog-footer">
+                                <el-button @click="showUploadedArticleDialog = false">OK</el-button>
+                            </span>
+        <!--                            <span slot="footer" class="dialog-footer">-->
+        <!--                                <el-button type="success" @click="addContributorConfirm()"-->
+        <!--                                               plain>Yes, I do</el-button>-->
+        <!--                                <el-button @click="showUploadedArticleDialog = false">Cancel</el-button>-->
+        <!--                            </span>-->
     </el-dialog>
 
     <el-dialog title="Personal Data Center ( User Space -> My Data )"

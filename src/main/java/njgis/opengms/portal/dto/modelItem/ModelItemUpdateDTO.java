@@ -3,8 +3,11 @@ package njgis.opengms.portal.dto.modelItem;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import njgis.opengms.portal.entity.support.ModelItemRelate;
+import njgis.opengms.portal.entity.support.ModelRelation;
 import njgis.opengms.portal.entity.support.Reference;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,5 +25,8 @@ import java.util.List;
 public class ModelItemUpdateDTO extends ModelItemAddDTO {
 
     String oid;
+    List<String> relatedData = new ArrayList<>();
+    List<ModelRelation> modelRelationList = new ArrayList<>();
+    ModelItemRelate relate = new ModelItemRelate();
 
 }

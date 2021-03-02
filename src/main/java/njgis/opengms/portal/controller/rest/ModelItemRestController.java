@@ -17,11 +17,13 @@ import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.entity.support.AuthorInfo;
 import njgis.opengms.portal.entity.support.Localization;
 import njgis.opengms.portal.entity.support.ModelRelation;
+import njgis.opengms.portal.entity.support.Reference;
 import njgis.opengms.portal.enums.RelationTypeEnum;
 import njgis.opengms.portal.service.*;
 import njgis.opengms.portal.utils.ResultUtils;
 import njgis.opengms.portal.utils.Utils;
 import org.apache.commons.io.IOUtils;
+import org.apache.tomcat.jni.Local;
 import org.dom4j.DocumentException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -136,13 +138,157 @@ public class ModelItemRestController {
     @RequestMapping(value = "/updateClass", method = RequestMethod.POST)
     public JsonResult updateClass(@RequestParam(value = "oid") String oid,
                                   @RequestParam(value = "class1[]") List<String> class1,
-                                  @RequestParam(value = "class2[]",required = false) List<String> class2){
-        ModelItem modelItem = modelItemDao.findFirstByOid(oid);
-        modelItem.setClassifications(class1);
-        modelItem.setClassifications2(class2);
-        modelItemDao.save(modelItem);
+                                  @RequestParam(value = "class2[]",required = false) List<String> class2,
+                                  HttpServletRequest request){
+        HttpSession session=request.getSession();
+        String uid=session.getAttribute("uid").toString();
+        if(uid==null)
+        {
+            return ResultUtils.error(-2,"未登录");
+        }
 
-        return ResultUtils.success();
+
+        ModelItem modelItem = modelItemDao.findFirstByOid(oid);
+
+        String author = modelItem.getAuthor();
+
+        if(author.equals(uid)) {
+            modelItem.setClassifications(class1);
+            modelItem.setClassifications2(class2);
+            modelItemDao.save(modelItem);
+
+            return ResultUtils.success("suc");
+        }else{
+            ModelItemUpdateDTO modelItemUpdateDTO = new ModelItemUpdateDTO();
+            modelItemUpdateDTO.setOid(modelItem.getOid());
+            modelItemUpdateDTO.setName(modelItem.getName());
+            modelItemUpdateDTO.setAlias(modelItem.getAlias());
+            modelItemUpdateDTO.setUploadImage(modelItem.getImage());
+            modelItemUpdateDTO.setDescription(modelItem.getDescription());
+            modelItemUpdateDTO.setDetail(modelItem.getDetail());
+            modelItemUpdateDTO.setStatus(modelItem.getStatus());
+            modelItemUpdateDTO.setLocalizationList(modelItem.getLocalizationList());
+            modelItemUpdateDTO.setAuthorship(modelItem.getAuthorship());
+            modelItemUpdateDTO.setClassifications(class1);
+            modelItemUpdateDTO.setClassifications2(class2);
+            modelItemUpdateDTO.setKeywords(modelItem.getKeywords());
+            modelItemUpdateDTO.setReferences(modelItem.getReferences());
+            modelItemUpdateDTO.setModelRelationList(modelItem.getModelRelationList());
+            modelItemUpdateDTO.setRelate(modelItem.getRelate());
+            modelItemUpdateDTO.setRelatedData(modelItem.getRelatedData());
+
+
+            modelItemService.update(modelItemUpdateDTO,uid);
+
+            return ResultUtils.success("version");
+        }
+
+    }
+
+
+    @RequestMapping(value = "/updateDesctription", method = RequestMethod.POST)
+    public JsonResult updateDesctription(HttpServletRequest request){
+        HttpSession session=request.getSession();
+        String uid=session.getAttribute("uid").toString();
+        if(uid==null)
+        {
+            return ResultUtils.error(-2,"未登录");
+        }
+
+        String oid = request.getParameter("oid");
+        String localizationListStr = request.getParameter("localization");
+
+        JSONArray j_localizationList = JSONArray.parseArray(localizationListStr);
+        List<Localization> localizationList =JSONObject.parseArray(j_localizationList.toJSONString(), Localization.class);;
+
+        ModelItem modelItem = modelItemDao.findFirstByOid(oid);
+
+        String author = modelItem.getAuthor();
+
+        if(author.equals(uid)){
+            modelItem.setLocalizationList(localizationList);
+            modelItemDao.save(modelItem);
+            return ResultUtils.success("suc");
+        }else{
+            ModelItemUpdateDTO modelItemUpdateDTO = new ModelItemUpdateDTO();
+            modelItemUpdateDTO.setOid(modelItem.getOid());
+            modelItemUpdateDTO.setName(modelItem.getName());
+            modelItemUpdateDTO.setAlias(modelItem.getAlias());
+            modelItemUpdateDTO.setUploadImage(modelItem.getImage());
+            modelItemUpdateDTO.setDescription(modelItem.getDescription());
+            modelItemUpdateDTO.setDetail(modelItem.getDetail());
+            modelItemUpdateDTO.setStatus(modelItem.getStatus());
+            modelItemUpdateDTO.setLocalizationList(localizationList);
+            modelItemUpdateDTO.setAuthorship(modelItem.getAuthorship());
+            modelItemUpdateDTO.setClassifications(modelItem.getClassifications());
+            modelItemUpdateDTO.setClassifications2(modelItem.getClassifications2());
+            modelItemUpdateDTO.setKeywords(modelItem.getKeywords());
+            modelItemUpdateDTO.setReferences(modelItem.getReferences());
+            modelItemUpdateDTO.setRelate(modelItem.getRelate());
+            modelItemUpdateDTO.setModelRelationList(modelItem.getModelRelationList());
+            modelItemUpdateDTO.setRelatedData(modelItem.getRelatedData());
+
+
+            modelItemService.update(modelItemUpdateDTO,uid);
+
+            return ResultUtils.success("version");
+        }
+
+//        modelItem.setLocalizationList(localizationList);
+//        modelItemDao.save(modelItem);
+
+    }
+
+    @RequestMapping(value = "/updateReference", method = RequestMethod.POST)
+    public JsonResult updateReference(HttpServletRequest request){
+        HttpSession session=request.getSession();
+        String uid=session.getAttribute("uid").toString();
+        if(uid==null)
+        {
+            return ResultUtils.error(-2,"未登录");
+        }
+
+        String oid = request.getParameter("oid");
+        String referenceListStr = request.getParameter("reference");
+
+        JSONArray j_referenceList = JSONArray.parseArray(referenceListStr);
+        List<Reference> referenceList =JSONObject.parseArray(j_referenceList.toJSONString(), Reference.class);;
+
+        ModelItem modelItem = modelItemDao.findFirstByOid(oid);
+
+        String author = modelItem.getAuthor();
+
+        if(author.equals(uid)){
+            modelItem.setReferences(referenceList);
+            modelItemDao.save(modelItem);
+            return ResultUtils.success("suc");
+        }else{
+            ModelItemUpdateDTO modelItemUpdateDTO = new ModelItemUpdateDTO();
+            modelItemUpdateDTO.setOid(modelItem.getOid());
+            modelItemUpdateDTO.setName(modelItem.getName());
+            modelItemUpdateDTO.setAlias(modelItem.getAlias());
+            modelItemUpdateDTO.setUploadImage(modelItem.getImage());
+            modelItemUpdateDTO.setDescription(modelItem.getDescription());
+            modelItemUpdateDTO.setDetail(modelItem.getDetail());
+            modelItemUpdateDTO.setStatus(modelItem.getStatus());
+            modelItemUpdateDTO.setLocalizationList(modelItem.getLocalizationList());
+            modelItemUpdateDTO.setAuthorship(modelItem.getAuthorship());
+            modelItemUpdateDTO.setClassifications(modelItem.getClassifications());
+            modelItemUpdateDTO.setClassifications2(modelItem.getClassifications2());
+            modelItemUpdateDTO.setKeywords(modelItem.getKeywords());
+            modelItemUpdateDTO.setReferences(referenceList);
+            modelItemUpdateDTO.setRelate(modelItem.getRelate());
+            modelItemUpdateDTO.setModelRelationList(modelItem.getModelRelationList());
+            modelItemUpdateDTO.setRelatedData(modelItem.getRelatedData());
+
+            modelItemService.update(modelItemUpdateDTO,uid);
+
+            return ResultUtils.success("version");
+        }
+
+//        modelItem.setLocalizationList(localizationList);
+//        modelItemDao.save(modelItem);
+
     }
 
     @RequestMapping(value="/simulation",method = RequestMethod.GET)
@@ -282,85 +428,99 @@ public class ModelItemRestController {
         return ResultUtils.success(obj);
     }
 
-        @RequestMapping(value = "/searchClass")
-        public JsonResult searchClass(ModelItemFindDTO modelItemFindDTO,@RequestParam(value = "classNum") int num, @RequestParam(value = "classifications[]") List<String> classes){
-            int page = modelItemFindDTO.getPage();
-            int pageSize = modelItemFindDTO.getPageSize();
-            String searchText = modelItemFindDTO.getSearchText();
-            //List<String> classifications=modelItemFindDTO.getClassifications();
-            //默认以viewCount排序
-            Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
-            Pageable pageable = PageRequest.of(page, pageSize, sort);
+    @RequestMapping(value = "/getDescription/{id}", method = RequestMethod.GET)
+    JsonResult getDescription(@PathVariable("id") String id){
+        ModelItem modelItem = modelItemService.getByOid(id);
 
-            Classification classification;
-            if(num==1) {
-                classification = classificationService.getByOid(classes.get(0));
-            }else {
-                classification = classification2Service.getByOid(classes.get(0));
-            }
-            if (classification != null) {
-                List<String> children = classification.getChildrenId();
-                if (children.size() > 0) {
-                    for (String child : children
-                            ) {
-                        classes.add(child);
-                        Classification classification1 = num==1?classificationService.getByOid(child):classification2Service.getByOid(child);
-                        List<String> children1 = classification1.getChildrenId();
-                        if (children1.size() > 0) {
-                            for (String child1 : children1) {
-                                classes.add(child1);
-                            }
+        return ResultUtils.success(modelItem.getLocalizationList());
+    }
+
+    @RequestMapping(value = "/getReference/{id}", method = RequestMethod.GET)
+    JsonResult getReference(@PathVariable("id") String id) {
+        ModelItem modelItem = modelItemService.getByOid(id);
+
+        return ResultUtils.success(modelItem.getReferences());
+    }
+
+    @RequestMapping(value = "/searchClass")
+    public JsonResult searchClass(ModelItemFindDTO modelItemFindDTO, @RequestParam(value = "classNum") int num, @RequestParam(value = "classifications[]") List<String> classes) {
+        int page = modelItemFindDTO.getPage();
+        int pageSize = modelItemFindDTO.getPageSize();
+        String searchText = modelItemFindDTO.getSearchText();
+        //List<String> classifications=modelItemFindDTO.getClassifications();
+        //默认以viewCount排序
+        Sort sort = new Sort(modelItemFindDTO.getAsc() ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
+        Pageable pageable = PageRequest.of(page, pageSize, sort);
+
+        Classification classification;
+        if (num == 1) {
+            classification = classificationService.getByOid(classes.get(0));
+        } else {
+            classification = classification2Service.getByOid(classes.get(0));
+        }
+        if (classification != null) {
+            List<String> children = classification.getChildrenId();
+            if (children.size() > 0) {
+                for (String child : children
+                ) {
+                    classes.add(child);
+                    Classification classification1 = num == 1 ? classificationService.getByOid(child) : classification2Service.getByOid(child);
+                    List<String> children1 = classification1.getChildrenId();
+                    if (children1.size() > 0) {
+                        for (String child1 : children1) {
+                            classes.add(child1);
                         }
                     }
                 }
             }
+        }
 
 
-            Page<ModelItemResultDTO> modelItemPage;
-            if(num==1) {
-                if(classes.get(0).equals("all")) {
-                    modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndClassifications2IsNull(searchText, pageable);
-                }else{
-                    modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndClassificationsInAndClassifications2IsNull(searchText, classes, pageable);
-                }
-            }else {
-                if(classes.get(0).equals("all")) {
-                    modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndClassifications2IsNotNull(searchText, pageable);
-                }else {
-                    modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndClassifications2In(searchText, classes, pageable);
-                }
+        Page<ModelItemResultDTO> modelItemPage;
+        if (num == 1) {
+            if (classes.get(0).equals("all")) {
+                modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndClassifications2IsNull(searchText, pageable);
+            } else {
+                modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndClassificationsInAndClassifications2IsNull(searchText, classes, pageable);
             }
-            List<ModelItemResultDTO> modelItems = modelItemPage.getContent();
-            JSONArray users = new JSONArray();
-            for (int i = 0; i < modelItems.size(); i++) {
-                ModelItemResultDTO modelItem = modelItems.get(i);
-                String image = modelItem.getImage();
-                if (!image.equals("")) {
-                    modelItem.setImage(htmlLoadPath + image);
-                }
+        } else {
+            if (classes.get(0).equals("all")) {
+                modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndClassifications2IsNotNull(searchText, pageable);
+            } else {
+                modelItemPage = modelItemDao.findByNameContainsIgnoreCaseAndClassifications2In(searchText, classes, pageable);
+            }
+        }
+        List<ModelItemResultDTO> modelItems = modelItemPage.getContent();
+        JSONArray users = new JSONArray();
+        for (int i = 0; i < modelItems.size(); i++) {
+            ModelItemResultDTO modelItem = modelItems.get(i);
+            String image = modelItem.getImage();
+            if (!image.equals("")) {
+                modelItem.setImage(htmlLoadPath + image);
+            }
 
-                JSONObject userObj = new JSONObject();
-                User user = userDao.findFirstByUserName(modelItems.get(i).getAuthor());
-                userObj.put("oid", user.getOid());
-                userObj.put("image", user.getImage().equals("") ? "" : htmlLoadPath + user.getImage());
-                userObj.put("name", user.getName());
+            JSONObject userObj = new JSONObject();
+            User user = userDao.findFirstByUserName(modelItems.get(i).getAuthor());
+            userObj.put("oid", user.getOid());
+            userObj.put("image", user.getImage().equals("") ? "" : htmlLoadPath + user.getImage());
+            userObj.put("name", user.getName());
 
-                users.add(userObj);
+            users.add(userObj);
 
-                modelItems.get(i).setAuthor_name(user.getName());
-                modelItems.get(i).setAuthor_oid(user.getOid());
+            modelItems.get(i).setAuthor_name(user.getName());
+            modelItems.get(i).setAuthor_oid(user.getOid());
 //            modelItems.get(i).setAuthor(user.getName());
 
-            }
-
-            JSONObject obj = new JSONObject();
-            obj.put("list", modelItems);
-            obj.put("total", modelItemPage.getTotalElements());
-            obj.put("pages", modelItemPage.getTotalPages());
-            obj.put("users", users);
-
-            return ResultUtils.success(obj);
         }
+
+        JSONObject obj = new JSONObject();
+        obj.put("list", modelItems);
+        obj.put("total", modelItemPage.getTotalElements());
+        obj.put("pages", modelItemPage.getTotalPages());
+        obj.put("users", users);
+
+        return ResultUtils.success(obj);
+    }
 
     @RequestMapping(value = "/list", method = RequestMethod.POST)
     public JsonResult list(ModelItemFindDTO modelItemFindDTO, @RequestParam(value = "classifications[]") List<String> classes, @RequestParam(value = "classType", required = false) Integer classType) {
@@ -415,9 +575,18 @@ public class ModelItemRestController {
     @RequestMapping(value="/setRelation",method = RequestMethod.POST)
     JsonResult setRelation(@RequestParam(value="oid") String oid,
                            @RequestParam(value="type") String type,
-                           @RequestParam(value = "relations[]") List<String> relations){
+                           @RequestParam(value = "relations[]") List<String> relations,
+                           HttpServletRequest request
+                           ){
 
-        String result=modelItemService.setRelation(oid,type,relations);
+        HttpSession session=request.getSession();
+        String uid=session.getAttribute("uid").toString();
+        if(uid==null)
+        {
+            return ResultUtils.error(-2,"未登录");
+        }
+
+        String result=modelItemService.setRelation(oid,type,relations,uid);
 
         return ResultUtils.success(result);
 
@@ -441,7 +610,7 @@ public class ModelItemRestController {
             return ResultUtils.error(-2,"未登录");
         }
 
-        String result=modelItemService.addRelateResources(oid,infoArray,files);
+        String result=modelItemService.addRelateResources(oid,infoArray,files,uid);
 
         return ResultUtils.success(result);
 
@@ -449,24 +618,29 @@ public class ModelItemRestController {
 
     @RequestMapping(value = "/setModelRelation/{oid}", method = RequestMethod.POST)
     JsonResult setModelRelation(@PathVariable("oid") String oid,
-        @RequestBody JSONObject jsonObject) {
-
-            JSONArray relations = jsonObject.getJSONArray("relations");
-            List<ModelRelation> modelRelationList = new ArrayList<>();
-
-            for (int i = 0; i < relations.size(); i++) {
-                JSONObject object = relations.getJSONObject(i);
-                ModelRelation modelRelation = new ModelRelation();
-                modelRelation.setOid(object.getString("oid"));
-                modelRelation.setRelation(RelationTypeEnum.getRelationTypeByText(object.getString("relation")));
-                modelRelationList.add(modelRelation);
-            }
-
-            JSONArray result = modelItemService.setModelRelation(oid, modelRelationList);
-
-            return ResultUtils.success(result);
-
+                                @RequestBody JSONObject jsonObject,
+                                HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        String uid = session.getAttribute("uid").toString();
+        if (uid == null) {
+            return ResultUtils.error(-2, "未登录");
         }
+        JSONArray relations = jsonObject.getJSONArray("relations");
+        List<ModelRelation> modelRelationList = new ArrayList<>();
+
+        for (int i = 0; i < relations.size(); i++) {
+            JSONObject object = relations.getJSONObject(i);
+            ModelRelation modelRelation = new ModelRelation();
+            modelRelation.setOid(object.getString("oid"));
+            modelRelation.setRelation(RelationTypeEnum.getRelationTypeByText(object.getString("relation")));
+            modelRelationList.add(modelRelation);
+        }
+
+        String result = modelItemService.setModelRelation(oid, modelRelationList,uid);
+
+        return ResultUtils.success(result);
+
+    }
 
 
 

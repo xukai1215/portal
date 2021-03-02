@@ -537,6 +537,137 @@ var info=new Vue({
             targetFile:{},
 
             showDataChose:false,
+
+            editDescription:false,
+
+            currentLocalization: {
+                localCode: "",
+                localName: "",
+                name: "",
+                description: "",
+            },
+            localIndex: 0,
+            languageAdd: {
+                show: false,
+                local: {
+
+                },
+            },
+            localizationList: [
+                {
+                    localCode: "en",
+                    localName: "English",
+                    name: "",
+                    description: "",
+                    selected: true,
+                }
+            ],
+            languageList:[
+                { value: 'af', label: 'Afrikaans' },
+                { value: 'sq', label: 'Albanian' },
+                { value: 'ar', label: 'Arabic' },
+                { value: 'hy', label: 'Armenian' },
+                { value: 'az', label: 'Azeri' },
+                { value: 'eu', label: 'Basque' },
+                { value: 'be', label: 'Belarusian' },
+                { value: 'bg', label: 'Bulgarian' },
+                { value: 'ca', label: 'Catalan' },
+                { value: 'zh', label: 'Chinese' },
+                { value: 'hr', label: 'Croatian' },
+                { value: 'cs', label: 'Czech' },
+                { value: 'da', label: 'Danish' },
+                { value: 'dv', label: 'Divehi' },
+                { value: 'nl', label: 'Dutch' },
+                { value: 'en', label: 'English' },
+                { value: 'eo', label: 'Esperanto' },
+                { value: 'et', label: 'Estonian' },
+                { value: 'mk', label: 'FYRO Macedonian' },
+                { value: 'fo', label: 'Faroese' },
+                { value: 'fa', label: 'Farsi' },
+                { value: 'fi', label: 'Finnish' },
+                { value: 'fr', label: 'French' },
+                { value: 'gl', label: 'Galician' },
+                { value: 'ka', label: 'Georgian' },
+                { value: 'de', label: 'German' },
+                { value: 'el', label: 'Greek' },
+                { value: 'gu', label: 'Gujarati' },
+                { value: 'he', label: 'Hebrew' },
+                { value: 'hi', label: 'Hindi' },
+                { value: 'hu', label: 'Hungarian' },
+                { value: 'is', label: 'Icelandic' },
+                { value: 'id', label: 'Indonesian' },
+                { value: 'it', label: 'Italian' },
+                { value: 'ja', label: 'Japanese' },
+                { value: 'kn', label: 'Kannada' },
+                { value: 'kk', label: 'Kazakh' },
+                { value: 'kok', label: 'Konkani' },
+                { value: 'ko', label: 'Korean' },
+                { value: 'ky', label: 'Kyrgyz' },
+                { value: 'lv', label: 'Latvian' },
+                { value: 'lt', label: 'Lithuanian' },
+                { value: 'ms', label: 'Malay' },
+                { value: 'mt', label: 'Maltese' },
+                { value: 'mi', label: 'Maori' },
+                { value: 'mr', label: 'Marathi' },
+                { value: 'mn', label: 'Mongolian' },
+                { value: 'ns', label: 'Northern Sotho' },
+                { value: 'nb', label: 'Norwegian' },
+                { value: 'ps', label: 'Pashto' },
+                { value: 'pl', label: 'Polish' },
+                { value: 'pt', label: 'Portuguese' },
+                { value: 'pa', label: 'Punjabi' },
+                { value: 'qu', label: 'Quechua' },
+                { value: 'ro', label: 'Romanian' },
+                { value: 'ru', label: 'Russian' },
+                { value: 'se', label: 'Sami' },
+                { value: 'sa', label: 'Sanskrit' },
+                { value: 'sr', label: 'Serbian' },
+                { value: 'sk', label: 'Slovak' },
+                { value: 'sl', label: 'Slovenian' },
+                { value: 'es', label: 'Spanish' },
+                { value: 'sw', label: 'Swahili' },
+                { value: 'sv', label: 'Swedish' },
+                { value: 'syr', label: 'Syriac' },
+                { value: 'tl', label: 'Tagalog' },
+                { value: 'ta', label: 'Tamil' },
+                { value: 'tt', label: 'Tatar' },
+                { value: 'te', label: 'Telugu' },
+                { value: 'th', label: 'Thai' },
+                { value: 'ts', label: 'Tsonga' },
+                { value: 'tn', label: 'Tswana' },
+                { value: 'tr', label: 'Turkish' },
+                { value: 'uk', label: 'Ukrainian' },
+                { value: 'ur', label: 'Urdu' },
+                { value: 'uz', label: 'Uzbek' },
+                { value: 'vi', label: 'Vietnamese' },
+                { value: 'cy', label: 'Welsh' },
+                { value: 'xh', label: 'Xhosa' },
+                { value: 'zu', label: 'Zulu' },
+            ],
+
+            editReference:false,
+            editArticleDialog:false,
+
+            showUploadArticleDialog:false,
+
+            showUploadedArticleDialog:false,
+
+            articleUploading:{
+                title:'',
+                authors:[],
+                journal:'',
+                pageRange:'',
+                date:2019,
+                doi:'',
+                status:'',
+                link:'',
+            },
+
+            doiLoading:false,
+
+            doi:'',
+
+            dynamicTable:{},
         }
     },
     methods: {
@@ -1202,15 +1333,490 @@ var info=new Vue({
                 class2:this.cls2,
             };
             $.post("/modelItem/updateClass",data,(result)=>{
-                this.$alert("Change classification successfully!", 'Success', {
-                    type: 'success',
-                    confirmButtonText: 'OK',
-                    callback: action => {
-                        window.location.reload();
-                    }
-                });
+                if(data=='suc'){
+                    this.$alert("Change classification successfully!", 'Success', {
+                        type: 'success',
+                        confirmButtonText: 'OK',
+                        callback: action => {
+                            window.location.reload();
+                        }
+                    });
+                }else if(data=='version'){
+                    this.$alert("Your edit has been submit, please wait for the contributor to handle it.", 'Success', {
+                        type: 'success',
+                        confirmButtonText: 'OK',
+                        callback: action => {
+                            window.location.reload();
+                        }
+                    })
+                }
+
+
             })
         },
+
+        addLocalization() {
+            this.languageAdd.show = true;
+        },
+
+        //description
+        confirmAddLocal() {
+
+            if (this.languageAdd.local.label == undefined) {
+                this.$message({
+                    message: 'Please selcet a language!',
+                    type: 'warning'
+                });
+                return;
+            }
+            for (i = 0; i < this.localizationList.length; i++) {
+                let localization = this.localizationList[i];
+                if (localization.localName == this.languageAdd.local.label) {
+                    this.$message({
+                        message: 'This language already exists!',
+                        type: 'warning'
+                    });
+                    return;
+                }
+            }
+
+            let newLocalization = {
+                localCode: this.languageAdd.local.value,
+                localName: this.languageAdd.local.label,
+                name: "",
+                description: "",
+            };
+            this.localizationList.push(newLocalization);
+            this.languageAdd.local = {};
+
+            this.changeLocalization(newLocalization);
+        },
+        cancelAddLocal() {
+            this.languageAdd.show = false;
+        },
+        deleteLocalization(row) {
+            this.$confirm('Do you want to delete <b>' + row.localName + '</b> description?', 'Warning', {
+                dangerouslyUseHTMLString: true,
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No',
+                type: 'warning'
+            }).then(() => {
+
+                for (i = 0; i < this.localizationList.length; i++) {
+                    let localization = this.localizationList[i]
+                    if (localization.localName == row.localName) {
+                        this.localizationList.splice(i, 1);
+                        break;
+                    }
+                }
+                if (this.localizationList.length > 0) {
+                    this.changeLocalization(this.localizationList[0]);
+                } else {
+                    this.changeLocalization(null);
+                }
+
+                this.$message({
+                    type: 'success',
+                    message: 'Delete ' + row.localName + ' successfully!',
+                });
+            }).catch(() => {
+
+            });
+
+        },
+        changeLocalization(row) {
+            if (row == null) {
+                this.currentLocalization = {
+                    localCode: "",
+                    localName: "",
+                    name: "",
+                    description: "",
+                };
+                tinymce.activeEditor.setContent("");
+                // tinymce.undoManager.clear();
+            } else {
+                for (i = 0; i < this.localizationList.length; i++) {
+                    this.$set(this.localizationList[i], "selected", false);
+                    if (this.currentLocalization.localName == this.localizationList[i].localName) {
+                        this.localizationList[i].name = this.currentLocalization.name;
+                        this.localizationList[i].description = tinymce.activeEditor.getContent();
+                        break;
+                    }
+                }
+                this.$set(row, "selected", true);
+                this.currentLocalization = row;
+                tinymce.activeEditor.setContent(row.description);
+                // tinymce.undoManager.clear();
+            }
+        },
+        getDescription(){
+            this.editDescription = true
+            axios.get('/modelItem/getDescription/'+this.modelOid
+            ).then(
+                res => {
+                    let data = res.data.data
+                    initTinymce('textarea#conceptText')
+                    this.localizationList = data
+                    let interval = setInterval(() => {
+                        this.changeLocalization(this.localizationList[0])
+                        clearInterval(interval);
+                    }, 1000);
+                }
+            )
+        },
+
+        submitDescription(){
+            for (i = 0; i < this.localizationList.length; i++) {
+                if (this.currentLocalization.localName == this.localizationList[i].localName) {
+                    this.localizationList[i].name = this.currentLocalization.name;
+                    this.localizationList[i].description = tinymce.activeEditor.getContent();
+                    break;
+                }
+            }
+
+            let data = {
+                oid:this.modelOid,
+                localization:JSON.stringify(this.localizationList)
+            }
+
+            $.ajax({
+                type:'post',
+                url:'/modelItem/updateDesctription',
+                data: data,
+                // dataType: "json",
+                // accept: 'application/json',
+                success:(res)=>{
+                    let data = res.data
+                    if(data=='suc'){
+                        this.$alert("Change description successfully!", 'Success', {
+                            type: 'success',
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                window.location.reload();
+                            }
+                        })
+                    }else if(data=='version'){
+                        this.$alert("Your edit has been submit, please wait for the contributor to handle it.", 'Success', {
+                            type: 'success',
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                window.location.reload();
+                            }
+                        })
+                    }
+
+                }
+            })
+            // $.post('/modelItem/updateDesctription',data).then(
+            //     (result)=> {
+            //
+            //     }
+            // )
+        },
+
+        getReference(){
+            this.editReference = true
+
+            axios.get('/modelItem/getReference/'+this.modelOid).then(
+                res =>{
+                    let references = res.data.data
+                    Vue.nextTick(()=>{
+                        if ( $.fn.dataTable.isDataTable( '#dynamic-table' ) ) {
+                            this.dynamicTable = $('#dynamic-table').DataTable();
+                        }
+                        else {
+                            this.dynamicTable = $('#dynamic-table').DataTable({
+                                //"aaSorting": [[ 0, "asc" ]],
+                                "paging": false,
+                                // "ordering":false,
+                                "info": false,
+                                "searching": false,
+                            });
+                        }
+
+
+                        this.dynamicTable.clear().draw();
+                        for (i = 0; i < references.length; i++) {
+                            var ref = references[i];
+                            this.dynamicTable.row.add([
+                                ref.title,
+                                ref.author,
+                                ref.date,
+                                ref.journal,
+                                ref.volume,
+                                ref.pages,
+                                ref.links,
+                                ref.doi,
+                                "<center><a href='javascript:;' class='fa fa-times refClose' style='color:red'></a></center>"]).draw();
+                        }
+                    })
+
+            }
+            )
+
+
+        },
+
+        searchDoi(){
+            if(this.doi == ''){
+                this.$alert('Please input the DOI', 'Tip', {
+                        type:"warning",
+                        confirmButtonText: 'OK',
+                        callback: ()=>{
+                            return
+                        }
+                    }
+                );
+            }else{
+                this.doiLoading = true
+                // if(this.doi===this.lastDoi)
+                //     setTimeout(()=>{
+                //         this.showUploadedArticleDialog=true;
+                //         this.doiLoading = false;
+                //     },200)
+                // this.lastDoi=this.doi;
+                $.ajax({
+                    type: "POST",
+                    url: "/modelItem/searchByDOI",
+                    data: {
+                        doi: this.doi,
+                        modelOid:this.modelOid
+                    },
+                    cache: false,
+                    async: true,
+                    success: (res) => {
+                        if(res.code==-1) {
+                            this.$alert('Please login first!', 'Error', {
+                                type:"error",
+                                confirmButtonText: 'OK',
+                                callback: action => {
+                                    window.location.href = "/user/login";
+                                }
+                            });
+                        }
+                        data=res.data;
+                        this.doiLoading = false;
+                        if (data.find == -1) {
+                            this.$alert('Failed to connect, please try again!', 'Tip', {
+                                    type:"warning",
+                                    confirmButtonText: 'OK',
+                                    callback: ()=>{
+                                        return
+                                    }
+                                }
+                            );
+                        }else if(data.find==0){
+                            this.$alert('Find no result, check the DOI you have input or fill information manually.', 'Tip', {
+                                    type:"warning",
+                                    confirmButtonText: 'OK',
+                                    callback: ()=>{
+                                        return
+                                    }
+                                }
+                            );
+                        }
+                        else if(data.find==1) {
+
+                            this.showUploadArticleDialog = true;
+                            this.articleUploading = data.article;
+
+                        }else if(data.find==2){
+                            this.showUploadedArticleDialog=true;
+
+                        }
+
+                    },
+                    error: (data) => {
+                        this.doiLoading = false;
+                        $("#doi_searchBox").removeClass("spinner")
+                        this.$alert('Failed to connect, please try again!', 'Tip', {
+                                type:"warning",
+                                confirmButtonText: 'OK',
+                                callback: ()=>{
+                                    return
+                                }
+                            }
+                        );
+                        $("#doiDetails").css("display", "none");
+                        $("#doiTitle").val("")
+                    }
+                })
+            }
+        },
+
+        updateArticleConfirmClick(){
+            // console.log(this.articleToBack);
+            var tags = $('#refAuthor').tagEditor('getTags')[0].tags;
+            for (i = 0; i < tags.length; i++) { $('#articleAuthor').tagEditor('removeTag', tags[i]); }
+            if(tags.length<1||$("#refTitle").val()==''){
+                this.$alert('Please enter the Title and at least one Author.', 'Tip', {
+                        type:"warning",
+                        confirmButtonText: 'OK',
+                        callback: ()=>{
+                            return
+                        }
+                    }
+                );
+                return;
+            }
+
+            let tags1 = $('#refAuthor').tagEditor('getTags')[0].tags;
+            for (i = 0; i < tags1.length; i++) { $('#refAuthor').tagEditor('removeTag', tags1[i]); }
+            if (tags1.length>0&&$("#refTitle").val()!='') {
+                this.dynamicTable.row.add([
+                    $("#refTitle").val(),
+                    tags1,
+                    $("#refDate").val(),
+                    $("#refJournal").val(),
+                    $("#volumeIssue").val(),
+                    $("#refPages").val(),
+                    $("#refLink").val(),
+                    $("#doiTitle").val(),
+                    "<center><a href='javascript:;' class='fa fa-times refClose' style='color:red'></a></center>"]).draw();
+
+                $("#dynamic-table").css("display", "block")
+                $("#refinfo").modal("hide")
+                $("#refTitle").val("")
+                var tags = $('#refAuthor').tagEditor('getTags')[0].tags;
+                for (i = 0; i < tags.length; i++) {
+                    $('#refAuthor').tagEditor('removeTag', tags[i]);
+                }
+                $("#refDate").val("")
+                $("#volumeIssue").val(""),
+                    $("#refJournal").val("")
+                $("#refPages").val("")
+                $("#doiTitle").val("")
+                $("#refLink").val("")
+            }
+
+            this.editArticleDialog = false
+            //调用$("#modal_save").click完成
+
+        },
+
+        cancelSearch() {
+            this.editArticleDialog = false
+        },
+
+        articleDoiUploadConfirm(status) {
+            this.articleToBack = this.articleUploading;
+
+            Vue.nextTick(()=>{
+                $("#refTitle").val(this.articleToBack.title);
+                $("#refJournal").val(this.articleToBack.journal);
+                $("#volumeIssue").val(this.articleToBack.volume);
+                $("#refPages").val(this.articleToBack.pageRange);
+                $("#refDate").val(this.articleToBack.date);
+                $("#refLink").val(this.articleToBack.link);
+                if ($("#refAuthor").nextAll().length == 0) {//如果不存在tageditor,则创建一个
+                    Vue.nextTick(() => {
+                        // $("#refAuthor").tagEditor({
+                        //     forceLowercase: false
+                        // })
+                        $('#refAuthor').tagEditor('destroy');
+                        $('#refAuthor').tagEditor({
+                            initialTags: this.articleToBack.authors,
+                            forceLowercase: false,
+                        });
+
+                    })
+                }else{
+                    $('#refAuthor').tagEditor('destroy');
+                    $('#refAuthor').tagEditor({
+                        initialTags: this.articleToBack.authors,
+                        forceLowercase: false,
+                    });
+                }
+
+            })
+            this.showUploadArticleDialog = false;
+            // this.articleToBack.status = status;
+        },
+
+        addArticleClick(){
+            this.editArticleDialog = true;
+            this.addorEdit='Add';
+            $("#refTitle").val('');
+
+            if ($("#refAuthor").nextAll().length == 0)//如果不存在tageditor,则创建一个
+                Vue.nextTick(() => {
+                    $("#refAuthor").tagEditor({
+                        forceLowercase: false
+                    })
+                })
+
+            $('#refAuthor').tagEditor('destroy');
+            $('#refAuthor').tagEditor({
+                initialTags:  [''],
+                forceLowercase: false,
+            });
+            $("#refJournal").val('');
+            $("#volumeIssue").val('');
+            $("#refPages").val('');
+            $("#refDate").val('');
+            $("#refLink").val('');
+
+            this.doi ='';
+        },
+
+        submitReference(){
+            let references = new Array();
+
+            var ref_lines = $("#dynamic-table tr");
+            for (i = 1; i < ref_lines.length; i++) {
+                var ref_prop = ref_lines.eq(i).children("td");
+                if (ref_prop != 0) {
+                    var ref = {};
+                    ref.title = ref_prop.eq(0).text();
+                    if (ref.title == "No data available in table")
+                        break;
+                    ref.author = ref_prop.eq(1).text().split(",");
+                    ref.date = ref_prop.eq(2).text();
+                    ref.journal = ref_prop.eq(3).text();
+                    ref.volume = ref_prop.eq(4).text();
+                    ref.pages = ref_prop.eq(5).text();
+                    ref.links = ref_prop.eq(6).text();
+                    ref.doi = ref_prop.eq(7).text();
+                    references.push(ref);
+                }
+            }
+
+            let data = {
+                oid:this.modelOid,
+                reference:JSON.stringify(references)
+            }
+
+            $.ajax({
+                type:'post',
+                url:'/modelItem/updateReference',
+                data: data,
+                // dataType: "json",
+                // accept: 'application/json',
+                success:(res)=>{
+                    let data = res.data
+                    if(data=='suc'){
+                        this.$alert("Change references successfully!", 'Success', {
+                            type: 'success',
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                window.location.reload();
+                            }
+                        })
+                    }else if(data=='version'){
+                        this.$alert("Your edit has been submit, please wait for the contributor to handle it.", 'Success', {
+                            type: 'success',
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                window.location.reload();
+                            }
+                        })
+                    }
+
+                }
+            })
+
+        },
+
         isCurrentItem(row){
             let urls = window.location.href.split('/');
             let oid = urls[urls.length-1].substring(0,36);
@@ -2085,23 +2691,35 @@ var info=new Vue({
                 contentType:contentType,
                 async: true,
                 success: (result) => {
-                    this.$alert('Success!', 'Tip', {
-                        type:'success',
-                        confirmButtonText: 'OK',
-                        callback: action => {
-                            this.dialogTableVisible = false;
-                            if(this.relateType === "modelItem"){
-                                this.relatedModelItems = result.data;
-                                this.setRelatedModelItemsPage();
-                                if(this.modelRelationGraphShow){
-                                    this.generateModelRelationGraph();
-                                }
+                    let info = result.data
+                    if(info === 'suc'){
+                        this.$alert('Success!', 'Tip', {
+                            type:'success',
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                this.dialogTableVisible = false;
+                                if(this.relateType === "modelItem"){
+                                    this.relatedModelItems = result.data;
+                                    this.setRelatedModelItemsPage();
+                                    if(this.modelRelationGraphShow){
+                                        this.generateModelRelationGraph();
+                                    }
 
-                            }else {
+                                }else {
+                                    window.location.reload();
+                                }
+                            }
+                        });
+                    }else if(info=='version'){
+                        this.$alert("Your edit has been submit, please wait for the contributor to handle it.", 'Success', {
+                            type: 'success',
+                            confirmButtonText: 'OK',
+                            callback: action => {
                                 window.location.reload();
                             }
-                        }
-                    });
+                        })
+                    }
+
 
                 },
                 error: (json) => {
@@ -2159,14 +2777,26 @@ var info=new Vue({
                 contentType: false,
                 async: true,
                 success: (result) => {
-                    this.$alert('Success!', 'Tip', {
-                        type:'success',
-                        confirmButtonText: 'OK',
-                        callback: action => {
-                            this.dialogTableVisible = false;
-                            window.location.reload();
-                        }
-                    });
+                    let info = result.data
+                    if(info === 'suc'){
+                        this.$alert('Success!', 'Tip', {
+                            type:'success',
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                this.dialogTableVisible = false;
+                                window.location.reload();
+                            }
+                        });
+                    }else if(info === 'version'){
+                        this.$alert("Your edit has been submit, please wait for the contributor to handle it.", 'Success', {
+                            type: 'success',
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                window.location.reload();
+                            }
+                        })
+                    }
+
 
                 },
                 error: (json) => {
@@ -2501,6 +3131,7 @@ var info=new Vue({
     },
 
     mounted() {
+        let vthis = this
 
         this.modelInfo = modelInfo;
         this.relatedModelItems = modelItemList;
@@ -2637,6 +3268,15 @@ var info=new Vue({
                 break;
             }
         }
+
+        $(document).on("click", ".refClose", function () {
+            vthis.dynamicTable.row($(this).parents("tr")).remove().draw();
+            //$(this).parents("tr").eq(0).remove();
+            console.log($("tbody tr"));
+            if ($("tbody tr").eq(0)[0].innerText == "No data available in table") {
+                $("#dynamic-table").css("display", "none")
+            }
+        });
     }
 })
 
@@ -2652,3 +3292,38 @@ $(function () {
     );
 
 })
+
+function initTinymce(idStr){
+    tinymce.remove(idStr)
+    tinymce.init({
+        selector: idStr,
+        height: 350,
+        plugins: [
+            "advcode advlist autolink codesample image imagetools ",
+            " lists link media noneditable powerpaste preview",
+            " searchreplace table visualblocks wordcount"
+        ],
+        toolbar:
+            "undo redo | fontselect | fontsizeselect | bold italic underline | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist | link image",
+        file_picker_types: 'image',
+        file_picker_callback: function (cb, value, meta) {
+            var input = document.createElement('input');
+            input.setAttribute('type', 'file');
+            input.setAttribute('accept', 'image/*');
+            input.onchange = function () {
+                var file = input.files[0];
+
+                var reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = function () {
+                    var img = reader.result.toString();
+                    cb(img, {title: file.name});
+                }
+            };
+            input.click();
+        },
+        images_dataimg_filter: function (img) {
+            return img.hasAttribute('internal-blob');
+        }
+    });
+}
