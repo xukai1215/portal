@@ -359,7 +359,37 @@ var createModelItem = Vue.extend({
             dynamicTable:{},
 
             startDraft:0,
+
+            metadata:{
+                overview:{
+                    name:'',
+                    version:'',
+                    modelType:'',
+                    modelDomain:[],
+                    scale:'',
+                },
+                design:{
+                    purpose:'',
+                    principles:[],
+                    incorporatedModels:[],
+                    framework:'',
+                    process:[],
+                },
+                usage:{
+                    information:'',
+                    initialization:'',
+                    hardware:'',
+                    software:'',
+                    inputs:[],
+                    outputs:[],
+                }
+            },
+
+            metaDataTab:'first',
+
         }
+
+
 
     },
 
@@ -610,6 +640,9 @@ var createModelItem = Vue.extend({
 
                 modelItemObj.localizationList.push(this.currentLocalization);
             }
+
+            modelItemObj.metadata = this.getMetaData()
+
             modelItemObj.references = new Array();
             var ref_lines = $("#dynamic-table tr");
             for (i = 1; i < ref_lines.length; i++) {
@@ -694,6 +727,89 @@ var createModelItem = Vue.extend({
             this.insertInfo(draftContent)
         },
 
+        insertMetaData(metadata){
+            let overview = metadata.overview
+            let design = metadata.design
+            let usage = metadata.usage
+
+            this.metadata.overview.name = overview.name
+            this.metadata.overview.version = overview.version
+            this.metadata.overview.modelType = overview.modelType
+            this.metadata.overview.scale = overview.scale
+
+            this.metadata.design.purpose = design.purpose
+            this.metadata.design.framework = design.framework
+
+            this.metadata.usage.information = usage.information
+            this.metadata.usage.initialization = usage.initialization
+            this.metadata.usage.hardware = usage.hardware
+            this.metadata.usage.software = usage.software
+
+            Vue.nextTick(()=>{
+                $('#modelDomainInput').tagEditor('destroy');
+                $('#modelDomainInput').tagEditor({
+                    initialTags: overview.modelDomain ,
+                    forceLowercase: false,
+                });
+                $('#principlesInput').tagEditor('destroy');
+                $('#principlesInput').tagEditor({
+                    initialTags: design.principles ,
+                    forceLowercase: false,
+                });
+                $('#incorporatedModelsInput').tagEditor('destroy');
+                $('#incorporatedModelsInput').tagEditor({
+                    initialTags: design.incorporatedModels ,
+                    forceLowercase: false,
+                });
+                $('#processInput').tagEditor('destroy');
+                $('#processInput').tagEditor({
+                    initialTags: design.process ,
+                    forceLowercase: false,
+                });
+                $('#inputsInput').tagEditor('destroy');
+                $('#inputsInput').tagEditor({
+                    initialTags: usage.inputs ,
+                    forceLowercase: false,
+                });
+                $("#outputsInput").tagEditor('destroy')
+                $("#outputsInput").tagEditor({
+                    initialTags: usage.outputs ,
+                    forceLowercase: false,
+                })
+            })
+
+
+
+        },
+
+        getMetaData(){
+            let metadata = {
+                'overview':{},
+                'design':{},
+                'usage':{},
+            }
+            metadata.overview.name = this.metadata.overview.name
+            metadata.overview.version = this.metadata.overview.version
+            metadata.overview.modelType = this.metadata.overview.modelType
+            metadata.overview.modelDomain = $("#modelDomainInput").val().split(",");
+            metadata.overview.scale = this.metadata.overview.scale
+
+            metadata.design.purpose = this.metadata.design.purpose
+            metadata.design.principles = $("#principlesInput").val().split(",");
+            metadata.design.incorporatedModels = $("#incorporatedModelsInput").val().split(",");
+            metadata.design.framework = this.metadata.design.framework
+            metadata.design.process = $("#processInput").val().split(",");
+
+            metadata.usage.information = this.metadata.usage.information
+            metadata.usage.initialization = this.metadata.usage.initialization
+            metadata.usage.hardware = this.metadata.usage.hardware
+            metadata.usage.software = this.metadata.usage.software
+            metadata.usage.inputs = $("#inputsInput").val().split(",");
+            metadata.usage.outputs = $("#outputsInput").val().split(",");
+
+            return metadata
+        },
+
         insertInfo(basicInfo){
             this.cls = basicInfo.classifications2;
             this.cls = this.cls == null?[]:this.cls;
@@ -773,6 +889,8 @@ var createModelItem = Vue.extend({
                 }
             }
 
+            let metadata = basicInfo.metadata
+            this.insertMetaData(metadata)
 
             $("#nameInput").val(basicInfo.name);
             $("#descInput").val(basicInfo.description);
@@ -825,6 +943,7 @@ var createModelItem = Vue.extend({
                 forceLowercase: false,
                 // placeholder: 'Enter alias ...'
             });
+
 
             // //detail
             // tinyMCE.remove(tinyMCE.editors[0])
@@ -1295,6 +1414,19 @@ var createModelItem = Vue.extend({
             }
             return null;
 
+        },
+
+        metaDataClick(tab){
+            let name = tab
+            // if($('#principlesInput').val()){
+            //     $('#principlesInput').tagEditor('destroy');
+            //     $('#principlesInput').tagEditor({
+            //         initialTags: overview.principles ,
+            //         forceLowercase: false,
+            //     });
+            // }
+
+
         }
 
     },
@@ -1542,10 +1674,25 @@ var createModelItem = Vue.extend({
         $('#tagInput').tagEditor({
             forceLowercase: false
         });
-         $('#aliasInput').tagEditor({
+        $('#aliasInput').tagEditor({
             forceLowercase: false
         });
-        $("#refAuthor").tagEditor({
+        $('#modelDomainInput').tagEditor({
+            forceLowercase: false
+        });
+        $('#principlesInput').tagEditor({
+            forceLowercase: false
+        });
+        $('#incorporatedModelsInput').tagEditor({
+            forceLowercase: false
+        });
+        $('#processInput').tagEditor({
+            forceLowercase: false
+        });
+        $('#inputsInput').tagEditor({
+            forceLowercase: false
+        });
+        $("#outputsInput").tagEditor({
             forceLowercase: false
         })
 

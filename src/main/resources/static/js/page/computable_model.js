@@ -421,6 +421,43 @@ new Vue({
             })
         },
 
+        deployToGivenServer(){
+            this.contentBeforeDeploy=false;
+            this.contentDeploying=true;
+            this.footerBeforeDeploy=false;
+            const hrefs=window.location.href.split("/");
+            const oid=hrefs[hrefs.length-1];
+            let serverInfo = {
+                'id':oid,
+                'ip':'172.21.212.103',
+                'port':'8060',
+            }
+            $.ajax({
+                type:'post',
+                url:'/computableModel/deployToGivenServer',
+                data:serverInfo,
+                success:(result)=>{
+                    if(result.code == -1){
+                        alert("Please login first!")
+                        window.sessionStorage.setItem("history", window.location.href);
+                        window.location.href = "/user/login"
+                    } else{
+                        setTimeout(() => {
+                            this.contentDeploying = false;
+                            if (result.data == 'suc') {
+                                this.contentAfterDeploy_suc = true;
+                            }
+                            else {
+                                this.contentAfterDeploy_fail = true;
+                            }
+                            this.footerAfterDeploy = true;
+                        },300)
+                    }
+                }
+            }
+            )
+        },
+
         invoke(){
             const href=window.location.href;
 

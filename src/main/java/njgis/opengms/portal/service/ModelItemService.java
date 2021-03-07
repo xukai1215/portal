@@ -530,6 +530,7 @@ public class ModelItemService {
         modelItem.setCreateTime(now);
         modelItem.setLastModifyTime(now);
         modelItem.setStatus(modelItemAddDTO.getStatus());
+        modelItem.setMetadata(modelItemAddDTO.getMetaData());
         modelItem.setAuthor(author);
         modelItem.setOid(UUID.randomUUID().toString());
         modelItem.setDetail("");
@@ -1021,6 +1022,7 @@ public class ModelItemService {
             modelItemUpdateDTO.setModelRelationList(modelRelationListNew);//
             modelItemUpdateDTO.setRelate(modelItem.getRelate());
             modelItemUpdateDTO.setRelatedData(modelItem.getRelatedData());
+            modelItemUpdateDTO.setMetaData(modelItem.getMetadata());
 
             update(modelItemUpdateDTO,user);
 
@@ -1277,6 +1279,7 @@ public class ModelItemService {
             modelItemUpdateDTO.setClassifications2(modelItem.getClassifications2());
             modelItemUpdateDTO.setKeywords(modelItem.getKeywords());
             modelItemUpdateDTO.setReferences(modelItem.getReferences());
+            modelItemUpdateDTO.setMetaData(modelItem.getMetadata());
             modelItemUpdateDTO.setModelRelationList(modelItem.getModelRelationList());//
             if(type.equals("dataItem")){
                 modelItemUpdateDTO.setRelatedData(relations);
@@ -1386,6 +1389,7 @@ public class ModelItemService {
             modelItemUpdateDTO.setModelRelationList(modelItem.getModelRelationList());//
             modelItemUpdateDTO.setRelate(relate);
             modelItemUpdateDTO.setRelatedData(modelItem.getRelatedData());
+            modelItemUpdateDTO.setMetaData(modelItem.getMetadata());
 
             update(modelItemUpdateDTO,user);
 

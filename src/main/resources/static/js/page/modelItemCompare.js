@@ -61,6 +61,55 @@ new Vue({
             references_o:[],
             references_n:[],
 
+            metaDataTab:'first',
+            metadata_o:{
+                overview:{
+                    name:'',
+                    version:'',
+                    modelType:'',
+                    modelDomain:[],
+                    scale:'',
+                },
+                design:{
+                    purpose:'',
+                    principles:[],
+                    incorporatedModels:[],
+                    framework:'',
+                    process:[],
+                },
+                usage:{
+                    information:'',
+                    initialization:'',
+                    hardware:'',
+                    software:'',
+                    inputs:[],
+                    outputs:[],
+                }
+            },
+            metadata_n:{
+                overview:{
+                    name:'',
+                    version:'',
+                    modelType:'',
+                    modelDomain:[],
+                    scale:'',
+                },
+                design:{
+                    purpose:'',
+                    principles:[],
+                    incorporatedModels:[],
+                    framework:'',
+                    process:[],
+                },
+                usage:{
+                    information:'',
+                    initialization:'',
+                    hardware:'',
+                    software:'',
+                    inputs:[],
+                    outputs:[],
+                }
+            },
         }
     },
     methods: {
@@ -519,6 +568,9 @@ new Vue({
 
         this.references_o = references
         this.references_n = references2
+
+        this.metadata_o = modelInfo.metadata
+        this.metadata_n = modelInfo2.metadata
 
         let currenturl=window.location.href;
         let dataitemid=currenturl.split("/");

@@ -219,7 +219,7 @@ public class ComputableModelRestController {
     }
 
     @RequestMapping(value = "/deploy",method = RequestMethod.POST)
-    JsonResult deploy(@RequestParam("id")String id,@RequestParam("modelServer")String modelServer) throws IOException {
+    JsonResult deployToGivenServer(@RequestParam("id")String id,@RequestParam("modelServer")String modelServer) throws IOException {
         String result=computableModelService.deploy(id,modelServer);
         if(result!=null){
             return ResultUtils.success(result);
@@ -228,6 +228,25 @@ public class ComputableModelRestController {
             return ResultUtils.error(-1,"deploy failed.");
         }
     }
+
+    @RequestMapping(value = "/deployToGivenServer",method = RequestMethod.POST)
+    JsonResult deploy(@RequestParam("id")String id,@RequestParam("ip")String ip,@RequestParam("port")String port,HttpServletRequest request) throws IOException {
+        HttpSession session=request.getSession();
+
+        if(session.getAttribute("uid")==null){
+            return ResultUtils.error(-1,"no login");
+        }
+        String userName=session.getAttribute("uid").toString();
+
+        String result=computableModelService.deployToGivenServer(id,ip,port);
+        if(result!=null){
+            return ResultUtils.success(result);
+        }
+        else {
+            return ResultUtils.success("failed");
+        }
+    }
+
 
 
     @RequestMapping (value = "/listByUserOid",method = RequestMethod.GET)

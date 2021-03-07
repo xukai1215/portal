@@ -668,6 +668,35 @@ var info=new Vue({
             doi:'',
 
             dynamicTable:{},
+
+            metaDataTab:'first',
+
+            metadata:{
+                overview:{
+                    name:'',
+                    version:'',
+                    modelType:'',
+                    modelDomain:[],
+                    scale:'',
+                },
+                design:{
+                    purpose:'',
+                    principles:[],
+                    incorporatedModels:[],
+                    framework:'',
+                    process:[],
+                },
+                usage:{
+                    information:'',
+                    initialization:'',
+                    hardware:'',
+                    software:'',
+                    inputs:[],
+                    outputs:[],
+                }
+            },
+
+            editMetadata:false,
         }
     },
     methods: {
@@ -1449,6 +1478,103 @@ var info=new Vue({
                 // tinymce.undoManager.clear();
             }
         },
+
+        insertMetaData(metadata){
+            let overview = metadata.overview
+            let design = metadata.design
+            let usage = metadata.usage
+
+            this.metadata.overview.name = overview.name
+            this.metadata.overview.version = overview.version
+            this.metadata.overview.modelType = overview.modelType
+            this.metadata.overview.scale = overview.scale
+
+            this.metadata.design.purpose = design.purpose
+            this.metadata.design.framework = design.framework
+
+            this.metadata.usage.information = usage.information
+            this.metadata.usage.initialization = usage.initialization
+            this.metadata.usage.hardware = usage.hardware
+            this.metadata.usage.software = usage.software
+
+            Vue.nextTick(()=>{
+                if ($("#modelDomainInput").nextAll().length != 0){
+                    $('#modelDomainInput').tagEditor('destroy');
+                }
+                $('#modelDomainInput').tagEditor({
+                    initialTags: overview.modelDomain ,
+                    forceLowercase: false,
+                });
+                if ($("#principlesInput").nextAll().length != 0){
+                    $('#principlesInput').tagEditor('destroy');
+                }
+                $('#principlesInput').tagEditor({
+                    initialTags: design.principles ,
+                    forceLowercase: false,
+                });
+                if ($("#incorporatedModelsInput").nextAll().length != 0){
+                    $('#incorporatedModelsInput').tagEditor('destroy');
+                }
+
+                $('#incorporatedModelsInput').tagEditor({
+                    initialTags: design.incorporatedModels ,
+                    forceLowercase: false,
+                });
+                if ($("#processInput").nextAll().length != 0){
+                    $('#processInput').tagEditor('destroy');
+                }
+                $('#processInput').tagEditor({
+                    initialTags: design.process ,
+                    forceLowercase: false,
+                });
+                if ($("#inputsInput").nextAll().length != 0){
+                     $('#inputsInput').tagEditor('destroy');
+                }
+                $('#inputsInput').tagEditor({
+                    initialTags: usage.inputs ,
+                    forceLowercase: false,
+                });
+                if ($("#outputsInput").nextAll().length != 0){
+                    $('#outputsInput').tagEditor('destroy');
+                }
+                $("#outputsInput").tagEditor({
+                    initialTags: usage.outputs ,
+                    forceLowercase: false,
+                })
+            })
+
+
+
+        },
+
+        getMetaData(){
+            let metadata = {
+                'overview':{},
+                'design':{},
+                'usage':{},
+            }
+            metadata.overview.name = this.metadata.overview.name
+            metadata.overview.version = this.metadata.overview.version
+            metadata.overview.modelType = this.metadata.overview.modelType
+            metadata.overview.modelDomain = $("#modelDomainInput").val().split(",");
+            metadata.overview.scale = this.metadata.overview.scale
+
+            metadata.design.purpose = this.metadata.design.purpose
+            metadata.design.principles = $("#principlesInput").val().split(",");
+            metadata.design.incorporatedModels = $("#incorporatedModelsInput").val().split(",");
+            metadata.design.framework = this.metadata.design.framework
+            metadata.design.process = $("#processInput").val().split(",");
+
+            metadata.usage.information = this.metadata.usage.information
+            metadata.usage.initialization = this.metadata.usage.initialization
+            metadata.usage.hardware = this.metadata.usage.hardware
+            metadata.usage.software = this.metadata.usage.software
+            metadata.usage.inputs = $("#inputsInput").val().split(",");
+            metadata.usage.outputs = $("#outputsInput").val().split(",");
+
+            return metadata
+        },
+
         getDescription(){
             this.editDescription = true
             axios.get('/modelItem/getDescription/'+this.modelOid
@@ -1463,6 +1589,52 @@ var info=new Vue({
                     }, 1000);
                 }
             )
+        },
+
+        getMetadata(){
+            this.editMetadata = true
+            axios.get('/modelItem/getMetadata/'+this.modelOid
+            ).then(
+                res => {
+                    let data = res.data.data
+                    this.insertMetaData(data)
+                }
+            )
+        },
+
+        submitMetadata(){
+            let data = {}
+            data.oid = this.modelOid
+            data.metadata = JSON.stringify(this.getMetaData())
+
+            $.ajax({
+                type:'post',
+                url:'/modelItem/updateMetadata',
+                data: data,
+                // dataType: "json",
+                // accept: 'application/json',
+                success:(res)=>{
+                    let data = res.data
+                    if(data=='suc'){
+                        this.$alert("Change description successfully!", 'Success', {
+                            type: 'success',
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                window.location.reload();
+                            }
+                        })
+                    }else if(data=='version'){
+                        this.$alert("Your edit has been submit, please wait for the contributor to handle it.", 'Success', {
+                            type: 'success',
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                window.location.reload();
+                            }
+                        })
+                    }
+
+                }
+            })
         },
 
         submitDescription(){
@@ -3135,6 +3307,7 @@ var info=new Vue({
 
         this.modelInfo = modelInfo;
         this.relatedModelItems = modelItemList;
+        this.metadata = modelInfo.metadata
         this.setRelatedModelItemsPage();
 
         this.lightenContributor = author

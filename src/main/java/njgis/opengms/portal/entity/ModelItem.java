@@ -2,6 +2,7 @@ package njgis.opengms.portal.entity;
 
 import lombok.Data;
 import njgis.opengms.portal.entity.support.ModelItemRelate;
+import njgis.opengms.portal.entity.support.ModelMetadata;
 import njgis.opengms.portal.entity.support.ModelRelation;
 import njgis.opengms.portal.entity.support.Reference;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -25,5 +26,7 @@ public class ModelItem extends Item {
     ModelItemRelate relate = new ModelItemRelate();
 
     List<ModelRelation> modelRelationList = new ArrayList<>();
+
+    ModelMetadata metadata = new ModelMetadata();
 
 }

@@ -190,6 +190,61 @@ a{
 
 }
 
+.wzhTable{
+    border: 1px solid #cccccc;
+
+}
+
+.wzhTable tr{
+    border: 1px solid #cccccc;
+    padding: 5px 10px;
+}
+
+.wzhTable th{
+    padding: 10px 10px;
+    min-width: 0;
+    box-sizing: border-box;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+    position: relative;
+    text-align: left;
+    border: 1px solid #e0e0e0;
+}
+
+.wzhTable .tableSubTitle{
+    width: 200px;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.wzhTable .tableContent{
+    width: 400px;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.wzhTable .cell{
+    text-overflow: ellipsis;
+    white-space: normal;
+    word-break: break-all;
+}
+
+.wzhTag{
+    background-color: #ecf5ff;
+    border-color: #d9ecff;
+    display: inline-block;
+    height: 30px;
+    padding: 0 10px;
+    line-height: 20px;
+    font-size: 12px;
+    color: #409EFF;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 4px;
+    box-sizing: border-box;
+    white-space: nowrap;
+    margin: 2px 3px;
+}
 
 @-webkit-keyframes clockwise{
 

@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import njgis.opengms.portal.entity.support.AuthorInfo;
 import njgis.opengms.portal.entity.support.Localization;
+import njgis.opengms.portal.entity.support.ModelMetadata;
 import njgis.opengms.portal.entity.support.Reference;
 
 import java.util.ArrayList;
@@ -39,5 +40,7 @@ public class ModelItemAddDTO {
     List<String> classifications2;
     List<String> keywords;
     List<Reference> references;
+
+    ModelMetadata metaData;
 
 }

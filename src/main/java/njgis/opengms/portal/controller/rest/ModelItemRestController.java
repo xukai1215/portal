@@ -14,16 +14,12 @@ import njgis.opengms.portal.entity.Classification;
 import njgis.opengms.portal.entity.ComputableModel;
 import njgis.opengms.portal.entity.ModelItem;
 import njgis.opengms.portal.entity.User;
-import njgis.opengms.portal.entity.support.AuthorInfo;
-import njgis.opengms.portal.entity.support.Localization;
-import njgis.opengms.portal.entity.support.ModelRelation;
-import njgis.opengms.portal.entity.support.Reference;
+import njgis.opengms.portal.entity.support.*;
 import njgis.opengms.portal.enums.RelationTypeEnum;
 import njgis.opengms.portal.service.*;
 import njgis.opengms.portal.utils.ResultUtils;
 import njgis.opengms.portal.utils.Utils;
 import org.apache.commons.io.IOUtils;
-import org.apache.tomcat.jni.Local;
 import org.dom4j.DocumentException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -176,6 +172,7 @@ public class ModelItemRestController {
             modelItemUpdateDTO.setModelRelationList(modelItem.getModelRelationList());
             modelItemUpdateDTO.setRelate(modelItem.getRelate());
             modelItemUpdateDTO.setRelatedData(modelItem.getRelatedData());
+            modelItemUpdateDTO.setMetadata(modelItem.getMetadata());
 
 
             modelItemService.update(modelItemUpdateDTO,uid);
@@ -227,6 +224,60 @@ public class ModelItemRestController {
             modelItemUpdateDTO.setRelate(modelItem.getRelate());
             modelItemUpdateDTO.setModelRelationList(modelItem.getModelRelationList());
             modelItemUpdateDTO.setRelatedData(modelItem.getRelatedData());
+            modelItemUpdateDTO.setMetadata(modelItem.getMetadata());
+
+            modelItemService.update(modelItemUpdateDTO,uid);
+
+            return ResultUtils.success("version");
+        }
+
+//        modelItem.setLocalizationList(localizationList);
+//        modelItemDao.save(modelItem);
+
+    }
+
+    @RequestMapping(value = "/updateMetadata", method = RequestMethod.POST)
+    public JsonResult updateMetadata(HttpServletRequest request){
+        HttpSession session=request.getSession();
+        String uid=session.getAttribute("uid").toString();
+        if(uid==null)
+        {
+            return ResultUtils.error(-2,"未登录");
+        }
+
+        String oid = request.getParameter("oid");
+        String metadataStr = request.getParameter("metadata");
+
+        JSONObject j_metadata = JSONObject.parseObject(metadataStr);
+        ModelMetadata metadata = JSONObject.toJavaObject(j_metadata, ModelMetadata.class);;
+
+        ModelItem modelItem = modelItemDao.findFirstByOid(oid);
+
+        String author = modelItem.getAuthor();
+
+        if(author.equals(uid)){
+            modelItem.setMetadata(metadata);
+            modelItemDao.save(modelItem);
+            return ResultUtils.success("suc");
+        }else{
+            ModelItemUpdateDTO modelItemUpdateDTO = new ModelItemUpdateDTO();
+            modelItemUpdateDTO.setOid(modelItem.getOid());
+            modelItemUpdateDTO.setName(modelItem.getName());
+            modelItemUpdateDTO.setAlias(modelItem.getAlias());
+            modelItemUpdateDTO.setUploadImage(modelItem.getImage());
+            modelItemUpdateDTO.setDescription(modelItem.getDescription());
+            modelItemUpdateDTO.setDetail(modelItem.getDetail());
+            modelItemUpdateDTO.setStatus(modelItem.getStatus());
+            modelItemUpdateDTO.setLocalizationList(modelItem.getLocalizationList());
+            modelItemUpdateDTO.setAuthorship(modelItem.getAuthorship());
+            modelItemUpdateDTO.setClassifications(modelItem.getClassifications());
+            modelItemUpdateDTO.setClassifications2(modelItem.getClassifications2());
+            modelItemUpdateDTO.setKeywords(modelItem.getKeywords());
+            modelItemUpdateDTO.setReferences(modelItem.getReferences());
+            modelItemUpdateDTO.setRelate(modelItem.getRelate());
+            modelItemUpdateDTO.setModelRelationList(modelItem.getModelRelationList());
+            modelItemUpdateDTO.setRelatedData(modelItem.getRelatedData());
+            modelItemUpdateDTO.setMetadata(metadata);
 
 
             modelItemService.update(modelItemUpdateDTO,uid);
@@ -280,6 +331,7 @@ public class ModelItemRestController {
             modelItemUpdateDTO.setRelate(modelItem.getRelate());
             modelItemUpdateDTO.setModelRelationList(modelItem.getModelRelationList());
             modelItemUpdateDTO.setRelatedData(modelItem.getRelatedData());
+            modelItemUpdateDTO.setMetadata(modelItem.getMetadata());
 
             modelItemService.update(modelItemUpdateDTO,uid);
 
@@ -433,6 +485,13 @@ public class ModelItemRestController {
         ModelItem modelItem = modelItemService.getByOid(id);
 
         return ResultUtils.success(modelItem.getLocalizationList());
+    }
+
+    @RequestMapping(value = "/getMetadata/{id}", method = RequestMethod.GET)
+    JsonResult getMetadata(@PathVariable("id") String id){
+        ModelItem modelItem = modelItemService.getByOid(id);
+
+        return ResultUtils.success(modelItem.getMetadata());
     }
 
     @RequestMapping(value = "/getReference/{id}", method = RequestMethod.GET)
