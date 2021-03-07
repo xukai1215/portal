@@ -581,7 +581,6 @@ var createModelItem = Vue.extend({
 
         //drafts
         onInputName(){
-            console.log(1)
             if(this.toCreate==1){
                 this.toCreate=0
                 this.startDraft=1

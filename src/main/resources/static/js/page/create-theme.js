@@ -1267,45 +1267,39 @@ var createTheme = Vue.extend({
             onFinish: function () {
                 alert('complete');
             },
-            onChange: function (currentIndex, newIndex, stepDirection) {
-                return true
-                // let that = this
-                // console.log(currentIndex)
-                //
-                // if (currentIndex === 0) {
-                //     if (stepDirection === "forward") {
-                //         if ($("#nameInput").val().length == 0) {
-                //             alert('Please Input Theme Name!');
-                //             return false;
-                //         } else {
-                //             return true;
-                //         }
-                //     }
-                // }
-                //
-                // else if (currentIndex === 1) {
-                //     for (let i = 0; i < that.themeObj.classinfo.length; i++) {
-                //         if (that.themeObj.classinfo[i].mcname == "" || (that.findFirstChildObj(that.themeObj.classinfo[i])).modelsoid.length==0) {
-                //             that.$alert("Please complete the information");
-                //             return false;
-                //         }
-                //     }
-                //     return true;
-                // }
-                //
-                // else if (currentIndex === 2) {
-                //     for (let i = 0; i < that.themeObj.dataClassInfo.length; i++) {
-                //         if (that.themeObj.dataClassInfo[i].dcname == "" || (that.findFirstChildObj(that.themeObj.dataClassInfo[i])).datasoid.length==0) {
-                //             that.$alert("Please complete the information");
-                //             return false;
-                //         }
-                //     }
-                //     return true
-                // }
-                //
-                // else if (currentIndex === 3) {
-                //     return true;
-                // }
+            onChange: (currentIndex, newIndex, stepDirection) => {
+                if (currentIndex === 0 && stepDirection === "forward") {
+                    if ($("#nameInput").val().length === 0) {
+                        alert('Please Input Theme Name!');
+                        return false;
+                    } else {
+                        return true;
+                    }
+                }
+
+                else if (currentIndex === 1 && stepDirection === "forward") {
+                    for (let i = 0; i < this.themeObj.classinfo.length; i++) {
+                        if (this.themeObj.classinfo[i].mcname == "" || (this.findFirstChildObj(this.themeObj.classinfo[i])).modelsoid.length==0) {
+                            this.$alert("Please complete the information");
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+
+                else if (currentIndex === 2 && stepDirection === "forward") {
+                    for (let i = 0; i < this.themeObj.dataClassInfo.length; i++) {
+                        if (this.themeObj.dataClassInfo[i].dcname == "" || (this.findFirstChildObj(this.themeObj.dataClassInfo[i])).datasoid.length==0) {
+                            that.$alert("Please complete the information");
+                            return false;
+                        }
+                    }
+                    return true
+                }
+
+                else if (currentIndex === 3 && stepDirection === "forward") {
+                    return true;
+                }
             }
         });
         const url="ModelDataDownloadServlet";

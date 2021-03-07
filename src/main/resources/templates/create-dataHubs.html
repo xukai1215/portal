@@ -45,6 +45,9 @@
         font {
             vertical-align: middle;
         }
+        .step-tab-panel{
+            height: 510px;
+        }
     </style>
 </head>
 
@@ -81,98 +84,248 @@
                             <div class="panel panel-success" style="border: none;height: 680px;">
                                 <div class="panel-body">
                                     <!--                                    以下使用step步骤插件-->
-                                    <div class="step2">
+                                    <div id="step">
                                         <div class="step-app">
                                             <ul class="step-steps text-center">
-                                                <li><a id="start_step" href="#step21">Basic Info</a></li>
-                                                <li><a href="#step22">Data</a></li>
-                                                <li><a href="#step23">Overview & Detail</a></li>
-                                                <li><a href="#step24">Authorship</a></li>
+                                                <li><a id="start_step" href="#step0">Classification</a></li>
+                                                <li><a href="#step1">Basic Info</a></li>
+                                                <li><a href="#step2">Data</a></li>
+                                                <li><a href="#step3">Overview & Detail</a></li>
+                                                <li><a href="#step4">Authorship</a></li>
                                             </ul>
                                             <div class="step-content">
-                                                <div class="step-tab-panel" id="step21">
-                                                    <div class="col-md-3 col-sm-4"
-                                                         style="overflow-y: auto;height: 450px;width: auto">
-                                                        <el-card>
+                                                <div class="step-tab-panel" id="step0">
+                                                    <div>
+                                                        <label>Please select one or more classifications the model belongs to:</label>
+                                                    </div>
+
+                                                    <div class="col-sm-offset-0 col-sm-7 tree" style="margin-top:10px">
+                                                        <el-card shadow="never">
                                                             <div slot="header" class="clearfix text-center">
-                                                                <span style="font-size: 20px;color:#444">Data Classifications</span>
+                                                                <span style="font-size: 20px;color:#444">Model Classifications</span>
                                                             </div>
-                                                            <el-tree style="height: 320px;overflow: auto"
+                                                            <el-tree style="height: 400px;overflow: auto"
+                                                                     class="col-lg-6 col-md-12 wzhScrollbar"
                                                                      id="tree2"
                                                                      ref="tree2"
-                                                                     :data="treeData"
+                                                                     :data="treeData_part1"
                                                                      show-checkbox
                                                                      node-key="id"
-                                                                     :default-expanded-keys="[]"
-                                                                     :current-node-key="100"
+                                                                     :default-expanded-keys="[1,9,30]"
+
+                                                                     @check-change="handleCheckChange"
+                                                                     :props="defaultProps">
+                                                            </el-tree>
+                                                            <el-tree style="height: 400px;overflow: auto"
+                                                                     class="col-lg-6 col-md-12 wzhScrollbar"
+                                                                     id="tree3"
+                                                                     ref="tree3"
+                                                                     :data="treeData_part2"
+                                                                     show-checkbox
+                                                                     node-key="id"
+                                                                     :default-expanded-keys="[14,19]"
+
                                                                      @check-change="handleCheckChange"
                                                                      :props="defaultProps">
                                                             </el-tree>
                                                         </el-card>
                                                     </div>
-                                                    <div class="col-sm-8">
-                                                        <div class="form-group">
-                                                            <!--classificaation-->
-                                                            <label for="classification"><span class="star">* </span>Category:</label><br>
-                                                            <input type="text" class="form-control" v-model="clsStr"
-                                                                   placeholder="Please choose the catgory of the data which you are ready to upload"
-                                                                   id="classification" required="required" readonly/><br>
-                                                            <!--<small id="catgoryHelp" class="form-text text-muted">Please choose the catgory of the data which you are ready to upload.</small>-->
+                                                    <div class="col-sm-5" style="margin-top:10px">
 
-                                                            <label for="classification"><span class="star">* </span>Status:</label><br>
-                                                            <el-radio-group v-model="dataItemAddDTO.status" size="medium" >
-                                                                <el-tooltip popper-class="fontsize-15" effect="light" content="This item can be retrieved, shared and edited." placement="top">
-                                                                    <el-radio-button label="Public"></el-radio-button>
-                                                                </el-tooltip>
-                                                                <el-tooltip popper-class="fontsize-15" class="item" effect="light" content="This item can be retrieved and shared, can ONLY be edited by creator." placement="top">
-                                                                    <el-radio-button label="Discoverable"></el-radio-button>
-                                                                </el-tooltip>
-                                                                <el-tooltip popper-class="fontsize-15" class="item" effect="light" content="This item can NOT be retrieved and shared, can ONLY be edited by creator." placement="top">
-                                                                    <el-radio-button label="Private"></el-radio-button>
-                                                                </el-tooltip>
+                                                        <el-card shadow="never">
+                                                            <div slot="header" class="clearfix text-center">
+                                                                <span style="font-size: 20px;color:#444">Selected Classifications</span>
+                                                            </div>
+                                                            <el-tree style="height: 287px;overflow: auto"
+                                                                     class="wzhScrollbar"
+                                                                     id="tree_select"
+                                                                     ref="tree_select"
+                                                                     :data="treeData_select"
+                                                                     node-key="id"
+                                                                     :props="defaultProps">
+                                                            </el-tree>
 
-                                                            </el-radio-group><br><br>
+                                                        </el-card>
+                                                        <el-card shadow="never" style="height:100px;">
+                                                            <span style="font-family: aktiv-grotesk;color: #737373;" v-if="curClassDesc.label!=''">{{curClassDesc.label}}: </span>
+                                                            <span style="color: #636363;">{{curClassDesc.desc}}</span>
 
-                                                            <!--name-->
-                                                            <label for="dataname"><span class="star">* </span>Name:</label><br>
-                                                            <input type="text" class="form-control" id="dataname"
-                                                                   aria-describedby="emailHelp"
-                                                                   placeholder="Please input the name of the data which you are ready to upload."
-                                                                   required="required"/><br>
-                                                            <!--<small id="nameHelp" class="form-text text-muted">Please input the name of the data which you are ready to upload.<font color="red">*Not Empty</font></small>-->
+                                                        </el-card>
 
-                                                            <!--keywords-->
-                                                            <label for="keywords">Keywords:</label><br>
-                                                            <!--<div class="bootstrap-tagsinput" >-->
-                                                            <input type="text"  id="keywords" placeholder="input key words.."
-                                                                   required="required" style="border-radius: 4px;"/><br>
-                                                            <!--<small id="keywordsHelp" class="form-text text-muted">Please input  keywords of the data which you are ready to upload.<font color="red">*Not Empty</font></small>-->
+                                                    </div>
+                                                </div>
+                                                <div class="step-tab-panel" id="step1">
+<!--                                                    <div class="col-md-3 col-sm-4"-->
+<!--                                                         style="overflow-y: auto;height: 450px;width: auto">-->
+<!--                                                        <el-card>-->
+<!--                                                            <div slot="header" class="clearfix text-center">-->
+<!--                                                                <span style="font-size: 20px;color:#444">Data Classifications</span>-->
+<!--                                                            </div>-->
+<!--                                                            <el-tree style="height: 320px;overflow: auto"-->
+<!--                                                                     id="tree2"-->
+<!--                                                                     ref="tree2"-->
+<!--                                                                     :data="treeData"-->
+<!--                                                                     show-checkbox-->
+<!--                                                                     node-key="id"-->
+<!--                                                                     :default-expanded-keys="[]"-->
+<!--                                                                     :current-node-key="100"-->
+<!--                                                                     @check-change="handleCheckChange"-->
+<!--                                                                     :props="defaultProps">-->
+<!--                                                            </el-tree>-->
+<!--                                                        </el-card>-->
+<!--                                                    </div>-->
+<!--                                                    <div class="col-sm-8">-->
+<!--                                                        <div class="form-group">-->
+<!--                                                            &lt;!&ndash;classificaation&ndash;&gt;-->
+<!--                                                            <label for="classification"><span class="star">* </span>Category:</label><br>-->
+<!--                                                            <input type="text" class="form-control" v-model="clsStr"-->
+<!--                                                                   placeholder="Please choose the catgory of the data which you are ready to upload"-->
+<!--                                                                   id="classification" required="required" readonly/><br>-->
+<!--                                                            &lt;!&ndash;<small id="catgoryHelp" class="form-text text-muted">Please choose the catgory of the data which you are ready to upload.</small>&ndash;&gt;-->
 
-                                                            <!--img type-->
-                                                            <!--todo 依据类型选择图片-->
-                                                            <label
-                                                                    class="col-sm-2 control-label" style="margin-left: 20px;padding-bottom: 5px">Image:</label>
-                                                            <div class="col-sm-10">
-                                                                <!--                                                                                        <img id="imgShow" v-show="itemInfo.image"/>-->
-                                                                <img id="imgShow" style="display: inline" v-show="itemInfo.image!=undefined&&itemInfo.image!=''" :src="itemInfo.image"/>
-                                                                <div id="imgMask" class="flexCenter" v-if="itemInfo.image!=undefined&&itemInfo.image!=''"
-                                                                     style="position: absolute;width: 100px;height: 100px">
-                                                                    <div class="fa fa-times imgDelete" @click="deleteImg"></div>
-                                                                    <div class="fa fa-pencil imgEditBlock flexCenter" style="" @click="imgFile"></div>
+<!--                                                            <label for="classification"><span class="star">* </span>Status:</label><br>-->
+<!--                                                            <el-radio-group v-model="dataItemAddDTO.status" size="medium" >-->
+<!--                                                                <el-tooltip popper-class="fontsize-15" effect="light" content="This item can be retrieved, shared and edited." placement="top">-->
+<!--                                                                    <el-radio-button label="Public"></el-radio-button>-->
+<!--                                                                </el-tooltip>-->
+<!--                                                                <el-tooltip popper-class="fontsize-15" class="item" effect="light" content="This item can be retrieved and shared, can ONLY be edited by creator." placement="top">-->
+<!--                                                                    <el-radio-button label="Discoverable"></el-radio-button>-->
+<!--                                                                </el-tooltip>-->
+<!--                                                                <el-tooltip popper-class="fontsize-15" class="item" effect="light" content="This item can NOT be retrieved and shared, can ONLY be edited by creator." placement="top">-->
+<!--                                                                    <el-radio-button label="Private"></el-radio-button>-->
+<!--                                                                </el-tooltip>-->
+
+<!--                                                            </el-radio-group><br><br>-->
+
+<!--                                                            &lt;!&ndash;name&ndash;&gt;-->
+<!--                                                            <label for="dataname"><span class="star">* </span>Name:</label><br>-->
+<!--                                                            <input type="text" class="form-control" id="dataname"-->
+<!--                                                                   aria-describedby="emailHelp"-->
+<!--                                                                   placeholder="Please input the name of the data which you are ready to upload."-->
+<!--                                                                   required="required"/><br>-->
+<!--                                                            <small id="nameHelp" class="form-text text-muted">Please input the name of the data which you are ready to upload.<font color="red">*Not Empty</font></small>-->
+
+<!--&lt;!&ndash;                                                            keywords&ndash;&gt;-->
+<!--                                                            <label for="keywords">Keywords:</label><br>-->
+<!--                                                            <div class="bootstrap-tagsinput" >-->
+<!--                                                            <input type="text"  id="keywords" placeholder="input key words.."-->
+<!--                                                                   required="required" style="border-radius: 4px;"/><br>-->
+<!--                                                            <small id="keywordsHelp" class="form-text text-muted">Please input  keywords of the data which you are ready to upload.<font color="red">*Not Empty</font></small>-->
+
+<!--&lt;!&ndash;                                                            img type&ndash;&gt;-->
+<!--                                                            &lt;!&ndash;&ndash;&gt;-->
+<!--                                                            <label-->
+<!--                                                                    class="col-sm-2 control-label" style="margin-left: 20px;padding-bottom: 5px">Image:</label>-->
+<!--                                                            <div class="col-sm-10">-->
+<!--                                                                &lt;!&ndash;                                                                                        <img id="imgShow" v-show="itemInfo.image"/>&ndash;&gt;-->
+<!--                                                                <img id="imgShow" style="display: inline" v-show="itemInfo.image!=undefined&&itemInfo.image!=''" :src="itemInfo.image"/>-->
+<!--                                                                <div id="imgMask" class="flexCenter" v-if="itemInfo.image!=undefined&&itemInfo.image!=''"-->
+<!--                                                                     style="position: absolute;width: 100px;height: 100px">-->
+<!--                                                                    <div class="fa fa-times imgDelete" @click="deleteImg"></div>-->
+<!--                                                                    <div class="fa fa-pencil imgEditBlock flexCenter" style="" @click="imgFile"></div>-->
+<!--                                                                </div>-->
+<!--                                                                <div v-if="itemInfo.image==''||itemInfo.image==undefined" class="cursorPointer loadImg" @click="imgFile">-->
+<!--                                                                    <i class="fa fa-plus fa-5x"></i>-->
+<!--                                                                </div>-->
+<!--                                                                <input type="file" id="imgOne" @change="preImg()"-->
+<!--                                                                       style="display: none" accept="image/*"/>-->
+<!--                                                                                                                                                        <input id="imgFile" type="file"-->
+<!--                                                                                                                                                               style="display: none"-->
+<!--                                                                                                                                                               accept="image/*"/>-->
+<!--                                                            </div>-->
+<!--                                                        </div>-->
+<!--                                                    </div>-->
+
+                                                    <div class="col-sm-offset-2 col-sm-8" style="margin-top:10px;float:none">
+                                                        <div id="RepositoryParentsPanel">
+
+                                                            <div class="form-horizontal">
+                                                                <div class="form-group">
+                                                                    <label class="col-sm-2 control-label"><span class="xing">* </span>Status</label>
+                                                                    <div class="col-sm-10">
+                                                                        <el-radio-group v-model="dataItemAddDTO.status" size="medium">
+                                                                            <el-tooltip popper-class="fontsize-15" effect="light" content="This item can be retrieved, shared and edited." placement="top">
+                                                                                <el-radio-button label="Public"></el-radio-button>
+                                                                            </el-tooltip>
+                                                                            <el-tooltip popper-class="fontsize-15" class="item" effect="light" content="This item can be retrieved and shared, can ONLY be edited by creator." placement="top">
+                                                                                <el-radio-button label="Discoverable"></el-radio-button>
+                                                                            </el-tooltip>
+                                                                            <el-tooltip popper-class="fontsize-15" class="item" effect="light" content="This item can NOT be retrieved and shared, can ONLY be edited by creator." placement="top">
+                                                                                <el-radio-button label="Private"></el-radio-button>
+                                                                            </el-tooltip>
+
+                                                                        </el-radio-group>
+                                                                    </div>
                                                                 </div>
-                                                                <div v-if="itemInfo.image==''||itemInfo.image==undefined" class="cursorPointer loadImg" @click="imgFile">
-                                                                    <i class="fa fa-plus fa-5x"></i>
+                                                            </div>
+
+                                                            <div class="form-horizontal">
+                                                                <div class="form-group">
+                                                                    <label class="col-sm-2 control-label"><span class="xing">* </span>Name</label>
+                                                                    <div class="col-sm-10">
+                                                                        <input type="text" class="form-control" id="dataname"
+                                                                               aria-describedby="emailHelp"
+                                                                               placeholder="Please input the name of the data which you are ready to upload."
+                                                                               required="required"/>
+                                                                    </div>
                                                                 </div>
-                                                                <input type="file" id="imgOne" @change="preImg()"
-                                                                       style="display: none" accept="image/*"/>
-                                                                <!--                                                                                        <input id="imgFile" type="file"-->
-                                                                <!--                                                                                               style="display: none"-->
-                                                                <!--                                                                                               accept="image/*"/>-->
+                                                            </div>
+
+<!--                                                            <div class="form-horizontal">-->
+<!--                                                                <div class="form-group">-->
+<!--                                                                    <label class="col-sm-2 control-label"><span class="xing">* </span>Category</label>-->
+<!--                                                                    <input type="text" class="form-control" v-model="clsStr"-->
+<!--                                                                    placeholder="Please choose the category of the data which you are ready to upload"-->
+<!--                                                                    id="classification" required="required" readonly/>-->
+<!--                                                                </div>-->
+<!--                                                            </div>-->
+
+
+                                                            <div class="form-horizontal">
+                                                                <div class="form-group">
+<!--                                                                    <label for="keywords" class="col-sm-2 control-label">Keywords</label><br>-->
+<!--                                                                    <div class="col-sm-10">-->
+<!--                                                                        <div class="bootstrap-tagsinput" >-->
+<!--                                                                            <input type="text"  id="keywords" placeholder="input key words.."-->
+<!--                                                                                   required="required" style="border-radius: 4px;"/>-->
+<!--                                                                        </div>-->
+<!--                                                                    </div>-->
+                                                                    <label for="keywords"
+                                                                           class="col-sm-2 control-label">Keywords</label>
+                                                                    <div class="col-sm-10">
+                                                                                        <textarea class="form-control"
+                                                                                                  id="keywords">
+                                                                                        </textarea>
+                                                                    </div>
+                                                            </div>
+
+                                                            <div class="form-horizontal">
+                                                                <div class="form-group">
+                                                                    <label class="col-sm-2 control-label">Image:</label>
+                                                                    <div class="col-sm-10">
+                                                                        <img id="imgShow" style="display: inline" v-show="itemInfo.image!=undefined&&itemInfo.image!=''" :src="itemInfo.image"/>
+                                                                        <div id="imgMask" class="flexCenter" v-if="itemInfo.image!=undefined&&itemInfo.image!=''"
+                                                                             style="position: absolute;width: 100px;height: 100px">
+                                                                            <div class="fa fa-times imgDelete" @click="deleteImg"></div>
+                                                                            <div class="fa fa-pencil imgEditBlock flexCenter" style="" @click="imgFile"></div>
+                                                                        </div>
+                                                                        <div v-if="itemInfo.image==''||itemInfo.image==undefined" class="cursorPointer loadImg" @click="imgFile">
+                                                                            <i class="fa fa-plus fa-5x"></i>
+                                                                        </div>
+                                                                        <input type="file" id="imgOne" @change="preImg()"
+                                                                               style="display: none" accept="image/*"/>
+                                                                        <input id="imgFile" type="file"
+                                                                               style="display: none"
+                                                                               accept="image/*"/>
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    </div>
+
                                                 </div>
-                                                <div class="step-tab-panel" id="step22">
+                                                <div class="step-tab-panel" id="step2">
                                                     <!--非作者用户编辑，展示作者选择的data，当前用户不是作者时此div可见-->
                                                     <div id="ResourcesUrl" style="margin-top: 60px;margin-bottom: 40px;">
                                                         <div class="form-group">
@@ -191,7 +344,7 @@
 <!--                                                               style="width: 50%;"/>-->
                                                     </div>
                                                 </div>
-                                                <div class="step-tab-panel" id="step23">
+                                                <div class="step-tab-panel" id="step3">
                                                     <div class="col-md-12">
                                                         <div class="form-group">
                                                             <!--description-->
@@ -206,7 +359,7 @@
                                                     </div>
                                                     <br/>
                                                 </div>
-                                                <div class="step-tab-panel" id="step24">
+                                                <div class="step-tab-panel" id="step4">
                                                     <!--detail-->
                                                     <div class="panel panel-success" style="border:none">
 

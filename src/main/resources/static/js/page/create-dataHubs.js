@@ -76,6 +76,143 @@ var createDataHubs = Vue.extend({
                     }]
                 }]
             }],
+            treeData_part1: [
+                {
+                    "children": [{
+                        "children": [{
+                            "id": 2,
+                            "label": "Land regions",
+                            "oid": "5f3e42070e989714e8364e9a",
+                            "desc": "Models that mainly related to land regions, includes hydrology, hydrodynamics, soil, landform, terrestrial ecosystem etc.",
+                        }, {"id": 3, "label": "Ocean regions", "oid": "5f3e422a0e989714e8364e9c",
+                            "desc": "Models that mainly related to ocean regions, includes coastal, seawater, sea-ice, marine ecosystem etc.",
+                        }, {
+                            "id": 4,
+                            "label": "Frozen regions",
+                            "oid": "5f3e42360e989714e8364e9e",
+                            "desc": "Models that mainly related to frozen regions, includes galicer, permafrost, snow etc.",
+                        }, {"id": 5, "label": "Atmospheric regions", "oid": "5f3e42400e989714e8364ea0",
+                            "desc": "Models that mainly related to atmospheric regions, includes climate, weather, air etc.",
+                        }, {
+                            "id": 6,
+                            "label": "Space-earth regions",
+                            "oid": "5f3e424c0e989714e8364ea2",
+                            "desc": "Models that mainly related to space-earth regions, includes sun-earth, planets etc.",
+
+                        }, {"id": 7, "label": "Solid-earth regions", "oid":"5f3e42550e989714e8364ea4",
+                            "desc": "Models that mainly related to solid-earth regions, includes lithosphere, mantle, earthquack etc.",
+                        }
+                        ], "id": 1, "label": "Natural-perspective", "oid": "5f3e41680e989714e8364e92",
+                        "desc": "Models that mainly related to physical geography.",
+
+                    }, {
+                        "children": [{
+                            "id": 10,
+                            "label": "Development activities",
+                            "oid": "5f3e42780e989714e8364ea8",
+                            "desc": "Models that mainly related to development activities, includes continents, countries, cities, administrative zones etc.",
+                        }, {"id": 11, "label": "Social activities", "oid": "5f3e42830e989714e8364eaa",
+                            "desc": "Models that mainly related to social activities, includes urban, rural, cultural area, travel area, built-up area, indoor area etc.",}, {
+                            "id": 12,
+                            "label": "Economic activities",
+                            "oid": "5f3e428c0e989714e8364eac",
+                            "desc": "Models that mainly related to economic activities, includes agriculture, industry, tourism, trasport, energy, markets etc.",
+                        }],
+                        "id": 9,
+                        "label": "Human-perspective",
+                        "oid": "5f3e41940e989714e8364e94",
+                        "desc": "Models that mainly related to human geography.",
+                    }, {
+                        "id": 30,
+                        "label": "Integrated-perspective",
+                        "oid": "5f6c1dcbefdc24a7fc52543d",
+                        "desc": "Models that integrate many different models.",
+                        "children": [{
+                            "id": 31,
+                            "label": "Global scale",
+                            "oid": "5f6c424eefdc249e286947b8",
+                            "desc": "Integrated models that apply in global scale.",
+                        }, {
+                            "id": 32,
+                            "label": "Regional scale",
+                            "oid": "5f6c42d2efdc249dc47f4665",
+                            "desc": "Integrated models that apply in regional scale.",
+
+                        }]
+                    }],
+                    "id": 24,
+                    "label": "Application-focused categories",
+                    "oid": "5f3e403f0e98974dd874df62",
+                    "desc": "Models that apply in one or more field.",
+                },
+            ],
+            treeData_part2: [
+                {"children": [{
+                        "children": [{
+                            "id": 15,
+                            "label": "Geoinformation analysis",
+                            "oid": "5f3e42ac0e989714e8364eb0",
+                            "desc": "Models that mainly related to geoinformation analysis, includes vector analysis, raster analysis, network analysis, topology analysis etc.",
+                        }, {
+                            "id": 16,
+                            "label": "Remote sensing analysis",
+                            "oid": "5f3e42b40e989714e8364eb2",
+                            "desc": "Models that mainly related to remote sensing analysis, includes imagery analysis, spectrum analysis etc.",
+                        }, {
+                            "id": 17,
+                            "label": "Geostatistical analysis",
+                            "oid": "5f3e42bc0e989714e8364eb4",
+                            "desc": "Models that mainly related to geostatistical analysis, includes pattern detection, relation detection, clustering, interpolation etc.",
+                        }, {
+                            "id": 18,
+                            "label": "Intelligent computation analysis",
+                            "oid": "5f3e42c30e989714e8364eb6",
+                            "desc": "Models that mainly related to intelligent computation analysis, includes machine learning, deep learning etc.",
+                        }],
+                        "id": 14,
+                        "label": "Data-perspective",
+                        "oid": "5f3e41d20e989714e8364e96",
+                        "desc": "Models that mainly related to data process.",
+                    }, {
+                        "children": [{
+                            "id": 20,
+                            "label": "Physical process calculation",
+                            "oid": "5f3e42d40e989714e8364eb8",
+                            "desc": "Models that mainly related to physical process calculation, includes CFD, acoustic simulation, light simulation etc.",
+                        }, {
+                            "id": 21,
+                            "label": "Chemical process calculation",
+                            "oid": "5f3e42dc0e989714e8364eba",
+                            "desc": "Models that mainly related to chemical process calculation, includes insecticide, photosynthesis, combustion etc.",
+                        }, {
+                            "id": 22,
+                            "label": "Biological process calculation",
+                            "oid": "5f3e42e30e989714e8364ebc",
+                            "desc": "Models that mainly related to biological process calculation, includes genome, metabolic, cellular simulation etc.",
+                        }, {
+                            "id": 23,
+                            "label": "Human-activity calculation",
+                            "oid": "5f3e42ec0e989714e8364ebe",
+                            "desc": "Models that mainly related to human-activity calculation, includes monte carlo, CA, agent-based, travel, crime, disease, migration, health etc.",
+                        }],
+                        "id": 19,
+                        "label": "Process-perspective",
+                        "oid": "5f3e41e80e989714e8364e98",
+                        "desc": "Models that mainly related to process.",
+                    }], "id": 25, "label": "Method-focused categories", "oid": "5f3e40810e98974dd874df64",
+                    "desc": "Models that mainly related to method.",
+                }],
+            treeData_select:[],
+            curClassDesc: {
+                label:'',
+                desc:"Move your mouse to a classification to learn more."
+            },
+            currentLocalization: {
+                localCode: "",
+                localName: "",
+                name: "",
+                description: "",
+            },
 
             defaultProps: {
                 children: 'children',
@@ -118,24 +255,86 @@ var createDataHubs = Vue.extend({
         //     this.setSession("index",index);
         //     window.location.href="/user/userSpace"
         // },
-        handleCheckChange(data, checked, indeterminate) {
-            let checkedNodes = this.$refs.tree2.getCheckedNodes()
-            let classes = [];
-            let str='';
-            for (let i = 0; i < checkedNodes.length; i++) {
-                // console.log(checkedNodes[i].children)
-                if(checkedNodes[i].children!=undefined){
-                    continue;
+        // handleCheckChange(data, checked, indeterminate) {
+        //     let checkedNodes = this.$refs.tree2.getCheckedNodes()
+        //     let classes = [];
+        //     let str='';
+        //     for (let i = 0; i < checkedNodes.length; i++) {
+        //         // console.log(checkedNodes[i].children)
+        //         if(checkedNodes[i].children!=undefined){
+        //             continue;
+        //         }
+        //
+        //         classes.push(checkedNodes[i].id);
+        //         str+=checkedNodes[i].label;
+        //         if(i!=checkedNodes.length-1){
+        //             str+=", ";
+        //         }
+        //     }
+        //     this.cls=classes;
+        //     this.clsStr=str;
+        //
+        // },
+        handleCheckChange(data, checked, indeterminante){
+            // console.log(data, checked, indeterminante)
+            if(data.children == null) {
+                let checkedNodes1 = this.$refs.tree2.getCheckedNodes(false, true);
+                let checkedNodes2 = this.$refs.tree3.getCheckedNodes(false, true);
+
+                this.treeData_select = [];
+                for (i = 0; i < checkedNodes1.length; i++) {
+                    let node = checkedNodes1[i];
+                    if (node.children == undefined) {
+                        this.treeData_select.push(node);
+                    }
                 }
 
-                classes.push(checkedNodes[i].id);
-                str+=checkedNodes[i].label;
-                if(i!=checkedNodes.length-1){
-                    str+=", ";
+                for (i = 0; i < checkedNodes2.length; i++) {
+                    let node = checkedNodes2[i];
+                    if (node.children == undefined) {
+                        this.treeData_select.push(node);
+                    }
+                }
+
+                console.log($("#tree_select .el-tree-node"))
+                $("#tree_select").on("mouseenter",".el-tree-node",(event)=>{
+                    console.log(event)
+                    let name = event.currentTarget.innerText
+                    let desc = this.getClassificationDesc(name)
+                    console.log(desc);
+                    this.curClassDesc = desc;
+                })
+            }
+
+        },
+        getClassificationDesc(name){
+            let children = this.treeData_part1;
+            let desc = this.getChildrenDesc(children,name);
+            if(desc == null){
+                children = this.treeData_part2;
+                desc = this.getChildrenDesc(children,name);
+            }
+            return desc;
+        },
+        getChildrenDesc(children, name){
+            let i = 0;
+            for(;i<children.length;i++){
+                let child = children[i];
+                if(child.label==name){
+                    return {
+                        label:child.label,
+                        desc:child.desc
+                    };
+                }else{
+                    if(child.children!=undefined){
+                        let result = this.getChildrenDesc(child.children, name);
+                        if(result != null){
+                            return result;
+                        }
+                    }
                 }
             }
-            this.cls=classes;
-            this.clsStr=str;
+            return null;
 
         },
 
@@ -194,7 +393,10 @@ var createDataHubs = Vue.extend({
             // this.dataItemAddDTO.author=$("#author").val();
             this.dataItemAddDTO.keywords = $("#keywords").tagEditor('getTags')[0].tags;
 
-            this.dataItemAddDTO.classifications = this.cls;
+            this.dataItemAddDTO.classifications = [];
+            for(let i=0;i<this.treeData_select.length;++i){
+                this.dataItemAddDTO.classifications.push(this.treeData_select[i].oid)
+            }
             // this.dataItemAddDTO.displays.push($("#displays").val())
             this.dataItemAddDTO.displays = this.data_img;
             this.dataItemAddDTO.uploadImage = this.itemInfo.image;
@@ -281,7 +483,7 @@ var createDataHubs = Vue.extend({
                             $("#imgFile").val("");
                             var categoryAddDTO = {
                                 id: res.data.data.id,
-                                cate: that.cls,
+                                cate: that.treeData_select,
                                 tabType: "hubs"
                             };
                             axios.post('/dataItem/addcate', categoryAddDTO).then(res => {
@@ -480,32 +682,58 @@ var createDataHubs = Vue.extend({
             })
         var that = this;
 
-        $(".step2").steps({
-
+        $("#step").steps({
             onFinish: function () {
                 alert('complete');
             },
-            onChange: function (currentIndex, newIndex, stepDirection) {
+            onChange: (currentIndex, newIndex, stepDirection) => {
 
-                if (currentIndex === 0) {
-                    if (stepDirection === "forward") {
-                        if ($("#dataname").val().length == 0 || that.clsStr.length == 0) {
-                            new Vue().$message({
-                                message: 'Please complete data information!',
-                                type: 'warning',
-                                offset: 70,
-                            });
-                            return false;
-                        } else {
-                            return true;
-                        }
-
+                // if (currentIndex === 0) {
+                //     if (stepDirection === "forward") {
+                //         if ($("#dataname").val().length == 0 || that.clsStr.length == 0) {
+                //             new Vue().$message({
+                //                 message: 'Please complete data information!',
+                //                 type: 'warning',
+                //                 offset: 70,
+                //             });
+                //             return false;
+                //         } else {
+                //             return true;
+                //         }
+                //
+                //     }
+                // }
+                if (currentIndex === 0 && stepDirection === "forward") {
+                    if (this.treeData_select.length === 0) {
+                        new Vue().$message({
+                            message: 'Please select at least one classification!',
+                            type: 'warning',
+                            offset: 70,
+                        });
+                        return false;
                     }
-                }
-                if (currentIndex === 1) {
+
+                    if(this.currentLocalization.name === ""){
+                        this.currentLocalization.name = this.itemName;
+                    }
+
                     return true;
                 }
-                if (currentIndex === 2) {
+                else if (currentIndex === 1 && stepDirection === "forward") {
+                    if ($("#dataname").val().length == 0){
+                        new Vue().$message({
+                                            message: 'Please complete data information!',
+                                            type: 'warning',
+                                            offset: 70,
+                                        });
+                        return false;
+                    }
+                    return true;
+                }
+                else if (currentIndex === 2) {
+                    return  true;
+                }
+                else if (currentIndex === 3) {
                     if (stepDirection === "forward") {
                         if ($("#description").val().length == 0) {
                             new Vue().$message({
@@ -691,8 +919,8 @@ var createDataHubs = Vue.extend({
                         this.selectedFile = data.dataList;
 
                         this.$refs.tree2.setCheckedKeys(data.classifications);
-                        this.clsStr=data.categories;
-                        this.cls = data.classifications;
+                        this.treeData_select = data.categories;
+                        this.treeData_select = data.classifications;
                         this.dataItemAddDTO.viewCount = data.viewCount;
                         this.itemInfo.image = data.image;
                         //清空
