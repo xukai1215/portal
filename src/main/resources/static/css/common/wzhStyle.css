@@ -190,6 +190,61 @@ a{
 
 }
 
+.wzhTable{
+    border: 1px solid #cccccc;
+
+}
+
+.wzhTable tr{
+    border: 1px solid #cccccc;
+    padding: 5px 10px;
+}
+
+.wzhTable th{
+    padding: 10px 10px;
+    min-width: 0;
+    box-sizing: border-box;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+    position: relative;
+    text-align: left;
+    border: 1px solid #e0e0e0;
+}
+
+.wzhTable .tableSubTitle{
+    width: 200px;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.wzhTable .tableContent{
+    width: 400px;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.wzhTable .cell{
+    text-overflow: ellipsis;
+    white-space: normal;
+    word-break: break-all;
+}
+
+.wzhTag{
+    background-color: #ecf5ff;
+    border-color: #d9ecff;
+    display: inline-block;
+    height: 30px;
+    padding: 0 10px;
+    line-height: 20px;
+    font-size: 12px;
+    color: #409EFF;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 4px;
+    box-sizing: border-box;
+    white-space: nowrap;
+    margin: 2px 3px;
+}
 
 @-webkit-keyframes clockwise{
 
@@ -944,6 +999,127 @@ h1.h_lite,h2.h_lite,h3.h_lite,h4.h_lite,span.h_lite{
 
 .button_suc:focus{
     background-color: #2c6622;
+}
+
+.lineButton {
+    color: #05a6ff;
+    cursor: pointer;
+}
+
+.lineButton p {
+    margin: 0;
+    font-size: 16px;
+}
+
+.hoverLine {
+    /*display: none;*/
+    width: 0;
+    align-self: center;
+    border-bottom: 2px solid #05a6ff;
+    transition-property: width;
+    transition: .4s;
+    -webkit-transition-property: width;
+    -webkit-transition: .4s;
+}
+
+.lineButton:hover .hoverLine {
+    width: 100%;
+    border-color: #05a6ff;
+}
+
+.nutButton{
+    height: 42px;
+    border-radius: 99999px;
+    border: 2.5px #e6e6e6 solid;
+    padding: 0 15px;
+    background-color: transparent;
+    color: #e6e6e6;
+    transition: .3s all ;
+}
+
+.nutButton:hover{
+    background-color: #e6e6e6;
+    color: #333333;
+    font-weight: 500;
+}
+
+.nutButtonBlack{
+    height: 42px;
+    border-radius: 99999px;
+    border: 2px #333333 solid;
+    padding: 0 15px;
+    background-color: transparent;
+    color: #333333;
+    transition: .3s all ;
+}
+
+.nutButtonBlack:hover{
+    background-color: #333333;
+    color: #e6e6e6;
+    font-weight: 500;
+}
+
+.nutButtonBlue{
+    height: 42px;
+    border-radius: 99999px;
+    border: 2px #2991f7 solid;
+    padding: 0 15px;
+    background-color: transparent;
+    color: #2991f7;
+    transition: .3s all ;
+}
+
+.nutButtonBlue:hover{
+    background-color: #2991f7;
+    color: #e6e6e6;
+    font-weight: 500;
+}
+
+.nutButtonBlueFill{
+    height: 42px;
+    border-radius: 99999px;
+    border: 2px #3da2ff solid;
+    padding: 0 15px;
+    background-color: #3da2ff;
+    color: #fcfcfc;
+    transition: .3s all ;
+}
+
+.nutButtonBlueFill:hover{
+    background-color: #34acf7;
+    border: 2px #34acf7 solid;
+}
+
+.transparButton{
+    width: 50%;
+    background-color: rgba(255,255,255,0);
+    border-width: 0;
+    height: 55px;
+    color: white;
+    font-size: 18px;
+    z-index: 999999;
+    transition: .3s all;
+}
+
+.inlineBlock{
+    display: inline-block;
+}
+
+.iconImg{
+    width: 40px;
+    height: 40px;
+    transition: .2s;
+}
+
+.iconImg:hover{
+    width: 50px;
+    height: 50px;
+}
+
+.ellipsis{
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
 }
 
 @media only screen and (min-width:1150px) {

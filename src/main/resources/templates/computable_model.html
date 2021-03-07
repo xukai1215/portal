@@ -726,7 +726,7 @@
         </span>
         <span v-if="footerBeforeDeploy" slot="footer" class="dialog-footer">
             <el-button @click="dialogVisible = false">Cancel</el-button>
-            <el-button type="primary" @click="deploy">OK</el-button>
+            <el-button type="primary" @click="deployToGivenServer">OK</el-button>
         </span>
         <span v-if="footerAfterDeploy" slot="footer" class="dialog-footer">
             <el-button type="primary" @click="window.location.reload();">OK</el-button>
@@ -740,7 +740,7 @@
     <el-dialog title="Select Model Server" center :visible.sync="selectModelServerDialog">
         <div style="flex: 1.5;margin-left: 5px">
             <p style="text-align: center;font-style: italic;color: #999999">We have provided several servers of different platforms for model deploying.</p>
-            <p style="text-align: center;font-style: italic;color: #999999">If you want to deploy this model only on your model server, please change its content type to 'md5' in your space.</p>
+            <p style="text-align: center;font-style: italic;color: #999999">If this model was contributed by you, and you want to deploy this model only on your model server, please change its content type to 'md5' in your space.</p>
             <div class="wzhScrollbar"
                      style="height: 340px;min-height: 350px">
                 <div style="width: 100%;margin-bottom: 10px">

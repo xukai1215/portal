@@ -1084,6 +1084,29 @@ new Vue({
             //执行查询
             this.getModels(this.classType);
         },
+
+        createNew(){
+            axios.get("/user/load").then(
+                res => {
+                    if(res.data.oid==''){
+                         this.$alert('Please login first', 'Tip', {
+                                  type:"warning",
+                                  confirmButtonText: 'OK',
+                                  callback: ()=>{
+                                      window.location.href='/user/login'
+                                  }
+                              }
+                          );
+                    }else{
+                        window.location.href=createItemUrl['modelItem']
+                    }
+                }
+            )
+        },
+
+        feedBack(){
+            window.location.href="mailto:opengms@njnu.edu.cn"
+        },
     },
     mounted() {
 

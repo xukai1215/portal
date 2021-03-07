@@ -341,7 +341,8 @@
                                 padding-bottom: 61px;
                             ">
                             <span v-if="pageOption.progressBar">&nbsp;</span>
-                            <span v-if="!pageOption.progressBar">No Result</span>
+                            <span v-if="!pageOption.progressBar" style="font-style: italic">You can either
+                            <a class="cursorPointer" @click="createNew()">create one</a> or <a class="cursorPointer" @click="feedBack">feed back to us.</a></span>
                         </div>
                     </div>
 
@@ -437,6 +438,7 @@
 <script src="/static/js/common/bootstrap.js"></script>
 <script src="/static/js/common/bootstrap-select.js"></script>
 <script src="/static/js/common/echarts.min.js"></script>
+<script src="/static/js/common/generalInfo.js"></script>
 <script src="/static/driver/driver.min.js"></script>
 <script src="/static/js/page/model_items.js"></script>
 
