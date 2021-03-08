@@ -292,12 +292,19 @@
                             <h5 th:if="${history==true}" th:text="'modified at '+${date}">modified at 2018-7-13 14:32:18 </h5>
                         </div>
                     </div>
-                    <div class="wzhScrollbar">
-                        <div class="flexCol flexCenter">
-                            <div v-for="contributor in contributors" style="margin: 10px 5px">
-                                <img :src="contributor.image==''?'/static/img/icon/default.png':contributor.image"
-                                     class="round_icon" style="width:40px;height: 40px;">
+                    <div class="flexAlignEnd flexJustCenter">
+                        <div class="wzhScrollbar " style="max-height: 135px">
+                            <div v-if="contributors!=null&&contributors.length>0" v-for="(contributor,index) in contributors" :key="contributor.userId"
+                                 class="inlineBlock cursorPointer" style="margin: 10px 5px;">
+                                <el-tooltip effect="dark"
+                                            :content="contributor.name"
+                                            placement="bottom">
+                                    <img :src="contributor.image==''?'/static/img/icon/default.png':contributor.image"
+                                         @click="riseUser(contributor,index)"
+                                         class="round_icon iconImg">
+                                </el-tooltip>
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -1469,9 +1476,13 @@
                         <div>
                             <div v-if="contributors!=null&&contributors.length>0" v-for="(contributor,index) in contributors" :key="contributor.userId"
                                  class="inlineBlock cursorPointer" style="margin: 10px 5px;">
-                                <img :src="contributor.image==''?'/static/img/icon/default.png':contributor.image"
-                                     @click="riseUser(contributor,index)"
-                                     class="round_icon iconImg">
+                                <el-tooltip effect="dark"
+                                            :content="contributor.name"
+                                            placement="bottom">
+                                    <img :src="contributor.image==''?'/static/img/icon/default.png':contributor.image"
+                                         @click="riseUser(contributor,index)"
+                                         class="round_icon iconImg">
+                                </el-tooltip>
                             </div>
 
                         </div>
