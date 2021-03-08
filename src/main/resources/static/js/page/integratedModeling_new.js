@@ -927,6 +927,7 @@ var vue = new Vue({
                 asc:0,
                 searchText:this.searchDataMethodText,
                 sortTypeName:'createTime',
+                curQueryField:'name',
                 method:classi
             }
             axios.post("/dataApplication/methods/getApplication",data)
@@ -936,7 +937,9 @@ var vue = new Vue({
                         this.dataMethodLoading = false
                         this.pageOption3.total=res.data.data.total;
                     },100)
-                });
+                }).catch(res => {
+                    this.dataMethodLoading = false
+            });
 
         },
 

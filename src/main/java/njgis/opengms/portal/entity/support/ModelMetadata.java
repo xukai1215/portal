@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ModelMetadata {
 
-    MetadataOverview overview ;
-    MetadataUsage usage;
-    MetadataDesign design ;
+    MetadataOverview overview = new MetadataOverview();
+    MetadataUsage usage = new MetadataUsage();
+    MetadataDesign design = new MetadataDesign();
 }
