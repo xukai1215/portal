@@ -324,7 +324,10 @@ var vue = new Vue({
         // tree的四个事件
         changeClassNode(data,node) {
             if(data.children.length === 0){
-                this.selectedTableData = data.tableData
+                this.selectedTableData = []
+                for (let i=0;i<data.tableData.length;++i){
+                    this.selectedTableData.push(JSON.parse(data.tableData[i]))
+                }
                 this.currentNode = data.id
                 this.parentNode = false
                 this.childNode = true
@@ -336,7 +339,10 @@ var vue = new Vue({
         },
         changeModelClassNode(data,node) {
             if(data.children.length === 0){
-                this.selectedModelTableData = data.tableData
+                this.selectedModelTableData = []
+                for (let i=0;i<data.tableData.length;++i){
+                    this.selectedModelTableData.push(JSON.parse(data.tableData[i]))
+                }
                 this.currentModelNode = data.id
                 this.parentModelNode = false
                 this.childModelNode = true
@@ -1267,8 +1273,8 @@ var vue = new Vue({
                             type: "GET",
                             data: {},
                             success: (result) => {
-                                this.themeModelData = result.data.classinfo;
-                                this.themeData = result.data.dataClassInfo;
+                                this.themeModelData = result.data.themeModelData;
+                                this.themeData = result.data.themeData;
 
                                 let basicInfo = result.data;
 

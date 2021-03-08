@@ -11,7 +11,8 @@ var createTheme = Vue.extend({
                     label: 'new model class',
                     children: [],
                     tableData: []
-                }]
+                }],
+                tableData:[]
             }
         ];
         const themeData = [
@@ -23,7 +24,8 @@ var createTheme = Vue.extend({
                     label: 'new data class',
                     children: [],
                     tableData: []
-                }]
+                }],
+                tableData:[]
             }
         ];
         return {
@@ -100,7 +102,9 @@ var createTheme = Vue.extend({
                     applicationname: '',
                     applicationlink: '',
                     upload_application_image: '',
-                }]
+                }],
+                themeModelData:'',
+                themeData:'',
             },
 
             themeVersion:{
@@ -1735,14 +1739,14 @@ var createTheme = Vue.extend({
 
             that.themeObj.uploadImage = $('#imgShow').get(0).currentSrc;
             that.themeObj.tabledata = that.editableTabs_model;
+            that.themeObj.themeData = that.themeData;
+            that.themeObj.themeModelData = that.themeModelData;
             let formData=new FormData();
             if ((oid === "0") || (oid === "") || (oid == null)) {
                 let file = new File([JSON.stringify(that.themeObj)],'ant.txt',{
                     type: 'text/plain',
                 });
                 formData.append("info",file);
-                console.log(that.themeObj);
-                console.log(formData);
 
                 $.ajax({
                     url: "/theme/addTheme",
