@@ -696,6 +696,31 @@ var info=new Vue({
                 }
             },
 
+            metadataTemp:{
+                overview:{
+                    name:'',
+                    version:'',
+                    modelType:'',
+                    modelDomain:[],
+                    scale:'',
+                },
+                design:{
+                    purpose:'',
+                    principles:[],
+                    incorporatedModels:[],
+                    framework:'',
+                    process:[],
+                },
+                usage:{
+                    information:'',
+                    initialization:'',
+                    hardware:'',
+                    software:'',
+                    inputs:[],
+                    outputs:[],
+                }
+            },
+
             editMetadata:false,
         }
     },
@@ -1479,37 +1504,37 @@ var info=new Vue({
             }
         },
 
-        insertMetaData(metadata){
-            let overview = metadata.overview
-            let design = metadata.design
-            let usage = metadata.usage
+        insertMetaData(metadata,data){
+            let overview = data.overview
+            let design = data.design
+            let usage = data.usage
 
-            this.metadata.overview.name = overview.name
-            this.metadata.overview.version = overview.version
-            this.metadata.overview.modelType = overview.modelType
-            this.metadata.overview.scale = overview.scale
+            metadata.overview.name = overview.name
+            metadata.overview.version = overview.version
+            metadata.overview.modelType = overview.modelType
+            metadata.overview.scale = overview.scale
 
-            this.metadata.design.purpose = design.purpose
-            this.metadata.design.framework = design.framework
+            metadata.design.purpose = design.purpose
+            metadata.design.framework = design.framework
 
-            this.metadata.usage.information = usage.information
-            this.metadata.usage.initialization = usage.initialization
-            this.metadata.usage.hardware = usage.hardware
-            this.metadata.usage.software = usage.software
+            metadata.usage.information = usage.information
+            metadata.usage.initialization = usage.initialization
+            metadata.usage.hardware = usage.hardware
+            metadata.usage.software = usage.software
 
             Vue.nextTick(()=>{
                 if ($("#modelDomainInput").nextAll().length != 0){
                     $('#modelDomainInput').tagEditor('destroy');
                 }
                 $('#modelDomainInput').tagEditor({
-                    initialTags: overview.modelDomain ,
+                    initialTags: overview.modelDomain==null?[]:overview.modelDomain ,
                     forceLowercase: false,
                 });
                 if ($("#principlesInput").nextAll().length != 0){
                     $('#principlesInput').tagEditor('destroy');
                 }
                 $('#principlesInput').tagEditor({
-                    initialTags: design.principles ,
+                    initialTags: design.principles==null?[]:design.principles ,
                     forceLowercase: false,
                 });
                 if ($("#incorporatedModelsInput").nextAll().length != 0){
@@ -1517,28 +1542,28 @@ var info=new Vue({
                 }
 
                 $('#incorporatedModelsInput').tagEditor({
-                    initialTags: design.incorporatedModels ,
+                    initialTags: design.incorporatedModels==null?[]:design.incorporatedModels ,
                     forceLowercase: false,
                 });
                 if ($("#processInput").nextAll().length != 0){
                     $('#processInput').tagEditor('destroy');
                 }
                 $('#processInput').tagEditor({
-                    initialTags: design.process ,
+                    initialTags: design.process==null?[]:design.process ,
                     forceLowercase: false,
                 });
                 if ($("#inputsInput").nextAll().length != 0){
                      $('#inputsInput').tagEditor('destroy');
                 }
                 $('#inputsInput').tagEditor({
-                    initialTags: usage.inputs ,
+                    initialTags: usage.inputs==null?[]:usage.inputs ,
                     forceLowercase: false,
                 });
                 if ($("#outputsInput").nextAll().length != 0){
                     $('#outputsInput').tagEditor('destroy');
                 }
                 $("#outputsInput").tagEditor({
-                    initialTags: usage.outputs ,
+                    initialTags: usage.outputs==null?[]:usage.outputs ,
                     forceLowercase: false,
                 })
             })
@@ -1553,22 +1578,22 @@ var info=new Vue({
                 'design':{},
                 'usage':{},
             }
-            metadata.overview.name = this.metadata.overview.name
-            metadata.overview.version = this.metadata.overview.version
-            metadata.overview.modelType = this.metadata.overview.modelType
+            metadata.overview.name = this.metadataTemp.overview.name.trim()
+            metadata.overview.version = this.metadataTemp.overview.version.trim()
+            metadata.overview.modelType = this.metadataTemp.overview.modelType.trim()
             metadata.overview.modelDomain = $("#modelDomainInput").val().split(",");
-            metadata.overview.scale = this.metadata.overview.scale
+            metadata.overview.scale = this.metadataTemp.overview.scale.trim()
 
-            metadata.design.purpose = this.metadata.design.purpose
+            metadata.design.purpose = this.metadataTemp.design.purpose.trim()
             metadata.design.principles = $("#principlesInput").val().split(",");
             metadata.design.incorporatedModels = $("#incorporatedModelsInput").val().split(",");
-            metadata.design.framework = this.metadata.design.framework
+            metadata.design.framework = this.metadataTemp.design.framework.trim()
             metadata.design.process = $("#processInput").val().split(",");
 
-            metadata.usage.information = this.metadata.usage.information
-            metadata.usage.initialization = this.metadata.usage.initialization
-            metadata.usage.hardware = this.metadata.usage.hardware
-            metadata.usage.software = this.metadata.usage.software
+            metadata.usage.information = this.metadataTemp.usage.information.trim()
+            metadata.usage.initialization = this.metadataTemp.usage.initialization.trim()
+            metadata.usage.hardware = this.metadataTemp.usage.hardware.trim()
+            metadata.usage.software = this.metadataTemp.usage.software.trim()
             metadata.usage.inputs = $("#inputsInput").val().split(",");
             metadata.usage.outputs = $("#outputsInput").val().split(",");
 
@@ -1597,7 +1622,7 @@ var info=new Vue({
             ).then(
                 res => {
                     let data = res.data.data
-                    this.insertMetaData(data)
+                    this.insertMetaData(this.metadataTemp, data)
                 }
             )
         },
@@ -3296,18 +3321,27 @@ var info=new Vue({
             this.lightenContributor = contributor
             this.$set(this.contributors,index,tmp)
         },
+
+        checkObjAllProptNull(obj){
+            let pros = Object.values(obj)
+            return pros.every( ele => {
+                return ele === null
+            })
+        }
     },
 
     created(){
         this.getContributors()
+
+        this.modelInfo = modelInfo;
+        this.relatedModelItems = modelItemList;
+        this.metadata = modelInfo.metadata
     },
 
     mounted() {
         let vthis = this
 
-        this.modelInfo = modelInfo;
-        this.relatedModelItems = modelItemList;
-        this.metadata = modelInfo.metadata
+
         this.setRelatedModelItemsPage();
 
         this.lightenContributor = author
