@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -676,6 +677,50 @@ public class ComputableModelService {
         }
 
         return null;
+    }
+
+    public String deployToGivenServer(String id,String ip,String port) {
+        ComputableModel computableModel = computableModelDao.findFirstByOid(id);
+        //String saveFilePath = ConceptualModelService.class.getClassLoader().getResource("").getPath() + "static/upload/computableModel/Package" + computableModel.getResources().get(0);
+        String saveFilePath = resourcePath + "/computableModel/Package" + computableModel.getResources().get(0);
+        String[] paths = computableModel.getResources().get(0).split("/");
+        String fileName = paths[paths.length - 1];
+        FileSystemResource deployPackage = new FileSystemResource(saveFilePath);
+        String deployUrl = "http://" + ip + ":" + port + "/modelser";
+
+        MultiValueMap<String, Object> part = new LinkedMultiValueMap<>();
+        part.add("file_model", deployPackage);
+
+        RestTemplate restTemplate = new RestTemplate();
+        try {
+            String deployResultStr = restTemplate.postForObject(deployUrl, part, String.class);
+            JSONObject deployResult = JSONObject.parseObject(deployResultStr);
+
+            if (deployResult.getInteger("code") == 1) {
+                if (deployResult.getString("result").equals("suc")) {
+                    String mid = deployResult.getJSONObject("data").getString("_id");
+                    JSONObject modelInfo = deployResult.getJSONObject("data").getJSONObject("ms_model");
+                    String md5 = modelInfo.getString("p_id");
+
+                    computableModel.setDeploy(true);
+                    computableModel.setMd5(md5);
+                    computableModel.setModelserUrl("http://" + ip + ":" + port + "/modelser/" + mid);
+                    computableModel.setLastModifyTime(new Date());
+
+                    computableModelDao.save(computableModel);
+
+                    return "suc";
+
+                }
+            }
+
+            return null;
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return null;
+        }
+
+
     }
 
     public JSONObject insert(List<MultipartFile> files, JSONObject jsonObject, String uid) {

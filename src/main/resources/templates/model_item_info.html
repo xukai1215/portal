@@ -20,7 +20,8 @@
     <link rel="stylesheet" href="/static/css/base/relate_item.css">
     <link rel="stylesheet" href="/static/css/page/model_item_info.css">
     <link rel="stylesheet" href="/static/css/common/userModule.css">
-    <!--<link rel="stylesheet" href="/static/css/common/wzhStyle.css">-->
+    <link rel="stylesheet" href="/static/css/common/wzhStyle.css">
+    <link rel="stylesheet" href="/static/css/common/wzhFlexContainer.css">
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/footerResponse.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="/static/css/common/navbar.css"/>
 
@@ -122,11 +123,67 @@
         .el-tabs__item > div > div > .el-switch__label.is-active{
             color: #13ce66;
         }
+
+        .uploadCenter{
+            display: flex;
+            flex-direction: column;
+            align-self: center;
+        }
+
+        .uploadCenter .el-upload.el-upload--text{
+            display: flex;
+            flex-direction: column;
+            align-self: center;
+            justify-content: center;
+        }
+
+        .el-textarea__inner::-webkit-input-placeholder { /* WebKit browsers */
+            font-style: normal;
+        }
+
+        .el-textarea__inner::-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+            font-style: normal;
+        }
+
+        .el-textarea__inner::-moz-placeholder { /* Mozilla Firefox 19+ */
+            font-style: normal;
+        }
+
+        .el-textarea__inner::-ms-input-placeholder { /* Internet Explorer 10+ */
+            font-style: normal;
+        }
+
+        .localization .tox-tinymce{
+            border: none;
+        }
+
+        .localization .el-table td{
+            padding: 0;
+        }
+        .localization .el-table .cell{
+            padding: 0;
+        }
+        .localization .el-button{
+            padding-left:0;
+            padding-right:0;
+            border: none;
+            -webkit-border-radius: 0;
+            -moz-border-radius: 0;
+            border-radius: 0;
+        }
+        .localization .el-card{
+            box-shadow: none;
+            -webkit-box-shadow: none;
+        }
+        .localization .el-card__body{
+            padding: 0;
+        }
+
     </style>
 
 </head>
 <body style="overflow-x: hidden;">
-<div id="app">
+<div id="app" v-cloak>
     <div th:replace="fragments/navbar :: unlog"></div>
 
     <div th:replace="fragments/backToTop :: backtop-down"></div>
@@ -220,13 +277,12 @@
                     <div class="el-row"
                          style="margin-bottom: 3px;height: 40px;display: flex;justify-content: center;align-items: center;">
                         <div class="el-col ">
-                            <img th:src="${user.image}==''?'/static/img/icon/default.png':${user.image}"
+                            <img :src="lightenContributor.image==''?'/static/img/icon/default.png':lightenContributor.image"
                                  class="round_icon" style="width:40px;height: 40px;float:left;">
                         </div>
                         <div class="el-col">
                             <div class="pull-left" style="display: block;margin-left: 15px;">
-                                <a th:href="'/profile/'+${user.userId}"><h4 th:text="${user.name}" style="padding: 0;">Tom
-                                    Marvolo Riddle</h4></a>
+                                <a :href="'/profile/'+lightenContributor.userId"><h4 style="padding: 0;">{{lightenContributor.name}}</h4></a>
                             </div>
                         </div>
                     </div>
@@ -234,6 +290,21 @@
                         <div class="text-center">
                             <h5 th:if="${history!=true}" th:text="'contributed at '+${date}">contributed at 2018-7-13 14:32:18 </h5>
                             <h5 th:if="${history==true}" th:text="'modified at '+${date}">modified at 2018-7-13 14:32:18 </h5>
+                        </div>
+                    </div>
+                    <div class="flexAlignEnd flexJustCenter">
+                        <div class="wzhScrollbar " style="max-height: 135px">
+                            <div v-if="contributors!=null&&contributors.length>0" v-for="(contributor,index) in contributors" :key="contributor.userId"
+                                 class="inlineBlock cursorPointer" style="margin: 10px 5px;">
+                                <el-tooltip effect="dark"
+                                            :content="contributor.name"
+                                            placement="bottom">
+                                    <img :src="contributor.image==''?'/static/img/icon/default.png':contributor.image"
+                                         @click="riseUser(contributor,index)"
+                                         class="round_icon iconImg">
+                                </el-tooltip>
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -320,9 +391,18 @@
                     <div class="head_text">
                         <h4>Classification(s)</h4>
                     </div>
-                    <!--<span class="blockEdit">-->
-                        <!--<el-button type="primary" icon="el-icon-edit" @click="getClassifications" circle></el-button>-->
-                    <!--</span>-->
+                    <span class="blockEdit">
+                        <el-tooltip popper-class="fontsize-15" content="Edit" effect="light" placement="top">
+                            <el-button th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock!=true}"
+                                       type="primary" icon="el-icon-edit" @click="getClassifications" circle></el-button>
+                        </el-tooltip>
+                        <el-tooltip popper-class="fontsize-15"
+                                    content="There is another version haven't been reviewed, you can edit it later or contact us."
+                                    effect="light" placement="top">
+                            <el-button th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock==true}"
+                                   icon="el-icon-edit" plain circle></el-button>
+                        </el-tooltip>
+                    </span>
                 </div>
                 <div class="block_content" style="margin-top:20px;">
                     <div th:each="classS:${classifications2}">
@@ -335,7 +415,6 @@
                             </el-breadcrumb-item>
                         </el-breadcrumb>
                     </div>
-
                 </div>
             </div>
 
@@ -362,9 +441,18 @@
                         </el-dropdown-menu>
                     </el-dropdown>
                     <span class="fa fa-language" style="background-color:white;padding-left:10px;float:right;font-size:23px;"></span>
-                    <!--<span class="blockEdit">-->
-                    <!--<el-button type="primary" icon="el-icon-edit" @click="getClassifications" circle></el-button>-->
-                    <!--</span>-->
+                    <span class="blockEdit">
+                         <el-tooltip popper-class="fontsize-15" content="Edit" effect="light" placement="top">
+                            <el-button th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock!=true}"
+                                       type="primary" icon="el-icon-edit" @click="getDescription" circle></el-button>
+                        </el-tooltip>
+                        <el-tooltip popper-class="fontsize-15"
+                                    content="There is another version haven't been reviewed, you can edit it later or contact us."
+                                    effect="light" placement="top">
+                            <el-button th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock==true}"
+                                       icon="el-icon-edit" plain circle></el-button>
+                        </el-tooltip>
+                    </span>
                 </div>
                 <div class="block_content">
                     <div v-if="detail==''" th:utext="${detail}" id="detail" class="detailIntroducePanel">
@@ -377,6 +465,177 @@
                                                                                               style="margin-left: 10px;color:red;font-weight: bold"
                                                                                               aria-hidden="true"></i></a>
                 </div>
+            </div>
+
+            <div id="metadata" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Model Metadata</h4>
+                    </div>
+                    <span class="blockEdit">
+                         <el-tooltip popper-class="fontsize-15" content="Edit" effect="light" placement="top">
+                            <el-button th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock!=true}"
+                                       type="primary" icon="el-icon-edit" @click="getMetadata" circle></el-button>
+                        </el-tooltip>
+                        <el-tooltip popper-class="fontsize-15"
+                                    content="There is another version haven't been reviewed, you can edit it later or contact us."
+                                    effect="light" placement="top">
+                            <el-button th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock==true}"
+                                       icon="el-icon-edit" plain circle></el-button>
+                        </el-tooltip>
+                    </span>
+                </div>
+                <el-tabs class="block_content"  v-model="metaDataTab" type="border-card">
+                    <el-tab-pane label="Overview" name="first">
+                        <table class="wzhTable" style="width: 100%" v-if="!checkObjAllProptNull(metadata.overview)">
+                            <tr v-if="metadata.overview.name!=undefined&&metadata.overview.name!=''">
+                                <th class="tableSubTitle">Name</th>
+                                <th class="tableContent wzhScrollbar" style="max-width: 660px;">
+                                    {{metadata.overview.name}}
+                                </th>
+                            </tr>
+                            <tr v-if="metadata.overview.version!=undefined&&metadata.overview.version!=''">
+                                <th class="tableSubTitle">Version</th>
+                                <th class="tableContent wzhScrollbar" style="max-width: 660px;">
+                                    {{metadata.overview.version}}
+                                </th>
+                            </tr>
+                            <tr v-if="metadata.overview.modelType!=undefined&&metadata.overview.modelType!=''">
+                                <th class="tableSubTitle">Model Type</th>
+                                <th class="tableContent wzhScrollbar" style="max-width: 660px;">
+                                    {{metadata.overview.modelType}}
+                                </th>
+                            </tr>
+                            <tr v-if="metadata.overview.modelDomain!=undefined&&metadata.overview.modelDomain.length>0">
+                                <th class="tableSubTitle">Model Domain</th>
+                                <th class="tableContent wzhScrollbar" style="max-width: 660px;">
+                                    <div class="flexJustStart cell">
+                                        <div class="wzhTag flexCenter" v-for="domain in metadata.overview.modelDomain">
+                                            {{domain}}
+                                        </div>
+                                    </div>
+                                </th>
+                            </tr>
+                            <tr v-if="metadata.overview.scale!=undefined&&metadata.overview.scale!=''">
+                                <th class="tableSubTitle">Sacle</th>
+                                <th class="tableContent wzhScrollbar" style="max-width: 660px;">
+                                    {{metadata.overview.scale}}
+                                </th>
+                            </tr>
+                        </table>
+                        <div class="text-center" v-else>
+                            <p>There is no overview about this model.
+                                You can <span><a class="cursorPointer" @click="getMetadata">click</a></span> to add overview.</p>
+                        </div>
+                    </el-tab-pane>
+                    <el-tab-pane label="Design" name="second">
+                        <table class="wzhTable" style="width: 100%" v-if="!checkObjAllProptNull(metadata.design)">
+                            <tr v-if="metadata.design.purpose!=undefined&&metadata.design.purpose!=''">
+                                <th class="tableSubTitle">Purpose</th>
+                                <th class="tableContent wzhScrollbar" style="max-width: 660px;">
+                                    {{metadata.design.purpose}}
+                                </th>
+                            </tr>
+                            <tr v-if="metadata.design.principles!=undefined&&metadata.design.principles.length>0">
+                                <th class="tableSubTitle">Principles</th>
+                                <th class="tableContent wzhScrollbar" style="max-width: 660px;">
+                                    <div class="flexJustStart cell">
+                                        <div class="wzhTag flexCenter" v-for="principle in metadata.design.principles">
+                                            {{principle}}
+                                        </div>
+                                    </div>
+
+                                </th>
+                            </tr>
+                            <tr v-if="metadata.design.incorporatedModels!=undefined&&metadata.design.incorporatedModels.length>0">
+                                <th class="tableSubTitle">Incorporated Models</th>
+                                <th class="tableContent wzhScrollbar" style="max-width: 660px;">
+                                    <div class="flexJustStart cell">
+                                        <div class="wzhTag flexCenter"
+                                             v-for="incorporatedModel in metadata.design.incorporatedModels">
+                                            {{incorporatedModel}}
+                                        </div>
+                                    </div>
+
+                                </th>
+                            </tr>
+                            <tr v-if="metadata.design.framework!=undefined&&metadata.design.framework!=''">
+                                <th class="tableSubTitle">Model part of larger framework:</th>
+                                <th class="tableContent wzhScrollbar" style="max-width: 660px;">
+                                    {{metadata.design.framework}}
+                                </th>
+                            </tr>
+                            <tr v-if="metadata.design.process!=undefined&&metadata.design.process.length>0">
+                                <th class="tableSubTitle">Incorporated Models</th>
+                                <th class="tableContent wzhScrollbar" style="max-width: 660px;">
+                                    <div class="flexJustStart cell">
+                                        <div class="wzhTag flexCenter" v-for="process in metadata.design.process">
+                                            {{process}}
+                                        </div>
+                                    </div>
+                                </th>
+                            </tr>
+                        </table>
+                        <div class="text-center" v-else>
+                            <p>There is no design info about this model.
+                                You can <span><a class="cursorPointer" @click="getMetadata">click</a></span> to add overview.</p>
+                        </div>
+                    </el-tab-pane>
+
+                    <el-tab-pane label="Usage" name="third">
+                        <table class="wzhTable" style="width: 100%" v-if="!checkObjAllProptNull(metadata.usage)">
+                            <tr v-if="metadata.usage.information!=undefined&&metadata.usage.information!=''">
+                                <th class="tableSubTitle">Information</th>
+                                <th class="tableContent wzhScrollbar" style="max-width: 660px;">
+                                    {{metadata.usage.information}}
+                                </th>
+                            </tr>
+                            <tr v-if="metadata.usage.initialization!=undefined&&metadata.usage.initialization!=''">
+                                <th class="tableSubTitle">Initialization</th>
+                                <th class="tableContent wzhScrollbar" style="max-width: 660px;">
+                                    {{metadata.usage.initialization}}
+                                </th>
+                            </tr>
+                            <tr v-if="metadata.usage.hardware!=undefined&&metadata.usage.hardware!=''">
+                                <th class="tableSubTitle">Hardware Requirements</th>
+                                <th class="tableContent wzhScrollbar" style="max-width: 660px;">
+                                    {{metadata.usage.hardware}}
+                                </th>
+                            </tr>
+                            <tr v-if="metadata.usage.software!=undefined&&metadata.usage.software!=''">
+                                <th class="tableSubTitle">Software Requirements</th>
+                                <th class="tableContent wzhScrollbar" style="max-width: 660px;">
+                                    {{metadata.usage.software}}
+                                </th>
+                            </tr>
+                            <tr v-if="metadata.usage.inputs!=undefined&&metadata.usage.inputs.length>0">
+                                <th class="tableSubTitle">Inputs</th>
+                                <th class="tableContent wzhScrollbar" style="max-width: 660px;">
+                                    <div class="flexJustStart cell">
+                                        <div class="wzhTag flexCenter" v-for="input in metadata.usage.inputs">
+                                            {{input}}
+                                        </div>
+                                    </div>
+                                </th>
+                            </tr>
+                            <tr v-if="metadata.usage.outputs!=undefined&&metadata.usage.outputs.length>0">
+                                <th class="tableSubTitle">Outputs</th>
+                                <th class="tableContent wzhScrollbar" style="max-width: 660px;">
+                                    <div class="flexJustStart cell">
+                                        <div class="wzhTag flexCenter" v-for="output in metadata.usage.outputs">
+                                            {{output}}
+                                        </div>
+                                    </div>
+                                </th>
+                            </tr>
+                        </table>
+                        <div class="text-center" v-else>
+                            <p>There is no usage info about this model.
+                                You can <span><a class="cursorPointer" @click="getMetadata">click</a></span> to add overview.</p>
+                        </div>
+                    </el-tab-pane>
+                </el-tabs>
+
             </div>
 
             <div v-cloak th:if="${history!=true}" id="related_models" class="detail_block">
@@ -430,20 +689,43 @@
                                         simulations and predictions.</p>
                                 </div>
                             </div>
-                            <el-button @click="addRelation(4)" type="primary" icon="el-icon-plus"
+                            <el-button th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock!=true}" @click="addRelation(4)" type="primary" icon="el-icon-plus"
                                        style="width: 100%">
                                 Edit Related Computable Model
                             </el-button>
+                            <el-tooltip th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock==true}"
+                                        popper-class="fontsize-15"
+                                        content="There is another version haven't been reviewed, you can edit it later or contact us."
+                                        effect="light" placement="top">
+                                <el-button plain type="info" icon="el-icon-plus"
+                                           style="width: 100%">
+                                    Edit Related Computable Model
+                                </el-button>
+                            </el-tooltip>
+
+
                         </div>
                         <div class="text-center" th:if="${#lists.size(computableModels)}==0">
                             <h5 style="margin-bottom: 10px;display: inline-block;">
                                 There is no related computable model. You can link computable models.
                             </h5>
-                            <button class="btn btn-default" type="button"
+                            <button th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock!=true}" class="btn btn-default" type="button"
                                     style="display: inline-block;" @click="addRelation(4)">
 
                                 <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
                             </button>
+                            <el-tooltip th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock==true}"
+                                        popper-class="fontsize-15"
+                                        content="There is another version haven't been reviewed, you can edit it later or contact us."
+                                        effect="light" placement="top">
+                                <button class="btn btn-default" type="button"
+                                        style="display: inline-block;">
+
+                                    <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
+                                </button>
+                            </el-tooltip>
+
+
                         </div>
 
                     </el-tab-pane>
@@ -471,20 +753,44 @@
                                         simulations and predictions.</p>
                                 </div>
                             </div>
-                            <el-button @click="addRelation(2)" type="primary" icon="el-icon-plus"
+                            <el-button th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock!=true}"
+                                       @click="addRelation(2)" type="primary" icon="el-icon-plus"
                                        style="width: 100%">
                                 Edit Related Conceptual Model
                             </el-button>
+                            <el-tooltip th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock==true}"
+                                        popper-class="fontsize-15"
+                                        content="There is another version haven't been reviewed, you can edit it later or contact us."
+                                        effect="light" placement="top">
+                                <el-button plain type="info" icon="el-icon-plus"
+                                           style="width: 100%">
+                                    Edit Related Conceptual Model
+                                </el-button>
+                            </el-tooltip>
+
+
                         </div>
                         <div class="text-center" th:if="${#lists.size(conceptualModels)}==0">
                             <h5 style="margin-bottom: 10px;display: inline-block;">
                                 There is no related conceptual model. You can link conceptual models.
                             </h5>
-                            <button class="btn btn-default" type="button"
+                            <button th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock!=true}"
+                                    class="btn btn-default" type="button"
                                     style="display: inline-block;" @click="addRelation(2)">
 
                                 <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
                             </button>
+                            <el-tooltip th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock==true}"
+                                        popper-class="fontsize-15"
+                                        content="There is another version haven't been reviewed, you can edit it later or contact us."
+                                        effect="light" placement="top">
+                                <button class="btn btn-default" type="button"
+                                        style="display: inline-block;" >
+
+                                    <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
+                                </button>
+                            </el-tooltip>
+
                         </div>
                     </el-tab-pane>
                     <el-tab-pane name="Logical Model">
@@ -510,20 +816,43 @@
                                         simulations and predictions.</p>
                                 </div>
                             </div>
-                            <el-button @click="addRelation(3)" type="primary" icon="el-icon-plus"
+                            <el-button th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock!=true}"
+                                       @click="addRelation(3)" type="primary" icon="el-icon-plus"
                                        style="width: 100%">
                                 Edit Related Logical Model
                             </el-button>
+                            <el-tooltip th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock==true}"
+                                        popper-class="fontsize-15"
+                                        content="There is another version haven't been reviewed, you can edit it later or contact us."
+                                        effect="light" placement="top">
+                                <el-button plain type="info" icon="el-icon-plus"
+                                           style="width: 100%">
+                                    Edit Related Logical Model
+                                </el-button>
+                            </el-tooltip>
+
+
                         </div>
                         <div class="text-center" th:if="${#lists.size(logicalModels)}==0">
                             <h5 style="margin-bottom: 10px;display: inline-block;">
                                 There is no related logical model. You can link logical models.
                             </h5>
-                            <button class="btn btn-default" type="button" style="display: inline-block;"
+                            <button th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock!=true}"
+                                    class="btn btn-default" type="button" style="display: inline-block;"
                                     @click="addRelation(3)">
 
                                 <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
                             </button>
+                            <el-tooltip th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock==true}"
+                                        popper-class="fontsize-15"
+                                        content="There is another version haven't been reviewed, you can edit it later or contact us."
+                                        effect="light" placement="top">
+                                <button class="btn btn-default" type="button" style="display: inline-block;">
+
+                                    <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
+                                </button>
+                            </el-tooltip>
+
                         </div>
                     </el-tab-pane>
 
@@ -661,10 +990,22 @@
                                 </div>
                                 <div id="modelRelationGraph" style="height:100%;"></div>
                             </div>
-                            <el-button @click="addRelation(1)" type="primary" icon="el-icon-plus"
+                            <el-button th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock!=true}"
+                                       @click="addRelation(1)" type="primary" icon="el-icon-plus"
                                        style="width: 100%">
                                 Edit Related Model Item
                             </el-button>
+                            <el-tooltip th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock==true}"
+                                        popper-class="fontsize-15"
+                                        content="There is another version haven't been reviewed, you can edit it later or contact us."
+                                        effect="light" placement="top">
+                                <el-button plain type="info" icon="el-icon-plus"
+                                           style="width: 100%">
+                                    Edit Related Model Item
+                                </el-button>
+                            </el-tooltip>
+
+
                             <!--<el-button v-if="!modelRelationGraphShow" @click="generateModelRelationGraph" type="success" icon="el-icon-picture-outline" style="margin-left:1%;width: 49.5%">-->
                                 <!--Relation Graph-->
                             <!--</el-button><el-button v-if="modelRelationGraphShow" @click="closeModelRelationGraph" type="danger" style="margin-left:1%;width: 49.5%">-->
@@ -676,11 +1017,22 @@
                             <h5 style="margin-bottom: 10px;display: inline-block;">
                                 There is no related model item. You can link model items.
                             </h5>
-                            <button class="btn btn-default" type="button"
+                            <button th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock!=true}"
+                                    class="btn btn-default" type="button"
                                     style="display: inline-block;" @click="addRelation(1)">
 
                                 <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
                             </button>
+                            <el-tooltip th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock==true}"
+                                        popper-class="fontsize-15"
+                                        content="There is another version haven't been reviewed, you can edit it later or contact us."
+                                        effect="light" placement="top">
+                                <button class="btn btn-default" type="button"
+                                        style="display: inline-block;" >
+
+                                    <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
+                                </button>
+                            </el-tooltip>
                         </div>
                     </el-tab-pane>
                     <el-tab-pane name="Data Item">
@@ -705,39 +1057,56 @@
                                         simulations and predictions.</p>
                                 </div>
                             </div>
-                            <el-button @click="addRelation(9)" type="primary" icon="el-icon-plus"
+                            <el-button th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock!=true}"
+                                       @click="addRelation(9)" type="primary" icon="el-icon-plus"
                                        style="width: 100%">
                                 Edit Related Data Item
                             </el-button>
+                            <el-tooltip th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock==true}"
+                                        popper-class="fontsize-15"
+                                        content="There is another version haven't been reviewed, you can edit it later or contact us."
+                                        effect="light" placement="top">
+                                <el-button plain type="info" icon="el-icon-plus"
+                                           style="width: 100%">
+                                    Edit Related Data Item
+                                </el-button>
+                            </el-tooltip>
+
                         </div>
                         <div class="text-center" th:if="${#lists.size(dataItems)}==0">
                             <h5 style="margin-bottom: 10px;display: inline-block;">
                                 There is no related data item. You can link data items.
                             </h5>
-                            <button class="btn btn-default" type="button"
+                            <button th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock!=true}"
+                                    class="btn btn-default" type="button"
                                     style="display: inline-block;" @click="addRelation(9)">
 
                                 <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
                             </button>
+                            <el-tooltip th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock==true}"
+                                        popper-class="fontsize-15"
+                                        content="There is another version haven't been reviewed, you can edit it later or contact us."
+                                        effect="light" placement="top">
+                                <button class="btn btn-default" type="button"
+                                        style="display: inline-block;">
+
+                                    <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
+                                </button>
+                            </el-tooltip>
+
                         </div>
                     </el-tab-pane>
                 </el-tabs>
             </div>
 
-            <div v-cloak th:if="${history!=true}" id="related_knowledge" class="detail_block">
+            <div v-cloak th:if="${history!=true}" id="related_resource" class="detail_block">
                 <div class="block_head">
                     <div class="head_text">
-                        <h4>Related Knowledge</h4>
+                        <h4>Related Resource</h4>
                     </div>
                 </div>
                 <el-tabs class="block_content" v-model="activeName2" type="border-card" stretch="true">
-                    <el-tab-pane name="Concept & Semantic">
-                        <div slot="label">Concept & Semantic
-                            <span class="el-badge__content el-badge__content--undefined" th:style="@{(${#lists.size(concepts)==0} ? 'background-color: #bbbbbb' : '')}"
-                                  th:text="${#lists.size(concepts)}">
-                            </span>
-                        </div>
-                        <div th:if="${#lists.size(concepts)}!=0">
+                    <div th:if="${#lists.size(concepts)}!=0">
                             <div class="list_panel clearfix" th:each="model:${concepts}">
                                 <a th:href="'/repository/concept/'+${model.oid}" class="img">
                                     <img src="/static/img/model/semantics.png">
@@ -754,138 +1123,146 @@
                                         simulations and predictions.</p>
                                 </div>
                             </div>
-                            <el-button @click="addRelation(5)" type="primary" icon="el-icon-plus"
-                                       style="width: 100%">
-                                Edit Related Concept & Semantic
-                            </el-button>
                         </div>
-                        <div class="text-center" th:if="${#lists.size(concepts)}==0">
-                            <h5 style="margin-bottom: 10px;display: inline-block;">
-                                There is no related concept & semantic. You can link concepts or semantics.
-                            </h5>
-                            <button class="btn btn-default" type="button"
-                                    style="display: inline-block;" @click="addRelation(5)">
 
-                                <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
-                            </button>
-                        </div>
-                    </el-tab-pane>
-                    <el-tab-pane name="Spatial Reference">
-                        <div slot="label">Spatial Reference
-                            <span class="el-badge__content el-badge__content--undefined" th:style="@{(${#lists.size(spatialReferences)==0} ? 'background-color: #bbbbbb' : '')}"
-                                  th:text="${#lists.size(spatialReferences)}">
-                            </span>
-                        </div>
-                        <div th:if="${#lists.size(spatialReferences)}!=0">
-                            <div class="list_panel clearfix" th:each="model:${spatialReferences}">
-                                <a th:href="'/repository/spatialReference/'+${model.oid}" class="img">
-                                    <img src="/static/img/model/spatialreference.png">
-                                </a>
-                                <div class="info" style="margin-top:0px;">
-                                    <a th:href="'/repository/spatialReference/'+${model.oid}"
-                                       th:text="${model.name}">Ground Water Flow System</a>
-                                    <p style="margin-top: 0px"
-                                       th:text="${model.description!=null?model.description:model.wkname}">ANN-CA uses
-                                        the artificial
-                                        neural network method to extract
-                                        land use change rules in the study area, and then applies the rules to
-                                        subsequent
-                                        simulations and predictions.</p>
-                                </div>
+                    <div th:if="${#lists.size(spatialReferences)}!=0">
+                        <div class="list_panel clearfix" th:each="model:${spatialReferences}">
+                            <a th:href="'/repository/spatialReference/'+${model.oid}" class="img">
+                                <img src="/static/img/model/spatialreference.png">
+                            </a>
+                            <div class="info" style="margin-top:0px;">
+                                <a th:href="'/repository/spatialReference/'+${model.oid}"
+                                   th:text="${model.name}">Ground Water Flow System</a>
+                                <p style="margin-top: 0px"
+                                   th:text="${model.description!=null?model.description:model.wkname}">ANN-CA uses
+                                    the artificial
+                                    neural network method to extract
+                                    land use change rules in the study area, and then applies the rules to
+                                    subsequent
+                                    simulations and predictions.</p>
                             </div>
-                            <el-button @click="addRelation(6)" type="primary" icon="el-icon-plus"
-                                       style="width: 100%">
-                                Edit Related Spatial Reference
-                            </el-button>
                         </div>
-                        <div class="text-center" th:if="${#lists.size(spatialReferences)}==0">
-                            <h5 style="margin-bottom: 10px;display: inline-block;">
-                                There is no related spatial reference. You can link spatial references.
-                            </h5>
-                            <button class="btn btn-default" type="button"
-                                    style="display: inline-block;" @click="addRelation(6)">
+                    </div>
 
-                                <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
-                            </button>
-                        </div>
-                    </el-tab-pane>
-                    <el-tab-pane name="Data Template">
-                        <div slot="label">Data Template
-                            <span class="el-badge__content el-badge__content--undefined" th:style="@{(${#lists.size(templates)==0} ? 'background-color: #bbbbbb' : '')}"
-                                  th:text="${#lists.size(templates)}">
-                            </span>
-                        </div>
-                        <div th:if="${#lists.size(templates)}!=0">
-                            <div class="list_panel clearfix" th:each="model:${templates}">
-                                <a th:href="'/repository/template/'+${model.oid}" class="img">
-                                    <img src="/static/img/model/template.png">
-                                </a>
-                                <div class="info" style="margin-top:0px;">
-                                    <a th:href="'/repository/template/'+${model.oid}"
-                                       th:text="${model.name}">Ground Water Flow System</a>
-                                    <p style="margin-top: 0px" th:text="${model.description}">ANN-CA
-                                        uses the artificial
-                                        neural network method to extract
-                                        land use change rules in the study area, and then applies the rules to
-                                        subsequent
-                                        simulations and predictions.</p>
-                                </div>
+                    <div th:if="${#lists.size(templates)}!=0">
+                        <div class="list_panel clearfix" th:each="model:${templates}">
+                            <a th:href="'/repository/template/'+${model.oid}" class="img">
+                                <img src="/static/img/model/template.png">
+                            </a>
+                            <div class="info" style="margin-top:0px;">
+                                <a th:href="'/repository/template/'+${model.oid}"
+                                   th:text="${model.name}">Ground Water Flow System</a>
+                                <p style="margin-top: 0px" th:text="${model.description}">ANN-CA
+                                    uses the artificial
+                                    neural network method to extract
+                                    land use change rules in the study area, and then applies the rules to
+                                    subsequent
+                                    simulations and predictions.</p>
                             </div>
-                            <el-button @click="addRelation(7)" type="primary" icon="el-icon-plus"
-                                       style="width: 100%">
-                                Edit Related Data Template
-                            </el-button>
                         </div>
-                        <div class="text-center" th:if="${#lists.size(templates)}==0">
-                            <h5 style="margin-bottom: 10px;display: inline-block;">
-                                There is no related data template. You can link data templates.
-                            </h5>
-                            <button class="btn btn-default" type="button"
-                                    style="display: inline-block;" @click="addRelation(7)">
+                    </div>
 
-                                <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
-                            </button>
-                        </div>
-                    </el-tab-pane>
-                    <el-tab-pane name="Unit & Metric">
-                        <div slot="label">Unit & Metric
-                            <span class="el-badge__content el-badge__content--undefined" th:style="@{(${#lists.size(units)==0} ? 'background-color: #bbbbbb' : '')}"
-                                  th:text="${#lists.size(units)}">
-                            </span>
-                        </div>
-                        <div th:if="${#lists.size(units)}!=0">
-                            <div class="list_panel clearfix" th:each="model:${units}">
-                                <a th:href="'/repository/unit/'+${model.oid}" class="img">
-                                    <img src="/static/img/model/unit.png">
-                                </a>
-                                <div class="info" style="margin-top:0px;">
-                                    <a th:href="'/repository/unit/'+${model.oid}"
-                                       th:text="${model.name}">Ground Water Flow System</a>
-                                    <p style="margin-top: 0px"
-                                       th:text="${model.description}">
-                                        ANN-CA uses the artificial
-                                        neural network method to extract
-                                        land use change rules in the study area, and then applies the rules to
-                                        subsequent
-                                        simulations and predictions.</p>
-                                </div>
+                    <div th:if="${#lists.size(units)}!=0">
+                        <div class="list_panel clearfix" th:each="model:${units}">
+                            <a th:href="'/repository/unit/'+${model.oid}" class="img">
+                                <img src="/static/img/model/unit.png">
+                            </a>
+                            <div class="info" style="margin-top:0px;">
+                                <a th:href="'/repository/unit/'+${model.oid}"
+                                   th:text="${model.name}">Ground Water Flow System</a>
+                                <p style="margin-top: 0px"
+                                   th:text="${model.description}">
+                                    ANN-CA uses the artificial
+                                    neural network method to extract
+                                    land use change rules in the study area, and then applies the rules to
+                                    subsequent
+                                    simulations and predictions.</p>
                             </div>
-                            <el-button @click="addRelation(8)" type="primary" icon="el-icon-plus"
-                                       style="width: 100%">
-                                Edit Related Unit & Metrics
-                            </el-button>
                         </div>
-                        <div class="text-center" th:if="${#lists.size(units)}==0">
-                            <h5 style="margin-bottom: 10px;display: inline-block;">
-                                There is no related Unit & Metric. You can link units or metrics.
-                            </h5>
+                    </div>
+
+                    <div th:if="${#lists.size(dataSpaceFiles)}!=0">
+                        <div class="list_panel clearfix" th:each="model:${dataSpaceFiles}">
+                            <a th:href="${model.url}" class="img">
+                                <i class="fa fa-file-o" style="font-size: 60px;margin: 15px 0 0 20px;color: #11c2fd"></i>
+                            </a>
+                            <div class="info" style="margin-top:0px;">
+                                <a th:href="${model.url}"
+                                   th:text="${model.name}">Ground Water Flow System</a>
+<!--                                <p style="margin-top: 0px"-->
+<!--                                   th:text="${model.description}">-->
+<!--                                    ANN-CA uses the artificial-->
+<!--                                    neural network method to extract-->
+<!--                                    land use change rules in the study area, and then applies the rules to-->
+<!--                                    subsequent-->
+<!--                                    simulations and predictions.</p>-->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div th:if="${#lists.size(exLinks)}!=0">
+                        <div class="list_panel clearfix" th:each="model:${exLinks}">
+                            <a th:href="${model.content}" class="img">
+                                <i class="fa fa-link" style="font-size: 60px;margin: 15px 0 0 20px;color: #11c2fd"></i>
+                            </a>
+                            <div class="info" style="margin-top:0px;">
+                                <a th:href="${model.content}"
+                                   th:text="${model.name}">Ground Water Flow System</a>
+<!--                                <p style="margin-top: 0px"-->
+<!--                                   th:text="${model.description}">-->
+<!--                                    ANN-CA uses the artificial-->
+<!--                                    neural network method to extract-->
+<!--                                    land use change rules in the study area, and then applies the rules to-->
+<!--                                    subsequent-->
+<!--                                    simulations and predictions.</p>-->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center" th:if="${#lists.size(concepts)==0 && #lists.size(spatialReferences)==0 &&
+                    #lists.size(templates)==0 && #lists.size(units)==0 && #lists.size(dataSpaceFiles)==0&& #lists.size(exLinks)==0}">
+                        <h5 style="margin-bottom: 10px;display: inline-block;">
+                            There is no related resource. You can link resource to it.
+                        </h5>
+                        <button th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock!=true}"
+                                class="btn btn-default" type="button"
+                                style="display: inline-block;" @click="addRelatedResouece()">
+
+                            <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
+                        </button>
+                        <el-tooltip th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock==true}"
+                                    popper-class="fontsize-15"
+                                    content="There is another version haven't been reviewed, you can edit it later or contact us."
+                                    effect="light" placement="top">
                             <button class="btn btn-default" type="button"
-                                    style="display: inline-block;" @click="addRelation(8)">
+                                    style="display: inline-block;">
 
                                 <i class="fa fa-plus" aria-hidden="true" style="color:#409eff;"></i>
                             </button>
-                        </div>
-                    </el-tab-pane>
+                        </el-tooltip>
+
+                    </div>
+                    <div th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock!=true}">
+                        <el-button th:unless="${#lists.size(concepts)==0 && #lists.size(spatialReferences)==0 &&
+                         #lists.size(templates)==0 && #lists.size(units)==0 && #lists.size(dataSpaceFiles)==0 && #lists.size(exLinks)==0}"
+                                   @click="addRelatedResouece()" type="primary" icon="el-icon-plus"
+                                   style="width: 100%">
+                            Edit Related Resource
+                        </el-button>
+                    </div>
+
+                    <el-tooltip th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock==true}"
+                                popper-class="fontsize-15"
+                                content="There is another version haven't been reviewed, you can edit it later or contact us."
+                                effect="light" placement="top">
+                        <el-button th:unless="${#lists.size(concepts)==0 && #lists.size(spatialReferences)==0 &&
+                        #lists.size(templates)==0 && #lists.size(units)==0 && #lists.size(dataSpaceFiles)==0 && #lists.size(exLinks)==0}"
+                                   plain type="info" icon="el-icon-plus"
+                                   style="width: 100%">
+                            Edit Related Resource
+                        </el-button>
+                    </el-tooltip>
+
                 </el-tabs>
             </div>
 
@@ -895,6 +1272,18 @@
                     <div class="head_text">
                         <h4>References</h4>
                     </div>
+                    <span class="blockEdit">
+                        <el-tooltip popper-class="fontsize-15" content="Edit" effect="light" placement="top">
+                            <el-button th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock!=true}"
+                                       type="primary" icon="el-icon-edit" @click="getReference" circle></el-button>
+                        </el-tooltip>
+                        <el-tooltip popper-class="fontsize-15"
+                                    content="There is another version haven't been reviewed, you can edit it later or contact us."
+                                    effect="light" placement="top">
+                            <el-button th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock==true}"
+                                       icon="el-icon-edit" plain circle></el-button>
+                        </el-tooltip>
+                    </span>
                 </div>
                 <div class="block_content">
                     <el-table
@@ -1068,13 +1457,12 @@
                     <div class="el-row"
                          style="margin-bottom: 3px;height: 40px;display: flex;justify-content: center;align-items: center;">
                         <div class="el-col ">
-                            <img th:src="${user.image}==''?'/static/img/icon/default.png':${user.image}"
+                            <img :src="lightenContributor.image==''?'/static/img/icon/default.png':lightenContributor.image"
                                  class="round_icon" style="width:40px;height: 40px;float:left;">
                         </div>
                         <div class="el-col">
                             <div class="pull-left" style="display: block;margin-left: 15px;">
-                                <a th:href="'/profile/'+${user.userId}"><h4 th:text="${user.name}" style="padding: 0;">Tom
-                                    Marvolo Riddle</h4></a>
+                                <a :href="'/profile/'+lightenContributor.userId"><h4 style="padding: 0;">{{lightenContributor.name}}</h4></a>
                             </div>
                         </div>
                     </div>
@@ -1083,6 +1471,22 @@
                             <h5 th:if="${history!=true}" th:text="'contributed at '+${date}">contributed at 2018-7-13 14:32:18 </h5>
                             <h5 th:if="${history==true}" th:text="'modified at '+${date}">modified at 2018-7-13 14:32:18 </h5>
                         </div>
+                    </div>
+                    <div class="wzhScrollbar flexAlignEnd" style=" white-space: nowrap;height: 70px">
+                        <div>
+                            <div v-if="contributors!=null&&contributors.length>0" v-for="(contributor,index) in contributors" :key="contributor.userId"
+                                 class="inlineBlock cursorPointer" style="margin: 10px 5px;">
+                                <el-tooltip effect="dark"
+                                            :content="contributor.name"
+                                            placement="bottom">
+                                    <img :src="contributor.image==''?'/static/img/icon/default.png':contributor.image"
+                                         @click="riseUser(contributor,index)"
+                                         class="round_icon iconImg">
+                                </el-tooltip>
+                            </div>
+
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -1476,6 +1880,306 @@
         </div>
     </el-dialog>
 
+    <!--Related resource 弹出框-->
+    <el-dialog v-cloak :visible.sync="relatedResourceVisible" :title="'Link Resource to '+ modelInfo.name" width="70%" style="min-height: 450px">
+
+        <el-card shadow="never" class="box-card" style="width:40%;margin-right: 1%;float: left;">
+            <div slot="header" class="clearfix">
+                <span>Related Items</span>
+
+            </div>
+            <el-table
+                    :data="tableData"
+                    ref="leftTable"
+                    :max-height="tableMaxHeight">
+                <!--<el-table-column type="expand">-->
+                <!--<template slot-scope="props">-->
+                <!--<el-form label-position="left" inline class="demo-table-expand">-->
+                <!--<el-form-item label="Contributor">-->
+                <!--<span>{{ props.row.author }}</span>-->
+                <!--</el-form-item>-->
+
+                <!--</el-form>-->
+                <!--</template>-->
+                <!--</el-table-column>-->
+
+                <el-table-column Label="Relation" v-if="relateType=='modelItem'">
+                    <template slot-scope="props">
+                        <el-tooltip popper-class="fontsize-15" effect="light"
+                                    :content="modelInfo.name +' '+  props.row.relation.toLowerCase() + ' ' + props.row.name"
+                                    placement="top">
+                            <el-select v-model="props.row.relation" value-key="props.row.relation" placeholder="Select">
+                                <el-option-group
+                                        v-for="group in options"
+                                        :key="group.label"
+                                        :label="group.label">
+                                    <el-option
+                                            v-for="item in group.options"
+                                            :key="item.value"
+                                            :label="item.value"
+                                            :value="item.value">
+                                    </el-option>
+                                </el-option-group>
+                            </el-select>
+
+                        </el-tooltip>
+                    </template>
+
+
+                </el-table-column>
+
+                <el-table-column
+                        label="Name"
+                        width="180"
+                >
+                    <template slot-scope="props">
+                        <a class="cursorPointer ellipsis" @click="checkContent(props.row)" target="_blank">{{props.row.name}}</a>
+                    </template>
+                </el-table-column>
+
+                <el-table-column
+                        label="Type"
+                        width="55"
+                >
+                    <template slot-scope="props">
+                        <el-tooltip class="item" effect="dark" :content="getTypeExpress(props.row)" placement="bottom-start">
+                            <i class="fa fa-file-o" style="font-size: 26px;color: #11c2fd;" v-if="props.row.type=='dataSpaceFile'"></i>
+                            <i class="fa fa-link" style="font-size: 26px;color: #11c2fd;" v-else-if="props.row.type=='exLink'"></i>
+                            <img class="ellipsis" :src="getTypeImg(props.row)" v-else target="_blank" style="width: 27px;">{{props.row.name}}</img>
+                        </el-tooltip>
+                    </template>
+                </el-table-column>
+
+                <el-table-column fixed="right" label=" " width="60">
+                    <template slot-scope="scope">
+                        <!--<el-button-->
+                        <!--v-if="relateType=='concept'||relateType=='spatialReference'||relateType=='template'||relateType=='unit'"-->
+                        <!--size="mini"-->
+                        <!--type="danger"-->
+                        <!--@click="handleDelete(scope.$index, scope.row)">Remove-->
+                        <!--</el-button>-->
+                        <!--<el-button-->
+                        <!--v-else-->
+                        <!--:disabled="scope.row.author_uid!=userUid&&scope.row.author!=userUid&&scope.row.userName!=userUid"-->
+                        <!--size="mini"-->
+                        <!--type="danger"-->
+                        <!--@click="handleDelete(scope.$index, scope.row)">Remove-->
+                        <!--</el-button>-->
+
+                        <el-button
+
+                                size="mini"
+                                type="danger"
+                                icon="el-icon-close" circle
+                                @click="handleDelete(scope.$index, scope.row)">
+                        </el-button>
+
+
+                    </template>
+                </el-table-column>
+            </el-table>
+        </el-card>
+
+        <div style="width:59%;float: left;">
+
+            <el-radio-group v-model="relateType" @change="search(activeName_dialog)">
+                <el-radio :label="'concept'" @click="search(activeName_dialog)">Concept & Semantic</el-radio>
+                <el-radio :label="'spatialReference'"  @click="search(activeName_dialog)">Spatiotemporal Reference</el-radio>
+                <el-radio :label="'template'"  @click="search(activeName_dialog)">Data Template</el-radio>
+                <el-radio :label="'unit'"  @click="search(activeName_dialog)">Unit & Metric</el-radio>
+                <el-radio :label="'dataSpaceFile'"  @click="search(activeName_dialog)">File</el-radio>
+                <el-radio :label="'exLink'"  @click="search(activeName_dialog)">External Link</el-radio>
+            </el-radio-group>
+            <el-tabs type="border-card" :stretch="true" v-model="activeName_dialog" v-if="relateType=='concept'||relateType=='spatialReference'
+            ||relateType=='template'||relateType=='unit'">
+                <div style="padding: 8px 16px;
+                        background-color: #ecf8ff;
+                        border-radius: 4px;
+                        border-left: 5px solid #50bfff;
+                        margin: 0 0 10px;">
+                    <p style="font-size: 14px;color: #5e6d82;line-height: 1.5em;margin:0;">
+                        You can link resource from
+                        repository to this model item, or you can <a style="cursor:pointer;text-decoration: underline"
+                                                                     @click="jump">create</a> a new <span>{{typeName.toLowerCase()}}</span>.
+                    </p>
+                </div>
+                <el-tab-pane name="my" label="My Repository" v-if="relateType!='concept'&&relateType!='spatialReference'&&relateType!='template'&&relateType!='unit'">
+
+                    <el-input placeholder="Please enter name..." v-model="pageOption_my.relateSearch" class="input-with-select"
+                              clearable="true" @keyup.enter.native="searchInit()">
+                        <el-button slot="append" icon="el-icon-search" @click="searchInit()"></el-button>
+                    </el-input>
+                    <el-table
+                            :data="pageOption_my.searchResult"
+                            style="margin-top:17px;"
+                            show-overflow-tooltip
+                            :max-height="tableMaxHeight">
+                        <el-table-column type="expand">
+                            <template slot-scope="props">
+                                <el-form label-position="left" inline class="demo-table-expand">
+                                    <el-form-item label="Overview">
+                                        <span>{{ props.row.description }}</span>
+                                    </el-form-item>
+
+                                </el-form>
+                            </template>
+                        </el-table-column>
+                        <el-table-column sortable='custom'
+                                         label="Name">
+                            <template slot-scope="props">
+                                <a :href="'/repository/'+relateType+'/'+props.row.oid"
+                                   target="_blank">{{props.row.name}}</a>
+                            </template>
+                        </el-table-column>
+                        <!--<el-table-column-->
+                        <!--label="Contributor"-->
+                        <!--prop="author">-->
+                        <!--</el-table-column>-->
+                        <el-table-column fixed="right" label=" " width="60">
+                            <template slot-scope="scope">
+                                <el-button
+                                        v-if="!isCurrentItem(scope.row)&&!hasAdded(scope.row)"
+                                        size="mini"
+                                        type="success"
+                                        icon="el-icon-plus" circle
+                                        @click="handleEdit(scope.$index, scope.row)">
+                                </el-button>
+                                <el-button
+                                        v-if="hasAdded(scope.row)"
+                                        size="mini"
+                                        type="danger"
+                                        icon="el-icon-close" circle
+                                        @click="handleDelete(scope.$index, scope.row)">
+                                </el-button>
+
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <el-pagination style="text-align: center;margin-top:20px"
+                                   @current-change="handlePageChange"
+                                   :current-page="pageOption_my.currentPage"
+                                   layout="total, prev, pager, next, jumper"
+                                   :page-size="pageOption_my.pageSize"
+                                   :total="pageOption_my.total">
+                    </el-pagination>
+                </el-tab-pane>
+                <el-tab-pane name="all" label="All Repository">
+
+                    <el-input placeholder="Please enter name..." v-model="pageOption_all.relateSearch" class="input-with-select"
+                              clearable="true" @keyup.enter.native="searchInit('all')">
+                        <el-button slot="append" icon="el-icon-search" @click="searchInit('all')"></el-button>
+                    </el-input>
+                    <el-table
+                            :data="pageOption_all.searchResult"
+                            style="margin-top:17px;"
+
+                            show-overflow-tooltip
+                            @sort-change="relationSortChange"
+                            :max-height="tableMaxHeight">
+                        <el-table-column type="expand">
+                            <template slot-scope="props">
+                                <el-form label-position="left" inline class="demo-table-expand">
+                                    <el-form-item label="Overview">
+                                        <span>{{ props.row.description }}</span>
+                                    </el-form-item>
+
+                                </el-form>
+                            </template>
+                        </el-table-column>
+                        <el-table-column sortable='custom'
+                                         label="Name">
+                            <template slot-scope="props">
+                                <a :href="'/repository/'+relateType+'/'+props.row.oid"
+                                   target="_blank">{{props.row.name}}</a>
+                            </template>
+                        </el-table-column>
+                        <!--<el-table-column-->
+                        <!--label="Contributor"-->
+                        <!--prop="author">-->
+                        <!--</el-table-column>-->
+                        <el-table-column fixed="right" label=" " width="60">
+                            <template slot-scope="scope">
+                                <el-button
+                                        v-if="!isCurrentItem(scope.row)&&!hasAdded(scope.row)"
+                                        size="mini"
+                                        type="success"
+                                        icon="el-icon-plus" circle
+                                        @click="handleEdit(scope.$index, scope.row)">
+                                </el-button>
+                                <el-button
+                                        v-if="hasAdded(scope.row)"
+                                        size="mini"
+                                        type="danger"
+                                        icon="el-icon-close" circle
+                                        @click="handleDelete(scope.$index, scope.row)">
+                                </el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <el-pagination style="text-align: center;margin-top:20px"
+                                   @current-change="handlePageChange"
+                                   :current-page="pageOption_all.currentPage"
+                                   layout="total, prev, pager, next, jumper"
+                                   :page-size="pageOption_all.pageSize"
+                                   :total="pageOption_all.total">
+                    </el-pagination>
+                </el-tab-pane>
+            </el-tabs>
+            <el-card v-if="relateType=='localFile'">
+                <div   class="">
+<!--                    <el-upload-->
+<!--                            class="uploadCenter"-->
+<!--                            drag-->
+<!--                            ref="upload"-->
+<!--                            :on-change="uploadChange"-->
+<!--                            :on-remove="uploadRemove"-->
+<!--                            :auto-upload="false"-->
+<!--                            :show-file-list="false"-->
+<!--                            :multiple="false">-->
+<!--                        <i class="el-icon-upload"></i>-->
+<!--                        <div class="el-upload__text">Drop the file here, or<em>click </em>to upload.</div>-->
+<!--                        <template #tip>-->
+<!--                            <div class="el-upload__tip">-->
+<!--                                File size should not exceed 10m.-->
+<!--                            </div>-->
+<!--                        </template>-->
+<!--                    </el-upload>-->
+                </div>
+            </el-card>
+            <el-card v-if="relateType=='dataSpaceFile'" class="flexCenter" style="min-height: 260px">
+                <el-button round size="mini" @click='checkPersonData()' type="primary">Select From My Space</el-button>
+            </el-card>
+            <el-card v-if="relateType=='exLink'" style="min-height: 260px">
+                <div class="flexCol flexAlignCenter">
+                    <el-input
+                            :rows="2"
+                            placeholder="please input name of the external link"
+                            v-model="exLink.name"
+                            style="margin-top:15px"
+                    >
+                    </el-input>
+                    <el-input
+                            type="textarea"
+                            :rows="2"
+                            placeholder="please input content the external link"
+                            v-model="exLink.content"
+                            style="margin-top:15px">
+                    </el-input>
+                    <el-button round size="mini" @click='addExLink' type="success" style="margin-top:15px">+ add</el-button>
+                </div>
+
+            </el-card>
+        </div>
+
+
+
+        <div slot="footer" class="dialog-footer">
+            <!--<span style="float:left;font-size: 16px">Or you can click <a style="cursor:pointer" @click="jump">here</a> to create a new one.</span>-->
+            <el-button @click="relatedResourceVisible = false;">Cancel</el-button>
+            <el-button type="primary" @click="addRelateResources()">OK</el-button>
+        </div>
+    </el-dialog>
+
     <!-- claim authorship-->
     <el-dialog v-cloak title="Claim" :visible.sync="authorshipFormVisible">
         <div style="padding: 8px 16px;
@@ -1581,15 +2285,589 @@
         </span>
     </el-dialog>
 
+    <el-dialog v-cloak title="Edit Model Description" :visible.sync="editDescription" width="75%">
+        <div class="localization">
+            <el-card style="width: 15%;float:left">
+                <div slot="header" class="clearfix">
+                    <span style="font-weight: bold">Localizations</span>
+                    <el-button
+                            style="float: right; padding: 3px 0"
+                            type="text" @click="addLocalization">+ Add
+                    </el-button>
+                </div>
+                <el-collapse-transition>
+                    <div v-show="languageAdd.show">
+                        <el-select v-model="languageAdd.local" filterable placeholder="Select language" style="width:80%;float: left;">
+                            <el-option
+                                    v-for="item in languageList"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item">
+                                <span style="float: left">{{ item.label }}</span>
+                                <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
+                            </el-option>
+                        </el-select>
+                        <el-button @click="confirmAddLocal" type="success" style="width:10%;float: left;"><i class="el-icon-check"></i></el-button>
+                        <el-button @click="cancelAddLocal" type="danger" style="width:10%;"><i class="el-icon-close"></i></el-button>
+                    </div>
+                </el-collapse-transition>
+                <div class="clearfix" style="height:400px;overflow: auto;">
+                    <el-table
+                            :data="localizationList"
+                            :show-header="false"
+                    >
+                        <el-table-column>
+                            <template slot-scope="props">
+                                <el-tooltip class="item" effect="light" :content="props.row.localCode" placement="top">
+                                    <el-button
+                                            :class="{localizationSelected:props.row.selected}"
+                                            style="width:90%;float:left;"
+                                            @click="changeLocalization(props.row)">
+                                        {{props.row.localName}}
+                                    </el-button>
+                                </el-tooltip>
+
+                                <el-button style="width:10%;" @click="deleteLocalization(props.row)"><i
+                                        class="el-icon-close"></i>
+                                </el-button>
+
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </div>
+            </el-card>
+            <el-card style="width: 85%;">
+                <div slot="header" class="clearfix">
+                    <span>Model Name : </span>
+                    <el-input v-model="currentLocalization.name" placeholder="Please enter the model's localized name"></el-input>
+
+                </div>
+                <textarea id="conceptText" style="float:left">
+
+                                                                    </textarea>
+            </el-card>
+        </div>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="editClassification = false">Cancel</el-button>
+            <el-button type="primary" @click="submitDescription">Submit</el-button>
+        </span>
+    </el-dialog>
+
+    <el-dialog v-cloak title="Edit Model Metadata" :visible.sync="editMetadata" width="72%">
+        <el-tabs v-model="metaDataTab" >
+            <el-tab-pane label="Overview" name="first">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <lable class='control-label col-sm-2 text-center'
+                               style='font-weight: bold;'>
+                            Name:
+                        </lable>
+                        <div class='col-sm-10'>
+                            <input type='text'
+                                   v-model="metadataTemp.overview.name"
+                                   class='form-control'>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <lable class='control-label col-sm-2 text-center'
+                               style='font-weight: bold;'>
+                            Version:
+                        </lable>
+                        <div class='col-sm-10'>
+                            <input type='text'
+                                   v-model="metadataTemp.overview.version"
+                                   class='form-control'>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <lable class='control-label col-sm-2 text-center'
+                               style='font-weight: bold;'>
+                            Model Type:
+                        </lable>
+                        <div class='col-sm-10'>
+                            <input type='text'
+                                   v-model="metadataTemp.overview.modelType"
+                                   class='form-control'>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <lable class='control-label col-sm-2 text-center'
+                               style='font-weight: bold;'>
+                            Model Domain:
+                        </lable>
+                        <div class='col-sm-10'>
+                            <textarea class="form-control" id="modelDomainInput"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <lable class='control-label col-sm-2 text-center'
+                               style='font-weight: bold;'>
+                            Scale:
+                        </lable>
+                        <div class='col-sm-10'>
+                            <input type='text'
+                                   v-model="metadataTemp.overview.scale"
+                                   class='form-control'>
+                        </div>
+                    </div>
+                </div>
+
+            </el-tab-pane>
+            <el-tab-pane label="Design" name="second">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <lable class='control-label col-sm-2 text-center'
+                               style='font-weight: bold;'>
+                            Purpose:
+                        </lable>
+                        <div class='col-sm-10'>
+                            <input type='text'
+                                   v-model="metadataTemp.design.purpose"
+                                   class='form-control'>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <lable class='control-label col-sm-2 text-center'
+                               style='font-weight: bold;'>
+                            Principles:
+                        </lable>
+                        <div class='col-sm-10'>
+                                                                                            <textarea
+                                                                                                    class="form-control"
+                                                                                                    id="principlesInput"></textarea>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <lable class='control-label col-sm-2 text-center'
+                               style='font-weight: bold;'>
+                            Incorporated models:
+                        </lable>
+                        <div class='col-sm-10'>
+                                                                                            <textarea
+                                                                                                    class="form-control"
+                                                                                                    id="incorporatedModelsInput"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-horizontal">
+                    <div class="form-group flexAlignCenter">
+                        <lable class='control-label col-sm-2 text-center'
+                               style='font-weight: bold;'>
+                            <p>Model part of </p><p>
+                            larger framework</p>
+                        </lable>
+                        <div class='col-sm-10'>
+                            <input type='text'
+                                   v-model="metadataTemp.design.framework"
+                                   class='form-control'>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <lable class='control-label col-sm-2 text-center'
+                               style='font-weight: bold;'>
+                            Process:
+                        </lable>
+                        <div class='col-sm-10'>
+                                                                                            <textarea
+                                                                                                    class="form-control"
+                                                                                                    id="processInput"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </el-tab-pane>
+            <el-tab-pane label="Usage" name="third">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <lable class='control-label col-sm-2 text-center'
+                               style='font-weight: bold;'>
+                            Information:
+                        </lable>
+                        <div class='col-sm-10'>
+                            <input type='text'
+                                   v-model="metadataTemp.usage.information"
+                                   class='form-control'>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <lable class='control-label col-sm-2 text-center'
+                               style='font-weight: bold;'>
+                            Initialization:
+                        </lable>
+                        <div class='col-sm-10'>
+                            <input type='text'
+                                   v-model="metadataTemp.usage.initialization"
+                                   class='form-control'>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <lable class='control-label col-sm-2 text-center'
+                               style='font-weight: bold;'>
+                            Hardware Requirements:
+                        </lable>
+                        <div class='col-sm-10'>
+                            <input type='text'
+                                   v-model="metadataTemp.usage.hardware"
+                                   class='form-control'>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <lable class='control-label col-sm-2 text-center'
+                               style='font-weight: bold;'>
+                            Software Requirements:
+                        </lable>
+                        <div class='col-sm-10'>
+                            <input type='text'
+                                   v-model="metadataTemp.usage.software"
+                                   class='form-control'>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <lable class='control-label col-sm-2 text-center'
+                               style='font-weight: bold;'>
+                            Inputs:
+                        </lable>
+                        <div class='col-sm-10'>
+                                                                                            <textarea
+                                                                                                    class="form-control"
+                                                                                                    id="inputsInput"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <lable class='control-label col-sm-2 text-center'
+                               style='font-weight: bold;'>
+                            Outputs:
+                        </lable>
+                        <div class='col-sm-10'>
+                                                                                            <textarea
+                                                                                                    class="form-control"
+                                                                                                    id="outputsInput"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </el-tab-pane>
+        </el-tabs>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="editMetadata = false">Cancel</el-button>
+            <el-button type="primary" @click="submitMetadata">Submit</el-button>
+        </span>
+    </el-dialog>
+
+    <el-dialog  v-cloak title="Edit Reference" :visible.sync="editReference" width="75%">
+        <table class="display table table-bordered table-striped dataTable"
+               id="dynamic-table"
+               aria-describedby="dynamic-table_info">
+            <thead>
+            <tr role="row">
+                <th class="sorting"
+                    role="columnheader"
+                    tabindex="0"
+                    aria-controls="dynamic-table"
+                    rowspan="1" colspan="1"
+                    aria-label="Title: activate to sort column ascending"
+                    width="200px">
+                    Title
+                </th>
+                <th class="sorting"
+                    role="columnheader"
+                    tabindex="0"
+                    aria-controls="dynamic-table"
+                    rowspan="1" colspan="1"
+                    aria-label="Author: activate to sort column ascending"
+                    width="200px">
+                    Author
+                </th>
+                <th class="sorting"
+                    role="columnheader"
+                    tabindex="0"
+                    aria-controls="dynamic-table"
+                    rowspan="1" colspan="1"
+                    aria-label="Date: activate to sort column ascending"
+                    width="100px">
+                    Date
+                </th>
+                <th class="hidden-phone sorting"
+                    role="columnheader"
+                    tabindex="0"
+                    aria-controls="dynamic-table"
+                    rowspan="1" colspan="1"
+                    aria-label="Journal: activate to sort column ascending"
+                    width="100px">
+                    Journal
+                </th>
+                <th class="hidden-phone sorting"
+                    role="columnheader"
+                    tabindex="0"
+                    aria-controls="dynamic-table"
+                    rowspan="1" colspan="1"
+                    aria-sort="descending"
+                    aria-label="Pages: activate to sort column ascending"
+                    width="100px">
+                    Volume(Issue)
+                </th>
+                <th class="hidden-phone sorting"
+                    role="columnheader"
+                    tabindex="0"
+                    aria-controls="dynamic-table"
+                    rowspan="1" colspan="1"
+                    aria-sort="descending"
+                    aria-label="Pages: activate to sort column ascending"
+                    width="100px">
+                    Pages
+                </th>
+                <th class="hidden-phone sorting"
+                    role="columnheader"
+                    tabindex="0"
+                    aria-controls="dynamic-table"
+                    rowspan="1" colspan="1"
+                    aria-sort="descending"
+                    aria-label="Links: activate to sort column ascending"
+                    width="100px">
+                    Links
+                </th>
+                <th class="hidden-phone sorting"
+                    role="columnheader"
+                    tabindex="0"
+                    aria-controls="dynamic-table"
+                    rowspan="1" colspan="1"
+                    aria-sort="descending"
+                    aria-label="Links: activate to sort column ascending"
+                    width="100px">
+                    Doi
+                </th>
+                <th class="hidden-phone sorting"
+                    role="columnheader"
+                    tabindex="0"
+                    aria-controls="dynamic-table"
+                    rowspan="1" colspan="1"
+                    aria-sort="descending"
+                    aria-label="CSS grade: activate to sort column ascending"
+                    width="82px">
+                    Operation
+                </th>
+            </tr>
+            </thead>
+
+            <tbody role="alert"
+                   aria-live="polite"
+                   aria-relevant="all">
+
+            </tbody>
+        </table>
+        <button id="addref"
+                class="btn btn-success btn-lg btn-block"
+                data-toggle="modal"
+                data-target="#refinfo"
+                @click="addArticleClick"
+                type="button">Add Reference
+        </button>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="editReference = false">Cancel</el-button>
+            <el-button type="primary" @click="submitReference">Submit</el-button>
+        </span>
+    </el-dialog>
+
+    <el-dialog title="Reference Info" :close-on-click-modal="false" :visible.sync = "editArticleDialog" width="33%" custom-class="min400w" >
+        <div class="wzhScrollbar" style="max-height: 500px;padding-right:10px" >
+            <div class="tab-content" v-loading="doiLoading">
+                <div class="tab-pane active articleInfo" id="manually" >
+                    <div class="form-group">
+                        <label for="doiTitle" class="col-sm-2 control-label">
+                            Get by doi :
+                        </label>
+                        <el-tag size="middle" primary>Enter the doi and click search, information may be filled automaticly. </el-tag>
+                        <div class="input-group col-md-12">
+                            <input id="doiTitle" type="text"
+                                   class="form-control" v-model="doi">
+                            <span class="input-group-btn" style="width: 19%">
+                                                    <button id="doiSearch"
+                                                            class="btn btn-info"
+                                                            type="button" @click="searchDoi()" style="height: 34px;width: 100%;margin: 0;">Search</button>
+                                                </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="refTitle"
+                               class="col-sm-12 control-label">Title</label>
+                        <div>
+                            <input type="text" class="form-control"
+                                   id="refTitle"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="refAuthor"
+                               class="col-sm-12 control-label">Author</label>
+                        <div>
+                            <input type="text" class="form-control"
+                                   id="refAuthor"/>
+                            <!--                                                        <ul class="tag-editor"><li style="width:.1px">&nbsp;</li></ul>-->
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="refDate"
+                               class="col-sm-12 control-label">Date</label>
+                        <div>
+                            <input type="text" class="form-control"
+                                   id="refDate"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="refJournal"
+                               class="col-sm-12 control-label">Journal</label>
+                        <div>
+                            <input type="text" class="form-control"
+                                   id="refJournal"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="volumeIssue"
+                               class="col-sm-12 control-label">Volume(issue)</label>
+                        <div>
+                            <input type="text" class="form-control"
+                                   id="volumeIssue"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="refPages"
+                               class="col-sm-12 control-label">Page Range</label>
+                        <div>
+                            <input type="text" class="form-control"
+                                   id="refPages"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="refLink"
+                               class="col-sm-12 control-label">Link</label>
+                        <div>
+                            <input type="text" class="form-control"
+                                   id="refLink"/>
+                        </div>
+                    </div>
+                    <!--                                        <div class="form-group flexRow" style="padding-top: 3px;padding-left: 16px">-->
+                    <!--                                            <p style="font-weight: 600;margin-right: 10px">Status</p>-->
+                    <!--                                            <el-checkbox-group v-model="checkedIdentity" @change="changeChecked">-->
+                    <!--                                                <el-checkbox v-for="Identity in Identities" :label="Identity" :key="Identity">{{Identity}}</el-checkbox>-->
+                    <!--                                            </el-checkbox-group>-->
+
+                    <!--                                        </div>-->
+                </div>
+
+
+            </div>
+
+        </div>
+        <span slot="footer" class="dialog-footer">
+                        <el-button type="primary" size="small" @click="updateArticleConfirmClick" id="modal_save">Add</el-button>
+                        <el-button size="small" @click="cancelSearch()">Cancel</el-button>
+                    </span>
+    </el-dialog>
+
+    <el-dialog title="Is this article you want to add?" :visible.sync = "showUploadArticleDialog" width="30%" custom-class="min400w">
+        <h4>{{articleUploading.title}}</h4>
+        <p v-if="articleUploading.authors.length>0"><span>Authors:</span><span>&nbsp&nbsp{{articleUploading.authors[0]}},</span>
+            <span v-if="articleUploading.authors[1]">{{articleUploading.authors[1]}}, </span>
+            <span v-if="articleUploading.authors[2]">{{articleUploading.authors[2]}},</span>
+            <span v-if="articleUploading.authors.length>3"> et al.</span> </p>
+        <p v-if="articleUploading.journal!=''"><span>Journal:</span> &nbsp&nbsp{{articleUploading.journal}}</p>
+        <p v-if="articleUploading.date!=''"><span>Date:</span> &nbsp&nbsp{{articleUploading.date}}</p>
+        <p v-if="articleUploading.pageRange!=''"><span>Page range:</span> &nbsp&nbsp{{articleUploading.pageRange}}</p>
+        <p v-if="articleUploading.link!=''"><span>Link:</span> &nbsp&nbsp{{articleUploading.link}}</p>
+        <p v-if="articleUploading.doi!=''"><span>DOI:</span> &nbsp&nbsp{{articleUploading.doi}}</p>
+        <!--                            <div class="flex">-->
+
+        <!--                            </div>-->
+        <span slot="footer" class="dialog-footer">
+<!--                                <div class="flex flexRowSpaceBetween" >-->
+            <!--                                    <div class="flexColCenter">-->
+            <!--                                        <p style="font-weight: 600;margin-right: 10px">Yes,</p>-->
+            <!--                                        <el-button type="success" @click="articleDoiUploadConfirm('author')" plain>I am the author</el-button>-->
+            <!--                                        <el-button type="primary" @click="articleDoiUploadConfirm('learner')" plain>I am a learner</el-button>-->
+            <!--                                    </div>-->
+            <!--                                    <div class="innerBorderCol" style="height: 40px"></div>-->
+                                    <el-button type="success" @click="articleDoiUploadConfirm()" plain>Yes, this is it</el-button>
+                                    <el-button @click="showUploadArticleDialog = false">Cancel</el-button>
+            <!--                                </div>-->
+                            </span>
+    </el-dialog>
+
+    <el-dialog title="Tip"
+               :visible.sync = "showUploadedArticleDialog" width="30%" custom-class="min400w">
+        <!--                            <div class="flexCol" style="font-size:16px;word-break: normal ">-->
+        <!--                                <p>The article <span style="font-weight: 600;"> {{articleUploading.title}} </span> has been-->
+        <!--                                    <span style="color: #2b95f7"> uploaded</span> yet, do you want to be one of the contrbutors?</p>-->
+        <!--                            </div>-->
+        <div class="flexCol" style="font-size:16px;word-break: normal ">
+            <p>The article <span style="font-weight: 600;"> {{articleUploading.title}} </span> has been
+                <span style="color: #2b95f7"> uploaded</span> yet.</p>
+        </div>
+        <span slot="footer" class="dialog-footer">
+                                <el-button @click="showUploadedArticleDialog = false">OK</el-button>
+                            </span>
+        <!--                            <span slot="footer" class="dialog-footer">-->
+        <!--                                <el-button type="success" @click="addContributorConfirm()"-->
+        <!--                                               plain>Yes, I do</el-button>-->
+        <!--                                <el-button @click="showUploadedArticleDialog = false">Cancel</el-button>-->
+        <!--                            </span>-->
+    </el-dialog>
+
+    <el-dialog title="Personal Data Center ( User Space -> My Data )"
+               :visible.sync="showDataChose"
+               width="70%"
+               class="centerDialog"
+    >
+        <user-data
+                @com-selectfile="selectDataspaceFile"
+                @com-removefile="removeDataspaceFile"
+                single-choice
+                ref="userDataSpace" style="height: 508px;"></user-data>
+
+        <span slot="footer" class="dialog-footer">
+                                <el-button @click="showDataChose = false">Cancel</el-button>
+                                <el-button type="primary" @click="selectDataFromPersonal">Confirm</el-button>
+
+                            </span>
+    </el-dialog>
+
     <div th:replace="fragments/footer :: footer"></div>
 
 </div>
 <template th:replace="modules/editModelItemModule :: editModelItemModule"></template>
+<template th:replace="modules/userDataSpaceModule :: userDataSpaceModule"></template>
 </body>
 
 <script th:inline="javascript">
     var modelInfo = [[${modelInfo}]];
     var modelItemList=[[${modelItems}]];
+    var author=[[${user}]];
 </script>
 
 
@@ -1598,6 +2876,7 @@
 <script type="text/javascript" src="/static/js/common/jquery.tag-editor.js"></script>
 <script type="text/javascript" src="/static/js/common/jquery-steps.js"></script>
 <script type="text/javascript" src="/static/data-tables/jquery.dataTables.js"></script>
+
 <script src="/static/js/common/vue.min.js"></script>
 <script src="/static/js/common/vue-avatar.min.js"></script>
 <script src="/static/js/common/axios.min.js"></script>
@@ -1605,7 +2884,7 @@
 <script src="/static/js/common/qrcode.min.js"></script>
 <script src="/static/js/tinymce_5.3.2/tinymce/js/tinymce/tinymce.min.js"></script>
 <script src="/static/js/page/model_item_info.js"></script>
-
+<script src="/static/js/modules/userDataSpaceModule.js"></script>
 <script src="/static/js/common/copy.js"></script>
 <script src="/static/js/common/bootstrap.min.js"></script>
 <script src="/static/element-ui/umd/locale/en.js"></script>

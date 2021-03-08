@@ -104,7 +104,7 @@
                         <el-button type="primary" size="small" style="margin:5px;font-weight: 700;" @click="buildNewTask">Build New Task</el-button>
                         <el-button type="primary" size="small" plain style="margin:5px;font-weight: 700;" @click="loadDeployedModelClick">Select Model</el-button>
                         <el-button type="primary" size="small" plain style="margin:5px;font-weight: 700;" @click="loadDeployedDataMethodClick">Select Data Method</el-button>
-                        <el-button type="success" size="small" style="margin:5px;font-weight: 700;" @click="generateXml()">XML</el-button>
+                        <el-button type="success" size="small" style="margin:5px;font-weight: 700;" @click="showXml()">XML</el-button>
                         <el-button type="success" size="small" style="margin:5px;font-weight: 700;" @click="taskConfigure(2)">
                             <i class="fa fa-play-circle" aria-hidden="true"></i> Execute</el-button>
                     </div>
@@ -402,7 +402,7 @@
 
         <div>
             <div class="clearfix" style="margin: 0px 5px 10px;background: #f5f5f5;box-shadow:0 3.2px 7.2px 0 rgba(0,0,0,0.141), 0 0.6px 1.8px 0 rgba(0, 0, 0, .112)">
-                <h4 style="text-align: center;margin-top: 5px">Data Bus</h4>
+                <h4 style="text-align: center;margin-top: 5px">Data Service Bus</h4>
                 <div v-for="dataLine in dataLines" class="dataBusContainer flexAlignCenter wzhScrollbar" style="width: 100%;height: 150px;z-index: 1;">
                     <!--                    <div class="innerBorder" v-if="Object.keys(dataItemList).length!=0"></div>-->
                     <div class="acrylicMask" ref="acrylicMask" @click="flatContainer($event)"></div>
@@ -915,7 +915,7 @@
         </div>
     </el-dialog>
 
-    <el-dialog title="Integrated Models Configuration" :visible.sync="executeVisible" width="30%">
+    <el-dialog title="Integrated Models Configuration" :visible.sync="executeVisible" :close-on-click-modal="false" width="30%">
         <p v-if="taskConfigStatus==2" style="font-style: italic ">Every integrated task will be saved automaticly if it is executed.</p>
         <div style="font-size: 18px">
             Task Name :
@@ -928,6 +928,7 @@
         <div slot="footer" class="dialog-footer">
             <el-button v-if="taskConfigStatus==1" type="primary" @click="saveIntegratedTaskClick">Save</el-button>
             <el-button v-else type="primary" @click="executeNew">Execute</el-button>
+            <el-button plain @click="executeVisible = false">Cancel</el-button>
         </div>
     </el-dialog>
 
@@ -935,7 +936,7 @@
                append-to-body
                :visible.sync="userDataSpaceVisible"
                ref="userDataSpace"
-               width="68%" class="noScroll">
+               width="68%" class="noScroll centerDialog">
         <el-tabs v-model="dataFromActive" stretch="stretch" @tab-click="changeDataFrom" style="min-height: 105px">
             <el-tab-pane label="My Data Space" name="dataSpace">
                 <user-data
@@ -1620,10 +1621,11 @@
 
     </el-dialog>
 
-    <el-dialog title="Integrated Task Xml">
+    <el-dialog title="Integrated Task Xml" :visible.sync="showXmlDialog">
         <div class="wzhScrollbar" style="max-height: 500px">
-            <el-input type="text" v-model="integratedTaskXml"></el-input>
+            <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 22}" v-model="integratedTaskXml"></el-input>
         </div>
+
     </el-dialog>
 
     <el-dialog title="Preview Result" :visible.sync="previewDialog" width="55%">
@@ -1654,9 +1656,6 @@
 
 <script src="/static/js/page/integratedModeling_new.js"></script>
 <script src="/static/js/common/navbar.js"></script>
-<!--imgUpload通用组件-->
-<template th:replace="modules/imgUpload :: imgUpload"></template>
-<script src="/static/js/modules/imgUpload.js"></script>
 <!--<script src="/static/js/common/navbarJquery.js/"></script>-->
 <script>
 

@@ -62,10 +62,14 @@
                      id="pageContent">
                     <!--            <div class="titleContainer"><h4>My Space</h4></div>-->
                     <div class="flexColContainer mainContent mainDataSpaceContent" style="max-width: 1500px;height: 100%;min-height: 300px;">
-                        <section role="description" class="flexCol flexCenter contentSection" style="max-width: 100%">
+                        <section role="description" class="flexCenter flexWrap contentSection" style="max-width: 100%;position: relative">
+                            <div style="margin-top: 10px;position: absolute;left: 25px">
+                                <a href="../user/userSpace#/data"><i class="fa fa-arrow-left"></i>Back</a>
+                            </div>
+                            <i class="fa fa-cloud-upload" style="font-size: 40px;color: #00c0ff;font-weight: 600;margin:10px 10px 0 0;"></i>
                             <h3>Data Space</h3>
                         </section>
-                        <section class="flexRowContainer flexWrap contentSection" style="max-width: 100%;height: 100%">
+                        <section class="flexRowContainer flexWrap contentSection" style="max-width: 100%;height: 100%;margin-top: 24px">
                             <div class="page-content-wrap container-fluid  myDataContainer">
 
                                 <div class="dataSpaceContent showHidden" :class="{showActive:dataChosenIndex==1}"

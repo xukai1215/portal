@@ -566,6 +566,8 @@ var vue = new Vue({
         integratedTaskXml:'',
 
         singleDataConfigTitle:'',
+
+        showXmlDialog:false,
     },
 
     computed:{
@@ -925,6 +927,7 @@ var vue = new Vue({
                 asc:0,
                 searchText:this.searchDataMethodText,
                 sortTypeName:'createTime',
+                curQueryField:'name',
                 method:classi
             }
             axios.post("/dataApplication/methods/getApplication",data)
@@ -934,7 +937,9 @@ var vue = new Vue({
                         this.dataMethodLoading = false
                         this.pageOption3.total=res.data.data.total;
                     },100)
-                });
+                }).catch(res => {
+                    this.dataMethodLoading = false
+            });
 
         },
 
@@ -1045,6 +1050,7 @@ var vue = new Vue({
             if(nodeEle == -1) {
                 this.$confirm('This service is offline, please select another one', 'Tips', {
                     confirmButtonText: 'Ok',
+                    cancelButtonText: 'Cancel',
                     type: 'warning',
                 }).then(() => {
                 })
@@ -1456,7 +1462,7 @@ var vue = new Vue({
             this.dataItemList = {}
             this.dataItems = []
             //把画布清空
-            this.iframeWindow.setCXml('<mxGraphModel dx="670" dy="683" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169">\n' +
+            this.iframeWindow.setCXml('<mxGraphModel dx="1196" dy="704" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169">\n' +
                 '  <root>\n' +
                 '    <mxCell id="0"/>\n' +
                 '    <mxCell id="1" parent="0"/>\n' +
@@ -2301,6 +2307,23 @@ var vue = new Vue({
             xml += "</TaskConfiguration>";
 
             return xml
+        },
+
+        showXml(){
+            if(this.modelActions.length>0){
+                this.showXmlDialog = true
+                this.integratedTaskXml = this.generateXml('save')
+            }else{
+                 this.$alert('Please select at least one model', 'Tip', {
+                          type:"warning",
+                          confirmButtonText: 'OK',
+                          callback: ()=>{
+                              return
+                          }
+                      }
+                  );
+            }
+
         },
 
         executeNew() {

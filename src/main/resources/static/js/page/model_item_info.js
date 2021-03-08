@@ -23,6 +23,8 @@ var info=new Vue({
             replyTo:"",
 
             dialogTableVisible: false,
+            relatedResourceVisible:false,
+
             relateSearch: "",
             relateType: "",
             typeName: "",
@@ -522,6 +524,204 @@ var info=new Vue({
             lineLabelShow:true,
             lineColorShow:false,
 
+            lightenContributor:{},
+            contributors:[],
+
+            relateFile: [],
+
+            exLink:{
+                name:'',
+                content:'',
+            },
+
+            targetFile:{},
+
+            showDataChose:false,
+
+            editDescription:false,
+
+            currentLocalization: {
+                localCode: "",
+                localName: "",
+                name: "",
+                description: "",
+            },
+            localIndex: 0,
+            languageAdd: {
+                show: false,
+                local: {
+
+                },
+            },
+            localizationList: [
+                {
+                    localCode: "en",
+                    localName: "English",
+                    name: "",
+                    description: "",
+                    selected: true,
+                }
+            ],
+            languageList:[
+                { value: 'af', label: 'Afrikaans' },
+                { value: 'sq', label: 'Albanian' },
+                { value: 'ar', label: 'Arabic' },
+                { value: 'hy', label: 'Armenian' },
+                { value: 'az', label: 'Azeri' },
+                { value: 'eu', label: 'Basque' },
+                { value: 'be', label: 'Belarusian' },
+                { value: 'bg', label: 'Bulgarian' },
+                { value: 'ca', label: 'Catalan' },
+                { value: 'zh', label: 'Chinese' },
+                { value: 'hr', label: 'Croatian' },
+                { value: 'cs', label: 'Czech' },
+                { value: 'da', label: 'Danish' },
+                { value: 'dv', label: 'Divehi' },
+                { value: 'nl', label: 'Dutch' },
+                { value: 'en', label: 'English' },
+                { value: 'eo', label: 'Esperanto' },
+                { value: 'et', label: 'Estonian' },
+                { value: 'mk', label: 'FYRO Macedonian' },
+                { value: 'fo', label: 'Faroese' },
+                { value: 'fa', label: 'Farsi' },
+                { value: 'fi', label: 'Finnish' },
+                { value: 'fr', label: 'French' },
+                { value: 'gl', label: 'Galician' },
+                { value: 'ka', label: 'Georgian' },
+                { value: 'de', label: 'German' },
+                { value: 'el', label: 'Greek' },
+                { value: 'gu', label: 'Gujarati' },
+                { value: 'he', label: 'Hebrew' },
+                { value: 'hi', label: 'Hindi' },
+                { value: 'hu', label: 'Hungarian' },
+                { value: 'is', label: 'Icelandic' },
+                { value: 'id', label: 'Indonesian' },
+                { value: 'it', label: 'Italian' },
+                { value: 'ja', label: 'Japanese' },
+                { value: 'kn', label: 'Kannada' },
+                { value: 'kk', label: 'Kazakh' },
+                { value: 'kok', label: 'Konkani' },
+                { value: 'ko', label: 'Korean' },
+                { value: 'ky', label: 'Kyrgyz' },
+                { value: 'lv', label: 'Latvian' },
+                { value: 'lt', label: 'Lithuanian' },
+                { value: 'ms', label: 'Malay' },
+                { value: 'mt', label: 'Maltese' },
+                { value: 'mi', label: 'Maori' },
+                { value: 'mr', label: 'Marathi' },
+                { value: 'mn', label: 'Mongolian' },
+                { value: 'ns', label: 'Northern Sotho' },
+                { value: 'nb', label: 'Norwegian' },
+                { value: 'ps', label: 'Pashto' },
+                { value: 'pl', label: 'Polish' },
+                { value: 'pt', label: 'Portuguese' },
+                { value: 'pa', label: 'Punjabi' },
+                { value: 'qu', label: 'Quechua' },
+                { value: 'ro', label: 'Romanian' },
+                { value: 'ru', label: 'Russian' },
+                { value: 'se', label: 'Sami' },
+                { value: 'sa', label: 'Sanskrit' },
+                { value: 'sr', label: 'Serbian' },
+                { value: 'sk', label: 'Slovak' },
+                { value: 'sl', label: 'Slovenian' },
+                { value: 'es', label: 'Spanish' },
+                { value: 'sw', label: 'Swahili' },
+                { value: 'sv', label: 'Swedish' },
+                { value: 'syr', label: 'Syriac' },
+                { value: 'tl', label: 'Tagalog' },
+                { value: 'ta', label: 'Tamil' },
+                { value: 'tt', label: 'Tatar' },
+                { value: 'te', label: 'Telugu' },
+                { value: 'th', label: 'Thai' },
+                { value: 'ts', label: 'Tsonga' },
+                { value: 'tn', label: 'Tswana' },
+                { value: 'tr', label: 'Turkish' },
+                { value: 'uk', label: 'Ukrainian' },
+                { value: 'ur', label: 'Urdu' },
+                { value: 'uz', label: 'Uzbek' },
+                { value: 'vi', label: 'Vietnamese' },
+                { value: 'cy', label: 'Welsh' },
+                { value: 'xh', label: 'Xhosa' },
+                { value: 'zu', label: 'Zulu' },
+            ],
+
+            editReference:false,
+            editArticleDialog:false,
+
+            showUploadArticleDialog:false,
+
+            showUploadedArticleDialog:false,
+
+            articleUploading:{
+                title:'',
+                authors:[],
+                journal:'',
+                pageRange:'',
+                date:2019,
+                doi:'',
+                status:'',
+                link:'',
+            },
+
+            doiLoading:false,
+
+            doi:'',
+
+            dynamicTable:{},
+
+            metaDataTab:'first',
+
+            metadata:{
+                overview:{
+                    name:'',
+                    version:'',
+                    modelType:'',
+                    modelDomain:[],
+                    scale:'',
+                },
+                design:{
+                    purpose:'',
+                    principles:[],
+                    incorporatedModels:[],
+                    framework:'',
+                    process:[],
+                },
+                usage:{
+                    information:'',
+                    initialization:'',
+                    hardware:'',
+                    software:'',
+                    inputs:[],
+                    outputs:[],
+                }
+            },
+
+            metadataTemp:{
+                overview:{
+                    name:'',
+                    version:'',
+                    modelType:'',
+                    modelDomain:[],
+                    scale:'',
+                },
+                design:{
+                    purpose:'',
+                    principles:[],
+                    incorporatedModels:[],
+                    framework:'',
+                    process:[],
+                },
+                usage:{
+                    information:'',
+                    initialization:'',
+                    hardware:'',
+                    software:'',
+                    inputs:[],
+                    outputs:[],
+                }
+            },
+
+            editMetadata:false,
         }
     },
     methods: {
@@ -1187,15 +1387,633 @@ var info=new Vue({
                 class2:this.cls2,
             };
             $.post("/modelItem/updateClass",data,(result)=>{
-                this.$alert("Change classification successfully!", 'Success', {
-                    type: 'success',
-                    confirmButtonText: 'OK',
-                    callback: action => {
-                        window.location.reload();
-                    }
-                });
+                if(data=='suc'){
+                    this.$alert("Change classification successfully!", 'Success', {
+                        type: 'success',
+                        confirmButtonText: 'OK',
+                        callback: action => {
+                            window.location.reload();
+                        }
+                    });
+                }else if(data=='version'){
+                    this.$alert("Your edit has been submit, please wait for the contributor to handle it.", 'Success', {
+                        type: 'success',
+                        confirmButtonText: 'OK',
+                        callback: action => {
+                            window.location.reload();
+                        }
+                    })
+                }
+
+
             })
         },
+
+        addLocalization() {
+            this.languageAdd.show = true;
+        },
+
+        //description
+        confirmAddLocal() {
+
+            if (this.languageAdd.local.label == undefined) {
+                this.$message({
+                    message: 'Please selcet a language!',
+                    type: 'warning'
+                });
+                return;
+            }
+            for (i = 0; i < this.localizationList.length; i++) {
+                let localization = this.localizationList[i];
+                if (localization.localName == this.languageAdd.local.label) {
+                    this.$message({
+                        message: 'This language already exists!',
+                        type: 'warning'
+                    });
+                    return;
+                }
+            }
+
+            let newLocalization = {
+                localCode: this.languageAdd.local.value,
+                localName: this.languageAdd.local.label,
+                name: "",
+                description: "",
+            };
+            this.localizationList.push(newLocalization);
+            this.languageAdd.local = {};
+
+            this.changeLocalization(newLocalization);
+        },
+        cancelAddLocal() {
+            this.languageAdd.show = false;
+        },
+        deleteLocalization(row) {
+            this.$confirm('Do you want to delete <b>' + row.localName + '</b> description?', 'Warning', {
+                dangerouslyUseHTMLString: true,
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No',
+                type: 'warning'
+            }).then(() => {
+
+                for (i = 0; i < this.localizationList.length; i++) {
+                    let localization = this.localizationList[i]
+                    if (localization.localName == row.localName) {
+                        this.localizationList.splice(i, 1);
+                        break;
+                    }
+                }
+                if (this.localizationList.length > 0) {
+                    this.changeLocalization(this.localizationList[0]);
+                } else {
+                    this.changeLocalization(null);
+                }
+
+                this.$message({
+                    type: 'success',
+                    message: 'Delete ' + row.localName + ' successfully!',
+                });
+            }).catch(() => {
+
+            });
+
+        },
+        changeLocalization(row) {
+            if (row == null) {
+                this.currentLocalization = {
+                    localCode: "",
+                    localName: "",
+                    name: "",
+                    description: "",
+                };
+                tinymce.activeEditor.setContent("");
+                // tinymce.undoManager.clear();
+            } else {
+                for (i = 0; i < this.localizationList.length; i++) {
+                    this.$set(this.localizationList[i], "selected", false);
+                    if (this.currentLocalization.localName == this.localizationList[i].localName) {
+                        this.localizationList[i].name = this.currentLocalization.name;
+                        this.localizationList[i].description = tinymce.activeEditor.getContent();
+                        break;
+                    }
+                }
+                this.$set(row, "selected", true);
+                this.currentLocalization = row;
+                tinymce.activeEditor.setContent(row.description);
+                // tinymce.undoManager.clear();
+            }
+        },
+
+        insertMetaData(metadata,data){
+            let overview = data.overview
+            let design = data.design
+            let usage = data.usage
+
+            metadata.overview.name = overview.name
+            metadata.overview.version = overview.version
+            metadata.overview.modelType = overview.modelType
+            metadata.overview.scale = overview.scale
+
+            metadata.design.purpose = design.purpose
+            metadata.design.framework = design.framework
+
+            metadata.usage.information = usage.information
+            metadata.usage.initialization = usage.initialization
+            metadata.usage.hardware = usage.hardware
+            metadata.usage.software = usage.software
+
+            Vue.nextTick(()=>{
+                if ($("#modelDomainInput").nextAll().length != 0){
+                    $('#modelDomainInput').tagEditor('destroy');
+                }
+                $('#modelDomainInput').tagEditor({
+                    initialTags: overview.modelDomain==null?[]:overview.modelDomain ,
+                    forceLowercase: false,
+                });
+                if ($("#principlesInput").nextAll().length != 0){
+                    $('#principlesInput').tagEditor('destroy');
+                }
+                $('#principlesInput').tagEditor({
+                    initialTags: design.principles==null?[]:design.principles ,
+                    forceLowercase: false,
+                });
+                if ($("#incorporatedModelsInput").nextAll().length != 0){
+                    $('#incorporatedModelsInput').tagEditor('destroy');
+                }
+
+                $('#incorporatedModelsInput').tagEditor({
+                    initialTags: design.incorporatedModels==null?[]:design.incorporatedModels ,
+                    forceLowercase: false,
+                });
+                if ($("#processInput").nextAll().length != 0){
+                    $('#processInput').tagEditor('destroy');
+                }
+                $('#processInput').tagEditor({
+                    initialTags: design.process==null?[]:design.process ,
+                    forceLowercase: false,
+                });
+                if ($("#inputsInput").nextAll().length != 0){
+                     $('#inputsInput').tagEditor('destroy');
+                }
+                $('#inputsInput').tagEditor({
+                    initialTags: usage.inputs==null?[]:usage.inputs ,
+                    forceLowercase: false,
+                });
+                if ($("#outputsInput").nextAll().length != 0){
+                    $('#outputsInput').tagEditor('destroy');
+                }
+                $("#outputsInput").tagEditor({
+                    initialTags: usage.outputs==null?[]:usage.outputs ,
+                    forceLowercase: false,
+                })
+            })
+
+
+
+        },
+
+        getMetaData(){
+            let metadata = {
+                'overview':{},
+                'design':{},
+                'usage':{},
+            }
+            metadata.overview.name = this.metadataTemp.overview.name.trim()
+            metadata.overview.version = this.metadataTemp.overview.version.trim()
+            metadata.overview.modelType = this.metadataTemp.overview.modelType.trim()
+            metadata.overview.modelDomain = $("#modelDomainInput").val().split(",");
+            metadata.overview.scale = this.metadataTemp.overview.scale.trim()
+
+            metadata.design.purpose = this.metadataTemp.design.purpose.trim()
+            metadata.design.principles = $("#principlesInput").val().split(",");
+            metadata.design.incorporatedModels = $("#incorporatedModelsInput").val().split(",");
+            metadata.design.framework = this.metadataTemp.design.framework.trim()
+            metadata.design.process = $("#processInput").val().split(",");
+
+            metadata.usage.information = this.metadataTemp.usage.information.trim()
+            metadata.usage.initialization = this.metadataTemp.usage.initialization.trim()
+            metadata.usage.hardware = this.metadataTemp.usage.hardware.trim()
+            metadata.usage.software = this.metadataTemp.usage.software.trim()
+            metadata.usage.inputs = $("#inputsInput").val().split(",");
+            metadata.usage.outputs = $("#outputsInput").val().split(",");
+
+            return metadata
+        },
+
+        getDescription(){
+            this.editDescription = true
+            axios.get('/modelItem/getDescription/'+this.modelOid
+            ).then(
+                res => {
+                    let data = res.data.data
+                    initTinymce('textarea#conceptText')
+                    this.localizationList = data
+                    let interval = setInterval(() => {
+                        this.changeLocalization(this.localizationList[0])
+                        clearInterval(interval);
+                    }, 1000);
+                }
+            )
+        },
+
+        getMetadata(){
+            this.editMetadata = true
+            axios.get('/modelItem/getMetadata/'+this.modelOid
+            ).then(
+                res => {
+                    let data = res.data.data
+                    this.insertMetaData(this.metadataTemp, data)
+                }
+            )
+        },
+
+        submitMetadata(){
+            let data = {}
+            data.oid = this.modelOid
+            data.metadata = JSON.stringify(this.getMetaData())
+
+            $.ajax({
+                type:'post',
+                url:'/modelItem/updateMetadata',
+                data: data,
+                // dataType: "json",
+                // accept: 'application/json',
+                success:(res)=>{
+                    let data = res.data
+                    if(data=='suc'){
+                        this.$alert("Change description successfully!", 'Success', {
+                            type: 'success',
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                window.location.reload();
+                            }
+                        })
+                    }else if(data=='version'){
+                        this.$alert("Your edit has been submit, please wait for the contributor to handle it.", 'Success', {
+                            type: 'success',
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                window.location.reload();
+                            }
+                        })
+                    }
+
+                }
+            })
+        },
+
+        submitDescription(){
+            for (i = 0; i < this.localizationList.length; i++) {
+                if (this.currentLocalization.localName == this.localizationList[i].localName) {
+                    this.localizationList[i].name = this.currentLocalization.name;
+                    this.localizationList[i].description = tinymce.activeEditor.getContent();
+                    break;
+                }
+            }
+
+            let data = {
+                oid:this.modelOid,
+                localization:JSON.stringify(this.localizationList)
+            }
+
+            $.ajax({
+                type:'post',
+                url:'/modelItem/updateDesctription',
+                data: data,
+                // dataType: "json",
+                // accept: 'application/json',
+                success:(res)=>{
+                    let data = res.data
+                    if(data=='suc'){
+                        this.$alert("Change description successfully!", 'Success', {
+                            type: 'success',
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                window.location.reload();
+                            }
+                        })
+                    }else if(data=='version'){
+                        this.$alert("Your edit has been submit, please wait for the contributor to handle it.", 'Success', {
+                            type: 'success',
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                window.location.reload();
+                            }
+                        })
+                    }
+
+                }
+            })
+            // $.post('/modelItem/updateDesctription',data).then(
+            //     (result)=> {
+            //
+            //     }
+            // )
+        },
+
+        getReference(){
+            this.editReference = true
+
+            axios.get('/modelItem/getReference/'+this.modelOid).then(
+                res =>{
+                    let references = res.data.data
+                    Vue.nextTick(()=>{
+                        if ( $.fn.dataTable.isDataTable( '#dynamic-table' ) ) {
+                            this.dynamicTable = $('#dynamic-table').DataTable();
+                        }
+                        else {
+                            this.dynamicTable = $('#dynamic-table').DataTable({
+                                //"aaSorting": [[ 0, "asc" ]],
+                                "paging": false,
+                                // "ordering":false,
+                                "info": false,
+                                "searching": false,
+                            });
+                        }
+
+
+                        this.dynamicTable.clear().draw();
+                        for (i = 0; i < references.length; i++) {
+                            var ref = references[i];
+                            this.dynamicTable.row.add([
+                                ref.title,
+                                ref.author,
+                                ref.date,
+                                ref.journal,
+                                ref.volume,
+                                ref.pages,
+                                ref.links,
+                                ref.doi,
+                                "<center><a href='javascript:;' class='fa fa-times refClose' style='color:red'></a></center>"]).draw();
+                        }
+                    })
+
+            }
+            )
+
+
+        },
+
+        searchDoi(){
+            if(this.doi == ''){
+                this.$alert('Please input the DOI', 'Tip', {
+                        type:"warning",
+                        confirmButtonText: 'OK',
+                        callback: ()=>{
+                            return
+                        }
+                    }
+                );
+            }else{
+                this.doiLoading = true
+                // if(this.doi===this.lastDoi)
+                //     setTimeout(()=>{
+                //         this.showUploadedArticleDialog=true;
+                //         this.doiLoading = false;
+                //     },200)
+                // this.lastDoi=this.doi;
+                $.ajax({
+                    type: "POST",
+                    url: "/modelItem/searchByDOI",
+                    data: {
+                        doi: this.doi,
+                        modelOid:this.modelOid
+                    },
+                    cache: false,
+                    async: true,
+                    success: (res) => {
+                        if(res.code==-1) {
+                            this.$alert('Please login first!', 'Error', {
+                                type:"error",
+                                confirmButtonText: 'OK',
+                                callback: action => {
+                                    window.location.href = "/user/login";
+                                }
+                            });
+                        }
+                        data=res.data;
+                        this.doiLoading = false;
+                        if (data.find == -1) {
+                            this.$alert('Failed to connect, please try again!', 'Tip', {
+                                    type:"warning",
+                                    confirmButtonText: 'OK',
+                                    callback: ()=>{
+                                        return
+                                    }
+                                }
+                            );
+                        }else if(data.find==0){
+                            this.$alert('Find no result, check the DOI you have input or fill information manually.', 'Tip', {
+                                    type:"warning",
+                                    confirmButtonText: 'OK',
+                                    callback: ()=>{
+                                        return
+                                    }
+                                }
+                            );
+                        }
+                        else if(data.find==1) {
+
+                            this.showUploadArticleDialog = true;
+                            this.articleUploading = data.article;
+
+                        }else if(data.find==2){
+                            this.showUploadedArticleDialog=true;
+
+                        }
+
+                    },
+                    error: (data) => {
+                        this.doiLoading = false;
+                        $("#doi_searchBox").removeClass("spinner")
+                        this.$alert('Failed to connect, please try again!', 'Tip', {
+                                type:"warning",
+                                confirmButtonText: 'OK',
+                                callback: ()=>{
+                                    return
+                                }
+                            }
+                        );
+                        $("#doiDetails").css("display", "none");
+                        $("#doiTitle").val("")
+                    }
+                })
+            }
+        },
+
+        updateArticleConfirmClick(){
+            // console.log(this.articleToBack);
+            var tags = $('#refAuthor').tagEditor('getTags')[0].tags;
+            for (i = 0; i < tags.length; i++) { $('#articleAuthor').tagEditor('removeTag', tags[i]); }
+            if(tags.length<1||$("#refTitle").val()==''){
+                this.$alert('Please enter the Title and at least one Author.', 'Tip', {
+                        type:"warning",
+                        confirmButtonText: 'OK',
+                        callback: ()=>{
+                            return
+                        }
+                    }
+                );
+                return;
+            }
+
+            let tags1 = $('#refAuthor').tagEditor('getTags')[0].tags;
+            for (i = 0; i < tags1.length; i++) { $('#refAuthor').tagEditor('removeTag', tags1[i]); }
+            if (tags1.length>0&&$("#refTitle").val()!='') {
+                this.dynamicTable.row.add([
+                    $("#refTitle").val(),
+                    tags1,
+                    $("#refDate").val(),
+                    $("#refJournal").val(),
+                    $("#volumeIssue").val(),
+                    $("#refPages").val(),
+                    $("#refLink").val(),
+                    $("#doiTitle").val(),
+                    "<center><a href='javascript:;' class='fa fa-times refClose' style='color:red'></a></center>"]).draw();
+
+                $("#dynamic-table").css("display", "block")
+                $("#refinfo").modal("hide")
+                $("#refTitle").val("")
+                var tags = $('#refAuthor').tagEditor('getTags')[0].tags;
+                for (i = 0; i < tags.length; i++) {
+                    $('#refAuthor').tagEditor('removeTag', tags[i]);
+                }
+                $("#refDate").val("")
+                $("#volumeIssue").val(""),
+                    $("#refJournal").val("")
+                $("#refPages").val("")
+                $("#doiTitle").val("")
+                $("#refLink").val("")
+            }
+
+            this.editArticleDialog = false
+            //调用$("#modal_save").click完成
+
+        },
+
+        cancelSearch() {
+            this.editArticleDialog = false
+        },
+
+        articleDoiUploadConfirm(status) {
+            this.articleToBack = this.articleUploading;
+
+            Vue.nextTick(()=>{
+                $("#refTitle").val(this.articleToBack.title);
+                $("#refJournal").val(this.articleToBack.journal);
+                $("#volumeIssue").val(this.articleToBack.volume);
+                $("#refPages").val(this.articleToBack.pageRange);
+                $("#refDate").val(this.articleToBack.date);
+                $("#refLink").val(this.articleToBack.link);
+                if ($("#refAuthor").nextAll().length == 0) {//如果不存在tageditor,则创建一个
+                    Vue.nextTick(() => {
+                        // $("#refAuthor").tagEditor({
+                        //     forceLowercase: false
+                        // })
+                        $('#refAuthor').tagEditor('destroy');
+                        $('#refAuthor').tagEditor({
+                            initialTags: this.articleToBack.authors,
+                            forceLowercase: false,
+                        });
+
+                    })
+                }else{
+                    $('#refAuthor').tagEditor('destroy');
+                    $('#refAuthor').tagEditor({
+                        initialTags: this.articleToBack.authors,
+                        forceLowercase: false,
+                    });
+                }
+
+            })
+            this.showUploadArticleDialog = false;
+            // this.articleToBack.status = status;
+        },
+
+        addArticleClick(){
+            this.editArticleDialog = true;
+            this.addorEdit='Add';
+            $("#refTitle").val('');
+
+            if ($("#refAuthor").nextAll().length == 0)//如果不存在tageditor,则创建一个
+                Vue.nextTick(() => {
+                    $("#refAuthor").tagEditor({
+                        forceLowercase: false
+                    })
+                })
+
+            $('#refAuthor').tagEditor('destroy');
+            $('#refAuthor').tagEditor({
+                initialTags:  [''],
+                forceLowercase: false,
+            });
+            $("#refJournal").val('');
+            $("#volumeIssue").val('');
+            $("#refPages").val('');
+            $("#refDate").val('');
+            $("#refLink").val('');
+
+            this.doi ='';
+        },
+
+        submitReference(){
+            let references = new Array();
+
+            var ref_lines = $("#dynamic-table tr");
+            for (i = 1; i < ref_lines.length; i++) {
+                var ref_prop = ref_lines.eq(i).children("td");
+                if (ref_prop != 0) {
+                    var ref = {};
+                    ref.title = ref_prop.eq(0).text();
+                    if (ref.title == "No data available in table")
+                        break;
+                    ref.author = ref_prop.eq(1).text().split(",");
+                    ref.date = ref_prop.eq(2).text();
+                    ref.journal = ref_prop.eq(3).text();
+                    ref.volume = ref_prop.eq(4).text();
+                    ref.pages = ref_prop.eq(5).text();
+                    ref.links = ref_prop.eq(6).text();
+                    ref.doi = ref_prop.eq(7).text();
+                    references.push(ref);
+                }
+            }
+
+            let data = {
+                oid:this.modelOid,
+                reference:JSON.stringify(references)
+            }
+
+            $.ajax({
+                type:'post',
+                url:'/modelItem/updateReference',
+                data: data,
+                // dataType: "json",
+                // accept: 'application/json',
+                success:(res)=>{
+                    let data = res.data
+                    if(data=='suc'){
+                        this.$alert("Change references successfully!", 'Success', {
+                            type: 'success',
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                window.location.reload();
+                            }
+                        })
+                    }else if(data=='version'){
+                        this.$alert("Your edit has been submit, please wait for the contributor to handle it.", 'Success', {
+                            type: 'success',
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                window.location.reload();
+                            }
+                        })
+                    }
+
+                }
+            })
+
+        },
+
         isCurrentItem(row){
             let urls = window.location.href.split('/');
             let oid = urls[urls.length-1].substring(0,36);
@@ -1810,7 +2628,7 @@ var info=new Vue({
                     asc: this.pageOption_my.sortAsc,
                     page: this.pageOption_my.currentPage-1,
                     pageSize: this.pageOption_my.pageSize,
-                    searchText: this.pageOption_my.relateSearch.trim(),
+                    searchText: this.pageOption_my.relateSearch,
                     sortField: this.pageOption_my.sortField,
                     classifications: ["all"],
                 };
@@ -1932,6 +2750,33 @@ var info=new Vue({
             })
         },
 
+        getRelatedResources() {
+            //从地址栏拿到oid
+            let arr = window.location.href.split("/");
+            let oid = arr[arr.length - 1].split("#")[0];
+            let data = {
+                oid: oid,
+            };
+            $.ajax({
+                type: "GET",
+                url: "/modelItem/getRelatedResources",
+                data: data,
+                async: true,
+                success: (json) => {
+                    if (json.code == 0) {
+                        let data = json.data;
+                        console.log(data)
+
+                        this.tableData = data;
+
+                    }
+                    else {
+                        console.log("query error!")
+                    }
+                }
+            })
+        },
+
         handlePageChange(val) {
             if(this.activeName_dialog=="my") {
                 this.pageOption_my.currentPage = val;
@@ -1982,6 +2827,7 @@ var info=new Vue({
 
         handleEdit(index, row) {
             console.log(row);
+            row.type=this.relateType
             let flag = false;
             for (i = 0; i < this.tableData.length; i++) {
                 let tableRow = this.tableData[i];
@@ -2042,23 +2888,35 @@ var info=new Vue({
                 contentType:contentType,
                 async: true,
                 success: (result) => {
-                    this.$alert('Success!', 'Tip', {
-                        type:'success',
-                        confirmButtonText: 'OK',
-                        callback: action => {
-                            this.dialogTableVisible = false;
-                            if(this.relateType === "modelItem"){
-                                this.relatedModelItems = result.data;
-                                this.setRelatedModelItemsPage();
-                                if(this.modelRelationGraphShow){
-                                    this.generateModelRelationGraph();
-                                }
+                    let info = result.data
+                    if(info === 'suc'){
+                        this.$alert('Success!', 'Tip', {
+                            type:'success',
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                this.dialogTableVisible = false;
+                                if(this.relateType === "modelItem"){
+                                    this.relatedModelItems = result.data;
+                                    this.setRelatedModelItemsPage();
+                                    if(this.modelRelationGraphShow){
+                                        this.generateModelRelationGraph();
+                                    }
 
-                            }else {
+                                }else {
+                                    window.location.reload();
+                                }
+                            }
+                        });
+                    }else if(info=='version'){
+                        this.$alert("Your edit has been submit, please wait for the contributor to handle it.", 'Success', {
+                            type: 'success',
+                            confirmButtonText: 'OK',
+                            callback: action => {
                                 window.location.reload();
                             }
-                        }
-                    });
+                        })
+                    }
+
 
                 },
                 error: (json) => {
@@ -2071,6 +2929,125 @@ var info=new Vue({
                     });
                 }
             })
+        },
+
+        addRelateResources(){
+            let formData=new FormData();
+
+            let stringInfo = []
+            this.tableData.forEach(function (item, index) {
+                let relateItem={}
+                relateItem.oid = item.oid
+                relateItem.type = item.type
+                if(item.type=='localFile'){
+                    formData.append("resources",item.raw);
+                }
+                if(item.type=='exLink'){
+                    relateItem.content = item.content
+                    relateItem.name = item.name
+                }
+                if(item.type=='dataSpaceFile'){
+                    relateItem.oid = item.oid
+                    relateItem.url = item.url
+                    relateItem.name = item.name
+                }
+                stringInfo.push(relateItem);
+            })
+
+            // let file = new File([JSON.stringify(stringInfo)],'ant.txt',{
+            //     type: 'text/plain',
+            // });
+            formData.append("stringInfo", JSON.stringify(stringInfo))
+
+
+            let arr = window.location.href.split("/");
+            let oid = arr[arr.length - 1].split("#")[0];
+
+            let url = '';
+
+            $.ajax({
+                type: "POST",
+                url: "/modelItem/addRelateResources/"+oid,
+                data: formData,
+                cache: false,
+                processData: false,
+                contentType: false,
+                async: true,
+                success: (result) => {
+                    let info = result.data
+                    if(info === 'suc'){
+                        this.$alert('Success!', 'Tip', {
+                            type:'success',
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                this.dialogTableVisible = false;
+                                window.location.reload();
+                            }
+                        });
+                    }else if(info === 'version'){
+                        this.$alert("Your edit has been submit, please wait for the contributor to handle it.", 'Success', {
+                            type: 'success',
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                window.location.reload();
+                            }
+                        })
+                    }
+
+
+                },
+                error: (json) => {
+                    this.$alert('Submitted failed!', 'Error', {
+                        type:'error',
+                        confirmButtonText: 'OK',
+                        callback: action => {
+
+                        }
+                    });
+                }
+            })
+        },
+
+        async checkPersonData() {
+            this.showDataChose = true;
+            this.$nextTick(()=>{
+                this.$refs.userDataSpace.getFilePackage();
+            })
+
+        },
+
+        selectDataspaceFile(file) {
+            this.targetFile = file
+        },
+
+        removeDataspaceFile(file) {
+            this.targetFile = {}
+        },
+
+        selectDataFromPersonal(){
+            let file = {
+                name:this.targetFile.label+this.targetFile.suffix,
+                oid:this.targetFile.id,
+                url:this.targetFile.url,
+                type:"dataSpaceFile"
+            }
+            for(let tableEle of this.tableData){
+                if(tableEle.oid == file.oid){
+                     this.$alert('You have select this file.', 'Tip', {
+                              type:"warning",
+                              confirmButtonText: 'OK',
+                              callback: ()=>{
+                                  return
+                              }
+                          }
+                      );
+                     return
+                }
+            }
+
+            this.tableData.push(file)
+
+            this.showDataChose = false
         },
 
         handleClose(done) {
@@ -2168,6 +3145,147 @@ var info=new Vue({
 
         },
 
+        addRelatedResouece(){
+            this.relateType = 'concept'
+            $.ajax({
+                type: "GET",
+                url: "/user/load",
+                data: {},
+                cache: false,
+                async: false,
+                xhrFields: {
+                    withCredentials: true
+                },
+                crossDomain: true,
+                success: (data) => {
+                    if (data.oid == "") {
+                        this.confirmLogin()
+                    }
+                    else {
+                        this.activeName_dialog = 'all'
+
+                        this.tableData = [];
+
+                        this.pageOption_my.currentPage = 1;
+                        this.pageOption_my.searchResult = [];
+                        this.pageOption_my.relateSearch = "";
+
+                        this.pageOption_all.currentPage = 1;
+                        this.pageOption_all.searchResult = [];
+                        this.pageOption_all.relateSearch = "";
+
+                        this.getRelatedResources();
+                        this.search(this.activeName_dialog);
+                        if(this.activeName_dialog!="all"){
+                            this.search("all");
+                        }
+                        this.relatedResourceVisible = true;
+                    }
+                }
+            })
+
+        },
+
+        uploadRemove(file, fileList) {
+            this.relateFile = [];
+        },
+
+        uploadChange(file, fileList) {
+            this.relateFile.splice(0,1);
+            this.relateFile.push(file);
+            let fileMeta = {
+                name:file.name,
+                oid:file.uid,
+                raw:file.raw,
+                type:'localFile'
+            }
+            this.tableData.push(fileMeta)
+        },
+
+        getTypeImg(row){
+            switch (row.type){
+                case "concept":
+                    return '../../static/img/model/semantics.png'
+                    break;
+                case "spatialReference":
+                    return '../../static/img/model/spatialreference.png'
+                case "template":
+                    return '../../static/img/model/template.png'
+                case "unit":
+                    return '../../static/img/model/unit.png'
+            }
+
+        },
+
+        getTypeExpress(row){
+            switch (row.type){
+                case "concept":
+                    return 'Concept & Semantic'
+                    break;
+                case "spatialReference":
+                    return 'Spatiotemporal Reference'
+                case "template":
+                    return 'Data Template'
+                case "unit":
+                    return 'Unit & Metric'
+            }
+        },
+
+        checkContent(row){
+            if(row.type=='file'){
+                return
+            }else if(row.type=='link'){
+                window.open(row.content)
+            }else {
+                window.open('/repository/'+row.type+'/'+row.oid)
+            }
+        },
+
+        addExLink(){
+            if(this.exLink.name.trim()==''){
+                 this.$alert('Please input the name of the link', 'Tip', {
+                          type:"warning",
+                          confirmButtonText: 'OK',
+                          callback: ()=>{
+                              return
+                          }
+                      }
+                  );
+                 return
+            }
+            if(this.exLink.content.trim()==''){
+                this.$alert('Please input the content of the link', 'Tip', {
+                        type:"warning",
+                        confirmButtonText: 'OK',
+                        callback: ()=>{
+                            return
+                        }
+                    }
+                );
+                return
+            }
+
+
+
+            let linkMeta = {
+                name : this.exLink.name,
+                oid : this.exLink.name,
+                content : this.exLink.content,
+                type:'exLink'
+            }
+
+            this.exLink = {}
+            this.tableData.push(linkMeta)
+        },
+
+        // handleSuccess(result,file,fileList){
+        //     let fileMeta = {
+        //
+        //     }
+        //     this.tableData.push(fileMeta)
+        //     // this.upload_data_dataManager(uploadSource);
+        // },
+
         collapse(){
             console.log('aa')
             $('#authorship0').collapse()
@@ -2180,14 +3298,53 @@ var info=new Vue({
                 this.relatedModelItemsPage.push(this.relatedModelItems[i]);
 
             }
+        },
+
+        getContributors(){
+            let ids = window.location.href.split('/')
+            let id = ids[ids.length-1]
+
+            axios.get('/modelItem/getContributors',{
+                params:{
+                    id:id
+                }
+            }).then(
+                res=>{
+                    this.contributors = res.data.data
+                }
+            )
+
+        },
+
+        riseUser(contributor,index){
+            let tmp = this.lightenContributor
+            this.lightenContributor = contributor
+            this.$set(this.contributors,index,tmp)
+        },
+
+        checkObjAllProptNull(obj){
+            let pros = Object.values(obj)
+            return pros.every( ele => {
+                return ele === null
+            })
         }
     },
-    mounted() {
+
+    created(){
+        this.getContributors()
 
         this.modelInfo = modelInfo;
         this.relatedModelItems = modelItemList;
+        this.metadata = modelInfo.metadata
+    },
+
+    mounted() {
+        let vthis = this
+
+
         this.setRelatedModelItemsPage();
 
+        this.lightenContributor = author
 
         let href = window.location.href;
         let hrefs = href.split('/');
@@ -2318,6 +3475,15 @@ var info=new Vue({
                 break;
             }
         }
+
+        $(document).on("click", ".refClose", function () {
+            vthis.dynamicTable.row($(this).parents("tr")).remove().draw();
+            //$(this).parents("tr").eq(0).remove();
+            console.log($("tbody tr"));
+            if ($("tbody tr").eq(0)[0].innerText == "No data available in table") {
+                $("#dynamic-table").css("display", "none")
+            }
+        });
     }
 })
 
@@ -2333,3 +3499,38 @@ $(function () {
     );
 
 })
+
+function initTinymce(idStr){
+    tinymce.remove(idStr)
+    tinymce.init({
+        selector: idStr,
+        height: 350,
+        plugins: [
+            "advcode advlist autolink codesample image imagetools ",
+            " lists link media noneditable powerpaste preview",
+            " searchreplace table visualblocks wordcount"
+        ],
+        toolbar:
+            "undo redo | fontselect | fontsizeselect | bold italic underline | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist | link image",
+        file_picker_types: 'image',
+        file_picker_callback: function (cb, value, meta) {
+            var input = document.createElement('input');
+            input.setAttribute('type', 'file');
+            input.setAttribute('accept', 'image/*');
+            input.onchange = function () {
+                var file = input.files[0];
+
+                var reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = function () {
+                    var img = reader.result.toString();
+                    cb(img, {title: file.name});
+                }
+            };
+            input.click();
+        },
+        images_dataimg_filter: function (img) {
+            return img.hasAttribute('internal-blob');
+        }
+    });
+}

@@ -410,6 +410,34 @@ public class Utils {
         return result;
     }
 
+    public static List<String> saveFile(MultipartFile file, String path, String uid, String suffix, List<String> result) {
+        new File(path).mkdirs();
+        String fileName = file.getOriginalFilename();
+        fileName = "/" + uid + "/" + new Date().getTime() + "_" + fileName;
+        result.add(suffix + fileName);
+        int size = (int) file.getSize();
+        System.out.println(fileName + "-->" + size);
+
+        if (file.isEmpty()) {
+           return null;
+        } else {
+            File dest = new File(path + fileName);
+            if (!dest.getParentFile().exists()) { // 判断文件父目录是否存在
+                dest.getParentFile().mkdir();
+            }
+            try {
+                file.transferTo(dest);
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        return result;
+    }
+
+
 
     /**
      * 根据路径删除指定的目录或文件，无论存在与否
