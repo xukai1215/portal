@@ -722,6 +722,8 @@ var info=new Vue({
             },
 
             editMetadata:false,
+            editAliasDialog:false,
+            editingModelAlias:'',
         }
     },
     methods: {
@@ -1256,23 +1258,23 @@ var info=new Vue({
         },
 
         handleCheckChange(data, checked, indeterminate) {
-            let checkedNodes = this.$refs.tree2.getCheckedNodes()
-            let classes = [];
-            let str='';
-            for (let i = 0; i < checkedNodes.length; i++) {
-                // console.log(checkedNodes[i].children)
-                if(checkedNodes[i].children!=undefined){
-                    continue;
-                }
-
-                classes.push(checkedNodes[i].oid);
-                str+=checkedNodes[i].label;
-                if(i!=checkedNodes.length-1){
-                    str+=", ";
-                }
-            }
-            this.cls=classes;
-            this.clsStr=str;
+            // let checkedNodes = this.$refs.tree2.getCheckedNodes()
+            // let classes = [];
+            // let str='';
+            // for (let i = 0; i < checkedNodes.length; i++) {
+            //     // console.log(checkedNodes[i].children)
+            //     if(checkedNodes[i].children!=undefined){
+            //         continue;
+            //     }
+            //
+            //     classes.push(checkedNodes[i].oid);
+            //     str+=checkedNodes[i].label;
+            //     if(i!=checkedNodes.length-1){
+            //         str+=", ";
+            //     }
+            // }
+            // this.cls=classes;
+            // this.clsStr=str;
 
         },
 
@@ -1296,6 +1298,64 @@ var info=new Vue({
             this.clsStr2=str;
 
         },
+
+        getAlias(){
+            this.editAliasDialog = true
+            axios.get('/modelItem/getAlias/'+this.modelOid
+            ).then(res => {
+                Vue.nextTick(()=>{
+                    if($('#aliasInput').nextAll().length>0){
+                        $('#aliasInput').tagEditor('destroy');
+                    }
+                    $('#aliasInput').tagEditor({
+                        initialTags: res.data.data==null?[]:res.data.data ,
+                        forceLowercase: false,
+                        // placeholder: 'Enter alias ...'
+                    });
+                })
+
+            })
+        },
+
+        submitModelAlias(){
+            let alias = $("#aliasInput").val().split(",");
+            if (alias.length === 1 && alias[0] === "") {
+                alias = [];
+            }
+
+            let data = {
+                oid:this.modelOid,
+                alias:alias,
+            };
+            $.post("/modelItem/updateAlias",data,(result)=>{
+                if (result.code == -2) {
+                    this.confirmLogin()
+                }else{
+                    if(result.data=='suc'){
+                        this.$alert("Change classification successfully!", 'Success', {
+                            type: 'success',
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                window.location.reload();
+                            }
+                        });
+                    }else if(result.data=='version'){
+                        this.$alert("Your edit has been submit, please wait for the contributor to handle it.", 'Success', {
+                            type: 'success',
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                window.location.reload();
+                            }
+                        })
+                    }
+                }
+
+
+
+
+            })
+        },
+
         getClassifications(){
             this.editClassification = true;
             $.get("/modelItem/getClassification/"+this.modelOid,{},(result)=>{
@@ -1337,7 +1397,7 @@ var info=new Vue({
                     }
                 }
 
-                this.$refs.tree2.setCheckedKeys(ids);
+                // this.$refs.tree2.setCheckedKeys(ids);
 
                 //cls
                 this.cls2 = result.data.class2;
@@ -1383,27 +1443,32 @@ var info=new Vue({
         submitClassifications(){
             let data = {
                 oid:this.modelOid,
-                class1:this.cls,
-                class2:this.cls2,
+                // class1:this.cls,
+                class:this.cls2,
             };
             $.post("/modelItem/updateClass",data,(result)=>{
-                if(data=='suc'){
-                    this.$alert("Change classification successfully!", 'Success', {
-                        type: 'success',
-                        confirmButtonText: 'OK',
-                        callback: action => {
-                            window.location.reload();
-                        }
-                    });
-                }else if(data=='version'){
-                    this.$alert("Your edit has been submit, please wait for the contributor to handle it.", 'Success', {
-                        type: 'success',
-                        confirmButtonText: 'OK',
-                        callback: action => {
-                            window.location.reload();
-                        }
-                    })
+                if (result.code == -2) {
+                    this.confirmLogin()
+                }else{
+                    if(result.data=='suc'){
+                        this.$alert("Change classification successfully!", 'Success', {
+                            type: 'success',
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                window.location.reload();
+                            }
+                        });
+                    }else if(result.data=='version'){
+                        this.$alert("Your edit has been submit, please wait for the contributor to handle it.", 'Success', {
+                            type: 'success',
+                            confirmButtonText: 'OK',
+                            callback: action => {
+                                window.location.reload();
+                            }
+                        })
+                    }
                 }
+
 
 
             })
@@ -1578,25 +1643,41 @@ var info=new Vue({
                 'design':{},
                 'usage':{},
             }
-            metadata.overview.name = this.metadataTemp.overview.name.trim()
-            metadata.overview.version = this.metadataTemp.overview.version.trim()
-            metadata.overview.modelType = this.metadataTemp.overview.modelType.trim()
+            metadata.overview.name = this.metadataTemp.overview.name==null?null:this.metadataTemp.overview.name.trim()
+            metadata.overview.version = this.metadataTemp.overview.version==null?null:this.metadataTemp.overview.version.trim()
+            metadata.overview.modelType = this.metadataTemp.overview.modelType==null?null:this.metadataTemp.overview.modelType.trim()
             metadata.overview.modelDomain = $("#modelDomainInput").val().split(",");
-            metadata.overview.scale = this.metadataTemp.overview.scale.trim()
+            if (metadata.overview.modelDomain.length === 1 && metadata.overview.modelDomain[0] === "") {
+                metadata.overview.modelDomain = [];
+            }
+            metadata.overview.scale = this.metadataTemp.overview.scale==null?null:this.metadataTemp.overview.scale.trim()
 
-            metadata.design.purpose = this.metadataTemp.design.purpose.trim()
+            metadata.design.purpose = this.metadataTemp.design.purpose==null?null:this.metadataTemp.design.purpose.trim()
             metadata.design.principles = $("#principlesInput").val().split(",");
+            if (metadata.design.principles.length === 1 && metadata.design.principles[0] === "") {
+                metadata.design.principles = [];
+            }
             metadata.design.incorporatedModels = $("#incorporatedModelsInput").val().split(",");
-            metadata.design.framework = this.metadataTemp.design.framework.trim()
+            if (metadata.design.incorporatedModels.length === 1 && metadata.design.incorporatedModels[0] === "") {
+                metadata.design.incorporatedModels = [];
+            }
+            metadata.design.framework = this.metadataTemp.design.framework==null?null:this.metadataTemp.design.framework.trim()
             metadata.design.process = $("#processInput").val().split(",");
-
-            metadata.usage.information = this.metadataTemp.usage.information.trim()
-            metadata.usage.initialization = this.metadataTemp.usage.initialization.trim()
-            metadata.usage.hardware = this.metadataTemp.usage.hardware.trim()
-            metadata.usage.software = this.metadataTemp.usage.software.trim()
+            if (metadata.design.process.length === 1 && metadata.design.process[0] === "") {
+                metadata.design.process = [];
+            }
+            metadata.usage.information = this.metadataTemp.usage.information==null?null:this.metadataTemp.usage.information.trim()
+            metadata.usage.initialization = this.metadataTemp.usage.initialization==null?null:this.metadataTemp.usage.initialization.trim()
+            metadata.usage.hardware = this.metadataTemp.usage.hardware==null?null:this.metadataTemp.usage.hardware.trim()
+            metadata.usage.software = this.metadataTemp.usage.software==null?null:this.metadataTemp.usage.software.trim()
             metadata.usage.inputs = $("#inputsInput").val().split(",");
+            if (metadata.usage.inputs.length === 1 && metadata.usage.inputs[0] === "") {
+                metadata.usage.inputs = [];
+            }
             metadata.usage.outputs = $("#outputsInput").val().split(",");
-
+            if (metadata.usage.outputs.length === 1 && metadata.usage.outputs[0] === "") {
+                metadata.usage.outputs = [];
+            }
             return metadata
         },
 
@@ -1640,23 +1721,28 @@ var info=new Vue({
                 // accept: 'application/json',
                 success:(res)=>{
                     let data = res.data
-                    if(data=='suc'){
-                        this.$alert("Change description successfully!", 'Success', {
-                            type: 'success',
-                            confirmButtonText: 'OK',
-                            callback: action => {
-                                window.location.reload();
-                            }
-                        })
-                    }else if(data=='version'){
-                        this.$alert("Your edit has been submit, please wait for the contributor to handle it.", 'Success', {
-                            type: 'success',
-                            confirmButtonText: 'OK',
-                            callback: action => {
-                                window.location.reload();
-                            }
-                        })
+                    if (res.code == -2) {
+                        this.confirmLogin()
+                    }else{
+                        if(data=='suc'){
+                            this.$alert("Change metadata successfully!", 'Success', {
+                                type: 'success',
+                                confirmButtonText: 'OK',
+                                callback: action => {
+                                    window.location.reload();
+                                }
+                            })
+                        }else if(data=='version'){
+                            this.$alert("Your edit has been submit, please wait for the contributor to handle it.", 'Success', {
+                                type: 'success',
+                                confirmButtonText: 'OK',
+                                callback: action => {
+                                    window.location.reload();
+                                }
+                            })
+                        }
                     }
+
 
                 }
             })
@@ -1684,23 +1770,28 @@ var info=new Vue({
                 // accept: 'application/json',
                 success:(res)=>{
                     let data = res.data
-                    if(data=='suc'){
-                        this.$alert("Change description successfully!", 'Success', {
-                            type: 'success',
-                            confirmButtonText: 'OK',
-                            callback: action => {
-                                window.location.reload();
-                            }
-                        })
-                    }else if(data=='version'){
-                        this.$alert("Your edit has been submit, please wait for the contributor to handle it.", 'Success', {
-                            type: 'success',
-                            confirmButtonText: 'OK',
-                            callback: action => {
-                                window.location.reload();
-                            }
-                        })
+                    if (res.code == -2) {
+                        this.confirmLogin()
+                    }else{
+                        if(data=='suc'){
+                            this.$alert("Change description successfully!", 'Success', {
+                                type: 'success',
+                                confirmButtonText: 'OK',
+                                callback: action => {
+                                    window.location.reload();
+                                }
+                            })
+                        }else if(data=='version'){
+                            this.$alert("Your edit has been submit, please wait for the contributor to handle it.", 'Success', {
+                                type: 'success',
+                                confirmButtonText: 'OK',
+                                callback: action => {
+                                    window.location.reload();
+                                }
+                            })
+                        }
                     }
+
 
                 }
             })
@@ -1990,24 +2081,30 @@ var info=new Vue({
                 // dataType: "json",
                 // accept: 'application/json',
                 success:(res)=>{
-                    let data = res.data
-                    if(data=='suc'){
-                        this.$alert("Change references successfully!", 'Success', {
-                            type: 'success',
-                            confirmButtonText: 'OK',
-                            callback: action => {
-                                window.location.reload();
-                            }
-                        })
-                    }else if(data=='version'){
-                        this.$alert("Your edit has been submit, please wait for the contributor to handle it.", 'Success', {
-                            type: 'success',
-                            confirmButtonText: 'OK',
-                            callback: action => {
-                                window.location.reload();
-                            }
-                        })
+                    if (res.code == -2) {
+                        this.confirmLogin()
+                    }else{
+                        let data = res.data
+                        if(data=='suc'){
+                            this.$alert("Change references successfully!", 'Success', {
+                                type: 'success',
+                                confirmButtonText: 'OK',
+                                callback: action => {
+                                    window.location.reload();
+                                }
+                            })
+                        }else if(data=='version'){
+                            this.$alert("Your edit has been submit, please wait for the contributor to handle it.", 'Success', {
+                                type: 'success',
+                                confirmButtonText: 'OK',
+                                callback: action => {
+                                    window.location.reload();
+                                }
+                            })
+                        }
+
                     }
+
 
                 }
             })
@@ -2221,6 +2318,7 @@ var info=new Vue({
         },
 
         confirmLogin(){
+            window.sessionStorage.setItem("history", window.location.href);
             this.$confirm('<div style=\'font-size: 18px\'>This function requires an account, <br/>please login first.</div>', 'Tip', {
                 dangerouslyUseHTMLString: true,
                 confirmButtonText: 'Log In',
@@ -3325,7 +3423,7 @@ var info=new Vue({
         checkObjAllProptNull(obj){
             let pros = Object.values(obj)
             return pros.every( ele => {
-                return ele === null
+                return ele === null||ele.length==0
             })
         }
     },

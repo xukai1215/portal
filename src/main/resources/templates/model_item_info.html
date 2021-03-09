@@ -250,6 +250,18 @@
                     <div class="head_text">
                         <h4>Alias</h4>
                     </div>
+                    <span class="blockEdit">
+                         <el-tooltip popper-class="fontsize-15" content="Edit" effect="light" placement="top">
+                            <el-button th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock!=true}"
+                                       type="primary" icon="el-icon-edit" @click="getAlias" circle></el-button>
+                        </el-tooltip>
+                        <el-tooltip popper-class="fontsize-15"
+                                    content="There is another version haven't been reviewed, you can edit it later or contact us."
+                                    effect="light" placement="top">
+                            <el-button th:if="${modelInfo.status=='Public'&&history!=true&&modelInfo.lock==true}"
+                                       icon="el-icon-edit" plain circle></el-button>
+                        </el-tooltip>
+                    </span>
                 </div>
                 <div class="block_content" style="margin-bottom:10px;">
 
@@ -259,6 +271,7 @@
                             style="margin: 0 10px 10px 0;font-weight: bold;color: #3396ef"></el-tag>
 
                 </div>
+
             </div>
 
             <div id="Contributor0" class="detail_block minScreen">
@@ -2219,24 +2232,40 @@
         <edit-modelitem-module :model-edit-oid="modelOid"></edit-modelitem-module>
     </el-dialog>
 
-    <el-dialog v-cloak title="Edit Classification" :visible.sync="editClassification" width="65%">
+    <el-dialog title="Edit Model Alias" :visible.sync="editAliasDialog" width="48%">
         <div class="form-horizontal">
             <div class="form-group">
-                <label for="parentNode2"
-                       class="col-sm-2 control-label"><span class="xing">* </span>Classifications</label>
-                <div class="col-sm-10">
-                                                                            <textarea class="form-control"
-                                                                                      id="parentNode2"
-                                                                                      v-model="clsStr"
-                                                                                      readonly></textarea>
+                <label for="aliasInput"
+                       class="col-sm-1 control-label">Alias</label>
+                <div class="col-sm-11">
+                    <textarea class="form-control" id="aliasInput"></textarea>
                 </div>
             </div>
         </div>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="editAliasDialog = false">Cancel</el-button>
+            <el-button type="primary" @click="submitModelAlias">Submit</el-button>
+        </span>
+    </el-dialog>
+
+    <el-dialog v-cloak title="Edit Classification" :visible.sync="editClassification" width="50%">
+<!--        <div class="form-horizontal">-->
+<!--            <div class="form-group">-->
+<!--                <label for="parentNode2"-->
+<!--                       class="col-sm-2 control-label"><span class="xing">* </span>Classifications</label>-->
+<!--                <div class="col-sm-10">-->
+<!--                                                                            <textarea class="form-control"-->
+<!--                                                                                      id="parentNode2"-->
+<!--                                                                                      v-model="clsStr"-->
+<!--                                                                                      readonly></textarea>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
 
         <div class="form-horizontal">
             <div class="form-group">
                 <label for="parentNode"
-                       class="col-sm-2 control-label"><span class="xing">* </span>Classifications2</label>
+                       class="col-sm-2 control-label"><span class="xing">* </span>Classifications</label>
                 <div class="col-sm-10">
                                                                             <textarea class="form-control"
                                                                                       id="parentNode"
@@ -2245,26 +2274,26 @@
                 </div>
             </div>
         </div>
-        <el-card style="width:50%;float:left;">
-            <div slot="header" class="clearfix text-center">
-                <span style="font-size: 20px;color:#444">Model Classifications 1</span>
-            </div>
-            <el-tree style="height: 260px;overflow: auto"
-                     class="wzhScrollbar"
-                     id="tree2"
-                     ref="tree2"
-                     :data="treeData"
-                     show-checkbox
-                     node-key="id"
-                     :default-expanded-keys="[1,64]"
+<!--        <el-card style="width:50%;float:left;">-->
+<!--            <div slot="header" class="clearfix text-center">-->
+<!--                <span style="font-size: 20px;color:#444">Model Classifications 1</span>-->
+<!--            </div>-->
+<!--            <el-tree style="height: 260px;overflow: auto"-->
+<!--                     class="wzhScrollbar"-->
+<!--                     id="tree2"-->
+<!--                     ref="tree2"-->
+<!--                     :data="treeData"-->
+<!--                     show-checkbox-->
+<!--                     node-key="id"-->
+<!--                     :default-expanded-keys="[1,64]"-->
 
-                     @check-change="handleCheckChange"
-                     :props="defaultProps">
-            </el-tree>
-        </el-card>
-        <el-card style="width:50%;">
+<!--                     @check-change="handleCheckChange"-->
+<!--                     :props="defaultProps">-->
+<!--            </el-tree>-->
+<!--        </el-card>-->
+        <el-card style="width:100%;">
             <div slot="header" class="clearfix text-center">
-                <span style="font-size: 20px;color:#444">Model Classifications 2</span>
+                <span style="font-size: 20px;color:#444">Model Classifications</span>
             </div>
             <el-tree style="height: 260px;overflow: auto"
                      class="wzhScrollbar"
