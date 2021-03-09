@@ -4,10 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import njgis.opengms.portal.bean.JsonResult;
-import njgis.opengms.portal.dao.TestServiceDao;
 import njgis.opengms.portal.dto.DataNodeContentDTO;
-import njgis.opengms.portal.entity.TestService;
-import njgis.opengms.portal.entity.support.InvokeService;
 import njgis.opengms.portal.service.DataServerService;
 import njgis.opengms.portal.utils.MyHttpUtils;
 import njgis.opengms.portal.utils.ResultUtils;
@@ -15,8 +12,6 @@ import njgis.opengms.portal.utils.XmlTool;
 import org.dom4j.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpRequest;
-import org.springframework.web.HttpRequestHandler;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -25,8 +20,6 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
-import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RestController
@@ -36,9 +29,6 @@ public class DataServerRestController {
     @Value("${dataServerManager}")
     private String dataServerManager;
 
-
-    @Autowired
-    TestServiceDao testServiceDao;
 
     @Autowired
     DataServerService dataServerService;
@@ -232,10 +222,4 @@ public class DataServerRestController {
 
     }
 
-    @RequestMapping(value = "/getTestServices", method = RequestMethod.GET)
-    public JsonResult getTestServices(){
-
-        return ResultUtils.success(testServiceDao.findAll());
-
-    }
 }

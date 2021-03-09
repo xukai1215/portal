@@ -292,12 +292,19 @@
                             <h5 th:if="${history==true}" th:text="'modified at '+${date}">modified at 2018-7-13 14:32:18 </h5>
                         </div>
                     </div>
-                    <div class="wzhScrollbar">
-                        <div class="flexCol flexCenter">
-                            <div v-for="contributor in contributors" style="margin: 10px 5px">
-                                <img :src="contributor.image==''?'/static/img/icon/default.png':contributor.image"
-                                     class="round_icon" style="width:40px;height: 40px;">
+                    <div class="flexAlignEnd flexJustCenter">
+                        <div class="wzhScrollbar " style="max-height: 135px">
+                            <div v-if="contributors!=null&&contributors.length>0" v-for="(contributor,index) in contributors" :key="contributor.userId"
+                                 class="inlineBlock cursorPointer" style="margin: 10px 5px;">
+                                <el-tooltip effect="dark"
+                                            :content="contributor.name"
+                                            placement="bottom">
+                                    <img :src="contributor.image==''?'/static/img/icon/default.png':contributor.image"
+                                         @click="riseUser(contributor,index)"
+                                         class="round_icon iconImg">
+                                </el-tooltip>
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -460,7 +467,7 @@
                 </div>
             </div>
 
-            <div id="metadata" th:if="${detailLanguage!=''}" class="detail_block">
+            <div id="metadata" class="detail_block">
                 <div class="block_head">
                     <div class="head_text">
                         <h4>Model Metadata</h4>
@@ -478,46 +485,60 @@
                         </el-tooltip>
                     </span>
                 </div>
-                <el-tabs v-model="metaDataTab" >
+                <el-tabs class="block_content"  v-model="metaDataTab" type="border-card">
                     <el-tab-pane label="Overview" name="first">
-                    <table class="wzhTable" style="width: 100%">
-                        <tr v-if="metadata.overview.name!=undefined&&metadata.overview.name!=''">
-                            <th class="tableSubTitle">Name</th>
-                            <th class="tableContent wzhScrollbar"  style="max-width: 660px;">{{metadata.overview.name}}</th>
-                        </tr>
-                        <tr v-if="metadata.overview.version!=undefined&&metadata.overview.version!=''">
-                            <th class="tableSubTitle">Version</th>
-                            <th class="tableContent wzhScrollbar"  style="max-width: 660px;">{{metadata.overview.version}}</th>
-                        </tr>
-                        <tr v-if="metadata.overview.modelType!=undefined&&metadata.overview.modelType!=''">
-                            <th class="tableSubTitle">Model Type</th>
-                            <th class="tableContent wzhScrollbar"  style="max-width: 660px;">{{metadata.overview.modelType}}</th>
-                        </tr>
-                        <tr v-if="metadata.overview.modelDomain!=undefined&&metadata.overview.modelDomain.length>0">
-                            <th class="tableSubTitle">Model Domain</th>
-                            <th class="tableContent wzhScrollbar"  style="max-width: 660px;">
-                                <div class="flexJustStart cell">
-                                    <div class="wzhTag flexCenter" v-for="domain in metadata.overview.modelDomain">
-                                        {{domain}}
+                        <table class="wzhTable" style="width: 100%" v-if="!checkObjAllProptNull(metadata.overview)">
+                            <tr v-if="metadata.overview.name!=undefined&&metadata.overview.name!=''">
+                                <th class="tableSubTitle">Name</th>
+                                <th class="tableContent wzhScrollbar" style="max-width: 660px;">
+                                    {{metadata.overview.name}}
+                                </th>
+                            </tr>
+                            <tr v-if="metadata.overview.version!=undefined&&metadata.overview.version!=''">
+                                <th class="tableSubTitle">Version</th>
+                                <th class="tableContent wzhScrollbar" style="max-width: 660px;">
+                                    {{metadata.overview.version}}
+                                </th>
+                            </tr>
+                            <tr v-if="metadata.overview.modelType!=undefined&&metadata.overview.modelType!=''">
+                                <th class="tableSubTitle">Model Type</th>
+                                <th class="tableContent wzhScrollbar" style="max-width: 660px;">
+                                    {{metadata.overview.modelType}}
+                                </th>
+                            </tr>
+                            <tr v-if="metadata.overview.modelDomain!=undefined&&metadata.overview.modelDomain.length>0">
+                                <th class="tableSubTitle">Model Domain</th>
+                                <th class="tableContent wzhScrollbar" style="max-width: 660px;">
+                                    <div class="flexJustStart cell">
+                                        <div class="wzhTag flexCenter" v-for="domain in metadata.overview.modelDomain">
+                                            {{domain}}
+                                        </div>
                                     </div>
-                                </div>
-                            </th>
-                        </tr>
-                        <tr v-if="metadata.overview.scale!=undefined&&metadata.overview.scale!=''">
-                            <th class="tableSubTitle">Sacle</th>
-                            <th class="tableContent wzhScrollbar"  style="max-width: 660px;">{{metadata.overview.scale}}</th>
-                        </tr>
-                    </table>
-                </el-tab-pane>
+                                </th>
+                            </tr>
+                            <tr v-if="metadata.overview.scale!=undefined&&metadata.overview.scale!=''">
+                                <th class="tableSubTitle">Sacle</th>
+                                <th class="tableContent wzhScrollbar" style="max-width: 660px;">
+                                    {{metadata.overview.scale}}
+                                </th>
+                            </tr>
+                        </table>
+                        <div class="text-center" v-else>
+                            <p>There is no overview about this model.
+                                You can <span><a class="cursorPointer" @click="getMetadata">click</a></span> to add overview.</p>
+                        </div>
+                    </el-tab-pane>
                     <el-tab-pane label="Design" name="second">
-                        <table class="wzhTable" style="width: 100%">
+                        <table class="wzhTable" style="width: 100%" v-if="!checkObjAllProptNull(metadata.design)">
                             <tr v-if="metadata.design.purpose!=undefined&&metadata.design.purpose!=''">
                                 <th class="tableSubTitle">Purpose</th>
-                                <th class="tableContent wzhScrollbar"  style="max-width: 660px;">{{metadata.design.purpose}}</th>
+                                <th class="tableContent wzhScrollbar" style="max-width: 660px;">
+                                    {{metadata.design.purpose}}
+                                </th>
                             </tr>
                             <tr v-if="metadata.design.principles!=undefined&&metadata.design.principles.length>0">
                                 <th class="tableSubTitle">Principles</th>
-                                <th class="tableContent wzhScrollbar"  style="max-width: 660px;">
+                                <th class="tableContent wzhScrollbar" style="max-width: 660px;">
                                     <div class="flexJustStart cell">
                                         <div class="wzhTag flexCenter" v-for="principle in metadata.design.principles">
                                             {{principle}}
@@ -528,9 +549,10 @@
                             </tr>
                             <tr v-if="metadata.design.incorporatedModels!=undefined&&metadata.design.incorporatedModels.length>0">
                                 <th class="tableSubTitle">Incorporated Models</th>
-                                <th class="tableContent wzhScrollbar"  style="max-width: 660px;">
+                                <th class="tableContent wzhScrollbar" style="max-width: 660px;">
                                     <div class="flexJustStart cell">
-                                        <div class="wzhTag flexCenter" v-for="incorporatedModel in metadata.design.incorporatedModels">
+                                        <div class="wzhTag flexCenter"
+                                             v-for="incorporatedModel in metadata.design.incorporatedModels">
                                             {{incorporatedModel}}
                                         </div>
                                     </div>
@@ -539,11 +561,13 @@
                             </tr>
                             <tr v-if="metadata.design.framework!=undefined&&metadata.design.framework!=''">
                                 <th class="tableSubTitle">Model part of larger framework:</th>
-                                <th class="tableContent wzhScrollbar"  style="max-width: 660px;">{{metadata.design.framework}}</th>
+                                <th class="tableContent wzhScrollbar" style="max-width: 660px;">
+                                    {{metadata.design.framework}}
+                                </th>
                             </tr>
                             <tr v-if="metadata.design.process!=undefined&&metadata.design.process.length>0">
                                 <th class="tableSubTitle">Incorporated Models</th>
-                                <th class="tableContent wzhScrollbar"  style="max-width: 660px;">
+                                <th class="tableContent wzhScrollbar" style="max-width: 660px;">
                                     <div class="flexJustStart cell">
                                         <div class="wzhTag flexCenter" v-for="process in metadata.design.process">
                                             {{process}}
@@ -552,29 +576,41 @@
                                 </th>
                             </tr>
                         </table>
+                        <div class="text-center" v-else>
+                            <p>There is no design info about this model.
+                                You can <span><a class="cursorPointer" @click="getMetadata">click</a></span> to add overview.</p>
+                        </div>
                     </el-tab-pane>
 
                     <el-tab-pane label="Usage" name="third">
-                        <table class="wzhTable" style="width: 100%">
+                        <table class="wzhTable" style="width: 100%" v-if="!checkObjAllProptNull(metadata.usage)">
                             <tr v-if="metadata.usage.information!=undefined&&metadata.usage.information!=''">
                                 <th class="tableSubTitle">Information</th>
-                                <th class="tableContent wzhScrollbar"  style="max-width: 660px;">{{metadata.usage.information}}</th>
+                                <th class="tableContent wzhScrollbar" style="max-width: 660px;">
+                                    {{metadata.usage.information}}
+                                </th>
                             </tr>
                             <tr v-if="metadata.usage.initialization!=undefined&&metadata.usage.initialization!=''">
                                 <th class="tableSubTitle">Initialization</th>
-                                <th class="tableContent wzhScrollbar"  style="max-width: 660px;">{{metadata.usage.initialization}}</th>
+                                <th class="tableContent wzhScrollbar" style="max-width: 660px;">
+                                    {{metadata.usage.initialization}}
+                                </th>
                             </tr>
                             <tr v-if="metadata.usage.hardware!=undefined&&metadata.usage.hardware!=''">
                                 <th class="tableSubTitle">Hardware Requirements</th>
-                                <th class="tableContent wzhScrollbar"  style="max-width: 660px;">{{metadata.usage.hardware}}</th>
+                                <th class="tableContent wzhScrollbar" style="max-width: 660px;">
+                                    {{metadata.usage.hardware}}
+                                </th>
                             </tr>
                             <tr v-if="metadata.usage.software!=undefined&&metadata.usage.software!=''">
                                 <th class="tableSubTitle">Software Requirements</th>
-                                <th class="tableContent wzhScrollbar"  style="max-width: 660px;">{{metadata.usage.software}}</th>
+                                <th class="tableContent wzhScrollbar" style="max-width: 660px;">
+                                    {{metadata.usage.software}}
+                                </th>
                             </tr>
                             <tr v-if="metadata.usage.inputs!=undefined&&metadata.usage.inputs.length>0">
                                 <th class="tableSubTitle">Inputs</th>
-                                <th class="tableContent wzhScrollbar"  style="max-width: 660px;">
+                                <th class="tableContent wzhScrollbar" style="max-width: 660px;">
                                     <div class="flexJustStart cell">
                                         <div class="wzhTag flexCenter" v-for="input in metadata.usage.inputs">
                                             {{input}}
@@ -584,7 +620,7 @@
                             </tr>
                             <tr v-if="metadata.usage.outputs!=undefined&&metadata.usage.outputs.length>0">
                                 <th class="tableSubTitle">Outputs</th>
-                                <th class="tableContent wzhScrollbar"  style="max-width: 660px;">
+                                <th class="tableContent wzhScrollbar" style="max-width: 660px;">
                                     <div class="flexJustStart cell">
                                         <div class="wzhTag flexCenter" v-for="output in metadata.usage.outputs">
                                             {{output}}
@@ -593,6 +629,10 @@
                                 </th>
                             </tr>
                         </table>
+                        <div class="text-center" v-else>
+                            <p>There is no usage info about this model.
+                                You can <span><a class="cursorPointer" @click="getMetadata">click</a></span> to add overview.</p>
+                        </div>
                     </el-tab-pane>
                 </el-tabs>
 
@@ -1434,11 +1474,15 @@
                     </div>
                     <div class="wzhScrollbar flexAlignEnd" style=" white-space: nowrap;height: 70px">
                         <div>
-                            <div v-for="(contributor,index) in contributors" :key="contributor.userId"
+                            <div v-if="contributors!=null&&contributors.length>0" v-for="(contributor,index) in contributors" :key="contributor.userId"
                                  class="inlineBlock cursorPointer" style="margin: 10px 5px;">
-                                <img :src="contributor.image==''?'/static/img/icon/default.png':contributor.image"
-                                     @click="riseUser(contributor,index)"
-                                     class="round_icon iconImg">
+                                <el-tooltip effect="dark"
+                                            :content="contributor.name"
+                                            placement="bottom">
+                                    <img :src="contributor.image==''?'/static/img/icon/default.png':contributor.image"
+                                         @click="riseUser(contributor,index)"
+                                         class="round_icon iconImg">
+                                </el-tooltip>
                             </div>
 
                         </div>
@@ -2309,7 +2353,7 @@
         </span>
     </el-dialog>
 
-    <el-dialog v-cloak title="Edit Model Metadata" :visible.sync="editMetadata" width="70%">
+    <el-dialog v-cloak title="Edit Model Metadata" :visible.sync="editMetadata" width="72%">
         <el-tabs v-model="metaDataTab" >
             <el-tab-pane label="Overview" name="first">
                 <div class="form-horizontal">
@@ -2320,7 +2364,7 @@
                         </lable>
                         <div class='col-sm-10'>
                             <input type='text'
-                                   v-model="metadata.overview.name"
+                                   v-model="metadataTemp.overview.name"
                                    class='form-control'>
                         </div>
                     </div>
@@ -2333,7 +2377,7 @@
                         </lable>
                         <div class='col-sm-10'>
                             <input type='text'
-                                   v-model="metadata.overview.version"
+                                   v-model="metadataTemp.overview.version"
                                    class='form-control'>
                         </div>
                     </div>
@@ -2346,7 +2390,7 @@
                         </lable>
                         <div class='col-sm-10'>
                             <input type='text'
-                                   v-model="metadata.overview.modelType"
+                                   v-model="metadataTemp.overview.modelType"
                                    class='form-control'>
                         </div>
                     </div>
@@ -2370,7 +2414,7 @@
                         </lable>
                         <div class='col-sm-10'>
                             <input type='text'
-                                   v-model="metadata.overview.scale"
+                                   v-model="metadataTemp.overview.scale"
                                    class='form-control'>
                         </div>
                     </div>
@@ -2386,7 +2430,7 @@
                         </lable>
                         <div class='col-sm-10'>
                             <input type='text'
-                                   v-model="metadata.design.purpose"
+                                   v-model="metadataTemp.design.purpose"
                                    class='form-control'>
                         </div>
                     </div>
@@ -2421,7 +2465,7 @@
                 </div>
 
                 <div class="form-horizontal">
-                    <div class="form-group">
+                    <div class="form-group flexAlignCenter">
                         <lable class='control-label col-sm-2 text-center'
                                style='font-weight: bold;'>
                             <p>Model part of </p><p>
@@ -2429,7 +2473,7 @@
                         </lable>
                         <div class='col-sm-10'>
                             <input type='text'
-                                   v-model="metadata.design.framework"
+                                   v-model="metadataTemp.design.framework"
                                    class='form-control'>
                         </div>
                     </div>
@@ -2458,7 +2502,7 @@
                         </lable>
                         <div class='col-sm-10'>
                             <input type='text'
-                                   v-model="metadata.usage.information"
+                                   v-model="metadataTemp.usage.information"
                                    class='form-control'>
                         </div>
                     </div>
@@ -2471,7 +2515,7 @@
                         </lable>
                         <div class='col-sm-10'>
                             <input type='text'
-                                   v-model="metadata.usage.initialization"
+                                   v-model="metadataTemp.usage.initialization"
                                    class='form-control'>
                         </div>
                     </div>
@@ -2484,7 +2528,7 @@
                         </lable>
                         <div class='col-sm-10'>
                             <input type='text'
-                                   v-model="metadata.usage.hardware"
+                                   v-model="metadataTemp.usage.hardware"
                                    class='form-control'>
                         </div>
                     </div>
@@ -2497,7 +2541,7 @@
                         </lable>
                         <div class='col-sm-10'>
                             <input type='text'
-                                   v-model="metadata.usage.software"
+                                   v-model="metadataTemp.usage.software"
                                    class='form-control'>
                         </div>
                     </div>

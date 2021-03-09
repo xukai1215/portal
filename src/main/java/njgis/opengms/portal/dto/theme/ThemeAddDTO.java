@@ -36,4 +36,6 @@ public class ThemeAddDTO {
     List<Application>application;
     List<SubApplication> subApplications;
     List<Application> sub_application;//
+    List<ThemeData> themeData;  // 多级菜单保存下来，为了后面好编辑
+    List<ThemeModelData> themeModelData;
 }
