@@ -12,7 +12,6 @@ import njgis.opengms.portal.entity.DataItem;
 import njgis.opengms.portal.entity.DataNodeContent;
 import njgis.opengms.portal.entity.User;
 import njgis.opengms.portal.entity.support.InvokeService;
-import njgis.opengms.portal.entity.support.TestService;
 import njgis.opengms.portal.utils.MyHttpUtils;
 import njgis.opengms.portal.utils.XmlTool;
 import org.dom4j.DocumentException;
@@ -54,9 +53,6 @@ public class DataServerService {
 
     @Autowired
     UserDao userDao;
-
-    @Autowired
-    TestServiceDao testServiceDao;
 
     @Value("${dataServerManager}")
     private String dataServerManager;

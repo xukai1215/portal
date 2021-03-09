@@ -1553,7 +1553,7 @@ var info=new Vue({
                     forceLowercase: false,
                 });
                 if ($("#inputsInput").nextAll().length != 0){
-                     $('#inputsInput').tagEditor('destroy');
+                    $('#inputsInput').tagEditor('destroy');
                 }
                 $('#inputsInput').tagEditor({
                     initialTags: usage.inputs==null?[]:usage.inputs ,
@@ -1748,7 +1748,7 @@ var info=new Vue({
                         }
                     })
 
-            }
+                }
             )
 
 
@@ -2061,36 +2061,36 @@ var info=new Vue({
             axios.post("/modelItem/claimAuthorship",this.authorshipForm)
                 .then((result) => {
                     result = result.data;
-                if(result.code==-1){
-                    this.confirmLogin();
-                }else if(result.code==-2){
-                    this.$alert(result.msg, 'Tip', {
-                        type:'info',
-                        confirmButtonText: 'OK',
-                        callback: action => {
+                    if(result.code==-1){
+                        this.confirmLogin();
+                    }else if(result.code==-2){
+                        this.$alert(result.msg, 'Tip', {
+                            type:'info',
+                            confirmButtonText: 'OK',
+                            callback: action => {
 
+                            }
+                        });
+                    }else{
+                        if(result.data.method=='update'){
+                            this.$alert("Added successfully!", 'Success', {
+                                type: 'success',
+                                confirmButtonText: 'OK',
+                                callback: action => {
+                                    window.location.reload();
+                                }
+                            });
+                        }else {
+                            this.$alert("Submitted successfully, please wait for review.", 'Tip', {
+                                type: 'success',
+                                confirmButtonText: 'OK',
+                                callback: action => {
+                                    this.authorshipFormVisible = false
+                                }
+                            });
                         }
-                    });
-                }else{
-                    if(result.data.method=='update'){
-                        this.$alert("Added successfully!", 'Success', {
-                            type: 'success',
-                            confirmButtonText: 'OK',
-                            callback: action => {
-                                window.location.reload();
-                            }
-                        });
-                    }else {
-                        this.$alert("Submitted successfully, please wait for review.", 'Tip', {
-                            type: 'success',
-                            confirmButtonText: 'OK',
-                            callback: action => {
-                                this.authorshipFormVisible = false
-                            }
-                        });
                     }
-                }
-            })
+                })
         },
 
         //comment
@@ -3033,15 +3033,15 @@ var info=new Vue({
             }
             for(let tableEle of this.tableData){
                 if(tableEle.oid == file.oid){
-                     this.$alert('You have select this file.', 'Tip', {
-                              type:"warning",
-                              confirmButtonText: 'OK',
-                              callback: ()=>{
-                                  return
-                              }
-                          }
-                      );
-                     return
+                    this.$alert('You have select this file.', 'Tip', {
+                            type:"warning",
+                            confirmButtonText: 'OK',
+                            callback: ()=>{
+                                return
+                            }
+                        }
+                    );
+                    return
                 }
             }
 
@@ -3243,15 +3243,15 @@ var info=new Vue({
 
         addExLink(){
             if(this.exLink.name.trim()==''){
-                 this.$alert('Please input the name of the link', 'Tip', {
-                          type:"warning",
-                          confirmButtonText: 'OK',
-                          callback: ()=>{
-                              return
-                          }
-                      }
-                  );
-                 return
+                this.$alert('Please input the name of the link', 'Tip', {
+                        type:"warning",
+                        confirmButtonText: 'OK',
+                        callback: ()=>{
+                            return
+                        }
+                    }
+                );
+                return
             }
             if(this.exLink.content.trim()==''){
                 this.$alert('Please input the content of the link', 'Tip', {
