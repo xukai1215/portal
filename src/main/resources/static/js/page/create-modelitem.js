@@ -787,25 +787,41 @@ var createModelItem = Vue.extend({
                 'design':{},
                 'usage':{},
             }
-            metadata.overview.name = this.metadata.overview.name
-            metadata.overview.version = this.metadata.overview.version
-            metadata.overview.modelType = this.metadata.overview.modelType
+            metadata.overview.name = this.metadataTemp.overview.name==null?null:this.metadataTemp.overview.name.trim()
+            metadata.overview.version = this.metadataTemp.overview.version==null?null:this.metadataTemp.overview.version.trim()
+            metadata.overview.modelType = this.metadataTemp.overview.modelType==null?null:this.metadataTemp.overview.modelType.trim()
             metadata.overview.modelDomain = $("#modelDomainInput").val().split(",");
-            metadata.overview.scale = this.metadata.overview.scale
+            if (metadata.overview.modelDomain.length === 1 && metadata.overview.modelDomain[0] === "") {
+                metadata.overview.modelDomain = [];
+            }
+            metadata.overview.scale = this.metadataTemp.overview.scale==null?null:this.metadataTemp.overview.scale.trim()
 
-            metadata.design.purpose = this.metadata.design.purpose
+            metadata.design.purpose = this.metadataTemp.design.purpose==null?null:this.metadataTemp.design.purpose.trim()
             metadata.design.principles = $("#principlesInput").val().split(",");
+            if (metadata.design.principles.length === 1 && metadata.design.principles[0] === "") {
+                metadata.design.principles = [];
+            }
             metadata.design.incorporatedModels = $("#incorporatedModelsInput").val().split(",");
-            metadata.design.framework = this.metadata.design.framework
+            if (metadata.design.incorporatedModels.length === 1 && metadata.design.incorporatedModels[0] === "") {
+                metadata.design.incorporatedModels = [];
+            }
+            metadata.design.framework = this.metadataTemp.design.framework==null?null:this.metadataTemp.design.framework.trim()
             metadata.design.process = $("#processInput").val().split(",");
-
-            metadata.usage.information = this.metadata.usage.information
-            metadata.usage.initialization = this.metadata.usage.initialization
-            metadata.usage.hardware = this.metadata.usage.hardware
-            metadata.usage.software = this.metadata.usage.software
+            if (metadata.design.process.length === 1 && metadata.design.process[0] === "") {
+                metadata.design.process = [];
+            }
+            metadata.usage.information = this.metadataTemp.usage.information==null?null:this.metadataTemp.usage.information.trim()
+            metadata.usage.initialization = this.metadataTemp.usage.initialization==null?null:this.metadataTemp.usage.initialization.trim()
+            metadata.usage.hardware = this.metadataTemp.usage.hardware==null?null:this.metadataTemp.usage.hardware.trim()
+            metadata.usage.software = this.metadataTemp.usage.software==null?null:this.metadataTemp.usage.software.trim()
             metadata.usage.inputs = $("#inputsInput").val().split(",");
+            if (metadata.usage.inputs.length === 1 && metadata.usage.inputs[0] === "") {
+                metadata.usage.inputs = [];
+            }
             metadata.usage.outputs = $("#outputsInput").val().split(",");
-
+            if (metadata.usage.outputs.length === 1 && metadata.usage.outputs[0] === "") {
+                metadata.usage.outputs = [];
+            }
             return metadata
         },
 

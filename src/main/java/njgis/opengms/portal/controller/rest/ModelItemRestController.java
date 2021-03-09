@@ -133,15 +133,14 @@ public class ModelItemRestController {
 
     @RequestMapping(value = "/updateClass", method = RequestMethod.POST)
     public JsonResult updateClass(@RequestParam(value = "oid") String oid,
-                                  @RequestParam(value = "class1[]") List<String> class1,
-                                  @RequestParam(value = "class2[]",required = false) List<String> class2,
+                                  @RequestParam(value = "class[]") List<String> classi,
                                   HttpServletRequest request){
         HttpSession session=request.getSession();
-        String uid=session.getAttribute("uid").toString();
-        if(uid==null)
+        if(session.getAttribute("uid")==null)
         {
             return ResultUtils.error(-2,"未登录");
         }
+        String uid=session.getAttribute("uid").toString();
 
 
         ModelItem modelItem = modelItemDao.findFirstByOid(oid);
@@ -149,8 +148,8 @@ public class ModelItemRestController {
         String author = modelItem.getAuthor();
 
         if(author.equals(uid)) {
-            modelItem.setClassifications(class1);
-            modelItem.setClassifications2(class2);
+//            modelItem.setClassifications(class1);
+            modelItem.setClassifications2(classi);
             modelItemDao.save(modelItem);
 
             return ResultUtils.success("suc");
@@ -165,8 +164,8 @@ public class ModelItemRestController {
             modelItemUpdateDTO.setStatus(modelItem.getStatus());
             modelItemUpdateDTO.setLocalizationList(modelItem.getLocalizationList());
             modelItemUpdateDTO.setAuthorship(modelItem.getAuthorship());
-            modelItemUpdateDTO.setClassifications(class1);
-            modelItemUpdateDTO.setClassifications2(class2);
+//            modelItemUpdateDTO.setClassifications(class1);
+            modelItemUpdateDTO.setClassifications2(classi);
             modelItemUpdateDTO.setKeywords(modelItem.getKeywords());
             modelItemUpdateDTO.setReferences(modelItem.getReferences());
             modelItemUpdateDTO.setModelRelationList(modelItem.getModelRelationList());
@@ -182,15 +181,63 @@ public class ModelItemRestController {
 
     }
 
+    @RequestMapping(value = "/updateAlias", method = RequestMethod.POST)
+    public JsonResult updateAlias(@RequestParam(value = "oid") String oid,
+                                  @RequestParam(value = "alias[]") List<String> alias,
+                                  HttpServletRequest request){
+        HttpSession session=request.getSession();
+        if(session.getAttribute("uid")==null)
+        {
+            return ResultUtils.error(-2,"未登录");
+        }
+        String uid=session.getAttribute("uid").toString();
+
+        ModelItem modelItem = modelItemDao.findFirstByOid(oid);
+
+        String author = modelItem.getAuthor();
+
+        if(author.equals(uid)) {
+//            modelItem.setClassifications(class1);
+            modelItem.setAlias(alias);
+            modelItemDao.save(modelItem);
+
+            return ResultUtils.success("suc");
+        }else{
+            ModelItemUpdateDTO modelItemUpdateDTO = new ModelItemUpdateDTO();
+            modelItemUpdateDTO.setOid(modelItem.getOid());
+            modelItemUpdateDTO.setName(modelItem.getName());
+            modelItemUpdateDTO.setAlias(alias);
+            modelItemUpdateDTO.setUploadImage(modelItem.getImage());
+            modelItemUpdateDTO.setDescription(modelItem.getDescription());
+            modelItemUpdateDTO.setDetail(modelItem.getDetail());
+            modelItemUpdateDTO.setStatus(modelItem.getStatus());
+            modelItemUpdateDTO.setLocalizationList(modelItem.getLocalizationList());
+            modelItemUpdateDTO.setAuthorship(modelItem.getAuthorship());
+//            modelItemUpdateDTO.setClassifications(class1);
+            modelItemUpdateDTO.setClassifications2(modelItem.getClassifications2());
+            modelItemUpdateDTO.setKeywords(modelItem.getKeywords());
+            modelItemUpdateDTO.setReferences(modelItem.getReferences());
+            modelItemUpdateDTO.setModelRelationList(modelItem.getModelRelationList());
+            modelItemUpdateDTO.setRelate(modelItem.getRelate());
+            modelItemUpdateDTO.setRelatedData(modelItem.getRelatedData());
+            modelItemUpdateDTO.setMetadata(modelItem.getMetadata());
+
+
+            modelItemService.update(modelItemUpdateDTO,uid);
+
+            return ResultUtils.success("version");
+        }
+
+    }
 
     @RequestMapping(value = "/updateDesctription", method = RequestMethod.POST)
     public JsonResult updateDesctription(HttpServletRequest request){
         HttpSession session=request.getSession();
-        String uid=session.getAttribute("uid").toString();
-        if(uid==null)
+        if(session.getAttribute("uid")==null)
         {
             return ResultUtils.error(-2,"未登录");
         }
+        String uid=session.getAttribute("uid").toString();
 
         String oid = request.getParameter("oid");
         String localizationListStr = request.getParameter("localization");
@@ -239,11 +286,11 @@ public class ModelItemRestController {
     @RequestMapping(value = "/updateMetadata", method = RequestMethod.POST)
     public JsonResult updateMetadata(HttpServletRequest request){
         HttpSession session=request.getSession();
-        String uid=session.getAttribute("uid").toString();
-        if(uid==null)
+        if(session.getAttribute("uid")==null)
         {
             return ResultUtils.error(-2,"未登录");
         }
+        String uid=session.getAttribute("uid").toString();
 
         String oid = request.getParameter("oid");
         String metadataStr = request.getParameter("metadata");
@@ -293,11 +340,11 @@ public class ModelItemRestController {
     @RequestMapping(value = "/updateReference", method = RequestMethod.POST)
     public JsonResult updateReference(HttpServletRequest request){
         HttpSession session=request.getSession();
-        String uid=session.getAttribute("uid").toString();
-        if(uid==null)
+        if(session.getAttribute("uid")==null)
         {
             return ResultUtils.error(-2,"未登录");
         }
+        String uid=session.getAttribute("uid").toString();
 
         String oid = request.getParameter("oid");
         String referenceListStr = request.getParameter("reference");
@@ -425,11 +472,11 @@ public class ModelItemRestController {
     public JsonResult updateModelItem(HttpServletRequest request) throws IOException{
 
         HttpSession session=request.getSession();
-        String uid=session.getAttribute("uid").toString();
-        if(uid==null)
+        if(session.getAttribute("uid")==null)
         {
             return ResultUtils.error(-2,"未登录");
         }
+        String uid=session.getAttribute("uid").toString();
 
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
         MultipartFile file=multipartRequest.getFile("info");
@@ -478,6 +525,13 @@ public class ModelItemRestController {
         obj.put("class1",modelItem.getClassifications());
         obj.put("class2",modelItem.getClassifications2());
         return ResultUtils.success(obj);
+    }
+
+    @RequestMapping(value = "/getAlias/{id}", method = RequestMethod.GET)
+    JsonResult getAlias(@PathVariable("id") String id){
+        ModelItem modelItem = modelItemService.getByOid(id);
+
+        return ResultUtils.success(modelItem.getAlias());
     }
 
     @RequestMapping(value = "/getDescription/{id}", method = RequestMethod.GET)
@@ -680,10 +734,11 @@ public class ModelItemRestController {
                                 @RequestBody JSONObject jsonObject,
                                 HttpServletRequest request) {
         HttpSession session = request.getSession();
-        String uid = session.getAttribute("uid").toString();
-        if (uid == null) {
-            return ResultUtils.error(-2, "未登录");
+        if(session.getAttribute("uid")==null)
+        {
+            return ResultUtils.error(-2,"未登录");
         }
+        String uid=session.getAttribute("uid").toString();
         JSONArray relations = jsonObject.getJSONArray("relations");
         List<ModelRelation> modelRelationList = new ArrayList<>();
 

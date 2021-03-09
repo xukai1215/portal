@@ -405,7 +405,7 @@ public class ComputableModelRestController {
     }
 
     @RequestMapping (value="/searchComputableModelsByUserId",method = RequestMethod.GET)
-    public JsonResult searchModelItemsByUserId(HttpServletRequest request,
+    public JsonResult searchComputableModelsByUserId(HttpServletRequest request,
                                                @RequestParam(value="searchText") String searchText,
                                                @RequestParam(value="page") int page,
                                                @RequestParam(value="sortType") String sortType,

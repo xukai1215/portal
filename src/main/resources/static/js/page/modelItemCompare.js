@@ -556,13 +556,15 @@ new Vue({
             }
         },
 
+        checkObjAllProptNull(obj){
+            let pros = Object.values(obj)
+            return pros.every( ele => {
+                return ele === null||ele.length==0
+            })
+        }
+
     },
-    mounted(){
-        let titleArr=$(".detail_title");
-        CompareTxt(titleArr[0],titleArr[1]);
-        // let detailArr=$(".detail_overview .info p");
-        // CompareTxt(detailArr[0],detailArr[1])
-        // CompareTxt($("#detail")[0],$("#detail2")[0]);
+    created(){
         this.modelInfo = modelInfo;
         this.relatedModelItems = modelItemList;
 
@@ -571,6 +573,13 @@ new Vue({
 
         this.metadata_o = modelInfo.metadata
         this.metadata_n = modelInfo2.metadata
+    },
+    mounted(){
+        let titleArr=$(".detail_title");
+        CompareTxt(titleArr[0],titleArr[1]);
+        // let detailArr=$(".detail_overview .info p");
+        // CompareTxt(detailArr[0],detailArr[1])
+        // CompareTxt($("#detail")[0],$("#detail2")[0]);
 
         let currenturl=window.location.href;
         let dataitemid=currenturl.split("/");

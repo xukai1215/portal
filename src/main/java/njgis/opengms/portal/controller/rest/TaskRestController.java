@@ -218,7 +218,7 @@ public class TaskRestController {
     }
 
     @RequestMapping (value="/searchTasksByUserId",method = RequestMethod.GET)
-    public JsonResult searchModelItemsByUserId(HttpServletRequest request,
+    public JsonResult searchTasksByUserId(HttpServletRequest request,
                                                @RequestParam(value="searchText") String searchText,
                                                @RequestParam(value="page") int page,
                                                @RequestParam(value="sortType") String sortType,
