@@ -26,7 +26,7 @@ public class ThemeVersion {
     Date modifyTime;
     Date acceptTime;
     Date rejectTime;
-    int status;//版本状态
+    int status;//版本状态  0未审核 1接受 -1拒绝
     String image;
     String modifierOid;
     String creator;

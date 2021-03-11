@@ -1,7 +1,10 @@
 package njgis.opengms.portal.dao;
 
 import njgis.opengms.portal.entity.DataItemVersion;
+import njgis.opengms.portal.entity.UnitVersion;
 import org.springframework.data.mongodb.repository.MongoRepository;
+
+import java.util.List;
 
 /**
  * @Author mingyuan
@@ -9,4 +12,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  */
 public interface DataItemVersionDao extends MongoRepository<DataItemVersion,String> {
     DataItemVersion findFirstByOid(String oid);
+
+    List<DataItemVersion> findFirstByCreatorAndVerStatus(String creator, Integer verStatus);
+
 }

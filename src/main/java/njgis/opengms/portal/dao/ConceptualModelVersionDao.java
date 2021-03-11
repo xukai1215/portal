@@ -1,6 +1,7 @@
 package njgis.opengms.portal.dao;
 
 import njgis.opengms.portal.entity.ConceptualModelVersion;
+import njgis.opengms.portal.entity.ModelItemVersion;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
@@ -19,5 +20,6 @@ public interface ConceptualModelVersionDao extends MongoRepository<ConceptualMod
     List<ConceptualModelVersion> findAllByOriginOid(String oid, Pageable pageable);
 
     ConceptualModelVersion findFirstByOid(String oid);
+    List<ConceptualModelVersion> findFirstByCreatorAndVerStatus(String creator, Integer verStatus);
 
 }

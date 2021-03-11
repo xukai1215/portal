@@ -1,7 +1,12 @@
 package njgis.opengms.portal.controller.rest;
 
 import njgis.opengms.portal.bean.JsonResult;
+import njgis.opengms.portal.dao.DataApplicationDao;
+import njgis.opengms.portal.dao.TemplateDao;
 import njgis.opengms.portal.dto.Template.TemplateFindDTO;
+import njgis.opengms.portal.dto.Template.TemplateResultDTO;
+import njgis.opengms.portal.dto.dataApplication.DataApplicationFindDTO;
+import njgis.opengms.portal.entity.DataApplication;
 import njgis.opengms.portal.entity.Template;
 import njgis.opengms.portal.service.TemplateService;
 import njgis.opengms.portal.utils.ResultUtils;
@@ -9,6 +14,10 @@ import njgis.opengms.portal.dao.DataItemDao;
 import org.apache.http.entity.ContentType;
 import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,6 +30,7 @@ import javax.servlet.http.Part;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -31,7 +41,11 @@ public class TemplateRestController {
     @Autowired
     TemplateService templateService;
 
+    @Autowired
+    TemplateDao templateDao;
 
+    @Autowired
+    DataApplicationDao dataApplicationDao;
 
     @RequestMapping (value = "/listTemplatesByOid",method = RequestMethod.GET)
     JsonResult listSpatialByUserOid(TemplateFindDTO templateFindDTO,
@@ -125,5 +139,47 @@ public class TemplateRestController {
             e.printStackTrace();
         }
         return ResultUtils.error(-1,"fail");
+    }
+
+    /**
+     * 获取模板关联的数据方法信息
+     * @param templateId 模板id
+     * @return 关联的数据方法信息
+     */
+    @RequestMapping(value = "/getRelatedDataMethods/{templateId}", method = RequestMethod.GET)
+    JsonResult getRelatedDataMethods(@PathVariable(value = "templateId") String templateId){
+        JsonResult jsonResult = new JsonResult();
+        Template template = templateDao.findByOid(templateId);
+        if(template != null){
+            List<String> relatedMethods = template.getRelatedMethods();
+            if(relatedMethods != null){
+                List<DataApplication> dataApplications = new ArrayList<>();
+                for(String relatedMethod:relatedMethods){
+                    DataApplication dataApplication = dataApplicationDao.findFirstByOid(relatedMethod);
+                    dataApplications.add(dataApplication);
+                }
+                jsonResult.setMsg("find ok");
+                jsonResult.setData(dataApplications);
+            }else {
+                jsonResult.setCode(-1);
+            }
+        }
+        return jsonResult;
+    }
+
+    /**
+     * 获取所有的methods数据
+     * @return methods分页数据
+     */
+    @RequestMapping(value = "/getMethods", method = RequestMethod.POST)
+    JsonResult getMethods(DataApplicationFindDTO dataApplicationFindDTO){
+        JsonResult jsonResult = new JsonResult();
+        Sort sort = new Sort(dataApplicationFindDTO.getAsc() == false ? Sort.Direction.ASC : Sort.Direction.DESC, "createTime");
+        Pageable pageable = PageRequest.of(dataApplicationFindDTO.getPage(), 5, sort);
+        Page<DataApplication> dataApplications =
+                dataApplicationDao.findByNameLike(pageable, dataApplicationFindDTO.getSearchText());
+
+        jsonResult.setData(dataApplications);
+        return jsonResult;
     }
 }

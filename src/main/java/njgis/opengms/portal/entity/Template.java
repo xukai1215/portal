@@ -8,7 +8,6 @@ import java.util.List;
 @Document
 @Data
 public class Template extends Item {
-
     List<String> classifications;
 
     String image;
@@ -17,4 +16,5 @@ public class Template extends Item {
     String type;
     String parentId;
 
+    List<String> relatedMethods;//所链接的方法
 }

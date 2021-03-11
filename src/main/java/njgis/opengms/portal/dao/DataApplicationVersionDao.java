@@ -2,6 +2,7 @@ package njgis.opengms.portal.dao;
 
 import njgis.opengms.portal.entity.DataApplication;
 import njgis.opengms.portal.entity.DataApplicationVersion;
+import njgis.opengms.portal.entity.DataHubsVersion;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.awt.print.Pageable;
@@ -15,4 +16,7 @@ public interface DataApplicationVersionDao extends MongoRepository<DataApplicati
     List<DataApplicationVersion> findAllByOriginOid(String oid, Pageable pageable);
 
     DataApplicationVersion findFirstByOid(String oid);
+
+    List<DataApplicationVersion> findFirstByAuthorAndVerStatus(String creator, Integer verStatus);
+
 }

@@ -20,8 +20,9 @@ var createDataApplication = Vue.extend({
                     email: "",
                 },
                 deploy:false,
-                bindTemplate:'',
-                bindOid:'',
+                bindDataTemplates:[],
+                // bindTemplate:'',
+                // bindOid:'',
                 // bindTemplates:[],
             },
 
@@ -276,8 +277,8 @@ var createDataApplication = Vue.extend({
         },
         selectTemplate(index, info){
             console.log(info);
-            this.dataApplication.bindTemplate = info.name;
-            this.dataApplication.bindOid = info.oid;
+            // this.dataApplication.bindTemplate = info.name;
+            // this.dataApplication.bindOid = info.oid;
             this.bindTemplateDialogVisible = false;
         },
     },

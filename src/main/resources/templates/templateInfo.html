@@ -211,6 +211,49 @@
                 <!--<a id="addLocalization" style="cursor:pointer;font-size:16px;" data-toggle="modal" data-target="#myModal">Add Localization<i class="fa fa-plus" style="margin-left: 10px;color:#339fff;font-weight: bold" aria-hidden="true"></i></a>-->
             <!--</div>-->
 
+            <!--链接的数据方法-->
+            <div id="relatedDataMethods" class="detail_block">
+                <div class="block_head">
+                    <div class="head_text">
+                        <h4>Related Data Methods</h4>
+                    </div>
+                </div>
+                <div class="block_content">
+                    <div style="padding: 30px;margin-left:20px">
+                        <el-table
+                            :data="relatedDataMethods"
+                            style="width: 100%">
+                        <el-table-column
+                                prop="name"
+                                label="Data Method Name">
+                        </el-table-column>
+                            <el-table-column
+                                    prop="author"
+                                    label="Author">
+                            </el-table-column>
+                        <el-table-column
+                                prop="method"
+                                label="Method Type">
+                        </el-table-column>
+                        <el-table-column label="Operation">
+                                <template slot-scope="scope">
+                                    <el-tooltip class="item" effect="light" content="You can try to invoke the service" placement="top-start">
+                                        <el-button @click = "ViewMethod($event)" target = "_blank" type="success" class="viewMethod">
+                                            View
+                                        </el-button>
+                                    </el-tooltip>
+                                </template>
+                        </el-table-column>
+                    </el-table>
+                        <div class="addNew" style="text-align: center;margin: 10px">
+                            <span style="margin-right: 20px">You can click the button to bind the data method</span>
+                            <el-button  icon="el-icon-plus" @click="openBindMethodDialog()"></el-button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
             <div id="cite" class="detail_block">
                 <div class="block_head">
                     <div class="head_text">
@@ -408,6 +451,58 @@
         </div><!-- /.modal -->
     </div>
 
+    <el-dialog :visible.sync="bindNewMethodDialog" title="Bind Data Method Item" width="50%"
+               top="40px">
+        <el-input placeholder="Method name..." v-model="pageOption1.searchText" class="input-with-select"
+                  @keyup.enter.native="searchMethod()">
+            <el-button slot="append" icon="el-icon-search" @click="searchMethod()"></el-button>
+        </el-input>
+        <el-table
+                :data="pageOption1.searchResult"
+                style="margin-top:17px;"
+        >
+            <el-table-column type="expand">
+                <template slot-scope="props">
+                    <el-form label-position="left" inline class="demo-table-expand">
+                        <el-form-item label="Overview">
+                            <span>{{ props.row.description }}</span>
+                        </el-form-item>
+
+                    </el-form>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    label="Name">
+                <template slot-scope="props">
+                    <a :href="'/repository/template/'+props.row.oid" target="_blank">{{props.row.name}}</a>
+                </template>
+            </el-table-column>
+            <el-table-column label="Contributor">
+                <template slot-scope="props">
+                    <a :href="'/profile/'+props.row.author_name"
+                       target="_blank">{{props.row.author}}</a>
+                </template>
+            </el-table-column>
+            <el-table-column fixed="right" label="Operation" width="100">
+                <template slot-scope="scope">
+                    <el-button
+                            size="mini"
+                            type="success"
+                            @click="selectMethod(scope.$index, scope.row)">Choose
+                    </el-button>
+
+                </template>
+            </el-table-column>
+        </el-table>
+        <el-pagination style="text-align: center;margin-top:20px"
+                       @current-change="handlePageChange"
+                       :current-page="pageOption1.currentPage"
+                       layout="total, prev, pager, next, jumper"
+                       :page-size="6"
+                       :total="pageOption1.total">
+        </el-pagination>
+
+    </el-dialog>
     <div th:replace="fragments/footer :: footer"></div>
 
 </div>
@@ -415,6 +510,7 @@
 <script type="text/javascript" src="/static/js/common/jquery-3.3.1.min.js"></script>
 <script type="text/javascript" src="/static/js/common/bootstrap.min.js"></script>
 <script src="/static/js/common/vue.min.js"></script>
+<script src="/static/js/common/axios.min.js"></script>
 <script src="/static/element-ui/index.js"></script>
 <script src="/static/js/common/vue-avatar.min.js"></script>
 <script src="/static/js/common/qrcode.min.js"></script>
@@ -424,6 +520,7 @@
 <script src="/static/js/common/bootstrap.min.js"></script>
 <script src="/static/element-ui/umd/locale/en.js"></script>
 <script src="/static/js/common/navbar.js"></script>
+<!--<script src="/static/js/page/template_info.js"></script>-->
 <script>
     function submitFrom() {
         var arry = $("#addConceptLocalizationForm").serializeArray();

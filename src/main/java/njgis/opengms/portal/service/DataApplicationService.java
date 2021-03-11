@@ -86,6 +86,9 @@ public class DataApplicationService {
     @Autowired
     UserDao userDao;
 
+    @Autowired
+    TemplateDao templateDao;
+
 //    @Value("${dataContainerDeployPort}")
 //    String dataContainerDeployPort;
 
@@ -323,8 +326,30 @@ public class DataApplicationService {
             result.setCode(-2);
         }else {
             try {
+
+
                 dataApplication.setResources(resources);
-                dataApplication.setOid(UUID.randomUUID().toString());
+                String dataApplicationOid = UUID.randomUUID().toString();
+
+                dataApplication.setOid(dataApplicationOid);
+
+                //根据获取的bindTemplateId双向绑定到templated中
+                if(dataApplication.getBindDataTemplates() != null){
+                    List<String> bindDataTemplates = dataApplication.getBindDataTemplates();
+                    for(String bindDataTemplate:bindDataTemplates){
+                        Template template = templateDao.findByOid(bindDataTemplate);
+                        if(template != null){
+                            List<String> relatedMethods = template.getRelatedMethods();
+                            if(relatedMethods == null){
+                                relatedMethods = new ArrayList<>();
+                            }
+                            relatedMethods.add(dataApplicationOid);
+                            template.setRelatedMethods(relatedMethods);
+                            templateDao.save(template);
+                        }
+                    }
+
+                }
                 dataApplication.setAuthor(oid);
                 dataApplication.setIsAuthor(true);
 
