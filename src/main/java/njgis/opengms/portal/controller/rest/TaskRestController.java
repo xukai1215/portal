@@ -24,6 +24,8 @@ import njgis.opengms.portal.utils.ResultUtils;
 import njgis.opengms.portal.utils.Utils;
 import org.apache.commons.io.FilenameUtils;
 import org.dom4j.DocumentException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
@@ -72,6 +74,8 @@ public class TaskRestController {
 
     @Value("${dataContainerIpAndPort}")
     private String dataContainerIpAndPort;
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @LoginRequired
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
@@ -214,7 +218,7 @@ public class TaskRestController {
     }
 
     @RequestMapping (value="/searchTasksByUserId",method = RequestMethod.GET)
-    public JsonResult searchModelItemsByUserId(HttpServletRequest request,
+    public JsonResult searchTasksByUserId(HttpServletRequest request,
                                                @RequestParam(value="searchText") String searchText,
                                                @RequestParam(value="page") int page,
                                                @RequestParam(value="sortType") String sortType,
@@ -320,40 +324,53 @@ public class TaskRestController {
                                   HttpServletRequest request) throws IOException {
         HttpSession session = request.getSession();
         if(session.getAttribute("uid")==null) {
+            logger.info("nologin");
             return ResultUtils.error(-1, "no login");
         }
         else {
-            String username = session.getAttribute("uid").toString();
-            RestTemplate restTemplate=new RestTemplate();
-            String url="http://" + managerServerIpAndPort + "/GeoModeling/task/runTask";//远程接口
-            String suffix="."+FilenameUtils.getExtension(file.getOriginalFilename());
-            File temp=File.createTempFile("temp",suffix);
-            file.transferTo(temp);
-            FileSystemResource resource = new FileSystemResource(temp);
-            MultiValueMap<String, Object> param = new LinkedMultiValueMap<>();
-            param.add("file", resource);
-            param.add("userName",username);
-            HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(param);
-            ResponseEntity<JSONObject> responseEntity = restTemplate.exchange(url, HttpMethod.POST, httpEntity, JSONObject.class);
-            if (responseEntity.getStatusCode()!=HttpStatus.OK){
-                throw new MyException("远程服务出错");
+            try{
+                String username = session.getAttribute("uid").toString();
+                RestTemplate restTemplate=new RestTemplate();
+                String url="http://" + managerServerIpAndPort + "/GeoModeling/task/runTask";//远程接口
+                logger.info(url);
+                String suffix="."+FilenameUtils.getExtension(file.getOriginalFilename());
+                File temp=File.createTempFile("temp",suffix);
+                file.transferTo(temp);
+                FileSystemResource resource = new FileSystemResource(temp);
+                MultiValueMap<String, Object> param = new LinkedMultiValueMap<>();
+                param.add("file", resource);
+                param.add("userName",username);
+                logger.info("param");
+                HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(param);
+                ResponseEntity<JSONObject> responseEntity = restTemplate.exchange(url, HttpMethod.POST, httpEntity, JSONObject.class);
+                if (responseEntity.getStatusCode()!=HttpStatus.OK){
+                    logger.error("remoteerr");
+                    throw new MyException("远程服务出错");
+                }
+                else{
+                    JSONObject body=responseEntity.getBody();
+                    if(body.getInteger("code")==-1){
+                        logger.info("code-1");
+                        return ResultUtils.error(-2,body.getString("msg"));
+                    }
+                    else {
+                        String taskId = responseEntity.getBody().getString("data");
+                        logger.info(responseEntity.getBody().getString("data"));
+                        logger.info(taskId);
+                        IntegratedTask task = integratedTaskDao.findByOid(taskOid);
+                        task.setTaskId(taskId);
+                        task.setStatus(1);
+                        logger.info("111");
+                        integratedTaskDao.save(task);
+                        logger.info("save");
+                        return ResultUtils.success(taskId);
+                    }
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+                return ResultUtils.error(-1,"err");
             }
-            else{
 
-                JSONObject body=responseEntity.getBody();
-                if(body.getInteger("code")==-1){
-                    return ResultUtils.error(-2,body.getString("msg"));
-                }
-                else {
-                    String taskId = responseEntity.getBody().getString("data");
-                    IntegratedTask task = integratedTaskDao.findByOid(taskOid);
-                    task.setOid(taskOid);
-                    task.setTaskId(taskId);
-                    task.setStatus(1);
-                    integratedTaskDao.save(task);
-                    return ResultUtils.success(taskId);
-                }
-            }
 
         }
     }

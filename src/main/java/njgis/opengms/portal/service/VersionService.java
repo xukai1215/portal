@@ -7,6 +7,8 @@ import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.entity.*;
 import njgis.opengms.portal.entity.support.AuthorInfo;
 import njgis.opengms.portal.entity.support.Localization;
+import njgis.opengms.portal.entity.support.ModelItemRelate;
+import njgis.opengms.portal.entity.support.ModelRelation;
 import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.ResultUtils;
 import njgis.opengms.portal.utils.deCode;
@@ -41,6 +43,9 @@ public class VersionService {
 
     @Autowired
     ModelItemDao modelItemDao;
+
+    @Autowired
+    DataItemDao dataItemDao;
 
     @Autowired
     ModelItemVersionDao modelItemVersionDao;
@@ -188,7 +193,7 @@ public class VersionService {
         JSONArray classResult2 = new JSONArray();
 
         List<String> classifications2 = modelItemVersion.getClassifications2();
-        for(int i=0;i<classifications2.size();i++){
+        for(int i=0;classifications2!=null&&i<classifications2.size();i++){
 
             JSONArray array=new JSONArray();
             String classId=classifications2.get(i);
@@ -261,8 +266,6 @@ public class VersionService {
             }
         }
 
-
-
         //图片路径
         String image=modelInfo.getImage();
         if(!image.equals("")){
@@ -274,6 +277,386 @@ public class VersionService {
             modelItemVersion.setImage(htmlLoadPath+image1);
         }
 
+        //relate
+        ModelItemRelate modelItemRelate=modelInfo.getRelate();
+        List<ModelRelation> modelItems = modelInfo.getModelRelationList();
+        List<String> dataItems=modelInfo.getRelatedData();
+        List<String> conceptual=modelItemRelate.getConceptualModels();
+        List<String> computable=modelItemRelate.getComputableModels();
+        List<String> logical=modelItemRelate.getLogicalModels();
+        List<String> concepts=modelItemRelate.getConcepts();
+        List<String> spatialReferences=modelItemRelate.getSpatialReferences();
+        List<String> templates=modelItemRelate.getTemplates();
+        List<String> units=modelItemRelate.getUnits();
+        List<Map<String,String>> dataSpaceFiles=modelItemRelate.getDataSpaceFiles();
+        List<Map<String,String>> exLinks=modelItemRelate.getExLinks();
+
+        ModelItemRelate modelItemRelate2=modelItemVersion.getRelate();
+        List<ModelRelation> modelItems2 = modelItemVersion.getModelRelationList();
+        List<String> dataItems2=modelItemVersion.getRelatedData();
+        List<String> conceptual2=modelItemRelate2.getConceptualModels();
+        List<String> computable2=modelItemRelate2.getComputableModels();
+        List<String> logical2=modelItemRelate2.getLogicalModels();
+        List<String> concepts2=modelItemRelate2.getConcepts();
+        List<String> spatialReferences2=modelItemRelate2.getSpatialReferences();
+        List<String> templates2=modelItemRelate2.getTemplates();
+        List<String> units2=modelItemRelate2.getUnits();
+        List<Map<String,String>> dataSpaceFiles2=modelItemRelate2.getDataSpaceFiles();
+        List<Map<String,String>> exLinks2=modelItemRelate2.getExLinks();
+
+        JSONObject relatedItems_o = new JSONObject();
+        JSONObject relatedItems_n = new JSONObject();
+
+        JSONArray modelItemArray=new JSONArray();
+        if(modelItems!=null) {
+            for (int i = 0; i < modelItems.size(); i++) {
+                String oidNew = modelItems.get(i).getOid();
+                ModelItem modelItemNew = modelItemDao.findFirstByOid(oidNew);
+                if (modelItemNew.getStatus().equals("Private")) {
+                    continue;
+                }
+                JSONObject modelItemJson = new JSONObject();
+                modelItemJson.put("name", modelItemNew.getName());
+                modelItemJson.put("oid", modelItemNew.getOid());
+                modelItemJson.put("relation",modelItems.get(i).getRelation().getText());
+                modelItemJson.put("description", modelItemNew.getDescription());
+                modelItemJson.put("image", modelItemNew.getImage().equals("") ? null : htmlLoadPath + modelItemNew.getImage());
+                modelItemArray.add(modelItemJson);
+            }
+        }
+        relatedItems_o.put("modelItems",modelItemArray);
+
+        JSONArray conceptualArray=new JSONArray();
+        if(conceptual!=null){
+            for(int i=0;i<conceptual.size();i++){
+                String oid=conceptual.get(i);
+                ConceptualModel conceptualModel=conceptualModelDao.findFirstByOid(oid);
+                if(conceptualModel.getStatus().equals("Private")){
+                    continue;
+                }
+                JSONObject conceptualJson = new JSONObject();
+                conceptualJson.put("name",conceptualModel.getName());
+                conceptualJson.put("oid",conceptualModel.getOid());
+                conceptualJson.put("description",conceptualModel.getDescription());
+                conceptualJson.put("image", conceptualModel.getImage().size() == 0 ? null : htmlLoadPath + conceptualModel.getImage().get(0));
+                conceptualArray.add(conceptualJson);
+            }
+        }
+
+        relatedItems_o.put("conceptualModels",conceptualArray);
+
+        JSONArray logicalArray=new JSONArray();
+        for(int i=0;i<logical.size();i++){
+            String oid=logical.get(i);
+            LogicalModel logicalModel=logicalModelDao.findFirstByOid(oid);
+            if(logicalModel.getStatus().equals("Private")){
+                continue;
+            }
+            JSONObject logicalJson = new JSONObject();
+            logicalJson.put("name",logicalModel.getName());
+            logicalJson.put("oid",logicalModel.getOid());
+            logicalJson.put("description",logicalModel.getDescription());
+            logicalJson.put("image", logicalModel.getImage().size() == 0 ? null : htmlLoadPath + logicalModel.getImage().get(0));
+            logicalArray.add(logicalJson);
+        }
+        relatedItems_o.put("logicalModels",logicalArray);
+
+        JSONArray computableArray=new JSONArray();
+        for(int i=0;i<computable.size();i++){
+            String oid=computable.get(i);
+            ComputableModel computableModel=computableModelDao.findFirstByOid(oid);
+            if(computableModel.getStatus().equals("Private")){
+                continue;
+            }
+            JSONObject computableJson = new JSONObject();
+            computableJson.put("name",computableModel.getName());
+            computableJson.put("oid",computableModel.getOid());
+            computableJson.put("description",computableModel.getDescription());
+            computableJson.put("contentType",computableModel.getContentType());
+            computableArray.add(computableJson);
+        }
+        relatedItems_o.put("computableModels",computableArray);
+
+        JSONArray conceptArray=new JSONArray();
+        if(concepts!=null) {
+            for (int i = 0; i < concepts.size(); i++) {
+                String oid = concepts.get(i);
+                Concept concept = conceptDao.findFirstByOid(oid);
+                if(concept.getStatus().equals("Private")){
+                    continue;
+                }
+                JSONObject jsonObj = new JSONObject();
+                jsonObj.put("name", concept.getName());
+                jsonObj.put("oid", concept.getOid());
+//                jsonObj.put("alias", concept.getAlias());
+                String desc = "";
+                List<Localization> localizationListConcept = concept.getLocalizationList();
+                for(int j=0;j<localizationListConcept.size();j++){
+                    String description = localizationListConcept.get(j).getDescription();
+                    if(description!=null&&!description.equals("")){
+                        desc = description;
+                        break;
+                    }
+                }
+                jsonObj.put("description", desc);
+//                jsonObj.put("description_ZH", concept.getDescription_ZH());
+//                jsonObj.put("description_EN", concept.getDescription_EN());
+                conceptArray.add(jsonObj);
+            }
+        }
+        relatedItems_o.put("concepts",conceptArray);
+
+        JSONArray spatialReferenceArray=new JSONArray();
+        if(spatialReferences!=null) {
+            for (int i = 0; i < spatialReferences.size(); i++) {
+                String oid = spatialReferences.get(i);
+                SpatialReference spatialReference = spatialReferenceDao.findByOid(oid);
+                if(spatialReference.getStatus().equals("Private")){
+                    continue;
+                }
+                JSONObject jsonObj = new JSONObject();
+                jsonObj.put("name", spatialReference.getName());
+                jsonObj.put("oid", spatialReference.getOid());
+                jsonObj.put("wkname", spatialReference.getWkname());
+                jsonObj.put("description", spatialReference.getDescription());
+                spatialReferenceArray.add(jsonObj);
+            }
+        }
+        relatedItems_o.put("spatialReferences",spatialReferenceArray);
+
+        JSONArray templateArray=new JSONArray();
+        if(templates!=null) {
+            for (int i = 0; i < templates.size(); i++) {
+                String oid = templates.get(i);
+                Template template = templateDao.findByOid(oid);
+                if(template.getStatus().equals("Private")){
+                    continue;
+                }
+                JSONObject jsonObj = new JSONObject();
+                jsonObj.put("name", template.getName());
+                jsonObj.put("oid", template.getOid());
+                jsonObj.put("description", template.getDescription());
+                jsonObj.put("type", template.getType());
+                templateArray.add(jsonObj);
+            }
+        }
+        relatedItems_o.put("templates",templateArray);
+
+        JSONArray unitArray=new JSONArray();
+        if(units!=null) {
+            for (int i = 0; i < units.size(); i++) {
+                String oid = units.get(i);
+                Unit unit = unitDao.findByOid(oid);
+                if(unit.getStatus().equals("Private")){
+                    continue;
+                }
+                JSONObject jsonObj = new JSONObject();
+                jsonObj.put("name", unit.getName());
+                jsonObj.put("oid", unit.getOid());
+
+                jsonObj.put("description", unit.getDescription());
+//                jsonObj.put("description_EN", unit.getDescription_EN());
+                unitArray.add(jsonObj);
+            }
+        }
+        relatedItems_o.put("units",unitArray);
+
+        JSONArray dataItemArray=new JSONArray();
+        if(dataItems!=null){
+            for(String dataId:dataItems){
+                DataItem dataItem=dataItemDao.findFirstById(dataId);
+                if(dataItem.getStatus().equals("Private")){
+                    continue;
+                }
+                JSONObject dataJson=new JSONObject();
+                dataJson.put("name",dataItem.getName());
+                dataJson.put("id",dataItem.getId());
+                dataJson.put("description",dataItem.getDescription());
+                dataItemArray.add(dataJson);
+            }
+        }
+        relatedItems_o.put("dataItems",dataItemArray);
+        relatedItems_o.put("dataSpaceFiles",dataSpaceFiles);
+        relatedItems_o.put("exLinks",exLinks);
+
+        //new version
+        JSONArray modelItemArray2=new JSONArray();
+        if(modelItems2!=null) {
+            for (int i = 0; i < modelItems2.size(); i++) {
+                String oidNew = modelItems2.get(i).getOid();
+                ModelItem modelItemNew = modelItemDao.findFirstByOid(oidNew);
+                if (modelItemNew.getStatus().equals("Private")) {
+                    continue;
+                }
+                JSONObject modelItemJson = new JSONObject();
+                modelItemJson.put("name", modelItemNew.getName());
+                modelItemJson.put("oid", modelItemNew.getOid());
+                modelItemJson.put("relation",modelItems2.get(i).getRelation().getText());
+                modelItemJson.put("description", modelItemNew.getDescription());
+                modelItemJson.put("image", modelItemNew.getImage().equals("") ? null : htmlLoadPath + modelItemNew.getImage());
+                modelItemArray2.add(modelItemJson);
+            }
+        }
+        relatedItems_n.put("modelItems",modelItemArray2);
+
+        JSONArray conceptualArray2=new JSONArray();
+        if(conceptual2!=null) {
+            for(int i=0;i<conceptual2.size();i++){
+                String oid=conceptual2.get(i);
+                ConceptualModel conceptualModel=conceptualModelDao.findFirstByOid(oid);
+                if(conceptualModel.getStatus().equals("Private")){
+                    continue;
+                }
+                JSONObject conceptualJson = new JSONObject();
+                conceptualJson.put("name",conceptualModel.getName());
+                conceptualJson.put("oid",conceptualModel.getOid());
+                conceptualJson.put("description",conceptualModel.getDescription());
+                conceptualJson.put("image", conceptualModel.getImage().size() == 0 ? null : htmlLoadPath + conceptualModel.getImage().get(0));
+                conceptualArray2.add(conceptualJson);
+            }
+        }
+
+        relatedItems_n.put("conceptualModels",conceptualArray2);
+
+        JSONArray logicalArray2=new JSONArray();
+        if(logical2!=null) {
+            for(int i=0;i<logical2.size();i++){
+                String oid=logical2.get(i);
+                LogicalModel logicalModel=logicalModelDao.findFirstByOid(oid);
+                if(logicalModel.getStatus().equals("Private")){
+                    continue;
+                }
+                JSONObject logicalJson = new JSONObject();
+                logicalJson.put("name",logicalModel.getName());
+                logicalJson.put("oid",logicalModel.getOid());
+                logicalJson.put("description",logicalModel.getDescription());
+                logicalJson.put("image", logicalModel.getImage().size() == 0 ? null : htmlLoadPath + logicalModel.getImage().get(0));
+                logicalArray2.add(logicalJson);
+            }
+        }
+
+        relatedItems_n.put("logicalModels",logicalArray2);
+
+        JSONArray computableArray2=new JSONArray();
+        if(computable2!=null) {
+            for(int i=0;i<computable2.size();i++){
+                String oid=computable2.get(i);
+                ComputableModel computableModel=computableModelDao.findFirstByOid(oid);
+                if(computableModel.getStatus().equals("Private")){
+                    continue;
+                }
+                JSONObject computableJson = new JSONObject();
+                computableJson.put("name",computableModel.getName());
+                computableJson.put("oid",computableModel.getOid());
+                computableJson.put("description",computableModel.getDescription());
+                computableJson.put("contentType",computableModel.getContentType());
+                computableArray2.add(computableJson);
+            }
+        }
+
+        relatedItems_n.put("computableModels",computableArray2);
+
+        JSONArray conceptArray2=new JSONArray();
+        if(concepts2!=null) {
+            for (int i = 0; i < concepts2.size(); i++) {
+                String oid = concepts2.get(i);
+                Concept concept = conceptDao.findFirstByOid(oid);
+                if(concept.getStatus().equals("Private")){
+                    continue;
+                }
+                JSONObject jsonObj = new JSONObject();
+                jsonObj.put("name", concept.getName());
+                jsonObj.put("oid", concept.getOid());
+//                jsonObj.put("alias", concept.getAlias());
+                String desc = "";
+                List<Localization> localizationListConcept = concept.getLocalizationList();
+                for(int j=0;j<localizationListConcept.size();j++){
+                    String description = localizationListConcept.get(j).getDescription();
+                    if(description!=null&&!description.equals("")){
+                        desc = description;
+                        break;
+                    }
+                }
+                jsonObj.put("description", desc);
+//                jsonObj.put("description_ZH", concept.getDescription_ZH());
+//                jsonObj.put("description_EN", concept.getDescription_EN());
+                conceptArray2.add(jsonObj);
+            }
+        }
+        relatedItems_n.put("concepts",conceptArray2);
+
+        JSONArray spatialReferenceArray2=new JSONArray();
+        if(spatialReferences2!=null) {
+            for (int i = 0; i < spatialReferences2.size(); i++) {
+                String oid = spatialReferences2.get(i);
+                SpatialReference spatialReference = spatialReferenceDao.findByOid(oid);
+                if(spatialReference.getStatus().equals("Private")){
+                    continue;
+                }
+                JSONObject jsonObj = new JSONObject();
+                jsonObj.put("name", spatialReference.getName());
+                jsonObj.put("oid", spatialReference.getOid());
+                jsonObj.put("wkname", spatialReference.getWkname());
+                jsonObj.put("description", spatialReference.getDescription());
+                spatialReferenceArray2.add(jsonObj);
+            }
+        }
+        relatedItems_n.put("spatialReferences",spatialReferenceArray2);
+
+        JSONArray templateArray2=new JSONArray();
+        if(templates2!=null) {
+            for (int i = 0; i < templates2.size(); i++) {
+                String oid = templates2.get(i);
+                Template template = templateDao.findByOid(oid);
+                if(template.getStatus().equals("Private")){
+                    continue;
+                }
+                JSONObject jsonObj = new JSONObject();
+                jsonObj.put("name", template.getName());
+                jsonObj.put("oid", template.getOid());
+                jsonObj.put("description", template.getDescription());
+                jsonObj.put("type", template.getType());
+                templateArray2.add(jsonObj);
+            }
+        }
+        relatedItems_n.put("templates",templateArray2);
+
+        JSONArray unitArray2=new JSONArray();
+        if(units2!=null) {
+            for (int i = 0; i < units2.size(); i++) {
+                String oid = units2.get(i);
+                Unit unit = unitDao.findByOid(oid);
+                if(unit.getStatus().equals("Private")){
+                    continue;
+                }
+                JSONObject jsonObj = new JSONObject();
+                jsonObj.put("name", unit.getName());
+                jsonObj.put("oid", unit.getOid());
+
+                jsonObj.put("description", unit.getDescription());
+//                jsonObj.put("description_EN", unit.getDescription_EN());
+                unitArray2.add(jsonObj);
+            }
+        }
+        relatedItems_n.put("units",unitArray2);
+
+        JSONArray dataItemArray2=new JSONArray();
+        if(dataItems2!=null){
+            for(String dataId:dataItems2){
+                DataItem dataItem=dataItemDao.findFirstById(dataId);
+                if(dataItem.getStatus().equals("Private")){
+                    continue;
+                }
+                JSONObject dataJson=new JSONObject();
+                dataJson.put("name",dataItem.getName());
+                dataJson.put("id",dataItem.getId());
+                dataJson.put("description",dataItem.getDescription());
+                dataItemArray2.add(dataJson);
+            }
+        }
+        relatedItems_n.put("dataItems",dataItemArray2);
+        relatedItems_n.put("dataSpaceFiles",dataSpaceFiles2);
+        relatedItems_n.put("exLinks",exLinks2);
 
         ModelAndView modelAndView=new ModelAndView();
         modelAndView.setViewName("compare/modelItemCompare");
@@ -294,6 +677,8 @@ public class VersionService {
 //        modelAndView.addObject("computableModels2",computableArray1);
         modelAndView.addObject("references2", JSONArray.parseArray(JSON.toJSONString(modelItemVersion.getReferences())));
 
+        modelAndView.addObject("relatedItems_o",relatedItems_o);
+        modelAndView.addObject("relatedItems_n",relatedItems_n);
         return modelAndView;
     }
 
@@ -393,6 +778,7 @@ public class VersionService {
         modelAndView.addObject("user", userJson);
         modelAndView.addObject("references", JSONArray.parseArray(JSON.toJSONString(modelItemVersion.getReferences())));
         modelAndView.addObject("history",true);
+
 
         return modelAndView;
     }

@@ -1,11 +1,11 @@
 package njgis.opengms.portal.entity;
 
 import lombok.Data;
-import njgis.opengms.portal.entity.support.AuthorInfo;
-import njgis.opengms.portal.entity.support.Reference;
+import njgis.opengms.portal.entity.support.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -33,6 +33,10 @@ public class ModelItemVersion extends Version {
     List<Reference> references;//
     List<AuthorInfo> authorship;//
 
+    List<String> relatedData = new ArrayList<>();
+    List<ModelRelation> modelRelationList = new ArrayList<>();
+    ModelMetadata metadata = new ModelMetadata();
+    ModelItemRelate relate;
 
     Date modifyTime;
     Date acceptTime;

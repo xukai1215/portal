@@ -3846,7 +3846,7 @@ Sidebar.prototype.addDataProcessToGraph = function (info) {
 
   let x = pt.x>250?pt.x:250
 
-  var cell = graph.insertVertex(parent, null, model.name, x, pt.y+150, 200, 50, "rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#f6aede;fillColor=#f6aede;fontSize=14");
+  var cell = graph.insertVertex(parent, null, info.name, x, pt.y+150, 200, 50, "rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#f6aede;fillColor=#f6aede;fontSize=14");
 
   // var a = this.createStateVertexTemplate('rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=#006600;fillColor=#EEFFEE;',
   //     210, 50, modelName, 'Computable Model', null, null, modelName, model);

@@ -2764,33 +2764,6 @@ ul.flexLi {
     box-shadow: 0 1px 3px 0 rgba(60, 64, 67, 0.302), 0 3px 5px 3px rgba(60, 64, 67, 0.192);
 }
 
-.lineButton {
-    color: #05a6ff;
-    cursor: pointer;
-}
-
-.lineButton p {
-    margin: 0;
-    font-size: 16px;
-}
-
-.hoverLine {
-    /*display: none;*/
-    width: 0;
-    align-self: center;
-    border-bottom: 2px solid #05a6ff;
-    transition-property: width;
-    transition: .4s;
-    -webkit-transition-property: width;
-    -webkit-transition: .4s;
-}
-
-.lineButton:hover .hoverLine {
-    width: 100%;
-    border-color: #05a6ff;
-}
-
-
 .mainContent {
 
     max-width: 1150px;
@@ -3307,6 +3280,10 @@ nav .totalContainer{
     .mainDataSpaceContent{
         padding-left: 0;
         padding-right: 0;
+    }
+
+    .createButton{
+        width: 100%;
     }
 }
 

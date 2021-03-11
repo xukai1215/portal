@@ -2303,7 +2303,7 @@ Vue.component("user-data",
                     e.stopPropagation();
                     if (vue_this.rightMenuShow == true)//vue组件命名为userDataSpace
                         vue_this.rightMenuShow = false
-                    if (e.currentTarget.className.indexOf('renameContainer') == -1 && vue.renameIndex != '') {
+                    if (e.currentTarget.className.indexOf('renameContainer') == -1 && vue_this.renameIndex != '') {
                         vue_this.renameIndex = ''
                     }
                 })

@@ -45,7 +45,71 @@ new Vue({
             searchAddModelPage:1,
 
             selectedModels:[],
-            selectedModelsOid:[]
+            selectedModelsOid:[],
+
+            activeIndex: '2',
+            activeName: 'Computable Model',
+            activeName1: 'Model Item',
+            activeName2: 'Concept & Semantic',
+            activeName_dialog :"",
+
+            relatedModelItems:[],
+            modelRelationGraphShow:false,
+            relatedModelItemsPage:[],
+            relationPageSize:4,
+
+            references_o:[],
+            references_n:[],
+
+            metaDataTab:'first',
+            metadata_o:{
+                overview:{
+                    name:'',
+                    version:'',
+                    modelType:'',
+                    modelDomain:[],
+                    scale:'',
+                },
+                design:{
+                    purpose:'',
+                    principles:[],
+                    incorporatedModels:[],
+                    framework:'',
+                    process:[],
+                },
+                usage:{
+                    information:'',
+                    initialization:'',
+                    hardware:'',
+                    software:'',
+                    inputs:[],
+                    outputs:[],
+                }
+            },
+            metadata_n:{
+                overview:{
+                    name:'',
+                    version:'',
+                    modelType:'',
+                    modelDomain:[],
+                    scale:'',
+                },
+                design:{
+                    purpose:'',
+                    principles:[],
+                    incorporatedModels:[],
+                    framework:'',
+                    process:[],
+                },
+                usage:{
+                    information:'',
+                    initialization:'',
+                    hardware:'',
+                    software:'',
+                    inputs:[],
+                    outputs:[],
+                }
+            },
         }
     },
     methods: {
@@ -440,9 +504,75 @@ new Vue({
                     window.location.href="/modelItem/"+$("#origin").attr("oid");
                 }
             })
+        },
+
+        relateModelItemListShowChange(val){
+            console.log(val);
+            if(val) {
+                this.generateModelRelationGraph();
+            }else{
+                this.closeModelRelationGraph();
+            }
+        },
+
+        closeGraphSideBar(){
+            this.modelRelationGraphSideBarShow = false;
+        },
+
+        handleRelationCurrentChange(page,type){
+            switch(type){
+                case "modelItem":
+                    let start = (page-1)*this.relationPageSize;
+                    let end = page * this.relationPageSize;
+                    this.relatedModelItemsPage = [];
+                    for(i=start;i<this.relatedModelItems.length;i++){
+                        if(i===end) break;
+                        this.relatedModelItemsPage.push(this.relatedModelItems[i]);
+                    }
+                    break;
+            }
+        },
+
+        setRelatedModelItemsPage(){
+            this.relatedModelItemsPage = [];
+            for(i=0;i<this.relatedModelItems.length;i++){
+                if(i===this.relationPageSize) break;
+                this.relatedModelItemsPage.push(this.relatedModelItems[i]);
+
+            }
+        },
+
+        handleRelationCurrentChange(page,type){
+            switch(type){
+                case "modelItem":
+                    let start = (page-1)*this.relationPageSize;
+                    let end = page * this.relationPageSize;
+                    this.relatedModelItemsPage = [];
+                    for(i=start;i<this.relatedModelItems.length;i++){
+                        if(i===end) break;
+                        this.relatedModelItemsPage.push(this.relatedModelItems[i]);
+                    }
+                    break;
+            }
+        },
+
+        checkObjAllProptNull(obj){
+            let pros = Object.values(obj)
+            return pros.every( ele => {
+                return ele === null||ele.length==0
+            })
         }
 
+    },
+    created(){
+        this.modelInfo = modelInfo;
+        this.relatedModelItems = modelItemList;
 
+        this.references_o = references
+        this.references_n = references2
+
+        this.metadata_o = modelInfo.metadata
+        this.metadata_n = modelInfo2.metadata
     },
     mounted(){
         let titleArr=$(".detail_title");

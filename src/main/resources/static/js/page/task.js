@@ -3062,15 +3062,15 @@ var vue = new Vue({
                 this.initializing=false;
                 if(data.msg=='no service'){
                     this.invokable = false
-                    this.errorMsg = 'Cannot find this model service, maybe the model container is offline or the service is hided by the contributor.'
-                    this.$confirm('Cannot find this model service, maybe the model container is offline or the service is hided by the contributor.', 'Tip', {
+                    this.errorMsg = 'Cannot find this model service, maybe the model container is offline or the service is hidden by the contributor.'
+                    this.$confirm('Cannot find this model service, maybe the model container is offline or the service is hidden by the contributor.', 'Tip', {
                             type:"error",
                             cancelButtonText: 'OK',
                             confirmButtonText: 'Try again',
 
                         }
                     ).then(() => {
-                        window.location.reload();
+                        this.loadTask();
                     } ).catch(()=>{
                         return
                     });

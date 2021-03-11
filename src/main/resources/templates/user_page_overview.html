@@ -1578,10 +1578,11 @@
                                     <div class="cardUpper">
                                         <div class="subTitle resourceTitle" >
                                             <div style="display: flex">
-                                                <a class="maxW80 " :href="'/modelItem/'+ modelItem.oid" target="_blank">
-                                                    <h4 class="ellipText" style="margin-top: 10px;margin-left: 5px;color: #383838;">{{modelItem.name}}</h4>
-
-                                                </a>
+                                                <el-tooltip class="item" effect="dark" :content="modelItem.name" placement="bottom-end">
+                                                    <a class="maxW80 " :href="'/modelItem/'+ modelItem.oid" target="_blank">
+                                                        <h4 class="ellipText" style="margin-top: 10px;margin-left: 5px;color: #383838;">{{modelItem.name}}</h4>
+                                                    </a>
+                                                </el-tooltip>
                                                 <div :class="modelItem.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
                                             </div>
                                             <div>
@@ -1672,9 +1673,12 @@
                                     <div class="cardUpper">
                                         <div class="subTitle resourceTitle" >
                                             <div style="display: flex">
-                                                <a :href="'/dataItem/'+ dataItem.id" target="_blank">
-                                                    <h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{dataItem.name}}</h4>
-                                                </a>
+                                                <el-tooltip class="item" effect="dark" :content="dataItem.name" placement="bottom-end">
+                                                    <a :href="'/dataItem/'+ dataItem.id" target="_blank">
+                                                        <h4 class="ellipText" style="margin-top: 10px;margin-left: 5px;color: #383838;">{{dataItem.name}}</h4>
+                                                    </a>
+                                                </el-tooltip>
+
                                                 <div :class="dataItem.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
                                             </div>
                                             <div>
@@ -1763,9 +1767,12 @@
                                     <div class="cardUpper">
                                         <div class="subTitle resourceTitle" >
                                             <div style="display: flex">
-                                                <a :href="'/conceptualModel/'+ conceptualModel.oid" target="_blank">
-                                                    <h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{conceptualModel.name}}</h4>
-                                                </a>
+                                                <el-tooltip class="item" effect="dark" :content="conceptualModel.name" placement="bottom-end">
+                                                    <a :href="'/conceptualModel/'+ conceptualModel.oid" target="_blank">
+                                                        <h4 class="ellipText" style="margin-top: 10px;margin-left: 5px;color: #383838;">{{conceptualModel.name}}</h4>
+                                                    </a>
+                                                </el-tooltip>
+
                                                 <div :class="conceptualModel.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
                                             </div>
                                             <div>
@@ -1856,9 +1863,12 @@
                                     <div class="cardUpper">
                                         <div class="subTitle resourceTitle" >
                                             <div style="display: flex">
-                                                <a :href="'/logicalModel/'+ logicalModel.oid" target="_blank">
-                                                    <h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{logicalModel.name}}</h4>
-                                                </a>
+                                                <el-tooltip class="item" effect="dark" :content="logicalModel.name" placement="bottom-end">
+                                                    <a :href="'/logicalModel/'+ logicalModel.oid" target="_blank">
+                                                        <h4 class="ellipText" style="margin-top: 10px;margin-left: 5px;color: #383838;">{{logicalModel.name}}</h4>
+                                                    </a>
+                                                </el-tooltip>
+
                                                 <div :class="logicalModel.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
                                             </div>
                                             <div>
@@ -1947,9 +1957,12 @@
                                     <div class="cardUpper">
                                         <div class="subTitle resourceTitle" >
                                             <div style="display: flex">
-                                                <a :href="'/computableModel/'+ computableModel.oid" target="_blank">
-                                                    <h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{computableModel.name}}</h4>
-                                                </a>
+                                                <el-tooltip class="item" effect="dark" :content="computableModel.name" placement="bottom-end">
+                                                    <a :href="'/computableModel/'+ computableModel.oid" target="_blank">
+                                                        <h4 class="ellipText" style="margin-top: 10px;margin-left: 5px;color: #383838;">{{computableModel.name}}</h4>
+                                                    </a>
+                                                </el-tooltip>
+
                                                 <div :class="computableModel.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
                                             </div>
                                             <div>
@@ -2038,9 +2051,12 @@
                                     <div class="cardUpper">
                                         <div class="subTitle resourceTitle" >
                                             <div style="display: flex">
-                                                <a :href="'/repository/concept/'+ concept.oid" target="_blank">
-                                                    <h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{concept.name}}</h4>
-                                                </a>
+                                                <el-tooltip class="item" effect="dark" :content="concept.name" placement="bottom-end">
+                                                    <a :href="'/repository/concept/'+ concept.oid" target="_blank">
+                                                        <h4 class="ellipText" style="margin-top: 10px;margin-left: 5px;color: #383838;">{{concept.name}}</h4>
+                                                    </a>
+                                                </el-tooltip>
+
                                                 <div :class="concept.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
                                             </div>
                                             <div>
@@ -2132,9 +2148,12 @@
                                     <div class="cardUpper">
                                         <div class="subTitle resourceTitle" >
                                             <div style="display: flex">
-                                                <a :href="'/repository/spatial/'+spatial.oid" target="_blank">
-                                                    <h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{spatial.name}}</h4>
-                                                </a>
+                                                <el-tooltip class="item" effect="dark" :content="spatial.name" placement="bottom-end">
+                                                    <a :href="'/repository/spatial/'+spatial.oid" target="_blank">
+                                                        <h4 class="ellipText" style="margin-top: 10px;margin-left: 5px;color: #383838;">{{spatial.name}}</h4>
+                                                    </a>
+                                                </el-tooltip>
+
                                                 <div :class="spatial.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
                                             </div>
                                             <div>
@@ -2223,9 +2242,12 @@
                                     <div class="cardUpper">
                                         <div class="subTitle resourceTitle" >
                                             <div style="display: flex">
-                                                <a :href="'/repository/template/'+template.oid" target="_blank">
-                                                    <h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{template.name}}</h4>
-                                                </a>
+                                                <el-tooltip class="item" effect="dark" :content="template.name" placement="bottom-end">
+                                                    <a :href="'/repository/template/'+template.oid" target="_blank">
+                                                        <h4 class="ellipText" style="margin-top: 10px;margin-left: 5px;color: #383838;">{{template.name}}</h4>
+                                                    </a>
+                                                </el-tooltip>
+
                                                 <div :class="template.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
                                             </div>
                                             <div>
@@ -2314,9 +2336,12 @@
                                     <div class="cardUpper">
                                         <div class="subTitle resourceTitle" >
                                             <div style="display: flex">
-                                                <a :href="'/repository/unit/'+unit.oid" target="_blank">
-                                                    <h4 style="margin-top: 10px;margin-left: 5px;color: #383838;">{{unit.name}}</h4>
-                                                </a>
+                                                <el-tooltip class="item" effect="dark" :content="unit.name" placement="bottom-end">
+                                                    <a :href="'/repository/unit/'+unit.oid" target="_blank">
+                                                        <h4 class="ellipText" style="margin-top: 10px;margin-left: 5px;color: #383838;">{{unit.name}}</h4>
+                                                    </a>
+                                                </el-tooltip>
+
                                                 <div :class="unit.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
                                             </div>
                                             <div>
@@ -2435,7 +2460,9 @@
                                         <div class="cardHeadContainer" style="max-height: 110px;">
                                             <div class="subTitle" style="height: auto;max-height: 105px;width: 100%;border-bottom-style: none;">
                                                 <div style="display: flex">
-                                                    <h4 class="twoLine">{{article.title}}</h4>
+                                                    <el-tooltip class="item" effect="dark" :content="article.title" placement="bottom-end">
+                                                        <h4 class="twoLine">{{article.title}}</h4>
+                                                    </el-tooltip>
                                                     <div :class="article.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
                                                 </div>
                                                 <div class="deleteEditContainer">
@@ -2663,8 +2690,9 @@
                                         <div class="cardHeadContainer" style="height: 72px;">
                                             <div class="subTitle" style="height: 70px;width: 100%;border-bottom-style: none;">
                                                 <div style="display: flex">
-
-                                                    <h4 class="twoLine">{{project.projectName}}</h4>
+                                                    <el-tooltip class="item" effect="dark" :content="project.name" placement="bottom-end">
+                                                        <h4 class="twoLine">{{project.projectName}}</h4>
+                                                    </el-tooltip>
 
                                                     <div :class="project.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
                                                 </div>
@@ -2835,9 +2863,9 @@
                                         <div class="cardHeadContainer" style="height: 72px;">
                                             <div class="subTitle" style="height: 60px;width: 100%;border-bottom-style: none;">
                                                 <div style="display: flex">
-
-                                                    <h4 class="twoLine">{{conference.title}}</h4>
-
+                                                    <el-tooltip class="item" effect="dark" :content="conference.title" placement="bottom-end">
+                                                        <h4 class="twoLine">{{conference.title}}</h4>
+                                                    </el-tooltip>
                                                     <div :class="conference.viewCount>500?'hotVisit':'noneDisplay'">hot</div>
                                                 </div>
                                                 <div class="deleteEditContainer">

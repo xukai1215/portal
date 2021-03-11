@@ -36,4 +36,7 @@ public class Theme extends Item {
     List<Reference> references;
     List<Maintainer> maintainer;//其余的维护者为下标0之后存储
 
+    List<ThemeData> themeData;  // 多级菜单保存下来，为了后面好编辑
+    List<ThemeModelData> themeModelData;
+
 }

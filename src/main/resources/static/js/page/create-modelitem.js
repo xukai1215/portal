@@ -359,7 +359,37 @@ var createModelItem = Vue.extend({
             dynamicTable:{},
 
             startDraft:0,
+
+            metadata:{
+                overview:{
+                    name:'',
+                    version:'',
+                    modelType:'',
+                    modelDomain:[],
+                    scale:'',
+                },
+                design:{
+                    purpose:'',
+                    principles:[],
+                    incorporatedModels:[],
+                    framework:'',
+                    process:[],
+                },
+                usage:{
+                    information:'',
+                    initialization:'',
+                    hardware:'',
+                    software:'',
+                    inputs:[],
+                    outputs:[],
+                }
+            },
+
+            metaDataTab:'first',
+
         }
+
+
 
     },
 
@@ -551,7 +581,6 @@ var createModelItem = Vue.extend({
 
         //drafts
         onInputName(){
-            console.log(1)
             if(this.toCreate==1){
                 this.toCreate=0
                 this.startDraft=1
@@ -610,6 +639,9 @@ var createModelItem = Vue.extend({
 
                 modelItemObj.localizationList.push(this.currentLocalization);
             }
+
+            modelItemObj.metadata = this.getMetaData()
+
             modelItemObj.references = new Array();
             var ref_lines = $("#dynamic-table tr");
             for (i = 1; i < ref_lines.length; i++) {
@@ -694,6 +726,105 @@ var createModelItem = Vue.extend({
             this.insertInfo(draftContent)
         },
 
+        insertMetaData(metadata){
+            let overview = metadata.overview
+            let design = metadata.design
+            let usage = metadata.usage
+
+            this.metadata.overview.name = overview.name
+            this.metadata.overview.version = overview.version
+            this.metadata.overview.modelType = overview.modelType
+            this.metadata.overview.scale = overview.scale
+
+            this.metadata.design.purpose = design.purpose
+            this.metadata.design.framework = design.framework
+
+            this.metadata.usage.information = usage.information
+            this.metadata.usage.initialization = usage.initialization
+            this.metadata.usage.hardware = usage.hardware
+            this.metadata.usage.software = usage.software
+
+            Vue.nextTick(()=>{
+                $('#modelDomainInput').tagEditor('destroy');
+                $('#modelDomainInput').tagEditor({
+                    initialTags: overview.modelDomain ,
+                    forceLowercase: false,
+                });
+                $('#principlesInput').tagEditor('destroy');
+                $('#principlesInput').tagEditor({
+                    initialTags: design.principles ,
+                    forceLowercase: false,
+                });
+                $('#incorporatedModelsInput').tagEditor('destroy');
+                $('#incorporatedModelsInput').tagEditor({
+                    initialTags: design.incorporatedModels ,
+                    forceLowercase: false,
+                });
+                $('#processInput').tagEditor('destroy');
+                $('#processInput').tagEditor({
+                    initialTags: design.process ,
+                    forceLowercase: false,
+                });
+                $('#inputsInput').tagEditor('destroy');
+                $('#inputsInput').tagEditor({
+                    initialTags: usage.inputs ,
+                    forceLowercase: false,
+                });
+                $("#outputsInput").tagEditor('destroy')
+                $("#outputsInput").tagEditor({
+                    initialTags: usage.outputs ,
+                    forceLowercase: false,
+                })
+            })
+
+
+
+        },
+
+        getMetaData(){
+            let metadata = {
+                'overview':{},
+                'design':{},
+                'usage':{},
+            }
+            metadata.overview.name = this.metadataTemp.overview.name==null?null:this.metadataTemp.overview.name.trim()
+            metadata.overview.version = this.metadataTemp.overview.version==null?null:this.metadataTemp.overview.version.trim()
+            metadata.overview.modelType = this.metadataTemp.overview.modelType==null?null:this.metadataTemp.overview.modelType.trim()
+            metadata.overview.modelDomain = $("#modelDomainInput").val().split(",");
+            if (metadata.overview.modelDomain.length === 1 && metadata.overview.modelDomain[0] === "") {
+                metadata.overview.modelDomain = [];
+            }
+            metadata.overview.scale = this.metadataTemp.overview.scale==null?null:this.metadataTemp.overview.scale.trim()
+
+            metadata.design.purpose = this.metadataTemp.design.purpose==null?null:this.metadataTemp.design.purpose.trim()
+            metadata.design.principles = $("#principlesInput").val().split(",");
+            if (metadata.design.principles.length === 1 && metadata.design.principles[0] === "") {
+                metadata.design.principles = [];
+            }
+            metadata.design.incorporatedModels = $("#incorporatedModelsInput").val().split(",");
+            if (metadata.design.incorporatedModels.length === 1 && metadata.design.incorporatedModels[0] === "") {
+                metadata.design.incorporatedModels = [];
+            }
+            metadata.design.framework = this.metadataTemp.design.framework==null?null:this.metadataTemp.design.framework.trim()
+            metadata.design.process = $("#processInput").val().split(",");
+            if (metadata.design.process.length === 1 && metadata.design.process[0] === "") {
+                metadata.design.process = [];
+            }
+            metadata.usage.information = this.metadataTemp.usage.information==null?null:this.metadataTemp.usage.information.trim()
+            metadata.usage.initialization = this.metadataTemp.usage.initialization==null?null:this.metadataTemp.usage.initialization.trim()
+            metadata.usage.hardware = this.metadataTemp.usage.hardware==null?null:this.metadataTemp.usage.hardware.trim()
+            metadata.usage.software = this.metadataTemp.usage.software==null?null:this.metadataTemp.usage.software.trim()
+            metadata.usage.inputs = $("#inputsInput").val().split(",");
+            if (metadata.usage.inputs.length === 1 && metadata.usage.inputs[0] === "") {
+                metadata.usage.inputs = [];
+            }
+            metadata.usage.outputs = $("#outputsInput").val().split(",");
+            if (metadata.usage.outputs.length === 1 && metadata.usage.outputs[0] === "") {
+                metadata.usage.outputs = [];
+            }
+            return metadata
+        },
+
         insertInfo(basicInfo){
             this.cls = basicInfo.classifications2;
             this.cls = this.cls == null?[]:this.cls;
@@ -773,6 +904,8 @@ var createModelItem = Vue.extend({
                 }
             }
 
+            let metadata = basicInfo.metadata
+            this.insertMetaData(metadata)
 
             $("#nameInput").val(basicInfo.name);
             $("#descInput").val(basicInfo.description);
@@ -825,6 +958,7 @@ var createModelItem = Vue.extend({
                 forceLowercase: false,
                 // placeholder: 'Enter alias ...'
             });
+
 
             // //detail
             // tinyMCE.remove(tinyMCE.editors[0])
@@ -1295,6 +1429,19 @@ var createModelItem = Vue.extend({
             }
             return null;
 
+        },
+
+        metaDataClick(tab){
+            let name = tab
+            // if($('#principlesInput').val()){
+            //     $('#principlesInput').tagEditor('destroy');
+            //     $('#principlesInput').tagEditor({
+            //         initialTags: overview.principles ,
+            //         forceLowercase: false,
+            //     });
+            // }
+
+
         }
 
     },
@@ -1542,10 +1689,25 @@ var createModelItem = Vue.extend({
         $('#tagInput').tagEditor({
             forceLowercase: false
         });
-         $('#aliasInput').tagEditor({
+        $('#aliasInput').tagEditor({
             forceLowercase: false
         });
-        $("#refAuthor").tagEditor({
+        $('#modelDomainInput').tagEditor({
+            forceLowercase: false
+        });
+        $('#principlesInput').tagEditor({
+            forceLowercase: false
+        });
+        $('#incorporatedModelsInput').tagEditor({
+            forceLowercase: false
+        });
+        $('#processInput').tagEditor({
+            forceLowercase: false
+        });
+        $('#inputsInput').tagEditor({
+            forceLowercase: false
+        });
+        $("#outputsInput").tagEditor({
             forceLowercase: false
         })
 

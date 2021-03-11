@@ -18,6 +18,8 @@ import njgis.opengms.portal.enums.RelationTypeEnum;
 import njgis.opengms.portal.enums.ResultEnum;
 import njgis.opengms.portal.exception.MyException;
 import njgis.opengms.portal.utils.Utils;
+import static njgis.opengms.portal.utils.Utils.saveFiles;
+
 import org.bson.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -30,6 +32,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -206,6 +209,8 @@ public class ModelItemService {
         List<String> spatialReferences=modelItemRelate.getSpatialReferences();
         List<String> templates=modelItemRelate.getTemplates();
         List<String> units=modelItemRelate.getUnits();
+        List<Map<String,String>> dataSpaceFiles=modelItemRelate.getDataSpaceFiles();
+        List<Map<String,String>> exLinks=modelItemRelate.getExLinks();
 
         JSONArray modelItemArray=new JSONArray();
         if(modelItems!=null) {
@@ -429,6 +434,8 @@ public class ModelItemService {
         modelAndView.addObject("spatialReferences",spatialReferenceArray);
         modelAndView.addObject("templates",templateArray);
         modelAndView.addObject("units",unitArray);
+        modelAndView.addObject("exLinks",exLinks);
+        modelAndView.addObject("dataSpaceFiles",dataSpaceFiles);
         modelAndView.addObject("dataItems",dataItemArray);
         modelAndView.addObject("user", userJson);
         modelAndView.addObject("authorship", authorshipString);
@@ -523,6 +530,7 @@ public class ModelItemService {
         modelItem.setCreateTime(now);
         modelItem.setLastModifyTime(now);
         modelItem.setStatus(modelItemAddDTO.getStatus());
+        modelItem.setMetadata(modelItemAddDTO.getMetaData());
         modelItem.setAuthor(author);
         modelItem.setOid(UUID.randomUUID().toString());
         modelItem.setDetail("");
@@ -886,101 +894,231 @@ public class ModelItemService {
         return result;
     }
 
-    public JSONArray setModelRelation(String oid, List<ModelRelation> modelRelationListNew) {
+    public JSONArray getRelatedResources(String oid){
+
+        JSONArray result=new JSONArray();
+        ModelItem modelItem=modelItemDao.findFirstByOid(oid);
+        ModelItemRelate relation=modelItem.getRelate();
+        List<String> list=new ArrayList<>();
+
+        list=relation.getConcepts();
+        if(list!=null) {
+            for (String id : list) {
+                Concept concept = conceptDao.findByOid(id);
+                if(concept.getStatus().equals("Private")){
+                    continue;
+                }
+                JSONObject item = new JSONObject();
+                item.put("oid", concept.getOid());
+                item.put("name", concept.getName());
+                item.put("author", userService.getByUid(concept.getAuthor()).getName());
+                item.put("author_uid", concept.getAuthor());
+                item.put("type", "concept");
+                result.add(item);
+            }
+        }
+
+        list=relation.getSpatialReferences();
+        if(list!=null) {
+            for (String id : list) {
+                SpatialReference spatialReference = spatialReferenceDao.findByOid(id);
+                if(spatialReference.getStatus().equals("Private")){
+                    continue;
+                }
+                JSONObject item = new JSONObject();
+                item.put("oid", spatialReference.getOid());
+                item.put("name", spatialReference.getName());
+                item.put("author", userService.getByUid(spatialReference.getAuthor()).getName());
+                item.put("author_uid", spatialReference.getAuthor());
+                item.put("type", "spatial");
+                result.add(item);
+            }
+        }
+
+        list=relation.getTemplates();
+        if(list!=null) {
+            for (String id : list) {
+                Template template = templateDao.findByOid(id);
+                if(template.getStatus().equals("Private")){
+                    continue;
+                }
+                JSONObject item = new JSONObject();
+                item.put("oid", template.getOid());
+                item.put("name", template.getName());
+                item.put("author", userService.getByUid(template.getAuthor()).getName());
+                item.put("author_uid", template.getAuthor());
+                item.put("type", "template");
+                result.add(item);
+            }
+        }
+
+        list=relation.getUnits();
+        if(list!=null) {
+            for (String id : list) {
+                Unit unit = unitDao.findByOid(id);
+                if(unit.getStatus().equals("Private")){
+                    continue;
+                }
+                JSONObject item = new JSONObject();
+                item.put("oid", unit.getOid());
+                item.put("name", unit.getName());
+                item.put("author", userService.getByUid(unit.getAuthor()).getName());
+                item.put("author_uid", unit.getAuthor());
+                item.put("type", "unit");
+                result.add(item);
+            }
+        }
+
+        List<Map<String,String>> mapList = new ArrayList<>();
+        mapList=relation.getDataSpaceFiles();
+        if(mapList!=null) {
+            for (Map<String,String> ele : mapList) {
+                JSONObject item = new JSONObject();
+                item.put("oid", ele.get("oid"));
+                item.put("name", ele.get("name"));
+                item.put("url", ele.get("url"));
+                item.put("type", "dataSpaceFile");
+                result.add(item);
+            }
+        }
+
+        mapList=relation.getExLinks();
+        if(mapList!=null) {
+            for (Map<String,String> ele : mapList) {
+                JSONObject item = new JSONObject();
+                item.put("oid", ele.get("oid"));
+                item.put("name", ele.get("name"));
+                item.put("content", ele.get("content"));
+                item.put("type","exLink");
+                result.add(item);
+            }
+        }
+
+
+        return result;
+    }
+
+    public String setModelRelation(String oid, List<ModelRelation> modelRelationListNew,String user) {
         ModelItem modelItem = modelItemDao.findFirstByOid(oid);
         List<ModelRelation> modelRelationListOld = modelItem.getModelRelationList();
 
         List<ModelRelation> relationIntersection = new ArrayList<>();
 
-        for (int i = 0; i < modelRelationListNew.size(); i++) {
-            ModelRelation modelRelationNew = modelRelationListNew.get(i);
-            for (int j = 0; j < modelRelationListOld.size(); j++) {
-                ModelRelation modelRelationOld = modelRelationListOld.get(j);
-                if (modelRelationNew.getOid().equals(modelRelationOld.getOid())) {
-                    relationIntersection.add(modelRelationListNew.get(i));
-                    if(modelRelationNew.getRelation()!=modelRelationOld.getRelation()){
+        if(!user.equals(modelItem.getAuthor())){
+            ModelItemUpdateDTO modelItemUpdateDTO = new ModelItemUpdateDTO();
+            modelItemUpdateDTO.setOid(modelItem.getOid());
+            modelItemUpdateDTO.setName(modelItem.getName());
+            modelItemUpdateDTO.setAlias(modelItem.getAlias());
+            modelItemUpdateDTO.setUploadImage(modelItem.getImage());
+            modelItemUpdateDTO.setDescription(modelItem.getDescription());
+            modelItemUpdateDTO.setDetail(modelItem.getDetail());
+            modelItemUpdateDTO.setStatus(modelItem.getStatus());
+            modelItemUpdateDTO.setLocalizationList(modelItem.getLocalizationList());
+            modelItemUpdateDTO.setAuthorship(modelItem.getAuthorship());
+            modelItemUpdateDTO.setClassifications(modelItem.getClassifications());
+            modelItemUpdateDTO.setClassifications2(modelItem.getClassifications2());
+            modelItemUpdateDTO.setKeywords(modelItem.getKeywords());
+            modelItemUpdateDTO.setReferences(modelItem.getReferences());
+            modelItemUpdateDTO.setModelRelationList(modelRelationListNew);//
+            modelItemUpdateDTO.setRelate(modelItem.getRelate());
+            modelItemUpdateDTO.setRelatedData(modelItem.getRelatedData());
+            modelItemUpdateDTO.setMetaData(modelItem.getMetadata());
 
-                        ModelItem modelItem1 = modelItemDao.findFirstByOid(modelRelationNew.getOid());
-                        for(int k = 0;k< modelItem1.getModelRelationList().size();k++){
-                            if(modelItem1.getModelRelationList().get(k).getOid().equals(oid)){
-                                modelItem1.getModelRelationList().get(k).setRelation(RelationTypeEnum.getOpposite(modelRelationNew.getRelation().getNumber()));
+            update(modelItemUpdateDTO,user);
+
+            return "version";
+        }else {
+            for (int i = 0; i < modelRelationListNew.size(); i++) {
+                ModelRelation modelRelationNew = modelRelationListNew.get(i);
+                for (int j = 0; j < modelRelationListOld.size(); j++) {
+                    ModelRelation modelRelationOld = modelRelationListOld.get(j);
+                    if (modelRelationNew.getOid().equals(modelRelationOld.getOid())) {
+                        relationIntersection.add(modelRelationListNew.get(i));
+                        if(modelRelationNew.getRelation()!=modelRelationOld.getRelation()){
+
+                            ModelItem modelItem1 = modelItemDao.findFirstByOid(modelRelationNew.getOid());
+                            for(int k = 0;k< modelItem1.getModelRelationList().size();k++){
+                                if(modelItem1.getModelRelationList().get(k).getOid().equals(oid)){
+                                    modelItem1.getModelRelationList().get(k).setRelation(RelationTypeEnum.getOpposite(modelRelationNew.getRelation().getNumber()));
+                                }
                             }
+                            modelItemDao.save(modelItem1);
                         }
-                        modelItemDao.save(modelItem1);
-                    }
-                    break;
-                }
-            }
-        }
-
-        for (int i = 0; i < modelRelationListNew.size(); i++) {
-            ModelRelation modelRelation = modelRelationListNew.get(i);
-            boolean exist = false;
-            for (int j = 0; j < relationIntersection.size(); j++) {
-                if (modelRelation.getOid().equals(relationIntersection.get(j).getOid())) {
-                    exist = true;
-                    break;
-                }
-            }
-            if (!exist) {
-
-                ModelRelation modelRelation1 = new ModelRelation();
-                modelRelation1.setOid(oid);
-                modelRelation1.setRelation(RelationTypeEnum.getOpposite(modelRelation.getRelation().getNumber()));
-                ModelItem modelItem1 = modelItemDao.findFirstByOid(modelRelation.getOid());
-                modelItem1.getModelRelationList().add(modelRelation1);
-                modelItemDao.save(modelItem1);
-            }
-        }
-
-        for (int i = 0; i < modelRelationListOld.size(); i++) {
-            ModelRelation modelRelation = modelRelationListOld.get(i);
-            boolean exist = false;
-            for (int j = 0; j < relationIntersection.size(); j++) {
-                if (modelRelation.getOid().equals(relationIntersection.get(j).getOid())) {
-                    exist = true;
-                    break;
-                }
-            }
-            if (!exist) {
-
-                ModelItem modelItem1 = modelItemDao.findFirstByOid(modelRelation.getOid());
-                if(modelItem1.getStatus().equals("Private")){
-                    modelRelationListNew.add(modelRelation);
-                    continue;
-                }
-                List<ModelRelation> modelRelationList = modelItem1.getModelRelationList();
-                for (ModelRelation modelRelation1 : modelRelationList) {
-                    if (modelRelation1.getOid().equals(oid)) {
-                        modelItem1.getModelRelationList().remove(modelRelation1);
                         break;
                     }
                 }
-                modelItemDao.save(modelItem1);
-
             }
+
+            for (int i = 0; i < modelRelationListNew.size(); i++) {
+                ModelRelation modelRelation = modelRelationListNew.get(i);
+                boolean exist = false;
+                for (int j = 0; j < relationIntersection.size(); j++) {
+                    if (modelRelation.getOid().equals(relationIntersection.get(j).getOid())) {
+                        exist = true;
+                        break;
+                    }
+                }
+                if (!exist) {
+
+                    ModelRelation modelRelation1 = new ModelRelation();
+                    modelRelation1.setOid(oid);
+                    modelRelation1.setRelation(RelationTypeEnum.getOpposite(modelRelation.getRelation().getNumber()));
+                    ModelItem modelItem1 = modelItemDao.findFirstByOid(modelRelation.getOid());
+                    modelItem1.getModelRelationList().add(modelRelation1);
+                    modelItemDao.save(modelItem1);
+                }
+            }
+
+            for (int i = 0; i < modelRelationListOld.size(); i++) {
+                ModelRelation modelRelation = modelRelationListOld.get(i);
+                boolean exist = false;
+                for (int j = 0; j < relationIntersection.size(); j++) {
+                    if (modelRelation.getOid().equals(relationIntersection.get(j).getOid())) {
+                        exist = true;
+                        break;
+                    }
+                }
+                if (!exist) {
+
+                    ModelItem modelItem1 = modelItemDao.findFirstByOid(modelRelation.getOid());
+                    if(modelItem1.getStatus().equals("Private")){
+                        modelRelationListNew.add(modelRelation);
+                        continue;
+                    }
+                    List<ModelRelation> modelRelationList = modelItem1.getModelRelationList();
+                    for (ModelRelation modelRelation1 : modelRelationList) {
+                        if (modelRelation1.getOid().equals(oid)) {
+                            modelItem1.getModelRelationList().remove(modelRelation1);
+                            break;
+                        }
+                    }
+                    modelItemDao.save(modelItem1);
+
+                }
+            }
+
+            modelItem.setModelRelationList(modelRelationListNew);
+
+            modelItemDao.save(modelItem);
+
+            JSONArray modelItemArray = new JSONArray();
+
+            for (int i = 0; i < modelItem.getModelRelationList().size(); i++) {
+                String oidNew = modelItem.getModelRelationList().get(i).getOid();
+                ModelItem modelItemNew = modelItemDao.findFirstByOid(oidNew);
+                JSONObject modelItemJson = new JSONObject();
+                modelItemJson.put("name", modelItemNew.getName());
+                modelItemJson.put("oid", modelItemNew.getOid());
+                modelItemJson.put("description", modelItemNew.getDescription());
+                modelItemJson.put("image", modelItemNew.getImage().equals("") ? null : htmlLoadPath + modelItemNew.getImage());
+                modelItemJson.put("relation", modelItem.getModelRelationList().get(i).getRelation().getText());
+                modelItemArray.add(modelItemJson);
+            }
+
+
+            return "version";
         }
 
-        modelItem.setModelRelationList(modelRelationListNew);
-
-        modelItemDao.save(modelItem);
-
-        JSONArray modelItemArray = new JSONArray();
-
-        for (int i = 0; i < modelItem.getModelRelationList().size(); i++) {
-            String oidNew = modelItem.getModelRelationList().get(i).getOid();
-            ModelItem modelItemNew = modelItemDao.findFirstByOid(oidNew);
-            JSONObject modelItemJson = new JSONObject();
-            modelItemJson.put("name", modelItemNew.getName());
-            modelItemJson.put("oid", modelItemNew.getOid());
-            modelItemJson.put("description", modelItemNew.getDescription());
-            modelItemJson.put("image", modelItemNew.getImage().equals("") ? null : htmlLoadPath + modelItemNew.getImage());
-            modelItemJson.put("relation", modelItem.getModelRelationList().get(i).getRelation().getText());
-            modelItemArray.add(modelItemJson);
-        }
-
-
-        return modelItemArray;
 //        List<ModelRelation> relationDelete = new ArrayList<>();
 //        List<ModelRelation> relationAdd = new ArrayList<>();
 //
@@ -992,7 +1130,7 @@ public class ModelItemService {
 //        }
     }
 
-    public String setRelation(String oid,String type,List<String> relations){
+    public String setRelation(String oid,String type,List<String> relations,String user){
 
         ModelItem modelItem=modelItemDao.findFirstByOid(oid);
         ModelItemRelate relate=modelItem.getRelate();
@@ -1053,7 +1191,6 @@ public class ModelItemService {
                     }
                 }
 
-                modelItem.setRelatedData(relations);
                 break;
             case "modelItem":
 
@@ -1127,10 +1264,143 @@ public class ModelItemService {
                 break;
         }
 
-        modelItem.setRelate(relate);
-        modelItemDao.save(modelItem);
+        if(!user.equals(modelItem.getAuthor())){
+            ModelItemUpdateDTO modelItemUpdateDTO = new ModelItemUpdateDTO();
+            modelItemUpdateDTO.setOid(modelItem.getOid());
+            modelItemUpdateDTO.setName(modelItem.getName());
+            modelItemUpdateDTO.setAlias(modelItem.getAlias());
+            modelItemUpdateDTO.setUploadImage(modelItem.getImage());
+            modelItemUpdateDTO.setDescription(modelItem.getDescription());
+            modelItemUpdateDTO.setDetail(modelItem.getDetail());
+            modelItemUpdateDTO.setStatus(modelItem.getStatus());
+            modelItemUpdateDTO.setLocalizationList(modelItem.getLocalizationList());
+            modelItemUpdateDTO.setAuthorship(modelItem.getAuthorship());
+            modelItemUpdateDTO.setClassifications(modelItem.getClassifications());
+            modelItemUpdateDTO.setClassifications2(modelItem.getClassifications2());
+            modelItemUpdateDTO.setKeywords(modelItem.getKeywords());
+            modelItemUpdateDTO.setReferences(modelItem.getReferences());
+            modelItemUpdateDTO.setMetaData(modelItem.getMetadata());
+            modelItemUpdateDTO.setModelRelationList(modelItem.getModelRelationList());//
+            if(type.equals("dataItem")){
+                modelItemUpdateDTO.setRelatedData(relations);
+                modelItemUpdateDTO.setRelate(modelItem.getRelate());
+            }else{
+                modelItemUpdateDTO.setRelatedData(modelItem.getRelatedData());
+                modelItemUpdateDTO.setRelate(relate);
+            }
 
-        return "suc";
+
+            update(modelItemUpdateDTO,user);
+
+            return "version";
+        }else{
+
+            if(type.equals("dataItem")){
+                modelItem.setRelatedData(relations);
+            }else{
+                modelItem.setRelate(relate);
+            }
+            modelItemDao.save(modelItem);
+
+            return "suc";
+        }
+
+
+
+    }
+
+    public String addRelateResources(String oid,List<Map<String,String>> stringRelations,List<MultipartFile> files,String user){
+        ModelItem modelItem=modelItemDao.findFirstByOid(oid);
+        ModelItemRelate relate=new ModelItemRelate();
+
+        List<String> relateConcept = new ArrayList<>();
+        List<String> relateSpatial = new ArrayList<>();
+        List<String> relateTemplate = new ArrayList<>();
+        List<String> relateUnit = new ArrayList<>();
+        List<Map<String,String>> relateExlinks = new ArrayList<Map<String,String>>();
+        List<Map<String,String>> relateLocalFiles = new ArrayList<Map<String,String>>();
+        List<Map<String,String>> relateDataSpaceFiles = new ArrayList<Map<String,String>>();
+
+        Map<String,String> stringRelation = new HashMap<>();
+        for(int x=0;x<stringRelations.size();x++){
+
+            stringRelation = stringRelations.get(x);
+            String type = stringRelations.get(x).get("type");
+
+            switch (type){
+                case "concept":
+                    relateConcept.add(stringRelation.get("oid"));
+                    break;
+                case "spatialReference":
+                    relateSpatial.add(stringRelation.get("oid"));
+                    break;
+                case "template":
+                    relateTemplate.add(stringRelation.get("oid"));
+                    break;
+                case "unit":
+                    relateUnit.add(stringRelation.get("oid"));
+                    break;
+                case "exLink":
+                    Map<String,String> relateExlink = new HashMap<>();
+                    relateExlink.put("oid",stringRelation.get("oid"));
+                    relateExlink.put("name",stringRelation.get("name"));
+                    relateExlink.put("content",stringRelation.get("content"));
+                    relateExlinks.add(relateExlink);
+                    break;
+                case "dataSpaceFile":
+                    Map<String,String> relateDataSpaceFile = new HashMap<>();
+                    relateDataSpaceFile.put("oid",stringRelation.get("oid"));
+                    relateDataSpaceFile.put("name",stringRelation.get("name"));
+                    relateDataSpaceFile.put("url",stringRelation.get("url"));
+                    relateDataSpaceFiles.add(relateDataSpaceFile);
+                    break;
+
+            }
+        }
+
+//        for(int i=0;i < files.size();i++){
+//            String path = resourcePath + "/modelItem/" + oid + "/relatedFile";
+//
+//        }
+
+        relate.setConcepts(relateConcept);
+        relate.setSpatialReferences(relateSpatial);
+        relate.setTemplates(relateTemplate);
+        relate.setUnits(relateUnit);
+        relate.setExLinks(relateExlinks);
+//        relate.setLocalFiles(relateLocalFiles);
+        relate.setDataSpaceFiles(relateDataSpaceFiles);
+
+        if(!user.equals(modelItem.getAuthor())){
+            ModelItemUpdateDTO modelItemUpdateDTO = new ModelItemUpdateDTO();
+            modelItemUpdateDTO.setOid(modelItem.getOid());
+            modelItemUpdateDTO.setName(modelItem.getName());
+            modelItemUpdateDTO.setAlias(modelItem.getAlias());
+            modelItemUpdateDTO.setUploadImage(modelItem.getImage());
+            modelItemUpdateDTO.setDescription(modelItem.getDescription());
+            modelItemUpdateDTO.setDetail(modelItem.getDetail());
+            modelItemUpdateDTO.setStatus(modelItem.getStatus());
+            modelItemUpdateDTO.setLocalizationList(modelItem.getLocalizationList());
+            modelItemUpdateDTO.setAuthorship(modelItem.getAuthorship());
+            modelItemUpdateDTO.setClassifications(modelItem.getClassifications());
+            modelItemUpdateDTO.setClassifications2(modelItem.getClassifications2());
+            modelItemUpdateDTO.setKeywords(modelItem.getKeywords());
+            modelItemUpdateDTO.setReferences(modelItem.getReferences());
+            modelItemUpdateDTO.setModelRelationList(modelItem.getModelRelationList());//
+            modelItemUpdateDTO.setRelate(relate);
+            modelItemUpdateDTO.setRelatedData(modelItem.getRelatedData());
+            modelItemUpdateDTO.setMetaData(modelItem.getMetadata());
+
+            update(modelItemUpdateDTO,user);
+
+            return "version";
+        }else{
+            modelItem.setRelate(relate);
+            modelItemDao.save(modelItem);
+
+            return "suc";
+        }
+
     }
 
     public JSONObject bindModel(int type, String name, String oid){
@@ -2146,6 +2416,31 @@ public class ModelItemService {
             }
         }
 
+    }
+
+    public JSONArray getContributors(String oid){
+
+        ModelItem modelItem = modelItemDao.findFirstByOid(oid);
+
+        List<String> contributors = modelItem.getContributors();
+        JSONArray jsonArray = new JSONArray();
+
+        if(contributors!=null&&contributors.size()>0){
+            for(String contributor : contributors){
+
+                JSONObject jsonObject = new JSONObject();
+                User user = userDao.findFirstByUserName(contributor);
+                jsonObject.put("name",user.getName());
+                jsonObject.put("userId",user.getUserId());
+                jsonObject.put("image",user.getImage());
+
+                jsonArray.add(jsonObject);
+
+            }
+
+        }
+
+        return jsonArray;
     }
 
 }

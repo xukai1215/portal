@@ -2,12 +2,10 @@ package njgis.opengms.portal.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.google.gson.JsonObject;
+
 import java.net.URLEncoder;
-import njgis.opengms.portal.dao.DataApplicationDao;
-import njgis.opengms.portal.dao.DataItemDao;
-import njgis.opengms.portal.dao.DataNodeContentDao;
-import njgis.opengms.portal.dao.UserDao;
+
+import njgis.opengms.portal.dao.*;
 import njgis.opengms.portal.dto.DataNodeContentDTO;
 import njgis.opengms.portal.entity.DataApplication;
 import njgis.opengms.portal.entity.DataItem;
@@ -37,7 +35,6 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -520,6 +517,10 @@ public class DataServerService {
                 if(code==0){
                     JSONObject capability = j_result.getJSONObject("capability");
                     result.put("content",capability.get("data"));
+//                    TestService testService = new TestService();
+//                    testService.setContent(capability.get("data"));
+//                    testServiceDao.insert(testService);
+
                 }else{
                     result.put("content","offline");
                 }
@@ -535,4 +536,5 @@ public class DataServerService {
         return result;
 
     }
+
 }

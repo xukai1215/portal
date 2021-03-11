@@ -112,10 +112,13 @@
                                                                     <a href="#step1">Basic Info</a>
                                                                 </li>
                                                                 <li>
-                                                                    <a href="#step2">Content</a>
+                                                                    <a href="#step2">MetaData</a>
                                                                 </li>
                                                                 <li>
-                                                                    <a href="#step3">Authorship</a>
+                                                                    <a href="#step3">Content</a>
+                                                                </li>
+                                                                <li>
+                                                                    <a href="#step4">Authorship</a>
                                                                 </li>
 
                                                             </ul>
@@ -185,8 +188,9 @@
                                                                                     <label for="tagInput"
                                                                                            class="col-sm-2 control-label">Keywords</label>
                                                                                     <div class="col-sm-10">
-                                                                            <textarea class="form-control"
-                                                                                      id="tagInput"></textarea>
+                                                                                        <textarea class="form-control"
+                                                                                            id="tagInput">
+                                                                                        </textarea>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -416,6 +420,227 @@
                                                                     </div>
                                                                 </div>
                                                                 <div class="step-tab-panel" id="step2">
+                                                                    <div class="flexJustCenter">
+                                                                        <el-tabs v-model="metaDataTab" @tab-click="metaDataClick" style="width: 95%">
+                                                                            <el-tab-pane label="Overview" name="first">
+                                                                                <div class="form-horizontal">
+                                                                                    <div class="form-group">
+                                                                                        <lable class='control-label col-sm-2 text-center'
+                                                                                               style='font-weight: bold;'>
+                                                                                            Name:
+                                                                                        </lable>
+                                                                                        <div class='col-sm-10'>
+                                                                                            <input type='text'
+                                                                                                   v-model="metadata.overview.name"
+                                                                                                   class='form-control'>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="form-horizontal">
+                                                                                    <div class="form-group">
+                                                                                        <lable class='control-label col-sm-2 text-center'
+                                                                                               style='font-weight: bold;'>
+                                                                                            Version:
+                                                                                        </lable>
+                                                                                        <div class='col-sm-10'>
+                                                                                            <input type='text'
+                                                                                                   v-model="metadata.overview.version"
+                                                                                                   class='form-control'>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="form-horizontal">
+                                                                                    <div class="form-group">
+                                                                                        <lable class='control-label col-sm-2 text-center'
+                                                                                               style='font-weight: bold;'>
+                                                                                            Model Type:
+                                                                                        </lable>
+                                                                                        <div class='col-sm-10'>
+                                                                                            <input type='text'
+                                                                                                   v-model="metadata.overview.modelType"
+                                                                                                   class='form-control'>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="form-horizontal">
+                                                                                    <div class="form-group">
+                                                                                        <lable class='control-label col-sm-2 text-center'
+                                                                                               style='font-weight: bold;'>
+                                                                                            Model Domain:
+                                                                                        </lable>
+                                                                                        <div class='col-sm-10'>
+                                                                                            <textarea class="form-control"
+                                                                                                      id="modelDomainInput"></textarea>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="form-horizontal">
+                                                                                    <div class="form-group">
+                                                                                        <lable class='control-label col-sm-2 text-center'
+                                                                                               style='font-weight: bold;'>
+                                                                                            Scale:
+                                                                                        </lable>
+                                                                                        <div class='col-sm-10'>
+                                                                                            <input type='text'
+                                                                                                   v-model="metadata.overview.scale"
+                                                                                                   class='form-control'>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                            </el-tab-pane>
+                                                                            <el-tab-pane label="Design" name="second">
+                                                                                <div class="form-horizontal">
+                                                                                    <div class="form-group">
+                                                                                        <lable class='control-label col-sm-2 text-center'
+                                                                                               style='font-weight: bold;'>
+                                                                                            Purpose:
+                                                                                        </lable>
+                                                                                        <div class='col-sm-10'>
+                                                                                            <input type='text'
+                                                                                                   v-model="metadata.design.purpose"
+                                                                                                   class='form-control'>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="form-horizontal">
+                                                                                    <div class="form-group">
+                                                                                        <lable class='control-label col-sm-2 text-center'
+                                                                                               style='font-weight: bold;'>
+                                                                                            Principles:
+                                                                                        </lable>
+                                                                                        <div class='col-sm-10'>
+                                                                                            <textarea class="form-control"
+                                                                                                      id="principlesInput"></textarea>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                </div>
+
+                                                                                <div class="form-horizontal">
+                                                                                    <div class="form-group">
+                                                                                        <lable class='control-label col-sm-2 text-center'
+                                                                                               style='font-weight: bold;'>
+                                                                                            Incorporated models:
+                                                                                        </lable>
+                                                                                        <div class='col-sm-10'>
+                                                                                            <textarea class="form-control"
+                                                                                                      id="incorporatedModelsInput"></textarea>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <div class="form-horizontal">
+                                                                                    <div class="form-group">
+                                                                                        <lable class='control-label col-sm-2 text-center'
+                                                                                               style='font-weight: bold;'>
+                                                                                            Model part of larger frameWork:
+                                                                                        </lable>
+                                                                                        <div class='col-sm-10'>
+                                                                                            <input type='text'
+                                                                                                   v-model="metadata.design.framework"
+                                                                                                   class='form-control'>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <div class="form-horizontal">
+                                                                                    <div class="form-group">
+                                                                                        <lable class='control-label col-sm-2 text-center'
+                                                                                               style='font-weight: bold;'>
+                                                                                            Process:
+                                                                                        </lable>
+                                                                                        <div class='col-sm-10'>
+                                                                                            <textarea class="form-control"
+                                                                                                      id="processInput"></textarea>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </el-tab-pane>
+                                                                            <el-tab-pane label="Usage" name="third">
+                                                                                <div class="form-horizontal">
+                                                                                    <div class="form-group">
+                                                                                        <lable class='control-label col-sm-2 text-center'
+                                                                                               style='font-weight: bold;'>
+                                                                                            Information:
+                                                                                        </lable>
+                                                                                        <div class='col-sm-10'>
+                                                                                            <input type='text'
+                                                                                                   v-model="metadata.usage.information"
+                                                                                                   class='form-control'>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="form-horizontal">
+                                                                                    <div class="form-group">
+                                                                                        <lable class='control-label col-sm-2 text-center'
+                                                                                               style='font-weight: bold;'>
+                                                                                            Initialization:
+                                                                                        </lable>
+                                                                                        <div class='col-sm-10'>
+                                                                                            <input type='text'
+                                                                                                   v-model="metadata.usage.initialization"
+                                                                                                   class='form-control'>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="form-horizontal">
+                                                                                    <div class="form-group">
+                                                                                        <lable class='control-label col-sm-2 text-center'
+                                                                                               style='font-weight: bold;'>
+                                                                                            Hardware Requirements:
+                                                                                        </lable>
+                                                                                        <div class='col-sm-10'>
+                                                                                            <input type='text'
+                                                                                                   v-model="metadata.usage.hardware"
+                                                                                                   class='form-control'>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="form-horizontal">
+                                                                                    <div class="form-group">
+                                                                                        <lable class='control-label col-sm-2 text-center'
+                                                                                               style='font-weight: bold;'>
+                                                                                            Software Requirements:
+                                                                                        </lable>
+                                                                                        <div class='col-sm-10'>
+                                                                                            <input type='text'
+                                                                                                   v-model="metadata.usage.software"
+                                                                                                   class='form-control'>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="form-horizontal">
+                                                                                    <div class="form-group">
+                                                                                        <lable class='control-label col-sm-2 text-center'
+                                                                                               style='font-weight: bold;'>
+                                                                                            Inputs:
+                                                                                        </lable>
+                                                                                        <div class='col-sm-10'>
+                                                                                            <textarea class="form-control"
+                                                                                                      id="inputsInput"></textarea>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="form-horizontal">
+                                                                                    <div class="form-group">
+                                                                                        <lable class='control-label col-sm-2 text-center'
+                                                                                               style='font-weight: bold;'>
+                                                                                            Outputs:
+                                                                                        </lable>
+                                                                                        <div class='col-sm-10'>
+                                                                                            <textarea class="form-control"
+                                                                                                      id="outputsInput"></textarea>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </el-tab-pane>
+                                                                        </el-tabs>
+                                                                    </div>
+
+                                                                </div>
+
+                                                                <div class="step-tab-panel" id="step3">
                                                                     <div v-if="editType=='create'" class="singleLocalization">
                                                                         <div style="margin:15px 0;width:15%;float: left;">
                                                                             <div>
@@ -519,7 +744,7 @@
                                                                         </el-card>
                                                                     </div>
                                                                 </div>
-                                                                <div class="step-tab-panel" id="step3">
+                                                                <div class="step-tab-panel" id="step4">
                                                                     <div class="panel panel-success" style="border:none">
 
                                                                         <div class="panel-body">

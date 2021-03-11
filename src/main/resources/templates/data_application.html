@@ -43,6 +43,38 @@
         input[type=file] {
             display: none;
         }
+
+        @media only screen and (max-width: 700px){
+
+            .detail_option{
+                margin-top: 0;
+            }
+
+            .minScreen_hide {
+                display: none;
+            }
+
+        }
+
+        @media only screen and (max-width: 1297px){
+
+            .wzhSection{
+                width: 40% !important;
+            }
+
+            .middleSection{
+                margin-right: 0 !important;
+            }
+        }
+
+        @media only screen and (max-width: 853px){
+
+            .wzhSection{
+                width: 100% !important;
+                margin-right: 0 !important;
+            }
+
+        }
     </style>
 
 </head>
@@ -88,7 +120,7 @@
                             </div>
                         </div>
                     </section>
-                    <section class="wzhSection" style="display:inline-block;flex: 1;margin-right:20px;min-width:360px;">
+                    <section class="wzhSection middleSection" style="display:inline-block;flex: 1;margin-right:20px;min-width:360px;">
                         <div class="wzhSectionContainer" style="background-color: #FFCC99">
                             <!--<div class="imgContainerW50 right0" style="background-image:url(/static/img/model/modelExcution.png);background-position-y: -18px"></div>-->
                             <div class="w100 flexCol flexJustBetween flexAlignCenter">
