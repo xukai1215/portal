@@ -1,6 +1,8 @@
 package njgis.opengms.portal.service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.gson.JsonArray;
 import njgis.opengms.portal.dao.SpatialReferenceClassificationDao;
 import njgis.opengms.portal.dao.SpatialReferenceDao;
 import njgis.opengms.portal.dao.UserDao;
@@ -8,6 +10,7 @@ import njgis.opengms.portal.dto.Spatial.SpatialFindDTO;
 import njgis.opengms.portal.dto.Spatial.SpatialResultDTO;
 import njgis.opengms.portal.entity.Classification;
 import njgis.opengms.portal.entity.SpatialReference;
+import njgis.opengms.portal.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -118,9 +121,28 @@ public class SpatialService {
 
         Page<SpatialResultDTO> spatialResultDTOPage = spatialReferenceDao.findAllByAndClassificationsIn(classificationIds,pageable);
 
+        JSONArray j_spatialReferences = new JSONArray();
+
+        for(SpatialResultDTO spatialResultDTO:spatialResultDTOPage.getContent()){
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("oid",spatialResultDTO.getOid());
+            jsonObject.put("name",spatialResultDTO.getName());
+            jsonObject.put("wkt",spatialResultDTO.getWkt());
+            jsonObject.put("wkname",spatialResultDTO.getWkname());
+
+            User user = userDao.findFirstByUserName(spatialResultDTO.getAuthor());
+            if(user!=null){
+                jsonObject.put("author",user.getName());
+            }else{
+                jsonObject.put("author","unknown");
+            }
+            j_spatialReferences.add(jsonObject);
+
+        }
+
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("total",spatialResultDTOPage.getTotalElements());
-        jsonObject.put("content",spatialResultDTOPage.getContent());
+        jsonObject.put("content",j_spatialReferences);
 
         return jsonObject;
     }

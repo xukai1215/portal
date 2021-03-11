@@ -724,9 +724,24 @@ var info=new Vue({
             editMetadata:false,
             editAliasDialog:false,
             editingModelAlias:'',
+
+            checkUrlValidLoading:false,
         }
     },
     methods: {
+        generateGUID() {
+            var s = [];
+            var hexDigits = "0123456789abcdef";
+            for (var i = 0; i < 36; i++) {
+                s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+            }
+            s[14] = "4";  // bits 12-15 of the time_hi_and_version field to 0010
+            s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
+            s[8] = s[13] = s[18] = s[23] = "-";
+
+            var uuid = s.join("");
+            return uuid;
+        },
 
         lineColorShowChange(newValue){
             let object = document.getElementById('modelRelationGraph');
@@ -1303,16 +1318,21 @@ var info=new Vue({
             this.editAliasDialog = true
             axios.get('/modelItem/getAlias/'+this.modelOid
             ).then(res => {
-                Vue.nextTick(()=>{
-                    if($('#aliasInput').nextAll().length>0){
-                        $('#aliasInput').tagEditor('destroy');
-                    }
-                    $('#aliasInput').tagEditor({
-                        initialTags: res.data.data==null?[]:res.data.data ,
-                        forceLowercase: false,
-                        // placeholder: 'Enter alias ...'
-                    });
-                })
+                if(res.data.code == -1){
+                    this.confirmLogin()
+                }else{
+                    Vue.nextTick(()=>{
+                        if($('#aliasInput').nextAll().length>0){
+                            $('#aliasInput').tagEditor('destroy');
+                        }
+                        $('#aliasInput').tagEditor({
+                            initialTags: res.data.data==null?[]:res.data.data ,
+                            forceLowercase: false,
+                            // placeholder: 'Enter alias ...'
+                        });
+                    })
+                }
+
 
             })
         },
@@ -1328,7 +1348,7 @@ var info=new Vue({
                 alias:alias,
             };
             $.post("/modelItem/updateAlias",data,(result)=>{
-                if (result.code == -2) {
+                if (result.code == -1) {
                     this.confirmLogin()
                 }else{
                     if(result.data=='suc'){
@@ -1357,86 +1377,92 @@ var info=new Vue({
         },
 
         getClassifications(){
-            this.editClassification = true;
             $.get("/modelItem/getClassification/"+this.modelOid,{},(result)=>{
-                //cls
-                this.cls = result.data.class1;
+                if (result.code == -1) {
+                    this.confirmLogin()
+                }else{
+                    //cls
 
-                let ids=[];
-                for(i=0;i<this.cls.length;i++){
-                    for(j=0;j<2;j++){
-                        for(k=0;k<this.treeData[j].children.length;k++){
-                            let children=this.treeData[j].children[k].children;
-                            if(children==null) {
-                                if (this.cls[i] == this.treeData[j].children[k].oid) {
-                                    ids.push(this.treeData[j].children[k].id);
-                                    this.clsStr += this.treeData[j].children[k].label;
-                                    if (i != this.cls.length - 1) {
-                                        this.clsStr += ", ";
-                                    }
-                                    break;
-                                }
-                            }
-                            else{
-                                for(x=0;x<children.length;x++){
-                                    if (this.cls[i] == children[x].oid) {
-                                        ids.push(children[x].id);
-                                        this.clsStr += children[x].label;
+                    this.editClassification = true;
+                    this.cls = result.data.class1;
+
+                    let ids=[];
+                    for(i=0;i<this.cls.length;i++){
+                        for(j=0;j<2;j++){
+                            for(k=0;k<this.treeData[j].children.length;k++){
+                                let children=this.treeData[j].children[k].children;
+                                if(children==null) {
+                                    if (this.cls[i] == this.treeData[j].children[k].oid) {
+                                        ids.push(this.treeData[j].children[k].id);
+                                        this.clsStr += this.treeData[j].children[k].label;
                                         if (i != this.cls.length - 1) {
                                             this.clsStr += ", ";
                                         }
                                         break;
                                     }
                                 }
-                            }
+                                else{
+                                    for(x=0;x<children.length;x++){
+                                        if (this.cls[i] == children[x].oid) {
+                                            ids.push(children[x].id);
+                                            this.clsStr += children[x].label;
+                                            if (i != this.cls.length - 1) {
+                                                this.clsStr += ", ";
+                                            }
+                                            break;
+                                        }
+                                    }
+                                }
 
-                        }
-                        if(ids.length-1==i){
-                            break;
+                            }
+                            if(ids.length-1==i){
+                                break;
+                            }
                         }
                     }
-                }
 
-                // this.$refs.tree2.setCheckedKeys(ids);
+                    // this.$refs.tree2.setCheckedKeys(ids);
 
-                //cls
-                this.cls2 = result.data.class2;
-                let ids2=[];
-                for(i=0;i<this.cls2.length;i++){
-                    for(j=0;j<2;j++){
-                        for(k=0;k<this.treeData2[j].children.length;k++){
-                            let children=this.treeData2[j].children[k].children;
-                            if(children==null) {
-                                if (this.cls2[i] == this.treeData2[j].children[k].oid) {
-                                    ids2.push(this.treeData2[j].children[k].id);
-                                    this.clsStr2 += this.treeData2[j].children[k].label;
-                                    if (i != this.cls2.length - 1) {
-                                        this.clsStr2 += ", ";
-                                    }
-                                    break;
-                                }
-                            }
-                            else{
-                                for(x=0;x<children.length;x++){
-                                    if (this.cls2[i] == children[x].oid) {
-                                        ids2.push(children[x].id);
-                                        this.clsStr2 += children[x].label;
+                    //cls
+                    this.cls2 = result.data.class2;
+                    let ids2=[];
+                    for(i=0;i<this.cls2.length;i++){
+                        for(j=0;j<2;j++){
+                            for(k=0;k<this.treeData2[j].children.length;k++){
+                                let children=this.treeData2[j].children[k].children;
+                                if(children==null) {
+                                    if (this.cls2[i] == this.treeData2[j].children[k].oid) {
+                                        ids2.push(this.treeData2[j].children[k].id);
+                                        this.clsStr2 += this.treeData2[j].children[k].label;
                                         if (i != this.cls2.length - 1) {
                                             this.clsStr2 += ", ";
                                         }
                                         break;
                                     }
                                 }
-                            }
+                                else{
+                                    for(x=0;x<children.length;x++){
+                                        if (this.cls2[i] == children[x].oid) {
+                                            ids2.push(children[x].id);
+                                            this.clsStr2 += children[x].label;
+                                            if (i != this.cls2.length - 1) {
+                                                this.clsStr2 += ", ";
+                                            }
+                                            break;
+                                        }
+                                    }
+                                }
 
-                        }
-                        if(ids2.length-1==i){
-                            break;
+                            }
+                            if(ids2.length-1==i){
+                                break;
+                            }
                         }
                     }
+
+                    this.$refs.tree4.setCheckedKeys(ids2);
                 }
 
-                this.$refs.tree4.setCheckedKeys(ids2);
             });
 
         },
@@ -1447,7 +1473,7 @@ var info=new Vue({
                 class:this.cls2,
             };
             $.post("/modelItem/updateClass",data,(result)=>{
-                if (result.code == -2) {
+                if (result.code == -1) {
                     this.confirmLogin()
                 }else{
                     if(result.data=='suc'){
@@ -1682,28 +1708,41 @@ var info=new Vue({
         },
 
         getDescription(){
-            this.editDescription = true
             axios.get('/modelItem/getDescription/'+this.modelOid
             ).then(
                 res => {
-                    let data = res.data.data
-                    initTinymce('textarea#conceptText')
-                    this.localizationList = data
-                    let interval = setInterval(() => {
-                        this.changeLocalization(this.localizationList[0])
-                        clearInterval(interval);
-                    }, 1000);
+                    if(res.data.code==-1){
+                        this.confirmLogin()
+                    }else{
+                        this.editDescription = true
+                        let data = res.data.data
+                        Vue.nextTick(()=>{
+                            initTinymce('textarea#conceptText')
+                            this.localizationList = data
+                            let interval = setInterval(() => {
+                                this.changeLocalization(this.localizationList[0])
+                                clearInterval(interval);
+                            }, 1000);
+                        })
+
+                    }
+
                 }
             )
         },
 
         getMetadata(){
-            this.editMetadata = true
+
             axios.get('/modelItem/getMetadata/'+this.modelOid
             ).then(
                 res => {
-                    let data = res.data.data
-                    this.insertMetaData(this.metadataTemp, data)
+                    if(res.data.code==-1){
+                        this.confirmLogin()
+                    }else{
+                        this.editMetadata = true
+                        let data = res.data.data
+                        this.insertMetaData(this.metadataTemp, data)
+                    }
                 }
             )
         },
@@ -1721,7 +1760,7 @@ var info=new Vue({
                 // accept: 'application/json',
                 success:(res)=>{
                     let data = res.data
-                    if (res.code == -2) {
+                    if (res.code == -1) {
                         this.confirmLogin()
                     }else{
                         if(data=='suc'){
@@ -1770,7 +1809,7 @@ var info=new Vue({
                 // accept: 'application/json',
                 success:(res)=>{
                     let data = res.data
-                    if (res.code == -2) {
+                    if (res.code == -1) {
                         this.confirmLogin()
                     }else{
                         if(data=='suc'){
@@ -1807,37 +1846,43 @@ var info=new Vue({
 
             axios.get('/modelItem/getReference/'+this.modelOid).then(
                 res =>{
-                    let references = res.data.data
-                    Vue.nextTick(()=>{
-                        if ( $.fn.dataTable.isDataTable( '#dynamic-table' ) ) {
-                            this.dynamicTable = $('#dynamic-table').DataTable();
-                        }
-                        else {
-                            this.dynamicTable = $('#dynamic-table').DataTable({
-                                //"aaSorting": [[ 0, "asc" ]],
-                                "paging": false,
-                                // "ordering":false,
-                                "info": false,
-                                "searching": false,
-                            });
-                        }
+                    if (res.data.code == -1) {
+                        this.confirmLogin()
+                    }else{let references = res.data.data
+                        Vue.nextTick(()=>{
+                            if ( $.fn.dataTable.isDataTable( '#dynamic-table' ) ) {
+                                this.dynamicTable = $('#dynamic-table').DataTable();
+                            }
+                            else {
+                                this.dynamicTable = $('#dynamic-table').DataTable({
+                                    //"aaSorting": [[ 0, "asc" ]],
+                                    "paging": false,
+                                    // "ordering":false,
+                                    "info": false,
+                                    "searching": false,
+                                });
+                            }
 
 
-                        this.dynamicTable.clear().draw();
-                        for (i = 0; i < references.length; i++) {
-                            var ref = references[i];
-                            this.dynamicTable.row.add([
-                                ref.title,
-                                ref.author,
-                                ref.date,
-                                ref.journal,
-                                ref.volume,
-                                ref.pages,
-                                ref.links,
-                                ref.doi,
-                                "<center><a href='javascript:;' class='fa fa-times refClose' style='color:red'></a></center>"]).draw();
-                        }
-                    })
+                            this.dynamicTable.clear().draw();
+                            for (i = 0; i < references.length; i++) {
+                                var ref = references[i];
+                                this.dynamicTable.row.add([
+                                    ref.title,
+                                    ref.author,
+                                    ref.date,
+                                    ref.journal,
+                                    ref.volume,
+                                    ref.pages,
+                                    ref.links,
+                                    ref.doi,
+                                    "<center><a href='javascript:;' class='fa fa-times refClose' style='color:red'></a></center>"]).draw();
+                            }
+                        })
+
+                    }
+
+
 
                 }
             )
@@ -2081,7 +2126,7 @@ var info=new Vue({
                 // dataType: "json",
                 // accept: 'application/json',
                 success:(res)=>{
-                    if (res.code == -2) {
+                    if (res.code == -1) {
                         this.confirmLogin()
                     }else{
                         let data = res.data
@@ -2840,6 +2885,8 @@ var info=new Vue({
 
                         this.tableData = data;
 
+                    }else if(json.code == -1){
+                        this.confirmLogin()
                     }
                     else {
                         console.log("query error!")
@@ -2867,6 +2914,8 @@ var info=new Vue({
 
                         this.tableData = data;
 
+                    }else  if (json.code == -1) {
+                        this.confirmLogin()
                     }
                     else {
                         console.log("query error!")
@@ -2986,35 +3035,38 @@ var info=new Vue({
                 contentType:contentType,
                 async: true,
                 success: (result) => {
-                    let info = result.data
-                    if(info === 'suc'){
-                        this.$alert('Success!', 'Tip', {
-                            type:'success',
-                            confirmButtonText: 'OK',
-                            callback: action => {
-                                this.dialogTableVisible = false;
-                                if(this.relateType === "modelItem"){
-                                    this.relatedModelItems = result.data;
-                                    this.setRelatedModelItemsPage();
-                                    if(this.modelRelationGraphShow){
-                                        this.generateModelRelationGraph();
-                                    }
+                    if(result.code == -1){
+                        this.confirmLogin()
+                    }else{
+                        let info = result.data
+                        if(info === 'suc'){
+                            this.$alert('Success!', 'Tip', {
+                                type:'success',
+                                confirmButtonText: 'OK',
+                                callback: action => {
+                                    this.dialogTableVisible = false;
+                                    if(this.relateType === "modelItem"){
+                                        this.relatedModelItems = result.data;
+                                        this.setRelatedModelItemsPage();
+                                        if(this.modelRelationGraphShow){
+                                            this.generateModelRelationGraph();
+                                        }
 
-                                }else {
+                                    }else {
+                                        window.location.reload();
+                                    }
+                                }
+                            });
+                        }else if(info=='version'){
+                            this.$alert("Your edit has been submit, please wait for the contributor to handle it.", 'Success', {
+                                type: 'success',
+                                confirmButtonText: 'OK',
+                                callback: action => {
                                     window.location.reload();
                                 }
-                            }
-                        });
-                    }else if(info=='version'){
-                        this.$alert("Your edit has been submit, please wait for the contributor to handle it.", 'Success', {
-                            type: 'success',
-                            confirmButtonText: 'OK',
-                            callback: action => {
-                                window.location.reload();
-                            }
-                        })
+                            })
+                        }
                     }
-
 
                 },
                 error: (json) => {
@@ -3363,19 +3415,47 @@ var info=new Vue({
                 return
             }
 
+            if(!this.checkUrlValid(this.exLink.content)){
+                this.$alert('Please input a valid link!', 'Tip', {
+                        type:"warning",
+                        confirmButtonText: 'OK',
+                        callback: ()=>{
+                            return
+                        }
+                    }
+                );
+                return
+            }
 
-
+            let oid = this.generateGUID()
             let linkMeta = {
                 name : this.exLink.name,
-                oid : this.exLink.name,
+                oid : oid,
                 content : this.exLink.content,
                 type:'exLink'
             }
 
-            this.exLink = {}
+            this.exLupdateAliasink = {}
             this.tableData.push(linkMeta)
         },
 
+        checkUrlValid(url){
+            this.checkUrlValidLoading = true
+            let strRegex =  "((https|http|ftp|rtsp|mms)?://)"
+                + "(([0-9a-z_!~*'().&=+$%-]+: )?[0-9a-z_!~*'().&=+$%-]+@)?" //ftp的user@
+                + "(([0-9]{1,3}\\.){3}[0-9]{1,3}" // IP形式的URL- 199.194.52.184
+                + "|" // 允许IP和DOMAIN（域名）
+                + "([0-9a-z_!~*'()-]+\\.)*" // 域名- www.
+                + "([0-9a-z][0-9a-z-]{0,61})?[0-9a-z]\\." // 二级域名
+                + "[a-z]{2,6})" // first level domain- .com or .museum
+                + "(:[0-9]{1,4})?" // 端口- :80
+                + "((/?)|" // a slash isn't required if there is no file name
+                + "(/[0-9a-z_!~*'().;?:@&=+$,%#-]+)+/?)";
+            let re=new RegExp(strRegex);
+            let flag = re.test(url)
+            this.checkUrlValidLoading = false
+            return flag
+        },
         // handleSuccess(result,file,fileList){
         //     let fileMeta = {
         //
@@ -3425,6 +3505,11 @@ var info=new Vue({
             return pros.every( ele => {
                 return ele === null||ele.length==0
             })
+        },
+
+        changeRelateType(activeType){
+            this.relateType = activeType
+            this.search(this.activeName_dialog)
         }
     },
 
@@ -3549,7 +3634,7 @@ var info=new Vue({
         if(modelInfo.relate.computableModels.length>0){
             this.activeName = "Computable Model";
         }else {
-            for (i = 0; i < 3; i++) {
+            for (i = 3; i < 6; i++) {
                 let list_size = panes.eq(i).children("div").children(".list_panel").length;
                 if (list_size > 0) {
                     this.activeName = panes[i].id.replace("pane-", "");
@@ -3558,7 +3643,7 @@ var info=new Vue({
             }
         }
 
-        for(i=3;i<5;i++){
+        for(i=6;i<8;i++){
             let list_size = panes.eq(i).children("div").children(".list_panel").length;
             if(list_size>0){
                 this.activeName1 = panes[i].id.replace("pane-","");
@@ -3566,13 +3651,13 @@ var info=new Vue({
             }
         }
 
-        for(i=5;i<9;i++){
-            let list_size = panes.eq(i).children("div").children(".list_panel").length;
-            if(list_size>0){
-                this.activeName2 = panes[i].id.replace("pane-","");
-                break;
-            }
-        }
+        // for(i=5;i<9;i++){
+        //     let list_size = panes.eq(i).children("div").children(".list_panel").length;
+        //     if(list_size>0){
+        //         this.activeName2 = panes[i].id.replace("pane-","");
+        //         break;
+        //     }
+        // }
 
         $(document).on("click", ".refClose", function () {
             vthis.dynamicTable.row($(this).parents("tr")).remove().draw();

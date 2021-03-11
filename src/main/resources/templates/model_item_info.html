@@ -1119,8 +1119,7 @@
                     </div>
                 </div>
                 <el-tabs class="block_content" v-model="activeName2" type="border-card" stretch="true">
-                    <div th:if="${#lists.size(concepts)}!=0">
-                            <div class="list_panel clearfix" th:each="model:${concepts}">
+                    <div th:if="${#lists.size(concepts)}!=0" class="list_panel clearfix" th:each="model:${concepts}">
                                 <a th:href="'/repository/concept/'+${model.oid}" class="img">
                                     <img src="/static/img/model/semantics.png">
                                 </a>
@@ -1136,99 +1135,83 @@
                                         simulations and predictions.</p>
                                 </div>
                             </div>
-                        </div>
-
-                    <div th:if="${#lists.size(spatialReferences)}!=0">
-                        <div class="list_panel clearfix" th:each="model:${spatialReferences}">
-                            <a th:href="'/repository/spatialReference/'+${model.oid}" class="img">
-                                <img src="/static/img/model/spatialreference.png">
-                            </a>
-                            <div class="info" style="margin-top:0px;">
-                                <a th:href="'/repository/spatialReference/'+${model.oid}"
-                                   th:text="${model.name}">Ground Water Flow System</a>
-                                <p style="margin-top: 0px"
-                                   th:text="${model.description!=null?model.description:model.wkname}">ANN-CA uses
-                                    the artificial
-                                    neural network method to extract
-                                    land use change rules in the study area, and then applies the rules to
-                                    subsequent
-                                    simulations and predictions.</p>
-                            </div>
+                    <div th:if="${#lists.size(spatialReferences)}!=0" class="list_panel clearfix" th:each="model:${spatialReferences}">
+                        <a th:href="'/repository/spatialReference/'+${model.oid}" class="img">
+                            <img src="/static/img/model/spatialreference.png">
+                        </a>
+                        <div class="info" style="margin-top:0px;">
+                            <a th:href="'/repository/spatialReference/'+${model.oid}"
+                               th:text="${model.name}">Ground Water Flow System</a>
+                            <p style="margin-top: 0px"
+                               th:text="${model.description!=null?model.description:model.wkname}">ANN-CA uses
+                                the artificial
+                                neural network method to extract
+                                land use change rules in the study area, and then applies the rules to
+                                subsequent
+                                simulations and predictions.</p>
                         </div>
                     </div>
-
-                    <div th:if="${#lists.size(templates)}!=0">
-                        <div class="list_panel clearfix" th:each="model:${templates}">
-                            <a th:href="'/repository/template/'+${model.oid}" class="img">
-                                <img src="/static/img/model/template.png">
-                            </a>
-                            <div class="info" style="margin-top:0px;">
-                                <a th:href="'/repository/template/'+${model.oid}"
-                                   th:text="${model.name}">Ground Water Flow System</a>
-                                <p style="margin-top: 0px" th:text="${model.description}">ANN-CA
-                                    uses the artificial
-                                    neural network method to extract
-                                    land use change rules in the study area, and then applies the rules to
-                                    subsequent
-                                    simulations and predictions.</p>
-                            </div>
+                    <div th:if="${#lists.size(templates)}!=0" class="list_panel clearfix" th:each="model:${templates}">
+                        <a th:href="'/repository/template/'+${model.oid}" class="img">
+                            <img src="/static/img/model/template.png">
+                        </a>
+                        <div class="info" style="margin-top:0px;">
+                            <a th:href="'/repository/template/'+${model.oid}"
+                               th:text="${model.name}">Ground Water Flow System</a>
+                            <p style="margin-top: 0px" th:text="${model.description}">ANN-CA
+                                uses the artificial
+                                neural network method to extract
+                                land use change rules in the study area, and then applies the rules to
+                                subsequent
+                                simulations and predictions.</p>
                         </div>
                     </div>
-
-                    <div th:if="${#lists.size(units)}!=0">
-                        <div class="list_panel clearfix" th:each="model:${units}">
-                            <a th:href="'/repository/unit/'+${model.oid}" class="img">
-                                <img src="/static/img/model/unit.png">
-                            </a>
-                            <div class="info" style="margin-top:0px;">
-                                <a th:href="'/repository/unit/'+${model.oid}"
-                                   th:text="${model.name}">Ground Water Flow System</a>
-                                <p style="margin-top: 0px"
-                                   th:text="${model.description}">
-                                    ANN-CA uses the artificial
-                                    neural network method to extract
-                                    land use change rules in the study area, and then applies the rules to
-                                    subsequent
-                                    simulations and predictions.</p>
-                            </div>
+                    <div th:if="${#lists.size(units)}!=0" class="list_panel clearfix" th:each="model:${units}">
+                        <a th:href="'/repository/unit/'+${model.oid}" class="img">
+                            <img src="/static/img/model/unit.png">
+                        </a>
+                        <div class="info" style="margin-top:0px;">
+                            <a th:href="'/repository/unit/'+${model.oid}"
+                               th:text="${model.name}">Ground Water Flow System</a>
+                            <p style="margin-top: 0px"
+                               th:text="${model.description}">
+                                ANN-CA uses the artificial
+                                neural network method to extract
+                                land use change rules in the study area, and then applies the rules to
+                                subsequent
+                                simulations and predictions.</p>
                         </div>
                     </div>
-
-                    <div th:if="${#lists.size(dataSpaceFiles)}!=0">
-                        <div class="list_panel clearfix" th:each="model:${dataSpaceFiles}">
-                            <a th:href="${model.url}" class="img">
-                                <i class="fa fa-file-o" style="font-size: 60px;margin: 15px 0 0 20px;color: #11c2fd"></i>
-                            </a>
-                            <div class="info" style="margin-top:0px;">
-                                <a th:href="${model.url}"
-                                   th:text="${model.name}">Ground Water Flow System</a>
-<!--                                <p style="margin-top: 0px"-->
-<!--                                   th:text="${model.description}">-->
-<!--                                    ANN-CA uses the artificial-->
-<!--                                    neural network method to extract-->
-<!--                                    land use change rules in the study area, and then applies the rules to-->
-<!--                                    subsequent-->
-<!--                                    simulations and predictions.</p>-->
-                            </div>
+                    <div th:if="${#lists.size(dataSpaceFiles)}!=0" class="list_panel clearfix" th:each="model:${dataSpaceFiles}">
+                        <a th:href="${model.url}" class="img">
+                            <i class="fa fa-file-o" style="font-size: 60px;margin: 15px 0 0 20px;color: #11c2fd"></i>
+                        </a>
+                        <div class="info" style="margin-top:0px;">
+                            <a th:href="${model.url}"
+                               th:text="${model.name}">Ground Water Flow System</a>
+                            <!--                                <p style="margin-top: 0px"-->
+                            <!--                                   th:text="${model.description}">-->
+                            <!--                                    ANN-CA uses the artificial-->
+                            <!--                                    neural network method to extract-->
+                            <!--                                    land use change rules in the study area, and then applies the rules to-->
+                            <!--                                    subsequent-->
+                            <!--                                    simulations and predictions.</p>-->
                         </div>
                     </div>
-
-                    <div th:if="${#lists.size(exLinks)}!=0">
-                        <div class="list_panel clearfix" th:each="model:${exLinks}">
-                            <a th:href="${model.content}" class="img">
-                                <i class="fa fa-link" style="font-size: 60px;margin: 15px 0 0 20px;color: #11c2fd"></i>
-                            </a>
-                            <div class="info" style="margin-top:0px;">
-                                <a th:href="${model.content}"
-                                   th:text="${model.name}">Ground Water Flow System</a>
-<!--                                <p style="margin-top: 0px"-->
-<!--                                   th:text="${model.description}">-->
-<!--                                    ANN-CA uses the artificial-->
-<!--                                    neural network method to extract-->
-<!--                                    land use change rules in the study area, and then applies the rules to-->
-<!--                                    subsequent-->
-<!--                                    simulations and predictions.</p>-->
-                            </div>
+                    <div th:if="${#lists.size(exLinks)}!=0" class="list_panel clearfix" th:each="model:${exLinks}">
+                        <a th:href="${model.content}" class="img">
+                            <i class="fa fa-link" style="font-size: 60px;margin: 15px 0 0 20px;color: #11c2fd"></i>
+                        </a>
+                        <div class="info" style="margin-top:0px;">
+                            <a th:href="${model.content}"
+                               th:text="${model.name}">Ground Water Flow System</a>
+                            <!--                                <p style="margin-top: 0px"-->
+                            <!--                                   th:text="${model.description}">-->
+                            <!--                                    ANN-CA uses the artificial-->
+                            <!--                                    neural network method to extract-->
+                            <!--                                    land use change rules in the study area, and then applies the rules to-->
+                            <!--                                    subsequent-->
+                            <!--                                    simulations and predictions.</p>-->
                         </div>
                     </div>
 
@@ -1485,8 +1468,8 @@
                             <h5 th:if="${history==true}" th:text="'modified at '+${date}">modified at 2018-7-13 14:32:18 </h5>
                         </div>
                     </div>
-                    <div class="wzhScrollbar flexAlignEnd" style=" white-space: nowrap;height: 70px">
-                        <div>
+                    <div class="flexCenter" style=" white-space: nowrap">
+                        <div class="wzhScrollbar ">
                             <div v-if="contributors!=null&&contributors.length>0" v-for="(contributor,index) in contributors" :key="contributor.userId"
                                  class="inlineBlock cursorPointer" style="margin: 10px 5px;">
                                 <el-tooltip effect="dark"
@@ -1894,7 +1877,7 @@
     </el-dialog>
 
     <!--Related resource 弹出框-->
-    <el-dialog v-cloak :visible.sync="relatedResourceVisible" :title="'Link Resource to '+ modelInfo.name" width="70%" style="min-height: 450px">
+    <el-dialog v-cloak :visible.sync="relatedResourceVisible" :title="'Link Resource to '+ modelInfo.name" width="72%" style="min-height: 450px">
 
         <el-card shadow="never" class="box-card" style="width:40%;margin-right: 1%;float: left;">
             <div slot="header" class="clearfix">
@@ -1903,47 +1886,9 @@
             </div>
             <el-table
                     :data="tableData"
-                    ref="leftTable"
                     :max-height="tableMaxHeight">
-                <!--<el-table-column type="expand">-->
-                <!--<template slot-scope="props">-->
-                <!--<el-form label-position="left" inline class="demo-table-expand">-->
-                <!--<el-form-item label="Contributor">-->
-                <!--<span>{{ props.row.author }}</span>-->
-                <!--</el-form-item>-->
-
-                <!--</el-form>-->
-                <!--</template>-->
-                <!--</el-table-column>-->
-
-                <el-table-column Label="Relation" v-if="relateType=='modelItem'">
-                    <template slot-scope="props">
-                        <el-tooltip popper-class="fontsize-15" effect="light"
-                                    :content="modelInfo.name +' '+  props.row.relation.toLowerCase() + ' ' + props.row.name"
-                                    placement="top">
-                            <el-select v-model="props.row.relation" value-key="props.row.relation" placeholder="Select">
-                                <el-option-group
-                                        v-for="group in options"
-                                        :key="group.label"
-                                        :label="group.label">
-                                    <el-option
-                                            v-for="item in group.options"
-                                            :key="item.value"
-                                            :label="item.value"
-                                            :value="item.value">
-                                    </el-option>
-                                </el-option-group>
-                            </el-select>
-
-                        </el-tooltip>
-                    </template>
-
-
-                </el-table-column>
-
                 <el-table-column
                         label="Name"
-                        width="180"
                 >
                     <template slot-scope="props">
                         <a class="cursorPointer ellipsis" @click="checkContent(props.row)" target="_blank">{{props.row.name}}</a>
@@ -1952,7 +1897,7 @@
 
                 <el-table-column
                         label="Type"
-                        width="55"
+                        width="120"
                 >
                     <template slot-scope="props">
                         <el-tooltip class="item" effect="dark" :content="getTypeExpress(props.row)" placement="bottom-start">
@@ -1963,22 +1908,8 @@
                     </template>
                 </el-table-column>
 
-                <el-table-column fixed="right" label=" " width="60">
+                <el-table-column fixed="right" label=" " width="70">
                     <template slot-scope="scope">
-                        <!--<el-button-->
-                        <!--v-if="relateType=='concept'||relateType=='spatialReference'||relateType=='template'||relateType=='unit'"-->
-                        <!--size="mini"-->
-                        <!--type="danger"-->
-                        <!--@click="handleDelete(scope.$index, scope.row)">Remove-->
-                        <!--</el-button>-->
-                        <!--<el-button-->
-                        <!--v-else-->
-                        <!--:disabled="scope.row.author_uid!=userUid&&scope.row.author!=userUid&&scope.row.userName!=userUid"-->
-                        <!--size="mini"-->
-                        <!--type="danger"-->
-                        <!--@click="handleDelete(scope.$index, scope.row)">Remove-->
-                        <!--</el-button>-->
-
                         <el-button
 
                                 size="mini"
@@ -1993,16 +1924,51 @@
             </el-table>
         </el-card>
 
-        <div style="width:59%;float: left;">
-
-            <el-radio-group v-model="relateType" @change="search(activeName_dialog)">
-                <el-radio :label="'concept'" @click="search(activeName_dialog)">Concept & Semantic</el-radio>
-                <el-radio :label="'spatialReference'"  @click="search(activeName_dialog)">Spatiotemporal Reference</el-radio>
-                <el-radio :label="'template'"  @click="search(activeName_dialog)">Data Template</el-radio>
-                <el-radio :label="'unit'"  @click="search(activeName_dialog)">Unit & Metric</el-radio>
-                <el-radio :label="'dataSpaceFile'"  @click="search(activeName_dialog)">File</el-radio>
-                <el-radio :label="'exLink'"  @click="search(activeName_dialog)">External Link</el-radio>
-            </el-radio-group>
+        <div class="flexJustStart" style="width:59%;float: left;" >
+            <ul class="sideSelect">
+                <li class="sideSelectLi" @click="changeRelateType('concept')" :class="relateType!='concept'?'':'active'">
+                    <div class="sideSelectCell flexCenter">
+                        <el-tooltip content="Concept & Semantic" placement="right-start">
+                            <img src="/static/img/model/semantics.png">
+                        </el-tooltip>
+                    </div>
+                </li>
+                <li class="sideSelectLi" @click="changeRelateType('spatialReference')" :class="relateType!='spatialReference'?'':'active'">
+                    <div class="sideSelectCell flexCenter">
+                    <el-tooltip content="Spatiotemporal Reference" placement="right-start">
+                        <img style="width: 30px" src="/static/img/model/spatialreference.png">
+                    </el-tooltip>
+                    </div>
+                </li>
+                <li class="sideSelectLi" @click="changeRelateType('template')" :class="relateType!='template'?'':'active'">
+                    <div class="sideSelectCell flexCenter">
+                    <el-tooltip content="Data Template" placement="right-start">
+                        <img src="/static/img/model/template.png">
+                    </el-tooltip>
+                    </div>
+                </li>
+                <li class="sideSelectLi" @click="changeRelateType('unit')" :class="relateType!='unit'?'':'active'">
+                    <div class="sideSelectCell flexCenter">
+                    <el-tooltip content="Unit & Metric" placement="right-start">
+                        <img src="/static/img/model/unit.png">
+                    </el-tooltip>
+                    </div>
+                </li>
+                <li class="sideSelectLi" @click="changeRelateType('dataSpaceFile')" :class="relateType!='dataSpaceFile'?'':'active'">
+                    <div class="sideSelectCell flexCenter">
+                    <el-tooltip content="File" placement="right-start">
+                        <i class="fa fa-file-o" style="font-size: 26px; color: rgb(17, 194, 253);"></i>
+                    </el-tooltip>
+                    </div>
+                </li>
+                <li class="sideSelectLi" @click="changeRelateType('exLink')" :class="relateType!='exLink'?'':'active'">
+                    <div class="sideSelectCell flexCenter">
+                    <el-tooltip content="External Link" placement="right-start">
+                        <i class="fa fa-link" style="font-size: 26px; color: rgb(17, 194, 253);"></i>
+                    </el-tooltip>
+                    </div>
+                </li>
+            </ul>
             <el-tabs type="border-card" :stretch="true" v-model="activeName_dialog" v-if="relateType=='concept'||relateType=='spatialReference'
             ||relateType=='template'||relateType=='unit'">
                 <div style="padding: 8px 16px;
@@ -2085,7 +2051,6 @@
                     <el-table
                             :data="pageOption_all.searchResult"
                             style="margin-top:17px;"
-
                             show-overflow-tooltip
                             @sort-change="relationSortChange"
                             :max-height="tableMaxHeight">
@@ -2159,14 +2124,14 @@
 <!--                    </el-upload>-->
                 </div>
             </el-card>
-            <el-card v-if="relateType=='dataSpaceFile'" class="flexCenter" style="min-height: 260px">
+            <el-card v-if="relateType=='dataSpaceFile'" class="flexCenter" style="min-height: 260px;flex:1">
                 <el-button round size="mini" @click='checkPersonData()' type="primary">Select From My Space</el-button>
             </el-card>
-            <el-card v-if="relateType=='exLink'" style="min-height: 260px">
+            <el-card v-if="relateType=='exLink'" v-loading="checkUrlValidLoading"  style="min-height: 260px;flex:1">
                 <div class="flexCol flexAlignCenter">
                     <el-input
                             :rows="2"
-                            placeholder="please input name of the external link"
+                            placeholder="please input the name of the external link"
                             v-model="exLink.name"
                             style="margin-top:15px"
                     >
@@ -2174,7 +2139,7 @@
                     <el-input
                             type="textarea"
                             :rows="2"
-                            placeholder="please input content the external link"
+                            placeholder="please input the content the external link"
                             v-model="exLink.content"
                             style="margin-top:15px">
                     </el-input>

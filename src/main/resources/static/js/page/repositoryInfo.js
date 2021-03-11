@@ -1073,17 +1073,18 @@ new Vue({
             let result
             try{
                 result=proj4(firstProjection,secondProjection,[inX,inY]);
+                if(this.judgeUnit(this.outputCoordinate)==='metre') {
+                    this.outputX = result[0].toFixed(5)
+                    this.outputY = result[1].toFixed(5)
+                }else{
+                    this.outputLong = result[0].toFixed(5)
+                    this.outputLat = result[1].toFixed(5)
+                }
             }catch (e) {
                 this.$alert('The selected coordinates are not supported to transform.')
             }
 
-            if(this.judgeUnit(this.outputCoordinate)==='metre') {
-                this.outputX = result[0].toFixed(5)
-                this.outputY = result[1].toFixed(5)
-            }else{
-                this.outputLong = result[0].toFixed(5)
-                this.outputLat = result[1].toFixed(5)
-            }
+
             // let inCoorNum=this.inputCoordinate.substring(this.inputCoordinate.indexOf('.')+1)
             // let outCoorNum=this.outputCoordinate.substring(this.outputCoordinate.indexOf('.')+1)
             //
@@ -1188,7 +1189,7 @@ new Vue({
                 adddata(that.unitdata);
             });
 
-            if(this.unitname.indexOf('_')!=-1)
+            if(this.unitname!=null&&this.unitname.indexOf('_')!=-1)
             {
                 this.unitname=this.unitname.replace(/_/,'');
             }
@@ -1224,7 +1225,7 @@ new Vue({
 
                 if (res.oid != '') {
                     this.useroid = res.oid;
-                    this.userId = res.data.userId;
+                    this.userId = res.userId;
                     this.userImg = res.image;
                 }
 

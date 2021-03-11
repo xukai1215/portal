@@ -1013,7 +1013,7 @@ var vue = new Vue({
 
         async checkDataMethodServicesStatus(invokeServices){
             this.invokeServiceLoading = true
-            if(invokeServices.length>0){
+            if(invokeServices!=null&&invokeServices.length>0){
                 for(let invokeService of invokeServices){
                     let status = 0
                     status = await this.checkNodeContent(invokeService)

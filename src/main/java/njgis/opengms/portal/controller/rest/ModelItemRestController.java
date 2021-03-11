@@ -138,7 +138,7 @@ public class ModelItemRestController {
         HttpSession session=request.getSession();
         if(session.getAttribute("uid")==null)
         {
-            return ResultUtils.error(-2,"未登录");
+            return ResultUtils.error(-1,"未登录");
         }
         String uid=session.getAttribute("uid").toString();
 
@@ -188,7 +188,7 @@ public class ModelItemRestController {
         HttpSession session=request.getSession();
         if(session.getAttribute("uid")==null)
         {
-            return ResultUtils.error(-2,"未登录");
+            return ResultUtils.error(-1,"未登录");
         }
         String uid=session.getAttribute("uid").toString();
 
@@ -235,7 +235,7 @@ public class ModelItemRestController {
         HttpSession session=request.getSession();
         if(session.getAttribute("uid")==null)
         {
-            return ResultUtils.error(-2,"未登录");
+            return ResultUtils.error(-1,"未登录");
         }
         String uid=session.getAttribute("uid").toString();
 
@@ -288,7 +288,7 @@ public class ModelItemRestController {
         HttpSession session=request.getSession();
         if(session.getAttribute("uid")==null)
         {
-            return ResultUtils.error(-2,"未登录");
+            return ResultUtils.error(-1,"未登录");
         }
         String uid=session.getAttribute("uid").toString();
 
@@ -342,7 +342,7 @@ public class ModelItemRestController {
         HttpSession session=request.getSession();
         if(session.getAttribute("uid")==null)
         {
-            return ResultUtils.error(-2,"未登录");
+            return ResultUtils.error(-1,"未登录");
         }
         String uid=session.getAttribute("uid").toString();
 
@@ -474,7 +474,7 @@ public class ModelItemRestController {
         HttpSession session=request.getSession();
         if(session.getAttribute("uid")==null)
         {
-            return ResultUtils.error(-2,"未登录");
+            return ResultUtils.error(-1,"未登录");
         }
         String uid=session.getAttribute("uid").toString();
 
@@ -519,7 +519,14 @@ public class ModelItemRestController {
     }
 
     @RequestMapping(value = "/getClassification/{id}", method = RequestMethod.GET)
-    JsonResult getClass(@PathVariable("id") String id){
+    JsonResult getClass(@PathVariable("id") String id ,HttpServletRequest request){
+        HttpSession session=request.getSession();
+        if(session.getAttribute("uid")==null)
+        {
+            return ResultUtils.error(-1,"未登录");
+        }
+        String uid=session.getAttribute("uid").toString();
+
         ModelItem modelItem = modelItemService.getByOid(id);
         JSONObject obj = new JSONObject();
         obj.put("class1",modelItem.getClassifications());
@@ -528,28 +535,52 @@ public class ModelItemRestController {
     }
 
     @RequestMapping(value = "/getAlias/{id}", method = RequestMethod.GET)
-    JsonResult getAlias(@PathVariable("id") String id){
+    JsonResult getAlias(@PathVariable("id") String id, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("uid") == null) {
+            return ResultUtils.error(-1, "未登录");
+        }
+        String uid = session.getAttribute("uid").toString();
         ModelItem modelItem = modelItemService.getByOid(id);
 
         return ResultUtils.success(modelItem.getAlias());
     }
 
     @RequestMapping(value = "/getDescription/{id}", method = RequestMethod.GET)
-    JsonResult getDescription(@PathVariable("id") String id){
+    JsonResult getDescription(@PathVariable("id") String id,HttpServletRequest request){
+        HttpSession session=request.getSession();
+        if(session.getAttribute("uid")==null)
+        {
+            return ResultUtils.error(-1,"未登录");
+        }
+        String uid=session.getAttribute("uid").toString();
         ModelItem modelItem = modelItemService.getByOid(id);
 
         return ResultUtils.success(modelItem.getLocalizationList());
     }
 
     @RequestMapping(value = "/getMetadata/{id}", method = RequestMethod.GET)
-    JsonResult getMetadata(@PathVariable("id") String id){
+    JsonResult getMetadata(@PathVariable("id") String id,HttpServletRequest request){
+        HttpSession session=request.getSession();
+        if(session.getAttribute("uid")==null)
+        {
+            return ResultUtils.error(-1,"未登录");
+        }
+        String uid=session.getAttribute("uid").toString();
+
         ModelItem modelItem = modelItemService.getByOid(id);
 
         return ResultUtils.success(modelItem.getMetadata());
     }
 
     @RequestMapping(value = "/getReference/{id}", method = RequestMethod.GET)
-    JsonResult getReference(@PathVariable("id") String id) {
+    JsonResult getReference(@PathVariable("id") String id,HttpServletRequest request){
+        HttpSession session=request.getSession();
+        if(session.getAttribute("uid")==null)
+        {
+            return ResultUtils.error(-1,"未登录");
+        }
+        String uid=session.getAttribute("uid").toString();
         ModelItem modelItem = modelItemService.getByOid(id);
 
         return ResultUtils.success(modelItem.getReferences());
@@ -670,7 +701,13 @@ public class ModelItemRestController {
     }
 
     @RequestMapping(value="/getRelatedResources",method = RequestMethod.GET)
-    JsonResult getRelatedResources(@RequestParam(value = "oid") String oid){
+    JsonResult getRelatedResources(@RequestParam(value = "oid") String oid,HttpServletRequest request){
+        HttpSession session=request.getSession();
+        if(session.getAttribute("uid")==null)
+        {
+            return ResultUtils.error(-1,"未登录");
+        }
+        String uid=session.getAttribute("uid").toString();
 
         JSONArray result=modelItemService.getRelatedResources(oid);
 
@@ -678,7 +715,13 @@ public class ModelItemRestController {
     }
 
     @RequestMapping(value="/getRelation",method = RequestMethod.GET)
-    JsonResult getRelation(@RequestParam(value = "type") String type,@RequestParam(value = "oid") String oid){
+    JsonResult getRelation(@RequestParam(value = "type") String type,@RequestParam(value = "oid") String oid,HttpServletRequest request){
+        HttpSession session=request.getSession();
+        if(session.getAttribute("uid")==null)
+        {
+            return ResultUtils.error(-1,"未登录");
+        }
+        String uid=session.getAttribute("uid").toString();
 
         JSONArray result=modelItemService.getRelation(oid,type);
 
@@ -693,11 +736,11 @@ public class ModelItemRestController {
                            ){
 
         HttpSession session=request.getSession();
-        String uid=session.getAttribute("uid").toString();
-        if(uid==null)
+        if(session.getAttribute("uid")==null)
         {
-            return ResultUtils.error(-2,"未登录");
+            return ResultUtils.error(-1,"未登录");
         }
+        String uid=session.getAttribute("uid").toString();
 
         String result=modelItemService.setRelation(oid,type,relations,uid);
 
@@ -736,7 +779,7 @@ public class ModelItemRestController {
         HttpSession session = request.getSession();
         if(session.getAttribute("uid")==null)
         {
-            return ResultUtils.error(-2,"未登录");
+            return ResultUtils.error(-1,"未登录");
         }
         String uid=session.getAttribute("uid").toString();
         JSONArray relations = jsonObject.getJSONArray("relations");

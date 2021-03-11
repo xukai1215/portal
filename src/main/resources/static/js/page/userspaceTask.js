@@ -935,10 +935,18 @@ var userTask = Vue.extend(
                 console.log(this.selectedPath)
 
                 this.uploadInPath = 0
+
+                //模型容器返回的url可能带有pwd字段
+                let originUrl = this.outputToMyData.url
+
+                let dataUrl = originUrl
+                if(originUrl.indexOf('pwd')!=-1){
+                    dataUrl = originUrl.split('?')[0]
+                }
                 let obj = {
                     label: this.outputToMyData.tag,
                     suffix: this.outputToMyData.suffix,
-                    url: this.outputToMyData.url,
+                    url: dataUrl,
                     templateId:this.outputToMyData.url.split('/')[this.outputToMyData.url.split('/').length-1],
                 }
 

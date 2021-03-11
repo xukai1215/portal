@@ -930,7 +930,7 @@ public class ModelItemService {
                 item.put("name", spatialReference.getName());
                 item.put("author", userService.getByUid(spatialReference.getAuthor()).getName());
                 item.put("author_uid", spatialReference.getAuthor());
-                item.put("type", "spatial");
+                item.put("type", "spatialReference");
                 result.add(item);
             }
         }

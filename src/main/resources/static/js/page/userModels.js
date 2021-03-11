@@ -486,8 +486,8 @@ var userModels = Vue.extend(
                                 alert("Please login first!");
                                 window.location.href = "/user/login";
                             } else {
-                                data = json.data;
-                                if(data.modelItems.length==0&&this.page>1){
+                                let data = json.data;
+                                if(data[name].length==0&&this.page>1){
                                     this.searchItems(--this.page)
                                     return
                                 }

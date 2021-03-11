@@ -411,6 +411,10 @@ var createSpatialReference = Vue.extend({
             itemObj.classifications = this.cls;
             itemObj.name = $("#nameInput").val();
             itemObj.alias = $("#aliasInput").val().split(",");
+            itemObj.alias = $("#aliasInput").val().split(",");
+            if (itemObj.alias.length === 1 && itemObj.alias[0] === "") {
+                itemObj.alias = [];
+            }
             itemObj.status = this.status;
             itemObj.wkname = $("#wknameInput").val();
             itemObj.wkt = $("#wktInput").val();

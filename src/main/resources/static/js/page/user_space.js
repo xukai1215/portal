@@ -2808,7 +2808,7 @@ var vue = new Vue({
                             this.resourceLoad = false;
                             this.totalNum = data.count;
                             this.searchCount = Number.parseInt(data["count"]);
-                            this.searchResult = data[name];
+                            this.searchResult = data[n``ame];
                             if (this.page == 1) {
                                 this.pageInit();
                             }

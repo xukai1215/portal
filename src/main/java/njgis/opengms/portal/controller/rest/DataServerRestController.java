@@ -222,4 +222,13 @@ public class DataServerRestController {
 
     }
 
+    @RequestMapping(value = "/checkNodeContent", method = RequestMethod.GET)
+    public JsonResult checkNodeContent(@RequestParam("serverId") String serverId,
+                                       @RequestParam("token") String token,
+                                       @RequestParam("type") String type
+                                       ){
+
+       return ResultUtils.success(dataServerService.checkNodeContent(serverId,token,type));
+
+    }
 }

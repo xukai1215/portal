@@ -61,6 +61,16 @@
         .is-disabled input{
             color: #6f7276!important;
         }
+        .batchInputButton{
+            color: #039bd9;
+            margin-top: 10px;
+            position: absolute;
+            bottom:0px;
+            margin-bottom: 5px;
+        }
+        .batchInputButton:hover{
+            text-decoration:underline ;
+        }
     </style>
 </head>
 <body>
@@ -224,11 +234,12 @@
                             <p>&deg</p>
                         </div>
                     </div>
-                    <div class="flexCol flexAlignCenter">
+                    <div class="flexCol flexCenter positionRelative" style="height: 150px">
                         <el-button type="primary" size="medium" style="margin: 0 20px" @click="transformClick">
-                            transform
+                            Transform
                         </el-button>
                         <i class="el-icon-sort cursorPointer exchangeButton" @click="exchangeIO" style="color: #0069ba;font-size: 18px;margin-top: 5px"></i>
+                        <p class="cursorPointer batchInputButton" role="button" style="">Batch input</p>
                     </div>
                     <div class="flexCol flexAlignCenter" style="flex: 1;">
                         <h5 style="font-size: 16px;">Output coordinate system</h5>
@@ -487,13 +498,16 @@
                         prop="name"
                 >
                     <template slot-scope="scope">
-                        <a :href="'/repository/spatialReference/'+scope.row.oid">{{scope.row.name}}</a>
+                        <a class="cursorPointer" @click="window.open('/repository/spatialReference/'+scope.row.oid)">{{scope.row.name}}</a>
                     </template>
                 </el-table-column>
                 <el-table-column
                         label="Contributor"
-                        prop="author"
                 >
+                    <template slot-scope="scope">
+                        <a class="cursorPointer" v-if="scope.row.author!='unknown'" @click="window.open('/user/'+scope.row.author)" >{{scope.row.author}}</a>
+                        <p v-else>{{scope.row.author}}</p>
+                    </template>
                 </el-table-column>
                 <el-table-column
                         label="Option"
