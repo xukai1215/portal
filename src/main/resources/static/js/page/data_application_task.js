@@ -168,7 +168,8 @@ let vue = new Vue({
                             that.outPutData = that.dataServerTask.outputs;
                             let str = this.outPutData[0].tag + '.' + this.outPutData[0].suffix;
                             that.resultData.name = str;
-                            that.resultData.url = this.outPutData[0].url;
+                            that.resultData.url = that.outPutData[0].url;
+                            that.resultData.visualUrl = that.outPutData[0].visualUrl;
                             that.value = that.resultData.name;
                             that.loading = false;
                             that.invokeDialog = false;
@@ -428,7 +429,12 @@ let vue = new Vue({
         },
         initPicture(){
             // let url = this.invokeService.cacheUrl;
-            this.visualPath = this.resultData.url;
+            //type为展示的数据类型
+            let type;
+
+            this.visualPath = this.resultData.visualUrl;
+            // window.open(this.visualPath ,"VisualResultHtml",
+            //     'width = 700, height = 600, resizable = yes, scrollbars = yes')
             this.visualization = true;
             // let formData=new FormData();
             // var that = this;
@@ -548,9 +554,6 @@ let vue = new Vue({
                     message: 'Cancel'
                 });
             });
-
-
-
         },
         addOutputToMyDataConfirm() {
             let data = this.$refs.folderTree2.getCurrentNode();

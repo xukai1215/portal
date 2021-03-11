@@ -13,6 +13,7 @@ public class TaskData {
     String statename;
     String event;
     String url;
+    String visualUrl;//可展示在网页的url
     String[] urls;//一个event有多文件
     String tag;
     String suffix;

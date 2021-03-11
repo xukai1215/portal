@@ -574,8 +574,10 @@ public class DataApplicationController {
             for(String fileName:urlRes.keySet()){
                 TaskData taskData = new TaskData();
                 taskData.setTag(fileName.substring(0, fileName.lastIndexOf(".")));
-                taskData.setSuffix(fileName.substring(fileName.lastIndexOf(".")).substring(1));
+                String suffic = fileName.substring(fileName.lastIndexOf(".")).substring(1);
+                taskData.setSuffix(suffic);
                 taskData.setUrl(urlRes.getString(fileName));
+                taskData.setVisualUrl(urlRes.getString(fileName) + "?type=" + suffic);
                 taskDatas.add(taskData);
             }
 //        }
@@ -1067,5 +1069,17 @@ public class DataApplicationController {
         }
         return result;
     }
+
+//    @RequestMapping(value = "/getTemplate", method = RequestMethod.GET)
+//    public List<String> getTemplate(){
+//        List<DataApplication> dataApplications = dataApplicationDao.findAll();
+//        List<String> res = new ArrayList<>();
+//        for(DataApplication dataApplication:dataApplications){
+//            if(dataApplication.getBindOid() != null){
+//                res.add(dataApplication.getOid());
+//            }
+//        }
+//        return res;
+//    }
 
 }

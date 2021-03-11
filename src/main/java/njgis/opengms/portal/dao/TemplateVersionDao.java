@@ -1,5 +1,6 @@
 package njgis.opengms.portal.dao;
 
+import njgis.opengms.portal.entity.ConceptVersion;
 import njgis.opengms.portal.entity.TemplateVersion;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -19,5 +20,7 @@ public interface TemplateVersionDao extends MongoRepository<TemplateVersion,Stri
     List<TemplateVersion> findAllByOriginOid(String oid, Pageable pageable);
 
     TemplateVersion findFirstByOid(String oid);
+
+    List<TemplateVersion> findFirstByCreatorAndVerStatus(String creator, Integer verStatus);
 
 }

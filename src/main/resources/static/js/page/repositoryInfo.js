@@ -154,6 +154,16 @@ new Vue({
 
             total: 11,
         },
+        pageOption1: {
+            paginationShow:false,
+            progressBar: true,
+            sortAsc: false,
+            currentPage: 1,
+            pageSize: 5,
+            searchText: '',
+            total: 264,
+            searchResult: [],
+        },
         searchText:'',
 
         isInSearch:0,
@@ -163,6 +173,13 @@ new Vue({
         searchResult:[{
             name:'',
         }],
+        relatedDataMethods:[{
+
+        }],
+        templateId:'',
+        bindNewMethodDialog: false,
+        searchResult: [],
+
     },
     methods: {
         select_prebase(value, loc, x, tag) {
@@ -1172,11 +1189,89 @@ new Vue({
             window.sessionStorage.setItem(name, value);
         },
 
+        getRelatedDataMethods(){
+            let url = window.location.href;
+            let index = url.lastIndexOf('/');
+            this.templateId = url.slice(index+1, url.length);
+            console.log(this.templateId);
+            $.ajax({
+                url:'/template/getRelatedDataMethods/' + this.templateId,
+                type:'GET',
+                success: (json)=>{
+                    console.log(json.data);
+                    if(json.data != null){
+                        let arr = [];
+                        console.log(typeof json.data);
+                        this.relatedDataMethods = json.data;
+                    }
+                }
+            })
+        },
+        ViewMethod(event){
+            let refLink=$(".viewMethod");
+            for(let i=0;i<refLink.length;i++){
+                if(event.currentTarget===refLink[i]){
+                    window.location.href = '/dataApplication/' + this.relatedDataMethods[i].oid;
+                    break;
+                }
+            }
+        },
+        searchMethod(){
+            //获取所有的template
+            let pageData = {
+                asc: this.pageOption1.sortAsc,
+                page: this.pageOption1.currentPage-1,
+                pageSize: this.pageOption1.pageSize,
+                searchText: this.pageOption1.searchText,
+                sortElement: "default",
+                // classifications: ["all"],
+            };
+            let contentType = "application/x-www-form-urlencoded";
+            $.ajax({
+                type:'POST',
+                url:'/template/getMethods',
+                data:pageData,
+                async: true,
+                contentType: contentType,
+                success:(json)=>{
+                    console.log(json);
+                    // that.dataApplication.bindTemplates = result.data;
 
+                    if (json.code === 0) {
+                        let data = json.data;
+                        console.log(data)
+
+                        this.pageOption1.total = data.totalElements;
+                        this.pageOption1.pages = data.totalPages;
+                        this.pageOption1.searchResult = data.content;
+                        // this.pageOption.users = data.users;
+                        this.pageOption1.progressBar = false;
+                        this.pageOption1.paginationShow = true;
+
+                    }
+                    else {
+                        console.log("query error!")
+                    }
+                }
+
+            })
+        },
+        openBindMethodDialog(){
+            this.pageOption1.currentPage = 1;
+            this.pageOption1.sortAsc = false;
+            this.bindNewMethodDialog = true;
+            this.searchMethod();
+        },
+        selectMethod(index, info){
+            console.log(info);
+            
+        },
     },
     mounted() {
 
         let that=this;
+        this.getRelatedDataMethods();
+
         var prearr=new Array();
         if(this.oid_cvt!=null){
             $("#transform").show();

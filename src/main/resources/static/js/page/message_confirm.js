@@ -178,7 +178,6 @@ var notice = Vue.extend({
             timeLineColor:'#409EFF',
             timeLineColor1:'#fe7708',
             stretch:true,
-            userOid:"",
             activeColor: '#f5f5dc',
         };
     },
@@ -1308,7 +1307,7 @@ var notice = Vue.extend({
                             this.dataItem_tableData1_length--;
                             this.table_length_sum--;
                             this.version_sum--;
-                            var messageNum = docu
+                            // var messageNum = document
                             this.dataItem_tableData1.splice(pos,1);
 
                         }
@@ -1820,11 +1819,21 @@ var notice = Vue.extend({
                 }
             }
         },
+        correctMsgNum(){
+            $.ajax({
+                url:'/message/correctMsgNum',
+                type:'GET',
+                success: (json) =>{
+                    console.log(json);
+                },
+            })
+        }
     },
     mounted(){
         this.sendcurIndexToParent();
         this.getComments();
         this.getVersions();
+        this.correctMsgNum();
         $(() => {
 
             let height = document.documentElement.clientHeight;

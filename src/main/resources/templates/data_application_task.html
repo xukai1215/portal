@@ -72,6 +72,10 @@
             border: 0;
         }
 
+        .el-dialog {
+            height:80%;
+            overflow: auto;
+        }
 
     </style>
 </head>
@@ -319,9 +323,10 @@
     <el-dialog
             title="Visualization Show"
             :visible.sync="visualization"
-            width="50%">
+            width="80%">
         <span>
-            <img style="display:inline;width: 100%;height: 100%;" :src="visualPath"/>
+<!--            <img style="display:inline;width: 100%;height: 100%;" :src="visualPath"/>-->
+            <iframe :src="visualPath" width="100%" height="100%"></iframe>
         </span>
         <span slot="footer" class="dialog-footer">
     <el-button @click="visualization = false">Cancel</el-button>

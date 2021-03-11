@@ -1,5 +1,6 @@
 package njgis.opengms.portal.dao;
 
+import njgis.opengms.portal.entity.DataApplicationVersion;
 import njgis.opengms.portal.entity.ModelItemVersion;
 import njgis.opengms.portal.entity.ThemeVersion;
 import org.springframework.data.domain.Pageable;
@@ -18,4 +19,7 @@ public interface ThemeVersionDao extends MongoRepository<ThemeVersion,String> {
     ThemeVersion findFirstByOid(String oid);
 
     ThemeVersion findByThemeOid(String themeOid);
+
+    List<ThemeVersion> findFirstByCreatorAndStatus(String creator, Integer verStatus);
+
 }

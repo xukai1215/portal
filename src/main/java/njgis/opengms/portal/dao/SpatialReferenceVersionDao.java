@@ -1,6 +1,7 @@
 package njgis.opengms.portal.dao;
 
 import njgis.opengms.portal.entity.SpatialReferenceVersion;
+import njgis.opengms.portal.entity.TemplateVersion;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
@@ -19,5 +20,7 @@ public interface SpatialReferenceVersionDao extends MongoRepository<SpatialRefer
     List<SpatialReferenceVersion> findAllByOriginOid(String oid, Pageable pageable);
 
     SpatialReferenceVersion findFirstByOid(String oid);
+
+    List<SpatialReferenceVersion> findFirstByCreatorAndVerStatus(String creator, Integer verStatus);
 
 }
